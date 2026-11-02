@@ -31,7 +31,8 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     run(join(source, 'bin/mini-check'), ['--docs'], source);
     const bootstrap = available ? verifyBootstrap(source) : null;
     const label = tag ?? `snapshot-${commit.slice(0, 12)}`;
-    const manifest = { schemaVersion: 1, tag: tag ?? null, commit, componentVersions: current, releasedComponent, node: process.version, bootstrap };
+    const title = releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
+    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent, node: process.version, bootstrap };
     assert(!existsSync(join(source, 'RELEASE.json')), 'RELEASE.json is reserved for packaged metadata');
     const record = JSON.stringify(manifest, null, 2) + '\n';
     writeFileSync(join(source, 'RELEASE.json'), record);
@@ -42,7 +43,7 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     run('tar', ['-xf', join(output, archive), '-C', extracted], work);
     run(join(extracted, 'bin/mini-check'), ['--docs'], extracted);
     writeFileSync(join(output, 'manifest.json'), record);
-    writeFileSync(join(output, 'RELEASE-NOTES.md'), `# ${label}\n\nSource: ${commit}\n\nBootstrap: ${bootstrap === null ? 'unavailable' : 'verified fixed point'}\n\n${readFileSync(join(source, 'CHANGELOG.md'), 'utf8')}`);
+    writeFileSync(join(output, 'RELEASE-NOTES.md'), `# ${title}\n\nVersion: ${label}\n\nSource: ${commit}\n\nBootstrap: ${bootstrap === null ? 'unavailable' : 'verified fixed point'}\n\n${readFileSync(join(source, 'CHANGELOG.md'), 'utf8')}`);
     const assets = readdirSync(output).sort();
     writeFileSync(join(output, 'SHA256SUMS'), assets.map(name => `${sha256(readFileSync(join(output, name)))}  ${name}\n`).join(''));
     return manifest;

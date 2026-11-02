@@ -1,6 +1,6 @@
 # Changes
 
-## Unreleased
+## cli 0.1.0-alpha.1 — mini tooling preview
 
 - Define mini's tiny self-hosting foundation and atomic development rules.
 - Add independently versioned CLI tools, JSON verification cases, benchmarks,
@@ -15,4 +15,5 @@
 - Document the main clone-and-evolve workflow, including breaking syntax bridges
   and atomic promotion of a verified compiler/source pair.
 
-No Mini grammar/compiler/bootstrap exists yet. No release has been published.
+This preview ships TypeScript tooling and guides. Mini grammar, compiler, and
+generated bootstrap are not implemented yet.

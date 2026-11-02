@@ -29,14 +29,14 @@ switch (task) {
     const tag = process.env['GITHUB_REF_NAME'];
     const directory = join(root, 'dist/release');
     const manifest = JSON.parse(readFileSync(join(directory, 'manifest.json'), 'utf8')) as {
-      tag: string; releasedComponent: { version: string };
+      title: string; tag: string; releasedComponent: { version: string };
     };
     assert.equal(manifest.tag, tag);
     assert(typeof tag === 'string');
     const { readdirSync } = await import('node:fs');
     const args = [
       'release', 'create', tag, ...readdirSync(directory).map(file => join(directory, file)),
-      '--draft', '--verify-tag', '--latest=false', '--title', tag,
+      '--draft', '--verify-tag', '--latest=false', '--title', manifest.title,
       '--notes-file', join(directory, 'RELEASE-NOTES.md'),
     ];
     if (manifest.releasedComponent.version.includes('-')) args.push('--prerelease');
