@@ -1,0 +1,6 @@
+---
+description: Repository-wide MiniLang scope, development, and atomic commit rules
+alwaysApply: true
+---
+
+Read and follow [AGENTS.md](../../AGENTS.md), including its linked rules.
