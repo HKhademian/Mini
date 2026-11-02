@@ -47,5 +47,5 @@ tasks use TypeScript directly through Node, with no shell scripts.
 
 After committing release preparation, create an annotated tag matching the
 registry and push that tag to your GitHub remote. Branch pushes never publish
-or create tags. No GitHub remote or hosted run is configured yet; these files
-do not create a repository or publish a release.
+or create tags. Workflows become active when their commits reach GitHub;
+local packaging never publishes a release.
