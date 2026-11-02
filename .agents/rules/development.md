@@ -37,3 +37,6 @@
 
 - Follow docs/builtins.md for primitive I/O and library scope. Built-in names
   and contracts are provisional; host adapters must not implement the compiler.
+
+- Put standard-library source under std/, with Mini code in .mini files. Keep
+  its verification manifests/streams under cases/; create directories when needed.

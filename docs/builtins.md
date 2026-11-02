@@ -24,6 +24,10 @@ in a standard library instead of adding syntax or compiler special cases.
 Prefer Mini implementations where practical. No module/import syntax or
 standard-library API is selected yet.
 
+Standard-library source belongs under `std/`, with Mini code in `.mini` files.
+Keep library verification manifests and streams under `cases/`. Create `std/`
+when its first implementation is added; do not add empty scaffolding.
+
 If a standard library is introduced, it has an independent `std` version and
 `std-vX.Y.Z` release tags. Its version remains `null` until implemented and
 assigned. A compiler using it must ship the matching library source and include

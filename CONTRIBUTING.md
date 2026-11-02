@@ -26,8 +26,8 @@ Internal TypeScript imports retain `.ts` for direct Node execution.
 Keep root files conventional: README, contributor/agent guides, changelog,
 package/lockfile, TypeScript config, and Node version. Put commands in `bin/`,
 implementations in `tools/`, metadata in `config/`, cases in `cases/`, and
-guides in `docs/`. Create compiler, sample, or example directories when needed;
-avoid empty scaffolding.
+guides in `docs/`. Standard-library source belongs in `std/`. Create it and
+compiler, sample, or example directories when needed; avoid empty scaffolding.
 
 For syntax or compiler changes, follow [the case guide](docs/cases.md), update
 affected samples/examples, and preserve [the bootstrap](docs/bootstrap.md).
