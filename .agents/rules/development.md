@@ -7,8 +7,9 @@
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
   it to MiniLang immediately. After replacement, implement compiler behavior in
   MiniLang and regenerate the bootstrap; never hand-edit generated compiler code.
-- TypeScript supporting tools are allowed. Keep them straightforward to replace
-  incrementally; they must not hide compiler logic needed for self-hosting.
+- Self-hosting applies only to the compiler path. Other tools may remain
+  TypeScript until Mini or a cloned language can replace them conveniently.
+  They must not hide compiler logic needed for self-hosting.
 - Preserve the fixed point and ordinary example when changing compiler code or
   its generated bootstrap. Implement syntax support before adopting it in the
   compiler source. Never revive the handwritten compiler to bypass a migration.
@@ -33,3 +34,6 @@
 - Keep each tool independently versioned. Use mini for the project version key.
 - Keep the root lean. Follow CONTRIBUTING.md and docs/cases.md for layout,
   verification, examples, samples, and benchmarks.
+
+- Follow docs/builtins.md for primitive I/O and library scope. Built-in names
+  and contracts are provisional; host adapters must not implement the compiler.

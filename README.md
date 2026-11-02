@@ -25,6 +25,11 @@ Compiler1, Compiler2, and Compiler3 must run and be byte-identical. The final
 compiler must also compile an example that runs with its expected output.
 Compiler0 is handwritten; its own code need not match generated code.
 
+Self-hosting belongs to the compiler path only. The generated compiler runs
+directly on Node; the CLI, checker, verifier, tests, and release tools need not
+be written in Mini. They may remain TypeScript until Mini or a cloned language
+can replace them conveniently.
+
 Promote the verified generated compiler to the distributed bootstrap. Remove
 the handwritten compiler from the active build. Ship the generated compiler,
 matching Mini source, and rebuild instructions together.
@@ -39,6 +44,9 @@ Mini source uses `.mini`. Other executable project code uses TypeScript run
 directly by Node. Supporting tools may start in TypeScript and move to Mini
 incrementally. Compiler logic must not remain hidden in TypeScript helpers
 after bootstrap replacement.
+
+[Built-in I/O and library functions](docs/builtins.md) provide the small host
+capabilities needed by the compiler and later tools.
 
 Avoid speculative features, advanced mathematics, Unicode requirements, rich
 diagnostics, extra safety systems, and unnecessary layers. Rebuild checks stay

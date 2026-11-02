@@ -3,6 +3,11 @@
 [config/bootstrap.json](../config/bootstrap.json) is `null` until a real
 compiler exists. `./bin/mini verify` fails clearly in that state.
 
+The self-hosting requirement applies only to `mini-compile` / `minic` and the
+generated compiler. Other tools may remain TypeScript indefinitely, including
+the `mini` dispatcher and the verification/release harness. They are development
+utilities, not prerequisites for running the generated compiler on Node.
+
 Delivery uses compilation, not a runner:
 
 ```text
@@ -15,6 +20,11 @@ output path. `mini-compile` and `minic` are aliases for `mini compile`.
 The generated compiler implements the same `compile SOURCE.mini [OUTPUT.ts]`
 interface and writes self-contained TypeScript. Node built-ins are available;
 handwritten compiler helpers must not be required.
+
+Primitive host I/O is allowed through [built-ins](builtins.md). These adapters
+must not contain Mini parsing or compilation logic. Any library code used by
+the compiler must be included in its source/build and generated bootstrap;
+it must not introduce another prerequisite tool or package.
 
 At first promotion, assign language/compiler/bootstrap versions and configure:
 
