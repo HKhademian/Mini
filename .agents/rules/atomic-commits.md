@@ -9,8 +9,10 @@
 - Stage explicit owned paths or hunks. Preserve unrelated and concurrent work.
 - Commit a completed unit before moving to independent work. Report commit IDs
   and checks. If committing is blocked, report the exact uncommitted scope.
-- Keep new feature support and later adoption in compiler source separately
-  reviewable, with a working bootstrap between them.
+- Separate support and source adoption commits when each stays self-hosted.
+  For breaking syntax, complete the temporary bridge, source conversion, and
+  verified bootstrap promotion in one atomic migration. See
+  [language evolution](../../docs/evolving-language.md).
 - Do not amend others' commits or rewrite published history. Create and push
   release tags only when the user authorizes that release.
 

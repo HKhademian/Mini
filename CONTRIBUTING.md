@@ -30,7 +30,8 @@ implementations in `tools/`, metadata in `config/`, cases in `cases/`, and
 guides in `docs/`. Standard-library source belongs in `std/`. Create it and
 compiler, sample, or example directories when needed; avoid empty scaffolding.
 
-For syntax or compiler changes, follow [the case guide](docs/cases.md), update
+For syntax or compiler changes, follow [language evolution](docs/evolving-language.md)
+and [the case guide](docs/cases.md), update
 affected samples/examples, and preserve [the bootstrap](docs/bootstrap.md).
 Document changes in [CHANGELOG.md](CHANGELOG.md).
 Use [versioning](docs/versioning.md) and [release instructions](docs/releases.md)

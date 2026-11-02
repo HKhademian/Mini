@@ -14,8 +14,9 @@
   TypeScript until Mini or a cloned language can replace them conveniently.
   They must not hide compiler logic needed for self-hosting.
 - Preserve the fixed point and ordinary example when changing compiler code or
-  its generated bootstrap. Implement syntax support before adopting it in the
-  compiler source. Never revive the handwritten compiler to bypass a migration.
+  its generated bootstrap. Follow docs/evolving-language.md: a breaking bridge
+  stays temporary until its migrated source and generated compiler self-host.
+  Never revive the handwritten compiler to bypass a migration.
 - Use focused checks for actual behavior. Do not add a large test matrix or
   invent language semantics solely to satisfy tooling.
 - Keep docs accurate about implemented, proposed, and unavailable capabilities.

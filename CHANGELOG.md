@@ -12,5 +12,7 @@
 - Balance language size with compiler readability and incremental syntax migration.
 - Put stream descriptors directly in JSON cases and invoke real tools through
   the shared runner; add `mini verify CASE.json` and remove per-case scripts.
+- Document the main clone-and-evolve workflow, including breaking syntax bridges
+  and atomic promotion of a verified compiler/source pair.
 
 No Mini grammar/compiler/bootstrap exists yet. No release has been published.

@@ -6,6 +6,9 @@ Keep syntax and implementation small, readable, and easy to change. Include
 enough expressiveness to develop, maintain, and extend the self-hosted compiler
 directly. Broad general-purpose features are outside this project's objective.
 
+The main workflow is to clone this foundation and
+[grow your own language while preserving self-hosting](docs/evolving-language.md).
+
 No grammar or compiler is implemented yet. Maintenance tools are available.
 
 ## Self-hosting
@@ -34,9 +37,10 @@ Promote the verified generated compiler to the distributed bootstrap. Remove
 the handwritten compiler from the active build. Ship the generated compiler,
 matching Mini source, and rebuild instructions together.
 
-Every later increment preserves self-hosting. Implement syntax support using
-old syntax, promote its compiler, then adopt new syntax in compiler source.
-Never revive the handwritten compiler to bypass a migration.
+Every completed increment preserves self-hosting. A breaking change can use a
+temporary compiler written in old syntax that accepts only the new syntax;
+rewrite its source and verify the final pair before promotion. Never revive
+the handwritten compiler to bypass a migration.
 
 ## Size and evolution
 
@@ -48,7 +52,7 @@ foundation harder to implement and reshape.
 Add a construct when its concrete readability or migration benefit justifies
 its implementation cost. Prefer simple rules and direct compiler code. A cloned
 language should approach its target through small, self-hosted increments;
-[temporary syntax bridges](docs/bootstrap.md) can keep those steps manageable.
+[temporary syntax bridges](docs/evolving-language.md) can keep those steps manageable.
 
 ## Scope
 
