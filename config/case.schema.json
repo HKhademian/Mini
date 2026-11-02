@@ -20,6 +20,7 @@
           "stdin": { "type": "string", "pattern": "\\.json$" },
           "stdout": { "type": "string", "pattern": "\\.json$" },
           "stderr": { "type": "string", "pattern": "\\.json$" },
+          "artifact": { "type": "string", "pattern": "\\.json$" },
           "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 }
         },
         "additionalProperties": false

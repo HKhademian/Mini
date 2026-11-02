@@ -40,11 +40,15 @@ export async function main(executable: string): Promise<void> {
         console.log(JSON.stringify((await import('./release.ts')).prepareRelease(root, resolve(args[0]), args[1]), null, 2));
         break;
       case 'compile': {
-        assert(args.length === 0, 'usage: mini-compile < SOURCE.mini > OUTPUT.ts');
+        assert(args[0] !== undefined && args.length <= 2, 'usage: mini-compile SOURCE.mini [OUTPUT.ts]');
         const { readFileSync } = await import('node:fs');
         const config = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
         assert(config !== null, 'Mini compiler unavailable: not implemented yet.');
-        process.stdout.write(run(process.execPath, [join(root, config.compiler)], root, readFileSync(0))); break;
+        const source = resolve(args[0]);
+        assert(source.endsWith('.mini'), 'Mini source must use .mini');
+        const output = args[1] === undefined ? source.slice(0, -5) + '.ts' : resolve(args[1]);
+        process.stdout.write(run(process.execPath, [join(root, config.compiler), 'compile', source, output], process.cwd()));
+        break;
       }
     }
   } catch (error) {

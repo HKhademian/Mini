@@ -34,8 +34,9 @@ JSON formatting. A changed hash fails verification; update expectations
 deliberately after reviewing the contract. Streams are compared byte for byte.
 
 Kinds: `tool` runs TypeScript; `feature`, `sample`, and `example` compile Mini
-then run it; `compile` checks emitted compiler output; `reject` checks failed
-compilation with no emitted artifact. Unavailable compilers fail language cases;
+then run it; `compile` checks compiler stdout/stderr/status and a separate
+`artifact` stream file; `reject` checks failed compilation with no output file.
+Unavailable compilers fail language cases;
 nothing is silently counted as passed.
 
 Run `./bin/mini test` or `./bin/mini test FILTER`.

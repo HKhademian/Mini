@@ -24,13 +24,16 @@ export function verifyBootstrap(directory: string) {
     writeFileSync(join(work, 'package.json'), '{"type":"module"}\n');
     let previous = join(work, 'compiler0.ts');
     writeFileSync(previous, seed);
+    const input = join(work, 'compiler.mini');
+    writeFileSync(input, source);
     const generations: string[] = [];
     for (let stage = 1; stage <= 3; stage++) {
-      const output = run(process.execPath, [previous], work, source);
+      const next = join(work, `compiler${stage}.ts`);
+      run(process.execPath, [previous, 'compile', input, next], work);
+      const output = readFileSync(next);
       assert(output.equals(seed), `bootstrap differs from generation ${stage}; regenerate and promote the matching compiler`);
       generations.push(sha256(output));
-      previous = join(work, `compiler${stage}.ts`);
-      writeFileSync(previous, output);
+      previous = next;
     }
     const example = loadCase(resolve(directory, config.example));
     assert.equal(example.definition.kind, 'example');

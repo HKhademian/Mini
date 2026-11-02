@@ -3,10 +3,18 @@
 [config/bootstrap.json](../config/bootstrap.json) is `null` until a real
 compiler exists. `./bin/mini verify` fails clearly in that state.
 
-Compiler interface: `mini-compile < source.mini > program.ts`.
-The generated compiler runs as `node COMPILER.ts`, reads complete source from
-stdin, and emits self-contained TypeScript to stdout. Node built-ins are
-available. Handwritten compiler helpers must not be required.
+Delivery uses compilation, not a runner:
+
+```text
+mini compile compiler.mini
+node compiler.ts compile compiler.mini
+```
+
+Both write `compiler.ts` by default. An optional final argument selects another
+output path. `mini-compile` and `minic` are aliases for `mini compile`.
+The generated compiler implements the same `compile SOURCE.mini [OUTPUT.ts]`
+interface and writes self-contained TypeScript. Node built-ins are available;
+handwritten compiler helpers must not be required.
 
 At first promotion, assign language/compiler/bootstrap versions and configure:
 
@@ -21,9 +29,10 @@ At first promotion, assign language/compiler/bootstrap versions and configure:
 These are illustrative paths. The example uses the [case format](cases.md):
 Mini source and each input/output stream remain separate files.
 
-The verifier copies the shipped compiler into an isolated directory, rebuilds
-three generations, and requires each to equal the shipped compiler byte for
-byte. It uses the last generation to compile and run every example scenario,
+The verifier copies the shipped compiler and Mini source into an isolated
+directory, invokes `node PREVIOUS.ts compile compiler.mini NEXT.ts` three times,
+and requires each output file to equal the shipped compiler byte for byte.
+It uses the last generation to compile and run every example scenario,
 checking stdout, stderr, and exit status. Release metadata records source,
 compiler, generation, example, and stream identities.
 

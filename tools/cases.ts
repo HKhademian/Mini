@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { root, sha256 } from './project.ts';
 
-export type Scenario = { name: string; args?: string[]; stdin: string; stdout: string; stderr: string; exitCode: number };
+export type Scenario = { name: string; args?: string[]; stdin: string; stdout: string; stderr: string; exitCode: number; artifact?: string };
 export type Case = { id: string; kind: 'tool' | 'feature' | 'reject' | 'compile' | 'sample' | 'example'; source: string; features: string[]; cases: Scenario[]; benchmark?: { warmups: number; samples: number } };
 export type Fixture = { path: string; definition: Case };
 
@@ -55,6 +55,10 @@ export function loadCases(filter = '', directory = join(root, 'cases')): Fixture
             stream(resolve(dirname(file), scenario[key]));
           }
           assert.equal(new Set([value.source, scenario.stdin, scenario.stdout, scenario.stderr]).size, 4, 'source and streams must be separate files');
+          if (value.kind === 'compile') {
+            assert(typeof scenario.artifact === 'string', 'compile case needs a separate artifact stream');
+            stream(resolve(dirname(file), scenario.artifact));
+          }
         }
         if (value.benchmark !== undefined) {
           assert(Number.isInteger(value.benchmark.warmups) && value.benchmark.warmups >= 0);
@@ -90,15 +94,20 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
     else {
       const config = JSON.parse(readFileSync(join(projectRoot, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
       assert(compilerOverride !== undefined || config !== null, `${spec.id}: compiler unavailable; cases are not skipped`);
-      const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), [], readFileSync(program));
-      artifact = sha256(compiled.stdout);
+      const output = join(work, 'program.ts');
+      const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), ['compile', program, output], Buffer.alloc(0));
+      if (compiled.status === 0) artifact = sha256(readFileSync(output));
+      if (spec.kind === 'compile') {
+        assert.deepEqual(readFileSync(output), stream(resolve(directory, scenario.artifact!)), 'generated artifact differs');
+      }
+      if (spec.kind === 'reject') assert(!existsSync(output), 'rejection created an output artifact');
       if (spec.kind === 'reject' || spec.kind === 'compile') result = compiled;
       else {
         assert.equal(compiled.status, 0, compiled.stderr.toString());
         assert.equal(compiled.stderr.length, 0, 'unexpected compiler diagnostics');
-        program = join(work, 'program.ts');
+        program = output;
         writeFileSync(join(work, 'package.json'), '{"type":"module"}\n');
-        writeFileSync(program, compiled.stdout);
+        assert.equal(compiled.stdout.length, 0, 'unexpected compiler stdout');
         result = execute(program, scenario.args ?? [], input);
       }
     }
