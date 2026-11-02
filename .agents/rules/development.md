@@ -32,8 +32,10 @@
 
 - Executable project code uses TypeScript run directly by Node or Mini only.
 - Use extensionless Node shebang commands under bin/; do not route tools through npm.
-- Mini source uses .mini. Keep case manifests, source, stdin, stdout, and stderr in
-  separate files. Stream JSON supports text, bytes, or file plus optional SHA-256.
+- Mini source uses .mini. Keep case manifests and source separate. Tool cases
+  invoke actual bin/ commands through the shared runner; never add per-case
+  executable wrappers. Stream fields are objects with text, bytes, or file plus
+  optional SHA-256. Prefer external files for substantial stream payloads.
 - Keep each tool independently versioned. Use mini for the project version key.
 - Keep the root lean. Follow CONTRIBUTING.md and docs/cases.md for layout,
   verification, examples, samples, and benchmarks.

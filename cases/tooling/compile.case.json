@@ -1,0 +1,25 @@
+{
+  "id": "tooling.compile",
+  "kind": "tool",
+  "tool": "mini-compile",
+  "features": [],
+  "cases": [
+    {
+      "name": "compile-unavailable",
+      "args": [
+        "source.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "compile-unavailable.stderr",
+        "hash": "sha256:6f99b946ec609c9061a090ee64ad5d48d726c122eb7fd012419e9b282314a08e"
+      },
+      "exitCode": 1
+    }
+  ]
+}

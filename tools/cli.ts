@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { root, run, versions, type Component } from './project.ts';
 
 const names: Record<string, Component> = { check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
-const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs] | test [FILTER] | bench OUTPUT [FILTER] | verify | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
+const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
 
 export async function main(executable: string): Promise<void> {
   try {
@@ -32,12 +32,14 @@ export async function main(executable: string): Promise<void> {
         (await import('./bench.ts')).benchmark(resolve(args[0]), args[1]);
         break;
       case 'verify':
-        assert(args.length === 0, 'usage: mini-verify');
-        console.log(JSON.stringify((await import('./verify.ts')).verifyBootstrap(root), null, 2));
+        assert(args.length <= 1, 'usage: mini-verify [CASE.json]');
+        if (args[0] === undefined) console.log(JSON.stringify((await import('./verify.ts')).verifyBootstrap(root), null, 2));
+        else (await import('./test.ts')).testCases('', resolve(args[0]));
         break;
       case 'release':
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-release OUTPUT [TAG]');
-        console.log(JSON.stringify((await import('./release.ts')).prepareRelease(root, resolve(args[0]), args[1]), null, 2));
+        (await import('./release.ts')).prepareRelease(root, resolve(args[0]), args[1]);
+        console.log('Release prepared.');
         break;
       case 'compile': {
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-compile SOURCE.mini [OUTPUT.ts]');

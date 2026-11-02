@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Separate input or expected-output stream",
+  "title": "Case input or expected-output descriptor",
   "type": "object",
   "properties": {
     "text": { "type": "string" },

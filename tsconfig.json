@@ -12,5 +12,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["tools/**/*.ts", "cases/**/*.ts"]
+  "include": ["tools/**/*.ts"]
 }

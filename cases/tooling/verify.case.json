@@ -1,0 +1,91 @@
+{
+  "id": "tooling.verify",
+  "kind": "tool",
+  "tool": "mini-verify",
+  "features": [],
+  "cases": [
+    {
+      "name": "verify-unavailable",
+      "args": [],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "verify-unavailable.stderr",
+        "hash": "sha256:26c897cc4a0aab3ffeb725dcb9b019900b38b86f066bfb0deb858d5735fd188a"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-selected",
+      "args": [
+        "cases/tooling/check.case.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "verify-selected.stdout",
+        "hash": "sha256:2c674b4b253160568975918a974f9b58df4983caef04943ea46a10d8f60015d2"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "verify-string-rejected",
+      "args": [
+        "cases/tooling/string.invalid.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "verify-string-rejected.stderr",
+        "hash": "sha256:0ded86097206d0738eac4c660592cb0067ea08ac117b97806bb5d13a7b22f68b"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-ambiguous-rejected",
+      "args": [
+        "cases/tooling/ambiguous.invalid.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "verify-ambiguous-rejected.stderr",
+        "hash": "sha256:7633a80afd4204fa8479e6189251103fcb0f5d4368b6763926a8da589983760c"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-hash-rejected",
+      "args": [
+        "cases/tooling/hash.invalid.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "verify-hash-rejected.stderr",
+        "hash": "sha256:c7e722cbf000c8602ed4b2f97fcb229cb5eda60b5b9c43d67a747379c05f2c6e"
+      },
+      "exitCode": 1
+    }
+  ]
+}

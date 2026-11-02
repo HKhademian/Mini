@@ -16,8 +16,9 @@ Use Node 24.16.0 and `npm ci` for locked development dependencies.
 
 `check` runs strict TypeScript, documentation, version, and case checks.
 `check --docs` omits TypeScript checking and needs no installed dependencies.
-A configured bootstrap is verified in either mode. `verify` deliberately fails
-while the compiler is unavailable. Release output directories must be empty.
+A configured bootstrap is verified in either mode. `verify CASE.json` runs one
+case manifest; bare `verify` checks the bootstrap and fails while the compiler
+is unavailable. Release output directories must be empty.
 
 Executable project code uses direct Node TypeScript or Mini; no shell, Python,
 or other scripting languages. Extensionless commands are Node shebang entries.

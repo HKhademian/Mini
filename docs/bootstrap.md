@@ -77,5 +77,5 @@ for the same version must still match.
 Keep each bridge local and temporary. No general syntax-translation framework
 is required. Supporting new syntax and adopting it remain separate atomic commits.
 
-Harness tests use synthetic reproducing programs. They test the verifier,
-not actual Mini self-hosting.
+Tool cases invoke real commands. Actual Mini self-hosting verification awaits
+the compiler implementation and its ordinary example.

@@ -72,6 +72,7 @@ Use Node 24.16.0 from [.node-version](.node-version).
 npm ci
 ./bin/mini check
 ./bin/mini test
+./bin/mini verify cases/tooling/check.case.json
 ./bin/mini bench .cache/bench.json
 ```
 

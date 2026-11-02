@@ -1,0 +1,25 @@
+{
+  "id": "tooling.bench",
+  "kind": "tool",
+  "tool": "mini-bench",
+  "features": [],
+  "cases": [
+    {
+      "name": "bench-version",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "bench-version.stdout",
+        "hash": "sha256:7b81da34fb2692236b09da50b819c139770f1674d8682e1357dedd20c089d846"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

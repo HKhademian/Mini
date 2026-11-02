@@ -1,0 +1,42 @@
+{
+  "id": "tooling.cli",
+  "kind": "tool",
+  "tool": "mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "cli-version",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "cli-version.stdout",
+        "hash": "sha256:b285f2e191f7c7db19af8b6ec4c29301aba3895a0acf93a2fe15a4dcb4b91e9d"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "cli-unknown",
+      "args": [
+        "unknown"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "cli-unknown.stderr",
+        "hash": "sha256:27680b6483332cba0cbb2d32e597353a553bd2fa11db45545540e63d9e8e2b63"
+      },
+      "exitCode": 1
+    }
+  ]
+}

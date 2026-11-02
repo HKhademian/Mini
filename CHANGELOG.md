@@ -10,5 +10,7 @@
 - Reserve the independent `std-v*` release stream; std remains unimplemented.
 - Place future standard-library source under `std/`.
 - Balance language size with compiler readability and incremental syntax migration.
+- Put stream descriptors directly in JSON cases and invoke real tools through
+  the shared runner; add `mini verify CASE.json` and remove per-case scripts.
 
 No Mini grammar/compiler/bootstrap exists yet. No release has been published.

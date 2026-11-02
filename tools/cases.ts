@@ -1,32 +1,87 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { root, sha256 } from './project.ts';
+import { root, run, sha256 } from './project.ts';
 
-export type Scenario = { name: string; args?: string[]; stdin: string; stdout: string; stderr: string; exitCode: number; artifact?: string };
-export type Case = { id: string; kind: 'tool' | 'feature' | 'reject' | 'compile' | 'sample' | 'example'; source: string; features: string[]; cases: Scenario[]; benchmark?: { warmups: number; samples: number } };
+export type Stream = ({ text: string } | { bytes: number[] } | { file: string }) & { hash?: string };
+export type Scenario = {
+  name: string;
+  args?: string[];
+  stdin: Stream;
+  stdout: Stream;
+  stderr: Stream;
+  exitCode: number;
+  artifact?: Stream;
+  workspace?: 'clean' | 'dirty';
+  tag?: { name: string; annotated: boolean };
+  files?: string[];
+};
+export type Case = {
+  id: string;
+  features: string[];
+  cases: Scenario[];
+  benchmark?: { warmups: number; samples: number };
+} & (
+  { kind: 'tool'; tool: string; source?: never } |
+  { kind: 'feature' | 'reject' | 'compile' | 'sample' | 'example'; source: string; tool?: never }
+);
 export type Fixture = { path: string; definition: Case };
 
-/** Stream JSON files contain exactly one representation, never executable code. */
-export function stream(file: string): Buffer {
-  const value = JSON.parse(readFileSync(file, 'utf8')) as { text?: string; bytes?: number[]; file?: string; hash?: string };
+export function stream(value: Stream, directory: string): Buffer {
+  assert(typeof value === 'object' && value !== null && !Array.isArray(value), 'stream must be an object');
   const keys = Object.keys(value).filter(key => key !== 'hash');
-  assert.equal(keys.length, 1, `one stream representation required: ${file}`);
+  assert(keys.length === 1, 'one stream representation required');
   let bytes: Buffer;
-  if (keys[0] === 'text') {
-    assert.equal(typeof value.text, 'string');
-    bytes = Buffer.from(value.text!);
-  } else if (keys[0] === 'bytes') {
-    assert(Array.isArray(value.bytes) && value.bytes.every(byte => Number.isInteger(byte) && byte >= 0 && byte <= 255));
+  if ('text' in value && keys[0] === 'text') {
+    assert(typeof value.text === 'string', 'stream text must be a string');
+    bytes = Buffer.from(value.text);
+  } else if ('bytes' in value && keys[0] === 'bytes') {
+    assert(Array.isArray(value.bytes) && value.bytes.every(byte => Number.isInteger(byte) && byte >= 0 && byte <= 255), 'invalid stream bytes');
     bytes = Buffer.from(value.bytes);
   } else {
-    assert(keys[0] === 'file' && typeof value.file === 'string', `invalid stream: ${file}`);
-    bytes = readFileSync(resolve(dirname(file), value.file));
+    assert(keys[0] === 'file' && 'file' in value && typeof value.file === 'string', 'invalid stream');
+    bytes = readFileSync(resolve(directory, value.file));
   }
-  if (value.hash !== undefined) assert.equal(value.hash, `sha256:${sha256(bytes)}`, `stream hash differs: ${file}`);
+  if (value.hash !== undefined) assert(value.hash === 'sha256:' + sha256(bytes), 'stream hash differs');
   return bytes;
+}
+
+export function loadCase(path: string): Fixture {
+  const file = resolve(path);
+  const spec = JSON.parse(readFileSync(file, 'utf8')) as Case;
+  assert(typeof spec.id === 'string' && spec.id.length > 0, 'case ID required');
+  assert(['tool', 'feature', 'reject', 'compile', 'sample', 'example'].includes(spec.kind), 'invalid case kind');
+  if (spec.kind === 'tool') {
+    assert(spec.source === undefined, 'tool cases name a tool, not a case executable');
+    assert(typeof spec.tool === 'string' && !spec.tool.includes('/') && existsSync(join(root, 'bin', spec.tool)), 'unknown tool');
+  } else {
+    assert(typeof spec.source === 'string' && spec.source.endsWith('.mini'), 'Mini source must use .mini');
+    readFileSync(resolve(dirname(file), spec.source));
+  }
+  assert(Array.isArray(spec.features) && spec.features.every(feature => typeof feature === 'string'), 'features must be an array');
+  assert(Array.isArray(spec.cases) && spec.cases.length > 0, 'case scenarios required');
+  const names = new Set<string>();
+  for (const scenario of spec.cases) {
+    assert(typeof scenario.name === 'string' && scenario.name.length > 0 && !names.has(scenario.name), 'scenario names must be unique');
+    names.add(scenario.name);
+    assert(Number.isInteger(scenario.exitCode) && scenario.exitCode >= 0 && scenario.exitCode <= 255, 'invalid exit status');
+    assert(scenario.args === undefined || (Array.isArray(scenario.args) && scenario.args.every(arg => typeof arg === 'string')), 'invalid arguments');
+    for (const key of ['stdin', 'stdout', 'stderr'] as const) stream(scenario[key], dirname(file));
+    if (spec.kind === 'compile') {
+      assert(scenario.artifact !== undefined, 'compile case needs an artifact stream');
+      stream(scenario.artifact, dirname(file));
+    }
+    assert(scenario.workspace === undefined || (spec.kind === 'tool' && ['clean', 'dirty'].includes(scenario.workspace)), 'invalid workspace');
+    assert(scenario.tag === undefined || (scenario.workspace !== undefined && typeof scenario.tag.name === 'string' && typeof scenario.tag.annotated === 'boolean'), 'invalid fixture tag');
+    assert(scenario.files === undefined || (Array.isArray(scenario.files) && scenario.files.every(file => typeof file === 'string')), 'invalid artifact paths');
+  }
+  if (spec.benchmark !== undefined) {
+    assert(Number.isInteger(spec.benchmark.warmups) && spec.benchmark.warmups >= 0);
+    assert(Number.isInteger(spec.benchmark.samples) && spec.benchmark.samples >= 1);
+  }
+  return { path: file, definition: spec };
 }
 
 export function loadCases(filter = '', directory = join(root, 'cases')): Fixture[] {
@@ -35,97 +90,95 @@ export function loadCases(filter = '', directory = join(root, 'cases')): Fixture
     for (const entry of readdirSync(path, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
       const file = join(path, entry.name);
       if (entry.isDirectory()) visit(file);
-      else if (entry.name.endsWith('.case.json')) {
-        const value = JSON.parse(readFileSync(file, 'utf8')) as Case;
-        assert(typeof value.id === 'string' && value.id.length > 0);
-        assert(['tool', 'feature', 'reject', 'compile', 'sample', 'example'].includes(value.kind));
-        assert(typeof value.source === 'string');
-        if (value.kind !== 'tool') assert(value.source.endsWith('.mini'), `Mini source must use .mini: ${file}`);
-        readFileSync(resolve(dirname(file), value.source));
-        assert(Array.isArray(value.features) && value.features.every(feature => typeof feature === 'string'));
-        assert(Array.isArray(value.cases) && value.cases.length > 0);
-        const names = new Set<string>();
-        for (const scenario of value.cases) {
-          assert(typeof scenario.name === 'string' && scenario.name.length > 0 && !names.has(scenario.name));
-          names.add(scenario.name);
-          assert(Number.isInteger(scenario.exitCode) && scenario.exitCode >= 0 && scenario.exitCode <= 255);
-          assert(scenario.args === undefined || (Array.isArray(scenario.args) && scenario.args.every(arg => typeof arg === 'string')));
-          for (const key of ['stdin', 'stdout', 'stderr'] as const) {
-            assert(typeof scenario[key] === 'string' && scenario[key].endsWith('.json'), `${file}: ${key} must reference a separate stream JSON`);
-            stream(resolve(dirname(file), scenario[key]));
-          }
-          assert.equal(new Set([value.source, scenario.stdin, scenario.stdout, scenario.stderr]).size, 4, 'source and streams must be separate files');
-          if (value.kind === 'compile') {
-            assert(typeof scenario.artifact === 'string', 'compile case needs a separate artifact stream');
-            stream(resolve(dirname(file), scenario.artifact));
-          }
-        }
-        if (value.benchmark !== undefined) {
-          assert(Number.isInteger(value.benchmark.warmups) && value.benchmark.warmups >= 0);
-          assert(Number.isInteger(value.benchmark.samples) && value.benchmark.samples >= 1);
-        }
-        fixtures.push({ path: file, definition: value });
-      }
+      else if (entry.name.endsWith('.case.json')) fixtures.push(loadCase(file));
     }
   }
   visit(directory);
-  assert.equal(new Set(fixtures.map(item => item.definition.id)).size, fixtures.length, 'duplicate case IDs');
+  assert(new Set(fixtures.map(item => item.definition.id)).size === fixtures.length, 'duplicate case IDs');
   const selected = fixtures.filter(item => item.definition.id.includes(filter));
-  assert(selected.length > 0, `no cases match: ${filter}`);
+  assert(selected.length > 0, 'no cases match: ' + filter);
   return selected;
+}
+
+function toolWorkspace(project: string, scenario: Scenario, work: string): string {
+  if (scenario.workspace === undefined) return project;
+  const directory = join(work, 'project');
+  for (const name of readdirSync(project)) {
+    if (['.git', 'node_modules', 'dist', '.cache'].includes(name)) continue;
+    cpSync(join(project, name), join(directory, name), { recursive: true, verbatimSymlinks: true });
+  }
+  const git = (...args: string[]) => run('git', [
+    '-c', 'user.name=Case fixture', '-c', 'user.email=fixture@example.invalid',
+    '-c', 'commit.gpgSign=false', '-c', 'tag.gpgSign=false', ...args,
+  ], directory);
+  git('init', '-b', 'main');
+  git('add', '.');
+  git('commit', '-m', 'case fixture');
+  if (scenario.tag !== undefined) {
+    const args = scenario.tag.annotated ? ['-a', scenario.tag.name, '-m', scenario.tag.name] : [scenario.tag.name];
+    git('tag', ...args);
+  }
+  if (scenario.workspace === 'dirty') writeFileSync(join(directory, 'uncommitted.txt'), 'dirty\n');
+  return directory;
 }
 
 export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot = root, compilerOverride?: string): string | null {
   const { definition: spec, path } = fixture;
   const directory = dirname(path);
   const work = mkdtempSync(join(tmpdir(), 'mini-case-'));
-  const execute = (file: string, args: string[], input: Buffer) => {
-    const result = spawnSync(process.execPath, [file, ...args], { cwd: projectRoot, input, timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
+  const execute = (file: string, args: string[], input: Buffer, cwd = projectRoot) => {
+    const result = spawnSync(process.execPath, [file, ...args], { cwd, input, timeout: 30_000, maxBuffer: 32 * 1024 * 1024 });
     if (result.error) throw result.error;
-    assert.equal(result.signal, null, `${spec.id}/${scenario.name}: process terminated by signal`);
+    assert.equal(result.signal, null, spec.id + '/' + scenario.name + ': process terminated by signal');
     return result;
   };
   try {
-    let program = resolve(directory, spec.source);
-    const input = stream(resolve(directory, scenario.stdin));
+    const input = stream(scenario.stdin, directory);
     let result;
     let artifact: string | null = null;
-    if (spec.kind === 'tool') result = execute(program, scenario.args ?? [], input);
-    else {
+    let workspace = projectRoot;
+    if (spec.kind === 'tool') {
+      workspace = toolWorkspace(projectRoot, scenario, work);
+      result = execute(join(workspace, 'bin', spec.tool), scenario.args ?? [], input, workspace);
+    } else {
       const config = JSON.parse(readFileSync(join(projectRoot, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
-      assert(compilerOverride !== undefined || config !== null, `${spec.id}: compiler unavailable; cases are not skipped`);
+      assert(compilerOverride !== undefined || config !== null, spec.id + ': compiler unavailable; cases are not skipped');
       const output = join(work, 'program.ts');
-      const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), ['compile', program, output], Buffer.alloc(0));
+      const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), ['compile', resolve(directory, spec.source), output], Buffer.alloc(0));
       if (compiled.status === 0) artifact = sha256(readFileSync(output));
-      if (spec.kind === 'compile') {
-        assert.deepEqual(readFileSync(output), stream(resolve(directory, scenario.artifact!)), 'generated artifact differs');
-      }
+      if (spec.kind === 'compile') assert.deepEqual(readFileSync(output), stream(scenario.artifact!, directory), 'generated artifact differs');
       if (spec.kind === 'reject') assert(!existsSync(output), 'rejection created an output artifact');
       if (spec.kind === 'reject' || spec.kind === 'compile') result = compiled;
       else {
         assert.equal(compiled.status, 0, compiled.stderr.toString());
         assert.equal(compiled.stderr.length, 0, 'unexpected compiler diagnostics');
-        program = output;
-        writeFileSync(join(work, 'package.json'), '{"type":"module"}\n');
         assert.equal(compiled.stdout.length, 0, 'unexpected compiler stdout');
-        result = execute(program, scenario.args ?? [], input);
+        writeFileSync(join(work, 'package.json'), '{"type":"module"}\n');
+        result = execute(output, scenario.args ?? [], input);
       }
     }
-    assert.equal(result.status, scenario.exitCode, `${spec.id}/${scenario.name}: exit status; ${result.stderr}`);
-    assert.deepEqual(result.stdout, stream(resolve(directory, scenario.stdout)), `${spec.id}/${scenario.name}: stdout`);
-    assert.deepEqual(result.stderr, stream(resolve(directory, scenario.stderr)), `${spec.id}/${scenario.name}: stderr`);
-    if (spec.kind === 'reject') { assert.notEqual(scenario.exitCode, 0); assert.equal(result.stdout.length, 0, 'rejection emitted artifact bytes'); }
+    assert.equal(result.status, scenario.exitCode, spec.id + '/' + scenario.name + ': exit status; ' + result.stderr);
+    assert.deepEqual(result.stdout, stream(scenario.stdout, directory), spec.id + '/' + scenario.name + ': stdout');
+    assert.deepEqual(result.stderr, stream(scenario.stderr, directory), spec.id + '/' + scenario.name + ': stderr');
+    if (spec.kind === 'reject') { assert.notEqual(scenario.exitCode, 0); assert.equal(result.stdout.length, 0); }
+    for (const file of scenario.files ?? []) assert(existsSync(resolve(workspace, file)), 'missing artifact: ' + file);
     return artifact;
   } finally { rmSync(work, { recursive: true, force: true }); }
 }
 
 export function caseIdentity(fixture: Fixture) {
   const base = dirname(fixture.path);
-  return { manifest: sha256(readFileSync(fixture.path)), source: sha256(readFileSync(resolve(base, fixture.definition.source))), streams: fixture.definition.cases.map(scenario => ({ name: scenario.name, stdin: sha256(stream(resolve(base, scenario.stdin))), stdout: sha256(stream(resolve(base, scenario.stdout))), stderr: sha256(stream(resolve(base, scenario.stderr))) })) };
-}
-
-export function loadCase(path: string): Fixture {
-  const fixture = loadCases('', dirname(path)).find(item => item.path === path);
-  assert(fixture, `case manifest not found: ${path}`);
-  return fixture;
+  const spec = fixture.definition;
+  const source = spec.kind === 'tool' ? join(root, 'bin', spec.tool) : resolve(base, spec.source);
+  return {
+    manifest: sha256(readFileSync(fixture.path)),
+    source: sha256(readFileSync(source)),
+    streams: spec.cases.map(scenario => ({
+      name: scenario.name,
+      stdin: sha256(stream(scenario.stdin, base)),
+      stdout: sha256(stream(scenario.stdout, base)),
+      stderr: sha256(stream(scenario.stderr, base)),
+      ...(scenario.artifact === undefined ? {} : { artifact: sha256(stream(scenario.artifact, base)) }),
+    })),
+  };
 }

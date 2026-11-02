@@ -1,0 +1,87 @@
+{
+  "id": "tooling.check",
+  "kind": "tool",
+  "tool": "mini-check",
+  "features": [],
+  "cases": [
+    {
+      "name": "check-version-file",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "file": "check-version.stdin",
+        "hash": "sha256:a6c7e3c5ddd823efc8b7a30853eabc152dac866843bd7a39dc4a29e0a0eb68b3"
+      },
+      "stdout": {
+        "file": "check-version-file.stdout",
+        "hash": "sha256:e2696d9f7b659e267f44ce49242867d616e8aa09a124388500ab1f08c29e07f1"
+      },
+      "stderr": {
+        "file": "check-version.stderr",
+        "hash": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "check-version-text",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": "ignored\n",
+        "hash": "sha256:a6c7e3c5ddd823efc8b7a30853eabc152dac866843bd7a39dc4a29e0a0eb68b3"
+      },
+      "stdout": {
+        "text": "mini-check 0.1.0-alpha.1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "check-version-bytes",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "bytes": [
+          0,
+          255,
+          10
+        ],
+        "hash": "sha256:712450d3c4a79eea9509e75dc1dacdeff58034df538536cfae2da882bd8a0c50"
+      },
+      "stdout": {
+        "file": "check-version-bytes.stdout",
+        "hash": "sha256:e2696d9f7b659e267f44ce49242867d616e8aa09a124388500ab1f08c29e07f1"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "check-docs",
+      "args": [
+        "--docs"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "check-docs.stdout",
+        "hash": "sha256:dd694ad825118402eac5220f10092696d223f205c043523ed889b0c2e8ee3513"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ],
+  "benchmark": {
+    "warmups": 1,
+    "samples": 3
+  }
+}

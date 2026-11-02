@@ -1,0 +1,25 @@
+{
+  "id": "invalid.hash",
+  "kind": "tool",
+  "tool": "mini-check",
+  "features": [],
+  "cases": [
+    {
+      "name": "invalid",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": "changed",
+        "hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

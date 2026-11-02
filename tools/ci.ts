@@ -16,7 +16,7 @@ switch (task) {
     break;
   case 'check': mini('check'); break;
   case 'test': mini('test'); break;
-  case 'bench': mini('bench', '.cache/bench-ci.json', 'tooling.io'); break;
+  case 'bench': mini('bench', '.cache/bench-ci.json', 'tooling.check'); break;
   case 'package': {
     const tag = process.env['GITHUB_EVENT_NAME'] === 'push' && process.env['GITHUB_REF_TYPE'] === 'tag'
       ? process.env['GITHUB_REF_NAME'] : undefined;

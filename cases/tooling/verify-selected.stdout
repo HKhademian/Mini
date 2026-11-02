@@ -1,0 +1,5 @@
+PASS tooling.check/check-version-file
+PASS tooling.check/check-version-text
+PASS tooling.check/check-version-bytes
+PASS tooling.check/check-docs
+4/4 scenarios passed

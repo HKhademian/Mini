@@ -2,11 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Mini verification case",
   "type": "object",
-  "required": ["id", "kind", "source", "features", "cases"],
+  "required": ["id", "kind", "features", "cases"],
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "tool" } } },
+      "then": { "required": ["tool"], "properties": { "source": false } },
+      "else": { "required": ["source"], "properties": { "tool": false } }
+    }
+  ],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
     "kind": { "enum": ["tool", "feature", "reject", "compile", "sample", "example"] },
     "source": { "type": "string", "minLength": 1 },
+    "tool": { "type": "string", "pattern": "^(mini|minic|mini-[a-z]+)$" },
     "features": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "cases": {
       "type": "array",
@@ -17,10 +25,18 @@
         "properties": {
           "name": { "type": "string", "minLength": 1 },
           "args": { "type": "array", "items": { "type": "string" } },
-          "stdin": { "type": "string", "pattern": "\\.json$" },
-          "stdout": { "type": "string", "pattern": "\\.json$" },
-          "stderr": { "type": "string", "pattern": "\\.json$" },
-          "artifact": { "type": "string", "pattern": "\\.json$" },
+          "stdin": { "$ref": "stream.schema.json" },
+          "stdout": { "$ref": "stream.schema.json" },
+          "stderr": { "$ref": "stream.schema.json" },
+          "artifact": { "$ref": "stream.schema.json" },
+          "workspace": { "enum": ["clean", "dirty"] },
+          "tag": {
+            "type": "object",
+            "required": ["name", "annotated"],
+            "properties": { "name": { "type": "string" }, "annotated": { "type": "boolean" } },
+            "additionalProperties": false
+          },
+          "files": { "type": "array", "items": { "type": "string" } },
           "exitCode": { "type": "integer", "minimum": 0, "maximum": 255 }
         },
         "additionalProperties": false

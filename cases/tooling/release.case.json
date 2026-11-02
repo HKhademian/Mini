@@ -1,0 +1,156 @@
+{
+  "id": "tooling.release",
+  "kind": "tool",
+  "tool": "mini-release",
+  "features": [],
+  "cases": [
+    {
+      "name": "release-clean",
+      "args": [
+        "dist/release"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "release-clean.stdout",
+        "hash": "sha256:462f4085e1fe3bdc20e52d1fe0852303267f8ba1b81b04b10ee78e48daef58e7"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "workspace": "clean",
+      "files": [
+        "dist/release/manifest.json",
+        "dist/release/SHA256SUMS",
+        "dist/release/RELEASE-NOTES.md"
+      ]
+    },
+    {
+      "name": "release-dirty",
+      "args": [
+        "dist/release"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-dirty.stderr",
+        "hash": "sha256:de89fd8d65cb1827ea0c3453d8f3b1590f5975c5834f907439493add019818ff"
+      },
+      "exitCode": 1,
+      "workspace": "dirty"
+    },
+    {
+      "name": "release-tagged",
+      "args": [
+        "dist/release",
+        "check-v0.1.0-alpha.1"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "release-tagged.stdout",
+        "hash": "sha256:462f4085e1fe3bdc20e52d1fe0852303267f8ba1b81b04b10ee78e48daef58e7"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "workspace": "clean",
+      "tag": {
+        "name": "check-v0.1.0-alpha.1",
+        "annotated": true
+      },
+      "files": [
+        "dist/release/manifest.json",
+        "dist/release/SHA256SUMS",
+        "dist/release/RELEASE-NOTES.md"
+      ]
+    },
+    {
+      "name": "release-lightweight",
+      "args": [
+        "dist/release",
+        "check-v0.1.0-alpha.1"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-lightweight.stderr",
+        "hash": "sha256:a1e156a65c9139aa84ba80f1e7f45093965ee5503b5f650c094b1183a9de8b49"
+      },
+      "exitCode": 1,
+      "workspace": "clean",
+      "tag": {
+        "name": "check-v0.1.0-alpha.1",
+        "annotated": false
+      }
+    },
+    {
+      "name": "release-unassigned",
+      "args": [
+        "dist/release",
+        "std-v0.1.0"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-unassigned.stderr",
+        "hash": "sha256:35d54c201ccd32694772778588b10d8f06c0373d3bd8b5494bac0e709f3800e5"
+      },
+      "exitCode": 1,
+      "workspace": "clean"
+    },
+    {
+      "name": "release-invalid-tag",
+      "args": [
+        "dist/release",
+        "v0.1.0"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-invalid-tag.stderr",
+        "hash": "sha256:e7812e19c2d103370f0c3574e936a4b428d4a5ea8d29d89bed20fda91e57b36f"
+      },
+      "exitCode": 1,
+      "workspace": "clean"
+    },
+    {
+      "name": "release-existing-output",
+      "args": [
+        "."
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-existing-output.stderr",
+        "hash": "sha256:53519b8a4d3b181655595418a3d23693de6d24f077edca66a4086b06bcb02e49"
+      },
+      "exitCode": 1,
+      "workspace": "clean"
+    }
+  ]
+}

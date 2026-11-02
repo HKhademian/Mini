@@ -7,19 +7,19 @@ import { verifyBootstrap } from './verify.ts';
 
 /** Package committed sources only. Never creates tags or publishes a release. */
 export function prepareRelease(directory: string, output: string, tag?: string) {
-  assert.equal(run('git', ['status', '--porcelain'], directory).toString().trim(), '', 'release needs a clean checkout');
+  assert(run('git', ['status', '--porcelain'], directory).toString().trim() === '', 'release needs a clean checkout');
   const commit = run('git', ['rev-parse', 'HEAD'], directory).toString().trim();
   const current = versions(directory);
   const releasedComponent = tag === undefined ? null : selectRelease(tag, current);
   if (tag !== undefined) {
-    assert.equal(run('git', ['cat-file', '-t', `refs/tags/${tag}`], directory).toString().trim(), 'tag', 'release tag must be annotated');
+    assert(run('git', ['cat-file', '-t', `refs/tags/${tag}`], directory).toString().trim() === 'tag', 'release tag must be annotated');
     assert.equal(run('git', ['rev-parse', `refs/tags/${tag}^{commit}`], directory).toString().trim(), commit);
   }
   const available = JSON.parse(readFileSync(join(directory, 'config/bootstrap.json'), 'utf8')) !== null;
   const compilerRelease = releasedComponent !== null && ['mini', 'language', 'compiler', 'bootstrap'].includes(releasedComponent.component);
   assert(available || !compilerRelease, 'this release requires a verified compiler bootstrap');
   mkdirSync(output, { recursive: true });
-  assert.equal(readdirSync(output).length, 0, 'release output directory must be empty');
+  assert(readdirSync(output).length === 0, 'release output directory must be empty');
   const work = mkdtempSync(join(tmpdir(), 'minilang-release-'));
   try {
     const source = join(work, 'source');

@@ -30,7 +30,7 @@ export function selectRelease(tag: string, current: Versions): { component: Comp
   const component = streams[match[1] as keyof typeof streams];
   const version = match[2]!;
   assert(versionPattern.test(version), `invalid release version: ${version}`);
-  assert.equal(version, current[component], `tag must match assigned ${component} version`);
+  assert(version === current[component], `tag must match assigned ${component} version`);
   return { component, version };
 }
 

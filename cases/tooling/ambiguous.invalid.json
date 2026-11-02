@@ -1,0 +1,25 @@
+{
+  "id": "invalid.ambiguous",
+  "kind": "tool",
+  "tool": "mini-check",
+  "features": [],
+  "cases": [
+    {
+      "name": "invalid",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": "",
+        "bytes": []
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,9 +1,9 @@
-import { loadCases, verifyScenario } from './cases.ts';
+import { loadCase, loadCases, verifyScenario } from './cases.ts';
 
-export function testCases(filter = ''): void {
+export function testCases(filter = '', file?: string): void {
   let failures = 0;
   let count = 0;
-  for (const fixture of loadCases(filter)) {
+  for (const fixture of file === undefined ? loadCases(filter) : [loadCase(file)]) {
     for (const scenario of fixture.definition.cases) {
       count++;
       try {

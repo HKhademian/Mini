@@ -28,7 +28,7 @@ export function checkProject(): void {
   assert.equal(Number(process.versions.node.split('.')[0]), 24, 'use Node 24; see .node-version');
   assert(Number(process.versions.node.split('.')[1]) >= 16, 'use Node 24.16.0 or newer in the 24.x line');
   const fixtures = loadCases();
-  const covered = new Set(fixtures.map(item => resolve(dirname(item.path), item.definition.source)));
+  const covered = new Set(fixtures.flatMap(item => item.definition.kind === 'tool' ? [] : [resolve(dirname(item.path), item.definition.source)]));
   for (const directory of ['samples', 'examples']) {
     const path = join(root, directory);
     if (!existsSync(path)) continue;
