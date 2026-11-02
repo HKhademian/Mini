@@ -1,0 +1,49 @@
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { root, versions } from './project.ts';
+import { verifyBootstrap } from './verify.ts';
+import { loadCases } from './cases.ts';
+
+function documents(directory: string): void {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (['.git', 'node_modules', 'dist', '.cache'].includes(entry.name)) continue;
+    const file = join(directory, entry.name);
+    if (entry.isDirectory()) documents(file);
+    else if (/\.(md|mdc)$/.test(entry.name)) {
+      const text = readFileSync(file, 'utf8');
+      assert.equal((text.match(/^```/gm) ?? []).length % 2, 0, `unbalanced code fence: ${file}`);
+      const prose = text.replace(/^```[^\n]*\n[\s\S]*?^```/gm, '');
+      for (const match of prose.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
+        const target = match[1]!.split('#')[0]!;
+        if (target && !/^[a-z]+:/i.test(target)) {
+          assert(existsSync(join(dirname(file), target)), `broken local link in ${file}: ${target}`);
+        }
+      }
+    }
+  }
+}
+export function checkProject(): void {
+  const current = versions(root);
+  assert.equal(Number(process.versions.node.split('.')[0]), 24, 'use Node 24; see .node-version');
+  assert(Number(process.versions.node.split('.')[1]) >= 16, 'use Node 24.16.0 or newer in the 24.x line');
+  const fixtures = loadCases();
+  const covered = new Set(fixtures.map(item => resolve(dirname(item.path), item.definition.source)));
+  for (const directory of ['samples', 'examples']) {
+    const path = join(root, directory);
+    if (!existsSync(path)) continue;
+    for (const entry of readdirSync(path, { recursive: true, encoding: 'utf8' })) {
+      if (entry.endsWith('.mini')) assert(covered.has(resolve(path, entry)), `missing case: ${directory}/${entry}`);
+    }
+  }
+documents(root);
+if (JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) === null) {
+  for (const component of ['language', 'compiler', 'bootstrap'] as const) assert.equal(current[component], null);
+  console.log('Repository checks passed. Bootstrap unavailable (not implemented).');
+} else {
+  verifyBootstrap(root);
+  console.log('Repository checks and bootstrap fixed point passed.');
+}
+}
+
+if (import.meta.main) checkProject();

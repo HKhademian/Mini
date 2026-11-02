@@ -1,0 +1,12 @@
+{
+  "name": "minilang-dev",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.16.0 <25"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "7.0.2"
+  }
+}

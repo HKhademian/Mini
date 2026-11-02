@@ -1,0 +1,15 @@
+{
+  "id": "tooling.bootstrap-roundtrip",
+  "kind": "tool",
+  "source": "bootstrap-roundtrip.ts",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "bootstrap-roundtrip.stdin.json",
+      "stdout": "bootstrap-roundtrip.stdout.json",
+      "stderr": "bootstrap-roundtrip.stderr.json",
+      "exitCode": 0
+    }
+  ]
+}

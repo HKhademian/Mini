@@ -1,0 +1,15 @@
+{
+  "id": "tooling.bootstrap-unavailable",
+  "kind": "tool",
+  "source": "bootstrap-unavailable.ts",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "bootstrap-unavailable.stdin.json",
+      "stdout": "bootstrap-unavailable.stdout.json",
+      "stderr": "bootstrap-unavailable.stderr.json",
+      "exitCode": 0
+    }
+  ]
+}

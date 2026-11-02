@@ -1,0 +1,15 @@
+{
+  "id": "tooling.release-dirty",
+  "kind": "tool",
+  "source": "release-dirty.ts",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "release-dirty.stdin.json",
+      "stdout": "release-dirty.stdout.json",
+      "stderr": "release-dirty.stderr.json",
+      "exitCode": 0
+    }
+  ]
+}

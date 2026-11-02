@@ -1,0 +1,15 @@
+{
+  "id": "tooling.release-roundtrip",
+  "kind": "tool",
+  "source": "release-roundtrip.ts",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "release-roundtrip.stdin.json",
+      "stdout": "release-roundtrip.stdout.json",
+      "stderr": "release-roundtrip.stderr.json",
+      "exitCode": 0
+    }
+  ]
+}

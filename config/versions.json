@@ -1,0 +1,12 @@
+{
+  "mini": "0.1.0-alpha.1",
+  "language": null,
+  "compiler": null,
+  "bootstrap": null,
+  "check": "0.1.0-alpha.1",
+  "verify": "0.1.0-alpha.1",
+  "release": "0.1.0-alpha.1",
+  "test": "0.1.0-alpha.1",
+  "bench": "0.1.0-alpha.1",
+  "cli": "0.1.0-alpha.1"
+}

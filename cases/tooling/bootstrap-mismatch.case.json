@@ -1,0 +1,15 @@
+{
+  "id": "tooling.bootstrap-mismatch",
+  "kind": "tool",
+  "source": "bootstrap-mismatch.ts",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "bootstrap-mismatch.stdin.json",
+      "stdout": "bootstrap-mismatch.stdout.json",
+      "stderr": "bootstrap-mismatch.stderr.json",
+      "exitCode": 0
+    }
+  ]
+}

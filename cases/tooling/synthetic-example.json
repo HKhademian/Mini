@@ -1,0 +1,15 @@
+{
+  "id": "synthetic.example",
+  "kind": "example",
+  "source": "source.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": "stdin.json",
+      "stdout": "stdout.json",
+      "stderr": "stderr.json",
+      "exitCode": 0
+    }
+  ]
+}
