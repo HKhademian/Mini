@@ -17,7 +17,7 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
   }
   const available = JSON.parse(readFileSync(join(directory, 'config/bootstrap.json'), 'utf8')) !== null;
   const compilerRelease = releasedComponent !== null && ['mini', 'language', 'compiler', 'bootstrap'].includes(releasedComponent.component);
-  assert(available || !compilerRelease, 'only individual tool releases are available before self-hosting');
+  assert(available || !compilerRelease, 'this release requires a verified compiler bootstrap');
   mkdirSync(output, { recursive: true });
   assert.equal(readdirSync(output).length, 0, 'release output directory must be empty');
   const work = mkdtempSync(join(tmpdir(), 'minilang-release-'));
@@ -42,7 +42,7 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     run('tar', ['-xf', join(output, archive), '-C', extracted], work);
     run(join(extracted, 'bin/mini-check'), ['--docs'], extracted);
     writeFileSync(join(output, 'manifest.json'), record);
-    writeFileSync(join(output, 'RELEASE-NOTES.md'), `# ${label}\n\nSource: ${commit}\n\nBootstrap: ${bootstrap === null ? 'unavailable; tools-only snapshot' : 'verified fixed point'}\n\n${readFileSync(join(source, 'CHANGELOG.md'), 'utf8')}`);
+    writeFileSync(join(output, 'RELEASE-NOTES.md'), `# ${label}\n\nSource: ${commit}\n\nBootstrap: ${bootstrap === null ? 'unavailable' : 'verified fixed point'}\n\n${readFileSync(join(source, 'CHANGELOG.md'), 'utf8')}`);
     const assets = readdirSync(output).sort();
     writeFileSync(join(output, 'SHA256SUMS'), assets.map(name => `${sha256(readFileSync(join(output, name)))}  ${name}\n`).join(''));
     return manifest;

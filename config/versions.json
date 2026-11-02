@@ -3,6 +3,7 @@
   "language": null,
   "compiler": null,
   "bootstrap": null,
+  "std": null,
   "check": "0.1.0-alpha.1",
   "verify": "0.1.0-alpha.1",
   "release": "0.1.0-alpha.1",

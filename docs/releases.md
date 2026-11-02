@@ -19,6 +19,8 @@ must be empty. To validate an existing annotated component tag at HEAD:
 The tag must match [the version registry](../config/versions.json). Packaging
 rejects dirty sources, mismatched versions, lightweight tags, and tags at another
 commit. Compiler/mini releases require a verified bootstrap.
+The optional library uses `std-v*`; its unassigned version blocks release until
+the library exists. Supporting tools and libraries need not be self-hosted.
 
 Assets: complete `minilang-TAG.tar.gz`, embedded `RELEASE.json`, external
 `manifest.json`, `RELEASE-NOTES.md`, and `SHA256SUMS`. They identify the source

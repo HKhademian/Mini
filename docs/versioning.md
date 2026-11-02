@@ -7,14 +7,16 @@ Each entity advances independently:
 - `language`: accepted language contract, tag `lang-vX.Y.Z`.
 - `compiler`: compiler implementation, tag `compiler-vX.Y.Z`.
 - `bootstrap`: generated compiler/source pair, tag `bootstrap-vX.Y.Z`.
+- `std`: optional standard library, tag `std-vX.Y.Z`.
 - `cli`: command dispatcher, tag `cli-vX.Y.Z`.
 - `check`, `test`, `verify`, `bench`, `release`: separate tools,
   each with its own `NAME-vX.Y.Z` tag.
 
 `null` means unimplemented/unassigned and blocks that entity's release.
-Language, compiler, and bootstrap are currently unassigned. Only individual
-tool/CLI releases can publish before self-hosting; a mini release must include
-a verified bootstrap.
+Language, compiler, bootstrap, and std are currently unassigned. Tool/CLI and
+implemented library releases can publish independently; language/compiler/
+bootstrap/mini releases require a verified compiler bootstrap. Reserving `std`
+does not introduce a library or select module/import syntax.
 
 Use `MAJOR.MINOR.PATCH`, optionally `-alpha.N`, `-beta.N`, or `-rc.N`.
 No leading zeros or build metadata. After 1.0, incompatible changes bump MAJOR,
