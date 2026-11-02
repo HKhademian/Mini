@@ -51,5 +51,31 @@ never hand-edit it. Implement new syntax using old syntax first, promote that
 compiler, then adopt the syntax in a separate atomic commit. Record the prior
 builder tag/commit in release notes.
 
+## Syntax migration
+
+Keep enough language expressiveness for a readable, maintainable compiler.
+Choose changes by their total implementation and migration cost, not by
+construct count alone. Avoid both compiler contortions and elaborate language
+machinery.
+
+For example, a clone might move from `if cond then code endif` to
+`if (cond) { code }`. This illustrates a migration, not selected Mini grammar:
+
+1. Add parenthesized conditions while retaining the old form. Implement support
+   using current syntax, generate the next bootstrap, and verify it.
+2. Refactor the compiler source to use the new condition form; rebuild and verify.
+3. Add braced blocks alongside the old block form. Generate and verify that
+   bootstrap, then migrate compiler blocks in a separate increment.
+4. Once compiler source and maintained consumers use the target form, remove
+   legacy acceptance and verify the next bootstrap. Record the compatibility break.
+
+Keep conditional behavior unchanged in this syntax-only example. At each
+increment, check focused cases, the same-source fixed point, and the ordinary
+example. Output may change between compiler versions; successive generations
+for the same version must still match.
+
+Keep each bridge local and temporary. No general syntax-translation framework
+is required. Supporting new syntax and adopting it remain separate atomic commits.
+
 Harness tests use synthetic reproducing programs. They test the verifier,
 not actual Mini self-hosting.

@@ -9,5 +9,6 @@
 - Scope self-hosting to the compiler and record built-in I/O/library direction.
 - Reserve the independent `std-v*` release stream; std remains unimplemented.
 - Place future standard-library source under `std/`.
+- Balance language size with compiler readability and incremental syntax migration.
 
 No Mini grammar/compiler/bootstrap exists yet. No release has been published.

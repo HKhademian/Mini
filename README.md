@@ -2,9 +2,9 @@
 
 A tiny self-hosting foundation for building other languages.
 
-Keep syntax and implementation small, readable, and easy to change. Add only
-what the compiler needs to compile itself. Broad general-purpose features are
-outside this project's objective.
+Keep syntax and implementation small, readable, and easy to change. Include
+enough expressiveness to develop, maintain, and extend the self-hosted compiler
+directly. Broad general-purpose features are outside this project's objective.
 
 No grammar or compiler is implemented yet. Maintenance tools are available.
 
@@ -37,6 +37,18 @@ matching Mini source, and rebuild instructions together.
 Every later increment preserves self-hosting. Implement syntax support using
 old syntax, promote its compiler, then adopt new syntax in compiler source.
 Never revive the handwritten compiler to bypass a migration.
+
+## Size and evolution
+
+Minimize the combined complexity of the language, compiler, and future changes.
+A tiny construct count is not useful if it forces an unreadable compiler or
+makes ordinary changes difficult. Extra language machinery also makes the
+foundation harder to implement and reshape.
+
+Add a construct when its concrete readability or migration benefit justifies
+its implementation cost. Prefer simple rules and direct compiler code. A cloned
+language should approach its target through small, self-hosted increments;
+[temporary syntax bridges](docs/bootstrap.md) can keep those steps manageable.
 
 ## Scope
 

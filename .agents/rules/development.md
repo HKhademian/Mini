@@ -1,7 +1,10 @@
 # Development guidance
 
-- MiniLang is a tiny bootstrap foundation for other language projects. Add only
-  what its self-hosting compiler needs.
+- mini is a tiny bootstrap foundation for other language projects. Minimize
+  combined language/compiler complexity, not construct count. Keep enough
+  expressiveness for readable compiler code and small self-hosted migrations.
+- Weigh concrete readability and migration benefits against implementation cost.
+  Use local, temporary syntax bridges; support new forms before adopting them.
 - Keep code short, readable, direct, and easy to port. Avoid speculative layers,
   dependencies, edge-case handling, and safety systems.
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
