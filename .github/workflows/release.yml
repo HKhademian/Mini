@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'mini-v*'
+      - 'lang-v*'
+      - 'compiler-v*'
+      - 'bootstrap-v*'
+      - 'cli-v*'
+      - 'check-v*'
+      - 'test-v*'
+      - 'verify-v*'
+      - 'bench-v*'
+      - 'release-v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  package:
+    needs: ci
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: node tools/ci.ts {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - name: Verify tag and package committed sources
+        run: package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release
+          path: dist/release/*
+          if-no-files-found: error
+          compression-level: 0
+
+  publish:
+    needs: package
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+      - uses: actions/download-artifact@v8
+        with:
+          name: release
+          path: dist/release
+      - name: Upload draft assets, then publish
+        shell: node tools/ci.ts {0}
+        run: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}

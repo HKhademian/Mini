@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: node tools/ci.ts {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Install development dependencies
+        run: install
+      - name: Strict types, versions, docs, cases, and available bootstrap
+        run: check
+      - name: JSON verification scenarios
+        run: test
+      - name: Benchmark harness smoke test
+        run: bench
+      - name: Extracted distribution smoke test
+        run: package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-${{ matrix.os }}
+          path: .cache/bench-ci.json
+          if-no-files-found: error

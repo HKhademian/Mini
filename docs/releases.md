@@ -33,5 +33,19 @@ an empty directory. Run `./bin/mini check --docs` without dependencies.
 Run `./bin/mini verify` when a compiler is included. For development, install
 the lockfile with `npm ci`, then use the normal bin commands.
 
-Local packaging does not configure a GitHub remote, push, create a tag, or
-publish a release. Hosted workflow integration is a separate increment.
+## GitHub
+
+[CI](../.github/workflows/ci.yml) checks Linux and macOS on branch pushes and
+pull requests. It runs strict checks, JSON cases, benchmark smoke tests, and
+extracted distribution checks. Benchmark reports are downloadable artifacts.
+
+[Release](../.github/workflows/release.yml) runs CI for an authorized push of an
+annotated entity tag, packages the exact revision, uploads all assets to a
+draft, then publishes it. Prereleases stay prereleases. Existing releases are
+never overwritten. Manual runs build artifacts without publishing. All workflow
+tasks use TypeScript directly through Node, with no shell scripts.
+
+After committing release preparation, create an annotated tag matching the
+registry and push that tag to your GitHub remote. Branch pushes never publish
+or create tags. No GitHub remote or hosted run is configured yet; these files
+do not create a repository or publish a release.
