@@ -1,7 +1,7 @@
 # Development guidance
 
 - MiniLang is a tiny bootstrap foundation for other language projects. Add only
-  what its self-hosting compiler needs; do not import Lite's mature feature set.
+  what its self-hosting compiler needs.
 - Keep code short, readable, direct, and easy to port. Avoid speculative layers,
   dependencies, edge-case handling, and safety systems.
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
@@ -22,3 +22,6 @@
   never imply that adding release automation makes the compiler self-hosted.
 - Treat generated releases and published tags as immutable. Corrections need a
   new version. Verify the exact source and artifact identities before packaging.
+
+- Keep code, docs, comments, commits, and chat messages concise, clear, and direct.
+- Keep this project self-contained; do not reference the predecessor project.
