@@ -1,5 +1,9 @@
 # Changes
 
+## Unreleased
+
+- Draft the compiler workload and first binding/assignment construct for review.
+
 ## cli 0.1.0-alpha.1 — mini tooling preview
 
 - Define mini's tiny self-hosting foundation and atomic development rules.

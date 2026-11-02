@@ -10,6 +10,7 @@ The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 
 No grammar or compiler is implemented yet. Maintenance tools are available.
+The [language draft](docs/language.md) starts the construct review.
 
 ## Self-hosting
 
