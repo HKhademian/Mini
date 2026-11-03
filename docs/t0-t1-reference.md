@@ -52,7 +52,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty-five signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): twenty-six signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -237,9 +237,10 @@ Those are already available in Mini.
 - `String(Number(token.text))`: current numeric-literal normalization. Mini
   exposes `number_to_text` for canonical safe-integer decimal output; broader
   numeric limits remain open.
-- `JSON.stringify(character)`: compact quoted text in unexpected-character errors.
+- `JSON.stringify(character)`: `json_to_text` for compact quoted text.
 - `JSON.stringify(tokens, null, 2)`: token JSON with two-space indentation,
-  stable field order, and a final newline.
+  stable field order, and a final newline. String fields use `json_to_text`;
+  field order remains explicit.
 - `basename(path)` and `endsWith(".mini")`: small text helpers for supported paths.
 - `argv.slice(2)`: already provided by `process_args()`.
 
@@ -266,6 +267,7 @@ target TS produced by the compiler, not extra syntax required in M1.
 - `text_slice(text, number, number) -> text`: `$mini_text_slice(arg0, arg1, arg2)` (adapter).
 - `text_split(text, text) -> list`: `$mini_text_split(arg0, arg1)` (adapter).
 - `number_to_text(number) -> text`: `$mini_number_to_text(arg0)` (adapter).
+- `json_to_text(value) -> text`: `$mini_json_to_text(arg0)` (adapter).
 
 ### Lists
 
@@ -307,20 +309,22 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 
 1. The shared map block: `$mini_map_proto`, `$mini_map_get`, `$mini_map_has`,
    `$mini_map_set`. The membership helper preserves argument evaluation order.
-2. `$mini_list_copy`: return a shallow array copy or an empty array.
-3. `$mini_list_get`: check list target, normalize a negative index, check bounds
+2. `$mini_json_to_text`: encode values as compact deterministic JSON, with map
+   keys sorted and cycles returning empty text.
+3. `$mini_list_copy`: return a shallow array copy or an empty array.
+4. `$mini_list_get`: check list target, normalize a negative index, check bounds
    and assigned slot, otherwise return numeric zero.
-4. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
+5. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
-5. `$mini_list_to_text`: join text elements with a separator, treating non-text
+6. `$mini_list_to_text`: join text elements with a separator, treating non-text
    elements as empty text.
-6. `$mini_map_copy`: copy own text keys into a fresh map.
-7. `$mini_number_to_text`: render a safe integer as canonical decimal text.
-8. `$mini_text_find`: return the first substring position or -1.
-9. `$mini_text_get`: read an in-range character from text, otherwise empty text.
-10. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
+7. `$mini_map_copy`: copy own text keys into a fresh map.
+8. `$mini_number_to_text`: render a safe integer as canonical decimal text.
+9. `$mini_text_find`: return the first substring position or -1.
+10. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+11. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
     the selected text or empty text for a non-text target or empty range.
-11. `$mini_text_split`: split on a literal divider, preserving empty fields.
+12. `$mini_text_split`: split on a literal divider, preserving empty fields.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.

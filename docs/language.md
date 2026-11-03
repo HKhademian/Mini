@@ -239,6 +239,20 @@ var text = number_to_text(42);
 - Non-number values and non-safe integers return empty text.
 - This does not add implicit text/number concatenation.
 
+## Accepted operation: JSON text
+
+```text
+var text = json_to_text(value);
+```
+
+- `json_to_text(value)` returns compact JSON text without added whitespace.
+- Text is quoted and escaped; safe integers use canonical decimal text; booleans
+  use `true` and `false`.
+- Lists become arrays; gaps become `null`. Maps become objects with keys sorted
+  lexicographically for deterministic output.
+- Unsupported values become `null`; cyclic collections return empty text.
+- This is serialization only; it does not add a JSON value kind or parsing.
+
 ## Accepted operations: text files
 
 The compiler needs to read source and write its generated script. Use two

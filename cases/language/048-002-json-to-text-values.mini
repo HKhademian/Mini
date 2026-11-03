@@ -1,0 +1,17 @@
+var inner = map_new();
+map_set(inner, "z", list_new());
+var outer = map_new();
+map_set(outer, "nested", inner);
+map_set(outer, "text", "value");
+if (json_to_text(outer) == "{\"nested\":{\"z\":[]},\"text\":\"value\"}") {
+    write("ok\n");
+} else {
+    write("bad\n");
+}
+var sparse = list_new();
+list_set(sparse, 2, "last");
+if (json_to_text(sparse) == "[null,null,\"last\"]") {
+    write("ok\n");
+} else {
+    write("bad\n");
+}

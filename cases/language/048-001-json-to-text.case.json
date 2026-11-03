@@ -1,0 +1,27 @@
+{
+  "id": "language.json-to-text",
+  "kind": "feature",
+  "source": "048-001-json-to-text.mini",
+  "features": [
+    "json.to-text",
+    "list.new",
+    "list.set",
+    "map.new",
+    "map.set"
+  ],
+  "cases": [
+    {
+      "name": "values",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\nok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

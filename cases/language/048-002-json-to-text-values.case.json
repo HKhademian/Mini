@@ -1,0 +1,27 @@
+{
+  "id": "language.json-to-text-values",
+  "kind": "feature",
+  "source": "048-002-json-to-text-values.mini",
+  "features": [
+    "json.to-text",
+    "list.new",
+    "list.set",
+    "map.new",
+    "map.set"
+  ],
+  "cases": [
+    {
+      "name": "nested-and-gaps",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -29,3 +29,4 @@ node samples/009-list-mutation.mini.ts
 - [017-list-copy.mini](017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Cases](../cases/language/045-004-list-copy-sample.case.json).
 - [018-list-to-text.mini](018-list-to-text.mini): Join a list of words with a visible separator. [Cases](../cases/language/046-004-list-to-text-sample.case.json).
 - [019-number-to-text.mini](019-number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Cases](../cases/language/047-003-number-to-text-sample.case.json).
+- [020-json-to-text.mini](020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Cases](../cases/language/048-004-json-to-text-sample.case.json).

@@ -28,6 +28,12 @@ The accepted built-in `number_to_text(value)` returns canonical decimal text
 for a safe integer: optional minus sign, no leading zeros, `0` for zero, and no
 exponent. Non-number values and non-safe integers return empty text.
 
+`json_to_text(value)` returns compact deterministic JSON text. Text is quoted
+and escaped, safe integers use decimal text, booleans use `true`/`false`, lists
+become arrays with gaps as `null`, and maps become objects with keys sorted
+lexicographically. Unsupported values become `null`; cyclic collections return
+empty text.
+
 The operations require primitive host access. Prefixes do not decide whether an
 operation is built-in or library code; both use ordinary call syntax.
 

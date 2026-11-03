@@ -67,6 +67,33 @@ export const builtins = new Map<string, Builtin>([
     return items.slice();
 }
 `, emit: args => `${listCopy}(${args[0]})` }],
+  ['json_to_text', { parameters: [ValueKind.Unknown], result: ValueKind.Text,
+    imports: [], helper: `function $mini_json_to_text(value) {
+    const seen = new Set();
+    function encode(item) {
+        if (typeof item === "string") return JSON.stringify(item);
+        if (typeof item === "number") return Number.isSafeInteger(item) ? String(item) : "null";
+        if (typeof item === "boolean") return item ? "true" : "false";
+        if (item === null || item === undefined) return "null";
+        if (typeof item !== "object") return "null";
+        if (seen.has(item)) throw 0;
+        seen.add(item);
+        let output;
+        if (Array.isArray(item)) {
+            const parts = [];
+            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
+            output = "[" + parts.join(",") + "]";
+        } else {
+            const parts = [];
+            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
+            output = "{" + parts.join(",") + "}";
+        }
+        seen.delete(item);
+        return output;
+    }
+    try { return encode(value); } catch { return ""; }
+}
+`, emit: args => `$mini_json_to_text(${args[0]})` }],
   ['number_to_text', { parameters: [ValueKind.Number], result: ValueKind.Text,
     imports: [], helper: `function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";

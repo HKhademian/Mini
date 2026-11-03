@@ -1,0 +1,26 @@
+{
+  "id": "language.json-to-text-sample",
+  "kind": "sample",
+  "source": "../../samples/020-json-to-text.mini",
+  "features": [
+    "json.to-text",
+    "map.new",
+    "map.set",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "sorted-keys",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "{\"count\":2,\"name\":\"Mini\"}\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
