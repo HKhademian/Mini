@@ -48,7 +48,7 @@ test('draft preview uses ordinary theme scopes for declarations, calls and contr
     [7, 'if', 'keyword.control.mini'],
     [8, 'join', 'entity.name.function.call.mini'],
     [9, 'else', 'keyword.control.mini'],
-  ] as const) assert.ok(scopes(source, needle, line).includes(scope), `${needle}: ${scope}`);
+  ] as const) assert.ok(scopes(source, needle, line + 3).includes(scope), `${needle}: ${scope}`);
 });
 
 test('strings shield keywords and calls, handle escaped quotes, and resume after closing', () => {
@@ -85,6 +85,28 @@ test('accepted text escapes differ from unsupported escapes', () => {
     assert.ok(scopes(`"${escape}"`, escape).includes('constant.character.escape.mini'), escape);
   }
   assert.ok(scopes(String.raw`"\q"`, String.raw`\q`).includes('invalid.illegal.escape.mini'));
+});
+
+test('line and documentation comments shield code and end at the next line', () => {
+  const source = [
+    'var value = "// ///"; // fn ignored() { "',
+    '/// Return the input; fn is documentation here.',
+    'fn mine(value) { return value; } /// trailing documentation',
+    String.raw`write("escaped \"//");`,
+  ].join('\n');
+  assert.ok(scopes(source, '// ///').includes('string.quoted.double.mini'));
+  assert.ok(!scopes(source, '// ///').some(scope => scope.startsWith('comment.')));
+  for (const needle of ['fn ignored', '{']) {
+    assert.ok(scopes(source, needle).includes('comment.line.double-slash.mini'));
+  }
+  assert.ok(!scopes(source, 'fn ignored').includes('storage.type.mini'));
+  assert.ok(scopes(source, 'Return', 1).includes('comment.line.documentation.mini'));
+  assert.ok(scopes(source, 'mine', 2).includes('entity.name.function.mini'));
+  assert.ok(scopes(source, 'trailing', 2).includes('comment.line.documentation.mini'));
+  assert.ok(scopes(source, 'write', 3).includes('entity.name.function.call.mini'));
+  assert.ok(scopes(source, '//', 3).includes('string.quoted.double.mini'));
+  const configuration = JSON.parse(readFileSync(new URL('language-configuration.json', root), 'utf8'));
+  assert.deepEqual(configuration.comments, { lineComment: '//' });
 });
 
 test('language contribution includes both icons and only packaged resource paths', () => {

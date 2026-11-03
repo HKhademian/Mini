@@ -16,6 +16,8 @@ The lexer is the tokenizer: it emits tokens with a source filename, zero-based
 start/end offsets, one-based line/column, and source-line context. Diagnostics
 show that location, the line, and a caret. A row means a line; tabs count as one
 column and remain tabs in the caret prefix. Parsing emits readable TS directly.
+The lexer skips `//` and `///` line comments outside text; original locations
+and context are preserved. Comments add no generated code.
 
 T0's completed increments implemented one feature at a time with indexed cases
 and verified version tags. T0 feature growth is now frozen for the Mini port.
@@ -111,6 +113,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.2.0-alpha.3`: list_get reads from the end with negative indices and returns
   zero for non-list targets, gaps, and out-of-range positions.
+
+- `0.2.0-alpha.4`: `//` line comments and `///` documentation comments, including
+  inline comments, with quoted markers and source positions preserved.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

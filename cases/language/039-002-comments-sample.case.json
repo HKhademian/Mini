@@ -1,0 +1,25 @@
+{
+  "id": "language.comments-sample",
+  "kind": "sample",
+  "source": "../../samples/012-comments.mini",
+  "features": [
+    "comments.line",
+    "comments.documentation",
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "documented-function",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "documented function\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

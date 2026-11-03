@@ -1,3 +1,4 @@
+/// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
 write("character: " + text_get("hello", 1) + "\n");
 if (text_get(0, 1) == "" && text_get("hello", 2000) == "") {
     write("unavailable text: empty\n");

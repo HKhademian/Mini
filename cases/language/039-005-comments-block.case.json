@@ -1,0 +1,23 @@
+{
+  "id": "language.comments-block",
+  "kind": "reject",
+  "source": "039-005-comments-block.mini",
+  "features": [
+    "comments.line"
+  ],
+  "cases": [
+    {
+      "name": "no-block-comments",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "039-005-comments-block.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

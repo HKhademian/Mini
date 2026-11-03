@@ -1,0 +1,26 @@
+{
+  "id": "language.comments-only",
+  "kind": "compile",
+  "source": "039-004-comments-only.mini",
+  "features": [
+    "comments.documentation"
+  ],
+  "cases": [
+    {
+      "name": "comment-only-eof",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "artifact": {
+        "text": "\"use strict\";\n"
+      },
+      "exitCode": 0
+    }
+  ]
+}

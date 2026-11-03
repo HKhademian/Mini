@@ -1,3 +1,6 @@
+/// Exercise the existing subset needed by M1 and write a checked TS program to the supplied path.
+
+/// Return ten times value using only addition; used by decimal formatting.
 fn times_ten(value) {
     var twice = value + value;
     var four = twice + twice;
@@ -5,6 +8,7 @@ fn times_ten(value) {
     return eight + twice;
 }
 
+/// Return signed decimal text for an ordinary integer value using addition and subtraction.
 fn decimal(value) {
     var remaining = value;
     var sign = "";
@@ -36,6 +40,7 @@ fn decimal(value) {
     return output;
 }
 
+/// Return source characters from start through the exclusive limit; callers supply nonnegative bounds.
 fn slice(source, start, limit) {
     var position = start;
     var output = "";
@@ -46,6 +51,7 @@ fn slice(source, start, limit) {
     return output;
 }
 
+/// Return whether the single-character value occurs in choices.
 fn contains(choices, value) {
     var position = 0;
     while (position < text_length(choices)) {
@@ -57,6 +63,7 @@ fn contains(choices, value) {
     return false;
 }
 
+/// Escape a single character using the five supported text escapes, or return it unchanged.
 fn quote_char(character) {
     if (character == "\"" || character == "\\") {
         return "\\" + character;
@@ -73,6 +80,7 @@ fn quote_char(character) {
     return character;
 }
 
+/// Return source as a double-quoted TS literal using the supported escapes.
 fn quoted(source) {
     var output = "\"";
     var position = 0;
@@ -83,6 +91,7 @@ fn quoted(source) {
     return output + "\"";
 }
 
+/// Return a shallow copy of scope; replacing a binding in the result leaves scope unchanged.
 fn copy_scope(scope) {
     var result = map_new();
     var keys = map_keys(scope);
@@ -95,6 +104,7 @@ fn copy_scope(scope) {
     return result;
 }
 
+/// Return whether nonnegative value is even, testing forward mutual recursion with odd.
 fn even(value) {
     if (value == 0) {
         return true;
@@ -102,6 +112,7 @@ fn even(value) {
     return odd(value - 1);
 }
 
+/// Return whether nonnegative value is odd, testing mutual recursion with even.
 fn odd(value) {
     if (value == 0) {
         return false;
@@ -109,6 +120,7 @@ fn odd(value) {
     return even(value - 1);
 }
 
+/// Append depths in ascending order to state.visits and increment state.count; return zero.
 fn descend(state, depth) {
     var saved = depth;
     if (depth > 0) {

@@ -8,13 +8,13 @@ Highlights `var`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
 assignment, and the arithmetic, comparison, and boolean operators in the draft.
 Strings shield their contents from other rules; backslash escapes receive a
-separate scope.
+separate scope. Line comments (`//`) and documentation comments (`///`) receive
+separate comment scopes and shield their contents from code highlighting.
 
 Highlighting follows the accepted forms in the language draft. It does not imply
 compiler support. The accepted text escapes are `\"`, `\\`, `\n`, `\r`, and `\t`;
-other escapes receive an invalid scope. Comment syntax has not been
-selected, so there is no comment highlighting or comment toggle yet. Built-in
-names use ordinary call highlighting.
+other escapes receive an invalid scope. The line-comment toggle uses `//`;
+there is no block-comment toggle. Built-in names use ordinary call highlighting.
 
 This is a declarative TextMate extension with no runtime dependencies or
 language server. It provides no diagnostics, completion, formatter, or runner.
@@ -26,11 +26,11 @@ From this directory, using the repository's Node 24.16.0:
 ```text
 npm ci
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.2.0-v0.1.1.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.2.0-v0.2.0.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.2.0-v0.1.1.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.2.0-v0.2.0.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 

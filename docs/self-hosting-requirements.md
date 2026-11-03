@@ -2,7 +2,7 @@
 
 Assessment: 2026-11-03. The [language contract](language.md), current compiler
 sources, and executable cases are the evidence for this assessment.
-Baseline: group 0.2.0, T0/compiler 0.2.0-alpha.3.
+Baseline: group 0.2.0, T0/compiler 0.2.0-alpha.4.
 
 ## Verdict
 
@@ -21,6 +21,8 @@ Functions, forward calls, recursion, per-call locals, branches, loops, scalar
 operations, mutable lists/maps, text access, and file/process I/O cover the
 compiler's main workload. No record, class, closure, module, or general AST is
 needed for the first direct emitter.
+Line comments (`//`) and documentation comments (`///`) support documenting M1;
+both are skipped by the compiler and add no generated runtime work.
 
 The [port-foundation case](../cases/compiler/port-foundation.case.json) compiles
 and runs Mini code that checks:
@@ -119,6 +121,6 @@ Use the existing ordinary-integer/ASCII subset, complete value-return paths, and
 unambiguous names in the port; do not turn every open design question into a new
 T0 feature. A concrete failed port case is evidence for a blocker.
 
-Comments, enum/const syntax, optional arguments, extra arithmetic, convenience
+Enum/const syntax, optional arguments, extra arithmetic, convenience
 text APIs, modules, and future tools are deferred. Records, structs, and classes
 remain outside Mini's scope. The next implementation target is the Mini compiler.

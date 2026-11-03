@@ -2,6 +2,7 @@
 
 All samples compile and run with T0. Sources and JSON cases stay separate.
 Descriptions name the main features and built-ins; case links verify output.
+Sources use `///` for file/function documentation and `//` for implementation notes.
 
 ```text
 ./bin/mini compile samples/009-list-mutation.mini
@@ -20,3 +21,4 @@ node samples/009-list-mutation.mini.ts
 - [009-list-mutation.mini](009-list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Cases](../cases/language/029-008-list-mutation-sample.case.json).
 - [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, `map_length`, and `map_keys`; read replacement values, distinguish missing keys, and snapshot keys. [Cases](../cases/language/033-005-map-sample.case.json).
 - [011-read-defaults.mini](011-read-defaults.mini): Use `text_get`, `list_get`, and `map_get` defaults, read gaps as zero, and use a negative list index, without null. [Cases](../cases/language/037-007-read-defaults-sample.case.json).
+- [012-comments.mini](012-comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).

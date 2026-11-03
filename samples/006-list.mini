@@ -1,3 +1,6 @@
+/// Join the command-line text arguments and write them to stdout.
+
+/// Return items separated by pipes; leave the list unchanged and return empty text for no items.
 fn join(items) {
     var output = "";
     var position = 0;

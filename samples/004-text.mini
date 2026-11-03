@@ -1,3 +1,6 @@
+/// Read stdin, replace each tab or line-ending character with a space, and print it.
+
+/// Return normalized text without changing source; ordinary characters are retained.
 fn normalize(source) {
     var output = "";
     var position = 0;

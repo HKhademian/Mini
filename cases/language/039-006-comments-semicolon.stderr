@@ -1,0 +1,3 @@
+039-006-comments-semicolon.mini:2:1: expected ;
+write("unreachable");
+^

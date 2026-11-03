@@ -1,0 +1,24 @@
+{
+  "id": "language.comments-semicolon",
+  "kind": "reject",
+  "source": "039-006-comments-semicolon.mini",
+  "features": [
+    "comments.line",
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "semicolon-still-required",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "039-006-comments-semicolon.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

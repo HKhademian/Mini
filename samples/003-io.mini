@@ -1,2 +1,3 @@
+/// Copy all stdin to stdout, preserving empty input and line endings.
 var source = readAll();
 write(source);

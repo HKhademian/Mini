@@ -1,3 +1,6 @@
+/// Preview Mini declarations, control flow, text, and function calls in the editor.
+
+/// Return left followed by right without changing either text input.
 fn join(left, right) {
     return left + right;
 }

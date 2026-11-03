@@ -2,6 +2,8 @@
   "name": "Mini",
   "scopeName": "source.mini",
   "patterns": [
+    { "name": "comment.line.documentation.mini", "match": "///.*$" },
+    { "name": "comment.line.double-slash.mini", "match": "//.*$" },
     {
       "name": "string.quoted.double.mini",
       "begin": "\"",

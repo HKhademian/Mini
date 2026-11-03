@@ -4,3 +4,4 @@ cases/**/*.stdin -text whitespace=cr-at-eol
 cases/**/*.stdout -text whitespace=cr-at-eol
 cases/**/*.stderr -text whitespace=cr-at-eol
 cases/language/001-009-position-bindings.mini -text whitespace=cr-at-eol
+cases/language/039-007-comments-positions.mini -text whitespace=cr-at-eol

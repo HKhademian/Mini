@@ -19,8 +19,8 @@ form will be `mini fmt`.
 
 Its initial job is consistent indentation, spacing, and line breaks for accepted
 Mini syntax. Preserve program meaning, literal values, and evaluation order.
-Preserve comments once a comment form exists. Reformatting already formatted
-source should produce identical bytes.
+Preserve `//` line comments and `///` documentation comments. Reformatting already
+formatted source should produce identical bytes.
 
 Decide file versus stdin input, stdout versus in-place output, newline policy,
 invalid-source behavior, and any check-only mode in the first implementation
@@ -34,10 +34,11 @@ dispatcher form will be `mini doc`.
 
 Its role is generating reference material from the language's documented source
 conventions and declarations. Decide the first useful output format and source
-of descriptions before implementation. Mini does not yet select documentation
-comments, export visibility, modules, or annotations; this tool does not approve
-any of them implicitly. A declaration listing can be a smaller starting point
-if that is useful without new language forms.
+of descriptions before implementation. Mini selects `///` documentation comments;
+read these from source, since the compiler's token stream skips comments.
+Documentation tags, declaration attachment/extraction rules, export visibility,
+modules, and annotations remain undecided. This tool does not approve them
+implicitly or require richer comment syntax.
 
 Keep reference output deterministic and avoid inventing parameter or result
 types where Mini's type contract has not selected them. A website generator,

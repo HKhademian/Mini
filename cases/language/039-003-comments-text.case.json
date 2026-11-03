@@ -1,0 +1,25 @@
+{
+  "id": "language.comments-text",
+  "kind": "feature",
+  "source": "039-003-comments-text.mini",
+  "features": [
+    "comments.line",
+    "comments.documentation",
+    "text.escapes"
+  ],
+  "cases": [
+    {
+      "name": "markers-and-escaped-quotes",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "// and /// stay text\nescaped quote: \"//\"\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Compiler/language 0.2.0-alpha.4: add `//` line comments and `///` documentation
+  comments, preserve quoted markers and positions, document Mini samples and
+  workload helpers, and add VS Code comment highlighting/toggling (0.2.0).
 - Define M1 as Mini compiler source and T1 as its generated TS compiler; require
   the first M1 to preserve T0's structure, control flow, lookups, and data layout.
   Defer performance refactoring until parity and the fixed point are established.

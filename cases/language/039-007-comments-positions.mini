@@ -1,0 +1,4 @@
+// leading
+var value = 1; /// doc
+	write("//"); // tail
+/// eof

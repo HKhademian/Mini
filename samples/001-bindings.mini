@@ -1,3 +1,4 @@
+/// Initialize scanner-style bindings and advance a zero-based cursor.
 var source = "";
 var position = 0;
 var output = "";

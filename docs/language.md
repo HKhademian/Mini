@@ -21,6 +21,38 @@ them.
 Review constructs against that workload. A construct should simplify real
 compiler code without adding disproportionate implementation or migration cost.
 
+## Accepted form: line and documentation comments
+
+Mini supports line comments only:
+
+```text
+/// Return 1 for any supplied values a and b.
+fn mine(a, b) {
+    // Both arguments are deliberately unused in this example.
+    return 1; // Comments can follow code on the same line.
+}
+```
+
+- Outside quoted text, `//` begins an ordinary comment and `///` identifies a
+  documentation comment. Neither requires preceding whitespace.
+- Both forms consume the rest of the line, ending at CR, LF, or end of file.
+  They may appear alone, after indentation, or after code. Quotation marks,
+  braces, escapes, and other comment markers inside a comment are ordinary text.
+- Markers inside double-quoted text remain text, including after escaped quotes.
+- Comments act as whitespace. Required punctuation such as `;` remains required.
+- The compiler skips both forms; they produce no tokens or generated TS text.
+  Source offsets, line/column positions, and diagnostic context remain accurate.
+- There are no block comments or comment-continuation escapes.
+
+Keep Mini source well documented. Use `///` for file purpose and immediately
+above functions to explain their responsibility, inputs, returned value, and
+shared-state changes where relevant. Use `//` for non-obvious implementation
+decisions. Prefer useful explanations to repeating the code. Documentation
+comments remain in source for readers and future tools; `mini doc` is not yet
+implemented, and no documentation tags or extraction format are selected.
+
+The [comment sample](../samples/012-comments.mini) demonstrates both forms.
+
 ## Accepted form: bindings and assignment
 
 Use one declaration form:

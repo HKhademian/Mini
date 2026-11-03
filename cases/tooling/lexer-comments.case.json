@@ -1,0 +1,29 @@
+{
+  "id": "compiler.tokens-comments",
+  "kind": "tool",
+  "tool": "mini-compile",
+  "features": [
+    "comments.line",
+    "comments.documentation",
+    "lexer.positions"
+  ],
+  "cases": [
+    {
+      "name": "crlf-tabs-and-eof",
+      "args": [
+        "--tokens",
+        "cases/language/039-007-comments-positions.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "lexer-comments.stdout.json"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

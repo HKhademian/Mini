@@ -1,7 +1,11 @@
+/// Synthetic compiler operations measured by tools/runtime-performance.ts; no standalone side effects.
+
+/// Return the next numeric value, providing an ordinary function call in the scalar probe.
 fn perf_step(value) {
     return value + 1;
 }
 
+/// Return count after repeated calls; source is unused to keep the shared probe interface.
 fn perf_scalar(count, source) {
     var index = 0;
     var result = 0;
@@ -12,6 +16,7 @@ fn perf_scalar(count, source) {
     return result;
 }
 
+/// Build and sum count sequential numeric items; source is unused and no state escapes.
 fn perf_list(count, source) {
     var items = list_new();
     var index = 0;
@@ -28,6 +33,7 @@ fn perf_list(count, source) {
     return result;
 }
 
+/// Return a map-held cursor after count mutations; source is unused.
 fn perf_state(count, source) {
     var state = map_new();
     map_set(state, "position", 0);
@@ -39,6 +45,7 @@ fn perf_state(count, source) {
     return map_get(state, "position");
 }
 
+/// Return count eight-field token maps sharing source as context, so the harness can measure retained storage.
 fn perf_tokens(count, source) {
     var items = list_new();
     var index = 0;
@@ -58,6 +65,7 @@ fn perf_tokens(count, source) {
     return items;
 }
 
+/// Return a character-by-character copy of the first count characters of source.
 fn perf_text(count, source) {
     var output = "";
     var index = 0;
@@ -68,6 +76,7 @@ fn perf_text(count, source) {
     return output;
 }
 
+/// Return the first count source characters through 24-character copies, exposing Mini slicing costs.
 fn perf_slices(count, source) {
     var output = "";
     var start = 0;
@@ -84,6 +93,7 @@ fn perf_slices(count, source) {
     return output;
 }
 
+/// Copy a scope of unique single-character source keys count times; return the sum of copy sizes.
 fn perf_scopes(count, source) {
     var scope = map_new();
     var index = 0;

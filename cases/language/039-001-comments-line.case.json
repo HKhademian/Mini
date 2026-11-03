@@ -1,0 +1,25 @@
+{
+  "id": "language.comments-line",
+  "kind": "feature",
+  "source": "039-001-comments-line.mini",
+  "features": [
+    "comments.line",
+    "bindings",
+    "text.write"
+  ],
+  "cases": [
+    {
+      "name": "standalone-and-inline",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "line comments\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

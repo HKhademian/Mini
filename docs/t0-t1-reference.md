@@ -1,6 +1,6 @@
 # T0 implementation inventory for M1 and T1
 
-Baseline: group 0.2.0, compiler 0.2.0-alpha.3. M1 is the first compiler source
+Baseline: group 0.2.0, compiler 0.2.0-alpha.4. M1 is the first compiler source
 written in Mini. T1 is its generated TypeScript compiler: `T1 = T0(M1)`.
 This inventories the five files in
 [compiler configuration](../config/compiler.json), not the CLI tools, tests, or
@@ -91,6 +91,9 @@ The lexer holds source text, source name, token list, source-line list, keyword
 and escape sets, cursor offset, line, and column.
 
 - Whitespace: space, tab, carriage return, newline.
+- Outside text, `//` line comments and `///` documentation comments are skipped
+  through CR, LF, or EOF before starting a token. Preserve source positions and
+  original diagnostic context. Neither form creates a token or emitted text.
 - Identifier start: ASCII letter or underscore.
 - Identifier continuation: ASCII letter, underscore, or decimal digit.
 - Numbers: consecutive decimal digits. Signs are separate operator tokens.

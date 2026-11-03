@@ -26,6 +26,10 @@ export function tokenize(text: string, source: string): Token[] {
   while (position < text.length) {
     const character = text[position]!;
     if (/[ \t\r\n]/.test(character)) { advance(); continue; }
+    if (character === '/' && text[position + 1] === '/') {
+      while (position < text.length && text[position] !== '\r' && text[position] !== '\n') advance();
+      continue;
+    }
     const token = start();
     if (/[A-Za-z_]/.test(character)) {
       token.kind = TokenKind.Identifier;

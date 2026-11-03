@@ -1,0 +1,112 @@
+[
+  {
+    "kind": "keyword",
+    "text": "var",
+    "source": "039-007-comments-positions.mini",
+    "start": 12,
+    "end": 15,
+    "line": 2,
+    "column": 1,
+    "context": "var value = 1; /// doc"
+  },
+  {
+    "kind": "identifier",
+    "text": "value",
+    "source": "039-007-comments-positions.mini",
+    "start": 16,
+    "end": 21,
+    "line": 2,
+    "column": 5,
+    "context": "var value = 1; /// doc"
+  },
+  {
+    "kind": "symbol",
+    "text": "=",
+    "source": "039-007-comments-positions.mini",
+    "start": 22,
+    "end": 23,
+    "line": 2,
+    "column": 11,
+    "context": "var value = 1; /// doc"
+  },
+  {
+    "kind": "number",
+    "text": "1",
+    "source": "039-007-comments-positions.mini",
+    "start": 24,
+    "end": 25,
+    "line": 2,
+    "column": 13,
+    "context": "var value = 1; /// doc"
+  },
+  {
+    "kind": "symbol",
+    "text": ";",
+    "source": "039-007-comments-positions.mini",
+    "start": 25,
+    "end": 26,
+    "line": 2,
+    "column": 14,
+    "context": "var value = 1; /// doc"
+  },
+  {
+    "kind": "identifier",
+    "text": "write",
+    "source": "039-007-comments-positions.mini",
+    "start": 37,
+    "end": 42,
+    "line": 3,
+    "column": 2,
+    "context": "\twrite(\"//\"); // tail"
+  },
+  {
+    "kind": "symbol",
+    "text": "(",
+    "source": "039-007-comments-positions.mini",
+    "start": 42,
+    "end": 43,
+    "line": 3,
+    "column": 7,
+    "context": "\twrite(\"//\"); // tail"
+  },
+  {
+    "kind": "text",
+    "text": "\"//\"",
+    "source": "039-007-comments-positions.mini",
+    "start": 43,
+    "end": 47,
+    "line": 3,
+    "column": 8,
+    "context": "\twrite(\"//\"); // tail"
+  },
+  {
+    "kind": "symbol",
+    "text": ")",
+    "source": "039-007-comments-positions.mini",
+    "start": 47,
+    "end": 48,
+    "line": 3,
+    "column": 12,
+    "context": "\twrite(\"//\"); // tail"
+  },
+  {
+    "kind": "symbol",
+    "text": ";",
+    "source": "039-007-comments-positions.mini",
+    "start": 48,
+    "end": 49,
+    "line": 3,
+    "column": 13,
+    "context": "\twrite(\"//\"); // tail"
+  },
+  {
+    "kind": "eof",
+    "text": "",
+    "source": "039-007-comments-positions.mini",
+    "start": 65,
+    "end": 65,
+    "line": 4,
+    "column": 8,
+    "context": "/// eof"
+  }
+]

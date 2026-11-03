@@ -1,0 +1,3 @@
+039-005-comments-block.mini:1:1: unexpected character "/"
+/* Block comments are not Mini syntax. */
+^

@@ -1,8 +1,9 @@
+/// Demonstrate growable lists, replacement, negative indices, and shared nested values.
 var items = list_new();
 list_set(items, 0, "first");
 list_set(items, 1, "second");
-list_set(items, -1, "last");
-list_set(items, -3, "ignored");
+list_set(items, -1, "last"); // Replace the last existing item.
+list_set(items, -3, "ignored"); // Still before the start after normalization: no change.
 write(list_get(items, 0) + "|" + list_get(items, 1) + "\n");
 
 list_set(items, 2, 7);
@@ -11,6 +12,7 @@ if (list_length(items) == 4 && list_get(items, 2) == 7 && list_get(items, 3)) {
     write("mixed values\n");
 }
 
+// The outer list retains the nested list reference rather than copying its contents.
 var nested = list_new();
 list_set(nested, 0, "nested");
 list_set(items, 4, nested);
