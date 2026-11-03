@@ -11,6 +11,9 @@
   port. The focused check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are
   byte-identical. T0 remains active; candidate performance evidence and bootstrap
   promotion are pending. No language or builtin contract changes.
+- Checker/cli 0.1.0-alpha.4: add `mini check SOURCE.mini` and `mini check -`
+  source checking with compiler diagnostics, stdin display name `<stdin>`, and
+  no generated artifacts. Formatter and language server commands remain future.
 - Group 0.3.0, language/compiler/builtins 0.3.0-alpha.1: use object-backed maps
   with an empty prototype and no per-map metadata. Remove `map_length`;
   count with `list_length(map_keys(items))`. Map operations and argument order

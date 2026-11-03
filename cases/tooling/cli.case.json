@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "cli-version.stdout",
-        "hash": "sha256:72914aa794c38d58bc6b594be9999cc5555079ab84248149feae162bd86971d9"
+        "hash": "sha256:a539bd9f9cee693b156d232f19189c90fd481ec7c6964dde0e23f70d93931c38"
       },
       "stderr": {
         "text": ""
@@ -35,6 +35,56 @@
       "stderr": {
         "file": "cli-unknown.stderr",
         "hash": "sha256:27680b6483332cba0cbb2d32e597353a553bd2fa11db45545540e63d9e8e2b63"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "cli-help",
+      "args": [
+        "--help"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "cli-help.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "cli-check-source",
+      "args": [
+        "check",
+        "cases/tooling/check-valid.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "cli-check-stdin",
+      "args": [
+        "check",
+        "-"
+      ],
+      "stdin": {
+        "file": "check-stdin.stdin"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-stdin.stderr"
       },
       "exitCode": 1
     }

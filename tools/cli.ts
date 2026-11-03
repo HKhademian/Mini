@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { compiler, releaseTag, root, run, versions, type Component } from './project.ts';
 
 const names: Record<string, Component> = { check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
-const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
+const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs | SOURCE.mini | -] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
 
 export async function main(executable: string): Promise<void> {
   try {
@@ -19,9 +20,30 @@ export async function main(executable: string): Promise<void> {
     if (args[0] === '--version') { console.log(releaseTag(component, current)); return; }
     switch (command) {
       case 'check': {
-        assert(args.length === 0 || (args.length === 1 && args[0] === '--docs'), 'usage: mini-check [--docs]');
-        if (args.length === 0) run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--noEmit'], root);
-        (await import('./check.ts')).checkProject(); break;
+        if (args.length === 0) {
+          run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--noEmit'], root);
+          (await import('./check.ts')).checkProject();
+          break;
+        }
+        if (args.length === 1 && args[0] === '--docs') {
+          (await import('./check.ts')).checkProject();
+          break;
+        }
+        assert(args.length === 1, 'usage: mini-check [--docs | SOURCE.mini | -]');
+        const path = args[0]!;
+        assert(path === '-' || path.endsWith('.mini'), 'Mini source must use .mini');
+        let source: string;
+        try {
+          source = readFileSync(path === '-' ? 0 : resolve(path), 'utf8');
+        } catch {
+          throw new Error(`cannot read ${path}`);
+        }
+        const diagnostic = (await import('./source-check.ts')).checkSource(source, path === '-' ? '<stdin>' : path);
+        if (diagnostic !== null) {
+          console.error(diagnostic);
+          process.exitCode = 1;
+        }
+        break;
       }
       case 'test':
         assert(args.length <= 1, 'usage: mini-test [FILTER]');

@@ -15,7 +15,7 @@
       },
       "stdout": {
         "file": "check-version-file.stdout",
-        "hash": "sha256:ab401fd72658864189cd0ccddcad62e9ba2550fcb631faf3d6f5ead2c1676c65"
+        "hash": "sha256:3ed8fa1f374035516c2b09f4a34632cd7c057ac4ca7667cb9e1d4556e4636a4d"
       },
       "stderr": {
         "file": "check-version.stderr",
@@ -33,7 +33,7 @@
         "hash": "sha256:a6c7e3c5ddd823efc8b7a30853eabc152dac866843bd7a39dc4a29e0a0eb68b3"
       },
       "stdout": {
-        "text": "check-v0.3.0-v0.1.0-alpha.3\n"
+        "text": "check-v0.3.0-v0.1.0-alpha.4\n"
       },
       "stderr": {
         "text": ""
@@ -55,7 +55,7 @@
       },
       "stdout": {
         "file": "check-version-bytes.stdout",
-        "hash": "sha256:ab401fd72658864189cd0ccddcad62e9ba2550fcb631faf3d6f5ead2c1676c65"
+        "hash": "sha256:3ed8fa1f374035516c2b09f4a34632cd7c057ac4ca7667cb9e1d4556e4636a4d"
       },
       "stderr": {
         "text": ""
@@ -78,6 +78,151 @@
         "text": ""
       },
       "exitCode": 0
+    },
+    {
+      "name": "check-source-valid",
+      "args": [
+        "cases/tooling/check-valid.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "check-source-invalid",
+      "args": [
+        "cases/tooling/check-invalid.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-invalid.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-lexer",
+      "args": [
+        "cases/tooling/check-lexer.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-lexer.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-arity",
+      "args": [
+        "cases/tooling/check-arity.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-arity.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "file": "check-stdin.stdin"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-stdin.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-crlf-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "file": "check-stdin-crlf.stdin"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-stdin-crlf.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-empty-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "check-source-missing",
+      "args": [
+        "cases/tooling/missing.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-missing.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "check-source-usage",
+      "args": [
+        "--docs",
+        "cases/tooling/check-valid.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "check-usage.stderr"
+      },
+      "exitCode": 1
     }
   ],
   "benchmark": {

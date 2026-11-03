@@ -52,8 +52,8 @@ mini-v0.3.0-v0.1.0-alpha.2
 lang-v0.3.0-v0.3.0-alpha.1
 compiler-v0.3.0-v0.3.0-alpha.1
 builtins-v0.3.0-v0.3.0-alpha.1
-cli-v0.3.0-v0.1.0-alpha.3
-check-v0.3.0-v0.1.0-alpha.3
+cli-v0.3.0-v0.1.0-alpha.4
+check-v0.3.0-v0.1.0-alpha.4
 test-v0.3.0-v0.1.0-alpha.2
 verify-v0.3.0-v0.1.0-alpha.2
 bench-v0.3.0-v0.1.0-alpha.3

@@ -1,22 +1,23 @@
 # Tooling direction
 
-Status: future tooling names and responsibilities. The commands in the next
-section are not implemented, installed aliases, or assigned release versions.
-Their initial input/output contracts and focused cases must accompany each
-implementation. They do not add language syntax.
+Status: source checking is implemented. Formatter, document, help, and language
+server commands remain future and are not implemented, installed aliases, or
+assigned release versions. Their initial input/output contracts and focused
+cases accompany each implementation. They do not add language syntax.
 
 Existing tools cover compilation, checking, cases, bootstrap verification,
 benchmarks, and releases. See the [README](../README.md) for current commands.
-The CLI currently provides basic usage through `mini --help`; the editor has
-syntax highlighting and pairing, without a language server.
+The CLI provides basic usage through `mini --help`; the editor has syntax
+highlighting and pairing, without a language server.
 
-## Future commands
+## Command contracts
 
 ### mini check SOURCE.mini
 
-Repository checking remains `mini check` and `mini check --docs`. Source checking
-uses `mini check SOURCE.mini`; `mini check -` reads standard input. `mini-check`
-accepts the same forms. These forms are proposed and not implemented yet.
+Status: implemented with the check and cli streams. Repository checking remains
+`mini check` and `mini check --docs`. Source checking uses `mini check
+SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
+forms.
 
 On success, source checking prints nothing and exits 0. On a Mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic
@@ -32,8 +33,8 @@ behavior. Diagnostics, offsets, and ranges use the
 
 ### mini-format / mini fmt
 
-A source formatter. The standalone command will be `mini-format`; the dispatcher
-form will be `mini fmt`.
+Status: future and not implemented. The standalone command will be
+`mini-format`; the dispatcher form will be `mini fmt`.
 
 Its initial job is consistent indentation, spacing, and line breaks for accepted
 Mini syntax. Preserve program meaning, literal values, evaluation order, and
@@ -107,8 +108,8 @@ TypeScript.
 
 ### mini-document / mini doc
 
-A documentation tool. The standalone command will be `mini-document`; the
-dispatcher form will be `mini doc`.
+Status: future and not implemented. The standalone command will be
+`mini-document`; the dispatcher form will be `mini doc`.
 
 Its role is generating reference material from the language's documented source
 conventions and declarations. Decide the first useful output format and source
@@ -125,8 +126,8 @@ search service, or publishing system is unnecessary for the initial tool.
 
 ### mini-help / mini help
 
-A help/reference helper. The standalone command will be `mini-help`; the
-dispatcher form will be `mini help`.
+Status: future and not implemented. The standalone command will be
+`mini-help`; the dispatcher form will be `mini help`.
 
 Its role is finding explanations of commands, language constructs, built-ins,
 and diagnostics. Start with concise, deterministic topic lookup over maintained
@@ -140,7 +141,7 @@ requirement for this helper.
 
 ### mini-lang-server
 
-An editor-facing language server. The standalone command will be
+Status: future and not implemented. The standalone command will be
 `mini-lang-server`; no dispatcher spelling is planned for this milestone. It
 speaks LSP 3.17 over standard input and standard output.
 

@@ -2,4 +2,13 @@ PASS tooling.check/check-version-file
 PASS tooling.check/check-version-text
 PASS tooling.check/check-version-bytes
 PASS tooling.check/check-docs
-4/4 scenarios passed
+PASS tooling.check/check-source-valid
+PASS tooling.check/check-source-invalid
+PASS tooling.check/check-source-lexer
+PASS tooling.check/check-source-arity
+PASS tooling.check/check-source-stdin
+PASS tooling.check/check-source-crlf-stdin
+PASS tooling.check/check-source-empty-stdin
+PASS tooling.check/check-source-missing
+PASS tooling.check/check-source-usage
+13/13 scenarios passed

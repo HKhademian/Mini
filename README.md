@@ -113,10 +113,15 @@ Use Node 24.16.0 from [.node-version](.node-version).
 ```text
 npm ci
 ./bin/mini check
+./bin/mini check samples/001-bindings.mini
 ./bin/mini test
 ./bin/mini verify cases/tooling/check.case.json
 ./bin/mini bench .cache/bench.json
 ```
+
+Source checking uses `mini check SOURCE.mini`; `mini check -` reads standard
+input. A successful check writes nothing and creates no `.mini.ts` file. A
+failure prints the compiler's first diagnostic and exits 1.
 
 npm installs development dependencies only. Commands live in `bin/`:
 `mini`, `mini-check`, `mini-test`, `mini-bench`, `mini-verify`,

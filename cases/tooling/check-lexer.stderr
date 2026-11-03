@@ -1,0 +1,3 @@
+cases/tooling/check-lexer.mini:1:1: unexpected character "@"
+@
+^

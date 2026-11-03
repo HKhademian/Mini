@@ -11,7 +11,7 @@ todos:
     status: completed
   - id: step-3-checker
     content: "Step 3 — Add explicit Mini source checking"
-    status: pending
+    status: completed
   - id: step-4-formatter
     content: "Step 4 — Implement a deterministic single-file formatter"
     status: pending
@@ -50,6 +50,8 @@ adds no language syntax and does not implement the self-hosted compiler.
 - Recorded the Step 1 command, formatting, diagnostic, analysis, and LSP contracts.
 - Added compiler analysis with structured diagnostics and comment-token mode. No product version changed: the
   command is internal and adds no language behavior.
+- Added `mini check SOURCE.mini` and `mini check -`; advanced check and cli to `0.1.0-alpha.4` with matches in the
+  registry, release cases, version fixtures, and changelog.
 
 ## Read first
 
@@ -139,12 +141,13 @@ text, with no filesystem output.
 ### Step 3 — checker
 
 **Depends on:** step-2-analysis.
-**Files:** modify `tools/cli.ts`, `cases/tooling/check.case.json`, `cases/tooling/cli.case.json`, `README.md`, `docs/tooling.md`; create `tools/source-check.ts`, source fixtures/streams under `cases/tooling/`.
+**Files:** modify `tools/cli.ts`, `cases/tooling/check.case.json`, `cases/tooling/cli.case.json`, `cases/tooling/verify.case.json`, `cases/tooling/release.case.json`, `config/versions.json`, `docs/versioning.md`, `docs/tooling.md`, `README.md`, `CHANGELOG.md`; create `tools/source-check.ts`, source fixtures/streams under `cases/tooling/`.
 
 - Add the explicit source/stdin modes using `tools/analysis.ts`; preserve repository checks and their existing output,
   including standalone aliases.
 - Verify valid input, lexer/parser/semantic rejection, stdin, missing file, argument errors, and no emitted `.mini.ts`
   files. Reuse existing language fixtures where practical; no new lint policy or stronger type claims.
+- Advance the check and cli streams together, update exact version-output fixtures, and tag the verified increment.
 
 **Acceptance:** CLI and compiler agree on the first error; successful checks create no artifacts and require no
 development dependencies in a distribution.
@@ -251,7 +254,7 @@ versions and valid local annotated tags.
 | --- | --- |
 | Runtime | Node 24.16.0; strict erasable TypeScript, `.ts` imports |
 | Compiler | T0, direct emitter; `Unknown` parameters/results limit checking; comments skipped by default |
-| Existing check | Repository types, docs, versions, cases, available bootstrap |
+| Existing check | Repository types, docs, versions, cases, available bootstrap; explicit source/stdin checking |
 | Editor | Declarative TextMate extension, version 0.2.0 |
 
 ## Overall acceptance
