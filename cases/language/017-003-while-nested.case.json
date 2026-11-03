@@ -1,8 +1,7 @@
 {
-  "id": "language.while-missing-condition",
-  "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "while-missing-condition.mini",
+  "id": "language.while-nested",
+  "kind": "compile",
+  "source": "017-003-while-nested.mini",
   "features": [
     "control.while"
   ],
@@ -16,9 +15,12 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "while-missing-condition.stderr"
+        "file": "empty.stderr"
       },
-      "exitCode": 1
+      "exitCode": 0,
+      "artifact": {
+        "file": "017-003-while-nested.expected.ts"
+      }
     }
   ]
 }

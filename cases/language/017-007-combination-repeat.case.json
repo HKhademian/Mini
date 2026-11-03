@@ -1,7 +1,7 @@
 {
   "id": "language.combination-repeat",
   "kind": "feature",
-  "source": "combination-repeat.mini",
+  "source": "017-007-combination-repeat.mini",
   "features": [
     "bindings",
     "functions",
@@ -11,7 +11,6 @@
     "text.input",
     "text.output"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "empty",

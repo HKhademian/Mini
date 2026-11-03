@@ -1,8 +1,7 @@
 {
-  "id": "language.while-many",
-  "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "while-many.mini",
+  "id": "language.while-missing-condition",
+  "kind": "reject",
+  "source": "017-006-while-missing-condition.mini",
   "features": [
     "control.while"
   ],
@@ -16,9 +15,9 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "empty.stderr"
+        "file": "017-006-while-missing-condition.stderr"
       },
-      "exitCode": 0
+      "exitCode": 1
     }
   ]
 }

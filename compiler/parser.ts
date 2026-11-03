@@ -137,13 +137,14 @@ class Parser {
     return { code: builtin.emit(args.map(arg => arg.code)), kind: builtin.result };
   }
   statement(): string {
+    if (this.token().text === 'while') {
+      this.take();
+      const condition = this.condition();
+      return `while (${condition.code}) ${this.block()}\n`;
+    }
     if (this.token().text === 'if') {
       this.take();
-      this.expect('(');
-      const start = this.token();
-      const condition = this.expression();
-      if (condition.kind !== ValueKind.Boolean && condition.kind !== ValueKind.Unknown) fail(start, 'condition must be boolean');
-      this.expect(')');
+      const condition = this.condition();
       let output = `if (${condition.code}) ${this.block()}`;
       if (this.token().text === 'else') { this.take(); output += ' else ' + this.block(); }
       return output + '\n';
@@ -183,6 +184,14 @@ class Parser {
     this.expect(';');
     this.variables.set(name.text, value.kind);
     return `let ${name.text} = ${value.code};\n`;
+  }
+  condition(): Expression {
+    this.expect('(');
+    const start = this.token();
+    const condition = this.expression();
+    if (condition.kind !== ValueKind.Boolean && condition.kind !== ValueKind.Unknown) fail(start, 'condition must be boolean');
+    this.expect(')');
+    return condition;
   }
   block(): string {
     this.expect('{');

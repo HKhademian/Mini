@@ -1,8 +1,7 @@
 {
-  "id": "language.while-zero",
+  "id": "language.while-many",
   "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "while-zero.mini",
+  "source": "017-002-while-many.mini",
   "features": [
     "control.while"
   ],
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "017-002-while-many.expected.ts"
+      }
     }
   ]
 }

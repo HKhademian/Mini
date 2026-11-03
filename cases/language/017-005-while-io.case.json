@@ -1,8 +1,7 @@
 {
   "id": "language.while-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable.",
-  "source": "while-io.mini",
+  "source": "017-005-while-io.mini",
   "features": [
     "control.while",
     "text.input",
