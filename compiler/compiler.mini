@@ -174,7 +174,7 @@ fn is_two_character_symbol(value) {
 }
 
 /// Return a token map with the fields used by T0.
-fn new_token(kind, text, source, start, end, line, column, context) {
+fn token_new(kind, text, source, start, end, line, column, context) {
     var token = map_new();
     map_set(token, "kind", kind);
     map_set(token, "text", text);
@@ -205,14 +205,14 @@ fn lex_advance(state) {
 /// Return a token at the current lexer position.
 fn lex_start(state) {
     var lines = map_get(state, "lines");
-    var token = new_token("symbol", "", map_get(state, "source"), map_get(state, "position"),
+    var token = token_new("symbol", "", map_get(state, "source"), map_get(state, "position"),
         map_get(state, "position"), map_get(state, "line"), map_get(state, "column"),
         list_get(lines, map_get(state, "line") - 1));
     return token;
 }
 
 /// Report a positioned diagnostic and stop the compiler.
-fn fail(token, message) {
+fn diagnostic_fail(token, message) {
     var context = map_get(token, "context");
     var column = map_get(token, "column");
     var indent = "";
@@ -228,6 +228,11 @@ fn fail(token, message) {
     write_error(map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":" + number_to_text(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
     process_exit(1);
     return 0;
+}
+
+/// Report a lexer/tokenizer diagnostic.
+fn lex_fail(token, message) {
+    return diagnostic_fail(token, message);
 }
 
 /// Scan text into a token list, matching T0 positions and diagnostics.
@@ -292,20 +297,20 @@ fn tokenize(source, source_name) {
                                 && text_get(source, map_get(state, "position")) != "\"") {
                                 var inner = text_get(source, map_get(state, "position"));
                                 if (inner == "\n" || inner == "\r") {
-                                    fail(token, "unterminated text");
+                                    lex_fail(token, "unterminated text");
                                 }
                                 if (inner == "\\") {
                                     var escape = lex_start(state);
                                     lex_advance(state);
                                     if (map_get(state, "position") == text_length(source)
                                         || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0) {
-                                        fail(escape, "unknown text escape");
+                                        lex_fail(escape, "unknown text escape");
                                     }
                                 }
                                 lex_advance(state);
                             }
                             if (map_get(state, "position") == text_length(source)) {
-                                fail(token, "unterminated text");
+                                lex_fail(token, "unterminated text");
                             }
                             lex_advance(state);
                         } else {
@@ -316,7 +321,7 @@ fn tokenize(source, source_name) {
                                 if (text_find("=+-!<>(),;{}", character) >= 0) {
                                     lex_advance(state);
                                 } else {
-                                    fail(token, "unexpected character " + json_to_text(character));
+                                    lex_fail(token, "unexpected character " + json_to_text(character));
                                 }
                             }
                         }
@@ -334,6 +339,11 @@ fn tokenize(source, source_name) {
     var end_tokens = map_get(state, "tokens");
     list_set(end_tokens, list_length(end_tokens), end_token);
     return end_tokens;
+}
+
+/// Report a parser/checker diagnostic.
+fn parser_fail(token, message) {
+    return diagnostic_fail(token, message);
 }
 
 /// Return an expression map with emitted code and kind.
@@ -364,7 +374,7 @@ fn parser_take(parser) {
 /// Consume required punctuation or report a diagnostic.
 fn parser_expect(parser, text) {
     if (map_get(parser_token(parser), "text") != text) {
-        fail(parser_token(parser), "expected " + text);
+        parser_fail(parser_token(parser), "expected " + text);
     }
     parser_take(parser);
     return 0;
@@ -373,7 +383,7 @@ fn parser_expect(parser, text) {
 /// Consume an identifier or report the selected diagnostic.
 fn parser_identifier(parser, message) {
     if (map_get(parser_token(parser), "kind") != "identifier") {
-        fail(parser_token(parser), message);
+        parser_fail(parser_token(parser), message);
     }
     return parser_take(parser);
 }
@@ -386,7 +396,7 @@ fn parser_expression(parser) {
         var right = parser_conjunction(parser);
         if ((map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
             || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown")) {
-            fail(operator, "|| needs booleans");
+            parser_fail(operator, "|| needs booleans");
         }
         left = expression_new("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean");
     }
@@ -401,7 +411,7 @@ fn parser_conjunction(parser) {
         var right = parser_equality(parser);
         if ((map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
             || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown")) {
-            fail(operator, "&& needs booleans");
+            parser_fail(operator, "&& needs booleans");
         }
         left = expression_new("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean");
     }
@@ -420,7 +430,7 @@ fn parser_equality(parser) {
             || left_kind == "list" || right_kind == "list"
             || left_kind == "map" || right_kind == "map"
             || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind)) {
-            fail(operator, "equality needs matching scalar kinds");
+            parser_fail(operator, "equality needs matching scalar kinds");
         }
         var symbol = "===";
         if (map_get(operator, "text") == "!=") {
@@ -440,7 +450,7 @@ fn parser_comparison(parser) {
         var right = parser_additive(parser);
         if ((map_get(left, "kind") != "number" && map_get(left, "kind") != "unknown")
             || (map_get(right, "kind") != "number" && map_get(right, "kind") != "unknown")) {
-            fail(operator, "comparison needs numbers");
+            parser_fail(operator, "comparison needs numbers");
         }
         left = expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean");
     }
@@ -463,12 +473,12 @@ fn parser_additive(parser) {
         if (map_get(operator, "text") == "-") {
             if ((left_kind != "number" && left_kind != "unknown")
                 || (right_kind != "number" && right_kind != "unknown")) {
-                fail(operator, "- needs two numbers");
+                parser_fail(operator, "- needs two numbers");
             }
         } else {
             if (!additive_kind(left_kind) || !additive_kind(right_kind)
                 || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind)) {
-                fail(operator, "+ needs two numbers or two texts");
+                parser_fail(operator, "+ needs two numbers or two texts");
             }
         }
         var result_kind = left_kind;
@@ -490,7 +500,7 @@ fn parser_unary(parser) {
             kind = "number";
         }
         if (map_get(value, "kind") != kind && map_get(value, "kind") != "unknown") {
-            fail(operator, map_get(operator, "text") + " needs a " + kind);
+            parser_fail(operator, map_get(operator, "text") + " needs a " + kind);
         }
         return expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind);
     }
@@ -532,7 +542,7 @@ fn parser_primary(parser) {
     if (map_get(token, "kind") == "identifier" && map_has(map_get(parser, "variables"), map_get(token, "text"))) {
         return expression_new(map_get(token, "text"), map_get(map_get(parser, "variables"), map_get(token, "text")));
     }
-    fail(token, "expected expression");
+    parser_fail(token, "expected expression");
     return expression_new("", "unknown");
 }
 
@@ -559,7 +569,7 @@ fn parser_call(parser, name) {
     var functions = map_get(parser, "functions");
     var has_user = map_has(functions, name_text);
     if (!is_builtin && !has_user) {
-        fail(name, "unknown function " + name_text);
+        parser_fail(name, "unknown function " + name_text);
     }
     parser_expect(parser, "(");
     var args = list_new();
@@ -580,7 +590,7 @@ fn parser_call(parser, name) {
         if (arity == 1) {
             suffix = "";
         }
-        fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
+        parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
     }
     if (!is_builtin) {
         return expression_new(name_text + "(" + argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
@@ -592,11 +602,11 @@ fn parser_call(parser, name) {
         var actual = map_get(list_get(args, position), "kind");
         if (kind == "unknown") {
             if (actual == "void") {
-                fail(name, "expected value argument");
+                parser_fail(name, "expected value argument");
             }
         } else {
             if (actual != "unknown" && actual != kind) {
-                fail(name, "expected " + kind + " argument");
+                parser_fail(name, "expected " + kind + " argument");
             }
         }
         position = position + 1;
@@ -637,11 +647,11 @@ fn parser_statement(parser) {
     if (map_get(parser_token(parser), "text") == "return") {
         var return_token = parser_take(parser);
         if (!map_get(parser, "in_function")) {
-            fail(return_token, "return outside function");
+            parser_fail(return_token, "return outside function");
         }
         var return_value = parser_expression(parser);
         if (map_get(return_value, "kind") == "void") {
-            fail(return_token, "expected a value");
+            parser_fail(return_token, "expected a value");
         }
         parser_expect(parser, ";");
         map_set(map_get(parser, "current"), "result", map_get(return_value, "kind"));
@@ -657,12 +667,12 @@ fn parser_statement(parser) {
         var assignment_name = parser_identifier(parser, "expected binding name");
         var variables = map_get(parser, "variables");
         if (!map_has(variables, map_get(assignment_name, "text"))) {
-            fail(assignment_name, "unknown binding " + map_get(assignment_name, "text"));
+            parser_fail(assignment_name, "unknown binding " + map_get(assignment_name, "text"));
         }
         parser_expect(parser, "=");
         var assignment_value = parser_expression(parser);
         if (map_get(assignment_value, "kind") == "void") {
-            fail(assignment_name, "expected a value");
+            parser_fail(assignment_name, "expected a value");
         }
         parser_expect(parser, ";");
         map_set(variables, map_get(assignment_name, "text"), map_get(assignment_value, "kind"));
@@ -671,12 +681,12 @@ fn parser_statement(parser) {
     parser_expect(parser, "var");
     var declaration_name = parser_identifier(parser, "expected binding name");
     if (map_get(parser_token(parser), "text") != "=") {
-        fail(parser_token(parser), "expected initializer");
+        parser_fail(parser_token(parser), "expected initializer");
     }
     parser_take(parser);
     var declaration_value = parser_expression(parser);
     if (map_get(declaration_value, "kind") == "void") {
-        fail(declaration_name, "expected a value");
+        parser_fail(declaration_name, "expected a value");
     }
     parser_expect(parser, ";");
     map_set(map_get(parser, "variables"), map_get(declaration_name, "text"), map_get(declaration_value, "kind"));
@@ -689,7 +699,7 @@ fn parser_condition(parser) {
     var start = parser_token(parser);
     var condition = parser_expression(parser);
     if (map_get(condition, "kind") != "boolean" && map_get(condition, "kind") != "unknown") {
-        fail(start, "condition must be boolean");
+        parser_fail(start, "condition must be boolean");
     }
     parser_expect(parser, ")");
     return condition;
@@ -719,7 +729,7 @@ fn parser_block(parser) {
 fn parser_function_declaration(parser) {
     var token = parser_take(parser);
     if (map_get(parser, "depth") != 0) {
-        fail(token, "functions must be top-level");
+        parser_fail(token, "functions must be top-level");
     }
     var name = parser_identifier(parser, "expected function name");
     parser_expect(parser, "(");
@@ -746,7 +756,7 @@ fn parser_function_declaration(parser) {
     map_set(parser, "variables", outer);
     map_set(parser, "in_function", false);
     if (!map_get(info, "returned")) {
-        fail(name, "T0 functions require a value return");
+        parser_fail(name, "T0 functions require a value return");
     }
     return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
 }

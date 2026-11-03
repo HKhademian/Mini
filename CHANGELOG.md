@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Refactor compiler helper names: `token_new` instead of `new_token`, and
+  `lex_fail`/`parser_fail` instead of the shared `fail`. No emitted-code
+  behavior change.
+
+- CLI 0.1.0-alpha.6 / Mini distribution 0.1.0-alpha.4: add `mini run SOURCE.mini
+  [ARG]...` through a temporary generated TS module, and mark shebang output
+  executable on supported platforms. Add `mini-run` and tool cases.
 - Build M1 from ordered `compiler/src/*.mini` parts. The build tool is Mini
   source (`tools/build-m1.mini`) with tracked generated
   `tools/build-m1.generated.ts`; `compiler/m1.parts` is the order,
@@ -9,12 +16,6 @@
   rejects stale composition or generated TS. Generated Mini tools use the
   `*.generated.ts` suffix and stay outside the strict TypeScript check. No
   language/module change.
-- CLI 0.1.0-alpha.6 / Mini distribution 0.1.0-alpha.4: add `mini run SOURCE.mini
-  [ARG]...` through a temporary generated TS module, and mark shebang output
-  executable on supported platforms. Add `mini-run` and tool cases.
-- Build M1 from ordered `compiler/src/*.mini` parts with `tools/build-m1.ts`;
-  keep `compiler/compiler.mini` as the canonical concatenated bootstrap source,
-  and make `mini check` reject stale composition. No language/module change.
 - Bootstrap/compiler 0.1.0-alpha.1 / 0.3.0-alpha.11; Mini distribution
   0.1.0-alpha.3: promote the generated T1 compiler from `compiler/compiler.mini`
   as `bootstrap/compiler.ts`. `config/bootstrap.json` and `config/compiler.json`

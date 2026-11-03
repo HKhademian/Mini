@@ -162,7 +162,7 @@ function is_identifier_part(character) {
 function is_two_character_symbol(value) {
     return ((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||"));
 }
-function new_token(kind, text, source, start, end, line, column, context) {
+function token_new(kind, text, source, start, end, line, column, context) {
     let token = ({ __proto__: $mini_map_proto });
     $mini_map_set(token, "kind", kind);
     $mini_map_set(token, "text", text);
@@ -189,10 +189,10 @@ function lex_advance(state) {
 }
 function lex_start(state) {
     let lines = $mini_map_get(state, "lines");
-    let token = new_token("symbol", "", $mini_map_get(state, "source"), $mini_map_get(state, "position"), $mini_map_get(state, "position"), $mini_map_get(state, "line"), $mini_map_get(state, "column"), $mini_list_get(lines, ($mini_map_get(state, "line") - 1)));
+    let token = token_new("symbol", "", $mini_map_get(state, "source"), $mini_map_get(state, "position"), $mini_map_get(state, "position"), $mini_map_get(state, "line"), $mini_map_get(state, "column"), $mini_list_get(lines, ($mini_map_get(state, "line") - 1)));
     return token;
 }
-function fail(token, message) {
+function diagnostic_fail(token, message) {
     let context = $mini_map_get(token, "context");
     let column = $mini_map_get(token, "column");
     let indent = "";
@@ -208,6 +208,9 @@ function fail(token, message) {
     writeSync(2, ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text(column)) + ": ") + message) + "\n") + context) + "\n") + indent) + "^\n"));
     process.exit(1);
     return 0;
+}
+function lex_fail(token, message) {
+    return diagnostic_fail(token, message);
 }
 function tokenize(source, source_name) {
     let state = ({ __proto__: $mini_map_proto });
@@ -262,19 +265,19 @@ function tokenize(source, source_name) {
                             while ((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\""))) {
                                 let inner = $mini_text_get(source, $mini_map_get(state, "position"));
                                 if (((inner === "\n") || (inner === "\r"))) {
-                                    fail(token, "unterminated text");
+                                    lex_fail(token, "unterminated text");
                                 }
                                 if ((inner === "\\")) {
                                     let escape = lex_start(state);
                                     lex_advance(state);
                                     if ((($mini_map_get(state, "position") === (source).length) || ($mini_text_find("\"\\nrt", $mini_text_get(source, $mini_map_get(state, "position"))) < 0))) {
-                                        fail(escape, "unknown text escape");
+                                        lex_fail(escape, "unknown text escape");
                                     }
                                 }
                                 lex_advance(state);
                             }
                             if (($mini_map_get(state, "position") === (source).length)) {
-                                fail(token, "unterminated text");
+                                lex_fail(token, "unterminated text");
                             }
                             lex_advance(state);
                         } else {
@@ -285,7 +288,7 @@ function tokenize(source, source_name) {
                                 if (($mini_text_find("=+-!<>(),;{}", character) >= 0)) {
                                     lex_advance(state);
                                 } else {
-                                    fail(token, ("unexpected character " + $mini_json_to_text(character)));
+                                    lex_fail(token, ("unexpected character " + $mini_json_to_text(character)));
                                 }
                             }
                         }
@@ -303,6 +306,9 @@ function tokenize(source, source_name) {
     let end_tokens = $mini_map_get(state, "tokens");
     $mini_list_set(end_tokens, (end_tokens).length, end_token);
     return end_tokens;
+}
+function parser_fail(token, message) {
+    return diagnostic_fail(token, message);
 }
 function expression_new(code, kind) {
     let expression = ({ __proto__: $mini_map_proto });
@@ -323,14 +329,14 @@ function parser_take(parser) {
 }
 function parser_expect(parser, text) {
     if (($mini_map_get(parser_token(parser), "text") !== text)) {
-        fail(parser_token(parser), ("expected " + text));
+        parser_fail(parser_token(parser), ("expected " + text));
     }
     parser_take(parser);
     return 0;
 }
 function parser_identifier(parser, message) {
     if (($mini_map_get(parser_token(parser), "kind") !== "identifier")) {
-        fail(parser_token(parser), message);
+        parser_fail(parser_token(parser), message);
     }
     return parser_take(parser);
 }
@@ -340,7 +346,7 @@ function parser_expression(parser) {
         let operator = parser_take(parser);
         let right = parser_conjunction(parser);
         if (((($mini_map_get(left, "kind") !== "boolean") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "boolean") && ($mini_map_get(right, "kind") !== "unknown")))) {
-            fail(operator, "|| needs booleans");
+            parser_fail(operator, "|| needs booleans");
         }
         left = expression_new((((("(" + $mini_map_get(left, "code")) + " || ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
@@ -352,7 +358,7 @@ function parser_conjunction(parser) {
         let operator = parser_take(parser);
         let right = parser_equality(parser);
         if (((($mini_map_get(left, "kind") !== "boolean") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "boolean") && ($mini_map_get(right, "kind") !== "unknown")))) {
-            fail(operator, "&& needs booleans");
+            parser_fail(operator, "&& needs booleans");
         }
         left = expression_new((((("(" + $mini_map_get(left, "code")) + " && ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
@@ -366,7 +372,7 @@ function parser_equality(parser) {
         let left_kind = $mini_map_get(left, "kind");
         let right_kind = $mini_map_get(right, "kind");
         if ((((((((left_kind === "void") || (right_kind === "void")) || (left_kind === "list")) || (right_kind === "list")) || (left_kind === "map")) || (right_kind === "map")) || (((left_kind !== "unknown") && (right_kind !== "unknown")) && (left_kind !== right_kind)))) {
-            fail(operator, "equality needs matching scalar kinds");
+            parser_fail(operator, "equality needs matching scalar kinds");
         }
         let symbol = "===";
         if (($mini_map_get(operator, "text") === "!=")) {
@@ -382,7 +388,7 @@ function parser_comparison(parser) {
         let operator = parser_take(parser);
         let right = parser_additive(parser);
         if (((($mini_map_get(left, "kind") !== "number") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "number") && ($mini_map_get(right, "kind") !== "unknown")))) {
-            fail(operator, "comparison needs numbers");
+            parser_fail(operator, "comparison needs numbers");
         }
         left = expression_new((((((("(" + $mini_map_get(left, "code")) + " ") + $mini_map_get(operator, "text")) + " ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
@@ -400,11 +406,11 @@ function parser_additive(parser) {
         let right_kind = $mini_map_get(right, "kind");
         if (($mini_map_get(operator, "text") === "-")) {
             if ((((left_kind !== "number") && (left_kind !== "unknown")) || ((right_kind !== "number") && (right_kind !== "unknown")))) {
-                fail(operator, "- needs two numbers");
+                parser_fail(operator, "- needs two numbers");
             }
         } else {
             if ((((!additive_kind(left_kind)) || (!additive_kind(right_kind))) || (((left_kind !== "unknown") && (right_kind !== "unknown")) && (left_kind !== right_kind)))) {
-                fail(operator, "+ needs two numbers or two texts");
+                parser_fail(operator, "+ needs two numbers or two texts");
             }
         }
         let result_kind = left_kind;
@@ -424,7 +430,7 @@ function parser_unary(parser) {
             kind = "number";
         }
         if ((($mini_map_get(value, "kind") !== kind) && ($mini_map_get(value, "kind") !== "unknown"))) {
-            fail(operator, (($mini_map_get(operator, "text") + " needs a ") + kind));
+            parser_fail(operator, (($mini_map_get(operator, "text") + " needs a ") + kind));
         }
         return expression_new(((("(" + $mini_map_get(operator, "text")) + $mini_map_get(value, "code")) + ")"), kind);
     }
@@ -462,7 +468,7 @@ function parser_primary(parser) {
     if ((($mini_map_get(token, "kind") === "identifier") && $mini_map_has($mini_map_get(parser, "variables"), $mini_map_get(token, "text")))) {
         return expression_new($mini_map_get(token, "text"), $mini_map_get($mini_map_get(parser, "variables"), $mini_map_get(token, "text")));
     }
-    fail(token, "expected expression");
+    parser_fail(token, "expected expression");
     return expression_new("", "unknown");
 }
 function argument_code_list(args) {
@@ -483,7 +489,7 @@ function parser_call(parser, name) {
     let functions = $mini_map_get(parser, "functions");
     let has_user = $mini_map_has(functions, name_text);
     if (((!is_builtin) && (!has_user))) {
-        fail(name, ("unknown function " + name_text));
+        parser_fail(name, ("unknown function " + name_text));
     }
     parser_expect(parser, "(");
     let args = [];
@@ -504,7 +510,7 @@ function parser_call(parser, name) {
         if ((arity === 1)) {
             suffix = "";
         }
-        fail(name, ((("expected " + $mini_number_to_text(arity)) + " argument") + suffix));
+        parser_fail(name, ((("expected " + $mini_number_to_text(arity)) + " argument") + suffix));
     }
     if ((!is_builtin)) {
         return expression_new((((name_text + "(") + argument_codes(args)) + ")"), $mini_map_get($mini_map_get(functions, name_text), "result"));
@@ -516,11 +522,11 @@ function parser_call(parser, name) {
         let actual = $mini_map_get($mini_list_get(args, position), "kind");
         if ((kind === "unknown")) {
             if ((actual === "void")) {
-                fail(name, "expected value argument");
+                parser_fail(name, "expected value argument");
             }
         } else {
             if (((actual !== "unknown") && (actual !== kind))) {
-                fail(name, (("expected " + kind) + " argument"));
+                parser_fail(name, (("expected " + kind) + " argument"));
             }
         }
         position = (position + 1);
@@ -559,11 +565,11 @@ function parser_statement(parser) {
     if (($mini_map_get(parser_token(parser), "text") === "return")) {
         let return_token = parser_take(parser);
         if ((!$mini_map_get(parser, "in_function"))) {
-            fail(return_token, "return outside function");
+            parser_fail(return_token, "return outside function");
         }
         let return_value = parser_expression(parser);
         if (($mini_map_get(return_value, "kind") === "void")) {
-            fail(return_token, "expected a value");
+            parser_fail(return_token, "expected a value");
         }
         parser_expect(parser, ";");
         $mini_map_set($mini_map_get(parser, "current"), "result", $mini_map_get(return_value, "kind"));
@@ -579,12 +585,12 @@ function parser_statement(parser) {
         let assignment_name = parser_identifier(parser, "expected binding name");
         let variables = $mini_map_get(parser, "variables");
         if ((!$mini_map_has(variables, $mini_map_get(assignment_name, "text")))) {
-            fail(assignment_name, ("unknown binding " + $mini_map_get(assignment_name, "text")));
+            parser_fail(assignment_name, ("unknown binding " + $mini_map_get(assignment_name, "text")));
         }
         parser_expect(parser, "=");
         let assignment_value = parser_expression(parser);
         if (($mini_map_get(assignment_value, "kind") === "void")) {
-            fail(assignment_name, "expected a value");
+            parser_fail(assignment_name, "expected a value");
         }
         parser_expect(parser, ";");
         $mini_map_set(variables, $mini_map_get(assignment_name, "text"), $mini_map_get(assignment_value, "kind"));
@@ -593,12 +599,12 @@ function parser_statement(parser) {
     parser_expect(parser, "var");
     let declaration_name = parser_identifier(parser, "expected binding name");
     if (($mini_map_get(parser_token(parser), "text") !== "=")) {
-        fail(parser_token(parser), "expected initializer");
+        parser_fail(parser_token(parser), "expected initializer");
     }
     parser_take(parser);
     let declaration_value = parser_expression(parser);
     if (($mini_map_get(declaration_value, "kind") === "void")) {
-        fail(declaration_name, "expected a value");
+        parser_fail(declaration_name, "expected a value");
     }
     parser_expect(parser, ";");
     $mini_map_set($mini_map_get(parser, "variables"), $mini_map_get(declaration_name, "text"), $mini_map_get(declaration_value, "kind"));
@@ -609,7 +615,7 @@ function parser_condition(parser) {
     let start = parser_token(parser);
     let condition = parser_expression(parser);
     if ((($mini_map_get(condition, "kind") !== "boolean") && ($mini_map_get(condition, "kind") !== "unknown"))) {
-        fail(start, "condition must be boolean");
+        parser_fail(start, "condition must be boolean");
     }
     parser_expect(parser, ")");
     return condition;
@@ -635,7 +641,7 @@ function parser_block(parser) {
 function parser_function_declaration(parser) {
     let token = parser_take(parser);
     if (($mini_map_get(parser, "depth") !== 0)) {
-        fail(token, "functions must be top-level");
+        parser_fail(token, "functions must be top-level");
     }
     let name = parser_identifier(parser, "expected function name");
     parser_expect(parser, "(");
@@ -662,7 +668,7 @@ function parser_function_declaration(parser) {
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "in_function", false);
     if ((!$mini_map_get(info, "returned"))) {
-        fail(name, "T0 functions require a value return");
+        parser_fail(name, "T0 functions require a value return");
     }
     return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_to_text(parameters, ", ")) + ") ") + body) + "\n");
 }

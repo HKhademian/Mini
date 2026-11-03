@@ -1,5 +1,5 @@
 /// Return a token map with the fields used by T0.
-fn new_token(kind, text, source, start, end, line, column, context) {
+fn token_new(kind, text, source, start, end, line, column, context) {
     var token = map_new();
     map_set(token, "kind", kind);
     map_set(token, "text", text);
@@ -30,14 +30,14 @@ fn lex_advance(state) {
 /// Return a token at the current lexer position.
 fn lex_start(state) {
     var lines = map_get(state, "lines");
-    var token = new_token("symbol", "", map_get(state, "source"), map_get(state, "position"),
+    var token = token_new("symbol", "", map_get(state, "source"), map_get(state, "position"),
         map_get(state, "position"), map_get(state, "line"), map_get(state, "column"),
         list_get(lines, map_get(state, "line") - 1));
     return token;
 }
 
 /// Report a positioned diagnostic and stop the compiler.
-fn fail(token, message) {
+fn diagnostic_fail(token, message) {
     var context = map_get(token, "context");
     var column = map_get(token, "column");
     var indent = "";
@@ -53,6 +53,11 @@ fn fail(token, message) {
     write_error(map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":" + number_to_text(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
     process_exit(1);
     return 0;
+}
+
+/// Report a lexer/tokenizer diagnostic.
+fn lex_fail(token, message) {
+    return diagnostic_fail(token, message);
 }
 
 /// Scan text into a token list, matching T0 positions and diagnostics.
@@ -117,20 +122,20 @@ fn tokenize(source, source_name) {
                                 && text_get(source, map_get(state, "position")) != "\"") {
                                 var inner = text_get(source, map_get(state, "position"));
                                 if (inner == "\n" || inner == "\r") {
-                                    fail(token, "unterminated text");
+                                    lex_fail(token, "unterminated text");
                                 }
                                 if (inner == "\\") {
                                     var escape = lex_start(state);
                                     lex_advance(state);
                                     if (map_get(state, "position") == text_length(source)
                                         || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0) {
-                                        fail(escape, "unknown text escape");
+                                        lex_fail(escape, "unknown text escape");
                                     }
                                 }
                                 lex_advance(state);
                             }
                             if (map_get(state, "position") == text_length(source)) {
-                                fail(token, "unterminated text");
+                                lex_fail(token, "unterminated text");
                             }
                             lex_advance(state);
                         } else {
@@ -141,7 +146,7 @@ fn tokenize(source, source_name) {
                                 if (text_find("=+-!<>(),;{}", character) >= 0) {
                                     lex_advance(state);
                                 } else {
-                                    fail(token, "unexpected character " + json_to_text(character));
+                                    lex_fail(token, "unexpected character " + json_to_text(character));
                                 }
                             }
                         }

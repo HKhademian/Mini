@@ -1,4 +1,4 @@
-import { fail } from './lexer.ts';
+import { lexer_fail as parser_fail } from './lexer.ts';
 import { TokenKind, ValueKind, type Token, type Expression, type FunctionInfo } from './types.ts';
 import { builtins } from './builtins.ts';
 
@@ -29,11 +29,11 @@ class Parser {
   token(): Token { return this.tokens[this.position]!; }
   take(): Token { return this.tokens[this.position++]!; }
   expect(text: string): void {
-    if (this.token().text !== text) fail(this.token(), 'expected ' + text);
+    if (this.token().text !== text) parser_fail(this.token(), 'expected ' + text);
     this.take();
   }
   identifier(message = 'expected binding name'): Token {
-    if (this.token().kind !== TokenKind.Identifier) fail(this.token(), message);
+    if (this.token().kind !== TokenKind.Identifier) parser_fail(this.token(), message);
     return this.take();
   }
   expression(): Expression {
@@ -41,7 +41,7 @@ class Parser {
     while (this.token().text === '||') {
       const operator = this.take();
       const right = this.conjunction();
-      if ((left.kind !== ValueKind.Boolean && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Boolean && right.kind !== ValueKind.Unknown)) fail(operator, '|| needs booleans');
+      if ((left.kind !== ValueKind.Boolean && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Boolean && right.kind !== ValueKind.Unknown)) parser_fail(operator, '|| needs booleans');
       left = { code: `(${left.code} || ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
@@ -51,7 +51,7 @@ class Parser {
     while (this.token().text === '&&') {
       const operator = this.take();
       const right = this.equality();
-      if ((left.kind !== ValueKind.Boolean && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Boolean && right.kind !== ValueKind.Unknown)) fail(operator, '&& needs booleans');
+      if ((left.kind !== ValueKind.Boolean && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Boolean && right.kind !== ValueKind.Unknown)) parser_fail(operator, '&& needs booleans');
       left = { code: `(${left.code} && ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
@@ -64,7 +64,7 @@ class Parser {
       if (left.kind === ValueKind.Void || right.kind === ValueKind.Void ||
           left.kind === ValueKind.List || right.kind === ValueKind.List ||
           left.kind === ValueKind.Map || right.kind === ValueKind.Map ||
-          (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
+          (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) parser_fail(operator, 'equality needs matching scalar kinds');
       left = { code: `(${left.code} ${operator.text === '==' ? '===' : '!=='} ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
@@ -74,7 +74,7 @@ class Parser {
     while (['<', '<=', '>', '>='].includes(this.token().text)) {
       const operator = this.take();
       const right = this.additive();
-      if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) fail(operator, 'comparison needs numbers');
+      if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) parser_fail(operator, 'comparison needs numbers');
       left = { code: `(${left.code} ${operator.text} ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
@@ -86,8 +86,8 @@ class Parser {
       const right = this.unary();
       const allowed = (kind: ValueKind) => kind === ValueKind.Number || kind === ValueKind.Text || kind === ValueKind.Unknown;
       if (operator.text === '-') {
-        if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) fail(operator, '- needs two numbers');
-      } else if (!allowed(left.kind) || !allowed(right.kind) || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, '+ needs two numbers or two texts');
+        if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) parser_fail(operator, '- needs two numbers');
+      } else if (!allowed(left.kind) || !allowed(right.kind) || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) parser_fail(operator, '+ needs two numbers or two texts');
       left = { code: `(${left.code} ${operator.text} ${right.code})`, kind: left.kind === ValueKind.Unknown ? right.kind : left.kind };
     }
     return left;
@@ -97,7 +97,7 @@ class Parser {
       const operator = this.take();
       const value = this.unary();
       const kind = operator.text === '-' ? ValueKind.Number : ValueKind.Boolean;
-      if (value.kind !== kind && value.kind !== ValueKind.Unknown) fail(operator, operator.text + ' needs a ' + kind);
+      if (value.kind !== kind && value.kind !== ValueKind.Unknown) parser_fail(operator, operator.text + ' needs a ' + kind);
       return { code: `(${operator.text}${value.code})`, kind };
     }
     return this.primary();
@@ -116,12 +116,12 @@ class Parser {
     if (token.kind === TokenKind.Identifier && this.variables.has(token.text)) {
       return { code: token.text, kind: this.variables.get(token.text)! };
     }
-    fail(token, 'expected expression');
+    parser_fail(token, 'expected expression');
   }
   call(name: Token): Expression {
     const builtin = builtins.get(name.text);
     const user = this.functions.get(name.text);
-    if (!builtin && !user) fail(name, 'unknown function ' + name.text);
+    if (!builtin && !user) parser_fail(name, 'unknown function ' + name.text);
     this.expect('(');
     const args: Expression[] = [];
     if (this.token().text !== ')') {
@@ -131,15 +131,15 @@ class Parser {
     this.expect(')');
     const arity = builtin ? builtin.parameters.length : user!.arity;
     if (args.length !== arity) {
-      fail(name, `expected ${arity} argument${arity === 1 ? '' : 's'}`);
+      parser_fail(name, `expected ${arity} argument${arity === 1 ? '' : 's'}`);
     }
     if (!builtin) return { code: `${name.text}(${args.map(arg => arg.code).join(', ')})`, kind: user!.result };
     for (const [index, kind] of builtin.parameters.entries()) {
       if (kind === ValueKind.Unknown) {
-        if (args[index]!.kind === ValueKind.Void) fail(name, 'expected value argument');
+        if (args[index]!.kind === ValueKind.Void) parser_fail(name, 'expected value argument');
         continue;
       }
-      if (args[index]!.kind !== ValueKind.Unknown && args[index]!.kind !== kind) fail(name, 'expected ' + kind + ' argument');
+      if (args[index]!.kind !== ValueKind.Unknown && args[index]!.kind !== kind) parser_fail(name, 'expected ' + kind + ' argument');
     }
     for (const dependency of builtin.imports) this.imports.add(dependency);
     if (builtin.helper) this.helpers.add(builtin.helper);
@@ -161,9 +161,9 @@ class Parser {
     if (this.token().text === 'fn') return this.functionDeclaration();
     if (this.token().text === 'return') {
       const token = this.take();
-      if (!this.currentFunction) fail(token, 'return outside function');
+      if (!this.currentFunction) parser_fail(token, 'return outside function');
       const value = this.expression();
-      if (value.kind === ValueKind.Void) fail(token, 'expected a value');
+      if (value.kind === ValueKind.Void) parser_fail(token, 'expected a value');
       this.expect(';');
       this.currentFunction.result = value.kind;
       this.currentFunction.returned = true;
@@ -176,20 +176,20 @@ class Parser {
     }
     if (this.token().text !== 'var') {
       const name = this.identifier();
-      if (!this.variables.has(name.text)) fail(name, 'unknown binding ' + name.text);
+      if (!this.variables.has(name.text)) parser_fail(name, 'unknown binding ' + name.text);
       this.expect('=');
       const value = this.expression();
-      if (value.kind === ValueKind.Void) fail(name, 'expected a value');
+      if (value.kind === ValueKind.Void) parser_fail(name, 'expected a value');
       this.expect(';');
       this.variables.set(name.text, value.kind);
       return `${name.text} = ${value.code};\n`;
     }
     this.expect('var');
     const name = this.identifier();
-    if (this.token().text !== '=') fail(this.token(), 'expected initializer');
+    if (this.token().text !== '=') parser_fail(this.token(), 'expected initializer');
     this.take();
     const value = this.expression();
-    if (value.kind === ValueKind.Void) fail(name, 'expected a value');
+    if (value.kind === ValueKind.Void) parser_fail(name, 'expected a value');
     this.expect(';');
     this.variables.set(name.text, value.kind);
     return `let ${name.text} = ${value.code};\n`;
@@ -198,7 +198,7 @@ class Parser {
     this.expect('(');
     const start = this.token();
     const condition = this.expression();
-    if (condition.kind !== ValueKind.Boolean && condition.kind !== ValueKind.Unknown) fail(start, 'condition must be boolean');
+    if (condition.kind !== ValueKind.Boolean && condition.kind !== ValueKind.Unknown) parser_fail(start, 'condition must be boolean');
     this.expect(')');
     return condition;
   }
@@ -217,7 +217,7 @@ class Parser {
   }
   functionDeclaration(): string {
     const token = this.take();
-    if (this.depth !== 0) fail(token, 'functions must be top-level');
+    if (this.depth !== 0) parser_fail(token, 'functions must be top-level');
     const name = this.identifier('expected function name');
     this.expect('(');
     const parameters: string[] = [];
@@ -234,7 +234,7 @@ class Parser {
     const body = this.block();
     this.variables = outer;
     this.currentFunction = undefined;
-    if (!info.returned) fail(name, 'T0 functions require a value return');
+    if (!info.returned) parser_fail(name, 'T0 functions require a value return');
     return `function ${name.text}(${parameters.join(', ')}) ${body}\n`;
   }
   program(): string {

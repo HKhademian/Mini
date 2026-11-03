@@ -11,7 +11,7 @@ export class CompilerDiagnostic extends Error {
   }
 }
 
-export function fail(token: Token, message: string): never {
+export function lexer_fail(token: Token, message: string): never {
   throw new CompilerDiagnostic(token, message);
 }
 
@@ -69,21 +69,21 @@ export function tokenize(text: string, source: string, includeComments = false):
       while (position < text.length && text[position] !== '"') {
         if (text[position] === '\n' || text[position] === '\r') {
           token.end = position;
-          fail(token, 'unterminated text');
+          lexer_fail(token, 'unterminated text');
         }
         if (text[position] === '\\') {
           const escape = start();
           advance();
           if (position === text.length || !escapes.has(text[position]!)) {
             escape.end = Math.min(position + 1, text.length);
-            fail(escape, 'unknown text escape');
+            lexer_fail(escape, 'unknown text escape');
           }
         }
         advance();
       }
       if (position === text.length) {
         token.end = position;
-        fail(token, 'unterminated text');
+        lexer_fail(token, 'unterminated text');
       }
       advance();
     } else if (['==', '!=', '<=', '>=', '&&', '||'].includes(text.slice(position, position + 2))) {
@@ -91,7 +91,7 @@ export function tokenize(text: string, source: string, includeComments = false):
     } else if ('=+-!<>(),;{}'.includes(character)) advance();
     else {
       token.end = token.start + 1;
-      fail(token, 'unexpected character ' + JSON.stringify(character));
+      lexer_fail(token, 'unexpected character ' + JSON.stringify(character));
     }
     token.text = text.slice(token.start, position);
     token.end = position;

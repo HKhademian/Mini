@@ -51,7 +51,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
 - [types.ts](../compiler/types.ts): named token/value kinds, escape tags, and
   TypeScript shapes for tokens, expressions, and function information.
 - [lexer.ts](../compiler/lexer.ts): `tokenize(text, source)` and
-  `fail(token, message)`; two nested helpers, `advance()` and `start()`.
+  `lexer_fail(token, message)`; the parser aliases it as `parser_fail`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
 - [builtins.ts](../compiler/builtins.ts): twenty-six signatures, lowering callbacks,
