@@ -18,7 +18,7 @@ with spaces. Its [case](../cases/language/019-004-text-sample.case.json) combine
 access, functions, loops, and branches, pending compiler support.
 
 [005-file.mini](005-file.mini) copies a text file and prints the copied content.
-Its [case](../cases/language/file-sample.case.json) covers creation, replacement,
+Its [case](../cases/language/021-003-file-sample.case.json) covers creation, replacement,
 and newline preservation, pending compiler support.
 
 [006-list.mini](006-list.mini) passes the argument list to a function and prints

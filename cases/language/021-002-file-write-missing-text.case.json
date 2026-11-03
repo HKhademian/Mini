@@ -1,11 +1,10 @@
 {
   "id": "language.file-write-missing-text",
   "kind": "reject",
-  "source": "file-write-missing-text.mini",
+  "source": "021-002-file-write-missing-text.mini",
   "features": [
     "file.write"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "stdin": {
@@ -15,7 +14,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "file-write-missing-text.stderr"
+        "file": "021-002-file-write-missing-text.stderr"
       },
       "exitCode": 1,
       "name": "default"

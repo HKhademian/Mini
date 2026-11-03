@@ -1,11 +1,10 @@
 {
   "id": "language.file-write",
   "kind": "feature",
-  "source": "file-write.mini",
+  "source": "021-001-file-write.mini",
   "features": [
     "file.write"
   ],
-  "pending": "Compiler and file built-ins unavailable.",
   "cases": [
     {
       "stdin": {
