@@ -1,0 +1,25 @@
+{
+  "id": "language.map-get-functions",
+  "kind": "feature",
+  "source": "035-003-map-get-functions.mini",
+  "features": [
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "mk:k:ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

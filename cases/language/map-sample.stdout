@@ -1,6 +1,8 @@
 empty
 source present
 replacement keeps one key
+replacement.mini
 source
 two keys
 key list is a snapshot
+missing key reads zero

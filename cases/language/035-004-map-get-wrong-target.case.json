@@ -1,0 +1,25 @@
+{
+  "id": "language.map-get-wrong-target",
+  "kind": "feature",
+  "source": "035-004-map-get-wrong-target.mini",
+  "features": [
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "zero"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

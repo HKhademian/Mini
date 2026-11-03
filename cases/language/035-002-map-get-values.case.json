@@ -1,0 +1,25 @@
+{
+  "id": "language.map-get-values",
+  "kind": "feature",
+  "source": "035-002-map-get-values.mini",
+  "features": [
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "replacement"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

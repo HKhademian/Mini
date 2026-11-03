@@ -1,0 +1,18 @@
+fn target() {
+    write("m");
+    var items = map_new();
+    map_set(items, "value", 7);
+    return items;
+}
+fn key() {
+    write("k");
+    return "value";
+}
+if (map_get(target(), key()) != 7) {
+    process_exit(1);
+}
+write(":");
+if (map_get(0, key()) != 0) {
+    process_exit(1);
+}
+write(":ok");

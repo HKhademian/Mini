@@ -49,9 +49,9 @@ publication or self-hosting. Check the registry for later increments:
 
 ```text
 mini-v0.1.2-v0.1.0-alpha.2
-lang-v0.1.2-v0.1.0-alpha.9
-compiler-v0.1.2-v0.1.0-alpha.34
-builtins-v0.1.2-v0.1.0-alpha.18
+lang-v0.1.2-v0.1.0-alpha.10
+compiler-v0.1.2-v0.1.0-alpha.35
+builtins-v0.1.2-v0.1.0-alpha.19
 cli-v0.1.2-v0.1.0-alpha.3
 check-v0.1.2-v0.1.0-alpha.3
 test-v0.1.2-v0.1.0-alpha.2

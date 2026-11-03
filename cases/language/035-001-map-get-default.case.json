@@ -1,0 +1,51 @@
+{
+  "id": "language.map-get-default",
+  "kind": "feature",
+  "source": "035-001-map-get-default.mini",
+  "features": [
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "ordinary-key",
+      "stdin": {
+        "text": "name"
+      },
+      "stdout": {
+        "text": "zero"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "empty-key",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "zero"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "method-key",
+      "stdin": {
+        "text": "get"
+      },
+      "stdout": {
+        "text": "zero"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -283,7 +283,7 @@ var names = map_new();
 
 T0 emits a native `Map` for each call. Other targets can choose their own
 representation. Maps hold unique text keys; membership and assignment follow below.
-Lookup is not implemented yet, and missing-key values remain open. There is no
+Missing-key lookup returns numeric zero, without introducing null. There is no
 `map_empty` alias or record/struct/class syntax.
 
 ## Accepted operation: map membership
@@ -321,9 +321,29 @@ map_set(names, "source", "replacement.mini");
   directly. Stored collections are shared, without implicit cloning.
 - The operation requires all three arguments and produces no result.
 
-T0 emits one small map-setter adapter when used. Membership can observe inserted
-keys now. A compiler host-adapter test inspects stored values and replacements
-until Mini lookup is implemented. Missing-key values remain undecided.
+T0 emits one small map-setter adapter when used. Membership and lookup observe
+inserted keys and stored values; a host-adapter test also checks stored references.
+
+## Accepted operation: map lookup
+
+```text
+var names = map_new();
+map_set(names, "source", "input.mini");
+var source = map_get(names, "source");
+var missing = map_get(names, "missing");
+```
+
+- `map_get(items, key)` returns the stored value, preserving its kind and any
+  collection reference. The caller supplies a text key.
+- If the key is absent or the target is not a map, return numeric `0` without
+  inserting a key or changing the target.
+- Stored `0`, `false`, and empty text remain their actual values. No truthiness
+  conversion occurs. Use `map_has` to distinguish a missing key from stored zero.
+- Both arguments are required and evaluate once, from left to right, including
+  when the target is not a map.
+
+Zero is an ordinary number, not an absence type. No null literal, pointer syntax,
+or null-checking operation is added. Argument omission remains a separate decision.
 
 ## Accepted operation: map length
 

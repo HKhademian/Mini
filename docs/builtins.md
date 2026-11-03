@@ -41,8 +41,11 @@ the map. Empty maps return false; membership does not decide a missing-key value
 
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared
-lists and maps. T0 emits the setter adapter once when used. Lookup remains
-unimplemented; membership can now observe inserted keys.
+lists and maps. T0 emits the setter adapter once when used.
+
+`map_get(items, key)` returns the stored value, or numeric zero for a missing
+key or non-map target, without inserting anything. Stored zero, false, and empty
+text retain their kinds; use `map_has` when presence matters. No null value is added.
 
 `map_length(items)` returns the number of stored keys without changing the map.
 New keys increase it; replacing a value does not. See the

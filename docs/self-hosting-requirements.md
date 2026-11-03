@@ -106,8 +106,8 @@ Records, structs, and classes are outside Mini's intended scope, rather than
 deferred additions. Text-keyed maps can hold named compiler data such as token
 information without dedicated field declarations or construction syntax.
 Lists can now be constructed, grown, and mutated, storing scalars, lists, and
-maps. Empty-map construction, membership, and mutation are available; map lookup
-is not implemented yet. Missing-position and missing-key values remain open.
+maps. Map construction, membership, mutation, lookup, counts, and keys are
+available. Missing map keys return numeric zero; list-gap reads remain open.
 
 Lists and maps can share implementation machinery, but their observable rules
 differ. Lists have positional indices, a sequence length, growth, and indexing

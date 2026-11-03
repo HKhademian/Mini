@@ -102,6 +102,8 @@ of `list_at`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.34`: map_keys(items) returns independent key-list snapshots.
 
+- `0.1.0-alpha.35`: map_get(items, key) reads values, with numeric-zero fallbacks.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

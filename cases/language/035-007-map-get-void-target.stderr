@@ -1,0 +1,3 @@
+035-007-map-get-void-target.mini:1:1: expected value argument
+map_get(write(""), "key");
+^

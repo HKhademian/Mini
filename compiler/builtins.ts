@@ -10,8 +10,15 @@ export type Builtin = {
 
 const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
+const mapGet = '$mini_map_get';
 
 export const builtins = new Map<string, Builtin>([
+  ['map_get', { parameters: [ValueKind.Unknown, ValueKind.Text], result: ValueKind.Unknown,
+    imports: [], helper: `function ${mapGet}(items, key) {
+    if (!(items instanceof Map) || !items.has(key)) return 0;
+    return items.get(key);
+}
+`, emit: args => `${mapGet}(${args.join(', ')})` }],
   ['map_keys', { parameters: [ValueKind.Map], result: ValueKind.List,
     imports: [], emit: args => `[...(${args[0]}).keys()]` }],
   ['map_length', { parameters: [ValueKind.Map], result: ValueKind.Number,

@@ -1,0 +1,24 @@
+var items = map_new();
+var nested = list_new();
+list_set(nested, 0, "nested");
+var child = map_new();
+map_set(items, "zero", 0);
+map_set(items, "false", false);
+map_set(items, "empty", "");
+map_set(items, "number", 7);
+map_set(items, "text", "old");
+map_set(items, "text", "replacement");
+map_set(items, "list", nested);
+map_set(items, "map", child);
+if (map_get(items, "zero") != 0 || map_get(items, "false") != false || map_get(items, "empty") != "") {
+    process_exit(1);
+}
+if (map_get(items, "number") != 7) {
+    process_exit(1);
+}
+list_set(map_get(items, "list"), 0, "shared");
+map_set(map_get(items, "map"), "flag", true);
+if (list_at(nested, 0) != "shared" || map_get(child, "flag") != true) {
+    process_exit(1);
+}
+write(map_get(items, "text"));

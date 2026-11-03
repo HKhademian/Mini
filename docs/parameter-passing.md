@@ -1,9 +1,8 @@
 # Parameter passing proposal
 
 Status: under review, not an accepted language decision. T0 currently emits
-ordinary TypeScript parameters. List/map mutation, empty-map construction, and
-map membership are available; map lookup remains unavailable. The review cases
-stay pending until the passing rule is accepted.
+ordinary TypeScript parameters. List/map mutation and map lookup are available.
+The review cases stay pending until the passing rule is accepted.
 
 ## Proposed rule
 
@@ -39,9 +38,8 @@ var result = change(original);
 ```
 
 The original map's name becomes `"shared"`; `result` is `"local"`. Assigning
-`items` to a new map does not replace `original`. Map lookup in this example is
-not implemented yet; existing keys and text values avoid deciding missing-key
-behavior.
+`items` to a new map does not replace `original`. These operations are available;
+the parameter-rebinding contract itself remains under review.
 
 ## Target-independent representation
 
@@ -94,7 +92,7 @@ physically incomplete call. Supplying more arguments than parameters is a
 separate decision; this investigation does not propose accepting extras or holes
 between supplied arguments.
 
-Two possible defaults have different consequences:
+The earlier investigation compared two possible defaults:
 
 - `0` exists already and needs no new value kind. An omitted numeric counter
   could then behave exactly like an explicit zero. Zero is not empty text, false,
@@ -113,10 +111,10 @@ to built-ins: a missing path or collection operand is not made useful merely by
 substituting zero or null. Arbitrary default expressions and declaration syntax
 are further features, not necessary for one universal default.
 
-Recommendation: retain exact arity for now. Revisit trailing omission only when
-compiler code demonstrates a recurring default, or when a shared absence value
-has been selected for collections. The filling mechanism is small; the semantic
-choice should earn its place. No omitted-argument behavior is accepted here.
+Collection lookup now selects ordinary numeric zero as its fallback; null is not
+introduced. That does not make parameters optional. Retain exact arity for now;
+revisit trailing omission only when compiler code demonstrates a recurring default.
+The filling mechanism is small, but no omitted-argument behavior is accepted here.
 
 ## Review cases
 

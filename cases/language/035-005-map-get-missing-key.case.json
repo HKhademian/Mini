@@ -1,0 +1,25 @@
+{
+  "id": "language.map-get-missing-key",
+  "kind": "reject",
+  "source": "035-005-map-get-missing-key.mini",
+  "features": [
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "035-005-map-get-missing-key.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
