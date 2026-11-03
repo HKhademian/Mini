@@ -6,8 +6,10 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. These operations are accepted, not implemented.
 
-The next proposal is `textLength(text)` and `textAt(text, index)` for scanning
+The next proposal is `text_length(text)` and `text_at(text, index)` for scanning
 ASCII source. Indices are zero-based and in range; scanner code guards access.
+The text family uses `group_operation` names, with lowercase words separated by
+underscores. This naming convention needs no namespace mechanism.
 
 Other candidates, added only when concrete compiler or tool code needs them:
 

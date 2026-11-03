@@ -2,8 +2,8 @@ fn normalize(source) {
     var output = "";
     var position = 0;
     var current = "";
-    while (position < textLength(source)) {
-        current = textAt(source, position);
+    while (position < text_length(source)) {
+        current = text_at(source, position);
         if (current == "\t" || current == "\r" || current == "\n") {
             output = output + " ";
         } else {

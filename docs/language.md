@@ -150,18 +150,22 @@ them only when concrete compiler or tool code needs them.
 
 Scanning needs two more ordinary calls:
 
+Use `group_operation` names for the text family. These are flat identifiers;
+the prefix adds no namespace syntax. A future helper could be `text_slice`;
+it is only a naming example at this step.
+
 ```text
 var source = readAll();
 var position = 0;
-while (position < textLength(source)) {
-    write(textAt(source, position));
+while (position < text_length(source)) {
+    write(text_at(source, position));
     position = position + 1;
 }
 ```
 
-- `textLength(text)` returns the number of characters; empty text has length 0.
-- `textAt(text, index)` returns one character as text, using a zero-based index.
-- The caller supplies an integer index with `0 <= index < textLength(text)`.
+- `text_length(text)` returns the number of characters; empty text has length 0.
+- `text_at(text, index)` returns one character as text, using a zero-based index.
+- The caller supplies an integer index with `0 <= index < text_length(text)`.
   Out-of-range behavior is outside the initial contract; scanners guard access.
 - Start with ASCII text. Unicode indexing is outside the initial scope.
 

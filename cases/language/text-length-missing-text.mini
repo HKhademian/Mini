@@ -1,1 +1,1 @@
-var count = textLength();
+var count = text_length();

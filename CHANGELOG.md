@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Use `text_length`/`text_at` names in the text-access proposal and cases.
 - Accept `readAll`/`write`; propose two text-access primitives with scanner cases.
 - Propose whole-input/text-output primitives with focused I/O and EOF cases.
 - Package checksummed VSIX assets from tagged extension sources and verify releases in CI.
