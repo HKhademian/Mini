@@ -14,6 +14,7 @@ export function formatSource(source: string, name: string): FormatResult {
 export function formatTokens(tokens: Token[]): string {
   const visible = tokens.filter(token => token.kind !== TokenKind.End);
   if (visible.length === 0) return '';
+  const shebang = visible[0]?.kind === TokenKind.Shebang ? visible[0]!.text : '';
   const lines: string[] = [];
   const stashed: Token[] = [];
   let current = '';
@@ -135,7 +136,7 @@ export function formatTokens(tokens: Token[]): string {
   }
 
   for (const [index, token] of tokens.entries()) {
-    if (token.kind === TokenKind.End) continue;
+    if (token.kind === TokenKind.End || token.kind === TokenKind.Shebang) continue;
     if (isComment(token)) {
       if (stashComment(index)) {
         stashed.push(token);
@@ -192,5 +193,6 @@ export function formatTokens(tokens: Token[]): string {
     previousUnary = unary;
   }
   if (current !== '') lines.push(current);
-  return lines.length === 0 ? '' : lines.join('\n') + '\n';
+  const body = lines.length === 0 ? '' : lines.join('\n') + '\n';
+  return shebang === '' ? body : shebang + '\n' + body;
 }

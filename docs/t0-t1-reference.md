@@ -65,7 +65,8 @@ Existing TypeScript imports/exports and file boundaries need no Mini equivalent.
 T0 uses `as const` objects and derived TypeScript types. M1 can use named
 bindings or maps holding the same tag strings.
 
-- Token kinds: `identifier`, `keyword`, `number`, `text`, `symbol`, `eof`.
+- Token kinds: `identifier`, `keyword`, `number`, `text`, `symbol`, `comment`,
+  `shebang`, `eof`.
 - Value kinds: `number`, `text`, `boolean`, `list`, `map`, `void`, `unknown`.
 - Escape tags: quote, backslash, and the letters `n`, `r`, `t`.
 
@@ -224,6 +225,8 @@ Those are already available in Mini.
 
 ## 7. Text, list, and serialization helpers used by T0
 
+- Shebang header: a first-line `shebang` token; generated TypeScript uses a
+  Node shebang.
 - `text.length` and text indexing: `text_length` / `text_get`.
 - Substring search: `text_find`.
 - `slice(start, end)`: the `text_slice` built-in.
@@ -341,7 +344,10 @@ and the adapter blocks in fixed ordered lists rather than add general sorting.
 
 ## 10. Emission rules that affect fixed-point equality
 
-- Begin every output with `"use strict";` and a newline.
+- If the source starts with a shebang, begin output with
+  `#!/usr/bin/env node` and a newline before `"use strict";`. Sources without a
+  shebang keep the existing first line, preserving the fixed point.
+- Otherwise begin every output with `"use strict";` and a newline.
 - Emit the optional fs import, then sorted adapters, then program statements.
 - Imports use comma-space separators and double-quoted `"node:fs"`.
 - Declarations use `let`; functions use `function` with unannotated parameters.

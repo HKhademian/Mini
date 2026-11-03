@@ -35,6 +35,14 @@ test('preserves every token, including comments', () => {
   assert.equal(signature(format(commented)), signature(commented));
 });
 
+test('preserves a first-line shebang', () => {
+  const source = '#!/usr/bin/env -S mini run\nvar value=1;\n';
+  const expected = '#!/usr/bin/env -S mini run\nvar value = 1;\n';
+  assert.equal(format(source), expected);
+  assert.equal(format(format(source)), expected);
+  assert.equal(signature(format(source)), signature(source));
+});
+
 test('empty and whitespace-only input becomes empty', () => {
   assert.equal(format(''), '');
   assert.equal(format(' \n\t\r\n'), '');

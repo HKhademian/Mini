@@ -1,0 +1,26 @@
+{
+  "id": "language.shebang-emission",
+  "kind": "compile",
+  "source": "049-001-shebang.mini",
+  "features": [
+    "shebang"
+  ],
+  "cases": [
+    {
+      "name": "node-shebang",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "049-002-shebang.expected.ts"
+      }
+    }
+  ]
+}

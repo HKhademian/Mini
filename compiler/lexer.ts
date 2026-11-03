@@ -33,6 +33,14 @@ export function tokenize(text: string, source: string, includeComments = false):
     return { kind: TokenKind.Symbol, text: '', source, start: position, end: position,
       line, column, context: lines[line - 1] ?? '' };
   }
+  if (text.startsWith('#!')) {
+    const shebang = start();
+    shebang.kind = TokenKind.Shebang;
+    while (position < text.length && text[position] !== '\r' && text[position] !== '\n') advance();
+    shebang.text = text.slice(shebang.start, position);
+    shebang.end = position;
+    tokens.push(shebang);
+  }
   while (position < text.length) {
     const character = text[position]!;
     if (/[ \t\r\n]/.test(character)) { advance(); continue; }

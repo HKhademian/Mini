@@ -1,0 +1,23 @@
+{
+  "id": "language.shebang-not-first",
+  "kind": "reject",
+  "source": "049-003-shebang-not-first.mini",
+  "features": [
+    "shebang"
+  ],
+  "cases": [
+    {
+      "name": "unexpected-character",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "049-003-shebang-not-first.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

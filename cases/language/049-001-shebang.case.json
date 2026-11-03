@@ -1,0 +1,24 @@
+{
+  "id": "language.shebang",
+  "kind": "feature",
+  "source": "049-001-shebang.mini",
+  "features": [
+    "shebang",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "header",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

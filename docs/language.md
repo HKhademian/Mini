@@ -59,6 +59,30 @@ implemented, and no documentation tags or extraction format are selected.
 
 The [comment sample](../samples/012-comments.mini) demonstrates both forms.
 
+## Accepted form: shebang header
+
+A Mini source file may begin with a shebang line:
+
+```text
+#!/usr/bin/env -S mini run
+write("ok\n");
+```
+
+- Only a `#!` at offset 0 is a shebang. It consumes through CR, LF, or end of
+  file. A `#` anywhere else remains an unexpected character.
+- The tokenizer emits a first-line `shebang` token. Following tokens keep their
+  original line and column numbers, so the first code token is on line 2.
+- The compiler skips the shebang for parsing and emits a Node shebang in the
+  generated TypeScript:
+  ```text
+  #!/usr/bin/env node
+  "use strict";
+  ```
+- The source shebang text is not copied into generated code because Mini and
+  TypeScript use different runners. Source without a shebang is unchanged.
+- The formatter and analysis mode preserve the shebang token. Direct execution
+  of `.mini` files through `mini run` is not implemented yet.
+
 ## Accepted form: bindings and assignment
 
 Use one declaration form:

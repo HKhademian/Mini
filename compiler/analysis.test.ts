@@ -34,6 +34,15 @@ test('the default tokenizer omits comments while the analysis mode includes them
   assert.equal(tokenize(source, 'include.mini', true).some(token => token.kind === TokenKind.Comment), true);
 });
 
+test('a shebang is a first-line token in every tokenizer mode', () => {
+  const source = '#!/usr/bin/env -S mini run\nwrite("x");\n';
+  for (const tokens of [tokenize(source, 'shebang.mini'), tokenize(source, 'shebang.mini', true)]) {
+    assert.equal(tokens[0]?.kind, TokenKind.Shebang);
+    assert.equal(tokens[0]?.text, '#!/usr/bin/env -S mini run');
+    assert.equal(tokens[1]?.line, 2);
+  }
+});
+
 test('parser diagnostics carry half-open source ranges', () => {
   const missing = analyze('var value = 1', 'missing.mini').diagnostics[0]!;
   assert.equal(missing.message, 'expected ;');

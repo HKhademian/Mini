@@ -7,6 +7,9 @@
 - Language server 0.1.0-alpha.2: add hover for functions, variables, and builtins
   with `///` documentation, and prefix-filtered completion for declarations,
   builtins, and keywords. Completion is suppressed in comments and text.
+- Language/compiler 0.3.0-alpha.10: recognize an optional first-line shebang as
+  a `shebang` token, preserve it in tokens/analysis/formatting, and emit a Node
+  shebang before `"use strict";`. Sources without a shebang are unchanged.
 - Language/compiler/builtins 0.3.0-alpha.9: add `json_to_text(value)` for compact
   deterministic JSON with sorted map keys; M1 uses it for JSON string quoting.
 - Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for

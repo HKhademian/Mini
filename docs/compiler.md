@@ -210,6 +210,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.9`: `json_to_text` serializes values as compact deterministic JSON;
   M1 uses it for JSON string quoting while keeping token field order explicit.
 
+- `0.3.0-alpha.10`: recognize an optional first-line shebang as a `shebang`
+  token; generated TypeScript begins with a Node shebang.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

@@ -240,6 +240,19 @@ fn tokenize(source, source_name) {
     map_set(state, "position", 0);
     map_set(state, "line", 1);
     map_set(state, "column", 1);
+    if (text_length(source) >= 2 && text_get(source, 0) == "#" && text_get(source, 1) == "!") {
+        var shebang_token = lex_start(state);
+        map_set(shebang_token, "kind", "shebang");
+        while (map_get(state, "position") < text_length(source)
+            && text_get(source, map_get(state, "position")) != "\r"
+            && text_get(source, map_get(state, "position")) != "\n") {
+            lex_advance(state);
+        }
+        map_set(shebang_token, "text", text_slice(source, map_get(shebang_token, "start"), map_get(state, "position")));
+        map_set(shebang_token, "end", map_get(state, "position"));
+        var initial_tokens = map_get(state, "tokens");
+        list_set(initial_tokens, list_length(initial_tokens), shebang_token);
+    }
     while (map_get(state, "position") < text_length(source)) {
         var character = text_get(source, map_get(state, "position"));
         if (text_find(" \t\r\n", character) >= 0) {
@@ -803,6 +816,11 @@ fn helper_blocks(helpers) {
 
 /// Parse the token list and return the complete TypeScript program.
 fn parser_program(parser) {
+    var shebang = "";
+    if (map_get(parser_token(parser), "kind") == "shebang") {
+        parser_take(parser);
+        shebang = "#!/usr/bin/env node\n";
+    }
     var output = "";
     while (map_get(parser_token(parser), "kind") != "eof") {
         output = output + parser_statement(parser);
@@ -812,7 +830,7 @@ fn parser_program(parser) {
     if (list_length(map_keys(imports)) > 0) {
         import_text = "import { " + import_names(imports) + " } from \"node:fs\";\n";
     }
-    return "\"use strict\";\n" + import_text + helper_blocks(map_get(parser, "helpers")) + output;
+    return shebang + "\"use strict\";\n" + import_text + helper_blocks(map_get(parser, "helpers")) + output;
 }
 
 /// Return a parser state with pre-registered top-level function signatures.

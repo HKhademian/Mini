@@ -238,10 +238,12 @@ class Parser {
     return `function ${name.text}(${parameters.join(', ')}) ${body}\n`;
   }
   program(): string {
+    let shebang = '';
+    if (this.token().kind === TokenKind.Shebang) shebang = this.take().text;
     let output = '';
     while (this.token().kind !== TokenKind.End) output += this.statement();
     const imports = this.imports.size ? `import { ${[...this.imports].sort().join(', ')} } from "node:fs";\n` : '';
-    return '"use strict";\n' + imports + [...this.helpers].sort().join('') + output;
+    return (shebang === '' ? '' : '#!/usr/bin/env node\n') + '"use strict";\n' + imports + [...this.helpers].sort().join('') + output;
   }
 }
 

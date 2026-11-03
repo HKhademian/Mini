@@ -1,6 +1,6 @@
 export const TokenKind = {
   Identifier: 'identifier', Keyword: 'keyword', Number: 'number',
-  Text: 'text', Symbol: 'symbol', Comment: 'comment', End: 'eof',
+  Text: 'text', Symbol: 'symbol', Comment: 'comment', Shebang: 'shebang', End: 'eof',
 } as const;
 export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
