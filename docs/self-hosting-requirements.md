@@ -97,10 +97,10 @@ decisions; they must not remain in handwritten TypeScript helpers.
    all three are runnable and byte-identical.
 4. **Compiler performance.** Measured in the [M1/T1 evidence](m1-performance-results.md).
    T1 emits identical bytes and passes the complete active case corpus. Its
-   self-build wall time is within a few percent with about 5% higher RSS, while
-   large synthetic sources compile about 1.6–1.7x slower. Investigate those
-   compile-time regressions before retiring T0; byte equality alone does not
-   establish a useful replacement.
+   self-build wall time is slightly below T0 with about 2% higher RSS, while
+   large synthetic sources compile about 1.43x slower. Investigate the remaining
+   large-source gap before retiring T0; byte equality alone does not establish a
+   useful replacement.
 5. **Bootstrap promotion.** Ship the matching Mini source and generated
    `bootstrap/compiler.ts`; assign the bootstrap version and configure the
    active compiler/source identities. Update affected check/release expectations,
