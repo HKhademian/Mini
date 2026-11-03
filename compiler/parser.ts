@@ -37,12 +37,14 @@ class Parser {
   }
   expression(): Expression {
     let left = this.primary();
-    while (this.token().text === '+') {
+    while (this.token().text === '+' || this.token().text === '-') {
       const operator = this.take();
       const right = this.primary();
       const allowed = (kind: ValueKind) => kind === ValueKind.Number || kind === ValueKind.Text || kind === ValueKind.Unknown;
-      if (!allowed(left.kind) || !allowed(right.kind) || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, '+ needs two numbers or two texts');
-      left = { code: `(${left.code} + ${right.code})`, kind: left.kind === ValueKind.Unknown ? right.kind : left.kind };
+      if (operator.text === '-') {
+        if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) fail(operator, '- needs two numbers');
+      } else if (!allowed(left.kind) || !allowed(right.kind) || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, '+ needs two numbers or two texts');
+      left = { code: `(${left.code} ${operator.text} ${right.code})`, kind: left.kind === ValueKind.Unknown ? right.kind : left.kind };
     }
     return left;
   }

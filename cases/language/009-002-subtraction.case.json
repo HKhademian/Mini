@@ -1,0 +1,14 @@
+{
+  "id": "language.subtraction",
+  "kind": "compile",
+  "source": "009-002-subtraction.mini",
+  "features": ["expressions.subtract"],
+  "cases": [{
+    "name": "default",
+    "stdin": { "file": "empty.stdin" },
+    "stdout": { "file": "empty.stdout" },
+    "stderr": { "file": "empty.stderr" },
+    "exitCode": 0,
+    "artifact": { "file": "009-002-subtraction.expected.ts" }
+  }]
+}

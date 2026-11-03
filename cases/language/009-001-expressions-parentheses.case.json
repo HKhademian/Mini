@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-parentheses",
   "kind": "compile",
-  "source": "expressions-parentheses.mini",
+  "source": "009-001-expressions-parentheses.mini",
   "features": [
     "expressions.grouping"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "009-001-expressions-parentheses.expected.ts"
+      }
     }
   ]
 }

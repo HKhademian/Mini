@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.9: numeric subtraction.
 - T0 alpha.8: parenthesized expressions.
 - T0 alpha.7: named functions, positional calls, and value returns.
 - T0 alpha.6: preserve the five supported text escapes directly in emitted TS.
