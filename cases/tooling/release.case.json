@@ -156,7 +156,7 @@
       "name": "release-t0-preview",
       "args": [
         "dist/release",
-        "compiler-v0.3.0-v0.3.0-alpha.1"
+        "compiler-v0.3.0-v0.3.0-alpha.9"
       ],
       "stdin": {
         "text": ""
@@ -170,12 +170,12 @@
       "exitCode": 0,
       "workspace": "clean",
       "tag": {
-        "name": "compiler-v0.3.0-v0.3.0-alpha.1",
+        "name": "compiler-v0.3.0-v0.3.0-alpha.9",
         "annotated": true
       },
       "files": [
         "dist/release/manifest.json",
-        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.1.tar.gz",
+        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.9.tar.gz",
         "dist/release/SHA256SUMS"
       ]
     },
