@@ -116,6 +116,17 @@ class Parser {
     return { code: builtin.emit(args.map(arg => arg.code)), kind: builtin.result };
   }
   statement(): string {
+    if (this.token().text === 'if') {
+      this.take();
+      this.expect('(');
+      const start = this.token();
+      const condition = this.expression();
+      if (condition.kind !== ValueKind.Boolean && condition.kind !== ValueKind.Unknown) fail(start, 'condition must be boolean');
+      this.expect(')');
+      let output = `if (${condition.code}) ${this.block()}`;
+      if (this.token().text === 'else') { this.take(); output += ' else ' + this.block(); }
+      return output + '\n';
+    }
     if (this.token().text === 'fn') return this.functionDeclaration();
     if (this.token().text === 'return') {
       const token = this.take();

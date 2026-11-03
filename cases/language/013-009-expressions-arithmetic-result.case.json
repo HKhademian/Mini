@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-arithmetic-result",
   "kind": "feature",
-  "source": "expressions-arithmetic-result.mini",
+  "source": "013-009-expressions-arithmetic-result.mini",
   "features": [
     "expressions.arithmetic"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "grouping",

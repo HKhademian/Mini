@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-nonboolean-condition",
   "kind": "reject",
-  "source": "expressions-nonboolean-condition.mini",
+  "source": "013-007-expressions-nonboolean-condition.mini",
   "features": [
     "expressions.boolean"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-nonboolean-condition-default.stderr"
+        "file": "013-007-expressions-nonboolean-condition.stderr"
       },
       "exitCode": 1
     }

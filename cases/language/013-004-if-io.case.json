@@ -1,8 +1,7 @@
 {
   "id": "language.if-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable.",
-  "source": "if-io.mini",
+  "source": "013-004-if-io.mini",
   "features": [
     "control.if",
     "text.input",

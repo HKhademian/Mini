@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-comparisons",
   "kind": "feature",
-  "source": "expressions-comparisons.mini",
+  "source": "013-008-expressions-comparisons.mini",
   "features": [
     "expressions.comparison"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "boundaries",

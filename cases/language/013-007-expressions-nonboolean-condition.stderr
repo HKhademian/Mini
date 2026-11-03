@@ -1,0 +1,3 @@
+013-007-expressions-nonboolean-condition.mini:1:5: condition must be boolean
+if (1) {
+    ^

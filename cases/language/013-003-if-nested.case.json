@@ -1,8 +1,7 @@
 {
-  "id": "language.if-missing-braces",
-  "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "if-missing-braces.mini",
+  "id": "language.if-nested",
+  "kind": "compile",
+  "source": "013-003-if-nested.mini",
   "features": [
     "control.if"
   ],
@@ -16,9 +15,12 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "if-missing-braces.stderr"
+        "file": "empty.stderr"
       },
-      "exitCode": 1
+      "exitCode": 0,
+      "artifact": {
+        "file": "013-003-if-nested.expected.ts"
+      }
     }
   ]
 }

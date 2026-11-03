@@ -1,8 +1,7 @@
 {
-  "id": "language.if-no-else",
-  "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "if-no-else.mini",
+  "id": "language.if-missing-braces",
+  "kind": "reject",
+  "source": "013-006-if-missing-braces.mini",
   "features": [
     "control.if"
   ],
@@ -16,9 +15,9 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "empty.stderr"
+        "file": "013-006-if-missing-braces.stderr"
       },
-      "exitCode": 0
+      "exitCode": 1
     }
   ]
 }

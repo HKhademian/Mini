@@ -1,0 +1,9 @@
+"use strict";
+let position = 0;
+if ((position === 0)) {
+    if ((position < 1)) {
+        position = 1;
+    } else {
+        position = 2;
+    }
+}

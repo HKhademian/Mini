@@ -1,8 +1,7 @@
 {
-  "id": "language.if-missing-parentheses",
-  "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "if-missing-parentheses.mini",
+  "id": "language.if-no-else",
+  "kind": "compile",
+  "source": "013-001-if-no-else.mini",
   "features": [
     "control.if"
   ],
@@ -16,9 +15,12 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "if-missing-parentheses.stderr"
+        "file": "empty.stderr"
       },
-      "exitCode": 1
+      "exitCode": 0,
+      "artifact": {
+        "file": "013-001-if-no-else.expected.ts"
+      }
     }
   ]
 }
