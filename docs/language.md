@@ -1,8 +1,8 @@
 # Mini language draft
 
-Status: binding, function, control-flow, expression, text I/O, and text access accepted.
-File I/O proposed. Nothing implemented yet. Typing and other open rules
-remain undecided.
+Status: bindings, functions, control flow, expressions, text, files, and read-only
+text-list access accepted. No compiler is implemented. Typing and other open
+rules remain undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -172,7 +172,7 @@ while (position < text_length(source)) {
 These primitives let Mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
 
-## Next proposal: text files
+## Accepted operations: text files
 
 The compiler needs to read source and write its generated script. Use two
 built-ins with ordinary call syntax:
@@ -189,8 +189,39 @@ file_write("output.txt", source);
 - Start with readable regular files and writable destinations whose parent
   directories exist. No Mini filesystem error model is introduced at this step.
 
-Process arguments and termination remain for a later review. These operations
-provide file access; parsing and emission stay in Mini compiler code.
+These operations provide file access; parsing and emission stay in Mini
+compiler code.
+
+## Accepted operations: text lists and process arguments
+
+Use shared list operations for a text list returned by the host:
+
+```text
+var args = process_args();
+var position = 0;
+while (position < list_length(args)) {
+    write(list_at(args, position));
+    position = position + 1;
+}
+```
+
+- `process_args()` returns a list of program arguments, excluding Node and
+  the script path. It is a primitive built-in.
+- `list_length(items)` returns the number of elements; an empty list has length 0.
+- `list_at(items, index)` returns one element, using a zero-based index.
+  The caller supplies an integer with `0 <= index < list_length(items)`.
+- Empty arguments and spaces are preserved. Flag-like text is ordinary text;
+  these primitives do not parse options.
+
+Start with read-only access to lists of text. Lists can be held in bindings and
+passed to functions. Construction, mutation, and broader element-type
+rules remain open. Equality keeps its existing scalar contract. The list
+operations are built-ins that can serve future list-producing APIs too.
+
+For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
+three elements: `compile`, `source.mini`, and `result.ts`, in that order.
+The compiler can combine list access with file I/O to implement its selected
+command interface. Diagnostics and termination follow in a later review.
 
 Pending single-construct, rejection, and combination cases live under
 [cases/language](../cases/language/). Mini typing and general no-result function

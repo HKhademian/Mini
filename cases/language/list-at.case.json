@@ -1,0 +1,46 @@
+{
+  "id": "language.list-at",
+  "kind": "feature",
+  "source": "list-at.mini",
+  "features": [
+    "list.at",
+    "list.length",
+    "process.args"
+  ],
+  "pending": "Compiler and list/process built-ins unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "list-at-single.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "single",
+      "args": [
+        "mini"
+      ]
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "list-at-values.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "values",
+      "args": [
+        "a b",
+        "--out"
+      ]
+    }
+  ]
+}

@@ -5,7 +5,7 @@
   "features": [
     "file.read"
   ],
-  "pending": "File I/O proposed; compiler unavailable.",
+  "pending": "Compiler and file built-ins unavailable.",
   "cases": [
     {
       "stdin": {

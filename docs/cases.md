@@ -110,9 +110,9 @@ exact bytes when implementing that compiler step. Remove `pending` only when
 the construct and its dependencies work; run the cases and preserve the
 bootstrap gate. A self-build alone does not establish all feature behavior.
 
-I/O and text-access cases use accepted contracts. File cases use proposed
-`file_read`/`file_write` contracts. All remain pending compiler support; proposal
-approval does not count as an execution pass.
+Language cases remain pending until compiler support. Their pending reasons
+identify proposal dependencies. Approval alone does not count as an execution
+pass.
 
 Use `samples/` for small teaching programs and `examples/` for complete useful
 programs, creating those directories only when needed. Give each a stable

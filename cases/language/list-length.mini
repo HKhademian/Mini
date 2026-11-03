@@ -1,0 +1,10 @@
+var args = process_args();
+if (list_length(args) == 0) {
+    write("none");
+} else {
+    if (list_length(args) == 2) {
+        write("pair");
+    } else {
+        write("other");
+    }
+}

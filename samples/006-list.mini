@@ -1,0 +1,14 @@
+fn join(items) {
+    var output = "";
+    var position = 0;
+    while (position < list_length(items)) {
+        if (position > 0) {
+            output = output + "|";
+        }
+        output = output + list_at(items, position);
+        position = position + 1;
+    }
+    return output;
+}
+var args = process_args();
+write(join(args));

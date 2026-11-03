@@ -1,0 +1,68 @@
+{
+  "id": "language.list-sample",
+  "kind": "sample",
+  "source": "../../samples/006-list.mini",
+  "features": [
+    "list.length",
+    "list.at",
+    "process.args",
+    "bindings",
+    "functions",
+    "control.while",
+    "control.if",
+    "text.output"
+  ],
+  "pending": "Compiler and list/process built-ins unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "none",
+      "args": []
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "list-command.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "command",
+      "args": [
+        "compile",
+        "input.mini",
+        "output.ts"
+      ]
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "list-values.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "values",
+      "args": [
+        "",
+        "a b",
+        "--flag"
+      ]
+    }
+  ]
+}

@@ -19,4 +19,9 @@ access, functions, loops, and branches, pending compiler support.
 
 [005-file.mini](005-file.mini) copies a text file and prints the copied content.
 Its [case](../cases/language/file-sample.case.json) covers creation, replacement,
-and newline preservation, pending file-I/O approval and compiler support.
+and newline preservation, pending compiler support.
+
+[006-list.mini](006-list.mini) passes the argument list to a function and prints
+its elements in order, separated by `|`. Its
+[case](../cases/language/list-sample.case.json) covers no arguments, ordinary
+values, and empty/space-containing values, pending compiler support.

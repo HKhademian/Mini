@@ -5,7 +5,7 @@
   "features": [
     "file.write"
   ],
-  "pending": "File I/O and diagnostic proposed; compiler unavailable.",
+  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "stdin": {

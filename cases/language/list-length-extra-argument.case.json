@@ -1,0 +1,24 @@
+{
+  "id": "language.list-length-extra-argument",
+  "kind": "reject",
+  "source": "list-length-extra-argument.mini",
+  "features": [
+    "list.length"
+  ],
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "list-length-extra-argument.stderr"
+      },
+      "exitCode": 1,
+      "name": "default"
+    }
+  ]
+}

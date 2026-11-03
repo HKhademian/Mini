@@ -1,0 +1,59 @@
+{
+  "id": "language.list-files",
+  "kind": "feature",
+  "source": "list-files.mini",
+  "features": [
+    "list.length",
+    "list.at",
+    "process.args",
+    "file.read",
+    "file.write",
+    "control.if",
+    "expressions.boolean"
+  ],
+  "pending": "Compiler and list/process built-ins unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "copy",
+      "args": [
+        "copy",
+        "input.txt",
+        "output copy.txt"
+      ],
+      "inputFiles": {
+        "input.txt": {
+          "file": "binding-word.stdin"
+        }
+      },
+      "outputFiles": {
+        "output copy.txt": {
+          "file": "io-word.stdout"
+        }
+      }
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "list-files-usage.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "usage",
+      "args": []
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "language.process-args-extra-argument",
+  "kind": "reject",
+  "source": "process-args-extra-argument.mini",
+  "features": [
+    "process.args"
+  ],
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "process-args-extra-argument.stderr"
+      },
+      "exitCode": 1,
+      "name": "default"
+    }
+  ]
+}

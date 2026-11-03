@@ -71,7 +71,10 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
   for (const value of ['true', 'false']) {
     assert.ok(scopes(value, value).includes('constant.language.mini'));
   }
-  for (const name of ['readAll', 'write', 'text_length', 'text_at', 'file_read', 'file_write']) {
+  for (const name of [
+    'readAll', 'write', 'text_length', 'text_at',
+    'file_read', 'file_write', 'process_args', 'list_length', 'list_at',
+  ]) {
     assert.ok(scopes(`${name}();`, name).includes('entity.name.function.call.mini'));
   }
 });

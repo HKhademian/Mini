@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Accept file I/O, shared text-list operations, and process arguments.
 - Accept text-access built-ins; distinguish primitives from Mini library helpers.
 - Propose text-file operations with isolated input/output file cases.
 - Use `text_length`/`text_at` names in the text-access proposal and cases.

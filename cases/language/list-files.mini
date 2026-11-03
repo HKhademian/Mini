@@ -1,0 +1,6 @@
+var args = process_args();
+if (list_length(args) == 3 && list_at(args, 0) == "copy") {
+    file_write(list_at(args, 2), file_read(list_at(args, 1)));
+} else {
+    write("usage: copy INPUT OUTPUT\n");
+}

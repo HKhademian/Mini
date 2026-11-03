@@ -16,16 +16,20 @@ ordinary Mini function built from them and a loop, under `std/`. That helper
 remains illustrative. Prefixes do not decide whether an operation is built-in
 or library code; both use ordinary call syntax.
 
-The next proposal is `file_read(path)` and `file_write(path, text)`: whole-file
-UTF-8 input and exact replacement output for the compiler's file interface.
+The accepted built-ins `file_read(path)` and `file_write(path, text)` provide
+whole-file UTF-8 input and exact replacement output for the compiler's file interface.
 See [the draft](language.md) for the initial success contract.
+
+The accepted built-in `process_args()` returns a text list for the generated
+compiler's command interface. Shared built-ins `list_length(items)` and
+`list_at(items, index)` expose the elements. This starts with read-only access;
+list construction, mutation, and broader element types remain open.
 
 Other candidates, added only when concrete compiler or tool code needs them:
 
 - Input: a line and a number; candidate names `readLine`, `readNumber`.
 - Output: a line and diagnostic text; candidate names `writeLine`, `writeError`.
 - Process termination: an explicit status; candidate name `exit`.
-- Process arguments for the compiler's file interface.
 
 These candidates are not selected APIs. Their signatures, EOF,
 number parsing, newline behavior, and failure behavior remain to be defined.
