@@ -1,6 +1,10 @@
 # Mini language draft
 
-Status: proposals for review. No grammar is accepted or implemented yet.
+Status: binding and function forms accepted; control flow proposed. Nothing
+implemented yet. Typing and other open rules remain undecided.
+
+After approval, record the decision and present the next small proposal in an
+atomic commit. Approval covers the presented form, not its open questions.
 
 ## Compiler workload
 
@@ -13,7 +17,7 @@ them.
 Review constructs against that workload. A construct should simplify real
 compiler code without adding disproportionate implementation or migration cost.
 
-## First proposal: bindings and assignment
+## Accepted form: bindings and assignment
 
 Use one declaration form:
 
@@ -39,7 +43,7 @@ These statements can map directly to readable TypeScript declarations and
 assignments. Mini's typing, scope, and declaration-order rules remain open;
 the TypeScript bootstrap being strongly typed does not decide them.
 
-## Next proposal: functions and calls
+## Accepted form: functions and calls
 
 Use named functions with positional parameters and brace-delimited bodies:
 
@@ -63,6 +67,31 @@ Parameter and result typing, scope, declaration order, and functions without
 a returned value remain open. The example illustrates the form; text operations
 will be reviewed with expressions.
 
-Review before implementation. Control flow, expressions, and primitive host
-operations follow as separate small reviews. Examples here are proposals,
-not executable verification cases.
+## Next proposal: conditionals and loops
+
+Use `if` with an optional `else`, and `while` for repetition:
+
+```text
+if (token == ";") {
+    output = output + token;
+} else {
+    output = output + " ";
+}
+
+while (position < limit) {
+    position = position + 1;
+}
+```
+
+- Conditions use parentheses; bodies always use braces.
+- `if` runs one branch according to its condition.
+- `while` checks its condition before every iteration, including the first.
+- No semicolon follows a closing block brace.
+
+These forms cover parser decisions and scanner loops and map directly to
+TypeScript. Comparison operators and condition types will be reviewed with
+expressions. No additional loop forms or loop-control statements are proposed
+at this step.
+
+Expressions and primitive host operations follow as separate small reviews.
+Examples illustrate syntax; they are not executable verification cases.
