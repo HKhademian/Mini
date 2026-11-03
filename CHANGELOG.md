@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.18 / builtins alpha.3: `text_length`.
 - T0 alpha.17: braced `while` loops.
 - T0 alpha.16: short-circuit boolean disjunction.
 - T0 alpha.15: short-circuit boolean conjunction.

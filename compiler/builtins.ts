@@ -8,6 +8,8 @@ export type Builtin = {
 };
 
 export const builtins = new Map<string, Builtin>([
+  ['text_length', { parameters: [ValueKind.Text], result: ValueKind.Number,
+    imports: [], emit: args => `(${args[0]}).length` }],
   ['readAll', { parameters: [], result: ValueKind.Text,
     imports: ['readFileSync'], emit: () => 'readFileSync(0, "utf8")' }],
   ['write', { parameters: [ValueKind.Text], result: ValueKind.Void,

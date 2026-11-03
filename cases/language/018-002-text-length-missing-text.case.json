@@ -1,11 +1,10 @@
 {
   "id": "language.text-length-missing-text",
   "kind": "reject",
-  "source": "text-length-missing-text.mini",
+  "source": "018-002-text-length-missing-text.mini",
   "features": [
     "text.length"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "text-length-missing-text.stderr"
+        "file": "018-002-text-length-missing-text.stderr"
       },
       "exitCode": 1
     }

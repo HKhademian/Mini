@@ -1,11 +1,10 @@
 {
   "id": "language.text-length",
   "kind": "feature",
-  "source": "text-length.mini",
+  "source": "018-001-text-length.mini",
   "features": [
     "text.length"
   ],
-  "pending": "Compiler and text built-ins unavailable.",
   "cases": [
     {
       "name": "empty",
