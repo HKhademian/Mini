@@ -1,0 +1,53 @@
+{
+  "id": "language.map-keys",
+  "kind": "feature",
+  "source": "034-001-map-keys.mini",
+  "features": [
+    "map.keys",
+    "map.new",
+    "map.set",
+    "list.at",
+    "list.length"
+  ],
+  "cases": [
+    {
+      "name": "ordinary-key",
+      "stdin": {
+        "text": "name"
+      },
+      "stdout": {
+        "text": "keys"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "empty-key",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "keys"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "method-key",
+      "stdin": {
+        "text": "keys"
+      },
+      "stdout": {
+        "text": "keys"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

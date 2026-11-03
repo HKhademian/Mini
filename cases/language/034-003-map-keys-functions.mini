@@ -1,0 +1,8 @@
+fn make_map() {
+    write("m");
+    var items = map_new();
+    map_set(items, "only", 1);
+    return items;
+}
+var keys = map_keys(make_map());
+write(list_at(keys, 0));

@@ -283,8 +283,8 @@ var names = map_new();
 
 T0 emits a native `Map` for each call. Other targets can choose their own
 representation. Maps hold unique text keys; membership and assignment follow below.
-Lookup and key enumeration are not implemented yet. Missing-key values
-remain open. There is no `map_empty` alias or record/struct/class syntax.
+Lookup is not implemented yet, and missing-key values remain open. There is no
+`map_empty` alias or record/struct/class syntax.
 
 ## Accepted operation: map membership
 
@@ -341,7 +341,27 @@ var count = map_length(names);
   not change the map.
 
 The [map sample](../samples/010-map.mini) combines construction, membership,
-insertion, replacement, and length with observable output.
+insertion, replacement, length, and key snapshots with observable output.
+
+## Accepted operation: map keys
+
+```text
+var names = map_new();
+map_set(names, "source", "input.mini");
+var keys = map_keys(names);
+```
+
+- `map_keys(items)` returns a fresh list containing each stored text key once.
+  An empty map returns an empty list.
+- The caller supplies one map argument. It evaluates once, and the query does
+  not change the map.
+- The result is a snapshot. Later map insertions do not update it; changing the
+  returned list does not change the map or another result from `map_keys`.
+- Enumeration order is unspecified. Do not rely on it for deterministic compiler
+  output; maintain an explicit ordered list when order matters.
+
+T0 materializes native map keys into a list. Tests check membership and uniqueness
+without depending on insertion order. No missing-key value is needed for enumeration.
 
 ## Accepted operation: process termination
 

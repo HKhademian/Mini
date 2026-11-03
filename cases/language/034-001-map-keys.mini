@@ -1,0 +1,29 @@
+var expected = readAll();
+var items = map_new();
+if (list_length(map_keys(items)) != 0) {
+    process_exit(1);
+}
+map_set(items, expected, 0);
+map_set(items, expected + "!", false);
+map_set(items, expected, 7);
+var keys = map_keys(items);
+var position = 0;
+var found_first = false;
+var found_second = false;
+while (position < list_length(keys)) {
+    var key = list_at(keys, position);
+    if (!map_has(items, key)) {
+        process_exit(1);
+    }
+    if (key == expected) {
+        found_first = true;
+    }
+    if (key == expected + "!") {
+        found_second = true;
+    }
+    position = position + 1;
+}
+if (list_length(keys) != 2 || !found_first || !found_second || map_length(items) != 2) {
+    process_exit(1);
+}
+write("keys");

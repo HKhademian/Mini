@@ -12,6 +12,8 @@ const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
 
 export const builtins = new Map<string, Builtin>([
+  ['map_keys', { parameters: [ValueKind.Map], result: ValueKind.List,
+    imports: [], emit: args => `[...(${args[0]}).keys()]` }],
   ['map_length', { parameters: [ValueKind.Map], result: ValueKind.Number,
     imports: [], emit: args => `(${args[0]}).size` }],
   ['map_set', { parameters: [ValueKind.Unknown, ValueKind.Text, ValueKind.Unknown], result: ValueKind.Void,

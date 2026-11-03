@@ -1,0 +1,3 @@
+034-004-map-keys-missing-map.mini:1:1: expected 1 argument
+map_keys();
+^

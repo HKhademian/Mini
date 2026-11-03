@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.34 / builtins alpha.18: map key snapshots, demonstrated by the map sample.
 - Showcase all implemented built-ins in runnable samples, including list mutation.
 - T0 alpha.33 / builtins alpha.17: map key counts, with a runnable map sample.
 - Document grouped-tag audits, explicit remote publication, and immutable history.

@@ -1,0 +1,3 @@
+034-005-map-keys-wrong-target.mini:1:1: expected map argument
+map_keys("hello");
+^

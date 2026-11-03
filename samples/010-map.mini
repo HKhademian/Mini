@@ -10,7 +10,13 @@ map_set(names, "source", "replacement.mini");
 if (map_length(names) == 1) {
     write("replacement keeps one key\n");
 }
+var keys = map_keys(names);
+write(list_at(keys, 0));
+write("\n");
 map_set(names, "verbose", false);
 if (map_length(names) == 2) {
     write("two keys\n");
+}
+if (list_length(keys) == 1) {
+    write("key list is a snapshot\n");
 }

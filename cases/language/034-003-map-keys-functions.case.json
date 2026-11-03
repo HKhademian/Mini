@@ -1,0 +1,27 @@
+{
+  "id": "language.map-keys-functions",
+  "kind": "feature",
+  "source": "034-003-map-keys-functions.mini",
+  "features": [
+    "map.keys",
+    "map.new",
+    "map.set",
+    "list.at",
+    "list.length"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "monly"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

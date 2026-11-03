@@ -41,12 +41,16 @@ the map. Empty maps return false; membership does not decide a missing-key value
 
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared
-lists and maps. T0 emits the setter adapter once when used. Lookup and enumeration
-remain unimplemented; membership can now observe inserted keys.
+lists and maps. T0 emits the setter adapter once when used. Lookup remains
+unimplemented; membership can now observe inserted keys.
 
 `map_length(items)` returns the number of stored keys without changing the map.
 New keys increase it; replacing a value does not. See the
 [map sample](../samples/010-map.mini) for the implemented map operations together.
+
+`map_keys(items)` returns a fresh list of the map's text keys, in unspecified
+order. It is a snapshot: list edits do not change the map, and later map insertions
+do not update the list. This needs no missing-key default.
 
 The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal

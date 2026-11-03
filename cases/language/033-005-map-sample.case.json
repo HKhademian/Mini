@@ -6,7 +6,8 @@
     "map.length",
     "map.new",
     "map.set",
-    "map.has"
+    "map.has",
+    "map.keys"
   ],
   "cases": [
     {

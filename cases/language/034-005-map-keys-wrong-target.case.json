@@ -1,0 +1,27 @@
+{
+  "id": "language.map-keys-wrong-target",
+  "kind": "reject",
+  "source": "034-005-map-keys-wrong-target.mini",
+  "features": [
+    "map.keys",
+    "map.new",
+    "map.set",
+    "list.at",
+    "list.length"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "034-005-map-keys-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
