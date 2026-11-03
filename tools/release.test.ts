@@ -28,7 +28,7 @@ function fixture() {
 
 test('tooling streams select their own annotated tags', () => {
   const current = versions(root);
-  for (const component of ['check', 'format', 'cli'] as const) {
+  for (const component of ['check', 'format', 'lsp', 'cli'] as const) {
     const tag = releaseTag(component, current);
     assert.deepEqual(selectRelease(tag, current), { component, group: current.group, version: current[component] });
     assert.equal(tag, `${component}-v${current.group}-v${current[component]}`);

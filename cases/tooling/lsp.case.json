@@ -1,0 +1,40 @@
+{
+  "id": "tooling.lsp",
+  "kind": "tool",
+  "tool": "mini-lang-server",
+  "features": [],
+  "cases": [
+    {
+      "name": "lsp-version",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "lsp-v0.3.0-v0.1.0-alpha.1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "lsp-usage",
+      "args": [
+        "--bad"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "lsp-usage.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

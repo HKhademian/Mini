@@ -13,6 +13,7 @@ on:
       - 'cli-v*'
       - 'check-v*'
       - 'format-v*'
+      - 'lsp-v*'
       - 'test-v*'
       - 'verify-v*'
       - 'bench-v*'

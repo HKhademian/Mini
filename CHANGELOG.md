@@ -7,6 +7,10 @@
   with about 5% higher RSS, large synthetic sources compile about 1.6–1.7x
   slower, and paired application compilation ranges 0.95–1.28x. Add candidate
   verification tooling and retry transient case-workspace cleanup.
+- Language server 0.1.0-alpha.1: add standalone `mini-lang-server` with LSP 3.17
+  over stdio, full document sync, pushed diagnostics, whole-document formatting,
+  UTF-16 positions, and `--version`. Diagnostics and formatting reuse the
+  compiler analysis and shared formatter.
 - Add the first Mini compiler source (`compiler/compiler.mini`) as a close T0
   port. The focused check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are
   byte-identical. T0 remains active; candidate performance evidence and bootstrap

@@ -1,15 +1,16 @@
 # Tooling direction
 
-Status: source checking and single-file formatting are implemented. Document,
-help, and language server commands remain future and are not implemented,
-installed aliases, or assigned release versions. Their initial input/output
-contracts and focused cases accompany each implementation. They do not add
-language syntax.
+Status: source checking, single-file formatting, and language-server diagnostics
+and formatting are implemented. Document and help commands remain future and are
+not implemented, installed aliases, or assigned release versions. Their initial
+input/output contracts and focused cases accompany each implementation. They do
+not add language syntax.
 
-Existing tools cover compilation, checking, single-file formatting, cases,
-bootstrap verification, benchmarks, and releases. See the [README](../README.md)
-for current commands. The CLI provides basic usage through `mini --help`; the
-editor has syntax highlighting and pairing, without a language server.
+Existing tools cover compilation, checking, single-file formatting, language-server
+diagnostics and formatting, cases, bootstrap verification, benchmarks, and
+releases. See the [README](../README.md) for current commands. The CLI provides
+basic usage through `mini --help`; the editor has syntax highlighting and
+pairing, and can connect to the standalone language server.
 
 ## Command contracts
 
@@ -142,7 +143,7 @@ requirement for this helper.
 
 ### mini-lang-server
 
-Status: future and not implemented. The standalone command will be
+Status: implemented with the lsp stream as a standalone command. The command is
 `mini-lang-server`; no dispatcher spelling is planned for this milestone. It
 speaks LSP 3.17 over standard input and standard output.
 

@@ -15,7 +15,7 @@
     "pending": { "type": "string", "pattern": "\\S" },
     "kind": { "enum": ["tool", "feature", "reject", "compile", "sample", "example"] },
     "source": { "type": "string", "minLength": 1 },
-    "tool": { "type": "string", "pattern": "^(mini|minic|mini-[a-z]+)$" },
+    "tool": { "type": "string", "pattern": "^(mini|minic|mini-[a-z]+(?:-[a-z]+)*)$" },
     "features": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
     "cases": {
       "type": "array",

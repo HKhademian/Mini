@@ -17,7 +17,7 @@ todos:
     status: completed
   - id: step-5-lsp
     content: "Step 5 — Implement diagnostics and formatting over LSP"
-    status: pending
+    status: completed
   - id: step-6-editor
     content: "Step 6 — Connect the VS Code extension to the installed server"
     status: pending
@@ -55,6 +55,8 @@ adds no language syntax and does not implement the self-hosted compiler.
   registry, release cases, version fixtures, and changelog.
 - Added `mini fmt` / `mini-format` over comment-including tokens; registered the `format` stream, advanced cli to
   `0.1.0-alpha.5`, and added exact, idempotence, token-preservation, and compiled-output tests.
+- Added `mini-lang-server` over LSP 3.17 stdio with full sync, diagnostics, and shared formatting; registered the
+  `lsp` stream and widened the case tool-name pattern for hyphenated commands.
 
 ## Read first
 
@@ -259,6 +261,7 @@ versions and valid local annotated tags.
 | Compiler | T0, direct emitter; `Unknown` parameters/results limit checking; comments skipped by default |
 | Existing check | Repository types, docs, versions, cases, available bootstrap; explicit source/stdin checking |
 | Formatter | Single-file `mini fmt`; fixed style, comment-preserving, no config |
+| Language server | `mini-lang-server`, LSP 3.17 stdio; full sync, diagnostics, whole-document formatting |
 | Editor | Declarative TextMate extension, version 0.2.0 |
 
 ## Overall acceptance

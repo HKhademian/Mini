@@ -1,0 +1,206 @@
+import assert from 'node:assert/strict';
+import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { test } from 'node:test';
+import { join } from 'node:path';
+import { root } from './project.ts';
+
+type Message = { jsonrpc?: string; id?: number | string; method?: string; result?: any; error?: { code: number; message: string }; params?: any };
+
+class Client {
+  readonly child: ChildProcessWithoutNullStreams;
+  private buffer = Buffer.alloc(0);
+  private queue: Message[] = [];
+  private waiters: (() => void)[] = [];
+  stderr = '';
+
+  constructor() {
+    this.child = spawn(process.execPath, [join(root, 'bin/mini-lang-server')], { cwd: root, stdio: ['pipe', 'pipe', 'pipe'] });
+    this.child.stdout.on('data', (chunk: Buffer) => this.receive(chunk));
+    this.child.stderr.on('data', (chunk: Buffer) => { this.stderr += chunk.toString(); });
+  }
+
+  private receive(chunk: Buffer): void {
+    this.buffer = Buffer.concat([this.buffer, chunk]);
+    while (true) {
+      const headerEnd = this.buffer.indexOf('\r\n\r\n');
+      if (headerEnd === -1) return;
+      const header = this.buffer.subarray(0, headerEnd).toString('ascii');
+      const match = /Content-Length: *(\d+)/i.exec(header);
+      assert.ok(match, 'server frame needs Content-Length');
+      const length = Number(match[1]);
+      const start = headerEnd + 4;
+      if (this.buffer.length < start + length) return;
+      const body = this.buffer.subarray(start, start + length).toString('utf8');
+      this.buffer = this.buffer.subarray(start + length);
+      this.queue.push(JSON.parse(body) as Message);
+      this.waiters.shift()?.();
+    }
+  }
+
+  frame(message: Message): Buffer {
+    const body = Buffer.from(JSON.stringify(message));
+    return Buffer.concat([Buffer.from(`Content-Length: ${body.length}\r\n\r\n`), body]);
+  }
+
+  send(message: Message): void {
+    this.child.stdin.write(this.frame(message));
+  }
+
+  write(bytes: Buffer): void {
+    this.child.stdin.write(bytes);
+  }
+
+  async next(timeout = 10_000): Promise<Message> {
+    if (this.queue.length > 0) return this.queue.shift()!;
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('timed out waiting for a server message; stderr: ' + this.stderr)), timeout);
+      this.waiters.push(() => { clearTimeout(timer); resolve(); });
+    });
+    return this.queue.shift()!;
+  }
+
+  async close(): Promise<number> {
+    this.child.stdin.end();
+    return new Promise(resolve => this.child.on('exit', code => resolve(code ?? -1)));
+  }
+
+  kill(): void {
+    this.child.kill();
+  }
+}
+
+async function session(run: (client: Client) => Promise<void>): Promise<void> {
+  const client = new Client();
+  try {
+    await run(client);
+  } finally {
+    if (client.child.exitCode === null) client.kill();
+  }
+}
+
+const open = (uri: string, text: string, version = 1) => ({ method: 'textDocument/didOpen', params: { textDocument: { uri, languageId: 'mini', text, version } } });
+const change = (uri: string, text: string, version: number) => ({ method: 'textDocument/didChange', params: { textDocument: { uri, version }, contentChanges: [{ text }] } });
+
+test('initializes, shuts down, and exits cleanly', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { processId: null, rootUri: null, capabilities: {} } });
+    const initialized = await client.next();
+    assert.equal(initialized.id, 1);
+    assert.equal(initialized.result.capabilities.textDocumentSync, 1);
+    assert.equal(initialized.result.capabilities.documentFormattingProvider, true);
+    assert.equal(initialized.result.serverInfo.name, 'mini-lang-server');
+    client.send({ jsonrpc: '2.0', method: 'initialized', params: {} });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
+    assert.deepEqual((await client.next()).result, null);
+    client.send({ jsonrpc: '2.0', method: 'exit' });
+    assert.equal(await client.close(), 0);
+  });
+});
+
+test('publishes diagnostics for unsaved text and clears them after a fix', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    client.send(open('file:///workspace/a.mini', 'var value = ;\n', 1));
+    const first = await client.next();
+    assert.equal(first.method, 'textDocument/publishDiagnostics');
+    assert.equal(first.params.uri, 'file:///workspace/a.mini');
+    assert.equal(first.params.version, 1);
+    assert.deepEqual(first.params.diagnostics[0].range, { start: { line: 0, character: 12 }, end: { line: 0, character: 13 } });
+    assert.equal(first.params.diagnostics[0].severity, 1);
+    assert.equal(first.params.diagnostics[0].source, 'mini');
+    assert.equal(first.params.diagnostics[0].message, 'expected expression');
+
+    client.send(change('file:///workspace/a.mini', 'var value = 1;\n', 2));
+    const second = await client.next();
+    assert.equal(second.params.version, 2);
+    assert.deepEqual(second.params.diagnostics, []);
+  });
+});
+
+test('formats only valid documents and returns one whole-document edit', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    const uri = 'file:///workspace/format.mini';
+    client.send(open(uri, 'var value=1;// keep\n', 1));
+    await client.next();
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/formatting', params: { textDocument: { uri }, options: { tabSize: 2, insertSpaces: true } } });
+    const formatted = await client.next();
+    assert.deepEqual(formatted.result, [{ range: { start: { line: 0, character: 0 }, end: { line: 1, character: 0 } }, newText: 'var value = 1; // keep\n' }]);
+
+    client.send(change(uri, 'var value = 1; // keep\n', 2));
+    await client.next();
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/formatting', params: { textDocument: { uri } } });
+    assert.deepEqual((await client.next()).result, null);
+
+    client.send(change(uri, 'var value = ;\n', 3));
+    await client.next();
+    client.send({ jsonrpc: '2.0', id: 4, method: 'textDocument/formatting', params: { textDocument: { uri } } });
+    assert.deepEqual((await client.next()).result, null);
+  });
+});
+
+test('keeps documents isolated and clears diagnostics on close', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    client.send(open('file:///a.mini', 'var a = ;\n', 1));
+    assert.equal((await client.next()).params.diagnostics.length, 1);
+    client.send(open('file:///b.mini', 'var b = 1;\n', 1));
+    assert.deepEqual((await client.next()).params.diagnostics, []);
+    client.send({ jsonrpc: '2.0', method: 'textDocument/didClose', params: { textDocument: { uri: 'file:///a.mini' } } });
+    const closed = await client.next();
+    assert.equal(closed.params.uri, 'file:///a.mini');
+    assert.deepEqual(closed.params.diagnostics, []);
+  });
+});
+
+test('handles split and coalesced frames', async () => {
+  await session(async client => {
+    const init = client.frame({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    client.write(init.subarray(0, 12));
+    client.write(init.subarray(12));
+    assert.equal((await client.next()).id, 1);
+
+    const a = client.frame(open('file:///a.mini', 'var a = 1;\n', 1));
+    const b = client.frame({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
+    client.write(Buffer.concat([a, b]));
+    assert.deepEqual((await client.next()).params.diagnostics, []);
+    assert.deepEqual((await client.next()).result, null);
+  });
+});
+
+test('uses UTF-16 offsets for CRLF and astral text', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    const text = 'var text = "😀";\r\nvar value = ;\r\n';
+    client.send(open('file:///emoji.mini', text, 1));
+    const published = await client.next();
+    assert.deepEqual(published.params.diagnostics[0].range, { start: { line: 1, character: 12 }, end: { line: 1, character: 13 } });
+  });
+});
+
+test('reports unknown requests and ignores unknown notifications', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    client.send({ jsonrpc: '2.0', method: 'textDocument/didSave', params: {} });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: {} });
+    const error = await client.next();
+    assert.equal(error.id, 2);
+    assert.equal(error.error?.code, -32601);
+    client.send({ jsonrpc: '2.0', id: 3, method: 'shutdown' });
+    assert.deepEqual((await client.next()).result, null);
+  });
+});
+
+test('exiting without shutdown is an error', async () => {
+  await session(async client => {
+    client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+    await client.next();
+    client.send({ jsonrpc: '2.0', method: 'exit' });
+    assert.equal(await client.close(), 1);
+  });
+});
