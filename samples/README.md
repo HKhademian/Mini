@@ -23,7 +23,7 @@ and newline preservation, pending compiler support.
 
 [006-list.mini](006-list.mini) passes the argument list to a function and prints
 its elements in order, separated by `|`. Its
-[case](../cases/language/list-sample.case.json) covers no arguments, ordinary
+[case](../cases/language/024-003-list-sample.case.json) covers no arguments, ordinary
 values, and empty/space-containing values, pending compiler support.
 
 [007-exit.mini](007-exit.mini) prints the first argument or terminates with

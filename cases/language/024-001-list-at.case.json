@@ -1,13 +1,12 @@
 {
   "id": "language.list-at",
   "kind": "feature",
-  "source": "list-at.mini",
+  "source": "024-001-list-at.mini",
   "features": [
     "list.at",
     "list.length",
     "process.args"
   ],
-  "pending": "Compiler and list/process built-ins unavailable.",
   "cases": [
     {
       "stdin": {

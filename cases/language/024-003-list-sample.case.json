@@ -12,7 +12,6 @@
     "control.if",
     "text.output"
   ],
-  "pending": "Compiler and list/process built-ins unavailable.",
   "cases": [
     {
       "stdin": {

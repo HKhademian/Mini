@@ -1,0 +1,3 @@
+024-002-list-at-missing-index.mini:1:15: expected 2 arguments
+var command = list_at(process_args());
+              ^

@@ -1,11 +1,10 @@
 {
   "id": "language.list-at-missing-index",
   "kind": "reject",
-  "source": "list-at-missing-index.mini",
+  "source": "024-002-list-at-missing-index.mini",
   "features": [
     "list.at"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "stdin": {
@@ -15,7 +14,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "list-at-missing-index.stderr"
+        "file": "024-002-list-at-missing-index.stderr"
       },
       "exitCode": 1,
       "name": "default"
