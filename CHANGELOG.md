@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.12: numeric ordering comparisons.
 - T0 alpha.11: scalar equality and inequality without coercion.
 - T0 alpha.10: unary numeric negation.
 - T0 alpha.9: numeric subtraction.

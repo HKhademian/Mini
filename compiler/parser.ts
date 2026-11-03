@@ -36,12 +36,22 @@ class Parser {
     return this.take();
   }
   expression(): Expression {
-    let left = this.additive();
+    let left = this.comparison();
     while (this.token().text === '==' || this.token().text === '!=') {
       const operator = this.take();
-      const right = this.additive();
+      const right = this.comparison();
       if (left.kind === ValueKind.Void || right.kind === ValueKind.Void || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
       left = { code: `(${left.code} ${operator.text === '==' ? '===' : '!=='} ${right.code})`, kind: ValueKind.Boolean };
+    }
+    return left;
+  }
+  comparison(): Expression {
+    let left = this.additive();
+    while (['<', '<=', '>', '>='].includes(this.token().text)) {
+      const operator = this.take();
+      const right = this.additive();
+      if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) fail(operator, 'comparison needs numbers');
+      left = { code: `(${left.code} ${operator.text} ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
   }

@@ -1,0 +1,5 @@
+var below = 1 < 2;
+var atMost = 2 <= 2;
+var above = 3 > 2;
+var atLeast = 2 >= 2;
+var arithmetic = 1 + 2 < 4;

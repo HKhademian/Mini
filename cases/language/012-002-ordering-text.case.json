@@ -1,0 +1,23 @@
+{
+  "id": "language.ordering-text",
+  "kind": "reject",
+  "source": "012-002-ordering-text.mini",
+  "features": [
+    "expressions.comparison"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "012-002-ordering-text.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
