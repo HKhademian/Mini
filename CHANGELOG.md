@@ -24,8 +24,8 @@
 - Bootstrap/compiler 0.1.0-alpha.1 / 0.3.0-alpha.11; Mini distribution
   0.1.0-alpha.3: promote the generated T1 compiler from `compiler/compiler.mini`
   as `bootstrap/compiler.ts`. `config/bootstrap.json` and `config/compiler.json`
-  select it; T0 remains the reference compiler and tooling analyzer. Tooling
-  analysis now uses `compiler/analyze.ts`, independent of the active compiler.
+  select it; T0 remains the reference compiler. Tooling analysis now uses the
+  active compiler's `tokens --comments` and `compile` commands.
 - VS Code extension 0.3.3: expose language-server go-to-definition through
   VS Code's definition provider.
 - Language server 0.1.0-alpha.3: add go-to-definition for document functions and

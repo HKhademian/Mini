@@ -28,16 +28,22 @@ fn token_json(tokens) {
 /// Run the Mini compiler command interface.
 fn main() {
     var args = process_args();
-    var count = list_length(args);
     var command = list_get(args, 0);
-    var source = list_get(args, 1);
-    var output = list_get(args, 2);
+    var include_comments = false;
+    var offset = 0;
+    if (command == "tokens" && list_get(args, 1) == "--comments") {
+        include_comments = true;
+        offset = 1;
+    }
+    var count = list_length(args) - offset;
+    var source = list_get(args, 1 + offset);
+    var output = list_get(args, 2 + offset);
     if (count < 2 || count > 3 || !text_ends_with(source, ".mini")
         || (command != "compile" && command != "tokens")) {
-        write_error("usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini\n");
+        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
         process_exit(1);
     }
-    var tokens = tokenize(file_read(source), basename(source));
+    var tokens = tokenize(file_read(source), basename(source), include_comments);
     if (command == "tokens") {
         write(token_json(tokens));
     } else {

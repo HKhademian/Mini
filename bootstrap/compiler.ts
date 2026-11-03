@@ -212,7 +212,7 @@ function diagnostic_fail(token, message) {
 function lex_fail(token, message) {
     return diagnostic_fail(token, message);
 }
-function tokenize(source, source_name) {
+function tokenize(source, source_name, include_comments) {
     let state = ({ __proto__: $mini_map_proto });
     $mini_map_set(state, "text", source);
     $mini_map_set(state, "source", source_name);
@@ -238,8 +238,16 @@ function tokenize(source, source_name) {
             lex_advance(state);
         } else {
             if (((character === "/") && ($mini_text_get(source, ($mini_map_get(state, "position") + 1)) === "/"))) {
+                let comment_token = lex_start(state);
                 while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
                     lex_advance(state);
+                }
+                if (include_comments) {
+                    $mini_map_set(comment_token, "kind", "comment");
+                    $mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
+                    $mini_map_set(comment_token, "end", $mini_map_get(state, "position"));
+                    let comment_tokens = $mini_map_get(state, "tokens");
+                    $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
                 }
             } else {
                 let token = lex_start(state);
@@ -1045,15 +1053,21 @@ function token_json(tokens) {
 }
 function main() {
     let args = process.argv.slice(2);
-    let count = (args).length;
     let command = $mini_list_get(args, 0);
-    let source = $mini_list_get(args, 1);
-    let output = $mini_list_get(args, 2);
+    let include_comments = false;
+    let offset = 0;
+    if (((command === "tokens") && ($mini_list_get(args, 1) === "--comments"))) {
+        include_comments = true;
+        offset = 1;
+    }
+    let count = ((args).length - offset);
+    let source = $mini_list_get(args, (1 + offset));
+    let output = $mini_list_get(args, (2 + offset));
     if (((((count < 2) || (count > 3)) || (!text_ends_with(source, ".mini"))) || ((command !== "compile") && (command !== "tokens")))) {
-        writeSync(2, "usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini\n");
+        writeSync(2, "usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
         process.exit(1);
     }
-    let tokens = tokenize(readFileSync(source, "utf8"), basename(source));
+    let tokens = tokenize(readFileSync(source, "utf8"), basename(source), include_comments);
     if ((command === "tokens")) {
         writeSync(1, token_json(tokens));
     } else {

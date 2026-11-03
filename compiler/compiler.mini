@@ -150,7 +150,7 @@ fn lex_fail(token, message) {
 }
 
 /// Scan text into a token list, matching T0 positions and diagnostics.
-fn tokenize(source, source_name) {
+fn tokenize(source, source_name, include_comments) {
     var state = map_new();
     map_set(state, "text", source);
     map_set(state, "source", source_name);
@@ -178,10 +178,18 @@ fn tokenize(source, source_name) {
             lex_advance(state);
         } else {
             if (character == "/" && text_get(source, map_get(state, "position") + 1) == "/") {
+                var comment_token = lex_start(state);
                 while (map_get(state, "position") < text_length(source)
                     && text_get(source, map_get(state, "position")) != "\r"
                     && text_get(source, map_get(state, "position")) != "\n") {
                     lex_advance(state);
+                }
+                if (include_comments) {
+                    map_set(comment_token, "kind", "comment");
+                    map_set(comment_token, "text", text_slice(source, map_get(comment_token, "start"), map_get(state, "position")));
+                    map_set(comment_token, "end", map_get(state, "position"));
+                    var comment_tokens = map_get(state, "tokens");
+                    list_set(comment_tokens, list_length(comment_tokens), comment_token);
                 }
             } else {
                 var token = lex_start(state);
@@ -1088,16 +1096,22 @@ fn token_json(tokens) {
 /// Run the Mini compiler command interface.
 fn main() {
     var args = process_args();
-    var count = list_length(args);
     var command = list_get(args, 0);
-    var source = list_get(args, 1);
-    var output = list_get(args, 2);
+    var include_comments = false;
+    var offset = 0;
+    if (command == "tokens" && list_get(args, 1) == "--comments") {
+        include_comments = true;
+        offset = 1;
+    }
+    var count = list_length(args) - offset;
+    var source = list_get(args, 1 + offset);
+    var output = list_get(args, 2 + offset);
     if (count < 2 || count > 3 || !text_ends_with(source, ".mini")
         || (command != "compile" && command != "tokens")) {
-        write_error("usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini\n");
+        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
         process_exit(1);
     }
-    var tokens = tokenize(file_read(source), basename(source));
+    var tokens = tokenize(file_read(source), basename(source), include_comments);
     if (command == "tokens") {
         write(token_json(tokens));
     } else {

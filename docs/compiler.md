@@ -31,28 +31,24 @@ below.
 
 ## Analysis interface
 
-Status: the compiler command is implemented; checker, formatter, and language
-server integrations are future tooling work. The selected compiler exposes one
-narrow command:
+Tooling uses the active compiler directly:
 
 ```text
-node COMPILER analyze < REQUEST.json
+node COMPILER tokens --comments SOURCE.mini
+node COMPILER compile SOURCE.mini OUTPUT.ts
 ```
 
-The request is one JSON object `{"source": "...", "name": "SOURCE.mini"}` on
-standard input. The result is one JSON object `{"tokens": [...], "diagnostics":
-[...]}` on standard output. There is no additional standard output. A source
-failure is result data with exit status 0. A malformed request, unavailable
-compiler, or unexpected exception is a failure with a nonzero exit status and a
-message on standard error.
+`tokens --comments` emits token JSON including comment tokens. Default `tokens`
+and `mini-compile --tokens` remain comment-free. `compile` writes no standard
+output and reports the first failure on standard error in the terminal format
+below. `tools/analysis.ts` runs both commands and returns `{tokens,
+diagnostics}`; it does not import T0 modules. The T0 `analyze` command remains in
+the reference compiler for tests and historical tooling.
 
-`tokens` uses the existing token shape: `kind`, `text`, `source`, `start`, `end`,
-`line`, `column`, and `context`. The list is in source order and includes comment
+The token list uses the existing shape: `kind`, `text`, `source`, `start`, `end`,
+`line`, `column`, and `context`. It is in source order and includes comment
 tokens with `kind` `comment`; comment text includes the leading `//` or `///` and
-excludes the line ending. Diagnostics are produced by a second tokenization
-without comments, so the parser never sees comment tokens. The existing
-`mini-compile --tokens` output remains comment-free; the include mode is internal
-to analysis.
+excludes the line ending. The parser never sees comment tokens.
 
 `diagnostics` contains at most the compiler's first error and uses
 `{message, source, start, end}`. `message` is the existing compiler message
@@ -77,7 +73,8 @@ context line
 caret
 ```
 
-The analysis command writes no files and does not run generated code.
+Analysis uses temporary files but does not alter source files or run generated
+code.
 
 T0's completed increments implemented one feature at a time with indexed cases
 and verified version tags. T0 feature growth is now frozen for the Mini port.

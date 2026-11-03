@@ -191,8 +191,9 @@ start and remain in direct Node TypeScript. A language server's protocol code,
 for example, need not be expressible in the first Mini subset.
 
 After bootstrap replacement, authoritative parsing, checking, and emission
-behavior must live in Mini. Tool integration should reuse that behavior through
-a deliberate interface rather than preserve a second handwritten compiler.
+behavior must live in Mini. Tool integration reuses that behavior through the
+active compiler's `tokens --comments` and `compile` commands; `tools/analysis.ts`
+does not import the T0 compiler modules.
 A future formatter or documenter may need syntax/trivia information that a
 direct emitter does not expose. Review that interface when needed; do not build
 an AST or persistent compiler service solely for hypothetical tools.
