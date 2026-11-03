@@ -1,0 +1,16 @@
+{
+  "id": "language.parameter-repeated-argument",
+  "kind": "feature",
+  "source": "028-002-parameter-repeated-argument.mini",
+  "features": ["parameters.sharing", "functions", "assignment"],
+  "pending": "Parameter-passing proposal is under review",
+  "cases": [
+    {
+      "name": "same-binding-twice",
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "text": "independent" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    }
+  ]
+}

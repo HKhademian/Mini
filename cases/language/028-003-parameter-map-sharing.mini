@@ -1,0 +1,16 @@
+fn change(items) {
+    map_set(items, "name", "shared");
+    items = map_new();
+    map_set(items, "name", "local");
+    return map_get(items, "name");
+}
+
+var original = map_new();
+map_set(original, "name", "old");
+var alias = original;
+var result = change(original);
+write(map_get(original, "name"));
+write(":");
+write(map_get(alias, "name"));
+write(":");
+write(result);

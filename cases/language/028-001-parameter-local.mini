@@ -1,0 +1,12 @@
+fn replace(value) {
+    value = 9;
+    return value;
+}
+
+var original = 1;
+var result = replace(original);
+if (original == 1 && result == 9 && replace(1) == 9 && replace(original + 1) == 9) {
+    write("local");
+} else {
+    process_exit(1);
+}

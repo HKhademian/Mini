@@ -70,6 +70,9 @@ objects or methods. The function and call forms map directly to TypeScript.
 Parameter and result typing, scope, declaration order, and functions without
 a returned value remain open.
 
+The [parameter-passing proposal](parameter-passing.md) evaluates local parameter
+bindings with shared collections. It remains under review, with pending cases.
+
 ## Accepted form: conditionals and loops
 
 Use `if` with an optional `else`, and `while` for repetition:

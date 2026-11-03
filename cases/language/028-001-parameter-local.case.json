@@ -1,0 +1,16 @@
+{
+  "id": "language.parameter-local",
+  "kind": "feature",
+  "source": "028-001-parameter-local.mini",
+  "features": ["parameters.sharing", "functions", "assignment"],
+  "pending": "Parameter-passing proposal is under review",
+  "cases": [
+    {
+      "name": "bindings-literals-expressions",
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "text": "local" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "language.parameter-list-sharing",
+  "kind": "feature",
+  "source": "028-004-parameter-list-sharing.mini",
+  "features": ["parameters.sharing", "functions", "list.new", "list.at", "list.set"],
+  "pending": "Parameter-passing proposal is under review; list_set is not implemented",
+  "cases": [
+    {
+      "name": "mutation-alias-and-rebinding",
+      "args": ["old"],
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "text": "shared:shared" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    }
+  ]
+}

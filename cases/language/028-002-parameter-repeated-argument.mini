@@ -1,0 +1,12 @@
+fn replace(left, right) {
+    left = 9;
+    return right;
+}
+
+var original = 1;
+var result = replace(original, original);
+if (original == 1 && result == 1) {
+    write("independent");
+} else {
+    process_exit(1);
+}
