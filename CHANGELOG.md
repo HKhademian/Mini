@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Share builtin signatures through `compiler/builtin-metadata.ts`; tooling
+  hover/completion no longer imports T0 lowering callbacks. T0 lowering reads the
+  same metadata.
 - Define adapter JavaScript once in `compiler/adapters.ts`, share it with T0
   lowering, and generate `compiler/src/00-constants.mini` with
   `tools/generate-adapters.ts`; `mini check` rejects stale adapter text.

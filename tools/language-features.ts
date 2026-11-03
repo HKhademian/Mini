@@ -1,4 +1,4 @@
-import { builtins } from '../compiler/builtins.ts';
+import { builtinMetadata as builtins } from '../compiler/builtin-metadata.ts';
 import { TokenKind, type Token } from '../compiler/types.ts';
 
 export type Position = { line: number; character: number };
