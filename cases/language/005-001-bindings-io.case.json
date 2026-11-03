@@ -1,20 +1,20 @@
 {
-  "id": "language.io-sample",
-  "kind": "sample",
-  "source": "../../samples/003-io.mini",
+  "id": "language.bindings-io",
+  "kind": "feature",
+  "source": "005-001-bindings-io.mini",
   "features": [
+    "bindings",
     "text.input",
     "text.output"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
-      "name": "empty",
+      "name": "binding-empty",
       "stdin": {
         "file": "empty.stdin"
       },
       "stdout": {
-        "file": "empty.stdout"
+        "file": "binding-empty.stdout"
       },
       "stderr": {
         "file": "empty.stderr"
@@ -22,12 +22,12 @@
       "exitCode": 0
     },
     {
-      "name": "word",
+      "name": "binding-word",
       "stdin": {
         "file": "binding-word.stdin"
       },
       "stdout": {
-        "file": "io-word.stdout"
+        "file": "binding-word.stdout"
       },
       "stderr": {
         "file": "empty.stderr"
@@ -35,12 +35,12 @@
       "exitCode": 0
     },
     {
-      "name": "lines",
+      "name": "binding-lines",
       "stdin": {
-        "file": "io-lines.stdin"
+        "file": "binding-lines.stdin"
       },
       "stdout": {
-        "file": "io-lines.stdout"
+        "file": "binding-lines.stdout"
       },
       "stderr": {
         "file": "empty.stderr"

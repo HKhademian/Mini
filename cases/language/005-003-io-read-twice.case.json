@@ -1,12 +1,11 @@
 {
   "id": "language.io-read-twice",
   "kind": "feature",
-  "source": "io-read-twice.mini",
+  "source": "005-003-io-read-twice.mini",
   "features": [
     "text.input",
     "text.output"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "empty",

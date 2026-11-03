@@ -4,7 +4,7 @@ Mini needs a small set of host operations for compiling files and writing tools.
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`write` produces no value. These operations are accepted, not implemented.
+`write` produces no value. T0 implements these operations.
 
 The accepted built-ins `text_length(text)` and `text_at(text, index)` scan
 ASCII source. Indices are zero-based and in range; scanner code guards access.

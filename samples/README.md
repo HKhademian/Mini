@@ -10,7 +10,7 @@ comparisons, booleans, and text concatenation without I/O. Its
 [case](../cases/language/expressions-sample.case.json) is pending compiler support.
 
 [003-io.mini](003-io.mini) copies input to output using text I/O
-operations. Its [case](../cases/language/io-sample.case.json) covers empty text,
+operations. Its [case](../cases/language/005-002-io-sample.case.json) covers empty text,
 a word, and multiline input, pending compiler support.
 
 [004-text.mini](004-text.mini) scans input and replaces tabs and newline characters

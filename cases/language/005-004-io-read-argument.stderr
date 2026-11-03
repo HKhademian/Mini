@@ -1,0 +1,3 @@
+005-004-io-read-argument.mini:1:14: expected 0 arguments
+var source = readAll("mini");
+             ^
