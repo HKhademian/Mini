@@ -18,9 +18,9 @@ cases verify compilation, generated output, execution, and diagnostics.
 Start with a minimal handwritten TypeScript compiler, emitting readable
 TypeScript run directly by Node. Port the compiler to Mini immediately.
 
-The current subset is the port baseline. Freeze T0 language additions and write
-the Mini compiler now. Limit T0 work to reproduced bugs that block that port;
-further language improvements belong after verified self-hosting.
+M1 is implemented and T1 is promoted as the active compiler. T0 remains the
+reference compiler and the tooling analyzer. Freeze T0 language additions;
+further compiler work uses the self-hosted source and bootstrap regeneration.
 The baseline includes `//` line comments and `///` documentation comments.
 Keep Mini source and functions documented using these forms.
 The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
@@ -30,16 +30,18 @@ compiler gains and the workloads that regress.
 
 M1 is the first compiler source written in Mini; T1 is the generated TypeScript
 compiler, `T1 = T0(M1)`. The first M1 lives in
-[compiler/compiler.mini](compiler/compiler.mini). T0 remains active until the
-candidate passes performance review and bootstrap promotion. Keep M1 close to T0
-in routine boundaries, control flow, calls, lookups, and data layout. Adapt forms
-where Mini requires it; defer redesign and performance refactoring until the
-corresponding port is verified.
+[compiler/compiler.mini](compiler/compiler.mini); the promoted T1 is
+[bootstrap/compiler.ts](bootstrap/compiler.ts), selected by
+[config/compiler.json](config/compiler.json). Keep M1 close to T0 in routine
+boundaries, control flow, calls, lookups, and data layout. Adapt forms where Mini
+requires it; defer redesign and performance refactoring until the corresponding
+port is verified.
 
 Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
 existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records
-measured costs and the actual-compiler comparison required before retiring T0.
+measured costs and the actual-compiler comparison; the large-source compile gap
+remains a tracked follow-up.
 The [paired application benchmarks](docs/application-performance.md) compare ten
 Mini/handwritten-TS applications, including scanner/parser/emitter workloads.
 
@@ -60,9 +62,9 @@ directly on Node; the CLI, checker, verifier, tests, and release tools need not
 be written in Mini. They may remain TypeScript until Mini or a cloned language
 can replace them conveniently.
 
-Promote the verified generated compiler to the distributed bootstrap. Remove
-the handwritten compiler from the active build. Ship the generated compiler,
-matching Mini source, and rebuild instructions together.
+The verified generated compiler is promoted to the distributed bootstrap. The
+generated compiler, matching Mini source, and rebuild instructions ship together.
+T0 remains as a reference and tooling source, not the active compiler.
 
 Every completed increment preserves self-hosting. A breaking change can use a
 temporary compiler written in old syntax that accepts only the new syntax;

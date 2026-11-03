@@ -5,19 +5,18 @@
   "features": [],
   "cases": [
     {
-      "name": "verify-unavailable",
+      "name": "verify-bootstrap",
       "args": [],
       "stdin": {
         "text": ""
       },
       "stdout": {
-        "text": ""
+        "file": "verify-bootstrap.stdout"
       },
       "stderr": {
-        "file": "verify-unavailable.stderr",
-        "hash": "sha256:bb0bcef08be17e108bddb95c42fc54180eee37fb3127580a62c4d4dacbce8a3d"
+        "text": ""
       },
-      "exitCode": 1
+      "exitCode": 0
     },
     {
       "name": "verify-selected",

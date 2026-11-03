@@ -1,8 +1,10 @@
 # T0 implementation inventory for M1 and T1
 
-Baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler source
-written in Mini, implemented in [compiler/compiler.mini](../compiler/compiler.mini).
-T1 is its generated TypeScript compiler: `T1 = T0(M1)`. This inventories the five files in
+T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
+source written in Mini, implemented in [compiler/compiler.mini](../compiler/compiler.mini).
+T1 is its generated TypeScript compiler: `T1 = T0(M1)`. T1 is now promoted as
+[bootstrap/compiler.ts](../bootstrap/compiler.ts); this inventory remains the T0
+port reference. It inventories the five files in
 [compiler configuration](../config/compiler.json), not the CLI tools, tests, or
 release system. T0 remains frozen; this is a port reference, not a feature list
 to add to Mini.

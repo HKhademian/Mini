@@ -1,20 +1,20 @@
 # Self-hosting readiness
 
-Assessment: 2026-11-03. The [language contract](language.md), current compiler
+Assessment: 2026-11-04. The [language contract](language.md), current compiler
 sources, and executable cases are the evidence for this assessment.
-Baseline: group 0.3.0, T0/compiler 0.3.0-alpha.1.
+Baseline: group 0.3.0, compiler 0.3.0-alpha.11, bootstrap 0.1.0-alpha.1.
 
 ## Verdict
 
-The current subset is sufficient for the Mini compiler port. No additional
-language construct or host primitive has been demonstrated to be indispensable.
-M1 now exists in [compiler/compiler.mini](../compiler/compiler.mini), and the
-focused fixed-point check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are byte-identical.
-Mini is not self-hosted yet: T0 remains active and the bootstrap configuration is null.
+The current subset is sufficient for the Mini compiler. M1 is
+[compiler/compiler.mini](../compiler/compiler.mini), and the fixed-point check
+proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are byte-identical. Mini is self-hosted
+for the compiler path: `bootstrap/compiler.ts` is selected by
+`config/compiler.json` and pinned by `config/bootstrap.json`.
 
-Freeze T0 language additions now. A reproduced bug that blocks compiling the
-port may justify a focused T0 fix. Further language improvements should be made
-with the self-hosted compiler after its fixed point is verified.
+T0 remains the reference compiler and the implementation behind the tooling
+analyzer. Freeze T0 language additions; further compiler work uses T1 and the
+bootstrap regeneration process.
 
 ## What already works
 
@@ -36,8 +36,8 @@ and runs Mini code that checks:
   and quoting the supported text escapes.
 - Writing an exact self-contained TypeScript program using ordinary host I/O.
 
-These are integration checks of existing capabilities, not another compiler or
-a self-hosting claim. They do not prove the candidate's correctness or speed alone.
+These are integration checks of existing capabilities. The self-hosting claim
+rests on the promoted bootstrap fixed point, not on these samples alone.
 
 The existing echo [example manifest](../cases/language/005-002-io-sample.case.json)
 is ready for the bootstrap example gate, including empty and multiline input.
@@ -86,8 +86,8 @@ decisions; they must not remain in handwritten TypeScript helpers.
 
 1. **Mini compiler source (M1).** Implemented in `compiler/compiler.mini`: the
    scanner/tokenizer, positioned diagnostics, recursive-descent parser, current
-   checking, TS emitter, and `compile` / `tokens` interfaces. T0 remains active
-   until promotion.
+   checking, TS emitter, and `compile` / `tokens` interfaces. T1 is promoted and
+   active; T0 remains the reference and tooling source.
 2. **Output and behavior parity.** The candidate passes the current language,
    rejection, emission, token-position, sample, and example cases in local
    verification. Preserve deterministic imports, adapters, parentheses,
@@ -101,12 +101,11 @@ decisions; they must not remain in handwritten TypeScript helpers.
    large synthetic sources compile about 1.43x slower. Investigate the remaining
    large-source gap before retiring T0; byte equality alone does not establish a
    useful replacement.
-5. **Bootstrap promotion.** Ship the matching Mini source and generated
-   `bootstrap/compiler.ts`; assign the bootstrap version and configure the
-   active compiler/source identities. Update affected check/release expectations,
-   verify an isolated rebuild and packaged execution, then remove handwritten
-   T0 from the active build. Adapt any tests importing T0 directly. The CLI and
-   other tools may remain TypeScript.
+5. **Bootstrap promotion.** Delivered: `bootstrap/compiler.ts` matches the Mini
+   source, the bootstrap/compiler identities are assigned, the isolated rebuild
+   and packaged execution pass, and T0 is no longer the active compiler. T0
+   remains the reference and tooling analyzer; the CLI and other tools may
+   remain TypeScript.
 
 A merely equivalent program is insufficient for the byte-equality gate. Preserve
 T0's emission rules during the initial port instead of weakening that gate.
@@ -128,5 +127,6 @@ T0 feature. A concrete failed port case is evidence for a blocker.
 
 Enum/const syntax, optional arguments, extra arithmetic, convenience
 text APIs, modules, and future tools are deferred. Records, structs, and classes
-remain outside Mini's scope. The next targets are candidate performance evidence
-and bootstrap promotion.
+remain outside Mini's scope. The next targets are the large-source performance
+follow-up, multi-file M1 authoring, and moving tooling onto self-hosted Mini
+sources.

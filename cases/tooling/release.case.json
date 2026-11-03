@@ -153,10 +153,10 @@
       "workspace": "clean"
     },
     {
-      "name": "release-t0-preview",
+      "name": "release-self-hosted-compiler",
       "args": [
         "dist/release",
-        "compiler-v0.3.0-v0.3.0-alpha.10"
+        "compiler-v0.3.0-v0.3.0-alpha.11"
       ],
       "stdin": {
         "text": ""
@@ -170,36 +170,14 @@
       "exitCode": 0,
       "workspace": "clean",
       "tag": {
-        "name": "compiler-v0.3.0-v0.3.0-alpha.10",
+        "name": "compiler-v0.3.0-v0.3.0-alpha.11",
         "annotated": true
       },
       "files": [
         "dist/release/manifest.json",
-        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.10.tar.gz",
+        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.11.tar.gz",
         "dist/release/SHA256SUMS"
       ]
-    },
-    {
-      "name": "release-foundation-needs-self-host",
-      "args": [
-        "dist/release",
-        "mini-v0.3.0-v0.1.0-alpha.2"
-      ],
-      "stdin": {
-        "text": ""
-      },
-      "stdout": {
-        "text": ""
-      },
-      "stderr": {
-        "file": "release-foundation.stderr"
-      },
-      "exitCode": 1,
-      "workspace": "clean",
-      "tag": {
-        "name": "mini-v0.3.0-v0.1.0-alpha.2",
-        "annotated": true
-      }
     },
     {
       "name": "release-wrong-group",

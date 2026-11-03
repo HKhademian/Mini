@@ -116,10 +116,12 @@ builtin-era change was rechecked with the 69-combination `--check` run.
 
 ## Promotion status
 
-T1 is functionally equivalent on the complete current corpus, and ordinary
-self-build wall time is now slightly below T0. Large synthetic sources still
-compile about 1.43x slower, so performance acceptance remains open.
+T1 is the active compiler at `bootstrap/compiler.ts`, selected by
+`config/compiler.json` and pinned by `config/bootstrap.json`. T0 remains the
+reference compiler and tooling analyzer.
 
-Further gains should target token/expression map allocation and repeated parser
-state lookups; the text-helper and collection-copy gaps are now much smaller.
-Preserve the fixed point and rerun this audit for any further optimization.
+Large synthetic sources still compile about 1.43x slower than T0. That gap is a
+tracked performance follow-up, not a correctness blocker. Further gains should
+target token/expression map allocation and repeated parser state lookups; the
+text-helper and collection-copy gaps are now much smaller. Preserve the fixed
+point and rerun this audit for any further optimization.

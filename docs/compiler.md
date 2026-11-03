@@ -1,8 +1,12 @@
-# T0 compiler
+# T0 compiler reference
 
-T0 is the handwritten TypeScript compiler and the bootstrap, not the language
-specification. Undocumented T0 behavior is an implementation choice and may
-change; only accepted language and builtin contracts are normative.
+T0 is the handwritten TypeScript compiler and the original bootstrap, not the
+language specification. Undocumented T0 behavior is an implementation choice and
+may change; only accepted language and builtin contracts are normative.
+
+The active compiler is the generated [bootstrap/compiler.ts](../bootstrap/compiler.ts),
+selected by [config/compiler.json](../config/compiler.json). T0 remains the
+reference implementation and the source of the TypeScript tooling analyzer.
 
 Run it directly with Node:
 
@@ -213,6 +217,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.10`: recognize an optional first-line shebang as a `shebang`
   token; generated TypeScript begins with a Node shebang.
 
-T0 is not self-hosted. `config/compiler.json` selects it explicitly;
-`config/bootstrap.json` remains null. Promotion will select the generated
-compiler and remove T0 from the active build. Never fall back to T0 afterward.
+The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
+active compiler; `config/bootstrap.json` pins it to `compiler/compiler.mini`.
+T0 is retained only as a reference and tooling source. Never revive T0 as the
+active compiler to bypass a bootstrap migration.

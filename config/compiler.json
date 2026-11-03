@@ -1,6 +1,6 @@
 {
-  "stage": "T0",
-  "entry": "compiler/t0.ts",
-  "sources": ["compiler/t0.ts", "compiler/types.ts", "compiler/lexer.ts", "compiler/parser.ts", "compiler/builtins.ts", "compiler/analysis.ts"],
+  "stage": "self-hosted",
+  "entry": "bootstrap/compiler.ts",
+  "sources": ["compiler/compiler.mini", "bootstrap/compiler.ts"],
   "example": "cases/language/005-002-io-sample.case.json"
 }

@@ -7,8 +7,9 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.3.0-v0.3.0-alpha.10
+compiler-v0.3.0-v0.3.0-alpha.11
 builtins-v0.3.0-v0.3.0-alpha.9
+bootstrap-v0.3.0-v0.1.0-alpha.1
 vscode-v0.3.0-v0.3.3
 ```
 
@@ -47,12 +48,15 @@ version does not make an alpha product stable.
 ## Current inventory
 
 Current group: `0.3.0`. These are assigned release identities, not claims of
-publication or self-hosting. Check the registry for later increments:
+publication. Bootstrap promotion is recorded separately in
+[config/bootstrap.json](../config/bootstrap.json). Check the registry for later
+increments:
 
 ```text
-mini-v0.3.0-v0.1.0-alpha.2
+mini-v0.3.0-v0.1.0-alpha.3
 lang-v0.3.0-v0.3.0-alpha.10
-compiler-v0.3.0-v0.3.0-alpha.10
+compiler-v0.3.0-v0.3.0-alpha.11
+bootstrap-v0.3.0-v0.1.0-alpha.1
 builtins-v0.3.0-v0.3.0-alpha.9
 cli-v0.3.0-v0.1.0-alpha.5
 check-v0.3.0-v0.1.0-alpha.4
@@ -66,24 +70,24 @@ vscode-v0.3.0-v0.3.3
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
-`lang` identifies the language/specification contract. `compiler` versions
-handwritten T0 while active; T0 is not a second product stream.
+`lang` identifies the language/specification contract. `compiler` versions the
+active generated compiler; T0 remains a reference and tooling source rather than
+a product stream. `bootstrap` versions the promoted `T1` fixed point.
 `mini-compile` and `minic` share the compiler version.
 `builtins` versions primitive support independently.
 Each other tool keeps the stream named by its tag.
 
-Bootstrap and std remain unassigned/unavailable. Future first-release examples
-under the current group, to use only after implementation and verification:
+Std remains unassigned/unavailable. Future first-release examples under the
+current group, to use only after implementation and verification:
 
 ```text
-bootstrap-v0.3.0-v0.1.0-alpha.1
 std-v0.3.0-v0.1.0-alpha.1
 document-v0.3.0-v0.1.0-alpha.1
 help-v0.3.0-v0.1.0-alpha.1
 play-v0.3.0-v0.1.0-alpha.1
 ```
 
-Only bootstrap/std are already registered as unassigned streams. Register other
+Only std is already registered as an unassigned stream. Register other
 future streams with their first implementation. See [tooling](tooling.md) for
 scope and commands; playground delivery remains undecided.
 
