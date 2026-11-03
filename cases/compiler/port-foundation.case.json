@@ -1,0 +1,38 @@
+{
+  "id": "compiler.port-foundation",
+  "kind": "feature",
+  "source": "port-foundation.mini",
+  "features": [
+    "functions",
+    "control.while",
+    "map.set",
+    "map.get",
+    "list.set",
+    "list.get",
+    "text.get",
+    "file.write"
+  ],
+  "cases": [
+    {
+      "name": "existing-subset",
+      "args": [
+        "program.ts"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "port-foundation.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "outputFiles": {
+        "program.ts": {
+          "file": "port-foundation.expected.ts"
+        }
+      }
+    }
+  ]
+}

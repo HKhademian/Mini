@@ -1,0 +1,162 @@
+fn times_ten(value) {
+    var twice = value + value;
+    var four = twice + twice;
+    var eight = four + four;
+    return eight + twice;
+}
+
+fn decimal(value) {
+    var remaining = value;
+    var sign = "";
+    if (remaining < 0) {
+        sign = "-";
+        remaining = -remaining;
+    }
+    if (remaining == 0) {
+        return "0";
+    }
+    var powers = list_new();
+    var power = 1;
+    while (power <= remaining) {
+        list_set(powers, list_length(powers), power);
+        power = times_ten(power);
+    }
+    var output = sign;
+    var position = list_length(powers) - 1;
+    while (position >= 0) {
+        power = list_get(powers, position);
+        var digit = 0;
+        while (remaining >= power) {
+            remaining = remaining - power;
+            digit = digit + 1;
+        }
+        output = output + text_get("0123456789", digit);
+        position = position - 1;
+    }
+    return output;
+}
+
+fn slice(source, start, limit) {
+    var position = start;
+    var output = "";
+    while (position < limit && position < text_length(source)) {
+        output = output + text_get(source, position);
+        position = position + 1;
+    }
+    return output;
+}
+
+fn contains(choices, value) {
+    var position = 0;
+    while (position < text_length(choices)) {
+        if (text_get(choices, position) == value) {
+            return true;
+        }
+        position = position + 1;
+    }
+    return false;
+}
+
+fn quote_char(character) {
+    if (character == "\"" || character == "\\") {
+        return "\\" + character;
+    }
+    if (character == "\n") {
+        return "\\n";
+    }
+    if (character == "\r") {
+        return "\\r";
+    }
+    if (character == "\t") {
+        return "\\t";
+    }
+    return character;
+}
+
+fn quoted(source) {
+    var output = "\"";
+    var position = 0;
+    while (position < text_length(source)) {
+        output = output + quote_char(text_get(source, position));
+        position = position + 1;
+    }
+    return output + "\"";
+}
+
+fn copy_scope(scope) {
+    var result = map_new();
+    var keys = map_keys(scope);
+    var position = 0;
+    while (position < list_length(keys)) {
+        var key = list_get(keys, position);
+        map_set(result, key, map_get(scope, key));
+        position = position + 1;
+    }
+    return result;
+}
+
+fn even(value) {
+    if (value == 0) {
+        return true;
+    }
+    return odd(value - 1);
+}
+
+fn odd(value) {
+    if (value == 0) {
+        return false;
+    }
+    return even(value - 1);
+}
+
+fn descend(state, depth) {
+    var saved = depth;
+    if (depth > 0) {
+        descend(state, depth - 1);
+    }
+    var visits = map_get(state, "visits");
+    list_set(visits, list_length(visits), saved);
+    map_set(state, "count", map_get(state, "count") + 1);
+    return 0;
+}
+
+var args = process_args();
+if (list_length(args) != 1) {
+    write_error("expected an output path\n");
+    process_exit(1);
+}
+var state = map_new();
+map_set(state, "visits", list_new());
+map_set(state, "count", 0);
+descend(state, 3);
+var position = 0;
+while (position < 4) {
+    if (list_get(map_get(state, "visits"), position) != position) {
+        process_exit(1);
+    }
+    position = position + 1;
+}
+if (map_get(state, "count") != 4 || !even(6) || !odd(5)) {
+    process_exit(1);
+}
+write("recursion and state\n");
+
+var scope = map_new();
+map_set(scope, "name", "text");
+var inner = copy_scope(scope);
+map_set(inner, "name", "number");
+map_set(inner, "local", "text");
+if (map_get(scope, "name") != "text" || map_has(scope, "local")) {
+    process_exit(1);
+}
+write("scope copy\n");
+write(decimal(0) + "," + decimal(-1234) + "," + decimal(100000) + "\n");
+write(quoted("a\"\\\n\r\t") + "\n");
+if (slice("compiler.mini", 0, 8) != "compiler" || !contains("abc", "b") || contains("abc", "#")) {
+    process_exit(1);
+}
+write("text helpers\n");
+
+var program = "\"use strict\";\nimport { writeSync } from \"node:fs\";\nwriteSync(1, " + quoted("port probe") + ");\n";
+file_write(list_get(args, 0), program);
+write("emitted\n");

@@ -1,173 +1,110 @@
-# Requirements for meaningful self-hosting
+# Self-hosting readiness
 
-Status: workload assessment, not an accepted language extension. The current
-[language contract](language.md) and [T0 support](compiler.md) remain authoritative.
-Review one concrete rule or construct with cases, then implement and verify it
-before advancing to another proposal.
+Assessment: 2026-11-03. The [language contract](language.md), current compiler
+sources, and executable cases are the evidence for this assessment.
+Baseline: group 0.2.0, T0/compiler 0.2.0-alpha.3.
 
-## Current position
+## Verdict
 
-T0 implements bindings, assignment, named functions, calls, value returns,
-branches, loops, scalar expressions, text access, file I/O, process arguments,
-stdout/stderr, and process exit. This covers most of a small compiler's basic
-control flow and host access. The generated self-hosted bootstrap is unavailable.
+The current subset is sufficient to begin the Mini compiler port. No additional
+language construct or host primitive has been demonstrated to be indispensable.
+Mini is not self-hosted yet: there is no Mini compiler source, the active compiler
+is T0, and the bootstrap configuration is null.
 
-No additional syntax is demonstrated to be indispensable yet. A streaming
-scanner and recursive-descent parser can use scalar bindings and emit TypeScript
-directly. However, a compiler that encodes every table into text or shares all
-state through globals would be a poor foundation to maintain and reshape.
-Judge the first port by readability as well as whether it compiles itself.
+Freeze T0 language additions now. A reproduced bug that blocks compiling the
+port may justify a focused T0 fix. Further language improvements should be made
+with the self-hosted compiler after its fixed point is verified.
 
-The existing TypeScript implementation uses token records, arrays, maps, sets,
-classes, regular expressions, and callbacks. Port its responsibilities, not
-every TypeScript construct. None of those particular mechanisms is itself a
-self-hosting requirement.
+## What already works
 
-## Required decisions using existing syntax
+Functions, forward calls, recursion, per-call locals, branches, loops, scalar
+operations, mutable lists/maps, text access, and file/process I/O cover the
+compiler's main workload. No record, class, closure, module, or general AST is
+needed for the first direct emitter.
 
-These rules need explicit contracts and focused cases. Current T0 behavior is
-implementation evidence, not an automatic decision for the language.
+The [port-foundation case](../cases/compiler/port-foundation.case.json) compiles
+and runs Mini code that checks:
 
-- **Binding visibility and lifetime.** Define top-level, function, and block
-  bindings; shadowing and duplicate names; when a name becomes usable; and
-  whether a function can read or update top-level state. A scanner needs persistent
-  source/cursor state, while recursive parsing needs per-call local state.
-- **Function calls and recursion.** Confirm direct recursion, calls to later
-  functions, and mutual recursion. Expression parsing naturally calls through
-  precedence levels and back into expressions inside parentheses. T0 recognizes
-  later function names, but that alone does not settle recursive behavior.
-- **Function results.** Decide parameter/result kind rules, inconsistent return
-  kinds, and reaching the end of a function. T0 requires a value return somewhere;
-  this is not a check that every execution path returns a value. Define how
-  no-result calls may be used before relying on scanner/emitter procedures.
-- **Value kinds and assignment.** Decide whether replacing a binding may change
-  its kind and what checking applies at function boundaries. T0's internal
-  `Unknown` kind is not a selected Mini type system. A small clear rule is enough;
-  sophisticated inference and annotation syntax are separate choices.
-- **Names emitted into TypeScript.** Choose a simple policy for reserved target
-  names, built-in collisions, and duplicate declarations so accepted Mini names
-  produce runnable output. This belongs to name handling, not new syntax.
-- **Numbers and text.** Bound the ordinary integer workload used for positions
-  and counts. Choose deterministic literal emission, including leading zeros.
-  Preserve the selected ASCII/escape contract; broad numeric or Unicode support
-  is unnecessary for this target.
+- Direct and mutual recursion, with local values retained across recursive calls.
+- Shared parser-style state in a map, with ordered results accumulated in a list.
+- Copying a scope map using existing key enumeration and lookup.
+- Decimal rendering with addition/subtraction, text slicing, character membership,
+  and quoting the supported text escapes.
+- Writing an exact self-contained TypeScript program using ordinary host I/O.
 
-These are real language semantics even when they add no keywords. Each decision
-should cover its compiler use and a rejection or interaction where relevant.
+These are integration checks of existing capabilities, not another compiler or
+a self-hosting claim. They do not prove the absent port's correctness or speed.
 
-## Required capabilities, with representation still open
+The existing echo [example manifest](../cases/language/005-002-io-sample.case.json)
+is ready for the bootstrap example gate, including empty and multiline input.
+The [verifier](../tools/verify.ts) already rebuilds an isolated compiler three
+times, compares each result to the shipped seed, and runs the ordinary example.
+The case runner already accepts a candidate compiler override.
 
-The compiler must perform the following work in Mini. They need not all become
-new language constructs or host built-ins.
+## Write the compiler with the existing subset
 
-- **Scan and track locations.** Classify ASCII characters, advance through source,
-  and retain token kind, spelling, offsets, line, column, and diagnostic context.
-  Existing text access, equality, loops, and counters can do this without regex.
-  A current-token scanner can avoid storing the entire token stream initially.
-- **Parse nested syntax.** Use functions and local state for precedence, calls,
-  braces, and returns. Retain enough context to reject invalid forms and locate
-  errors. A full AST is unnecessary for direct TypeScript emission.
-- **Remember names.** Store or recover binding kinds, function names and arities,
-  scope information, and built-in signatures. A small pre-scan can collect later
-  function names. The representation must remain readable as the compiler grows.
-- **Build deterministic output.** Accumulate generated code, indentation, escaped
-  text, and required host imports in a fixed order. Existing text concatenation
-  can start this; a string builder or sorting API is not required.
-- **Produce diagnostics.** Render positions and source context through
-  `write_error`, then fail through `process_exit`. Decimal rendering and quoting
-  can be Mini helpers; a concrete implementation should establish whether a
-  further primitive is justified. TypeScript must not hide the diagnostic logic.
-- **Run the compiler interface.** Read arguments/source and write output using
-  the accepted process and file built-ins. Generated code must run with Node
-  alone. Keep parsing, name handling, checking, and emission out of host adapters.
+Port the responsibilities of the five files named in
+[compiler configuration](../config/compiler.json), rather than their TypeScript
+mechanisms:
 
-## High-value additions to evaluate against port code
+- Tokens and expressions become maps with named text keys; token streams and
+  parameter/argument collections become lists.
+- Parser methods become top-level functions taking an explicit state map.
+  Keep recursive temporaries in local bindings and avoid parameter rebinding.
+- Sets become maps used for membership. Scope copies are small Mini helpers.
+- Regex character tests become character membership helpers. Slicing, quoting,
+  decimal formatting, basename handling, and token JSON output can be Mini code.
+- Procedures can return ordinary zero for now. A no-result function form is not
+  a prerequisite.
+- Keep the first compiler in one Mini file. Helpers can live there without adding
+  module syntax, a separate std library, or another prerequisite build tool.
 
-These are candidates, not selected syntax or APIs. Add one only when a compiler
-slice demonstrates its benefit over an ordinary Mini helper or simpler design.
+Map key order is unspecified. Emit the finite host-import and adapter sets in an
+explicit fixed order, matching T0, rather than introducing a sorting API.
 
-- **Functions without a result.** Advancing a token, expecting punctuation,
-  emitting text, and reporting an error are naturally procedures. Supporting
-  them avoids meaningless returned values. This is a small next review candidate;
-  its explicit return and fallthrough rules still need to be chosen.
-- **Named kind constants.** Token, value, and stage kinds should have one shared
-  definition rather than repeated string literals. Existing bindings can name
-  values; immutability or enum syntax should earn its cost separately.
-- **Small reusable text helpers.** Slicing, character membership, quoting, and
-  decimal rendering can remove repeated loops. Prefer Mini library functions
-  when the accepted primitives suffice; add primitive access only when needed.
-- **Source comments.** Useful for explaining scanner/parser invariants and
-  bootstrap migrations. Evaluate one simple form independently. Documentation
-  comments and annotations are additional choices, not prerequisites.
+Host adapters may still provide the accepted primitives. Scanning, parsing,
+name/kind checking, and emission must move into Mini, including built-in lowering
+decisions; they must not remain in handwritten TypeScript helpers.
 
-## Collection direction
+## Remaining deliverables
 
-Records, structs, and classes are outside Mini's intended scope, rather than
-deferred additions. Text-keyed maps can hold named compiler data such as token
-information without dedicated field declarations or construction syntax.
-Lists can now be constructed, grown, and mutated, storing scalars, lists, and
-maps. Map construction, membership, mutation, lookup, counts, and keys are
-available. Missing map keys and list positions return ordinary numeric zero,
-without a null value. Unavailable text reads return empty text.
+1. **Mini compiler source.** Implement the scanner/tokenizer, positioned
+   diagnostics, recursive-descent parser, current checking, TS emitter, and
+   `compile` / `tokens` interfaces in `compiler/compiler.mini`.
+   Keep T0 active while the replacement is being completed.
+2. **Output and behavior parity.** Run the active language, rejection, emission,
+   token-position, and sample cases through the candidate. Preserve deterministic
+   imports, adapters, parentheses, whitespace, and literal spelling. The first
+   self-build must reproduce T0's output for that same compiler source.
+3. **Fixed point and ordinary execution.** For unchanged source, produce
+   Compiler1 with T0, Compiler2 with Compiler1, and Compiler3 with Compiler2.
+   Require all three to be runnable and byte-identical. Use the final generation
+   to compile and run the ordinary example and the current language cases.
+4. **Bootstrap promotion.** Ship the matching Mini source and generated
+   `bootstrap/compiler.ts`; assign the bootstrap version and configure the
+   active compiler/source identities. Update affected check/release expectations,
+   verify an isolated rebuild and packaged execution, then remove handwritten
+   T0 from the active build. Adapt any tests importing T0 directly. The CLI and
+   other tools may remain TypeScript.
 
-Lists and maps can share implementation machinery, but their observable rules
-differ. Lists have positional indices, a sequence length, growth, and indexing
-from the end. Maps have unique text keys and membership. Combining them into
-one entity must not make these rules more complicated merely to reduce the
-number of container names. No shared runtime representation is required.
+A merely equivalent program is insufficient for the byte-equality gate. Preserve
+T0's emission rules during the initial port instead of weakening that gate.
+Do not select the replacement or remove T0 before the complete candidate passes.
 
-Keep the collection implementation small and readable. A short linear lookup
-can be adequate initially; a general collection/type system is unnecessary for
-the first compiler port.
+## Open rules and deferred work
 
-Capacity reservation and logical growth are different. On a fresh list, setting
-nonnegative index `r` makes its length `r + 1`; it cannot replace reserving
-capacity while keeping length zero. To obtain logical length `r` by assignment,
-set index `r - 1`. On a fresh list, the negative-index no-op rule keeps it empty
-when `r <= 0`. Skipped positions read as zero. Growth by assignment cannot shrink
-an existing list.
+The four parameter-passing review cases remain pending because the contract is
+under review, not because their forms need a new T0 construct. The first port
+can use explicit map state and avoid parameter reassignment. Resolve the final
+contract before claiming those cases as accepted conformance coverage.
+All four draft programs also matched their proposed results in direct T0 runs;
+that observation does not activate them or satisfy the bootstrap gate.
 
-Keeping only `list_new()` and growing through assignment is an option under
-discussion. It would omit explicit capacity control rather than emulate it.
-An optional reserve argument can wait for a measured compiler need, with targets
-managing automatic growth themselves. The existing empty constructor needs no
-optional-argument machinery; see the [argument-count investigation](parameter-passing.md).
+Broader typing, numeric limits, shadowing, and target-name policy remain open.
+Use the existing ordinary-integer/ASCII subset, complete value-return paths, and
+unambiguous names in the port; do not turn every open design question into a new
+T0 feature. A concrete failed port case is evidence for a blocker.
 
-## Useful later, without blocking the first port
-
-Modules/imports can wait while the compiler is one manageable source file.
-`break`, `continue`, `for`, `switch`, extra arithmetic, richer collections,
-structured recoverable errors, and source maps can wait for concrete pressure.
-Closures, methods, generics, pattern matching, packages, concurrency,
-and optimization passes are not first self-hosting requirements.
-
-Primitive file failures may retain the current narrow success contract at this
-stage. Do not introduce exceptions or a result type solely to mirror Node.
-Future tools may need broader contracts; their requirements do not expand the
-first compiler target automatically.
-
-## What proves the target
-
-Start a small Mini compiler slice using the current subset: scan positioned
-tokens, parse bindings and one nested expression, and emit runnable TypeScript.
-Use its actual awkward code to select the next single review. It is a prototype,
-not a claim of self-hosting; do not keep a second unfinished compiler framework.
-
-The completed port must compile the reviewed language, including its own source,
-with understandable scanner, parser, checking, emission, and host boundaries.
-Run the language and diagnostic cases through the generated compiler as well as
-the ordinary example; deliberately resolve any differences from T0.
-
-For unchanged source, require Compiler1, Compiler2, and Compiler3 to be
-byte-identical and runnable. Compile and run the ordinary example with the final
-generation. Then promote the generated compiler/source pair, remove handwritten
-T0 from the active build, and verify a rebuild in isolation. Follow the existing
-[bootstrap](bootstrap.md) and [evolution](evolving-language.md) gates.
-
-The ability to make and verify a small compiler change is part of the foundation's
-purpose. Subsequent increments must preserve the fixed point; a one-off compiler
-that cannot be maintained in Mini is not the intended outcome.
-
-The [future tooling](tooling.md) may remain TypeScript. A formatter, documenter,
-help tool, and language server are useful follow-on work, not compiler bootstrap
-prerequisites.
+Comments, enum/const syntax, optional arguments, extra arithmetic, convenience
+text APIs, modules, and future tools are deferred. Records, structs, and classes
+remain outside Mini's scope. The next implementation target is the Mini compiler.

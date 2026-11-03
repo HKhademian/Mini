@@ -18,6 +18,10 @@ cases verify compilation, generated output, execution, and diagnostics.
 Start with a minimal handwritten TypeScript compiler, emitting readable
 TypeScript run directly by Node. Port the compiler to Mini immediately.
 
+The current subset is the port baseline. Freeze T0 language additions and write
+the Mini compiler now. Limit T0 work to reproduced bugs that block that port;
+further language improvements belong after verified self-hosting.
+
 For unchanged compiler source `S`:
 
 ```text

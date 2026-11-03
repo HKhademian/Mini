@@ -1,6 +1,6 @@
 {
   "id": "language.io-sample",
-  "kind": "sample",
+  "kind": "example",
   "source": "../../samples/003-io.mini",
   "features": [
     "text.input",

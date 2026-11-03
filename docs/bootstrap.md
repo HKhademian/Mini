@@ -35,12 +35,13 @@ At first promotion, assign the bootstrap version, select the generated entry in
 {
   "compiler": "bootstrap/compiler.ts",
   "source": "compiler/compiler.mini",
-  "example": "cases/examples/hello.case.json"
+  "example": "cases/language/005-002-io-sample.case.json"
 }
 ```
 
-These are illustrative paths. The example uses the [case format](cases.md):
-Mini source and each input/output stream remain separate files.
+The compiler/source paths are illustrative. The echo example already exists as
+an example-kind manifest, reusing the runnable I/O sample. It uses the
+[case format](cases.md): source and input/output streams remain separate files.
 
 The verifier copies the shipped compiler and Mini source into an isolated
 directory, invokes `node PREVIOUS.ts compile compiler.mini NEXT.ts` three times,
@@ -69,4 +70,4 @@ transition as one atomic migration. Compatible support/adoption steps can be
 separate self-hosted commits.
 
 Tool cases invoke real commands. Actual Mini self-hosting verification awaits
-the compiler implementation and its ordinary example.
+the Mini compiler implementation and its generated bootstrap.

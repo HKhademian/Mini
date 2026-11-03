@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Freeze T0 feature growth, verify the port workload in Mini, and narrow the
+  remaining self-hosting work to the compiler port, fixed point, and promotion.
 - Focus reader documentation and cases on the current API.
 - 0.2.0-alpha.3: list reads return zero for gaps and invalid targets/positions;
   negative indices count from the end.
