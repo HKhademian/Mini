@@ -1,0 +1,226 @@
+{
+  "id": "tooling.format",
+  "kind": "tool",
+  "tool": "mini-format",
+  "features": [],
+  "cases": [
+    {
+      "name": "format-stdout",
+      "args": [
+        "cases/tooling/format-unformatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "format-unformatted.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "file": "format-unformatted.mini"
+      },
+      "stdout": {
+        "file": "format-unformatted.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-canonical-unchanged",
+      "args": [
+        "cases/tooling/format-formatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "format-formatted.mini"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-comment-only",
+      "args": [
+        "cases/tooling/format-comment.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "format-comment.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-empty-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "text": " \n\t\r\n"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-check-canonical",
+      "args": [
+        "--check",
+        "cases/tooling/format-formatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-check-unformatted",
+      "args": [
+        "--check",
+        "cases/tooling/format-unformatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "format-check.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "format-write",
+      "args": [
+        "--write",
+        "cases/tooling/format-unformatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "workspace": "clean",
+      "files": [
+        "cases/tooling/format-unformatted.mini"
+      ]
+    },
+    {
+      "name": "format-invalid",
+      "args": [
+        "cases/tooling/format-invalid.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "format-invalid.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "format-invalid-stdin",
+      "args": [
+        "-"
+      ],
+      "stdin": {
+        "file": "format-invalid.mini"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "format-invalid-stdin.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "format-write-stdin",
+      "args": [
+        "--write",
+        "-"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "format-write-stdin.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "format-conflicting-flags",
+      "args": [
+        "--write",
+        "--check",
+        "cases/tooling/format-formatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "format-flags.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "format-version",
+      "args": [
+        "--version"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "format-v0.3.0-v0.1.0-alpha.1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

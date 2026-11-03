@@ -25,6 +25,16 @@ function fixture() {
   return { work, directory, git };
 }
 
+test('tooling streams select their own annotated tags', () => {
+  const current = versions(root);
+  for (const component of ['check', 'format', 'cli'] as const) {
+    const tag = releaseTag(component, current);
+    assert.deepEqual(selectRelease(tag, current), { component, group: current.group, version: current[component] });
+    assert.equal(tag, `${component}-v${current.group}-v${current[component]}`);
+  }
+  assert.throws(() => selectRelease(`format-v${current.group}-v9999.0.0`, current), /tag must match assigned format version/);
+});
+
 test('VS Code has an independent, exact-version release stream', () => {
   const current = versions(root);
   assert.deepEqual(selectRelease(releaseTag('vscode', current), current), { component: 'vscode', group: current.group, version: current.vscode });

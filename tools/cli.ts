@@ -1,10 +1,18 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { compiler, releaseTag, root, run, versions, type Component } from './project.ts';
 
-const names: Record<string, Component> = { check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
-const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs | SOURCE.mini | -] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
+const names: Record<string, Component> = { check: 'check', format: 'format', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
+const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-format, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
+
+function readSource(path: string): string {
+  try {
+    return readFileSync(path === '-' ? 0 : resolve(path), 'utf8');
+  } catch {
+    throw new Error(`cannot read ${path}`);
+  }
+}
 
 export async function main(executable: string): Promise<void> {
   try {
@@ -14,9 +22,10 @@ export async function main(executable: string): Promise<void> {
     if (executable === 'mini' && args[0] === '--version') {
       console.log(`${releaseTag('mini', current)}\n${releaseTag('cli', current)}`); return;
     }
-    const command = executable === 'mini' ? args.shift()! : executable === 'minic' ? 'compile' : executable.replace(/^mini-/, '');
+    const invoked = executable === 'mini' ? args.shift()! : executable === 'minic' ? 'compile' : executable.replace(/^mini-/, '');
+    const command = invoked === 'fmt' ? 'format' : invoked;
     const component = names[command];
-    assert(component !== undefined, `unknown command: ${command}`);
+    assert(component !== undefined, `unknown command: ${invoked}`);
     if (args[0] === '--version') { console.log(releaseTag(component, current)); return; }
     switch (command) {
       case 'check': {
@@ -32,17 +41,60 @@ export async function main(executable: string): Promise<void> {
         assert(args.length === 1, 'usage: mini-check [--docs | SOURCE.mini | -]');
         const path = args[0]!;
         assert(path === '-' || path.endsWith('.mini'), 'Mini source must use .mini');
-        let source: string;
-        try {
-          source = readFileSync(path === '-' ? 0 : resolve(path), 'utf8');
-        } catch {
-          throw new Error(`cannot read ${path}`);
-        }
+        const source = readSource(path);
         const diagnostic = (await import('./source-check.ts')).checkSource(source, path === '-' ? '<stdin>' : path);
         if (diagnostic !== null) {
           console.error(diagnostic);
           process.exitCode = 1;
         }
+        break;
+      }
+      case 'format': {
+        let mode: 'stdout' | 'write' | 'check' = 'stdout';
+        let path: string | undefined;
+        for (const arg of args) {
+          if (arg === '--write' || arg === '--check') {
+            assert(mode === 'stdout', 'usage: mini-format [--write | --check] SOURCE.mini');
+            mode = arg === '--write' ? 'write' : 'check';
+          } else {
+            assert(path === undefined, 'usage: mini-format [--write | --check] SOURCE.mini');
+            path = arg;
+          }
+        }
+        assert(path !== undefined, 'usage: mini-format [--write | --check] SOURCE.mini');
+        assert(mode !== 'write' || path !== '-', '--write does not accept stdin');
+        assert(path === '-' || path.endsWith('.mini'), 'Mini source must use .mini');
+        const name = path === '-' ? '<stdin>' : path;
+        const source = readSource(path);
+        const result = (await import('./format.ts')).formatSource(source, name);
+        if ('diagnostic' in result) {
+          const { renderDiagnostic } = await import('./source-check.ts');
+          console.error(renderDiagnostic(source, result.diagnostic));
+          process.exitCode = 1;
+          break;
+        }
+        if (mode === 'check') {
+          if (result.text !== source) {
+            console.error(`${name}: not formatted`);
+            process.exitCode = 1;
+          }
+          break;
+        }
+        if (mode === 'write') {
+          if (result.text !== source) {
+            const target = resolve(path);
+            const temporary = `${target}.mini-format-${process.pid}`;
+            try {
+              writeFileSync(temporary, result.text);
+              renameSync(temporary, target);
+            } catch (error) {
+              rmSync(temporary, { force: true });
+              throw error;
+            }
+          }
+          break;
+        }
+        process.stdout.write(result.text);
         break;
       }
       case 'test':

@@ -114,6 +114,7 @@ Use Node 24.16.0 from [.node-version](.node-version).
 npm ci
 ./bin/mini check
 ./bin/mini check samples/001-bindings.mini
+./bin/mini fmt samples/001-bindings.mini
 ./bin/mini test
 ./bin/mini verify cases/tooling/check.case.json
 ./bin/mini bench .cache/bench.json
@@ -123,8 +124,12 @@ Source checking uses `mini check SOURCE.mini`; `mini check -` reads standard
 input. A successful check writes nothing and creates no `.mini.ts` file. A
 failure prints the compiler's first diagnostic and exits 1.
 
+`mini fmt SOURCE.mini` writes canonical source to standard output; `mini fmt -`
+reads standard input. `--write` replaces one file after successful formatting,
+and `--check` reports noncanonical input without writing.
+
 npm installs development dependencies only. Commands live in `bin/`:
-`mini`, `mini-check`, `mini-test`, `mini-bench`, `mini-verify`,
+`mini`, `mini-check`, `mini-format`, `mini-test`, `mini-bench`, `mini-verify`,
 `mini-release`, `mini-compile`, and `minic`.
 
 Runnable [samples](samples/README.md) showcase language features and built-ins.
@@ -134,9 +139,9 @@ Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
 syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX;
 there is no language server yet.
 
-[Future tooling](docs/tooling.md) records `mini-format` / `mini fmt`,
-`mini-document` / `mini doc`, `mini-help` / `mini help`, and `mini-lang-server`.
-These commands are not available yet.
+[Future tooling](docs/tooling.md) records `mini-document` / `mini doc`,
+`mini-help` / `mini help`, and `mini-lang-server`. These commands are not
+available yet.
 
 Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
 [versioning](docs/versioning.md), [cases](docs/cases.md),

@@ -12,6 +12,7 @@ on:
       - 'vscode-v*'
       - 'cli-v*'
       - 'check-v*'
+      - 'format-v*'
       - 'test-v*'
       - 'verify-v*'
       - 'bench-v*'

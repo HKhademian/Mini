@@ -18,8 +18,10 @@ switch (task) {
   case 'check': mini('check'); break;
   case 'test':
     mini('test');
+    process.stdout.write(run(process.execPath, ['--test', 'compiler/analysis.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'compiler/builtins.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'compiler/m1.test.ts'], root));
+    process.stdout.write(run(process.execPath, ['--test', 'tools/format.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'test/grammar.test.ts'], join(root, 'editors/vscode')));
     process.stdout.write(run(process.execPath, ['--test', 'tools/release.test.ts'], root));
     process.stdout.write(run(process.execPath, ['tools/application-performance.ts', '--check'], root));

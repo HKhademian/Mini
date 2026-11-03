@@ -52,8 +52,9 @@ mini-v0.3.0-v0.1.0-alpha.2
 lang-v0.3.0-v0.3.0-alpha.1
 compiler-v0.3.0-v0.3.0-alpha.1
 builtins-v0.3.0-v0.3.0-alpha.1
-cli-v0.3.0-v0.1.0-alpha.4
+cli-v0.3.0-v0.1.0-alpha.5
 check-v0.3.0-v0.1.0-alpha.4
+format-v0.3.0-v0.1.0-alpha.1
 test-v0.3.0-v0.1.0-alpha.2
 verify-v0.3.0-v0.1.0-alpha.2
 bench-v0.3.0-v0.1.0-alpha.3
@@ -74,7 +75,6 @@ under the current group, to use only after implementation and verification:
 ```text
 bootstrap-v0.3.0-v0.1.0-alpha.1
 std-v0.3.0-v0.1.0-alpha.1
-format-v0.3.0-v0.1.0-alpha.1
 document-v0.3.0-v0.1.0-alpha.1
 help-v0.3.0-v0.1.0-alpha.1
 lsp-v0.3.0-v0.1.0-alpha.1

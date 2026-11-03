@@ -14,7 +14,7 @@ todos:
     status: completed
   - id: step-4-formatter
     content: "Step 4 — Implement a deterministic single-file formatter"
-    status: pending
+    status: completed
   - id: step-5-lsp
     content: "Step 5 — Implement diagnostics and formatting over LSP"
     status: pending
@@ -52,6 +52,8 @@ adds no language syntax and does not implement the self-hosted compiler.
   command is internal and adds no language behavior.
 - Added `mini check SOURCE.mini` and `mini check -`; advanced check and cli to `0.1.0-alpha.4` with matches in the
   registry, release cases, version fixtures, and changelog.
+- Added `mini fmt` / `mini-format` over comment-including tokens; registered the `format` stream, advanced cli to
+  `0.1.0-alpha.5`, and added exact, idempotence, token-preservation, and compiled-output tests.
 
 ## Read first
 
@@ -255,6 +257,7 @@ versions and valid local annotated tags.
 | Runtime | Node 24.16.0; strict erasable TypeScript, `.ts` imports |
 | Compiler | T0, direct emitter; `Unknown` parameters/results limit checking; comments skipped by default |
 | Existing check | Repository types, docs, versions, cases, available bootstrap; explicit source/stdin checking |
+| Formatter | Single-file `mini fmt`; fixed style, comment-preserving, no config |
 | Editor | Declarative TextMate extension, version 0.2.0 |
 
 ## Overall acceptance

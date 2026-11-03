@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "cli-version.stdout",
-        "hash": "sha256:a539bd9f9cee693b156d232f19189c90fd481ec7c6964dde0e23f70d93931c38"
+        "hash": "sha256:361999b90c0f6960f21a61f9c900fe39c05bf08b71cf02dc3ebeee2d0ccbab15"
       },
       "stderr": {
         "text": ""
@@ -87,6 +87,40 @@
         "file": "check-stdin.stderr"
       },
       "exitCode": 1
+    },
+    {
+      "name": "cli-fmt-alias",
+      "args": [
+        "fmt",
+        "cases/tooling/format-unformatted.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "format-unformatted.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "cli-fmt-version",
+      "args": [
+        "fmt",
+        "--version"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "format-v0.3.0-v0.1.0-alpha.1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
     }
   ]
 }

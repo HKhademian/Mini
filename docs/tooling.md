@@ -1,14 +1,15 @@
 # Tooling direction
 
-Status: source checking is implemented. Formatter, document, help, and language
-server commands remain future and are not implemented, installed aliases, or
-assigned release versions. Their initial input/output contracts and focused
-cases accompany each implementation. They do not add language syntax.
+Status: source checking and single-file formatting are implemented. Document,
+help, and language server commands remain future and are not implemented,
+installed aliases, or assigned release versions. Their initial input/output
+contracts and focused cases accompany each implementation. They do not add
+language syntax.
 
-Existing tools cover compilation, checking, cases, bootstrap verification,
-benchmarks, and releases. See the [README](../README.md) for current commands.
-The CLI provides basic usage through `mini --help`; the editor has syntax
-highlighting and pairing, without a language server.
+Existing tools cover compilation, checking, single-file formatting, cases,
+bootstrap verification, benchmarks, and releases. See the [README](../README.md)
+for current commands. The CLI provides basic usage through `mini --help`; the
+editor has syntax highlighting and pairing, without a language server.
 
 ## Command contracts
 
@@ -33,13 +34,13 @@ behavior. Diagnostics, offsets, and ranges use the
 
 ### mini-format / mini fmt
 
-Status: future and not implemented. The standalone command will be
-`mini-format`; the dispatcher form will be `mini fmt`.
+Status: implemented with the format and cli streams. The standalone command is
+`mini-format`; the dispatcher form is `mini fmt`.
 
-Its initial job is consistent indentation, spacing, and line breaks for accepted
-Mini syntax. Preserve program meaning, literal values, evaluation order, and
-`//` and `///` comment text. Reformatting already formatted source produces
-identical bytes.
+Its job is consistent indentation, spacing, and line breaks for accepted Mini
+syntax. Preserve program meaning, literal values, evaluation order, and `//`
+and `///` comment text. Reformatting already formatted source produces identical
+bytes.
 
 ```text
 mini fmt SOURCE.mini
@@ -108,8 +109,8 @@ TypeScript.
 
 ### mini-document / mini doc
 
-Status: future and not implemented. The standalone command will be
-`mini-document`; the dispatcher form will be `mini doc`.
+Status: future and not implemented. A documentation tool. The standalone
+command will be `mini-document`; the dispatcher form will be `mini doc`.
 
 Its role is generating reference material from the language's documented source
 conventions and declarations. Decide the first useful output format and source
@@ -126,8 +127,8 @@ search service, or publishing system is unnecessary for the initial tool.
 
 ### mini-help / mini help
 
-Status: future and not implemented. The standalone command will be
-`mini-help`; the dispatcher form will be `mini help`.
+Status: future and not implemented. A help/reference helper. The standalone
+command will be `mini-help`; the dispatcher form will be `mini help`.
 
 Its role is finding explanations of commands, language constructs, built-ins,
 and diagnostics. Start with concise, deterministic topic lookup over maintained
