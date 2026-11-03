@@ -42,19 +42,39 @@ The original map's name becomes `"shared"`; `result` is `"local"`. Assigning
 are not implemented yet; existing keys and text values avoid deciding missing-key
 or mixed-value behavior.
 
-## Implementation and footprint
+## Target-independent representation
 
-Ordinary TypeScript parameters provide this behavior directly. Lists/maps keep
-their identity, without copying their contents or allocating a mutable wrapper
-for every argument. Literals need no compiler-created reference cell. Calls still
-pass values/references and use ordinary call storage; this is not a guarantee
-that no bytes are copied or that the runtime never allocates.
+Choose behavior for Mini independently of the current TypeScript target. The
+same parameter rule should remain small to implement in other backends.
+Undeclared source types do not require every value to be a heap reference.
+
+A uniform conceptual model is a local binding holding a value handle. Assignment
+changes that binding's handle; a collection operation changes the shared
+collection. A handle is a specification model, not a required pointer or wrapper.
+It must not be confused with a reference to another binding's writable slot.
+
+A native backend could use one tagged value representation, storing numbers and
+booleans inline and references to immutable text and mutable collections.
+An implementation could instead use references for every value, but the language
+need not require scalar boxing or a particular memory-management mechanism.
+Either representation must preserve the same observable behavior.
+
+In particular, passing text need not copy its character storage. Its immutable
+behavior is separate from whether its storage is shared. Lists/maps preserve
+their identity across assignment, calls, and returns, without implicit cloning.
+
+Ordinary TypeScript parameters already provide the proposed behavior. Literals
+need no compiler-created reference cell. Calls still pass values/handles and use
+ordinary call storage; this is not a guarantee that no bytes are copied or that
+the runtime never allocates.
 
 True reference parameters would additionally let an assignment replace the
-caller's variable. In this backend, that would require another mechanism, such
-as mutable cells or read/write accessors, and rules for literals, expressions,
-and repeated arguments. Prohibiting parameter reassignment would instead require
-an additional compiler restriction. Local reassignment needs neither mechanism.
+caller's variable. This is a separate semantic choice even if every value is
+physically stored through a reference. A backend needs a way to reference the
+caller's writable slot, such as cells, addresses, or read/write accessors, plus
+rules for literals, expressions, and repeated arguments. Prohibiting parameter
+reassignment would instead require an additional compiler restriction. Local
+reassignment needs neither mechanism.
 
 For compiler state that several functions must update, a shared map can hold the
 cursor, current token, and output. A function can also return a replacement scalar

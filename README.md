@@ -56,6 +56,10 @@ its implementation cost. Prefer simple rules and direct compiler code. A cloned
 language should approach its target through small, self-hosted increments;
 [temporary syntax bridges](docs/evolving-language.md) can keep those steps manageable.
 
+Keep language semantics small to implement across targets. TypeScript/Node is
+the selected bootstrap target; its physical value representation does not define
+Mini's semantics.
+
 ## Scope
 
 Records, structs, and classes are outside Mini's intended scope. Use simple

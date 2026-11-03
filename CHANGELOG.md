@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Separate parameter-sharing semantics from target-specific value representation.
 - Propose local parameter rebinding and shared collections, with pending review cases.
 - T0 alpha.28 / builtins alpha.12: zero-argument `list_new()` creates empty lists.
 - Define group/product versioning, compatibility evidence, and the version inventory.
