@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "test-version.stdout",
-        "hash": "sha256:7ca1a8fa6d838e118bd92ff5f8891e2202cb86087611e5c641d943cd51b213a2"
+        "hash": "sha256:ffce3b69758af120e50ec85fd7091dde1350a20805a96c54e0166ac2eb7e05d5"
       },
       "stderr": {
         "text": ""

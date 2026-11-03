@@ -13,7 +13,7 @@ Local packaging creates snapshot assets and never publishes. Output directories
 must be empty. To validate an existing annotated component tag at HEAD:
 
 ```text
-./bin/mini release dist/tag check-v0.1.0-alpha.1
+./bin/mini release dist/tag check-v0.1.2-v0.1.0-alpha.3
 ```
 
 The tag must match [the version registry](../config/versions.json). Packaging
@@ -32,12 +32,11 @@ Assets: complete `minilang-TAG.tar.gz`, embedded `RELEASE.json`, external
 `manifest.json`, `RELEASE-NOTES.md`, and `SHA256SUMS`. They identify the source
 commit, entity versions, Node version, and available bootstrap hashes.
 
-The [group/product policy](versioning.md#group-and-product-versions) also requires
-explicit compatibility and verification of a group's exact selection. Current
-packaging records the snapshot's versions; it does not yet validate compatibility
-declarations or certify a group. Independent product tags do not advance the
-Mini group or language. Documentation revisions remain tied to their source and
-applicable product versions.
+The [group/product policy](versioning.md#group-and-product-versions) uses
+`product-vGROUP-vPRODUCT` tags. Packaging validates both numbers against the
+registry and records them separately in schema-version-2 manifests. A complete
+distribution pins the exact products it verifies. General dependency compatibility
+checks are not implemented. Product fixes do not automatically bump other products.
 
 Packaging extracts and checks the finished archive without Git history or
 installed npm packages. Compiler output must reproduce exactly; compressed
@@ -45,16 +44,16 @@ archive bytes across tar implementations need not.
 
 ## VS Code extension
 
-An annotated `vscode-vX.Y.Z` tag releases the extension independently of the
+An annotated `vscode-vGROUP-vPRODUCT` tag releases the extension independently of the
 compiler. Install its locked development dependencies before local packaging:
 
 ```text
 npm --prefix editors/vscode ci --ignore-scripts
-./bin/mini release dist/vscode vscode-v0.1.1
+./bin/mini release dist/vscode vscode-v0.1.2-v0.1.1
 ```
 
 The example requires the matching annotated tag at HEAD and a clean checkout.
-The release adds `mini-X.Y.Z.vsix`, built from the committed source archive.
+The release adds `mini-GROUP-vPRODUCT.vsix`, built from the committed source archive.
 Its filename and SHA-256 are recorded in both manifests; `SHA256SUMS` covers
 the VSIX alongside the source archive and release notes. GitHub installs the
 packaging dependencies and uploads the VSIX automatically for `vscode-v*` tags.

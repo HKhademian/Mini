@@ -4,154 +4,137 @@
 
 ## Group and product versions
 
-`mini-vX.Y.Z` identifies a group release: one verified selection of language,
-compiler, builtins, available tools, libraries, and their documentation.
-Each product also advances independently. A product fix does not require a
-language change. A group update changes only its own version and the selected
-products that changed; unchanged products retain their versions.
+Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
-Each product declares the language versions it supports and any required
-builtins, libraries, runtime, or product interfaces. Start with exact supported
-versions during early development. Support for multiple versions is explicit;
-newer does not imply support for older syntax. Introduce ranges only with clear,
-tested compatibility rules. Do not combine group and product numbers into a
-custom `X-Y` version.
+```text
+compiler-v0.1.2-v0.1.0-alpha.31
+builtins-v0.1.2-v0.1.0-alpha.15
+vscode-v0.1.2-v0.1.1
+```
 
-A group pins exact product versions and source/artifact identities. Verify the
-selected combination together. Product releases can happen between group
-releases; they do not silently change an existing group.
+The shared group is `0.1.2`. Each product keeps its own version.
+The group identifies Mini's compatibility baseline, not a product counter.
+Change it when that baseline changes; changing groups does not reset products.
+A product-only fix advances only that product's version.
 
-The registry currently records versions, and release manifests record the
-snapshot's component versions. Machine-readable compatibility declarations and
-their enforcement are not implemented yet. Existing snapshots are not proof of
-group compatibility. The assigned `mini` version predates this group policy;
-it has no group tag and does not identify a verified group release yet.
+Product versions increase across groups. An unchanged implementation may carry
+its existing version into a new group after verification:
 
-## Registered streams
+```text
+vscode-v0.1.2-v0.1.1  initial grouped label
+vscode-v0.1.2-v0.1.2  editor fix; same group
+vscode-v0.2.0-v0.1.2  same implementation verified for a new group
+vscode-v0.2.0-v0.1.3  next editor fix
+```
 
-Each entity has its own tag:
+The last three labels illustrate future changes, not assigned releases.
+Use one continuous product counter; never restart it at a group boundary.
+New products start at `0.1.0-alpha.1`. Existing counters are preserved.
 
-- `mini`: verified group, tag `mini-vX.Y.Z`.
-- `language`: accepted language/specification contract, tag `lang-vX.Y.Z`.
-- `compiler`: compiler implementation, tag `compiler-vX.Y.Z`.
-- `builtins`: primitive language operations, tag `builtins-vX.Y.Z`.
-- `bootstrap`: generated compiler/source pair, tag `bootstrap-vX.Y.Z`.
-- `std`: optional standard library, tag `std-vX.Y.Z`.
-- `cli`: command dispatcher, tag `cli-vX.Y.Z`.
-- `vscode`: editor extension, tag `vscode-vX.Y.Z`. Its package and lockfile
-  versions must match the registry; `mini check` enforces this.
-- `check`, `test`, `verify`, `bench`, `release`: separate tools,
-  each with its own `NAME-vX.Y.Z` tag.
+Group versions use plain `MAJOR.MINOR.PATCH`. Product versions use
+`MAJOR.MINOR.PATCH`, optionally `-alpha.N`, `-beta.N`, or `-rc.N`.
+No leading zeros or build metadata. After 1.0, incompatible changes bump MAJOR,
+compatible additions MINOR, and compatible fixes PATCH. Before 1.0, incompatible
+changes bump MINOR and are documented.
 
-`mini-compile` and `minic` share the compiler version. T0 is the active compiler
-stage, not a second product stream. The `mini` command dispatcher uses the CLI
-version separately from the Mini group version.
+The VS Code package and lockfile retain the plain product version, such as
+`0.1.1`; the group appears in its release tag and packaged VSIX filename.
+`mini check` validates registry/package/lockfile alignment. A plain group
+version does not make an alpha product stable.
 
 ## Current inventory
 
-Assigned versions at this documentation update; check the registry for later
-changes. Assignment does not mean a release was published:
+Current group: `0.1.2`. These are assigned release identities, not claims of
+publication or self-hosting. Check the registry for later increments:
 
 ```text
-mini       0.1.0-alpha.1   group unverified; no group tag
-language   0.1.0-alpha.6   specification / accepted draft
-compiler   0.1.0-alpha.31  handwritten T0
-builtins   0.1.0-alpha.15
-cli        0.1.0-alpha.2
-check      0.1.0-alpha.2
-test       0.1.0-alpha.2
-verify     0.1.0-alpha.2
-bench      0.1.0-alpha.2
-release    0.1.0-alpha.2
-vscode     0.1.1
-bootstrap  unassigned; unavailable
-std        unassigned; unavailable
+mini-v0.1.2-v0.1.0-alpha.2
+lang-v0.1.2-v0.1.0-alpha.6
+compiler-v0.1.2-v0.1.0-alpha.31
+builtins-v0.1.2-v0.1.0-alpha.15
+cli-v0.1.2-v0.1.0-alpha.3
+check-v0.1.2-v0.1.0-alpha.3
+test-v0.1.2-v0.1.0-alpha.2
+verify-v0.1.2-v0.1.0-alpha.2
+bench-v0.1.2-v0.1.0-alpha.3
+release-v0.1.2-v0.1.0-alpha.3
+vscode-v0.1.2-v0.1.1
 ```
 
-Future independent products have no version or registered stream yet. Proposed
-identifiers and tag forms, to register with their first verified implementation:
+`mini` versions the complete distribution; `cli` versions its dispatcher.
+`lang` identifies the language/specification contract. `compiler` versions
+handwritten T0 while active; T0 is not a second product stream.
+`mini-compile` and `minic` share the compiler version.
+`builtins` versions primitive support independently.
+Each other tool keeps the stream named by its tag.
 
-- Formatter: `format`, `format-vX.Y.Z`; command `mini-format` / `mini fmt`.
-- Documentation generator: `document`, `document-vX.Y.Z`;
-  command `mini-document` / `mini doc`.
-- Help/reference tool: `help`, `help-vX.Y.Z`; command `mini-help` / `mini help`.
-- Language server: `lsp`, `lsp-vX.Y.Z`; command `mini-lang-server`.
-- Playground: `play`, `play-vX.Y.Z`; delivery and commands remain undecided.
+Bootstrap and std remain unassigned/unavailable. Future first-release examples
+under the current group, to use only after implementation and verification:
 
-The [tooling guide](tooling.md) defines the existing future-tool scope. Listing
-a version identity does not implement a product or select additional features.
+```text
+bootstrap-v0.1.2-v0.1.0-alpha.1
+std-v0.1.2-v0.1.0-alpha.1
+format-v0.1.2-v0.1.0-alpha.1
+document-v0.1.2-v0.1.0-alpha.1
+help-v0.1.2-v0.1.0-alpha.1
+lsp-v0.1.2-v0.1.0-alpha.1
+play-v0.1.2-v0.1.0-alpha.1
+```
 
-## Specification, docs, and other items
-
-- Specification: the language version identifies the contract. Prose-only
-  corrections get a source revision without changing that contract version.
-- Repository docs, guides, and generated reference output: identify their source
-  revision and the exact language/product versions they describe. Published
-  group docs are frozen with their group; later corrections get new revisions.
-  The documentation generator has its own product version, separate from output.
-- Command help: follows its owning tool's version. Current `mini --help` belongs
-  to the CLI. A future standalone help tool also records its content revision
-  and the versions its explanations describe.
-- Wiki: no separate wiki is maintained yet. Pages need revision history and
-  explicit applicable versions. A separately released wiki application would
-  have a product version; individual pages need no product counters.
-- Cases, samples, examples, schemas, agent rules, and CI definitions: identified
-  by source revision; cases retain stable IDs and source/stream hashes. Schema
-  revisions follow their owning tool's compatibility contract. No individual
-  release stream is needed for each file.
-- Benchmark reports: record tested product versions, source/case identities,
-  runtime, and environment, using the benchmark tool's version.
-- Node and editor/protocol requirements: dependency versions, not Mini products.
+Only bootstrap/std are already registered as unassigned streams. Register other
+future streams with their first implementation. See [tooling](tooling.md) for
+scope and commands; playground delivery remains undecided.
 
 ## Compatibility evidence
 
-- Compiler: verify every supported contract against its corresponding cases;
-  identify partial support explicitly. Record the language used to write the
-  compiler separately from the language accepted by it, plus the prior builder
-  identity for bootstrap migration.
-- Builtins and std: declare their language and builtin/API requirements and
-  verify compilation and execution with the selected compiler.
-- Editor: declare syntax/editor support. Highlighting is not compiler conformance.
-  An LSP additionally declares its client/protocol interface requirements.
-- Formatter, documenter, and help: verify behavior/content against their declared
-  language/product versions.
-- Playground: identify its own release and exact compiler, language, builtins,
-  and std selection. Shared programs preserve that selection; an updated site
-  must not silently run them with a different compiler.
+Products need not depend on one another merely because they share a group.
+The editor follows language syntax; bench consumes cases and the compiler
+command interface; release consumes packaging, case, and compiler interfaces.
+Do not introduce extra case-format or package-format release streams now.
 
-For example, an editor-only fix can advance `vscode` from `0.1.1` to `0.1.2`
-while leaving the language and compiler unchanged. Its support declaration stays
-the same if verified support is unchanged. A later group release can select it.
-This is an example, not an assigned version bump.
+Verify each product against the contracts it actually uses. A distribution pins
+exact product versions, source/artifact identities, and documentation revisions.
+Sharing a group label does not prove every possible pair was tested.
+Release manifests record group and product versions separately.
+
+The tag parser, CLI version output, release packaging, and CI enforce the
+group/product identities. General dependency declarations and cross-version
+compatibility checks are not implemented.
+
+Compiler verification uses the corresponding language cases. Record its source
+language separately from the language it accepts, plus its prior builder during
+bootstrap migration. Editor highlighting is not compiler conformance.
+Std declares its language and builtin requirements. A future LSP also identifies
+its client/protocol requirements. A playground pins its compiler/language/library
+selection; shared programs preserve that selection.
+
+## Specification, docs, and other items
+
+- Specification: follows the language contract; prose corrections use source revisions.
+- Docs/reference/wiki pages: source revision plus applicable group/product versions.
+  Freeze published revisions; corrections produce new revisions. No wiki exists yet.
+- Command help: follows its owning tool; current `mini --help` belongs to CLI.
+  Future help/document tools have independent versions; their content records its targets.
+- Cases, samples, schemas, agent rules, and CI: source revision, not per-file
+  release counters. Cases retain stable IDs and source/stream hashes.
+- Benchmarks: tested versions, case identities, runtime, and environment.
+- Node, editor, and protocol versions: dependencies, not Mini products.
 
 ## Assignment and release rules
 
-`null` means unimplemented/unassigned and blocks that entity's release.
-The compiler stream versions handwritten T0 while it is active. Each small
-support increment advances its prerelease counter. Built-ins advance separately
-when primitive support changes.
-Language, compiler, and builtins have T0 development versions; bootstrap and std remain
-unassigned. Tool/CLI and
-implemented library and builtin releases can publish independently. T0 compiler
-prereleases are labeled previews; stable compiler, language, bootstrap, and mini
-releases require a verified compiler bootstrap. Reserving `std`
-does not introduce a library or select module/import syntax.
+`null` means unimplemented/unassigned and blocks that product's release.
+Every verified increment has one atomic commit and an annotated grouped tag.
+Never move or rename historical tags. Old tags remain valid historical
+identities; current tooling requires the new grouped format.
 
-Use `MAJOR.MINOR.PATCH`, optionally `-alpha.N`, `-beta.N`, or `-rc.N`.
-No leading zeros or build metadata. After 1.0, incompatible changes bump MAJOR,
-compatible additions MINOR, and compatible fixes PATCH. Before 1.0, incompatible
-changes bump MINOR and are documented; do not hide them in PATCH.
+Release manifests use schema version 2 and record `group`, product versions,
+and the released product's group/version. VSIX filenames include both numbers,
+for example `mini-0.1.2-v0.1.1.vsix`.
 
-The `vscode` stream uses plain `MAJOR.MINOR.PATCH`, matching VS Code's extension
-version format. SemVer prerelease suffixes are not supported for this stream.
+Stable compiler, language, bootstrap, and Mini distribution releases require a
+verified self-hosted bootstrap. Handwritten T0 can ship only as a labeled compiler
+prerelease preview. Tools and implemented libraries need not be self-hosted.
 
-Commit release preparation separately from implementation. An annotated tag
-must match its entity's recorded version and exact source commit. Never move
-or reuse published tags. Corrections get a new version.
-Tag each verified version increment on its atomic commit before the next feature.
-Tags created locally become GitHub release triggers when explicitly pushed.
-
-Every release includes the complete source snapshot and available tools and
-bootstrap. The manifest records all entity versions; bundling an entity does
-not bump its version. Do not use bare `vX.Y.Z` tags or compete for GitHub's
-default latest release across independent streams.
+Tag each verified product on its atomic commit before the next feature.
+Push tags only when publishing is authorized. Packaging never publishes.
+Never reuse published tags; corrections require a new product version.

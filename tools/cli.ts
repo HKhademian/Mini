@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { join, resolve } from 'node:path';
-import { compiler, root, run, versions, type Component } from './project.ts';
+import { compiler, releaseTag, root, run, versions, type Component } from './project.ts';
 
 const names: Record<string, Component> = { check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
 const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
@@ -11,12 +11,12 @@ export async function main(executable: string): Promise<void> {
     if (executable === 'mini' && (args.length === 0 || args[0] === '--help')) { process.stdout.write(help); return; }
     const current = versions(root);
     if (executable === 'mini' && args[0] === '--version') {
-      console.log(`mini ${current.mini}\nmini CLI ${current.cli}`); return;
+      console.log(`${releaseTag('mini', current)}\n${releaseTag('cli', current)}`); return;
     }
     const command = executable === 'mini' ? args.shift()! : executable === 'minic' ? 'compile' : executable.replace(/^mini-/, '');
     const component = names[command];
     assert(component !== undefined, `unknown command: ${command}`);
-    if (args[0] === '--version') { console.log(`mini-${command} ${current[component] ?? 'unavailable'}`); return; }
+    if (args[0] === '--version') { console.log(releaseTag(component, current)); return; }
     switch (command) {
       case 'check': {
         assert(args.length === 0 || (args.length === 1 && args[0] === '--docs'), 'usage: mini-check [--docs]');

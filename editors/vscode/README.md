@@ -26,11 +26,11 @@ From this directory, using the repository's Node 24.16.0:
 ```text
 npm ci
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.1.1.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.1.2-v0.1.1.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.1.1.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.1.2-v0.1.1.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 
@@ -43,7 +43,8 @@ The focused checks use VS Code's TextMate tokenizer and Oniguruma engine.
 Packaging excludes tests, development dependencies, and preview configuration.
 CI runs these checks on Linux and macOS. The independent version is recorded in
 `config/versions.json`, `package.json`, and `package-lock.json`; update them
-together when editor behavior changes. `vscode-v*` identifies extension releases.
+together when editor behavior changes. `vscode-vGROUP-vPRODUCT` identifies extension releases. The package version is
+the product version; the tag and VSIX filename include the group as well.
 Tagged GitHub releases include an installable VSIX, the source archive, and
 checksums. Local tagged packaging uses `mini release`; see `docs/releases.md`
 in the repository. Build an untagged local VSIX with the command above.

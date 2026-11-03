@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symli
 import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
 import { test } from 'node:test';
-import { root, run, selectRelease, sha256, versions } from './project.ts';
+import { releaseTag, root, run, selectRelease, sha256, versions } from './project.ts';
 import { prepareRelease } from './release.ts';
 
 function fixture() {
@@ -27,28 +27,36 @@ function fixture() {
 
 test('VS Code has an independent, exact-version release stream', () => {
   const current = versions(root);
-  assert.deepEqual(selectRelease(`vscode-v${current.vscode}`, current), { component: 'vscode', version: current.vscode });
-  assert.throws(() => selectRelease('vscode-v9999.0.0', current), /tag must match assigned vscode version/);
+  assert.deepEqual(selectRelease(releaseTag('vscode', current), current), { component: 'vscode', group: current.group, version: current.vscode });
+  assert.throws(() => selectRelease(`vscode-v${current.group}-v9999.0.0`, current), /tag must match assigned vscode version/);
+  assert.throws(() => selectRelease(`vscode-v9999.0.0-v${current.vscode}`, current), /tag must match assigned group version/);
+  assert.throws(() => selectRelease(`vscode-v${current.vscode}`, current), /invalid component tag/);
   assert.throws(() => selectRelease(`v${current.vscode}`, current), /invalid component tag/);
+  const nextGroup = { ...current, group: '0.2.0' };
+  assert.deepEqual(selectRelease(releaseTag('vscode', nextGroup), nextGroup), { component: 'vscode', group: '0.2.0', version: current.vscode });
+  assert.equal(releaseTag('vscode', { ...nextGroup, vscode: '0.1.2' }), 'vscode-v0.2.0-v0.1.2');
 });
 
 test('VS Code releases build a checksummed VSIX from the annotated source revision', () => {
   const { work, directory, git } = fixture();
   try {
-    const version = versions(directory).vscode;
-    const tag = `vscode-v${version}`;
+    const current = versions(directory);
+    const version = current.vscode;
+    const tag = releaseTag('vscode', current);
     const output = join(work, 'release');
     git('tag', tag);
     assert.throws(() => prepareRelease(directory, output, tag), /release tag must be annotated/);
     git('tag', '-d', tag);
     git('tag', '-a', tag, '-m', tag);
     const manifest = prepareRelease(directory, output, tag);
-    assert.deepEqual(manifest.releasedComponent, { component: 'vscode', version });
+    assert.deepEqual(manifest.releasedComponent, { component: 'vscode', group: current.group, version });
+    assert.equal(manifest.schemaVersion, 2);
+    assert.equal(manifest.group, current.group);
     assert.equal(manifest.commit, git('rev-parse', 'HEAD').toString().trim());
     assert.equal(manifest.bootstrap, null);
     assert.ok(manifest.vsix);
     const file = join(output, manifest.vsix.file);
-    assert.equal(manifest.vsix.file, `mini-${version}.vsix`);
+    assert.equal(manifest.vsix.file, `mini-${current.group}-v${version}.vsix`);
     assert.equal(manifest.vsix.sha256, sha256(readFileSync(file)));
     const packaged = (path: string) => run('unzip', ['-p', file, `extension/${path}`], work);
     for (const path of ['package.json', 'language-configuration.json', 'syntaxes/mini.tmLanguage.json', 'icons/mini-dark.svg', 'icons/mini-light.svg']) {

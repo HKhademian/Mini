@@ -74,6 +74,6 @@ Keep library verification manifests and streams under `cases/`. Create `std/`
 when its first implementation is added; do not add empty scaffolding.
 
 If a standard library is introduced, it has an independent `std` version and
-`std-vX.Y.Z` release tags. Its version remains `null` until implemented and
+`std-vGROUP-vPRODUCT` release tags. Its version remains `null` until implemented and
 assigned. A compiler using it must ship the matching library source and include
 the required code in its generated bootstrap.

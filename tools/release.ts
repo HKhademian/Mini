@@ -13,7 +13,7 @@ export function packageVscode(directory: string, output: string, tooling = direc
   const packager = join(tooling, 'editors/vscode/node_modules/@vscode/vsce/vsce');
   assert(existsSync(packager), 'install VS Code development dependencies with npm ci in editors/vscode');
   mkdirSync(output, { recursive: true });
-  const file = `mini-${version}.vsix`;
+  const file = `mini-${versions(directory).group}-v${version}.vsix`;
   const destination = resolve(output, file);
   assert(!existsSync(destination), 'VSIX output already exists');
   run(process.execPath, [packager, 'package', '--no-dependencies', '--allow-missing-repository',
@@ -55,7 +55,7 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     const label = tag ?? `snapshot-${commit.slice(0, 12)}`;
     const title = t0Preview ? 'Mini T0 compiler preview' : releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
     const vsix = releasedComponent?.component === 'vscode' ? packageVscode(source, output, directory) : null;
-    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent,
+    const manifest = { schemaVersion: 2, title, tag: tag ?? null, commit, group: current.group, componentVersions: current, releasedComponent,
       compiler: { ...active, hash: compilerHash(directory) }, node: process.version, bootstrap, t0, vsix };
     assert(!existsSync(join(source, 'RELEASE.json')), 'RELEASE.json is reserved for packaged metadata');
     const record = JSON.stringify(manifest, null, 2) + '\n';

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Adopt group 0.1.2 and product-vGROUP-vPRODUCT tags; keep product counters across groups.
+
 - T0 alpha.31 / builtins alpha.15: `map_has` checks text-key membership without mutation.
 - T0 alpha.30 / builtins alpha.14: `map_new()` creates empty maps.
 - T0 alpha.29 / builtins alpha.13: list mutation with growth and uniform no-op rules.

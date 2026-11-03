@@ -12,26 +12,35 @@ export const streams = {
   check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', cli: 'cli',
 } as const;
 export type Component = typeof streams[keyof typeof streams];
-export type Versions = Record<Component, string | null>;
+export type Versions = Record<Component, string | null> & { group: string };
 export const versionPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:alpha|beta|rc)\.(0|[1-9]\d*))?$/;
 
 export function versions(directory: string): Versions {
   const value = JSON.parse(readFileSync(join(directory, 'config/versions.json'), 'utf8')) as Versions;
-  assert.deepEqual(Object.keys(value).sort(), Object.values(streams).sort());
+  assert.deepEqual(Object.keys(value).sort(), ['group', ...Object.values(streams)].sort());
+  assert(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(value.group), 'group requires MAJOR.MINOR.PATCH');
   for (const version of Object.values(value)) {
     assert(version === null || (typeof version === 'string' && versionPattern.test(version)), `invalid version: ${version}`);
   }
   return value;
 }
 
-export function selectRelease(tag: string, current: Versions): { component: Component; version: string } {
-  const match = /^(mini|lang|compiler|bootstrap|builtins|std|check|verify|release|test|bench|cli|vscode)-v(.+)$/.exec(tag);
+export function releaseTag(component: Component, current: Versions): string {
+  const name = Object.keys(streams).find(name => streams[name as keyof typeof streams] === component)!;
+  assert(current[component] !== null, `assign the ${component} version before tagging`);
+  return `${name}-v${current.group}-v${current[component]}`;
+}
+
+export function selectRelease(tag: string, current: Versions): { component: Component; group: string; version: string } {
+  const match = /^(mini|lang|compiler|bootstrap|builtins|std|check|verify|release|test|bench|cli|vscode)-v([0-9]+\.[0-9]+\.[0-9]+)-v(.+)$/.exec(tag);
   assert(match, `invalid component tag: ${tag}`);
   const component = streams[match[1] as keyof typeof streams];
-  const version = match[2]!;
+  const group = match[2]!;
+  assert(group === current.group, 'tag must match assigned group version');
+  const version = match[3]!;
   assert(versionPattern.test(version), `invalid release version: ${version}`);
   assert(version === current[component], `tag must match assigned ${component} version`);
-  return { component, version };
+  return { component, group, version };
 }
 
 export function run(command: string, args: string[], cwd: string, input?: string | Buffer): Buffer {

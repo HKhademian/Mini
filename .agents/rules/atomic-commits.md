@@ -14,7 +14,8 @@
   verified bootstrap promotion in one atomic migration. See
   [language evolution](../../docs/evolving-language.md).
 - Tag every verified component version on its atomic commit before the next
-  feature. Use annotated NAME-vVERSION tags and never move or reuse published
+  feature. Use annotated PRODUCT-vGROUP-vPRODUCT_VERSION tags. Product versions
+  continue across groups; never reset their counters. Never move or reuse published
   tags. Do not amend others' commits or rewrite published history. Push release
   tags only when publishing is authorized.
 
