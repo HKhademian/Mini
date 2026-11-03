@@ -1,8 +1,5 @@
 # Built-ins and library functions
 
-Group 0.2.0 renames `text_at` and `list_at` to `text_get` and `list_get`.
-Update calls to the new names; the former names are not built-in aliases.
-
 Mini needs a small set of host operations for compiling files and writing tools.
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout

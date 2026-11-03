@@ -2,10 +2,11 @@
 
 ## Unreleased
 
+- Focus reader documentation and cases on the current API.
 - 0.2.0-alpha.3: list reads return zero for gaps and invalid targets/positions;
   negative indices count from the end.
 - 0.2.0-alpha.2: text reads return empty text for non-text targets and invalid positions.
-- Breaking, group 0.2.0: rename text_at/list_at to text_get/list_get without aliases;
+- Group 0.2.0: use consistent text_get/list_get reader names;
   advance language, compiler, and builtins to 0.2.0-alpha.1.
 - T0 alpha.35 / builtins alpha.19: map reads use ordinary zero for missing keys.
 - T0 alpha.34 / builtins alpha.18: map key snapshots, demonstrated by the map sample.
@@ -29,12 +30,12 @@
 - Prepare independently versioned T0 preview releases with source provenance.
 - T0 alpha.26 / builtins alpha.11: exact stderr output with `write_error`.
 - T0 alpha.25 / builtins alpha.10: `process_exit`.
-- T0 alpha.24 / builtins alpha.9: `list_at`.
+- T0 alpha.24 / builtins alpha.9: indexed list reads.
 - T0 alpha.23 / builtins alpha.8: `list_length`.
 - T0 alpha.22 / builtins alpha.7: `process_args` returns the program's text list.
 - T0 alpha.21 / builtins alpha.6: `file_write`.
 - T0 alpha.20 / builtins alpha.5: `file_read`.
-- T0 alpha.19 / builtins alpha.4: `text_at`.
+- T0 alpha.19 / builtins alpha.4: indexed character reads.
 - T0 alpha.18 / builtins alpha.3: `text_length`.
 - T0 alpha.17: braced `while` loops.
 - T0 alpha.16: short-circuit boolean disjunction.
@@ -58,7 +59,7 @@
 - Accept file I/O, shared text-list operations, and process arguments.
 - Accept text-access built-ins; distinguish primitives from Mini library helpers.
 - Propose text-file operations with isolated input/output file cases.
-- Use `text_length`/`text_at` names in the text-access proposal and cases.
+- Use grouped names in the text-access proposal and cases.
 - Accept `readAll`/`write`; propose two text-access primitives with scanner cases.
 - Propose whole-input/text-output primitives with focused I/O and EOF cases.
 - Package checksummed VSIX assets from tagged extension sources and verify releases in CI.

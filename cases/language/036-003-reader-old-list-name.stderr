@@ -1,3 +1,0 @@
-036-003-reader-old-list-name.mini:1:1: unknown function list_at
-list_at(list_new(), 0);
-^

@@ -270,7 +270,7 @@ list_set(items, -1, "replacement");
 
 On an empty list, assigning index `-1` or `-2` is a no-op. The same rule removes
 the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empty
-for `r <= 0`. The reader is `list_get`; the former `list_at` built-in is removed.
+for `r <= 0`.
 
 Map assignment below likewise makes a non-map target a no-op. Function parameter
 rebinding and the broader passing contract remain under review separately.

@@ -68,7 +68,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.18`: text_length(text).
 
-- `0.1.0-alpha.19`: text_at(text, index).
+- `0.1.0-alpha.19`: indexed character reads.
 
 - `0.1.0-alpha.20`: file_read(path).
 
@@ -78,7 +78,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.23`: list_length(items).
 
-- `0.1.0-alpha.24`: list_at(items, index).
+- `0.1.0-alpha.24`: indexed list reads.
 
 - `0.1.0-alpha.25`: process_exit(status).
 
@@ -104,8 +104,8 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.35`: map_get(items, key) reads values, with numeric-zero fallbacks.
 
-- `0.2.0-alpha.1` (group 0.2.0): rename text_at/list_at to text_get/list_get,
-  migrate maintained sources and cases, and remove the former built-in names.
+- `0.2.0-alpha.1` (group 0.2.0): consistent text_get/list_get reader names
+  across maintained sources and cases.
 
 - `0.2.0-alpha.2`: text_get returns empty text for unavailable characters.
 
