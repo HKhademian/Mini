@@ -3,10 +3,10 @@ if (number_to_text(0) == "0" && number_to_text(123) == "123" && number_to_text(-
 } else {
     write("bad\n");
 }
-fn text(value) {
+fn to_text(value) {
     return number_to_text(value);
 }
-if (text("12") == "" && text(list_new()) == "") {
+if (to_text("12") == "" && to_text(list_new()) == "") {
     write("ok\n");
 } else {
     write("bad\n");
