@@ -105,8 +105,9 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
 Records, structs, and classes are outside Mini's intended scope, rather than
 deferred additions. Text-keyed maps can hold named compiler data such as token
 information without dedicated field declarations or construction syntax.
-Lists can now be constructed, grown, and mutated, storing scalars and other
-lists. Missing-position values remain open, and maps are not implemented yet.
+Lists can now be constructed, grown, and mutated, storing scalars, lists, and
+maps. Empty-map construction is available; map membership, mutation, and lookup
+are not implemented yet. Missing-position and missing-key values remain open.
 
 Lists and maps can share implementation machinery, but their observable rules
 differ. Lists have positional indices, a sequence length, growth, and indexing

@@ -27,12 +27,16 @@ compiler's command interface. Shared built-ins `list_length(items)` and
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
 Indices still below zero after adjustment are no-ops. Lists can hold scalar
-values and other lists; `list_at` returns the actual stored value.
+values, lists, and maps; `list_at` returns the actual stored value.
 Reserve and missing-position values remain open; see the [language contract](language.md).
 
 T0 emits the list setter's small host adapter once when used. It provides array
 mutation, not compiler logic. The generated helper name uses `$`, which Mini
 identifiers cannot contain, to avoid collisions with Mini source names.
+
+`map_new()` creates a fresh empty map with no arguments. T0 emits a native
+`Map`; maps can be stored in lists and passed through functions. Text-key
+operations, including membership and mutation, are not implemented yet.
 
 The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal

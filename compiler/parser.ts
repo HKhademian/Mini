@@ -61,7 +61,10 @@ class Parser {
     while (this.token().text === '==' || this.token().text === '!=') {
       const operator = this.take();
       const right = this.comparison();
-      if (left.kind === ValueKind.Void || right.kind === ValueKind.Void || left.kind === ValueKind.List || right.kind === ValueKind.List || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
+      if (left.kind === ValueKind.Void || right.kind === ValueKind.Void ||
+          left.kind === ValueKind.List || right.kind === ValueKind.List ||
+          left.kind === ValueKind.Map || right.kind === ValueKind.Map ||
+          (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
       left = { code: `(${left.code} ${operator.text === '==' ? '===' : '!=='} ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;

@@ -3,7 +3,7 @@
   "kind": "feature",
   "source": "028-003-parameter-map-sharing.mini",
   "features": ["parameters.sharing", "functions", "map.new", "map.get", "map.set"],
-  "pending": "Parameter-passing proposal is under review; map operations are not implemented",
+  "pending": "Parameter-passing proposal is under review; map mutation and lookup are not implemented",
   "cases": [
     {
       "name": "mutation-alias-and-rebinding",

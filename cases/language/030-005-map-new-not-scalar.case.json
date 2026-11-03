@@ -1,0 +1,23 @@
+{
+  "id": "language.map-new-not-scalar",
+  "kind": "reject",
+  "source": "030-005-map-new-not-scalar.mini",
+  "features": [
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "030-005-map-new-not-scalar.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

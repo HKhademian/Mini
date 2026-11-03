@@ -1,0 +1,23 @@
+{
+  "id": "language.map-new-functions",
+  "kind": "feature",
+  "source": "030-002-map-new-functions.mini",
+  "features": [
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "stored"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

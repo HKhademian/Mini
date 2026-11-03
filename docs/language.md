@@ -219,7 +219,7 @@ while (position < list_length(args)) {
   these primitives do not parse options.
 
 Lists can be held in bindings and passed to functions. They can store numbers,
-booleans, text, and other lists using `list_set` below. Equality keeps its existing
+booleans, text, lists, and maps using `list_set` below. Equality keeps its existing
 scalar contract. The list operations can serve future list-producing APIs too.
 
 For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
@@ -239,8 +239,7 @@ var count = list_length(items);
 - It uses the shared list kind.
 
 T0 emits a new array for each call. Only the zero-argument form is implemented.
-Explicit reserve remains under discussion. Missing elements and maps still
-require their own reviewed contracts.
+Explicit reserve and missing-position values remain under discussion.
 
 ## Accepted operation: list assignment
 
@@ -257,8 +256,8 @@ list_set(items, -1, "replacement");
   list length. If the adjusted index is still negative, do nothing.
 - An index within the list replaces that position. An index at or beyond its
   end grows the length to `index + 1` and assigns that position.
-- Stored values retain their kind. Lists can contain different kinds and other
-  lists, without converting stored values to text.
+- Stored values retain their kind. Lists can contain different kinds, including
+  lists and maps, without converting stored values to text.
 - Only assigned positions can be read in this increment. Reading skipped
   positions and out-of-range positions remains outside the contract. No zero or
   null default is selected by growth.
@@ -268,8 +267,26 @@ the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empt
 for `r <= 0`. The existing reader is `list_at`; no `list_get` alias is introduced.
 
 The selected direction for future `map_set` likewise makes a non-map target a
-no-op. Map operations are not implemented yet. Function parameter rebinding and
-the broader passing contract remain under review separately.
+no-op. Map mutation is not implemented yet. Function parameter rebinding and the
+broader passing contract remain under review separately.
+
+## Accepted operation: empty-map construction
+
+```text
+var names = map_new();
+```
+
+- `map_new()` returns a fresh empty map and takes no arguments.
+- A map can be held in a binding, passed to a function, returned, and stored in
+  a list. It is a distinct collection kind, not text or a list.
+- Equality retains its scalar-only contract; map identity or content equality
+  is not selected by this constructor.
+
+T0 emits a native `Map` for each call. Other targets can choose their own
+representation. Maps are intended to hold unique text keys; membership, length,
+mutation, lookup, and key enumeration follow as separate increments. They are
+not implemented yet. Missing-key values remain open. There is no `map_empty`
+alias or record/struct/class syntax.
 
 ## Accepted operation: process termination
 

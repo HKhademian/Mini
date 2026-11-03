@@ -1,0 +1,23 @@
+{
+  "id": "language.map-new",
+  "kind": "feature",
+  "source": "030-001-map-new.mini",
+  "features": [
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "created"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

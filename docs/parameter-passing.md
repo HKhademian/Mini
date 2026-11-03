@@ -1,8 +1,9 @@
 # Parameter passing proposal
 
 Status: under review, not an accepted language decision. T0 currently emits
-ordinary TypeScript parameters. List mutation is available; maps remain
-unavailable. The review cases stay pending until the passing rule is accepted.
+ordinary TypeScript parameters. List mutation and empty-map construction are
+available; map mutation and lookup remain unavailable. The review cases stay
+pending until the passing rule is accepted.
 
 ## Proposed rule
 
@@ -38,9 +39,9 @@ var result = change(original);
 ```
 
 The original map's name becomes `"shared"`; `result` is `"local"`. Assigning
-`items` to a new map does not replace `original`. Map operations in this example
-are not implemented yet; existing keys and text values avoid deciding missing-key
-or mixed-value behavior.
+`items` to a new map does not replace `original`. Map mutation and lookup in this
+example are not implemented yet; existing keys and text values avoid deciding
+missing-key or mixed-value behavior.
 
 ## Target-independent representation
 

@@ -11,6 +11,8 @@ export type Builtin = {
 const listSet = '$mini_list_set';
 
 export const builtins = new Map<string, Builtin>([
+  ['map_new', { parameters: [], result: ValueKind.Map,
+    imports: [], emit: () => 'new Map()' }],
   ['list_set', { parameters: [ValueKind.Unknown, ValueKind.Number, ValueKind.Unknown], result: ValueKind.Void,
     imports: [], helper: `function ${listSet}(items, index, value) {
     if (!Array.isArray(items)) return;

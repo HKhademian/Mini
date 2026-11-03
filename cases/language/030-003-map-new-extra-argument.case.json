@@ -1,0 +1,23 @@
+{
+  "id": "language.map-new-extra-argument",
+  "kind": "reject",
+  "source": "030-003-map-new-extra-argument.mini",
+  "features": [
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "030-003-map-new-extra-argument.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
