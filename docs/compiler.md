@@ -191,6 +191,8 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.2`: `text_slice` with clamped, end-exclusive bounds, negative
   bounds from the end, and empty-text fallbacks.
 
+- `0.3.0-alpha.3`: `text_find` returns the first substring position or -1.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

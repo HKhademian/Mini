@@ -1,0 +1,23 @@
+{
+  "id": "language.text-find-wrong-needle",
+  "kind": "reject",
+  "source": "042-004-text-find-wrong-needle.mini",
+  "features": [
+    "text.find"
+  ],
+  "cases": [
+    {
+      "name": "number-needle",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "042-004-text-find-wrong-needle.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

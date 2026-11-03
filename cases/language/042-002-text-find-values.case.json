@@ -1,0 +1,23 @@
+{
+  "id": "language.text-find-values",
+  "kind": "feature",
+  "source": "042-002-text-find-values.mini",
+  "features": [
+    "text.find"
+  ],
+  "cases": [
+    {
+      "name": "fallback",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

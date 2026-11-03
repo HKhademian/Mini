@@ -13,6 +13,7 @@ const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
 const mapHas = '$mini_map_has';
 const textGet = '$mini_text_get';
+const textFind = '$mini_text_find';
 const textSlice = '$mini_text_slice';
 const listGet = '$mini_list_get';
 
@@ -80,6 +81,12 @@ export const builtins = new Map<string, Builtin>([
 `, emit: args => `${textGet}(${args.join(', ')})` }],
   ['text_length', { parameters: [ValueKind.Text], result: ValueKind.Number,
     imports: [], emit: args => `(${args[0]}).length` }],
+  ['text_find', { parameters: [ValueKind.Text, ValueKind.Text], result: ValueKind.Number,
+    imports: [], helper: `function ${textFind}(text, needle) {
+    if (typeof text !== "string" || typeof needle !== "string") return -1;
+    return text.indexOf(needle);
+}
+`, emit: args => `${textFind}(${args.join(', ')})` }],
   ['text_slice', { parameters: [ValueKind.Text, ValueKind.Number, ValueKind.Number], result: ValueKind.Text,
     imports: [], helper: `function ${textSlice}(source, start, end) {
     if (typeof source !== "string") return "";

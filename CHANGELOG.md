@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language/compiler/builtins 0.3.0-alpha.3: add `text_find(text, needle)` with
+  first-position and `-1` fallback behavior, and replace M1 character-membership
+  loops with it.
 - Language/compiler/builtins 0.3.0-alpha.2: add `text_slice(text, start, end)`
   with zero-based end-exclusive bounds, clamping, negative bounds from the end,
   and empty-text fallbacks. M1 uses it for token spelling and text helpers.

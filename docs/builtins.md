@@ -10,10 +10,12 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. T0 implements these operations.
 
-The accepted built-ins `text_length(text)`, `text_get(text, index)`, and
-`text_slice(text, start, end)` scan ASCII source. `text_get` uses zero-based
-integer indices and returns empty text for a non-text target or an out-of-range
-position, including negative indices. `text_slice` uses a zero-based,
+The accepted built-ins `text_length(text)`, `text_get(text, index)`,
+`text_find(text, needle)`, and `text_slice(text, start, end)` scan ASCII
+source. `text_get` uses zero-based integer indices and returns empty text for a
+non-text target or an out-of-range position, including negative indices.
+`text_find` returns the first zero-based occurrence or `-1`; an empty needle
+returns `0`, and non-text inputs return `-1`. `text_slice` uses a zero-based,
 end-exclusive range; negative bounds count from the end, bounds clamp to the
 text, and an empty or reversed range returns empty text. A non-text target
 returns empty text. The text family uses `group_operation` names, with lowercase

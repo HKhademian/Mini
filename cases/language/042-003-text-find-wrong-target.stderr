@@ -1,0 +1,3 @@
+042-003-text-find-wrong-target.mini:1:7: expected text argument
+write(text_find(1, "a"));
+      ^

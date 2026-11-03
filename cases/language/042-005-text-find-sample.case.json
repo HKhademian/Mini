@@ -1,0 +1,38 @@
+{
+  "id": "language.text-find-sample",
+  "kind": "sample",
+  "source": "../../samples/014-text-find.mini",
+  "features": [
+    "text.find",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "both",
+      "stdin": {
+        "text": "MiniLang"
+      },
+      "stdout": {
+        "text": "has Mini\nhas Lang\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "none",
+      "stdin": {
+        "text": "Other"
+      },
+      "stdout": {
+        "text": "no Mini\nno Lang\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -209,6 +209,9 @@ while (position < text_length(source)) {
 - `text_get(text, index)` returns one character as text, using a zero-based index.
 - If the target is not text, or the index is negative or at/beyond its length,
   return empty text without an error or conversion.
+- `text_find(text, needle)` returns the zero-based position of the first
+  occurrence, or `-1` when absent. An empty needle returns `0`; a non-text target
+  or needle returns `-1`.
 - `text_slice(text, start, end)` returns text from `start` through the exclusive
   `end`. Bounds are zero-based integers. Negative bounds count from the end;
   bounds clamp to the text; a non-text target or an empty/reversed range returns

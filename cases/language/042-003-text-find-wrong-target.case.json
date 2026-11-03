@@ -1,0 +1,23 @@
+{
+  "id": "language.text-find-wrong-target",
+  "kind": "reject",
+  "source": "042-003-text-find-wrong-target.mini",
+  "features": [
+    "text.find"
+  ],
+  "cases": [
+    {
+      "name": "number-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "042-003-text-find-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

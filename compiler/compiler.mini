@@ -25,6 +25,10 @@ var list_set_helper = "function $mini_list_set(items, index, value) {\n"
     + "    if (index < 0) index = items.length + index;\n"
     + "    if (index >= 0) items[index] = value;\n"
     + "}\n";
+var text_find_helper = "function $mini_text_find(text, needle) {\n"
+    + "    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n"
+    + "    return text.indexOf(needle);\n"
+    + "}\n";
 var text_get_helper = "function $mini_text_get(text, index) {\n"
     + "    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n"
     + "    return \"\";\n"
@@ -40,18 +44,6 @@ var text_slice_helper = "function $mini_text_slice(source, start, end) {\n"
     + "    if (end <= start) return \"\";\n"
     + "    return source.slice(start, end);\n"
     + "}\n";
-
-/// Return whether the single-character value occurs in choices.
-fn contains(choices, value) {
-    var position = 0;
-    while (position < text_length(choices)) {
-        if (text_get(choices, position) == value) {
-            return true;
-        }
-        position = position + 1;
-    }
-    return false;
-}
 
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
@@ -236,12 +228,12 @@ fn text_ends_with(source, suffix) {
 
 /// Return whether character is an ASCII identifier start.
 fn is_letter(character) {
-    return contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character);
+    return text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0;
 }
 
 /// Return whether character is a decimal digit.
 fn is_digit(character) {
-    return contains("0123456789", character);
+    return text_find("0123456789", character) >= 0;
 }
 
 /// Return whether character continues an identifier.
@@ -323,7 +315,7 @@ fn tokenize(source, source_name) {
     map_set(state, "column", 1);
     while (map_get(state, "position") < text_length(source)) {
         var character = text_get(source, map_get(state, "position"));
-        if (contains(" \t\r\n", character)) {
+        if (text_find(" \t\r\n", character) >= 0) {
             lex_advance(state);
         } else {
             if (character == "/" && text_get(source, map_get(state, "position") + 1) == "/") {
@@ -366,7 +358,7 @@ fn tokenize(source, source_name) {
                                     var escape = lex_start(state);
                                     lex_advance(state);
                                     if (map_get(state, "position") == text_length(source)
-                                        || !contains("\"\\nrt", text_get(source, map_get(state, "position")))) {
+                                        || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0) {
                                         fail(escape, "unknown text escape");
                                     }
                                 }
@@ -381,7 +373,7 @@ fn tokenize(source, source_name) {
                                 lex_advance(state);
                                 lex_advance(state);
                             } else {
-                                if (contains("=+-!<>(),;{}", character)) {
+                                if (text_find("=+-!<>(),;{}", character) >= 0) {
                                     lex_advance(state);
                                 } else {
                                     fail(token, "unexpected character " + json_quote_char(character));
@@ -852,6 +844,9 @@ fn helper_blocks(helpers) {
     if (map_has(helpers, list_set_helper)) {
         output = output + list_set_helper;
     }
+    if (map_has(helpers, text_find_helper)) {
+        output = output + text_find_helper;
+    }
     if (map_has(helpers, text_get_helper)) {
         output = output + text_get_helper;
     }
@@ -928,7 +923,7 @@ fn builtin_exists(name) {
     return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
         || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
-        || name == "file_read" || name == "text_get" || name == "text_length" || name == "text_slice"
+        || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length" || name == "text_slice"
         || name == "readAll" || name == "write";
 }
 
@@ -988,8 +983,13 @@ fn builtin_parameters(name) {
                                                             list_set(parameters, 1, "number");
                                                             list_set(parameters, 2, "number");
                                                         } else {
-                                                            if (name == "write") {
+                                                            if (name == "text_find") {
                                                                 list_set(parameters, 0, "text");
+                                                                list_set(parameters, 1, "text");
+                                                            } else {
+                                                                if (name == "write") {
+                                                                    list_set(parameters, 0, "text");
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -1026,7 +1026,7 @@ fn builtin_result(name) {
         || name == "file_write" || name == "write") {
         return "void";
     }
-    if (name == "list_length" || name == "text_length") {
+    if (name == "list_length" || name == "text_length" || name == "text_find") {
         return "number";
     }
     return "text";
@@ -1060,6 +1060,9 @@ fn builtin_helper(name) {
     if (name == "list_set") {
         return list_set_helper;
     }
+    if (name == "text_find") {
+        return text_find_helper;
+    }
     if (name == "text_get") {
         return text_get_helper;
     }
@@ -1073,7 +1076,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find") {
         return "$mini_" + name + "(" + join_texts(args, ", ") + ")";
     }
     if (name == "map_keys") {

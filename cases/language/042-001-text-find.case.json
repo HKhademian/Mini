@@ -1,0 +1,23 @@
+{
+  "id": "language.text-find",
+  "kind": "feature",
+  "source": "042-001-text-find.mini",
+  "features": [
+    "text.find"
+  ],
+  "cases": [
+    {
+      "name": "positions",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

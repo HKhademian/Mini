@@ -1,0 +1,10 @@
+var source = "alpha beta alpha";
+var first = text_find(source, "alpha");
+var second = text_find(source, "beta");
+var missing = text_find(source, "missing");
+var empty = text_find(source, "");
+if (first == 0 && second == 6 && missing == -1 && empty == 0 && text_find("abc", "bc") == 1 && text_find("abc", "abcd") == -1) {
+    write("ok\n");
+} else {
+    write("bad\n");
+}

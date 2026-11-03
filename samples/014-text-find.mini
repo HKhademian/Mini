@@ -1,0 +1,12 @@
+/// Read text and report whether it contains the two sample words.
+var source = readAll();
+if (text_find(source, "Mini") >= 0) {
+    write("has Mini\n");
+} else {
+    write("no Mini\n");
+}
+if (text_find(source, "Lang") >= 0) {
+    write("has Lang\n");
+} else {
+    write("no Lang\n");
+}
