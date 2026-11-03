@@ -1,0 +1,2 @@
+var args = process_args();
+write(list_to_text(args, "|") + "\n");

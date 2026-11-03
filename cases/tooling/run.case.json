@@ -1,0 +1,27 @@
+{
+  "id": "tooling.run",
+  "kind": "tool",
+  "tool": "mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "forward-args",
+      "args": [
+        "run",
+        "cases/tooling/run-args.mini",
+        "alpha",
+        "beta"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "alpha|beta\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

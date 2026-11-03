@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+import { basename } from 'node:path';
+import { main } from '../tools/cli.ts';
+await main(basename(process.argv[1]));

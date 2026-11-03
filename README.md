@@ -117,7 +117,9 @@ npm ci
 ./bin/mini check
 ./bin/mini check samples/001-bindings.mini
 ./bin/mini fmt samples/001-bindings.mini
+./bin/mini run samples/003-io.mini
 ./bin/mini test
+./bin/mini verify
 ./bin/mini verify cases/tooling/check.case.json
 ./bin/mini bench .cache/bench.json
 ```

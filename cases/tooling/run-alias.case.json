@@ -1,0 +1,25 @@
+{
+  "id": "tooling.run-alias",
+  "kind": "tool",
+  "tool": "mini-run",
+  "features": [],
+  "cases": [
+    {
+      "name": "forward-arg",
+      "args": [
+        "cases/tooling/run-args.mini",
+        "one"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "one\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

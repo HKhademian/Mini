@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- CLI 0.1.0-alpha.6 / Mini distribution 0.1.0-alpha.4: add `mini run SOURCE.mini
+  [ARG]...` through a temporary generated TS module, and mark shebang output
+  executable on supported platforms. Add `mini-run` and tool cases.
 - Build M1 from ordered `compiler/src/*.mini` parts with `tools/build-m1.ts`;
   keep `compiler/compiler.mini` as the canonical concatenated bootstrap source,
   and make `mini check` reject stale composition. No language/module change.

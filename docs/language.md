@@ -80,8 +80,9 @@ write("ok\n");
   ```
 - The source shebang text is not copied into generated code because Mini and
   TypeScript use different runners. Source without a shebang is unchanged.
-- The formatter and analysis mode preserve the shebang token. Direct execution
-  of `.mini` files through `mini run` is not implemented yet.
+- The formatter and analysis mode preserve the shebang token. `mini run` compiles
+  and executes a Mini source directly, and `mini compile` makes shebang output
+  executable where the platform supports it.
 
 ## Accepted form: bindings and assignment
 
