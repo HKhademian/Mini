@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Build M1 from ordered `compiler/src/*.mini` parts. The build tool is Mini
+  source (`tools/build-m1.mini`) with tracked generated
+  `tools/build-m1.generated.ts`; `compiler/m1.parts` is the order,
+  `compiler/compiler.mini` is the canonical bootstrap source, and `mini check`
+  rejects stale composition or generated TS. Generated Mini tools use the
+  `*.generated.ts` suffix and stay outside the strict TypeScript check. No
+  language/module change.
 - CLI 0.1.0-alpha.6 / Mini distribution 0.1.0-alpha.4: add `mini run SOURCE.mini
   [ARG]...` through a temporary generated TS module, and mark shebang output
   executable on supported platforms. Add `mini-run` and tool cases.

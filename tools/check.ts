@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { compiler, CompilerStage, root, versions } from './project.ts';
-import { composeM1, m1Source } from './build-m1.ts';
+import { compiler, CompilerStage, root, run, versions } from './project.ts';
 import { verifyBootstrap } from './verify.ts';
 import { CaseKind, loadCases } from './cases.ts';
 
@@ -39,8 +39,15 @@ function portablePaths(directory: string): void {
   }
 }
 export function checkProject(): void {
-  assert.equal(readFileSync(join(root, m1Source), 'utf8'), composeM1(root),
-    'compiler/compiler.mini is stale; run node tools/build-m1.ts');
+  const toolWork = mkdtempSync(join(tmpdir(), 'mini-tool-check-'));
+  try {
+    run(process.execPath, [join(root, compiler().entry), 'compile', join(root, 'tools/build-m1.mini'), join(toolWork, 'build-m1.generated.ts')], root);
+    assert.equal(readFileSync(join(root, 'tools/build-m1.generated.ts'), 'utf8'), readFileSync(join(toolWork, 'build-m1.generated.ts'), 'utf8'),
+      'tools/build-m1.generated.ts is stale; regenerate it from tools/build-m1.mini');
+  } finally {
+    rmSync(toolWork, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  }
+  run(process.execPath, [join(root, 'tools/build-m1.generated.ts'), '--check'], root);
   const current = versions(root);
   const editor = JSON.parse(readFileSync(join(root, 'editors/vscode/package.json'), 'utf8')) as { version: string };
   const editorLock = JSON.parse(readFileSync(join(root, 'editors/vscode/package-lock.json'), 'utf8')) as { version: string; packages: Record<string, { version: string }> };

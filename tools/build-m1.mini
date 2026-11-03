@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+/// Concatenate the ordered M1 parts into compiler/compiler.mini.
+/// With --check, compare the canonical file and exit unsuccessfully when stale.
+
+var manifest = file_read("compiler/m1.parts");
+var parts = text_split(manifest, "\n");
+var output = "";
+var position = 0;
+while (position < list_length(parts)) {
+    var part = list_get(parts, position);
+    if (text_length(part) > 0) {
+        output = output + file_read(part);
+    }
+    position = position + 1;
+}
+var args = process_args();
+if (list_length(args) == 1 && list_get(args, 0) == "--check") {
+    if (file_read("compiler/compiler.mini") != output) {
+        write_error("compiler/compiler.mini is stale; run node tools/build-m1.generated.ts\n");
+        process_exit(1);
+    }
+} else {
+    if (list_length(args) != 0) {
+        write_error("usage: node tools/build-m1.generated.ts [--check]\n");
+        process_exit(1);
+    }
+    file_write("compiler/compiler.mini", output);
+}

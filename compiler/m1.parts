@@ -1,0 +1,6 @@
+compiler/src/00-constants.mini
+compiler/src/10-text.mini
+compiler/src/20-lexer.mini
+compiler/src/30-parser.mini
+compiler/src/40-builtins.mini
+compiler/src/50-main.mini

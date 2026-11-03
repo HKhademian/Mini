@@ -12,5 +12,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["tools/**/*.ts", "compiler/**/*.ts", "cases/applications/**/*.ts"]
+  "include": ["tools/**/*.ts", "compiler/**/*.ts", "cases/applications/**/*.ts"],
+  "exclude": ["tools/**/*.generated.ts"]
 }
