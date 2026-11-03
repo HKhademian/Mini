@@ -1,0 +1,16 @@
+fn normalize(source) {
+    var output = "";
+    var position = 0;
+    var current = "";
+    while (position < textLength(source)) {
+        current = textAt(source, position);
+        if (current == "\t" || current == "\r" || current == "\n") {
+            output = output + " ";
+        } else {
+            output = output + current;
+        }
+        position = position + 1;
+    }
+    return output;
+}
+write(normalize(readAll()));

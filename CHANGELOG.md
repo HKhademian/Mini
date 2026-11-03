@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Accept `readAll`/`write`; propose two text-access primitives with scanner cases.
 - Propose whole-input/text-output primitives with focused I/O and EOF cases.
 - Package checksummed VSIX assets from tagged extension sources and verify releases in CI.
 - Accept expression forms; balance single/combination cases and share empty fixtures.

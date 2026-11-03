@@ -1,0 +1,24 @@
+{
+  "id": "language.text-at-middle",
+  "kind": "feature",
+  "source": "text-at-middle.mini",
+  "features": [
+    "text.at"
+  ],
+  "pending": "Text access proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "text-at-middle.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

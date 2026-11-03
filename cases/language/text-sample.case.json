@@ -1,0 +1,58 @@
+{
+  "id": "language.text-sample",
+  "kind": "sample",
+  "source": "../../samples/004-text.mini",
+  "features": [
+    "text.at",
+    "text.length",
+    "bindings",
+    "functions",
+    "control.while",
+    "control.if",
+    "expressions",
+    "text.input",
+    "text.output"
+  ],
+  "pending": "Text access proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "word",
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "whitespace",
+      "stdin": {
+        "file": "text-scan-whitespace.stdin"
+      },
+      "stdout": {
+        "file": "text-scan-whitespace.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "id": "language.text-length",
+  "kind": "feature",
+  "source": "text-length.mini",
+  "features": [
+    "text.length"
+  ],
+  "pending": "Text access proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "text-length-empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "three",
+      "stdin": {
+        "file": "text-length-three.stdin"
+      },
+      "stdout": {
+        "file": "text-length-three.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "other",
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "text-length-other.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

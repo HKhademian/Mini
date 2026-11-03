@@ -1,8 +1,8 @@
 # Mini language draft
 
-Status: binding, function, control-flow, and expression forms accepted.
-Text I/O proposed. Nothing implemented yet. Typing and other open rules remain
-undecided.
+Status: binding, function, control-flow, expression, and text I/O forms accepted.
+Text access proposed. Nothing implemented yet. Typing and other open rules
+remain undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -68,8 +68,7 @@ output = join(output, token);
 This separates scanner, parser, and emitter operations without introducing
 objects or methods. The function and call forms map directly to TypeScript.
 Parameter and result typing, scope, declaration order, and functions without
-a returned value remain open. The example illustrates the form; text operations
-will be reviewed with expressions.
+a returned value remain open.
 
 ## Accepted form: conditionals and loops
 
@@ -95,9 +94,7 @@ while (position < limit) {
   There is no separate `elseif` or unbraced `else if` form.
 
 These forms cover parser decisions and scanner loops and map directly to
-TypeScript. Comparison operators and condition types will be reviewed with
-expressions. No additional loop forms or loop-control statements are proposed
-at this step.
+TypeScript. The expression rules below define comparisons and boolean conditions.
 
 ## Accepted form: values and expressions
 
@@ -128,7 +125,7 @@ conditions. More arithmetic can wait for concrete compiler needs. Numeric limits
 Mini's typing strategy, and host operation signatures remain open. Mini `==` /
 `!=` would emit TypeScript `===` / `!==`.
 
-## Next proposal: whole-input and text output
+## Accepted operations: whole-input and text output
 
 Use ordinary calls for two primitive operations:
 
@@ -146,6 +143,30 @@ write(source);
 These operations let small programs expose their behavior without adding
 syntax. File I/O, arguments, diagnostics, and process termination follow in
 later small reviews; this pair alone is not the compiler's file interface.
+`readLine`, `readNumber`, `writeLine`, and `writeError` remain candidates. Add
+them only when concrete compiler or tool code needs them.
+
+## Next proposal: text access
+
+Scanning needs two more ordinary calls:
+
+```text
+var source = readAll();
+var position = 0;
+while (position < textLength(source)) {
+    write(textAt(source, position));
+    position = position + 1;
+}
+```
+
+- `textLength(text)` returns the number of characters; empty text has length 0.
+- `textAt(text, index)` returns one character as text, using a zero-based index.
+- The caller supplies an integer index with `0 <= index < textLength(text)`.
+  Out-of-range behavior is outside the initial contract; scanners guard access.
+- Start with ASCII text. Unicode indexing is outside the initial scope.
+
+These primitives let Mini scan source and accumulate tokens using existing
+loops, conditions, and text concatenation. They add no syntax.
 
 Pending single-construct, rejection, and combination cases live under
 [cases/language](../cases/language/). Mini typing and general no-result function

@@ -1,0 +1,3 @@
+var source = readAll();
+write(textAt(source, 0));
+write(textAt(source, textLength(source) - 1));

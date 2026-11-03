@@ -96,8 +96,9 @@ exact bytes when implementing that compiler step. Remove `pending` only when
 the construct and its dependencies work; run the cases and preserve the
 bootstrap gate. A self-build alone does not establish all feature behavior.
 
-Current runtime cases use the proposed `readAll`/`write` operations. These remain
-review dependencies, not accepted built-in contracts.
+I/O cases use accepted `readAll`/`write` contracts. Text-access cases use proposed
+`textLength`/`textAt` contracts. All remain pending compiler support; proposal
+approval does not count as an execution pass.
 
 Use `samples/` for small teaching programs and `examples/` for complete useful
 programs, creating those directories only when needed. Give each a stable

@@ -6,7 +6,7 @@
     "text.input",
     "text.output"
   ],
-  "pending": "Text I/O proposed; compiler unavailable.",
+  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "default",

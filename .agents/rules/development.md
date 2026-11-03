@@ -51,8 +51,8 @@
 - Keep the root lean. Follow CONTRIBUTING.md and docs/cases.md for layout,
   verification, examples, samples, and benchmarks.
 
-- Follow docs/builtins.md for primitive I/O and library scope. Built-in names
-  and contracts are provisional; host adapters must not implement the compiler.
+- Follow docs/builtins.md for primitive I/O and library scope. Distinguish
+  accepted and proposed contracts; host adapters must not implement the compiler.
 
 - Put standard-library source under std/, with Mini code in .mini files. Keep
   its verification manifests/streams under cases/; create directories when needed.

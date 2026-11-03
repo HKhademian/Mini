@@ -13,8 +13,8 @@ separate scope.
 Highlighting follows the accepted forms in the language draft. It does not imply
 compiler support. The accepted text escapes are `\"`, `\\`, `\n`, `\r`, and `\t`;
 other escapes receive an invalid scope. Comment syntax has not been
-selected, so there is no comment highlighting or comment toggle yet. Candidate
-built-in names are colored like ordinary calls.
+selected, so there is no comment highlighting or comment toggle yet. Built-in
+names use ordinary call highlighting, including proposed text-access operations.
 
 This is a declarative TextMate extension with no runtime dependencies or
 language server. It provides no diagnostics, completion, formatter, or runner.

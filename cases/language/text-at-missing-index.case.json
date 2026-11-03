@@ -1,0 +1,24 @@
+{
+  "id": "language.text-at-missing-index",
+  "kind": "reject",
+  "source": "text-at-missing-index.mini",
+  "features": [
+    "text.at"
+  ],
+  "pending": "Text access and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "text-at-missing-index.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
