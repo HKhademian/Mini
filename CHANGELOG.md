@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for
+  canonical safe-integer decimal text; M1 uses it instead of its decimal helper.
 - Language/compiler/builtins 0.3.0-alpha.7: add `list_to_text(list, separator)`
   and replace M1's separate join helper.
 - Language/compiler/builtins 0.3.0-alpha.6: add `list_copy(list)` with shallow

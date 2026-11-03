@@ -1,0 +1,24 @@
+{
+  "id": "language.number-to-text",
+  "kind": "feature",
+  "source": "047-001-number-to-text.mini",
+  "features": [
+    "number.to-text",
+    "list.new"
+  ],
+  "cases": [
+    {
+      "name": "decimal",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

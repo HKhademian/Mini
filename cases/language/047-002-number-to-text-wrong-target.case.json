@@ -1,0 +1,23 @@
+{
+  "id": "language.number-to-text-wrong-target",
+  "kind": "reject",
+  "source": "047-002-number-to-text-wrong-target.mini",
+  "features": [
+    "number.to-text"
+  ],
+  "cases": [
+    {
+      "name": "text-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "047-002-number-to-text-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

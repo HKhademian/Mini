@@ -43,6 +43,10 @@ var list_set_helper = "function $mini_list_set(items, index, value) {\n"
     + "    if (index < 0) index = items.length + index;\n"
     + "    if (index >= 0) items[index] = value;\n"
     + "}\n";
+var number_to_text_helper = "function $mini_number_to_text(value) {\n"
+    + "    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n"
+    + "    return String(value);\n"
+    + "}\n";
 var text_find_helper = "function $mini_text_find(text, needle) {\n"
     + "    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n"
     + "    return text.indexOf(needle);\n"
@@ -100,46 +104,6 @@ fn indent_output(output) {
         position = position + 1;
     }
     return result;
-}
-
-/// Return ten times value using only addition.
-fn times_ten(value) {
-    var twice = value + value;
-    var four = twice + twice;
-    var eight = four + four;
-    return eight + twice;
-}
-
-/// Return signed decimal text for an ordinary integer value.
-fn decimal(value) {
-    var remaining = value;
-    var sign = "";
-    if (remaining < 0) {
-        sign = "-";
-        remaining = -remaining;
-    }
-    if (remaining == 0) {
-        return "0";
-    }
-    var powers = list_new();
-    var power = 1;
-    while (power <= remaining) {
-        list_set(powers, list_length(powers), power);
-        power = times_ten(power);
-    }
-    var output = sign;
-    var position = list_length(powers) - 1;
-    while (position >= 0) {
-        power = list_get(powers, position);
-        var digit = 0;
-        while (remaining >= power) {
-            remaining = remaining - power;
-            digit = digit + 1;
-        }
-        output = output + text_get("0123456789", digit);
-        position = position - 1;
-    }
-    return output;
 }
 
 /// Return text as a JSON string with the supported escapes.
@@ -288,7 +252,7 @@ fn fail(token, message) {
         }
         position = position + 1;
     }
-    write_error(map_get(token, "source") + ":" + decimal(map_get(token, "line")) + ":" + decimal(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
+    write_error(map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":" + number_to_text(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
     process_exit(1);
     return 0;
 }
@@ -630,7 +594,7 @@ fn parser_call(parser, name) {
         if (arity == 1) {
             suffix = "";
         }
-        fail(name, "expected " + decimal(arity) + " argument" + suffix);
+        fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
     }
     if (!is_builtin) {
         return expression_new(name_text + "(" + argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
@@ -843,6 +807,9 @@ fn helper_blocks(helpers) {
     if (map_has(helpers, map_copy_helper)) {
         output = output + map_copy_helper;
     }
+    if (map_has(helpers, number_to_text_helper)) {
+        output = output + number_to_text_helper;
+    }
     if (map_has(helpers, text_find_helper)) {
         output = output + text_find_helper;
     }
@@ -927,7 +894,7 @@ fn builtin_exists(name) {
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
         || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
         || name == "text_slice" || name == "text_split" || name == "map_copy" || name == "list_copy"
-        || name == "list_to_text"
+        || name == "list_to_text" || name == "number_to_text"
         || name == "readAll" || name == "write";
 }
 
@@ -1005,8 +972,12 @@ fn builtin_parameters(name) {
                                                                             if (name == "list_copy") {
                                                                                 list_set(parameters, 0, "list");
                                                                             } else {
-                                                                                if (name == "write") {
-                                                                                    list_set(parameters, 0, "text");
+                                                                                if (name == "number_to_text") {
+                                                                                    list_set(parameters, 0, "number");
+                                                                                } else {
+                                                                                    if (name == "write") {
+                                                                                        list_set(parameters, 0, "text");
+                                                                                    }
                                                                                 }
                                                                             }
                                                                         }
@@ -1082,6 +1053,9 @@ fn builtin_helper(name) {
     if (name == "list_to_text") {
         return list_to_text_helper;
     }
+    if (name == "number_to_text") {
+        return number_to_text_helper;
+    }
     if (name == "list_get") {
         return list_get_helper;
     }
@@ -1110,7 +1084,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "map_keys") {
@@ -1165,10 +1139,10 @@ fn token_json(tokens) {
         output = output + "\n    \"kind\": " + json_quote(map_get(token, "kind")) + ",";
         output = output + "\n    \"text\": " + json_quote(map_get(token, "text")) + ",";
         output = output + "\n    \"source\": " + json_quote(map_get(token, "source")) + ",";
-        output = output + "\n    \"start\": " + decimal(map_get(token, "start")) + ",";
-        output = output + "\n    \"end\": " + decimal(map_get(token, "end")) + ",";
-        output = output + "\n    \"line\": " + decimal(map_get(token, "line")) + ",";
-        output = output + "\n    \"column\": " + decimal(map_get(token, "column")) + ",";
+        output = output + "\n    \"start\": " + number_to_text(map_get(token, "start")) + ",";
+        output = output + "\n    \"end\": " + number_to_text(map_get(token, "end")) + ",";
+        output = output + "\n    \"line\": " + number_to_text(map_get(token, "line")) + ",";
+        output = output + "\n    \"column\": " + number_to_text(map_get(token, "column")) + ",";
         output = output + "\n    \"context\": " + json_quote(map_get(token, "context"));
         output = output + "\n  }";
         position = position + 1;

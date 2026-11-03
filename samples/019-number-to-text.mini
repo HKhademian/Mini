@@ -1,0 +1,4 @@
+/// Print canonical decimal text for zero, a positive number, and a negative number.
+write(number_to_text(42) + "\n");
+write(number_to_text(-7) + "\n");
+write(number_to_text(0) + "\n");

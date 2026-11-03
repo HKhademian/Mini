@@ -24,6 +24,10 @@ containing the source. The text family uses `group_operation` names, with
 lowercase words separated by underscores. This naming convention needs no
 namespace mechanism.
 
+The accepted built-in `number_to_text(value)` returns canonical decimal text
+for a safe integer: optional minus sign, no leading zeros, `0` for zero, and no
+exponent. Non-number values and non-safe integers return empty text.
+
 The operations require primitive host access. Prefixes do not decide whether an
 operation is built-in or library code; both use ordinary call syntax.
 

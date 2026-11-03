@@ -228,6 +228,17 @@ loops, conditions, and text concatenation. They add no syntax.
 The [read-defaults sample](../samples/011-read-defaults.mini) shows ordinary empty
 text and numeric-zero fallbacks without an absence value.
 
+## Accepted operation: number text
+
+```text
+var text = number_to_text(42);
+```
+
+- `number_to_text(value)` returns canonical decimal text for a safe integer:
+  optional minus sign, no leading zeros, `0` for zero, and no exponent.
+- Non-number values and non-safe integers return empty text.
+- This does not add implicit text/number concatenation.
+
 ## Accepted operations: text files
 
 The compiler needs to read source and write its generated script. Use two

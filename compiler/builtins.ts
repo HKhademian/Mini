@@ -67,6 +67,12 @@ export const builtins = new Map<string, Builtin>([
     return items.slice();
 }
 `, emit: args => `${listCopy}(${args[0]})` }],
+  ['number_to_text', { parameters: [ValueKind.Number], result: ValueKind.Text,
+    imports: [], helper: `function $mini_number_to_text(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
+}
+`, emit: args => `$mini_number_to_text(${args[0]})` }],
   ['list_to_text', { parameters: [ValueKind.List, ValueKind.Text], result: ValueKind.Text,
     imports: [], helper: `function $mini_list_to_text(items, separator) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";

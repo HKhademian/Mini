@@ -1,0 +1,24 @@
+{
+  "id": "language.number-to-text-sample",
+  "kind": "sample",
+  "source": "../../samples/019-number-to-text.mini",
+  "features": [
+    "number.to-text",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "decimal",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "42\n-7\n0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
