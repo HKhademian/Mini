@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.25 / builtins alpha.10: `process_exit`.
 - T0 alpha.24 / builtins alpha.9: `list_at`.
 - T0 alpha.23 / builtins alpha.8: `list_length`.
 - T0 alpha.22 / builtins alpha.7: `process_args` returns the program's text list.

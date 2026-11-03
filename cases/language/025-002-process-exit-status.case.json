@@ -1,12 +1,11 @@
 {
   "id": "language.process-exit-status",
   "kind": "feature",
-  "source": "process-exit-status.mini",
+  "source": "025-002-process-exit-status.mini",
   "features": [
     "process.exit",
     "text.output"
   ],
-  "pending": "Compiler and process built-ins unavailable.",
   "cases": [
     {
       "stdin": {

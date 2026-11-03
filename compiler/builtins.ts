@@ -8,6 +8,8 @@ export type Builtin = {
 };
 
 export const builtins = new Map<string, Builtin>([
+  ['process_exit', { parameters: [ValueKind.Number], result: ValueKind.Void,
+    imports: [], emit: args => `process.exit(${args[0]})` }],
   ['list_at', { parameters: [ValueKind.TextList, ValueKind.Number], result: ValueKind.Text,
     imports: [], emit: args => `(${args[0]})[${args[1]}]` }],
   ['list_length', { parameters: [ValueKind.TextList], result: ValueKind.Number,

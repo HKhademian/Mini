@@ -1,11 +1,10 @@
 {
-  "id": "language.process-exit-zero",
-  "kind": "feature",
-  "source": "process-exit-zero.mini",
+  "id": "language.process-exit-missing-status",
+  "kind": "reject",
+  "source": "025-003-process-exit-missing-status.mini",
   "features": [
     "process.exit"
   ],
-  "pending": "Compiler and process built-ins unavailable.",
   "cases": [
     {
       "stdin": {
@@ -15,9 +14,9 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "empty.stderr"
+        "file": "025-003-process-exit-missing-status.stderr"
       },
-      "exitCode": 0,
+      "exitCode": 1,
       "name": "default"
     }
   ]

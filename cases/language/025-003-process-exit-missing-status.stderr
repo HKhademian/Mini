@@ -1,0 +1,3 @@
+025-003-process-exit-missing-status.mini:1:1: expected 1 argument
+process_exit();
+^

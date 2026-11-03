@@ -1,0 +1,23 @@
+{
+  "id": "language.process-exit-zero",
+  "kind": "feature",
+  "source": "025-001-process-exit-zero.mini",
+  "features": [
+    "process.exit"
+  ],
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "default"
+    }
+  ]
+}
