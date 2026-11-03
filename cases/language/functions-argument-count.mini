@@ -1,0 +1,4 @@
+fn join(left, right) {
+    return left + right;
+}
+var output = join("mini");

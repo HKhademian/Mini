@@ -86,6 +86,54 @@
         "hash": "sha256:c7e722cbf000c8602ed4b2f97fcb229cb5eda60b5b9c43d67a747379c05f2c6e"
       },
       "exitCode": 1
+    },
+    {
+      "name": "verify-pending",
+      "args": [
+        "cases/language/bindings-sample.case.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "verify-pending.stdout"
+      },
+      "stderr": {
+        "file": "verify-pending.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-pending-reason",
+      "args": [
+        "cases/tooling/pending-reason.invalid.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "verify-pending-reason.stdout"
+      },
+      "stderr": {
+        "file": "verify-pending-reason.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-language-unavailable",
+      "args": [
+        "cases/tooling/compiler-unavailable.invalid.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "verify-language-unavailable.stdout"
+      },
+      "stderr": {
+        "file": "verify-language-unavailable.stderr"
+      },
+      "exitCode": 1
     }
   ]
 }

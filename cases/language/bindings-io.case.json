@@ -1,0 +1,52 @@
+{
+  "id": "language.bindings-io",
+  "kind": "feature",
+  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "source": "bindings-io.mini",
+  "features": [
+    "bindings",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "binding-empty",
+      "stdin": {
+        "file": "binding-empty.stdin"
+      },
+      "stdout": {
+        "file": "binding-empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "binding-word",
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "binding-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "binding-lines",
+      "stdin": {
+        "file": "binding-lines.stdin"
+      },
+      "stdout": {
+        "file": "binding-lines.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

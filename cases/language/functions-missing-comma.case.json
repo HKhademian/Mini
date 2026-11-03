@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-missing-comma",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "functions-missing-comma.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "functions-missing-comma.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

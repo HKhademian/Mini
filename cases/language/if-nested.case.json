@@ -1,0 +1,24 @@
+{
+  "id": "language.if-nested",
+  "kind": "compile",
+  "pending": "Compiler unavailable.",
+  "source": "if-nested.mini",
+  "features": [
+    "control.if"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

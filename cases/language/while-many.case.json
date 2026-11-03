@@ -1,0 +1,24 @@
+{
+  "id": "language.while-many",
+  "kind": "compile",
+  "pending": "Compiler unavailable.",
+  "source": "while-many.mini",
+  "features": [
+    "control.while"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

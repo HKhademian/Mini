@@ -1,0 +1,24 @@
+{
+  "id": "language.bindings-sample",
+  "kind": "sample",
+  "pending": "Compiler unavailable.",
+  "source": "../../samples/001-bindings.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "silent",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

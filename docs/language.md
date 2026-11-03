@@ -5,6 +5,9 @@ implemented yet. Typing and other open rules remain undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
+Create [cases](cases.md) with every proposal, including separate Mini sources,
+expected streams, input variants, rejections, and interactions. Keep unsupported
+cases explicitly pending; refine provisional diagnostics with compiler support.
 
 ## Compiler workload
 
@@ -94,4 +97,5 @@ expressions. No additional loop forms or loop-control statements are proposed
 at this step.
 
 Expressions and primitive host operations follow as separate small reviews.
-Examples illustrate syntax; they are not executable verification cases.
+Examples illustrate syntax. Their pending compile, runtime, and rejection cases
+live under [cases/language](../cases/language/).

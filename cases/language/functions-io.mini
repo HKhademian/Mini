@@ -1,0 +1,5 @@
+fn join(left, right) {
+    return left + right;
+}
+var source = readAll();
+write(join(join("[", source), "]"));

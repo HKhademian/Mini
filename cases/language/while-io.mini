@@ -1,0 +1,8 @@
+var token = readAll();
+var position = 0;
+var output = "";
+while (position < 3) {
+    output = output + token;
+    position = position + 1;
+}
+write(output);

@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-argument-count",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "functions-argument-count.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "functions-argument-count.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

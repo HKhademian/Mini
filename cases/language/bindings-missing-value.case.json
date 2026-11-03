@@ -1,0 +1,24 @@
+{
+  "id": "language.bindings-missing-value",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "bindings-missing-value.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "bindings-missing-value.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

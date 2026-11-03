@@ -1,0 +1,52 @@
+{
+  "id": "language.while-io",
+  "kind": "feature",
+  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "source": "while-io.mini",
+  "features": [
+    "control.while",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "while-empty",
+      "stdin": {
+        "file": "while-empty.stdin"
+      },
+      "stdout": {
+        "file": "while-empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "while-word",
+      "stdin": {
+        "file": "while-word.stdin"
+      },
+      "stdout": {
+        "file": "while-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "while-line",
+      "stdin": {
+        "file": "while-line.stdin"
+      },
+      "stdout": {
+        "file": "while-line.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

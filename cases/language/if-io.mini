@@ -1,0 +1,6 @@
+var token = readAll();
+if (token == ";") {
+    write("semicolon");
+} else {
+    write("other");
+}

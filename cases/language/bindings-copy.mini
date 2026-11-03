@@ -1,0 +1,3 @@
+var source = "mini";
+var output = source;
+source = "";

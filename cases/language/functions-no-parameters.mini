@@ -1,0 +1,4 @@
+fn start() {
+    return 0;
+}
+var position = start();

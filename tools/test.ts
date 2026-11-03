@@ -3,8 +3,14 @@ import { loadCase, loadCases, verifyScenario } from './cases.ts';
 export function testCases(filter = '', file?: string): void {
   let failures = 0;
   let count = 0;
+  let pending = 0;
   for (const fixture of file === undefined ? loadCases(filter) : [loadCase(file)]) {
     for (const scenario of fixture.definition.cases) {
+      if (fixture.definition.pending !== undefined) {
+        pending++;
+        console.log(`PENDING ${fixture.definition.id}/${scenario.name}: ${fixture.definition.pending}`);
+        continue;
+      }
       count++;
       try {
         verifyScenario(fixture, scenario);
@@ -16,5 +22,6 @@ export function testCases(filter = '', file?: string): void {
     }
   }
   console.log(`${count - failures}/${count} scenarios passed`);
-  if (failures) process.exitCode = 1;
+  if (pending) console.log(`${pending} scenarios pending`);
+  if (failures || (pending > 0 && (file !== undefined || count === 0))) process.exitCode = 1;
 }

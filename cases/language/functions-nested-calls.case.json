@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-nested-calls",
+  "kind": "compile",
+  "pending": "Compiler unavailable.",
+  "source": "functions-nested-calls.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

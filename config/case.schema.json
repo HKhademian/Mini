@@ -6,12 +6,13 @@
   "allOf": [
     {
       "if": { "properties": { "kind": { "const": "tool" } } },
-      "then": { "required": ["tool"], "properties": { "source": false } },
+      "then": { "required": ["tool"], "properties": { "source": false, "pending": false } },
       "else": { "required": ["source"], "properties": { "tool": false } }
     }
   ],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
+    "pending": { "type": "string", "pattern": "\\S" },
     "kind": { "enum": ["tool", "feature", "reject", "compile", "sample", "example"] },
     "source": { "type": "string", "minLength": 1 },
     "tool": { "type": "string", "pattern": "^(mini|minic|mini-[a-z]+)$" },

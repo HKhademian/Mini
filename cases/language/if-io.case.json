@@ -1,0 +1,52 @@
+{
+  "id": "language.if-io",
+  "kind": "feature",
+  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "source": "if-io.mini",
+  "features": [
+    "control.if",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "if-true",
+      "stdin": {
+        "file": "if-true.stdin"
+      },
+      "stdout": {
+        "file": "if-true.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "if-false",
+      "stdin": {
+        "file": "if-false.stdin"
+      },
+      "stdout": {
+        "file": "if-false.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "if-empty",
+      "stdin": {
+        "file": "if-empty.stdin"
+      },
+      "stdout": {
+        "file": "if-empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

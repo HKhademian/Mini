@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-parameters",
+  "kind": "compile",
+  "pending": "Compiler unavailable.",
+  "source": "functions-parameters.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add pending compile, runtime, rejection, and sample cases with each construct.
+- Report pending scenarios separately; allow compile checks without exact artifacts.
 - Draft the compiler workload and first binding/assignment construct for review.
 - Propose named functions, positional calls, and value returns for review.
 - Record accepted binding/function forms and propose `if`/`else` and `while`.

@@ -1,0 +1,24 @@
+{
+  "id": "language.while-missing-condition",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "while-missing-condition.mini",
+  "features": [
+    "control.while"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "while-missing-condition.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

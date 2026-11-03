@@ -1,0 +1,24 @@
+{
+  "id": "language.bindings-missing-initializer",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "bindings-missing-initializer.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "bindings-missing-initializer.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

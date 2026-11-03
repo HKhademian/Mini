@@ -19,6 +19,12 @@
   Never revive the handwritten compiler to bypass a migration.
 - Use focused checks for actual behavior. Do not add a large test matrix or
   invent language semantics solely to satisfy tooling.
+- Create multiple cases with every language construct proposal, before compiler
+  support: separate .mini sources, JSON manifests, and expected streams. Cover
+  valid forms, input variants, rejections, and interactions. Mark unsupported
+  cases pending; review provisional diagnostics when implementing support.
+- After approval, record the decision and advance to the next small proposal
+  in an atomic commit. Leave unresolved rules explicitly open.
 - Keep docs accurate about implemented, proposed, and unavailable capabilities.
   Document usage, runtime requirements, and changed contracts with the code.
 - Once available, use the repository's documented check, test, bootstrap, and

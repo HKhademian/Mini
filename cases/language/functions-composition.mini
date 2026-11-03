@@ -1,0 +1,7 @@
+fn join(left, right) {
+    return left + right;
+}
+fn twice(value) {
+    return join(value, value);
+}
+var output = twice("mini");

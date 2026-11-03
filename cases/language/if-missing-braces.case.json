@@ -1,0 +1,24 @@
+{
+  "id": "language.if-missing-braces",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "if-missing-braces.mini",
+  "features": [
+    "control.if"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "if-missing-braces.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

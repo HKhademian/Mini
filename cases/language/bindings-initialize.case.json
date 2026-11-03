@@ -1,0 +1,24 @@
+{
+  "id": "language.bindings-initialize",
+  "kind": "compile",
+  "pending": "Compiler unavailable.",
+  "source": "bindings-initialize.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -20,6 +20,22 @@
         "text": ""
       },
       "exitCode": 0
+    },
+    {
+      "name": "test-pending-only",
+      "args": [
+        "language.bindings-sample"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "test-pending-only.stdout"
+      },
+      "stderr": {
+        "file": "test-pending-only.stderr"
+      },
+      "exitCode": 1
     }
   ]
 }

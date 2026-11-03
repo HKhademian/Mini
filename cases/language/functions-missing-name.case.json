@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-missing-name",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "functions-missing-name.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "functions-missing-name.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

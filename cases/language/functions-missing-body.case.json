@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-missing-body",
+  "kind": "reject",
+  "pending": "Compiler unavailable; diagnostic proposed.",
+  "source": "functions-missing-body.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "functions-missing-body.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

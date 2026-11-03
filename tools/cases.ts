@@ -20,6 +20,7 @@ export type Scenario = {
 };
 export type Case = {
   id: string;
+  pending?: string;
   features: string[];
   cases: Scenario[];
   benchmark?: { warmups: number; samples: number };
@@ -53,6 +54,7 @@ export function loadCase(path: string): Fixture {
   const spec = JSON.parse(readFileSync(file, 'utf8')) as Case;
   assert(typeof spec.id === 'string' && spec.id.length > 0, 'case ID required');
   assert(['tool', 'feature', 'reject', 'compile', 'sample', 'example'].includes(spec.kind), 'invalid case kind');
+  assert(spec.pending === undefined || (spec.kind !== 'tool' && typeof spec.pending === 'string' && spec.pending.trim().length > 0), 'pending needs a language case and reason');
   if (spec.kind === 'tool') {
     assert(spec.source === undefined, 'tool cases name a tool, not a case executable');
     assert(typeof spec.tool === 'string' && !spec.tool.includes('/') && existsSync(join(root, 'bin', spec.tool)), 'unknown tool');
@@ -69,8 +71,8 @@ export function loadCase(path: string): Fixture {
     assert(Number.isInteger(scenario.exitCode) && scenario.exitCode >= 0 && scenario.exitCode <= 255, 'invalid exit status');
     assert(scenario.args === undefined || (Array.isArray(scenario.args) && scenario.args.every(arg => typeof arg === 'string')), 'invalid arguments');
     for (const key of ['stdin', 'stdout', 'stderr'] as const) stream(scenario[key], dirname(file));
-    if (spec.kind === 'compile') {
-      assert(scenario.artifact !== undefined, 'compile case needs an artifact stream');
+    if (scenario.artifact !== undefined) {
+      assert(spec.kind === 'compile', 'only compile cases compare generated artifacts');
       stream(scenario.artifact, dirname(file));
     }
     assert(scenario.workspace === undefined || (spec.kind === 'tool' && ['clean', 'dirty'].includes(scenario.workspace)), 'invalid workspace');
@@ -124,6 +126,7 @@ function toolWorkspace(project: string, scenario: Scenario, work: string): strin
 
 export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot = root, compilerOverride?: string): string | null {
   const { definition: spec, path } = fixture;
+  assert(spec.pending === undefined, spec.id + ': pending: ' + spec.pending);
   const directory = dirname(path);
   const work = mkdtempSync(join(tmpdir(), 'mini-case-'));
   const execute = (file: string, args: string[], input: Buffer, cwd = projectRoot) => {
@@ -146,7 +149,7 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
       const output = join(work, 'program.ts');
       const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), ['compile', resolve(directory, spec.source), output], Buffer.alloc(0));
       if (compiled.status === 0) artifact = sha256(readFileSync(output));
-      if (spec.kind === 'compile') assert.deepEqual(readFileSync(output), stream(scenario.artifact!, directory), 'generated artifact differs');
+      if (spec.kind === 'compile' && scenario.artifact !== undefined) assert.deepEqual(readFileSync(output), stream(scenario.artifact, directory), 'generated artifact differs');
       if (spec.kind === 'reject') assert(!existsSync(output), 'rejection created an output artifact');
       if (spec.kind === 'reject' || spec.kind === 'compile') result = compiled;
       else {

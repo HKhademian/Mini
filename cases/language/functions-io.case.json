@@ -1,0 +1,52 @@
+{
+  "id": "language.functions-io",
+  "kind": "feature",
+  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "source": "functions-io.mini",
+  "features": [
+    "functions",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "function-empty",
+      "stdin": {
+        "file": "function-empty.stdin"
+      },
+      "stdout": {
+        "file": "function-empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "function-word",
+      "stdin": {
+        "file": "function-word.stdin"
+      },
+      "stdout": {
+        "file": "function-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "function-lines",
+      "stdin": {
+        "file": "function-lines.stdin"
+      },
+      "stdout": {
+        "file": "function-lines.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

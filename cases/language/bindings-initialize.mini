@@ -1,0 +1,3 @@
+var source = "";
+var position = 0;
+var output = "";
