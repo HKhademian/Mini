@@ -23,7 +23,8 @@ operations, mutable lists/maps, text access, and file/process I/O cover the
 compiler's main workload. No record, class, closure, module, or general AST is
 needed for the first direct emitter.
 Line comments (`//`) and documentation comments (`///`) support documenting M1;
-both are skipped by the compiler and add no generated runtime work.
+both are omitted from the compiler parse path and add no generated runtime work.
+Tool analysis can request comment tokens from the lexer's include-comments mode.
 
 The [port-foundation case](../cases/compiler/port-foundation.case.json) compiles
 and runs Mini code that checks:

@@ -68,6 +68,15 @@ an isolated Git copy. Optional `tag` describes a fixture tag with `name` and
 `annotated`; `files` lists output paths that must exist. These setup options
 belong to the shared runner, not executable case scripts.
 
+Tooling cases stay focused. Source checking uses tool scenarios with `.mini`
+sources and exact streams; stdin uses the shared runner's stdin. Formatting cases
+compare exact stdout and include empty, comment-only, CRLF, and invalid-input
+scenarios. The runner executes a command once, so formatter idempotence, token
+preservation, and `--write` safety use focused Node tests. The language server's
+JSON case covers only standalone version/startup behavior; interactive protocol
+sessions use Node tests that spawn the real server. Do not add per-case
+executables or a general protocol scenario framework.
+
 ## Language changes
 
 Write the intended contract and focused cases before implementation. Cover

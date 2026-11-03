@@ -16,8 +16,58 @@ The lexer is the tokenizer: it emits tokens with a source filename, zero-based
 start/end offsets, one-based line/column, and source-line context. Diagnostics
 show that location, the line, and a caret. A row means a line; tabs count as one
 column and remain tabs in the caret prefix. Parsing emits readable TS directly.
-The lexer skips `//` and `///` line comments outside text; original locations
-and context are preserved. Comments add no generated code.
+The lexer omits `//` and `///` line comments from the default compile token
+stream; original locations and context are preserved. Comments add no generated
+code. Tool analysis can request a comment-including token stream, as described
+below.
+
+## Analysis interface
+
+Status: proposed for the tooling milestone and not implemented yet. The selected
+compiler exposes one narrow command:
+
+```text
+node COMPILER analyze < REQUEST.json
+```
+
+The request is one JSON object `{"source": "...", "name": "SOURCE.mini"}` on
+standard input. The result is one JSON object `{"tokens": [...], "diagnostics":
+[...]}` on standard output. There is no additional standard output. A source
+failure is result data with exit status 0. A malformed request, unavailable
+compiler, or unexpected exception is a failure with a nonzero exit status and a
+message on standard error.
+
+`tokens` uses the existing token shape: `kind`, `text`, `source`, `start`, `end`,
+`line`, `column`, and `context`. The list is in source order and includes comment
+tokens with `kind` `comment`; comment text includes the leading `//` or `///` and
+excludes the line ending. Diagnostics are produced by a second tokenization
+without comments, so the parser never sees comment tokens. The existing
+`mini-compile --tokens` output remains comment-free; the include mode is internal
+to analysis.
+
+`diagnostics` contains at most the compiler's first error and uses
+`{message, source, start, end}`. `message` is the existing compiler message
+without the `source:line:column`, source line, and caret prefix; the shared
+renderer adds those fields so terminal output remains byte-identical. Source
+failures include lexing, parsing, and the existing kind/arity checks. Internal
+failures are not diagnostics.
+
+Source positions are zero-based, half-open UTF-16 code-unit ranges `[start, end)`
+into the original source. `line` and `column` are one-based; tabs count as one
+column. The EOF token has `start === end === source.length`. Lexer failures finalize
+the reported range before failing: an unexpected character covers that character,
+an unknown escape includes the backslash and offending character (or EOF), and
+unterminated text extends to EOF. A zero-width EOF range is valid.
+
+The terminal renderer keeps the existing format:
+
+```text
+SOURCE:LINE:COLUMN: message
+context line
+caret
+```
+
+The analysis command writes no files and does not run generated code.
 
 T0's completed increments implemented one feature at a time with indexed cases
 and verified version tags. T0 feature growth is now frozen for the Mini port.

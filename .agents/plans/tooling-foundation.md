@@ -1,11 +1,11 @@
 ---
 name: tooling-foundation
-status: pending
+status: in_progress
 created: 2026-11-03
 todos:
   - id: step-1-contracts
     content: "Step 1 — Record the checker, formatter, and LSP contracts"
-    status: pending
+    status: completed
   - id: step-2-analysis
     content: "Step 2 — Expose compiler-owned analysis and structured diagnostics"
     status: pending
@@ -43,8 +43,12 @@ adds no language syntax and does not implement the self-hosted compiler.
 - Read the project direction, authoritative rules, tooling/versioning guides, compiler, CLI, case runner, release
   tooling, and VS Code extension.
 - Confirmed the user wants **existing compiler diagnostics first**, without new lint rules in this milestone.
-- Inspected clean baseline `8ff9908`; Node is `v24.16.0`.
-- No implementation or new product versions exist from this planning session.
+- Inspected baseline `bb8c436`; Node is `v24.16.0`. Group is `0.3.0`; language, compiler, and builtins are
+  `0.3.0-alpha.1`; the VS Code extension is `0.2.0`.
+- Selected a lexer `includeComments` mode: analysis returns comment tokens for the formatter and parses a second,
+  comment-free token stream for diagnostics. The parser stays unchanged.
+- Recorded the Step 1 command, formatting, diagnostic, analysis, and LSP contracts.
+- No tooling implementation or new product versions exist from this planning session.
 
 ## Read first
 
@@ -64,15 +68,18 @@ adds no language syntax and does not implement the self-hosted compiler.
   only after successful formatting; `--check` reports noncanonical input without writing. Flags are mutually exclusive;
   `--write -` fails. Exit 0 on success, 1 on failure/noncanonical input.
 - Use four-space indentation, LF line endings, no trailing spaces, and exactly one final LF for nonempty programs;
-  empty/whitespace-only input becomes empty. Put statements on separate lines, use braced blocks, and keep `} else {`
-  together. Preserve every token's spelling, order, and explicit parentheses. No line-width setting, config file, file
-  discovery, or comment syntax.
+  empty/whitespace-only input becomes empty. Put statements on separate lines, use braced blocks, keep `} else {`
+  together, and preserve at most one source blank line between constructs. Preserve every token's spelling, order,
+  explicit parentheses, and comment tokens. A trailing comment stays on its code line; other comments keep their own
+  line. No line-width setting, config file, file discovery, or new comment syntax.
 - Start with one diagnostic per analysis, matching the compiler's first error. Preserve existing plain-text compiler
   messages; add structured source offsets rather than scraping carets. No error recovery or new type inference.
 - The selected compiler provides a small `analyze` command: one JSON request `{source, name}` on stdin, one JSON result
-  `{tokens, diagnostics}` on stdout. Source failures are result data; invocation/internal failures are failures. Define
-  exact fields and exit behavior in Step 1. Reuse an in-memory entry within the compiler, and select the executable via
-  `config/compiler.json`. No generated files, temporary source files, or handwritten parser in tools.
+  `{tokens, diagnostics}` on stdout. The returned tokens include comment tokens. Diagnostics parse a second, comment-free
+  token stream. Source failures are result data; invocation/internal failures are failures. Define exact fields, the
+  lexer mode, and exit behavior in Step 1. Reuse an in-memory entry within the compiler, and select the executable via
+  `config/compiler.json`. No generated files, temporary source files, handwritten parser, parser comment filtering, or
+  `list_filter` builtin in tools or M1/T1.
 - `mini-lang-server` is standalone initially, using LSP 3.17 over stdio. Start with full document synchronization, push
   diagnostics, and whole-document formatting. No new dispatcher spelling is needed.
 - First editor delivery is a local VSIX with a configurable installed server path and Node executable. Document
@@ -87,14 +94,17 @@ implementation, not as deferred cleanup. Never push or publish as part of this p
 ### Step 1 — contracts
 
 **Depends on:** none.
-**Files:** modify `docs/tooling.md`, `docs/compiler.md`, `docs/cases.md`.
+**Files:** modify `docs/tooling.md`, `docs/compiler.md`, `docs/cases.md`, `docs/t0-t1-reference.md`,
+`docs/self-hosting-requirements.md`.
 
 - Record the proposed command forms, output/exit rules, formatting examples, invalid-input policy, source range
-  representation, and analysis JSON contract.
+  representation, comment-token mode, and analysis JSON contract.
 - Distinguish syntax from existing semantic checks and internal failures. A formatter initially accepts only
   compiler-valid input; LSP still diagnoses incomplete input and refuses formatting edits for invalid documents.
 - Define half-open UTF-16 source offsets, including EOF and lexer errors where a token's `end` is not yet finalized.
   Keep terminal line/column display stable.
+- Record the lexer `includeComments` mode: analysis returns comment tokens for formatting, while diagnostics use a
+  comment-free token stream. The parser and M1/T1 need no comment filtering or list-filter builtin.
 - Specify LSP lifecycle, UTF-16 positions, document versions, and capability set. Keep implementation status explicitly
   future until each command ships.
 
@@ -109,14 +119,17 @@ and unsaved documents without new semantics.
 
 - Add a structured compiler diagnostic carrying message, source, start, and end. Preserve the current diagnostic text
   renderer and all existing stderr fixtures.
+- Add the lexer `includeComments` mode, defaulting to off. Analysis requests comment tokens for its returned token list
+  and parses a second, comment-free token stream for diagnostics. Do not filter comments in the parser, build an AST, or
+  add `list_filter`.
 - Analyze in-memory text using the existing tokenizer and `compile(tokens)`; discarding generated text is sufficient
-  initially. Do not split out a second checker, build an AST, or change accepted/rejected programs.
+  initially. Do not split out a second checker or change accepted/rejected programs.
 - Implement the narrow JSON command and selected-compiler adapter. Return diagnostics only for known source failures;
   surface unexpected exceptions. Include new compiler sources in `config/compiler.json`. Node tests exercise the
   compiler command directly; this internal interface needs no new `bin/` command or tool-case wrapper.
-- Check lexing, parsing, and existing kind/arity errors, EOF, tabs/CRLF, and an astral character inside a string before
-  an error. Ensure malformed input produces a diagnostic rather than an unhandled exception; fix only concrete
-  source-error crashes exposed by this interface, with focused regressions.
+- Check lexing, parsing, and existing kind/arity errors, EOF, tabs/CRLF, comment-only input, and an astral character
+  inside a string before an error. Ensure malformed input produces a diagnostic rather than an unhandled exception; fix
+  only concrete source-error crashes exposed by this interface, with focused regressions.
 
 **Acceptance:** identical compiler rejection behavior and readable diagnostics; machine-readable ranges work for unsaved
 text, with no filesystem output.
@@ -141,15 +154,15 @@ development dependencies in a distribution.
 **Depends on:** step-3-checker.
 **Files:** create `bin/mini-format`, `tools/format.ts`, `tools/format.test.ts`, `cases/tooling/format.case.json` and fixtures; modify `tools/cli.ts`, `docs/tooling.md`, `README.md` and product integration files listed below.
 
-- Format compiler-provided raw tokens with a small whitespace printer. Reuse token kind constants; retain
-  literals/escapes, unary operators, grouping, and evaluation order. Add syntax structure only if an actual ambiguity
-  requires it.
+- Format compiler-provided raw tokens, including comment tokens, with a small whitespace printer. Reuse token kind
+  constants; retain literals/escapes, unary operators, grouping, comments, blank-line intent, and evaluation order. Add
+  syntax structure only if an actual ambiguity requires it.
 - Implement stdout, stdin, write, and check modes. Reject invalid input before emitting output or replacing files. Share
   the text formatter with the LSP.
-- Verify exact expected output, idempotence, identical raw token sequences, and unchanged generated TS for all currently
-  passing language fixtures. Run a few focused execution cases for expressions, control flow, and I/O. Check
-  unary/binary spacing, nested blocks, empty input, CRLF, and no-write behavior on invalid input. Avoid bulk
-  reformatting existing sources.
+- Verify exact expected output, idempotence, identical raw token sequences (comments included), and unchanged generated
+  TS for all currently passing language fixtures. Run a few focused execution cases for expressions, control flow, and
+  I/O. Check unary/binary spacing, nested blocks, empty input, comment-only input, trailing comments, CRLF, and
+  no-write behavior on invalid input. Avoid bulk reformatting existing sources.
 
 **Acceptance:** formatting stabilizes after one pass; source meaning and literal bytes are preserved; CLI output is
 deterministic and safe for explicit writes.
@@ -223,10 +236,11 @@ versions and valid local annotated tags.
   planning-only change needs no product tag.
 - After compiler promotion, analysis/parsing/checking must live in Mini and the selected generated compiler must
   implement this interface; tooling cannot retain T0 as a fallback. If promotion happens during this work, adapt first.
-- No new syntax, comments, modules, parameter typing, lint rules, project config, AST framework, compiler daemon,
-  persistent cache, or new self-hosting gate.
+- No new syntax, new comment syntax, modules, parameter typing, lint rules, project config, AST framework, compiler
+  daemon, persistent cache, or new self-hosting gate.
 - Completion, hover, symbols, navigation, rename, quick fixes, range/on-type formatting, incremental analysis, docs/help
-  tools, and publication are later milestones. They need separate justification and plans after this workflow.
+  tools, comment-aware parser lookahead (`peek(offset)`), doc-comment attachment, and publication are later milestones.
+  They need separate justification and plans after this workflow.
 - Keep authored executable code in direct Node TypeScript or Mini; extension JavaScript is build output only. No
   per-case executables or broad test matrix.
 
@@ -235,9 +249,9 @@ versions and valid local annotated tags.
 | Item | Current baseline |
 | --- | --- |
 | Runtime | Node 24.16.0; strict erasable TypeScript, `.ts` imports |
-| Compiler | T0, direct emitter; `Unknown` parameters/results limit checking |
+| Compiler | T0, direct emitter; `Unknown` parameters/results limit checking; comments skipped by default |
 | Existing check | Repository types, docs, versions, cases, available bootstrap |
-| Editor | Declarative TextMate extension, version 0.1.1 |
+| Editor | Declarative TextMate extension, version 0.2.0 |
 
 ## Overall acceptance
 

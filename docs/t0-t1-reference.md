@@ -91,9 +91,13 @@ The lexer holds source text, source name, token list, source-line list, keyword
 and escape sets, cursor offset, line, and column.
 
 - Whitespace: space, tab, carriage return, newline.
-- Outside text, `//` line comments and `///` documentation comments are skipped
-  through CR, LF, or EOF before starting a token. Preserve source positions and
-  original diagnostic context. Neither form creates a token or emitted text.
+- Outside text, `//` line comments and `///` documentation comments run through
+  CR, LF, or EOF. The compile path skips them and creates no token or emitted
+  text. Preserve source positions and original diagnostic context. The lexer
+  also exposes an `includeComments` mode for tool analysis; that mode appends a
+  comment token with the marker, text, and positions. The parser path keeps the
+  default comment-free list. M1/T1 implements the mode directly; it must not add
+  a general `list_filter` builtin or introduce parser comment filtering.
 - Identifier start: ASCII letter or underscore.
 - Identifier continuation: ASCII letter, underscore, or decimal digit.
 - Numbers: consecutive decimal digits. Signs are separate operator tokens.
