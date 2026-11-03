@@ -32,6 +32,8 @@ Pending cases are the remaining work, not completed support.
 
 - `0.1.0-alpha.5`: readAll() through EOF.
 
+- `0.1.0-alpha.6`: escaped text literals.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

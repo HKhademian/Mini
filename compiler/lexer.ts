@@ -1,4 +1,4 @@
-import { TokenKind, type Token } from './types.ts';
+import { TextEscape, TokenKind, type Token } from './types.ts';
 
 export function fail(token: Token, message: string): never {
   const indent = token.context.slice(0, token.column - 1).replace(/[^\t]/g, ' ');
@@ -9,6 +9,7 @@ export function tokenize(text: string, source: string): Token[] {
   const tokens: Token[] = [];
   const lines = text.split(/\r?\n/);
   const keywords = new Set(['var', 'fn', 'return', 'if', 'else', 'while', 'true', 'false']);
+  const escapes = new Set<string>(Object.values(TextEscape));
   let position = 0;
   let line = 1;
   let column = 1;
@@ -41,7 +42,7 @@ export function tokenize(text: string, source: string): Token[] {
         if (text[position] === '\\') {
           const escape = start();
           advance();
-          if (position === text.length || !'"\\nrt'.includes(text[position]!)) fail(escape, 'unknown text escape');
+          if (position === text.length || !escapes.has(text[position]!)) fail(escape, 'unknown text escape');
         }
         advance();
       }

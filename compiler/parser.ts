@@ -32,7 +32,7 @@ class Parser {
   primary(): Expression {
     const token = this.take();
     if (token.kind === TokenKind.Number) return { code: String(Number(token.text)), kind: ValueKind.Number };
-    if (token.kind === TokenKind.Text) return { code: JSON.stringify(JSON.parse(token.text)), kind: ValueKind.Text };
+    if (token.kind === TokenKind.Text) return { code: token.text, kind: ValueKind.Text };
     if (token.text === 'true' || token.text === 'false') return { code: token.text, kind: ValueKind.Boolean };
     if (token.kind === TokenKind.Identifier && this.token().text === '(') return this.call(token);
     if (token.kind === TokenKind.Identifier && this.variables.has(token.text)) {

@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-escapes",
   "kind": "compile",
-  "source": "expressions-escapes.mini",
+  "source": "006-001-expressions-escapes.mini",
   "features": [
     "expressions.text"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "006-001-expressions-escapes.expected.ts"
+      }
     }
   ]
 }

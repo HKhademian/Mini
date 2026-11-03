@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-escape-output",
   "kind": "feature",
-  "source": "expressions-escape-output.mini",
+  "source": "006-002-expressions-escape-output.mini",
   "features": [
     "expressions.text"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "escapes",

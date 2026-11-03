@@ -4,6 +4,8 @@ export const TokenKind = {
 } as const;
 export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
+export const TextEscape = { Quote: '"', Backslash: '\\', Newline: 'n', Return: 'r', Tab: 't' } as const;
+
 export const ValueKind = { Number: 'number', Text: 'text', Boolean: 'boolean', Void: 'void' } as const;
 export type ValueKind = typeof ValueKind[keyof typeof ValueKind];
 

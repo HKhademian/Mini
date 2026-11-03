@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.6: preserve the five supported text escapes directly in emitted TS.
 - T0 alpha.5 / builtins alpha.2: read stdin through EOF with `readAll`.
 - T0 alpha.4 / builtins alpha.1: write exact text to stdout.
 - T0 alpha.3: numeric addition and text concatenation with `+`.
