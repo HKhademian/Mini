@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Propose `process_exit(status)` with immediate-termination cases; keep `process_envs` optional.
 - Accept file I/O, shared text-list operations, and process arguments.
 - Accept text-access built-ins; distinguish primitives from Mini library helpers.
 - Propose text-file operations with isolated input/output file cases.

@@ -1,0 +1,24 @@
+{
+  "id": "language.process-exit-zero",
+  "kind": "feature",
+  "source": "process-exit-zero.mini",
+  "features": [
+    "process.exit"
+  ],
+  "pending": "Process termination proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "default"
+    }
+  ]
+}

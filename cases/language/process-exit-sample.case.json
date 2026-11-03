@@ -1,0 +1,47 @@
+{
+  "id": "language.process-exit-sample",
+  "kind": "sample",
+  "source": "../../samples/007-exit.mini",
+  "features": [
+    "process.exit",
+    "process.args",
+    "list.length",
+    "list.at",
+    "functions",
+    "control.if",
+    "text.output"
+  ],
+  "pending": "Process termination proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 2,
+      "name": "missing",
+      "args": []
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "present",
+      "args": [
+        "mini"
+      ]
+    }
+  ]
+}

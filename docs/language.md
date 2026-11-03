@@ -2,7 +2,7 @@
 
 Status: bindings, functions, control flow, expressions, text, files, and read-only
 text-list access accepted. No compiler is implemented. Typing and other open
-rules remain undecided.
+rules remain undecided. Process termination is proposed below.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -221,7 +221,25 @@ operations are built-ins that can serve future list-producing APIs too.
 For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
 three elements: `compile`, `source.mini`, and `result.ts`, in that order.
 The compiler can combine list access with file I/O to implement its selected
-command interface. Diagnostics and termination follow in a later review.
+command interface.
+
+## Next proposal: process termination
+
+Use a primitive built-in to report unsuccessful compilation or command usage:
+
+```text
+process_exit(1);
+```
+
+- `process_exit(status)` immediately terminates the whole program with that
+  status, including when called inside a function. Later statements do not run.
+- The caller supplies an integer status from 0 through 255. Zero means success;
+  a nonzero status means failure. The operation produces no value.
+- Reaching the end of the program normally gives status 0.
+
+Use `process_*` names for host process operations. `process_envs()` remains a
+candidate; add it only with a concrete need and a defined return shape.
+Diagnostic output remains for a later review.
 
 Pending single-construct, rejection, and combination cases live under
 [cases/language](../cases/language/). Mini typing and general no-result function

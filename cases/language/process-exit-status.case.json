@@ -1,0 +1,25 @@
+{
+  "id": "language.process-exit-status",
+  "kind": "feature",
+  "source": "process-exit-status.mini",
+  "features": [
+    "process.exit",
+    "text.output"
+  ],
+  "pending": "Process termination proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "process-exit-status.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 7,
+      "name": "default"
+    }
+  ]
+}

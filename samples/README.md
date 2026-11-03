@@ -25,3 +25,8 @@ and newline preservation, pending compiler support.
 its elements in order, separated by `|`. Its
 [case](../cases/language/list-sample.case.json) covers no arguments, ordinary
 values, and empty/space-containing values, pending compiler support.
+
+[007-exit.mini](007-exit.mini) prints the first argument or terminates with
+status 2 when none is supplied. Its
+[case](../cases/language/process-exit-sample.case.json) combines termination,
+functions, and list access, pending termination approval and compiler support.

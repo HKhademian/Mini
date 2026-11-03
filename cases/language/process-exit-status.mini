@@ -1,0 +1,3 @@
+write("before");
+process_exit(7);
+write("after");

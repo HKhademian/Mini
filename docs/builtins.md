@@ -25,11 +25,16 @@ compiler's command interface. Shared built-ins `list_length(items)` and
 `list_at(items, index)` expose the elements. This starts with read-only access;
 list construction, mutation, and broader element types remain open.
 
+The next contract review is `process_exit(status)`: immediate termination with
+an integer status from 0 through 255, including from inside a function. Normal
+program completion gives status 0. This is a primitive host operation.
+The `process_*` family also leaves `process_envs()` as a candidate until needed;
+its return shape remains open.
+
 Other candidates, added only when concrete compiler or tool code needs them:
 
 - Input: a line and a number; candidate names `readLine`, `readNumber`.
 - Output: a line and diagnostic text; candidate names `writeLine`, `writeError`.
-- Process termination: an explicit status; candidate name `exit`.
 
 These candidates are not selected APIs. Their signatures, EOF,
 number parsing, newline behavior, and failure behavior remain to be defined.
