@@ -23,7 +23,7 @@ todos:
     status: completed
   - id: step-7-distribution
     content: "Step 7 — Verify the complete workflow from a source distribution and VSIX"
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []
@@ -59,6 +59,8 @@ adds no language syntax and does not implement the self-hosted compiler.
   `lsp` stream and widened the case tool-name pattern for hyphenated commands.
 - Connected the VS Code extension to the installed server with a bundled thin client, `mini.serverPath` /
   `mini.nodePath` settings, and release-time bundling; advanced the extension to `0.3.0`.
+- Verified the extracted source archive without `.git` or `node_modules`: repository docs check, source check,
+  formatter, and a live LSP diagnostics/formatting session. Inspected the packaged VSIX (9 files, bundled client).
 
 ## Read first
 
