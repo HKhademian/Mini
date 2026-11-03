@@ -25,16 +25,20 @@ compiler's command interface. Shared built-ins `list_length(items)` and
 `list_at(items, index)` expose the elements. This starts with read-only access;
 list construction, mutation, and broader element types remain open.
 
-The next contract review is `process_exit(status)`: immediate termination with
+The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal
 program completion gives status 0. This is a primitive host operation.
 The `process_*` family also leaves `process_envs()` as a candidate until needed;
 its return shape remains open.
 
+The next proposal is `write_error(text)`: exact UTF-8 output to stderr, without
+an added newline or result value. It completes before returning so a following
+`process_exit` preserves the diagnostic. This requires primitive host access.
+
 Other candidates, added only when concrete compiler or tool code needs them:
 
 - Input: a line and a number; candidate names `readLine`, `readNumber`.
-- Output: a line and diagnostic text; candidate names `writeLine`, `writeError`.
+- Output: a line; candidate name `writeLine`.
 
 These candidates are not selected APIs. Their signatures, EOF,
 number parsing, newline behavior, and failure behavior remain to be defined.

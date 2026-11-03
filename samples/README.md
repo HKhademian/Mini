@@ -29,4 +29,10 @@ values, and empty/space-containing values, pending compiler support.
 [007-exit.mini](007-exit.mini) prints the first argument or terminates with
 status 2 when none is supplied. Its
 [case](../cases/language/process-exit-sample.case.json) combines termination,
-functions, and list access, pending termination approval and compiler support.
+functions, and list access, pending compiler support.
+
+[008-diagnostic.mini](008-diagnostic.mini) reports a missing argument to stderr
+and exits with status 2; otherwise it prints the argument. Its
+[case](../cases/language/write-error-sample.case.json) combines diagnostics,
+termination, and list access, pending diagnostic-output approval and compiler
+support.

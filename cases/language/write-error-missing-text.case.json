@@ -1,0 +1,24 @@
+{
+  "id": "language.write-error-missing-text",
+  "kind": "reject",
+  "source": "write-error-missing-text.mini",
+  "features": [
+    "text.error"
+  ],
+  "pending": "Diagnostic output and error text proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "write-error-missing-text.stderr"
+      },
+      "exitCode": 1,
+      "name": "default"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "language.write-error-channels",
+  "kind": "feature",
+  "source": "write-error-channels.mini",
+  "features": [
+    "text.error",
+    "text.output",
+    "process.exit"
+  ],
+  "pending": "Diagnostic output proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "write-error-channels.stdout"
+      },
+      "stderr": {
+        "file": "write-error-channels.stderr"
+      },
+      "exitCode": 1,
+      "name": "default"
+    }
+  ]
+}

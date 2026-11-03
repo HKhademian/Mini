@@ -1,0 +1,46 @@
+{
+  "id": "language.write-error-sample",
+  "kind": "sample",
+  "source": "../../samples/008-diagnostic.mini",
+  "features": [
+    "text.error",
+    "process.exit",
+    "process.args",
+    "list.length",
+    "list.at",
+    "control.if"
+  ],
+  "pending": "Diagnostic output proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "write-error-sample.stderr"
+      },
+      "exitCode": 2,
+      "name": "missing",
+      "args": []
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "present",
+      "args": [
+        "mini"
+      ]
+    }
+  ]
+}

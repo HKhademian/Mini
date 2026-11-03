@@ -1,8 +1,8 @@
 # Mini language draft
 
-Status: bindings, functions, control flow, expressions, text, files, and read-only
-text-list access accepted. No compiler is implemented. Typing and other open
-rules remain undecided. Process termination is proposed below.
+Status: accepted syntax and built-in contracts are documented below.
+Diagnostic output is proposed. No compiler is implemented. Typing and other
+open rules remain undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -143,7 +143,7 @@ write(source);
 These operations let small programs expose their behavior without adding
 syntax. File I/O, arguments, diagnostics, and process termination follow in
 later small reviews; this pair alone is not the compiler's file interface.
-`readLine`, `readNumber`, `writeLine`, and `writeError` remain candidates. Add
+`readLine`, `readNumber`, and `writeLine` remain candidates. Add
 them only when concrete compiler or tool code needs them.
 
 ## Accepted operations: text access
@@ -223,7 +223,7 @@ three elements: `compile`, `source.mini`, and `result.ts`, in that order.
 The compiler can combine list access with file I/O to implement its selected
 command interface.
 
-## Next proposal: process termination
+## Accepted operation: process termination
 
 Use a primitive built-in to report unsuccessful compilation or command usage:
 
@@ -239,7 +239,23 @@ process_exit(1);
 
 Use `process_*` names for host process operations. `process_envs()` remains a
 candidate; add it only with a concrete need and a defined return shape.
-Diagnostic output remains for a later review.
+
+## Next proposal: diagnostic output
+
+The compiler needs a separate stream for diagnostics:
+
+```text
+write_error("expected ;\n");
+process_exit(1);
+```
+
+- `write_error(text)` writes UTF-8 text to standard error, exactly as supplied.
+- It adds no newline and produces no value. Empty text writes nothing.
+- The write completes before the call returns, preserving the diagnostic when
+  followed by `process_exit`.
+
+This primitive uses ordinary call syntax. Compiler code builds messages with
+existing text operations.
 
 Pending single-construct, rejection, and combination cases live under
 [cases/language](../cases/language/). Mini typing and general no-result function

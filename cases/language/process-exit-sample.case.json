@@ -11,7 +11,7 @@
     "control.if",
     "text.output"
   ],
-  "pending": "Process termination proposed; compiler unavailable.",
+  "pending": "Compiler and process built-ins unavailable.",
   "cases": [
     {
       "stdin": {

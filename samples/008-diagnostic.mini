@@ -1,0 +1,6 @@
+var args = process_args();
+if (list_length(args) == 0) {
+    write_error("expected an argument\n");
+    process_exit(2);
+}
+write(list_at(args, 0));

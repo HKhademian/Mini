@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Accept process termination; propose `write_error(text)` with diagnostic cases.
 - Propose `process_exit(status)` with immediate-termination cases; keep `process_envs` optional.
 - Accept file I/O, shared text-list operations, and process arguments.
 - Accept text-access built-ins; distinguish primitives from Mini library helpers.

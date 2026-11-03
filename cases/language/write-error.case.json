@@ -1,0 +1,50 @@
+{
+  "id": "language.write-error",
+  "kind": "feature",
+  "source": "write-error.mini",
+  "features": [
+    "text.error"
+  ],
+  "pending": "Diagnostic output proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "empty"
+    },
+    {
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "write-error-word.stderr"
+      },
+      "exitCode": 0,
+      "name": "word"
+    },
+    {
+      "stdin": {
+        "file": "io-lines.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "write-error-lines.stderr"
+      },
+      "exitCode": 0,
+      "name": "lines"
+    }
+  ]
+}
