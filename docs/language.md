@@ -214,14 +214,30 @@ while (position < list_length(args)) {
   these primitives do not parse options.
 
 Start with read-only access to lists of text. Lists can be held in bindings and
-passed to functions. Construction, mutation, and broader element-type
-rules remain open. Equality keeps its existing scalar contract. The list
-operations are built-ins that can serve future list-producing APIs too.
+passed to functions. Empty-list construction follows below; mutation and broader
+element-type rules remain open. Equality keeps its existing scalar contract.
+The list operations are built-ins that can serve future list-producing APIs too.
 
 For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
 three elements: `compile`, `source.mini`, and `result.ts`, in that order.
 The compiler can combine list access with file I/O to implement its selected
 command interface.
+
+## Accepted operation: empty-list construction
+
+```text
+var items = list_new();
+var count = list_length(items);
+```
+
+- `list_new()` returns a fresh empty list; its length is 0.
+- The list can be stored in a binding, passed to a function, and returned.
+- It uses the existing list kind. This step adds no element or mutation rules.
+
+T0 emits a new array for each call. This increment supports the zero-argument
+form only. The selected collection direction includes an optional reserve size
+and list assignment; those operations are not implemented yet. Missing elements,
+mixed/nested values, and maps still require their own reviewed contracts.
 
 ## Accepted operation: process termination
 

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.28 / builtins alpha.12: zero-argument `list_new()` creates empty lists.
 - Define group/product versioning, compatibility evidence, and the version inventory.
 - Exclude records, structs, and classes from Mini's target; use simple collections.
 - Document future formatter, documentation, help, and language-server commands.

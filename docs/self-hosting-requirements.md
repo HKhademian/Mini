@@ -90,11 +90,11 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
   emitting text, and reporting an error are naturally procedures. Supporting
   them avoids meaningless returned values. This is a small next review candidate;
   its explicit return and fallthrough rules still need to be chosen.
-- **Constructible, growable lists.** The accepted list operations can only read
-  host-produced text lists. Compiler-owned tables need construction and growth
-  if represented as lists. Text-element lists could be a first step; number or
-  token elements should follow actual usage. Removal, arbitrary insertion, and
-  generic type syntax are not implied.
+- **Growable lists.** `list_new()` creates an empty list, and the accepted list
+  operations read host-produced text lists. Compiler-owned tables still need
+  growth and mutation if represented as lists. Text-element lists could be a
+  first step; number or token elements should follow actual usage. Removal,
+  arbitrary insertion, and generic type syntax are not implied.
 - **Named kind constants.** Token, value, and stage kinds should have one shared
   definition rather than repeated string literals. Existing bindings can name
   values; immutability or enum syntax should earn its cost separately.

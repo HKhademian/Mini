@@ -1,0 +1,15 @@
+{
+  "id": "language.list-new-not-text",
+  "kind": "reject",
+  "source": "027-004-list-new-not-text.mini",
+  "features": ["list.new", "write", "calls.kinds"],
+  "cases": [
+    {
+      "name": "list-is-not-text",
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "file": "empty.stdout" },
+      "stderr": { "file": "027-004-list-new-not-text.stderr" },
+      "exitCode": 1
+    }
+  ]
+}

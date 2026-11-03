@@ -1,0 +1,3 @@
+027-003-list-new-extra-arguments.mini:1:1: expected 0 arguments
+list_new(1, 2);
+^

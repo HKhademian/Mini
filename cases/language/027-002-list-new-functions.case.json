@@ -1,0 +1,23 @@
+{
+  "id": "language.list-new-functions",
+  "kind": "feature",
+  "source": "027-002-list-new-functions.mini",
+  "features": ["list.new", "list.length", "functions", "process.args"],
+  "cases": [
+    {
+      "name": "no-arguments",
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "text": "empty:empty" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    },
+    {
+      "name": "arguments-preserved",
+      "args": ["a", "b"],
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "text": "nonempty:empty" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    }
+  ]
+}

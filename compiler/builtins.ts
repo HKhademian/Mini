@@ -8,6 +8,8 @@ export type Builtin = {
 };
 
 export const builtins = new Map<string, Builtin>([
+  ['list_new', { parameters: [], result: ValueKind.TextList,
+    imports: [], emit: () => '[]' }],
   ['write_error', { parameters: [ValueKind.Text], result: ValueKind.Void,
     imports: ['writeSync'], emit: args => `writeSync(2, ${args[0]})` }],
   ['process_exit', { parameters: [ValueKind.Number], result: ValueKind.Void,

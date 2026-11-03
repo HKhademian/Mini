@@ -1,0 +1,14 @@
+fn make_list() {
+    return list_new();
+}
+
+fn describe(items) {
+    if (list_length(items) == 0) {
+        return "empty";
+    }
+    return "nonempty";
+}
+
+write(describe(process_args()));
+write(":");
+write(describe(make_list()));
