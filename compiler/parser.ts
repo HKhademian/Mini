@@ -36,10 +36,10 @@ class Parser {
     return this.take();
   }
   expression(): Expression {
-    let left = this.primary();
+    let left = this.unary();
     while (this.token().text === '+' || this.token().text === '-') {
       const operator = this.take();
-      const right = this.primary();
+      const right = this.unary();
       const allowed = (kind: ValueKind) => kind === ValueKind.Number || kind === ValueKind.Text || kind === ValueKind.Unknown;
       if (operator.text === '-') {
         if ((left.kind !== ValueKind.Number && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Number && right.kind !== ValueKind.Unknown)) fail(operator, '- needs two numbers');
@@ -47,6 +47,15 @@ class Parser {
       left = { code: `(${left.code} ${operator.text} ${right.code})`, kind: left.kind === ValueKind.Unknown ? right.kind : left.kind };
     }
     return left;
+  }
+  unary(): Expression {
+    if (this.token().text === '-') {
+      const operator = this.take();
+      const value = this.unary();
+      if (value.kind !== ValueKind.Number && value.kind !== ValueKind.Unknown) fail(operator, '- needs a number');
+      return { code: `(-${value.code})`, kind: ValueKind.Number };
+    }
+    return this.primary();
   }
   primary(): Expression {
     const token = this.take();

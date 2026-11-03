@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-arithmetic",
   "kind": "compile",
-  "source": "expressions-arithmetic.mini",
+  "source": "010-001-expressions-arithmetic.mini",
   "features": [
     "expressions.arithmetic"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "010-001-expressions-arithmetic.expected.ts"
+      }
     }
   ]
 }
