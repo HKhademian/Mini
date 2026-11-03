@@ -1,0 +1,26 @@
+{
+  "id": "language.boolean-not",
+  "kind": "compile",
+  "source": "014-002-boolean-not.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "014-002-boolean-not.expected.ts"
+      }
+    }
+  ]
+}

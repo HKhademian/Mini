@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-equality",
   "kind": "feature",
-  "source": "expressions-equality.mini",
+  "source": "014-001-expressions-equality.mini",
   "features": [
     "expressions.equality"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "empty",

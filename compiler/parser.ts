@@ -69,11 +69,12 @@ class Parser {
     return left;
   }
   unary(): Expression {
-    if (this.token().text === '-') {
+    if (this.token().text === '-' || this.token().text === '!') {
       const operator = this.take();
       const value = this.unary();
-      if (value.kind !== ValueKind.Number && value.kind !== ValueKind.Unknown) fail(operator, '- needs a number');
-      return { code: `(-${value.code})`, kind: ValueKind.Number };
+      const kind = operator.text === '-' ? ValueKind.Number : ValueKind.Boolean;
+      if (value.kind !== kind && value.kind !== ValueKind.Unknown) fail(operator, operator.text + ' needs a ' + kind);
+      return { code: `(${operator.text}${value.code})`, kind };
     }
     return this.primary();
   }

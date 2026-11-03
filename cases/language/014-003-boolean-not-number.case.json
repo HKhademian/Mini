@@ -1,0 +1,23 @@
+{
+  "id": "language.boolean-not-number",
+  "kind": "reject",
+  "source": "014-003-boolean-not-number.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "014-003-boolean-not-number.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+var ready = !false;
+var done = !true;
+var twice = !!true;
