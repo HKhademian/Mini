@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Use short helper keys for compiler adapter emission instead of comparing
+  full adapter text, and emit used adapters from a fixed ordered key list.
 - Refactor compiler helper names: `token_new` instead of `new_token`, and
   `lex_fail`/`parser_fail` instead of the shared `fail`. No emitted-code
   behavior change.

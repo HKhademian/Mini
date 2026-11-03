@@ -274,7 +274,7 @@ fn parser_call(parser, name) {
         map_set(map_get(parser, "imports"), list_get(imports, position), true);
         position = position + 1;
     }
-    var helper = builtin_helper(name_text);
+    var helper = builtin_helper_key(name_text);
     if (helper != "") {
         map_set(map_get(parser, "helpers"), helper, true);
     }
@@ -441,42 +441,28 @@ fn import_names(imports) {
 
 /// Return helper blocks in T0's sorted order.
 fn helper_blocks(helpers) {
+    // Keep this order equal to T0's lexicographic helper sort.
+    var order = list_new();
+    list_set(order, list_length(order), "map_runtime");
+    list_set(order, list_length(order), "json_to_text");
+    list_set(order, list_length(order), "list_copy");
+    list_set(order, list_length(order), "list_get");
+    list_set(order, list_length(order), "list_set");
+    list_set(order, list_length(order), "list_to_text");
+    list_set(order, list_length(order), "map_copy");
+    list_set(order, list_length(order), "number_to_text");
+    list_set(order, list_length(order), "text_find");
+    list_set(order, list_length(order), "text_get");
+    list_set(order, list_length(order), "text_slice");
+    list_set(order, list_length(order), "text_split");
     var output = "";
-    if (map_has(helpers, map_runtime)) {
-        output = output + map_runtime;
-    }
-    if (map_has(helpers, json_to_text_helper)) {
-        output = output + json_to_text_helper;
-    }
-    if (map_has(helpers, list_copy_helper)) {
-        output = output + list_copy_helper;
-    }
-    if (map_has(helpers, list_get_helper)) {
-        output = output + list_get_helper;
-    }
-    if (map_has(helpers, list_set_helper)) {
-        output = output + list_set_helper;
-    }
-    if (map_has(helpers, list_to_text_helper)) {
-        output = output + list_to_text_helper;
-    }
-    if (map_has(helpers, map_copy_helper)) {
-        output = output + map_copy_helper;
-    }
-    if (map_has(helpers, number_to_text_helper)) {
-        output = output + number_to_text_helper;
-    }
-    if (map_has(helpers, text_find_helper)) {
-        output = output + text_find_helper;
-    }
-    if (map_has(helpers, text_get_helper)) {
-        output = output + text_get_helper;
-    }
-    if (map_has(helpers, text_slice_helper)) {
-        output = output + text_slice_helper;
-    }
-    if (map_has(helpers, text_split_helper)) {
-        output = output + text_split_helper;
+    var position = 0;
+    while (position < list_length(order)) {
+        var key = list_get(order, position);
+        if (map_has(helpers, key)) {
+            output = output + helper_text(key);
+        }
+        position = position + 1;
     }
     return output;
 }

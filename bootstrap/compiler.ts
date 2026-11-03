@@ -537,7 +537,7 @@ function parser_call(parser, name) {
         $mini_map_set($mini_map_get(parser, "imports"), $mini_list_get(imports, position), true);
         position = (position + 1);
     }
-    let helper = builtin_helper(name_text);
+    let helper = builtin_helper_key(name_text);
     if ((helper !== "")) {
         $mini_map_set($mini_map_get(parser, "helpers"), helper, true);
     }
@@ -692,42 +692,27 @@ function import_names(imports) {
     return output;
 }
 function helper_blocks(helpers) {
+    let order = [];
+    $mini_list_set(order, (order).length, "map_runtime");
+    $mini_list_set(order, (order).length, "json_to_text");
+    $mini_list_set(order, (order).length, "list_copy");
+    $mini_list_set(order, (order).length, "list_get");
+    $mini_list_set(order, (order).length, "list_set");
+    $mini_list_set(order, (order).length, "list_to_text");
+    $mini_list_set(order, (order).length, "map_copy");
+    $mini_list_set(order, (order).length, "number_to_text");
+    $mini_list_set(order, (order).length, "text_find");
+    $mini_list_set(order, (order).length, "text_get");
+    $mini_list_set(order, (order).length, "text_slice");
+    $mini_list_set(order, (order).length, "text_split");
     let output = "";
-    if ($mini_map_has(helpers, map_runtime)) {
-        output = (output + map_runtime);
-    }
-    if ($mini_map_has(helpers, json_to_text_helper)) {
-        output = (output + json_to_text_helper);
-    }
-    if ($mini_map_has(helpers, list_copy_helper)) {
-        output = (output + list_copy_helper);
-    }
-    if ($mini_map_has(helpers, list_get_helper)) {
-        output = (output + list_get_helper);
-    }
-    if ($mini_map_has(helpers, list_set_helper)) {
-        output = (output + list_set_helper);
-    }
-    if ($mini_map_has(helpers, list_to_text_helper)) {
-        output = (output + list_to_text_helper);
-    }
-    if ($mini_map_has(helpers, map_copy_helper)) {
-        output = (output + map_copy_helper);
-    }
-    if ($mini_map_has(helpers, number_to_text_helper)) {
-        output = (output + number_to_text_helper);
-    }
-    if ($mini_map_has(helpers, text_find_helper)) {
-        output = (output + text_find_helper);
-    }
-    if ($mini_map_has(helpers, text_get_helper)) {
-        output = (output + text_get_helper);
-    }
-    if ($mini_map_has(helpers, text_slice_helper)) {
-        output = (output + text_slice_helper);
-    }
-    if ($mini_map_has(helpers, text_split_helper)) {
-        output = (output + text_split_helper);
+    let position = 0;
+    while ((position < (order).length)) {
+        let key = $mini_list_get(order, position);
+        if ($mini_map_has(helpers, key)) {
+            output = (output + helper_text(key));
+        }
+        position = (position + 1);
     }
     return output;
 }
@@ -934,6 +919,21 @@ function builtin_imports(name) {
         }
     }
     return imports;
+}
+function builtin_helper_key(name) {
+    if (((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "map_new"))) {
+        return "map_runtime";
+    }
+    if ((((((((((((name === "list_copy") || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "list_get")) || (name === "list_set")) || (name === "map_copy")) || (name === "text_find")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_split"))) {
+        return name;
+    }
+    return "";
+}
+function helper_text(key) {
+    if ((key === "map_runtime")) {
+        return map_runtime;
+    }
+    return builtin_helper(key);
 }
 function builtin_helper(name) {
     if (((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "map_new"))) {

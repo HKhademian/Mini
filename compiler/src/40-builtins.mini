@@ -158,6 +158,27 @@ fn builtin_imports(name) {
 }
 
 /// Return the builtin adapter block, or empty text.
+fn builtin_helper_key(name) {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
+        return "map_runtime";
+    }
+    if (name == "list_copy" || name == "list_to_text" || name == "number_to_text"
+        || name == "json_to_text" || name == "list_get" || name == "list_set"
+        || name == "map_copy" || name == "text_find" || name == "text_get"
+        || name == "text_slice" || name == "text_split") {
+        return name;
+    }
+    return "";
+}
+
+/// Return the adapter text for a helper key.
+fn helper_text(key) {
+    if (key == "map_runtime") {
+        return map_runtime;
+    }
+    return builtin_helper(key);
+}
+
 fn builtin_helper(name) {
     if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
         return map_runtime;
