@@ -1,16 +1,19 @@
 # Built-ins and library functions
 
 Mini needs a small set of host operations for compiling files and writing tools.
-Built-in capabilities include:
+The current [proposal](language.md) starts with `readAll()` and `write(text)`:
+consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
+without a newline. EOF yields empty text. Neither operation converts newlines.
+`write` produces no value. Names and contracts remain proposed, not implemented.
 
-- Input: whole input, a line, and a number; candidate names `readAll`,
-  `readLine`, `readNumber`.
-- Output: text, a line, and diagnostic text; candidate names `write`,
-  `writeLine`, `writeError`.
+Other planned capabilities include:
+
+- Input: a line and a number; candidate names `readLine`, `readNumber`.
+- Output: a line and diagnostic text; candidate names `writeLine`, `writeError`.
 - Process termination: an explicit status; candidate name `exit`.
 - File reading/writing and process arguments for the compiler's file interface.
 
-These are built-in directions, not implemented APIs. Names, signatures, EOF,
+These are built-in directions, not implemented APIs. Other signatures, EOF,
 number parsing, newline behavior, and failure behavior remain to be defined.
 Implement the subset needed for self-hosting first; add other practical
 capabilities in small increments with focused cases.

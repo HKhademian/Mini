@@ -1,0 +1,25 @@
+{
+  "id": "language.io-read-argument",
+  "kind": "reject",
+  "source": "io-read-argument.mini",
+  "features": [
+    "text.input",
+    "text.output"
+  ],
+  "pending": "I/O and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "io-read-argument.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

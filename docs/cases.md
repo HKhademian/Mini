@@ -33,6 +33,7 @@ Prefer external files for substantial inputs and expected output.
 Hashes use `sha256:` followed by 64 lowercase hex digits and cover resolved
 bytes. A mismatch fails verification. Update expectations deliberately after
 reviewing the contract. Streams are compared byte for byte.
+Git preserves stream bytes, including CRLF; do not normalize fixture newlines.
 
 Kinds: `tool` invokes the named command; `feature`, `sample`, and `example` compile Mini
 then run it; `compile` checks compiler stdout/stderr/status and a separate
@@ -95,8 +96,8 @@ exact bytes when implementing that compiler step. Remove `pending` only when
 the construct and its dependencies work; run the cases and preserve the
 bootstrap gate. A self-build alone does not establish all feature behavior.
 
-Current runtime cases use provisional `readAll`/`write` names and text/comparison
-expressions. These remain review dependencies, not accepted built-in contracts.
+Current runtime cases use the proposed `readAll`/`write` operations. These remain
+review dependencies, not accepted built-in contracts.
 
 Use `samples/` for small teaching programs and `examples/` for complete useful
 programs, creating those directories only when needed. Give each a stable

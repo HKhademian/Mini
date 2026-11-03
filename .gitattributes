@@ -1,2 +1,5 @@
 * text=auto eol=lf
 *.tar.gz binary
+cases/**/*.stdin -text whitespace=cr-at-eol
+cases/**/*.stdout -text whitespace=cr-at-eol
+cases/**/*.stderr -text whitespace=cr-at-eol

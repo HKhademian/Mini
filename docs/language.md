@@ -1,7 +1,8 @@
 # Mini language draft
 
 Status: binding, function, control-flow, and expression forms accepted.
-Nothing implemented yet. Typing and other open rules remain undecided.
+Text I/O proposed. Nothing implemented yet. Typing and other open rules remain
+undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -127,5 +128,25 @@ conditions. More arithmetic can wait for concrete compiler needs. Numeric limits
 Mini's typing strategy, and host operation signatures remain open. Mini `==` /
 `!=` would emit TypeScript `===` / `!==`.
 
-Primitive host operations follow in a separate review. Pending compile, runtime,
-rejection, and combination cases live under [cases/language](../cases/language/).
+## Next proposal: whole-input and text output
+
+Use ordinary calls for two primitive operations:
+
+```text
+var source = readAll();
+write(source);
+```
+
+- `readAll()` consumes remaining standard input through EOF and returns text.
+  At EOF it returns empty text.
+- `write(text)` writes text to standard output exactly, with no added newline.
+  It produces no value; use it as a call statement ending in `;`.
+- Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
+
+These operations let small programs expose their behavior without adding
+syntax. File I/O, arguments, diagnostics, and process termination follow in
+later small reviews; this pair alone is not the compiler's file interface.
+
+Pending single-construct, rejection, and combination cases live under
+[cases/language](../cases/language/). Mini typing and general no-result function
+rules remain open.

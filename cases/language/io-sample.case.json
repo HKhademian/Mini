@@ -1,0 +1,51 @@
+{
+  "id": "language.io-sample",
+  "kind": "sample",
+  "source": "../../samples/003-io.mini",
+  "features": [
+    "text.input",
+    "text.output"
+  ],
+  "pending": "Text I/O proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "word",
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "lines",
+      "stdin": {
+        "file": "io-lines.stdin"
+      },
+      "stdout": {
+        "file": "io-lines.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

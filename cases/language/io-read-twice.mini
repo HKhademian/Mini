@@ -1,0 +1,3 @@
+var first = readAll();
+var second = readAll();
+write(first + ":" + second);

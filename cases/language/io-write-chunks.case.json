@@ -1,0 +1,25 @@
+{
+  "id": "language.io-write-chunks",
+  "kind": "feature",
+  "source": "io-write-chunks.mini",
+  "features": [
+    "text.input",
+    "text.output"
+  ],
+  "pending": "Text I/O proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-write-chunks.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

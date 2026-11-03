@@ -71,7 +71,9 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
   for (const value of ['true', 'false']) {
     assert.ok(scopes(value, value).includes('constant.language.mini'));
   }
-  assert.ok(scopes('readAll();', 'readAll').includes('entity.name.function.call.mini'));
+  for (const name of ['readAll', 'write']) {
+    assert.ok(scopes(`${name}();`, name).includes('entity.name.function.call.mini'));
+  }
 });
 
 test('accepted text escapes differ from unsupported escapes', () => {

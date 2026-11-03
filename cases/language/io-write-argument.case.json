@@ -1,0 +1,25 @@
+{
+  "id": "language.io-write-argument",
+  "kind": "reject",
+  "source": "io-write-argument.mini",
+  "features": [
+    "text.input",
+    "text.output"
+  ],
+  "pending": "I/O and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "io-write-argument.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
