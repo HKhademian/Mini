@@ -195,7 +195,7 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
     if (spec.kind === CaseKind.Reject) { assert.notEqual(scenario.exitCode, 0); assert.equal(result.stdout.length, 0); }
     for (const file of scenario.files ?? []) assert(existsSync(resolve(workspace, file)), 'missing artifact: ' + file);
     return artifact;
-  } finally { rmSync(work, { recursive: true, force: true }); }
+  } finally { rmSync(work, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 }); }
 }
 
 export function caseIdentity(fixture: Fixture) {
