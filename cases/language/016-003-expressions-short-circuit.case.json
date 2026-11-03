@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-short-circuit",
   "kind": "feature",
-  "source": "expressions-short-circuit.mini",
+  "source": "016-003-expressions-short-circuit.mini",
   "features": [
     "expressions.boolean"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "true",

@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-boolean-result",
   "kind": "feature",
-  "source": "expressions-boolean-result.mini",
+  "source": "016-002-expressions-boolean-result.mini",
   "features": [
     "expressions.boolean"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "neither",

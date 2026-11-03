@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-boolean",
   "kind": "compile",
-  "source": "expressions-boolean.mini",
+  "source": "016-001-expressions-boolean.mini",
   "features": [
     "expressions.boolean"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "016-001-expressions-boolean.expected.ts"
+      }
     }
   ]
 }
