@@ -1,0 +1,15 @@
+{
+  "id": "language.list-mutation-sample",
+  "kind": "sample",
+  "source": "../../samples/009-list-mutation.mini",
+  "features": ["list.new", "list.set", "list.at", "list.length", "control.if"],
+  "cases": [
+    {
+      "name": "growth-and-values",
+      "stdin": { "file": "empty.stdin" },
+      "stdout": { "file": "list-mutation-sample.stdout" },
+      "stderr": { "file": "empty.stderr" },
+      "exitCode": 0
+    }
+  ]
+}

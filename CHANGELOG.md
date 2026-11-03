@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Showcase all implemented built-ins in runnable samples, including list mutation.
 - T0 alpha.33 / builtins alpha.17: map key counts, with a runnable map sample.
 - Document grouped-tag audits, explicit remote publication, and immutable history.
 - T0 alpha.32 / builtins alpha.16: map insertion/replacement with non-map no-ops.

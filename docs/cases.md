@@ -119,6 +119,8 @@ programs, creating those directories only when needed. Give each a stable
 numeric slug, short explanation, and a matching case manifest. The check tool
 requires coverage for every `.mini` file there. After syntax changes, simplify
 affected consumers, update cases/docs, and rerun them.
+Add or extend a runnable teaching sample with new language constructs and
+built-ins, and update [the sample index](../samples/README.md).
 
 ## Benchmarks
 
