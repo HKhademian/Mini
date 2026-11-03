@@ -1,0 +1,13 @@
+fn mark(value) {
+    if (value) {
+        return "T";
+    } else {
+        return "F";
+    }
+}
+var token = readAll();
+var left = token == "left";
+var right = token == "right";
+write(mark(!left) + mark(left && right) + mark(left || right));
+write(mark(true || false && false));
+write(mark((true || false) && false));

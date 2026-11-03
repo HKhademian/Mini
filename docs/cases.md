@@ -75,6 +75,11 @@ existing features. Keep distinct syntax forms in separate source/manifest pairs;
 use multiple scenarios for different inputs to the same source. Avoid
 speculative cases outside the tiny supported subset.
 
+Include combination cases: functions containing loops and branches, expressions
+in arguments and conditions, and observable evaluation order. For example,
+[repeat](../cases/language/combination-repeat.case.json) combines bindings,
+functions, loops, branches, and expressions with several input/output pairs.
+
 Create cases alongside every construct proposal, not after implementation.
 Keep them under `cases/language/`, marked pending while syntax or dependencies
 remain unimplemented. Include multiple valid forms, input/output variants,

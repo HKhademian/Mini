@@ -1,0 +1,10 @@
+fn mark(value) {
+    write(value);
+    return value;
+}
+fn join(left, right) {
+    return left + right;
+}
+var token = readAll();
+write(join(mark(token + "L"), mark("R")));
+write(mark("A") + mark("B"));

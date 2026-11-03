@@ -1,0 +1,50 @@
+{
+  "id": "language.expressions-boolean-result",
+  "kind": "feature",
+  "source": "expressions-boolean-result.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "neither",
+      "stdin": {
+        "file": "expressions-boolean-result-neither.stdin"
+      },
+      "stdout": {
+        "file": "expressions-boolean-result-neither.stdout"
+      },
+      "stderr": {
+        "file": "expressions-boolean-result-neither.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "left",
+      "stdin": {
+        "file": "expressions-boolean-result-left.stdin"
+      },
+      "stdout": {
+        "file": "expressions-boolean-result-left.stdout"
+      },
+      "stderr": {
+        "file": "expressions-boolean-result-left.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "right",
+      "stdin": {
+        "file": "expressions-boolean-result-right.stdin"
+      },
+      "stdout": {
+        "file": "expressions-boolean-result-right.stdout"
+      },
+      "stderr": {
+        "file": "expressions-boolean-result-right.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-arithmetic-result",
+  "kind": "feature",
+  "source": "expressions-arithmetic-result.mini",
+  "features": [
+    "expressions.arithmetic"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "grouping",
+      "stdin": {
+        "file": "expressions-arithmetic-result-grouping.stdin"
+      },
+      "stdout": {
+        "file": "expressions-arithmetic-result-grouping.stdout"
+      },
+      "stderr": {
+        "file": "expressions-arithmetic-result-grouping.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

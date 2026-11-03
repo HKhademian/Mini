@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-sample",
+  "kind": "sample",
+  "source": "../../samples/002-expressions.mini",
+  "features": [
+    "expressions"
+  ],
+  "pending": "Expressions proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "silent",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

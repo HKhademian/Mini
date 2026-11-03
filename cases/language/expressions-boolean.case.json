@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-boolean",
+  "kind": "compile",
+  "source": "expressions-boolean.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-boolean-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-boolean-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-boolean-default.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

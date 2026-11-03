@@ -1,7 +1,7 @@
 # Mini language draft
 
-Status: binding and function forms accepted; control flow proposed. Nothing
-implemented yet. Typing and other open rules remain undecided.
+Status: binding, function, and control-flow forms accepted; expressions proposed.
+Nothing implemented yet. Typing and other open rules remain undecided.
 
 After approval, record the decision and present the next small proposal in an
 atomic commit. Approval covers the presented form, not its open questions.
@@ -70,7 +70,7 @@ Parameter and result typing, scope, declaration order, and functions without
 a returned value remain open. The example illustrates the form; text operations
 will be reviewed with expressions.
 
-## Next proposal: conditionals and loops
+## Accepted form: conditionals and loops
 
 Use `if` with an optional `else`, and `while` for repetition:
 
@@ -96,6 +96,34 @@ TypeScript. Comparison operators and condition types will be reviewed with
 expressions. No additional loop forms or loop-control statements are proposed
 at this step.
 
-Expressions and primitive host operations follow as separate small reviews.
-Examples illustrate syntax. Their pending compile, runtime, and rejection cases
-live under [cases/language](../cases/language/).
+## Next proposal: values and expressions
+
+Start with decimal integer literals, double-quoted text, and `true` / `false`:
+
+```text
+var next = position + 1;
+var remaining = limit - position;
+var ready = token != "" && position < limit;
+var output = "token: " + token + "\n";
+```
+
+- Numeric `+` and `-`; unary `-` negates a number.
+- Text `+` concatenates text. No implicit text/number conversion.
+- `==` and `!=` compare values of the same kind without coercion.
+- `<`, `<=`, `>`, and `>=` compare numbers.
+- `!`, `&&`, and `||` operate on booleans. Conditions require booleans.
+- `&&` and `||` evaluate their right side only when needed.
+- Text escapes: `\"`, `\\`, `\n`, `\r`, and `\t`.
+
+Precedence, tightest first: calls/parentheses, unary `!` / `-`, binary `+` / `-`,
+numeric comparisons, equality, `&&`, then `||`. Binary operators at each level
+associate left to right. Operands and call arguments evaluate left to right.
+Parentheses override grouping. Assignment remains a statement.
+
+This covers cursor arithmetic, token comparisons, emission, and combined parser
+conditions. More arithmetic can wait for concrete compiler needs. Numeric limits,
+Mini's typing strategy, and host operation signatures remain open. Mini `==` /
+`!=` would emit TypeScript `===` / `!==`.
+
+Primitive host operations follow in a separate review. Pending compile, runtime,
+rejection, and combination cases live under [cases/language](../cases/language/).

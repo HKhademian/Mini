@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-nonboolean-condition",
+  "kind": "reject",
+  "source": "expressions-nonboolean-condition.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "pending": "Expression rule and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-nonboolean-condition-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-nonboolean-condition-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-nonboolean-condition-default.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

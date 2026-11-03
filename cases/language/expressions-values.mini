@@ -1,0 +1,4 @@
+var count = 12;
+var token = "mini";
+var ready = true;
+var done = false;

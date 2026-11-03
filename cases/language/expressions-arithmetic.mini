@@ -1,0 +1,3 @@
+var position = 10 - 3 - 2;
+var next = position + 1;
+var offset = -(position + 1);

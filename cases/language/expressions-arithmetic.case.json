@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-arithmetic",
+  "kind": "compile",
+  "source": "expressions-arithmetic.mini",
+  "features": [
+    "expressions.arithmetic"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-arithmetic-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-arithmetic-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-arithmetic-default.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

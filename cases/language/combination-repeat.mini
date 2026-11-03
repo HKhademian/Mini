@@ -1,0 +1,15 @@
+fn repeat(token, count) {
+    var output = "";
+    var position = 0;
+    while (position < count) {
+        if (token == ";" && position == 1) {
+            output = output + "\n";
+        } else {
+            output = output + token;
+        }
+        position = position + 1;
+    }
+    return output;
+}
+var token = readAll();
+write(repeat(token, 3));

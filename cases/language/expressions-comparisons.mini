@@ -1,0 +1,12 @@
+fn mark(value) {
+    if (value) {
+        return "T";
+    } else {
+        return "F";
+    }
+}
+var value = 2;
+write(mark(value < 2) + mark(value <= 2));
+write(mark(value > 2) + mark(value >= 2));
+write(mark(value == 2) + mark(value != 2));
+write(mark(1 < value) + mark(3 > value));

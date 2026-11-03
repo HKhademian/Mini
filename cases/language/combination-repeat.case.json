@@ -1,0 +1,56 @@
+{
+  "id": "language.combination-repeat",
+  "kind": "feature",
+  "source": "combination-repeat.mini",
+  "features": [
+    "bindings",
+    "functions",
+    "control.if",
+    "control.while",
+    "expressions",
+    "text.input",
+    "text.output"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "combination-repeat-empty.stdin"
+      },
+      "stdout": {
+        "file": "combination-repeat-empty.stdout"
+      },
+      "stderr": {
+        "file": "combination-repeat-empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "word",
+      "stdin": {
+        "file": "combination-repeat-word.stdin"
+      },
+      "stdout": {
+        "file": "combination-repeat-word.stdout"
+      },
+      "stderr": {
+        "file": "combination-repeat-word.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "semicolon",
+      "stdin": {
+        "file": "combination-repeat-semicolon.stdin"
+      },
+      "stdout": {
+        "file": "combination-repeat-semicolon.stdout"
+      },
+      "stderr": {
+        "file": "combination-repeat-semicolon.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

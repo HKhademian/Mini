@@ -1,0 +1,41 @@
+{
+  "id": "language.combination-evaluation-order",
+  "kind": "feature",
+  "source": "combination-evaluation-order.mini",
+  "features": [
+    "bindings",
+    "functions",
+    "expressions.evaluation",
+    "text.input",
+    "text.output"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "combination-evaluation-order-empty.stdin"
+      },
+      "stdout": {
+        "file": "combination-evaluation-order-empty.stdout"
+      },
+      "stderr": {
+        "file": "combination-evaluation-order-empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "word",
+      "stdin": {
+        "file": "combination-evaluation-order-word.stdin"
+      },
+      "stdout": {
+        "file": "combination-evaluation-order-word.stdout"
+      },
+      "stderr": {
+        "file": "combination-evaluation-order-word.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

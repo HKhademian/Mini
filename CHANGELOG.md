@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Record control-flow approval and propose basic values/operators with combination cases.
 - Add local VS Code syntax highlighting, file icons, and bracket/quote pairing.
 - Add pending compile, runtime, rejection, and sample cases with each construct.
 - Report pending scenarios separately; allow compile checks without exact artifacts.

@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-mixed-plus",
+  "kind": "reject",
+  "source": "expressions-mixed-plus.mini",
+  "features": [
+    "expressions.text"
+  ],
+  "pending": "Expression rule and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-mixed-plus-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-mixed-plus-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-mixed-plus-default.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

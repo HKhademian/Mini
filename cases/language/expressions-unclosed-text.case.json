@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-unclosed-text",
+  "kind": "reject",
+  "source": "expressions-unclosed-text.mini",
+  "features": [
+    "expressions.text"
+  ],
+  "pending": "Expression rule and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-unclosed-text-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-unclosed-text-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-unclosed-text-default.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

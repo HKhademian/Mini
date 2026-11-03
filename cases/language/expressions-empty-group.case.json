@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-empty-group",
+  "kind": "reject",
+  "source": "expressions-empty-group.mini",
+  "features": [
+    "expressions.grouping"
+  ],
+  "pending": "Expression rule and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-empty-group-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-empty-group-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-empty-group-default.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

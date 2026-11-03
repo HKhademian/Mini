@@ -1,0 +1,50 @@
+{
+  "id": "language.expressions-equality",
+  "kind": "feature",
+  "source": "expressions-equality.mini",
+  "features": [
+    "expressions.equality"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "expressions-equality-empty.stdin"
+      },
+      "stdout": {
+        "file": "expressions-equality-empty.stdout"
+      },
+      "stderr": {
+        "file": "expressions-equality-empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "equal",
+      "stdin": {
+        "file": "expressions-equality-equal.stdin"
+      },
+      "stdout": {
+        "file": "expressions-equality-equal.stdout"
+      },
+      "stderr": {
+        "file": "expressions-equality-equal.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "different",
+      "stdin": {
+        "file": "expressions-equality-different.stdin"
+      },
+      "stdout": {
+        "file": "expressions-equality-different.stdout"
+      },
+      "stderr": {
+        "file": "expressions-equality-different.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

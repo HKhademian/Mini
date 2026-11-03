@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-values",
+  "kind": "compile",
+  "source": "expressions-values.mini",
+  "features": [
+    "expressions.values"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-values-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-values-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-values-default.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

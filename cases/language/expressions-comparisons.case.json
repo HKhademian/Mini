@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-comparisons",
+  "kind": "feature",
+  "source": "expressions-comparisons.mini",
+  "features": [
+    "expressions.comparison"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "boundaries",
+      "stdin": {
+        "file": "expressions-comparisons-boundaries.stdin"
+      },
+      "stdout": {
+        "file": "expressions-comparisons-boundaries.stdout"
+      },
+      "stderr": {
+        "file": "expressions-comparisons-boundaries.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

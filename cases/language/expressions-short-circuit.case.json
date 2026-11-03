@@ -1,0 +1,50 @@
+{
+  "id": "language.expressions-short-circuit",
+  "kind": "feature",
+  "source": "expressions-short-circuit.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "true",
+      "stdin": {
+        "file": "expressions-short-circuit-true.stdin"
+      },
+      "stdout": {
+        "file": "expressions-short-circuit-true.stdout"
+      },
+      "stderr": {
+        "file": "expressions-short-circuit-true.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "false",
+      "stdin": {
+        "file": "expressions-short-circuit-false.stdin"
+      },
+      "stdout": {
+        "file": "expressions-short-circuit-false.stdout"
+      },
+      "stderr": {
+        "file": "expressions-short-circuit-false.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "empty",
+      "stdin": {
+        "file": "expressions-short-circuit-empty.stdin"
+      },
+      "stdout": {
+        "file": "expressions-short-circuit-empty.stdout"
+      },
+      "stderr": {
+        "file": "expressions-short-circuit-empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-escapes",
+  "kind": "compile",
+  "source": "expressions-escapes.mini",
+  "features": [
+    "expressions.text"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-escapes-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-escapes-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-escapes-default.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "language.expressions-parentheses",
+  "kind": "compile",
+  "source": "expressions-parentheses.mini",
+  "features": [
+    "expressions.grouping"
+  ],
+  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "expressions-parentheses-default.stdin"
+      },
+      "stdout": {
+        "file": "expressions-parentheses-default.stdout"
+      },
+      "stderr": {
+        "file": "expressions-parentheses-default.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

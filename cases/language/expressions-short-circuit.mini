@@ -1,0 +1,8 @@
+fn visit(value) {
+    write(value);
+    return true;
+}
+var token = readAll();
+var enabled = token == "yes";
+var left = enabled && visit("A");
+var right = enabled || visit("B");
