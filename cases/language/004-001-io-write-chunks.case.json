@@ -1,12 +1,11 @@
 {
   "id": "language.io-write-chunks",
   "kind": "feature",
-  "source": "io-write-chunks.mini",
+  "source": "004-001-io-write-chunks.mini",
   "features": [
     "text.input",
     "text.output"
   ],
-  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "default",

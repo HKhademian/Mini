@@ -1,0 +1,13 @@
+{
+  "id": "language.write-expression",
+  "kind": "feature",
+  "source": "004-003-write-expression.mini",
+  "features": ["text.output", "expressions.add", "bindings"],
+  "cases": [{
+    "name": "default",
+    "stdin": { "file": "empty.stdin" },
+    "stdout": { "file": "io-word.stdout" },
+    "stderr": { "file": "empty.stderr" },
+    "exitCode": 0
+  }]
+}

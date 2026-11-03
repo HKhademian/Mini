@@ -4,7 +4,7 @@ export const TokenKind = {
 } as const;
 export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
-export const ValueKind = { Number: 'number', Text: 'text', Boolean: 'boolean' } as const;
+export const ValueKind = { Number: 'number', Text: 'text', Boolean: 'boolean', Void: 'void' } as const;
 export type ValueKind = typeof ValueKind[keyof typeof ValueKind];
 
 export type Token = {

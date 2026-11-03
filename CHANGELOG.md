@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.4 / builtins alpha.1: write exact text to stdout.
 - T0 alpha.3: numeric addition and text concatenation with `+`.
 - T0 alpha.2: assign replacement values to existing bindings.
 - Start T0 with initialized bindings, positioned tokens, indexed cases, and `.mini.ts` output.

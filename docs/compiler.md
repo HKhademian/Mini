@@ -28,6 +28,8 @@ Pending cases are the remaining work, not completed support.
 
 - `0.1.0-alpha.3`: the + operator for numbers and text.
 
+- `0.1.0-alpha.4`: write(text) to stdout.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

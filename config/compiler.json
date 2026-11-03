@@ -1,5 +1,5 @@
 {
   "stage": "T0",
   "entry": "compiler/t0.ts",
-  "sources": ["compiler/t0.ts", "compiler/types.ts", "compiler/lexer.ts", "compiler/parser.ts"]
+  "sources": ["compiler/t0.ts", "compiler/types.ts", "compiler/lexer.ts", "compiler/parser.ts", "compiler/builtins.ts"]
 }

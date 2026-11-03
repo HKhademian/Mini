@@ -18,8 +18,8 @@ Each entity advances independently:
 `null` means unimplemented/unassigned and blocks that entity's release.
 The compiler stream versions handwritten T0 while it is active. Each small
 support increment advances its prerelease counter. Built-ins advance separately
-when primitive support changes; their version stays null until the first one.
-Language and compiler have T0 development versions; bootstrap, builtins, and std remain
+when primitive support changes.
+Language, compiler, and builtins have T0 development versions; bootstrap and std remain
 unassigned. Tool/CLI and
 implemented library releases can publish independently; language/compiler/
 bootstrap/mini releases require a verified compiler bootstrap. Reserving `std`
