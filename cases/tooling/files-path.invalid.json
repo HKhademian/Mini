@@ -1,0 +1,27 @@
+{
+  "id": "language.files-path",
+  "kind": "feature",
+  "source": "../../samples/003-io.mini",
+  "features": [],
+  "pending": "Compiler unavailable.",
+  "cases": [
+    {
+      "name": "outside",
+      "stdin": {
+        "file": "../language/empty.stdin"
+      },
+      "stdout": {
+        "file": "../language/empty.stdout"
+      },
+      "stderr": {
+        "file": "../language/empty.stderr"
+      },
+      "exitCode": 0,
+      "inputFiles": {
+        "../outside.txt": {
+          "file": "../language/empty.stdin"
+        }
+      }
+    }
+  ]
+}

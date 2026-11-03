@@ -84,6 +84,20 @@ Keep coverage representative: one case should check a distinct rule or
 interaction. Reuse scenarios and shared empty streams; avoid duplicate programs
 and exhaustive combinations that add no new behavior.
 
+Runnable Mini scenarios can stage files with `inputFiles` and compare generated
+files with `outputFiles`. Each maps a relative program path to a stream descriptor:
+
+```json
+{
+  "inputFiles": { "input.txt": { "file": "io-lines.stdin" } },
+  "outputFiles": { "output.txt": { "file": "io-lines.stdout" } }
+}
+```
+
+The shared runner uses an isolated working directory for each program. Input
+files are staged there; output files are compared byte for byte. Paths must
+remain within that directory. The case identity includes their content hashes.
+
 Create cases alongside every construct proposal, not after implementation.
 Keep them under `cases/language/`, marked pending while syntax or dependencies
 remain unimplemented. Include multiple valid forms, input/output variants,
@@ -96,8 +110,8 @@ exact bytes when implementing that compiler step. Remove `pending` only when
 the construct and its dependencies work; run the cases and preserve the
 bootstrap gate. A self-build alone does not establish all feature behavior.
 
-I/O cases use accepted `readAll`/`write` contracts. Text-access cases use proposed
-`text_length`/`text_at` contracts. All remain pending compiler support; proposal
+I/O and text-access cases use accepted contracts. File cases use proposed
+`file_read`/`file_write` contracts. All remain pending compiler support; proposal
 approval does not count as an execution pass.
 
 Use `samples/` for small teaching programs and `examples/` for complete useful

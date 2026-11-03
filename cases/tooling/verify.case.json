@@ -134,6 +134,22 @@
         "file": "verify-language-unavailable.stderr"
       },
       "exitCode": 1
+    },
+    {
+      "name": "verify-files-path",
+      "args": [
+        "cases/tooling/files-path.invalid.json"
+      ],
+      "stdin": {
+        "file": "../language/empty.stdin"
+      },
+      "stdout": {
+        "file": "../language/empty.stdout"
+      },
+      "stderr": {
+        "file": "verify-files-path.stderr"
+      },
+      "exitCode": 1
     }
   ]
 }

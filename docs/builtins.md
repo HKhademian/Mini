@@ -6,17 +6,26 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. These operations are accepted, not implemented.
 
-The next proposal is `text_length(text)` and `text_at(text, index)` for scanning
+The accepted built-ins `text_length(text)` and `text_at(text, index)` scan
 ASCII source. Indices are zero-based and in range; scanner code guards access.
 The text family uses `group_operation` names, with lowercase words separated by
 underscores. This naming convention needs no namespace mechanism.
+
+Both require primitive host access. A future `text_slice` could instead be an
+ordinary Mini function built from them and a loop, under `std/`. That helper
+remains illustrative. Prefixes do not decide whether an operation is built-in
+or library code; both use ordinary call syntax.
+
+The next proposal is `file_read(path)` and `file_write(path, text)`: whole-file
+UTF-8 input and exact replacement output for the compiler's file interface.
+See [the draft](language.md) for the initial success contract.
 
 Other candidates, added only when concrete compiler or tool code needs them:
 
 - Input: a line and a number; candidate names `readLine`, `readNumber`.
 - Output: a line and diagnostic text; candidate names `writeLine`, `writeError`.
 - Process termination: an explicit status; candidate name `exit`.
-- File reading/writing and process arguments for the compiler's file interface.
+- Process arguments for the compiler's file interface.
 
 These candidates are not selected APIs. Their signatures, EOF,
 number parsing, newline behavior, and failure behavior remain to be defined.

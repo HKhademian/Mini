@@ -15,5 +15,8 @@ a word, and multiline input, pending compiler support.
 
 [004-text.mini](004-text.mini) scans input and replaces tabs and newline characters
 with spaces. Its [case](../cases/language/text-sample.case.json) combines text
-access, functions, loops, and branches, pending text-access approval and compiler
-support.
+access, functions, loops, and branches, pending compiler support.
+
+[005-file.mini](005-file.mini) copies a text file and prints the copied content.
+Its [case](../cases/language/file-sample.case.json) covers creation, replacement,
+and newline preservation, pending file-I/O approval and compiler support.

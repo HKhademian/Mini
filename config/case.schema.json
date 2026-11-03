@@ -30,6 +30,8 @@
           "stdout": { "$ref": "stream.schema.json" },
           "stderr": { "$ref": "stream.schema.json" },
           "artifact": { "$ref": "stream.schema.json" },
+          "inputFiles": { "type": "object", "propertyNames": { "minLength": 1 }, "additionalProperties": { "$ref": "stream.schema.json" } },
+          "outputFiles": { "type": "object", "propertyNames": { "minLength": 1 }, "additionalProperties": { "$ref": "stream.schema.json" } },
           "workspace": { "enum": ["clean", "dirty"] },
           "tag": {
             "type": "object",

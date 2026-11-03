@@ -5,7 +5,7 @@
   "features": [
     "text.at"
   ],
-  "pending": "Text access and diagnostic proposed; compiler unavailable.",
+  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",

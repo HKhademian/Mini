@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept text-access built-ins; distinguish primitives from Mini library helpers.
+- Propose text-file operations with isolated input/output file cases.
 - Use `text_length`/`text_at` names in the text-access proposal and cases.
 - Accept `readAll`/`write`; propose two text-access primitives with scanner cases.
 - Propose whole-input/text-output primitives with focused I/O and EOF cases.

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { basename, dirname, join, resolve } from 'node:path';
+import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { root, run, sha256 } from './project.ts';
 
 export type Stream = ({ text: string } | { bytes: number[] } | { file: string }) & { hash?: string };
@@ -14,6 +14,8 @@ export type Scenario = {
   stderr: Stream;
   exitCode: number;
   artifact?: Stream;
+  inputFiles?: Record<string, Stream>;
+  outputFiles?: Record<string, Stream>;
   workspace?: 'clean' | 'dirty';
   tag?: { name: string; annotated: boolean };
   files?: string[];
@@ -71,6 +73,16 @@ export function loadCase(path: string): Fixture {
     assert(Number.isInteger(scenario.exitCode) && scenario.exitCode >= 0 && scenario.exitCode <= 255, 'invalid exit status');
     assert(scenario.args === undefined || (Array.isArray(scenario.args) && scenario.args.every(arg => typeof arg === 'string')), 'invalid arguments');
     for (const key of ['stdin', 'stdout', 'stderr'] as const) stream(scenario[key], dirname(file));
+    for (const key of ['inputFiles', 'outputFiles'] as const) {
+      const files = scenario[key];
+      if (files === undefined) continue;
+      assert(['feature', 'sample', 'example'].includes(spec.kind), 'file fixtures need a runnable Mini case');
+      assert(typeof files === 'object' && files !== null && !Array.isArray(files), 'file fixtures must be an object');
+      for (const [name, value] of Object.entries(files)) {
+        assert(name.length > 0 && !isAbsolute(name) && !name.split(/[\\/]/).includes('..'), 'file fixture paths must stay inside the case workspace');
+        stream(value, dirname(file));
+      }
+    }
     if (scenario.artifact !== undefined) {
       assert(spec.kind === 'compile', 'only compile cases compare generated artifacts');
       stream(scenario.artifact, dirname(file));
@@ -160,7 +172,17 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
         assert.equal(compiled.stderr.length, 0, 'unexpected compiler diagnostics');
         assert.equal(compiled.stdout.length, 0, 'unexpected compiler stdout');
         writeFileSync(join(work, 'package.json'), '{"type":"module"}\n');
-        result = execute(output, scenario.args ?? [], input);
+        const cwd = join(work, 'files');
+        mkdirSync(cwd);
+        for (const [name, value] of Object.entries(scenario.inputFiles ?? {})) {
+          const file = join(cwd, name);
+          mkdirSync(dirname(file), { recursive: true });
+          writeFileSync(file, stream(value, directory));
+        }
+        result = execute(output, scenario.args ?? [], input, cwd);
+        for (const [name, value] of Object.entries(scenario.outputFiles ?? {})) {
+          assert.deepEqual(readFileSync(join(cwd, name)), stream(value, directory), spec.id + '/' + scenario.name + ': file ' + name);
+        }
       }
     }
     assert.equal(result.status, scenario.exitCode, spec.id + '/' + scenario.name + ': exit status; ' + result.stderr);
@@ -175,6 +197,8 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
 export function caseIdentity(fixture: Fixture) {
   const base = dirname(fixture.path);
   const spec = fixture.definition;
+  const hashFiles = (files: Record<string, Stream>) => Object.fromEntries(
+    Object.entries(files).map(([name, value]) => [name, sha256(stream(value, base))]));
   const source = spec.kind === 'tool' ? join(root, 'bin', spec.tool) : resolve(base, spec.source);
   return {
     manifest: sha256(readFileSync(fixture.path)),
@@ -185,6 +209,8 @@ export function caseIdentity(fixture: Fixture) {
       stdout: sha256(stream(scenario.stdout, base)),
       stderr: sha256(stream(scenario.stderr, base)),
       ...(scenario.artifact === undefined ? {} : { artifact: sha256(stream(scenario.artifact, base)) }),
+      ...(scenario.inputFiles === undefined ? {} : { inputFiles: hashFiles(scenario.inputFiles) }),
+      ...(scenario.outputFiles === undefined ? {} : { outputFiles: hashFiles(scenario.outputFiles) }),
     })),
   };
 }

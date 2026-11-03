@@ -1,7 +1,7 @@
 # Mini language draft
 
-Status: binding, function, control-flow, expression, and text I/O forms accepted.
-Text access proposed. Nothing implemented yet. Typing and other open rules
+Status: binding, function, control-flow, expression, text I/O, and text access accepted.
+File I/O proposed. Nothing implemented yet. Typing and other open rules
 remain undecided.
 
 After approval, record the decision and present the next small proposal in an
@@ -146,13 +146,13 @@ later small reviews; this pair alone is not the compiler's file interface.
 `readLine`, `readNumber`, `writeLine`, and `writeError` remain candidates. Add
 them only when concrete compiler or tool code needs them.
 
-## Next proposal: text access
+## Accepted operations: text access
 
-Scanning needs two more ordinary calls:
+Scanning uses two primitive built-ins.
 
 Use `group_operation` names for the text family. These are flat identifiers;
-the prefix adds no namespace syntax. A future helper could be `text_slice`;
-it is only a naming example at this step.
+the prefix adds no namespace syntax. A future `text_slice` helper could be
+written in Mini and live in `std/`; it remains only a naming example.
 
 ```text
 var source = readAll();
@@ -171,6 +171,26 @@ while (position < text_length(source)) {
 
 These primitives let Mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
+
+## Next proposal: text files
+
+The compiler needs to read source and write its generated script. Use two
+built-ins with ordinary call syntax:
+
+```text
+var source = file_read("input.txt");
+file_write("output.txt", source);
+```
+
+- `file_read(path)` reads a whole file as UTF-8 text; an empty file returns `""`.
+- `file_write(path, text)` creates or replaces a file with exactly that text,
+  using UTF-8 without newline conversion. It produces no value.
+- Relative paths use the process working directory.
+- Start with readable regular files and writable destinations whose parent
+  directories exist. No Mini filesystem error model is introduced at this step.
+
+Process arguments and termination remain for a later review. These operations
+provide file access; parsing and emission stay in Mini compiler code.
 
 Pending single-construct, rejection, and combination cases live under
 [cases/language](../cases/language/). Mini typing and general no-result function

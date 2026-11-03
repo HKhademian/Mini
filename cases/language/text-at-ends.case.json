@@ -6,7 +6,7 @@
     "text.at",
     "text.length"
   ],
-  "pending": "Text access proposed; compiler unavailable.",
+  "pending": "Compiler and text built-ins unavailable.",
   "cases": [
     {
       "name": "single",

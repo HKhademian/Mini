@@ -1,0 +1,86 @@
+{
+  "id": "language.file-sample",
+  "kind": "sample",
+  "source": "../../samples/005-file.mini",
+  "features": [
+    "file.read",
+    "file.write",
+    "text.output",
+    "bindings"
+  ],
+  "pending": "File I/O proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "replace-empty",
+      "inputFiles": {
+        "input.txt": {
+          "file": "empty.stdin"
+        },
+        "output.txt": {
+          "file": "file-old.stdin"
+        }
+      },
+      "outputFiles": {
+        "output.txt": {
+          "file": "empty.stdout"
+        }
+      }
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "create-word",
+      "inputFiles": {
+        "input.txt": {
+          "file": "binding-word.stdin"
+        }
+      },
+      "outputFiles": {
+        "output.txt": {
+          "file": "io-word.stdout"
+        }
+      }
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-lines.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "preserve-lines",
+      "inputFiles": {
+        "input.txt": {
+          "file": "io-lines.stdin"
+        }
+      },
+      "outputFiles": {
+        "output.txt": {
+          "file": "io-lines.stdout"
+        }
+      }
+    }
+  ]
+}

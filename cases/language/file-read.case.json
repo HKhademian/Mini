@@ -1,0 +1,47 @@
+{
+  "id": "language.file-read",
+  "kind": "feature",
+  "source": "file-read.mini",
+  "features": [
+    "file.read"
+  ],
+  "pending": "File I/O proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "empty",
+      "inputFiles": {
+        "input.txt": {
+          "file": "empty.stdin"
+        }
+      }
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "io-word.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "word",
+      "inputFiles": {
+        "input.txt": {
+          "file": "binding-word.stdin"
+        }
+      }
+    }
+  ]
+}

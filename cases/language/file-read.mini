@@ -1,0 +1,1 @@
+write(file_read("input.txt"));

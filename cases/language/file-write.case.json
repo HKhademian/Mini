@@ -1,0 +1,47 @@
+{
+  "id": "language.file-write",
+  "kind": "feature",
+  "source": "file-write.mini",
+  "features": [
+    "file.write"
+  ],
+  "pending": "File I/O proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "empty",
+      "outputFiles": {
+        "output.txt": {
+          "file": "empty.stdout"
+        }
+      }
+    },
+    {
+      "stdin": {
+        "file": "binding-word.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "word",
+      "outputFiles": {
+        "output.txt": {
+          "file": "io-word.stdout"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "id": "language.file-write-missing-text",
+  "kind": "reject",
+  "source": "file-write-missing-text.mini",
+  "features": [
+    "file.write"
+  ],
+  "pending": "File I/O and diagnostic proposed; compiler unavailable.",
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "file-write-missing-text.stderr"
+      },
+      "exitCode": 1,
+      "name": "default"
+    }
+  ]
+}

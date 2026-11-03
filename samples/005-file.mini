@@ -1,0 +1,3 @@
+var source = file_read("input.txt");
+file_write("output.txt", source);
+write(file_read("output.txt"));
