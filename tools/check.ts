@@ -3,6 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { compiler, CompilerStage, root, run, versions } from './project.ts';
+import { adapterSource } from './generate-adapters.ts';
 import { verifyBootstrap } from './verify.ts';
 import { CaseKind, loadCases } from './cases.ts';
 
@@ -39,6 +40,8 @@ function portablePaths(directory: string): void {
   }
 }
 export function checkProject(): void {
+  assert.equal(readFileSync(join(root, 'compiler/src/00-constants.mini'), 'utf8'), adapterSource(),
+    'compiler/src/00-constants.mini is stale; run node tools/generate-adapters.ts');
   const toolWork = mkdtempSync(join(tmpdir(), 'mini-tool-check-'));
   try {
     run(process.execPath, [join(root, compiler().entry), 'compile', join(root, 'tools/build-m1.mini'), join(toolWork, 'build-m1.generated.ts')], root);

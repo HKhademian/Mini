@@ -226,7 +226,9 @@ active compiler to bypass a bootstrap migration.
 
 M1 is authored as ordered parts under [compiler/src](../compiler/src/README.md)
 and concatenated by the Mini-source build tool `tools/build-m1.mini` into the
-canonical `compiler/compiler.mini`. Its generated TypeScript is tracked as
-`tools/build-m1.generated.ts`; `mini check` rejects stale generated TypeScript or
-a stale canonical file. Concatenation is build tooling; Mini still has no module
-or import syntax.
+canonical `compiler/compiler.mini`. Adapter text is defined once in
+`compiler/adapters.ts`, generated into `compiler/src/00-constants.mini`, and
+shared by T0 lowering and M1. Its generated TypeScript is tracked as
+`tools/build-m1.generated.ts`; `mini check` rejects stale adapter text, generated
+TypeScript, or canonical composition. Concatenation is build tooling; Mini still
+has no module or import syntax.

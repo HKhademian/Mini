@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Define adapter JavaScript once in `compiler/adapters.ts`, share it with T0
+  lowering, and generate `compiler/src/00-constants.mini` with
+  `tools/generate-adapters.ts`; `mini check` rejects stale adapter text.
 - Use short helper keys for compiler adapter emission instead of comparing
   full adapter text, and emit used adapters from a fixed ordered key list.
 - Refactor compiler helper names: `token_new` instead of `new_token`, and

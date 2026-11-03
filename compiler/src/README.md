@@ -16,7 +16,7 @@ Generated Mini tools use the `*.generated.ts` suffix and are excluded from the
 strict TypeScript check; `mini check` compares `tools/build-m1.generated.ts`
 against a fresh compilation.
 
-- `00-constants.mini`: generated adapter text and shared constants.
+- `00-constants.mini`: generated adapter text from `compiler/adapters.ts`.
 - `10-text.mini`: text, line, path, and character helpers.
 - `20-lexer.mini`: tokens, lexer state, diagnostics, and scanning.
 - `30-parser.mini`: expression and statement parsing, checking, and emission.
