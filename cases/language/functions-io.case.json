@@ -1,7 +1,7 @@
 {
   "id": "language.functions-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "pending": "Compiler and host I/O unavailable.",
   "source": "functions-io.mini",
   "features": [
     "functions",
@@ -12,7 +12,7 @@
     {
       "name": "function-empty",
       "stdin": {
-        "file": "function-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "function-empty.stdout"

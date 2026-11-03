@@ -9,18 +9,18 @@
     "text.input",
     "text.output"
   ],
-  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "empty",
       "stdin": {
-        "file": "combination-evaluation-order-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "combination-evaluation-order-empty.stdout"
       },
       "stderr": {
-        "file": "combination-evaluation-order-empty.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     },
@@ -33,7 +33,7 @@
         "file": "combination-evaluation-order-word.stdout"
       },
       "stderr": {
-        "file": "combination-evaluation-order-word.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     }

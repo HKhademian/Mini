@@ -1,7 +1,7 @@
 {
   "id": "language.bindings-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "pending": "Compiler and host I/O unavailable.",
   "source": "bindings-io.mini",
   "features": [
     "bindings",
@@ -12,7 +12,7 @@
     {
       "name": "binding-empty",
       "stdin": {
-        "file": "binding-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "binding-empty.stdout"

@@ -12,4 +12,12 @@ fn repeat(token, count) {
     return output;
 }
 var token = readAll();
-write(repeat(token, 3));
+var count = 3;
+if (token == "zero") {
+    count = 0;
+} else {
+    if (token == "one") {
+        count = 1;
+    }
+}
+write(repeat(token, count));

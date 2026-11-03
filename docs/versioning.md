@@ -9,6 +9,8 @@ Each entity advances independently:
 - `bootstrap`: generated compiler/source pair, tag `bootstrap-vX.Y.Z`.
 - `std`: optional standard library, tag `std-vX.Y.Z`.
 - `cli`: command dispatcher, tag `cli-vX.Y.Z`.
+- `vscode`: editor extension, tag `vscode-vX.Y.Z`. Its package and lockfile
+  versions must match the registry; `mini check` enforces this.
 - `check`, `test`, `verify`, `bench`, `release`: separate tools,
   each with its own `NAME-vX.Y.Z` tag.
 

@@ -10,9 +10,9 @@ assignment, and the arithmetic, comparison, and boolean operators in the draft.
 Strings shield their contents from other rules; backslash escapes receive a
 separate scope.
 
-Highlighting follows the draft examples, including proposed expressions.
-It does not select lexical rules or imply compiler support. String, escape,
-number, and expression rules remain provisional. Comment syntax has not been
+Highlighting follows the accepted forms in the language draft. It does not imply
+compiler support. The accepted text escapes are `\"`, `\\`, `\n`, `\r`, and `\t`;
+other escapes receive an invalid scope. Comment syntax has not been
 selected, so there is no comment highlighting or comment toggle yet. Candidate
 built-in names are colored like ordinary calls.
 
@@ -26,11 +26,11 @@ From this directory, using the repository's Node 24.16.0:
 ```text
 npm ci
 node --test test/grammar.test.ts
-./node_modules/.bin/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.1.0.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.1.1.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.1.0.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.1.1.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 
@@ -41,6 +41,10 @@ theme colors and token scopes.
 
 The focused checks use VS Code's TextMate tokenizer and Oniguruma engine.
 Packaging excludes tests, development dependencies, and preview configuration.
+CI runs these checks on Linux and macOS. The independent version is recorded in
+`config/versions.json`, `package.json`, and `package-lock.json`; update them
+together when editor behavior changes. `vscode-v*` identifies extension releases.
+Build a local VSIX with the command above.
 
 Source contracts in the repository: `docs/language.md` and `docs/builtins.md`.
 Implementation references: [syntax highlighting](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide),

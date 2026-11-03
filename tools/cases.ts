@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { root, run, sha256 } from './project.ts';
 
 export type Stream = ({ text: string } | { bytes: number[] } | { file: string }) & { hash?: string };
@@ -107,7 +107,10 @@ function toolWorkspace(project: string, scenario: Scenario, work: string): strin
   const directory = join(work, 'project');
   for (const name of readdirSync(project)) {
     if (['.git', 'node_modules', 'dist', '.cache'].includes(name)) continue;
-    cpSync(join(project, name), join(directory, name), { recursive: true, verbatimSymlinks: true });
+    cpSync(join(project, name), join(directory, name), {
+      recursive: true, verbatimSymlinks: true,
+      filter: path => basename(path) !== 'node_modules',
+    });
   }
   const git = (...args: string[]) => run('git', [
     '-c', 'user.name=Case fixture', '-c', 'user.email=fixture@example.invalid',

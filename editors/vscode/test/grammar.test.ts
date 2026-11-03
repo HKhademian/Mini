@@ -74,6 +74,13 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
   assert.ok(scopes('readAll();', 'readAll').includes('entity.name.function.call.mini'));
 });
 
+test('accepted text escapes differ from unsupported escapes', () => {
+  for (const escape of [String.raw`\"`, String.raw`\\`, String.raw`\n`, String.raw`\r`, String.raw`\t`]) {
+    assert.ok(scopes(`"${escape}"`, escape).includes('constant.character.escape.mini'), escape);
+  }
+  assert.ok(scopes(String.raw`"\q"`, String.raw`\q`).includes('invalid.illegal.escape.mini'));
+});
+
 test('language contribution includes both icons and only packaged resource paths', () => {
   const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
   const language = manifest.contributes.languages[0];

@@ -1,7 +1,7 @@
 {
   "id": "language.if-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "pending": "Compiler and host I/O unavailable.",
   "source": "if-io.mini",
   "features": [
     "control.if",
@@ -38,7 +38,7 @@
     {
       "name": "if-empty",
       "stdin": {
-        "file": "if-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "if-empty.stdout"

@@ -1,6 +1,6 @@
 # Mini language draft
 
-Status: binding, function, and control-flow forms accepted; expressions proposed.
+Status: binding, function, control-flow, and expression forms accepted.
 Nothing implemented yet. Typing and other open rules remain undecided.
 
 After approval, record the decision and present the next small proposal in an
@@ -90,13 +90,15 @@ while (position < limit) {
 - `if` runs one branch according to its condition.
 - `while` checks its condition before every iteration, including the first.
 - No semicolon follows a closing block brace.
+- A chained decision uses another `if` inside the braced `else` body.
+  There is no separate `elseif` or unbraced `else if` form.
 
 These forms cover parser decisions and scanner loops and map directly to
 TypeScript. Comparison operators and condition types will be reviewed with
 expressions. No additional loop forms or loop-control statements are proposed
 at this step.
 
-## Next proposal: values and expressions
+## Accepted form: values and expressions
 
 Start with decimal integer literals, double-quoted text, and `true` / `false`:
 

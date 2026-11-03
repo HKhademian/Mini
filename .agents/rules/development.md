@@ -23,6 +23,10 @@
   support: separate .mini sources, JSON manifests, and expected streams. Cover
   valid forms, input variants, rejections, and interactions. Mark unsupported
   cases pending; review provisional diagnostics when implementing support.
+- Balance single-construct and combination coverage. Each case should check a
+  distinct rule or interaction; reuse fixtures and avoid redundant matrices.
+- Update VS Code support with syntax changes. Bump its independent version
+  when editor behavior changes; keep the registry, package, and lockfile aligned.
 - After approval, record the decision and advance to the next small proposal
   in an atomic commit. Leave unresolved rules explicitly open.
 - Keep docs accurate about implemented, proposed, and unavailable capabilities.

@@ -1,7 +1,7 @@
 {
   "id": "language.while-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable; dependent expressions remain under review.",
+  "pending": "Compiler and host I/O unavailable.",
   "source": "while-io.mini",
   "features": [
     "control.while",
@@ -12,10 +12,10 @@
     {
       "name": "while-empty",
       "stdin": {
-        "file": "while-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
-        "file": "while-empty.stdout"
+        "file": "empty.stdout"
       },
       "stderr": {
         "file": "empty.stderr"

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept expression forms; balance single/combination cases and share empty fixtures.
+- Version VS Code support independently at 0.1.1, validate escapes, and test it in CI.
 - Record control-flow approval and propose basic values/operators with combination cases.
 - Add local VS Code syntax highlighting, file icons, and bracket/quote pairing.
 - Add pending compile, runtime, rejection, and sample cases with each construct.

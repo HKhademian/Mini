@@ -8,6 +8,7 @@ on:
       - 'compiler-v*'
       - 'bootstrap-v*'
       - 'std-v*'
+      - 'vscode-v*'
       - 'cli-v*'
       - 'check-v*'
       - 'test-v*'

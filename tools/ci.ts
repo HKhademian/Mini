@@ -13,9 +13,13 @@ const mini = (...args: string[]) => process.stdout.write(run(process.execPath, [
 switch (task) {
   case 'install':
     process.stdout.write(run('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], root));
+    process.stdout.write(run('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], join(root, 'editors/vscode')));
     break;
   case 'check': mini('check'); break;
-  case 'test': mini('test'); break;
+  case 'test':
+    mini('test');
+    process.stdout.write(run(process.execPath, ['--test', 'test/grammar.test.ts'], join(root, 'editors/vscode')));
+    break;
   case 'bench': mini('bench', '.cache/bench-ci.json', 'tooling.check'); break;
   case 'package': {
     const tag = process.env['GITHUB_EVENT_NAME'] === 'push' && process.env['GITHUB_REF_TYPE'] === 'tag'

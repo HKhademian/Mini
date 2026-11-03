@@ -40,6 +40,8 @@ the lockfile with `npm ci`, then use the normal bin commands.
 [CI](../.github/workflows/ci.yml) checks Linux and macOS on branch pushes and
 pull requests. It runs strict checks, JSON cases, benchmark smoke tests, and
 extracted distribution checks. Benchmark reports are downloadable artifacts.
+It also checks the VS Code grammar on both platforms. The extension has its own
+`vscode-v*` stream; see its [local VSIX build](../editors/vscode/README.md).
 
 [Release](../.github/workflows/release.yml) runs CI for an authorized push of an
 annotated entity tag, packages the exact revision, uploads all assets to a

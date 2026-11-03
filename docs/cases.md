@@ -79,6 +79,9 @@ Include combination cases: functions containing loops and branches, expressions
 in arguments and conditions, and observable evaluation order. For example,
 [repeat](../cases/language/combination-repeat.case.json) combines bindings,
 functions, loops, branches, and expressions with several input/output pairs.
+Keep coverage representative: one case should check a distinct rule or
+interaction. Reuse scenarios and shared empty streams; avoid duplicate programs
+and exhaustive combinations that add no new behavior.
 
 Create cases alongside every construct proposal, not after implementation.
 Keep them under `cases/language/`, marked pending while syntax or dependencies

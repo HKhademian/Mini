@@ -5,18 +5,18 @@
   "features": [
     "expressions.values"
   ],
-  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
       "stdin": {
-        "file": "expressions-values-default.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
-        "file": "expressions-values-default.stdout"
+        "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-values-default.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     }

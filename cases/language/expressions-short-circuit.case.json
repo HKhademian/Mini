@@ -5,7 +5,7 @@
   "features": [
     "expressions.boolean"
   ],
-  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "true",
@@ -16,7 +16,7 @@
         "file": "expressions-short-circuit-true.stdout"
       },
       "stderr": {
-        "file": "expressions-short-circuit-true.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     },
@@ -29,20 +29,20 @@
         "file": "expressions-short-circuit-false.stdout"
       },
       "stderr": {
-        "file": "expressions-short-circuit-false.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     },
     {
       "name": "empty",
       "stdin": {
-        "file": "expressions-short-circuit-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "expressions-short-circuit-empty.stdout"
       },
       "stderr": {
-        "file": "expressions-short-circuit-empty.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     }

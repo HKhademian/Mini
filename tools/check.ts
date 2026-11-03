@@ -25,6 +25,11 @@ function documents(directory: string): void {
 }
 export function checkProject(): void {
   const current = versions(root);
+  const editor = JSON.parse(readFileSync(join(root, 'editors/vscode/package.json'), 'utf8')) as { version: string };
+  const editorLock = JSON.parse(readFileSync(join(root, 'editors/vscode/package-lock.json'), 'utf8')) as { version: string; packages: Record<string, { version: string }> };
+  assert.equal(editor.version, current.vscode, 'VS Code version must match the registry');
+  assert.equal(editorLock.version, editor.version, 'VS Code lockfile version differs');
+  assert.equal(editorLock.packages['']?.version, editor.version, 'VS Code lockfile package version differs');
   assert.equal(Number(process.versions.node.split('.')[0]), 24, 'use Node 24; see .node-version');
   assert(Number(process.versions.node.split('.')[1]) >= 16, 'use Node 24.16.0 or newer in the 24.x line');
   const fixtures = loadCases();

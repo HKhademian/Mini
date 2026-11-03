@@ -5,18 +5,18 @@
   "features": [
     "expressions.equality"
   ],
-  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "pending": "Compiler and host I/O unavailable.",
   "cases": [
     {
       "name": "empty",
       "stdin": {
-        "file": "expressions-equality-empty.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
         "file": "expressions-equality-empty.stdout"
       },
       "stderr": {
-        "file": "expressions-equality-empty.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     },
@@ -29,7 +29,7 @@
         "file": "expressions-equality-equal.stdout"
       },
       "stderr": {
-        "file": "expressions-equality-equal.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     },
@@ -42,7 +42,7 @@
         "file": "expressions-equality-different.stdout"
       },
       "stderr": {
-        "file": "expressions-equality-different.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     }

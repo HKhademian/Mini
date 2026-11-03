@@ -5,18 +5,18 @@
   "features": [
     "expressions.arithmetic"
   ],
-  "pending": "Expressions proposed; compiler unavailable. Runtime I/O remains provisional.",
+  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",
       "stdin": {
-        "file": "expressions-arithmetic-default.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
-        "file": "expressions-arithmetic-default.stdout"
+        "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-arithmetic-default.stderr"
+        "file": "empty.stderr"
       },
       "exitCode": 0
     }

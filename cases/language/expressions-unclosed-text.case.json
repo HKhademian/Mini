@@ -5,15 +5,15 @@
   "features": [
     "expressions.text"
   ],
-  "pending": "Expression rule and diagnostic proposed; compiler unavailable.",
+  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
       "stdin": {
-        "file": "expressions-unclosed-text-default.stdin"
+        "file": "empty.stdin"
       },
       "stdout": {
-        "file": "expressions-unclosed-text-default.stdout"
+        "file": "empty.stdout"
       },
       "stderr": {
         "file": "expressions-unclosed-text-default.stderr"
