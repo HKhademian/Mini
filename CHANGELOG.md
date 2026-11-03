@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Assess remaining self-hosting semantics, compiler capabilities, and useful additions.
 - Prepare independently versioned T0 preview releases with source provenance.
 - T0 alpha.26 / builtins alpha.11: exact stderr output with `write_error`.
 - T0 alpha.25 / builtins alpha.10: `process_exit`.

@@ -66,6 +66,10 @@ after bootstrap replacement.
 [Built-in I/O and library functions](docs/builtins.md) provide the small host
 capabilities needed by the compiler and later tools.
 
+The [self-hosting requirements assessment](docs/self-hosting-requirements.md)
+separates necessary semantic decisions and compiler capabilities from optional
+language additions. It does not accept new syntax.
+
 Avoid speculative features, advanced mathematics, Unicode requirements, rich
 diagnostics, extra safety systems, and unnecessary layers. Rebuild checks stay
 small too. “Smallest” is a practical goal, not a mathematical claim.
