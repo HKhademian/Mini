@@ -24,6 +24,8 @@ further language improvements belong after verified self-hosting.
 
 Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
 existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.
+The [generated-code performance audit](docs/runtime-performance.md) records
+measured costs and the actual-compiler comparison required before retiring T0.
 
 For unchanged compiler source `S`:
 

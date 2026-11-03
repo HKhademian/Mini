@@ -1,0 +1,3229 @@
+{
+  "description": "Two runs of the same compiler, source, and harness. Source commit predates audit files; exact hashes are recorded in each run.",
+  "runs": [
+    {
+      "schemaVersion": 1,
+      "measuredAt": "2026-11-03T19:56:00.267Z",
+      "commit": "b466ba64f72beccde0f5f460e7ba7efd4a7ec840",
+      "compilerEntry": "compiler/t0.ts",
+      "compilerHash": "c07abe971f667c7b04fd78531c2a05bd378bdd79d5cce4def1999c09a9aea793",
+      "compilerHashScope": "configured source files",
+      "sourceHash": "27c093d63aa214a2555bb4baa0325689d4295e8c3f22d8ee2e5cce6dad2c70bb",
+      "generatedHash": "b120a3c5614e9f3d87bcac1e7c7bafdc9ba81e93b6016ab4a564483c0a2c1aac",
+      "harnessHash": "901faf4a3fbe38afacad380fbc477d3219a86c4c74c4d1a56591d19a008fe7b8",
+      "generatedBytes": 3693,
+      "warmups": 3,
+      "samples": 7,
+      "scope": "Synthetic compiler workloads, not a T1 compiler or self-build. Temporary generated modules use an explicit type:module package scope. Fresh worker per variant/size. Explicit GC before timed calls; first call separate; string flattening included; correctness checks excluded. Heap is a GC-based retained estimate, RSS is whole-worker high-water. Process wall includes all warmups, checks, and samples, not compiler latency. Complete-compiler rows use fresh-process wall times, three runs each; identical emitted bytes in .mjs are loading-path controls.",
+      "results": [
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 1000000,
+          "firstCallMilliseconds": 1.0367499999999978,
+          "milliseconds": [
+            0.7590419999999938,
+            0.957792000000012,
+            0.7504999999999882,
+            0.8222919999999903,
+            0.8865420000000057,
+            0.8044170000000008,
+            0.8677910000000111
+          ],
+          "medianMilliseconds": 0.8222919999999903,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88288,
+          "processWallMilliseconds": 95.769209
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 1000000,
+          "firstCallMilliseconds": 1.126166000000012,
+          "milliseconds": [
+            1.000708000000003,
+            0.9818750000000023,
+            0.9532919999999905,
+            0.8552920000000057,
+            0.995750000000001,
+            0.9907089999999954,
+            0.9525000000000006
+          ],
+          "medianMilliseconds": 0.9818750000000023,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88352,
+          "processWallMilliseconds": 106.34345799999997
+        },
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 4000000,
+          "firstCallMilliseconds": 2.4110000000000014,
+          "milliseconds": [
+            2.1674580000000105,
+            2.1629580000000033,
+            2.2763750000000016,
+            2.1717079999999953,
+            2.1546670000000034,
+            2.2452090000000027,
+            2.3000419999999906
+          ],
+          "medianMilliseconds": 2.1717079999999953,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88608,
+          "processWallMilliseconds": 116.09325000000001
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 4000000,
+          "firstCallMilliseconds": 2.3589589999999987,
+          "milliseconds": [
+            2.1419169999999923,
+            2.1361249999999927,
+            2.214333999999994,
+            2.1312919999999878,
+            2.1113749999999953,
+            2.2491250000000065,
+            2.1714170000000053
+          ],
+          "medianMilliseconds": 2.1419169999999923,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88272,
+          "processWallMilliseconds": 108.00341700000001
+        },
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 16000000,
+          "firstCallMilliseconds": 7.966583,
+          "milliseconds": [
+            7.6165419999999955,
+            7.643708000000004,
+            7.649125000000012,
+            7.560583000000008,
+            7.610833000000014,
+            7.674374999999998,
+            7.613374999999991
+          ],
+          "medianMilliseconds": 7.6165419999999955,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88112,
+          "processWallMilliseconds": 182.457542
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 16000000,
+          "firstCallMilliseconds": 7.992958999999999,
+          "milliseconds": [
+            7.640000000000001,
+            7.587000000000003,
+            7.581874999999997,
+            7.640874999999994,
+            7.58695800000001,
+            7.576791999999983,
+            7.593249999999983
+          ],
+          "medianMilliseconds": 7.587000000000003,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88480,
+          "processWallMilliseconds": 183.75475000000006
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 10000,
+          "firstCallMilliseconds": 0.44404199999999605,
+          "milliseconds": [
+            0.16795800000001293,
+            0.15929200000000776,
+            0.1541249999999934,
+            0.06504199999999116,
+            0.060874999999995794,
+            0.06395899999999699,
+            0.12229200000000162
+          ],
+          "medianMilliseconds": 0.12229200000000162,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89424,
+          "processWallMilliseconds": 93.39575000000002
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 10000,
+          "firstCallMilliseconds": 0.21716699999998923,
+          "milliseconds": [
+            0.028999999999996362,
+            0.05212500000000375,
+            0.030417000000014127,
+            0.030332999999998833,
+            0.03037499999999227,
+            0.02949999999999875,
+            0.027416999999999803
+          ],
+          "medianMilliseconds": 0.030332999999998833,
+          "retainedHeapBytes": 2824,
+          "maximumResidentKiB": 88784,
+          "processWallMilliseconds": 91.52308399999993
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 40000,
+          "firstCallMilliseconds": 1.0198750000000132,
+          "milliseconds": [
+            0.30854200000000276,
+            0.3053330000000045,
+            0.3068330000000117,
+            0.17125000000000057,
+            0.178291999999999,
+            0.1856250000000017,
+            0.1711249999999893
+          ],
+          "medianMilliseconds": 0.1856250000000017,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89792,
+          "processWallMilliseconds": 94.24670800000013
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 40000,
+          "firstCallMilliseconds": 0.6779590000000013,
+          "milliseconds": [
+            0.1875830000000036,
+            0.1761669999999924,
+            0.1736669999999947,
+            0.17087500000000944,
+            0.17974999999999852,
+            0.19608300000000156,
+            0.16625000000000512
+          ],
+          "medianMilliseconds": 0.1761669999999924,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89472,
+          "processWallMilliseconds": 98.0542919999998
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 160000,
+          "firstCallMilliseconds": 2.8247089999999986,
+          "milliseconds": [
+            1.159791999999996,
+            1.1241250000000065,
+            1.1429590000000047,
+            1.1063749999999999,
+            1.153374999999997,
+            1.1379579999999976,
+            1.0733330000000052
+          ],
+          "medianMilliseconds": 1.1379579999999976,
+          "retainedHeapBytes": -176,
+          "maximumResidentKiB": 93056,
+          "processWallMilliseconds": 106.07204200000001
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 160000,
+          "firstCallMilliseconds": 1.706541999999999,
+          "milliseconds": [
+            0.73408400000001,
+            1.0295420000000064,
+            0.6291669999999954,
+            0.6197920000000039,
+            0.6149170000000055,
+            0.5991670000000084,
+            0.6299169999999918
+          ],
+          "medianMilliseconds": 0.6291669999999954,
+          "retainedHeapBytes": -176,
+          "maximumResidentKiB": 93504,
+          "processWallMilliseconds": 93.78441700000008
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 1.5607920000000064,
+          "milliseconds": [
+            1.3377079999999921,
+            1.2804579999999959,
+            1.2325419999999951,
+            1.207540999999992,
+            1.2348339999999922,
+            1.225666000000004,
+            1.1661249999999939
+          ],
+          "medianMilliseconds": 1.2325419999999951,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 88816,
+          "processWallMilliseconds": 104.75383299999999
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 1.0591249999999945,
+          "milliseconds": [
+            0.8269159999999971,
+            0.8445420000000041,
+            0.7755829999999975,
+            0.8558750000000117,
+            0.8260419999999868,
+            0.8133330000000001,
+            0.8332920000000001
+          ],
+          "medianMilliseconds": 0.8269159999999971,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88832,
+          "processWallMilliseconds": 100.07670800000005
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 0.3803750000000008,
+          "milliseconds": [
+            0.08599999999999852,
+            0.07691600000001131,
+            0.08425000000001148,
+            0.09779199999999832,
+            0.053959000000006085,
+            0.0526660000000021,
+            0.05204100000000267
+          ],
+          "medianMilliseconds": 0.07691600000001131,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 88816,
+          "processWallMilliseconds": 84.01633300000003
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 4.097458000000003,
+          "milliseconds": [
+            4.000042000000008,
+            3.7931250000000034,
+            3.5650830000000013,
+            3.547291999999999,
+            3.6720420000000047,
+            3.57891699999999,
+            3.6515830000000022
+          ],
+          "medianMilliseconds": 3.6515830000000022,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88960,
+          "processWallMilliseconds": 127.12529100000006
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 2.636583999999999,
+          "milliseconds": [
+            2.3795840000000084,
+            2.5815000000000055,
+            2.466208000000009,
+            2.4748750000000115,
+            2.4766249999999985,
+            2.4223750000000024,
+            2.4253749999999883
+          ],
+          "medianMilliseconds": 2.466208000000009,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88832,
+          "processWallMilliseconds": 118.99108299999989
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 0.8855000000000004,
+          "milliseconds": [
+            0.7189999999999941,
+            0.5837920000000025,
+            0.6600830000000002,
+            0.6770410000000027,
+            0.7066669999999959,
+            0.5968749999999972,
+            0.5480000000000018
+          ],
+          "medianMilliseconds": 0.6600830000000002,
+          "retainedHeapBytes": -240,
+          "maximumResidentKiB": 88832,
+          "processWallMilliseconds": 92.5885830000002
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 13.808665999999995,
+          "milliseconds": [
+            13.381416999999985,
+            13.307209,
+            13.289375000000007,
+            13.298000000000002,
+            13.542000000000002,
+            13.141500000000008,
+            13.359083999999996
+          ],
+          "medianMilliseconds": 13.307209,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 88720,
+          "processWallMilliseconds": 245.44174999999996
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 9.383708000000013,
+          "milliseconds": [
+            8.985624999999999,
+            8.915916999999993,
+            9.270499999999998,
+            9.157834000000008,
+            9.038667000000004,
+            8.89304100000001,
+            8.889791000000002
+          ],
+          "medianMilliseconds": 8.985624999999999,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88688,
+          "processWallMilliseconds": 198.40625
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 1.6999169999999992,
+          "milliseconds": [
+            1.7309159999999935,
+            1.3755000000000024,
+            1.6804170000000056,
+            1.809999999999988,
+            1.8086249999999922,
+            1.3971670000000103,
+            1.3969159999999903
+          ],
+          "medianMilliseconds": 1.6804170000000056,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88400,
+          "processWallMilliseconds": 110.66554200000019
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 2.2652089999999987,
+          "milliseconds": [
+            0.8950420000000037,
+            0.8888749999999987,
+            0.8580829999999935,
+            0.8562090000000069,
+            0.8744999999999834,
+            0.8886249999999905,
+            0.8842910000000188
+          ],
+          "medianMilliseconds": 0.8842910000000188,
+          "retainedHeapBytes": 3038664,
+          "maximumResidentKiB": 132464,
+          "processWallMilliseconds": 175.803625
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 1.8773750000000007,
+          "milliseconds": [
+            0.8284170000000017,
+            0.901416999999995,
+            0.9052920000000029,
+            0.8518750000000068,
+            0.848667000000006,
+            0.8611669999999947,
+            0.8421659999999918
+          ],
+          "medianMilliseconds": 0.8518750000000068,
+          "retainedHeapBytes": 3038664,
+          "maximumResidentKiB": 132048,
+          "processWallMilliseconds": 176.20449999999983
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 0.34620900000000177,
+          "milliseconds": [
+            0.054874999999995566,
+            0.056416999999996165,
+            0.03570799999999963,
+            0.03920800000000213,
+            0.039499999999989654,
+            0.03737499999999727,
+            0.03904099999999744
+          ],
+          "medianMilliseconds": 0.03920800000000213,
+          "retainedHeapBytes": 960000,
+          "maximumResidentKiB": 99184,
+          "processWallMilliseconds": 116.56204200000002
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 7.572958999999997,
+          "milliseconds": [
+            3.8205000000000098,
+            3.551000000000016,
+            3.790875000000028,
+            3.5303329999999846,
+            3.5497499999999604,
+            3.682583999999963,
+            3.646333000000027
+          ],
+          "medianMilliseconds": 3.646333000000027,
+          "retainedHeapBytes": 12245416,
+          "maximumResidentKiB": 227280,
+          "processWallMilliseconds": 425.211084
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 6.623124999999995,
+          "milliseconds": [
+            3.589665999999994,
+            3.418875000000014,
+            3.4563330000000008,
+            3.4735000000000014,
+            3.500750000000039,
+            3.448500000000024,
+            3.3815830000000346
+          ],
+          "medianMilliseconds": 3.4563330000000008,
+          "retainedHeapBytes": 12245416,
+          "maximumResidentKiB": 226400,
+          "processWallMilliseconds": 418.56875000000036
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 1.6402080000000012,
+          "milliseconds": [
+            0.9009160000000094,
+            0.42395799999999895,
+            0.36099999999999,
+            0.41304199999999014,
+            0.32120899999998187,
+            0.36454200000000014,
+            0.327541999999994
+          ],
+          "medianMilliseconds": 0.36454200000000014,
+          "retainedHeapBytes": 3926744,
+          "maximumResidentKiB": 125744,
+          "processWallMilliseconds": 186.26125000000002
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 25.469916999999995,
+          "milliseconds": [
+            26.119417,
+            22.271792000000005,
+            21.541416000000027,
+            21.40654200000006,
+            21.93266600000004,
+            21.473999999999933,
+            21.037915999999996
+          ],
+          "medianMilliseconds": 21.541416000000027,
+          "retainedHeapBytes": 48732320,
+          "maximumResidentKiB": 279504,
+          "processWallMilliseconds": 1390.2865419999998
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 26.36425,
+          "milliseconds": [
+            21.366625,
+            21.460125000000062,
+            22.057000000000016,
+            21.37749999999994,
+            21.484665999999947,
+            21.6449590000002,
+            21.508499999999913
+          ],
+          "medianMilliseconds": 21.484665999999947,
+          "retainedHeapBytes": 48732320,
+          "maximumResidentKiB": 278176,
+          "processWallMilliseconds": 1375.2958749999998
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 6.098708000000002,
+          "milliseconds": [
+            1.3872499999999945,
+            1.311208000000022,
+            1.2537499999999966,
+            1.2838750000000232,
+            1.303625000000011,
+            1.3065829999999892,
+            1.4395000000000095
+          ],
+          "medianMilliseconds": 1.3065829999999892,
+          "retainedHeapBytes": 15453600,
+          "maximumResidentKiB": 171552,
+          "processWallMilliseconds": 432.3140830000002
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 10000,
+          "firstCallMilliseconds": 0.23204099999999528,
+          "milliseconds": [
+            0.10350000000001103,
+            0.14966699999999378,
+            0.1389999999999958,
+            0.12895799999999724,
+            0.05058400000000063,
+            0.05054199999999298,
+            0.05254200000000253
+          ],
+          "medianMilliseconds": 0.10350000000001103,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 89200,
+          "processWallMilliseconds": 91.97470900000008
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 10000,
+          "firstCallMilliseconds": 0.1631670000000014,
+          "milliseconds": [
+            0.044708999999997445,
+            0.048041999999995255,
+            0.0740419999999915,
+            0.047291000000001304,
+            0.0466249999999917,
+            0.04487500000000466,
+            0.04287499999999511
+          ],
+          "medianMilliseconds": 0.0466249999999917,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 88736,
+          "processWallMilliseconds": 92.07124999999996
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 40000,
+          "firstCallMilliseconds": 0.4784579999999963,
+          "milliseconds": [
+            0.48554199999999526,
+            0.20170799999999645,
+            0.19354199999999366,
+            0.18754200000000765,
+            0.21133300000001043,
+            0.1872500000000059,
+            0.20204100000000835
+          ],
+          "medianMilliseconds": 0.20170799999999645,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89856,
+          "processWallMilliseconds": 85.27624999999989
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 40000,
+          "firstCallMilliseconds": 0.4671249999999958,
+          "milliseconds": [
+            0.1912499999999966,
+            0.18104200000000503,
+            0.17650000000000432,
+            0.17087500000000944,
+            0.1735829999999936,
+            0.17508300000000077,
+            0.18304200000000037
+          ],
+          "medianMilliseconds": 0.17650000000000432,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89792,
+          "processWallMilliseconds": 82.89745800000037
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 160000,
+          "firstCallMilliseconds": 2.7315830000000005,
+          "milliseconds": [
+            0.7217500000000001,
+            0.7321249999999964,
+            0.7489589999999993,
+            0.8686670000000021,
+            0.7173339999999939,
+            0.7808750000000089,
+            0.7581250000000068
+          ],
+          "medianMilliseconds": 0.7489589999999993,
+          "retainedHeapBytes": 159792,
+          "maximumResidentKiB": 101968,
+          "processWallMilliseconds": 99.87387499999932
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 160000,
+          "firstCallMilliseconds": 2.560874999999996,
+          "milliseconds": [
+            0.737125000000006,
+            0.6704999999999899,
+            0.7255409999999927,
+            0.7558330000000097,
+            0.6792499999999961,
+            0.6935000000000002,
+            0.6775829999999985
+          ],
+          "medianMilliseconds": 0.6935000000000002,
+          "retainedHeapBytes": 159904,
+          "maximumResidentKiB": 102176,
+          "processWallMilliseconds": 104.91204199999993
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.26062499999999034,
+          "milliseconds": [
+            0.1246670000000023,
+            0.1887920000000065,
+            0.15841600000000255,
+            0.06879200000000196,
+            0.06354100000000074,
+            0.059042000000005146,
+            0.05825000000000102
+          ],
+          "medianMilliseconds": 0.06879200000000196,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 88688,
+          "processWallMilliseconds": 95.50237500000003
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.2172079999999994,
+          "milliseconds": [
+            0.20579200000000242,
+            0.16724999999999568,
+            0.16408299999999088,
+            0.16908300000000054,
+            0.05762500000000159,
+            0.057541999999997984,
+            0.05491700000000321
+          ],
+          "medianMilliseconds": 0.16408299999999088,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 88816,
+          "processWallMilliseconds": 95.71274999999969
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.027124999999998067,
+          "milliseconds": [
+            0.0062910000000044874,
+            0.009124999999997385,
+            0.006458000000009179,
+            0.007334000000000174,
+            0.0073330000000026985,
+            0.006709000000000742,
+            0.005459000000001879
+          ],
+          "medianMilliseconds": 0.006709000000000742,
+          "retainedHeapBytes": 9792,
+          "maximumResidentKiB": 86304,
+          "processWallMilliseconds": 93.83845799999926
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.441709000000003,
+          "milliseconds": [
+            0.5931250000000006,
+            0.22333299999999667,
+            0.22475000000000023,
+            0.21966599999998948,
+            0.22629200000000083,
+            0.39929100000000517,
+            0.24262499999998965
+          ],
+          "medianMilliseconds": 0.22629200000000083,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89472,
+          "processWallMilliseconds": 98.00737499999923
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.49295899999999904,
+          "milliseconds": [
+            0.2083329999999961,
+            0.2147499999999951,
+            0.21333299999999156,
+            0.2119169999999997,
+            0.2204579999999936,
+            0.2260830000000027,
+            0.21291700000000446
+          ],
+          "medianMilliseconds": 0.21333299999999156,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89840,
+          "processWallMilliseconds": 96.81187499999942
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.07525000000001114,
+          "milliseconds": [
+            0.03491700000000719,
+            0.0363749999999925,
+            0.03674999999999784,
+            0.0698330000000027,
+            0.035750000000007276,
+            0.015084000000001652,
+            0.014375000000001137
+          ],
+          "medianMilliseconds": 0.035750000000007276,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 88496,
+          "processWallMilliseconds": 94.20083300000078
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 2.766707999999994,
+          "milliseconds": [
+            0.9244999999999948,
+            0.883665999999991,
+            0.8468749999999972,
+            0.8462499999999977,
+            0.8474590000000006,
+            1.004165999999998,
+            0.9219579999999894
+          ],
+          "medianMilliseconds": 0.883665999999991,
+          "retainedHeapBytes": 159856,
+          "maximumResidentKiB": 98128,
+          "processWallMilliseconds": 99.72362500000054
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 2.737833000000009,
+          "milliseconds": [
+            2.545957999999999,
+            0.9298749999999956,
+            0.8334999999999866,
+            0.8726249999999993,
+            0.8536670000000015,
+            0.8889999999999958,
+            0.8100000000000023
+          ],
+          "medianMilliseconds": 0.8726249999999993,
+          "retainedHeapBytes": 159856,
+          "maximumResidentKiB": 98160,
+          "processWallMilliseconds": 109.21691699999974
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 0.18916600000000017,
+          "milliseconds": [
+            0.0790839999999946,
+            0.07916600000000074,
+            0.08304100000000858,
+            0.11899999999999977,
+            0.08195899999999767,
+            0.08195899999999767,
+            0.07912500000000477
+          ],
+          "medianMilliseconds": 0.08195899999999767,
+          "retainedHeapBytes": 159352,
+          "maximumResidentKiB": 88944,
+          "processWallMilliseconds": 92.69154200000048
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.629209000000003,
+          "milliseconds": [
+            0.30408300000000565,
+            0.29129199999999855,
+            0.23187500000000227,
+            0.2127919999999932,
+            0.21987500000000182,
+            0.21425000000000693,
+            0.2041669999999982
+          ],
+          "medianMilliseconds": 0.21987500000000182,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89536,
+          "processWallMilliseconds": 94.71254200000112
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.380625000000002,
+          "milliseconds": [
+            0.19541700000000617,
+            0.2885830000000027,
+            0.29025000000000034,
+            0.140625,
+            0.14404100000000142,
+            0.14279100000000255,
+            0.13804199999999867
+          ],
+          "medianMilliseconds": 0.14404100000000142,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88960,
+          "processWallMilliseconds": 86.35495800000172
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.17508300000000077,
+          "milliseconds": [
+            0.17020799999999525,
+            0.15870799999999718,
+            0.15979199999999594,
+            0.16362499999999613,
+            0.1648750000000092,
+            0.1682079999999928,
+            0.23416699999999935
+          ],
+          "medianMilliseconds": 0.1648750000000092,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 86832,
+          "processWallMilliseconds": 80.12916699999914
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 1.3227079999999987,
+          "milliseconds": [
+            0.7629579999999976,
+            0.8262919999999951,
+            0.7878749999999997,
+            0.779916,
+            0.7975420000000071,
+            0.6061250000000058,
+            0.6015420000000091
+          ],
+          "medianMilliseconds": 0.779916,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 90992,
+          "processWallMilliseconds": 88.72500000000036
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 0.8099580000000088,
+          "milliseconds": [
+            0.4707909999999913,
+            0.490791999999999,
+            0.5069579999999974,
+            0.4832499999999982,
+            0.5247499999999974,
+            0.45091600000000653,
+            0.4387090000000029
+          ],
+          "medianMilliseconds": 0.4832499999999982,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 90672,
+          "processWallMilliseconds": 98.21866600000067
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 0.740708000000005,
+          "milliseconds": [
+            0.5669999999999931,
+            0.5655419999999935,
+            0.567916000000011,
+            0.5751249999999999,
+            0.5758750000000106,
+            0.640625,
+            0.584541999999999
+          ],
+          "medianMilliseconds": 0.5751249999999999,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88880,
+          "processWallMilliseconds": 91.4867919999997
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 3.389375000000001,
+          "milliseconds": [
+            2.8314999999999912,
+            2.867709000000005,
+            2.7789999999999964,
+            2.7330829999999935,
+            2.7442920000000015,
+            2.7217920000000078,
+            2.661457999999996
+          ],
+          "medianMilliseconds": 2.7442920000000015,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 91040,
+          "processWallMilliseconds": 123.83658300000025
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 2.5655,
+          "milliseconds": [
+            2.1621669999999966,
+            2.120500000000007,
+            2.1300410000000056,
+            2.1445420000000013,
+            2.1792919999999896,
+            2.2025409999999965,
+            2.115040999999991
+          ],
+          "medianMilliseconds": 2.1445420000000013,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 91088,
+          "processWallMilliseconds": 117.07604100000026
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 2.5920830000000024,
+          "milliseconds": [
+            2.2965420000000023,
+            2.3528340000000014,
+            2.2390419999999978,
+            2.2137089999999944,
+            2.2699579999999884,
+            2.2813330000000036,
+            2.3047910000000087
+          ],
+          "medianMilliseconds": 2.2813330000000036,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 90736,
+          "processWallMilliseconds": 117.51966700000048
+        }
+      ],
+      "completeCompiler": [
+        {
+          "name": "statements",
+          "count": 1000,
+          "sourceBytes": 19070,
+          "sourceHash": "b0f5357896512ca572000b9a9bd1ce8027e030f269066d4f68ba58bedafda572",
+          "generatedBytes": 21135,
+          "generatedHash": "4b4c913513a3463691355c708e4dbfae2da4429bc681802579909f894f325315",
+          "compileMilliseconds": [
+            62.129665999998906,
+            63.00154199999997,
+            63.2984579999993
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 53.65441699999974,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 50.54579199999898,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 52.852333000000726,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 24.633874999999534,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 20.914667000000918,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.20854099999997,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "statements",
+          "count": 4000,
+          "sourceBytes": 76070,
+          "sourceHash": "dee8bcb3a6e69da22e95e35311d637f5b80487bd7052db1d5c36ecef198952d5",
+          "generatedBytes": 84135,
+          "generatedHash": "84ba426e6b06db45f919ef81e866989f52f41144fe42278d47d14a67c270cead",
+          "compileMilliseconds": [
+            65.00204200000007,
+            64.96999999999935,
+            64.06891699999869
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 56.493375000000015,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 57.61387500000092,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 61.316249999999854,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.12487499999952,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 24.99529199999961,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.202292000001762,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "statements",
+          "count": 16000,
+          "sourceBytes": 304071,
+          "sourceHash": "021042c629fab09053a186ea17676646f4d5dfee7edf72cb0e939e92f7990037",
+          "generatedBytes": 336136,
+          "generatedHash": "bbdc45bc2f0b898ba86f2bd0109633ea928238b2cd91eced720909ad5c0ba747",
+          "compileMilliseconds": [
+            91.79462499999863,
+            83.63933399999951,
+            81.98358299999927
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 71.3003749999989,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 72.12391699999898,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 73.77254100000027,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 24.398042000000714,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 25.28245799999968,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 24.502791999999317,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 10000,
+          "sourceBytes": 10085,
+          "sourceHash": "cc0f6b147f54496e5514d8ed9f33d7aa28eaa3c060cdf02d188ae7435a6f372f",
+          "generatedBytes": 10146,
+          "generatedHash": "ae13b19c1d732f81bab1d74a97d6b3f19f535121be91a833fa149b9171796e51",
+          "compileMilliseconds": [
+            58.062707999999475,
+            58.86912499999926,
+            57.84850000000006
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 48.43079200000102,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.4002500000006,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 46.71283399999993,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.34400000000096,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.395709000000352,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 20.1801660000001,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 40000,
+          "sourceBytes": 40085,
+          "sourceHash": "8b44fe8736b1a41d1bdd317bbbb0b5b6d8ed712f9e7b455059687908f353a057",
+          "generatedBytes": 40146,
+          "generatedHash": "cca89a4bdcbf45e9957e6963943167de5a7fb85dd989ab7d89f70701b812b206",
+          "compileMilliseconds": [
+            64.49704100000054,
+            66.132708000001,
+            62.74487500000032
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 50.15808300000026,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 48.24541700000009,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 46.52991600000132,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.428499999999985,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.031209000000672,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.6461249999993,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 160000,
+          "sourceBytes": 160086,
+          "sourceHash": "b79ed30da4fe24c5ba963ddc8fefcc17b2d7e61a53123416de3c1c6850d5ed96",
+          "generatedBytes": 160147,
+          "generatedHash": "a92c946e267244c540e13b594f4e8e03d7de02349deb6876135c33b5f917e02a",
+          "compileMilliseconds": [
+            61.08866699999999,
+            59.16387500000019,
+            59.634249999999156
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 78.46287499999926,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 51.16679199999999,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.39520799999991,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.930458999999246,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.435625000000073,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.13891700000022,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "expression",
+          "count": 100,
+          "sourceBytes": 465,
+          "sourceHash": "95787d5b67b75b73924942fd618692d6c505742a178dbafd81d7f9654b255bcc",
+          "generatedBytes": 728,
+          "generatedHash": "cfcd94f2dce4ad3d8e15e43c0d58d625b692e2d735c8e2e3bea4090e3bab4293",
+          "compileMilliseconds": [
+            58.07966699999997,
+            57.02845800000068,
+            57.79762499999924
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.14995799999997,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 46.23624999999993,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.696083000000726,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.032749999998487,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.12683300000026,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.700874999998632,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 46.19645900000069,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        },
+        {
+          "name": "expression",
+          "count": 1000,
+          "sourceBytes": 4066,
+          "sourceHash": "c2a6cfd3ef7a86f9b319829059cdb6d2111bb231f548b138f52b3a8000154496",
+          "generatedBytes": 6129,
+          "generatedHash": "a91b4406d9ce16a1b047ce3ae9f737c39beb47950a303abe85410509e73f6651",
+          "compileMilliseconds": [
+            59.906167000001005,
+            57.269084000001385,
+            58.03087500000038
+          ],
+          "executions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.00145899999916,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.999665999999706,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 44.94812499999898,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "passed": false,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.03070800000023,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.559833000001163,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.398165999999037,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 48.113124999999854,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        },
+        {
+          "name": "expression",
+          "count": 4000,
+          "sourceBytes": 16066,
+          "sourceHash": "67fb1f6cceeb338776747b4aaf8060c3f86985b17c184ad52963ac5ade5610b3",
+          "generatedBytes": 24129,
+          "generatedHash": "b54b5eb10311add9c031a6f6294ac06f9d4db031cb930bf40194756e79e57393",
+          "compileMilliseconds": [
+            61.08441600000151,
+            61.1278340000008,
+            61.49137499999961
+          ],
+          "executions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 46.351582999999664,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.119833000000654,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 48.4497080000001,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "passed": false,
+          "javascriptExecutions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 20.996291999999812,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 22.838959000000614,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 20.742541999999958,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 50.248249999998734,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        }
+      ]
+    },
+    {
+      "schemaVersion": 1,
+      "measuredAt": "2026-11-03T19:56:31.460Z",
+      "commit": "b466ba64f72beccde0f5f460e7ba7efd4a7ec840",
+      "compilerEntry": "compiler/t0.ts",
+      "compilerHash": "c07abe971f667c7b04fd78531c2a05bd378bdd79d5cce4def1999c09a9aea793",
+      "compilerHashScope": "configured source files",
+      "sourceHash": "27c093d63aa214a2555bb4baa0325689d4295e8c3f22d8ee2e5cce6dad2c70bb",
+      "generatedHash": "b120a3c5614e9f3d87bcac1e7c7bafdc9ba81e93b6016ab4a564483c0a2c1aac",
+      "harnessHash": "901faf4a3fbe38afacad380fbc477d3219a86c4c74c4d1a56591d19a008fe7b8",
+      "generatedBytes": 3693,
+      "warmups": 3,
+      "samples": 7,
+      "scope": "Synthetic compiler workloads, not a T1 compiler or self-build. Temporary generated modules use an explicit type:module package scope. Fresh worker per variant/size. Explicit GC before timed calls; first call separate; string flattening included; correctness checks excluded. Heap is a GC-based retained estimate, RSS is whole-worker high-water. Process wall includes all warmups, checks, and samples, not compiler latency. Complete-compiler rows use fresh-process wall times, three runs each; identical emitted bytes in .mjs are loading-path controls.",
+      "results": [
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 1000000,
+          "firstCallMilliseconds": 1.4341249999999945,
+          "milliseconds": [
+            0.7778330000000011,
+            0.7648750000000035,
+            0.8247909999999905,
+            0.8448750000000018,
+            0.7670410000000061,
+            0.7759159999999952,
+            0.7882499999999908
+          ],
+          "medianMilliseconds": 0.7778330000000011,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 89488,
+          "processWallMilliseconds": 105.01983299999999
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 1000000,
+          "firstCallMilliseconds": 1.008958000000007,
+          "milliseconds": [
+            0.789874999999995,
+            0.8089170000000081,
+            0.7638329999999911,
+            0.7910420000000045,
+            0.7822500000000048,
+            0.7695409999999896,
+            0.7390840000000054
+          ],
+          "medianMilliseconds": 0.7822500000000048,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88384,
+          "processWallMilliseconds": 100.31845799999999
+        },
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 4000000,
+          "firstCallMilliseconds": 2.4032080000000065,
+          "milliseconds": [
+            2.203708000000006,
+            2.1470840000000067,
+            2.13924999999999,
+            2.302207999999993,
+            2.254000000000005,
+            2.262874999999994,
+            2.1294579999999996
+          ],
+          "medianMilliseconds": 2.203708000000006,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88480,
+          "processWallMilliseconds": 115.58100000000002
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 4000000,
+          "firstCallMilliseconds": 2.323750000000004,
+          "milliseconds": [
+            2.1712500000000006,
+            2.1507919999999956,
+            2.19741599999999,
+            2.125249999999994,
+            2.104167000000004,
+            2.174875,
+            2.1089589999999987
+          ],
+          "medianMilliseconds": 2.1507919999999956,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88320,
+          "processWallMilliseconds": 117.22270800000007
+        },
+        {
+          "variant": "generated",
+          "name": "scalar",
+          "count": 16000000,
+          "firstCallMilliseconds": 7.952665999999994,
+          "milliseconds": [
+            7.626542000000001,
+            7.589500000000001,
+            7.864584000000008,
+            7.767292000000026,
+            7.677375000000012,
+            7.596874999999983,
+            7.818375000000003
+          ],
+          "medianMilliseconds": 7.677375000000012,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88304,
+          "processWallMilliseconds": 184.04625
+        },
+        {
+          "variant": "direct",
+          "name": "scalar",
+          "count": 16000000,
+          "firstCallMilliseconds": 7.980124999999994,
+          "milliseconds": [
+            7.648666999999989,
+            7.7394999999999925,
+            7.60175000000001,
+            7.533417,
+            7.6237079999999935,
+            7.749959000000018,
+            7.825249999999983
+          ],
+          "medianMilliseconds": 7.648666999999989,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88352,
+          "processWallMilliseconds": 173.07237499999997
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 10000,
+          "firstCallMilliseconds": 0.497792000000004,
+          "milliseconds": [
+            0.1688749999999999,
+            0.16262499999999136,
+            0.15945899999999824,
+            0.06329100000000665,
+            0.061790999999999485,
+            0.06795799999999019,
+            0.0669589999999971
+          ],
+          "medianMilliseconds": 0.06795799999999019,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89088,
+          "processWallMilliseconds": 96.45154100000002
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 10000,
+          "firstCallMilliseconds": 0.18641599999999414,
+          "milliseconds": [
+            0.030083000000004745,
+            0.03133400000000108,
+            0.03079200000000526,
+            0.031083999999992784,
+            0.027958999999995626,
+            0.02820799999999224,
+            0.03741700000000492
+          ],
+          "medianMilliseconds": 0.03079200000000526,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88752,
+          "processWallMilliseconds": 89.58379200000002
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 40000,
+          "firstCallMilliseconds": 1.0366250000000008,
+          "milliseconds": [
+            0.30545800000000156,
+            0.3095830000000035,
+            0.3029159999999962,
+            0.37700000000000955,
+            0.17983300000000213,
+            0.18512499999999932,
+            0.17270899999999756
+          ],
+          "medianMilliseconds": 0.3029159999999962,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 89872,
+          "processWallMilliseconds": 88.3259999999998
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 40000,
+          "firstCallMilliseconds": 0.6999160000000018,
+          "milliseconds": [
+            0.18087500000000034,
+            0.1923749999999984,
+            0.1863750000000124,
+            0.17441699999999116,
+            0.18225000000001046,
+            0.18670799999999588,
+            0.17958400000000552
+          ],
+          "medianMilliseconds": 0.18225000000001046,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 90128,
+          "processWallMilliseconds": 99.66604200000006
+        },
+        {
+          "variant": "generated",
+          "name": "list",
+          "count": 160000,
+          "firstCallMilliseconds": 2.666374999999988,
+          "milliseconds": [
+            2.1167080000000027,
+            1.2404580000000038,
+            0.5804169999999971,
+            0.5652919999999995,
+            0.5837920000000025,
+            0.6736250000000013,
+            0.6993750000000034
+          ],
+          "medianMilliseconds": 0.6736250000000013,
+          "retainedHeapBytes": -176,
+          "maximumResidentKiB": 94816,
+          "processWallMilliseconds": 106.63108299999999
+        },
+        {
+          "variant": "direct",
+          "name": "list",
+          "count": 160000,
+          "firstCallMilliseconds": 1.6850409999999982,
+          "milliseconds": [
+            0.7074159999999949,
+            0.7357499999999959,
+            0.6582499999999953,
+            0.693000000000012,
+            0.6406669999999934,
+            0.6276249999999948,
+            0.6210829999999987
+          ],
+          "medianMilliseconds": 0.6582499999999953,
+          "retainedHeapBytes": -176,
+          "maximumResidentKiB": 94608,
+          "processWallMilliseconds": 104.07199999999989
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 1.5258749999999992,
+          "milliseconds": [
+            1.4130420000000044,
+            1.449541999999994,
+            1.2296249999999986,
+            1.1774999999999949,
+            1.2442499999999939,
+            1.3212919999999997,
+            1.1893749999999983
+          ],
+          "medianMilliseconds": 1.2442499999999939,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 88880,
+          "processWallMilliseconds": 107.603208
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 1.0678340000000048,
+          "milliseconds": [
+            0.8470839999999953,
+            0.8332500000000067,
+            0.8363750000000039,
+            0.8758330000000001,
+            0.8173340000000024,
+            0.8196669999999955,
+            0.8197919999999925
+          ],
+          "medianMilliseconds": 0.8332500000000067,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88688,
+          "processWallMilliseconds": 99.62695799999983
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 100000,
+          "firstCallMilliseconds": 0.3339169999999996,
+          "milliseconds": [
+            0.08270899999999415,
+            0.07970900000000114,
+            0.08020799999999895,
+            0.08033299999999599,
+            0.09620800000000429,
+            0.0516669999999948,
+            0.05150000000000432
+          ],
+          "medianMilliseconds": 0.08020799999999895,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88672,
+          "processWallMilliseconds": 80.99049999999988
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 3.9810000000000016,
+          "milliseconds": [
+            3.675708,
+            3.7577909999999974,
+            3.527917000000002,
+            3.5760840000000087,
+            3.541291000000001,
+            3.6113749999999953,
+            3.647166999999996
+          ],
+          "medianMilliseconds": 3.6113749999999953,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 88672,
+          "processWallMilliseconds": 126.18287499999997
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 2.676458000000011,
+          "milliseconds": [
+            2.4394160000000085,
+            2.427166999999997,
+            2.4354999999999905,
+            2.4419579999999996,
+            2.3986249999999956,
+            2.549915999999996,
+            2.4632919999999956
+          ],
+          "medianMilliseconds": 2.4394160000000085,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88784,
+          "processWallMilliseconds": 119.99849999999992
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 400000,
+          "firstCallMilliseconds": 0.8365000000000009,
+          "milliseconds": [
+            0.6467079999999896,
+            0.7051249999999953,
+            0.6552499999999952,
+            0.7137500000000045,
+            0.6622919999999937,
+            0.5980829999999884,
+            0.5502500000000055
+          ],
+          "medianMilliseconds": 0.6552499999999952,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88736,
+          "processWallMilliseconds": 98.16204199999993
+        },
+        {
+          "variant": "generated",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 13.861333000000002,
+          "milliseconds": [
+            14.098500000000001,
+            14.414582999999993,
+            13.940791000000019,
+            14.43954100000002,
+            14.205749999999995,
+            14.258542000000006,
+            13.877957999999978
+          ],
+          "medianMilliseconds": 14.205749999999995,
+          "retainedHeapBytes": -208,
+          "maximumResidentKiB": 88768,
+          "processWallMilliseconds": 267.00358300000016
+        },
+        {
+          "variant": "direct",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 10.155083000000005,
+          "milliseconds": [
+            9.421625000000006,
+            9.99962499999998,
+            9.656624999999991,
+            14.777332999999999,
+            9.723208,
+            9.573083999999994,
+            9.547917000000012
+          ],
+          "medianMilliseconds": 9.656624999999991,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88960,
+          "processWallMilliseconds": 238.63216599999987
+        },
+        {
+          "variant": "idiomatic",
+          "name": "state",
+          "count": 1600000,
+          "firstCallMilliseconds": 2.3480419999999995,
+          "milliseconds": [
+            1.832334000000003,
+            1.8737079999999935,
+            1.85883299999999,
+            2.0110829999999993,
+            1.7904160000000076,
+            1.4250830000000008,
+            1.3786670000000072
+          ],
+          "medianMilliseconds": 1.832334000000003,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88848,
+          "processWallMilliseconds": 103.47495900000013
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 2.224333999999999,
+          "milliseconds": [
+            0.9444160000000039,
+            0.928750000000008,
+            0.8426659999999941,
+            0.8259159999999923,
+            0.8690410000000099,
+            0.8951250000000073,
+            0.8318330000000174
+          ],
+          "medianMilliseconds": 0.8690410000000099,
+          "retainedHeapBytes": 3038664,
+          "maximumResidentKiB": 132592,
+          "processWallMilliseconds": 179.7052080000003
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 1.7727919999999955,
+          "milliseconds": [
+            0.9066249999999911,
+            0.9260000000000019,
+            0.8643749999999955,
+            0.8725839999999891,
+            0.8669170000000008,
+            0.8303750000000036,
+            0.8582499999999982
+          ],
+          "medianMilliseconds": 0.8669170000000008,
+          "retainedHeapBytes": 3038664,
+          "maximumResidentKiB": 132720,
+          "processWallMilliseconds": 186.2928750000001
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 10000,
+          "firstCallMilliseconds": 0.34825000000000017,
+          "milliseconds": [
+            0.051541999999997756,
+            0.057165999999995165,
+            0.03650000000000375,
+            0.03737499999999727,
+            0.03624999999999545,
+            0.03725000000000023,
+            0.035750000000007276
+          ],
+          "medianMilliseconds": 0.03725000000000023,
+          "retainedHeapBytes": 960000,
+          "maximumResidentKiB": 99488,
+          "processWallMilliseconds": 111.83300000000008
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 7.063832999999988,
+          "milliseconds": [
+            4.037499999999994,
+            4.129500000000007,
+            3.9156670000000418,
+            3.914250000000038,
+            3.890790999999979,
+            3.856457999999975,
+            4.015290999999991
+          ],
+          "medianMilliseconds": 3.9156670000000418,
+          "retainedHeapBytes": 12245416,
+          "maximumResidentKiB": 227200,
+          "processWallMilliseconds": 445.54437499999995
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 7.4807500000000005,
+          "milliseconds": [
+            3.850999999999999,
+            3.5845829999999808,
+            3.7610420000000317,
+            3.715833000000032,
+            3.5247909999999933,
+            3.7585410000000365,
+            3.6775420000000167
+          ],
+          "medianMilliseconds": 3.715833000000032,
+          "retainedHeapBytes": 12245416,
+          "maximumResidentKiB": 226544,
+          "processWallMilliseconds": 451.16845799999965
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 40000,
+          "firstCallMilliseconds": 1.7595409999999987,
+          "milliseconds": [
+            0.7639999999999958,
+            0.33174999999999955,
+            0.28366599999999664,
+            0.307707999999991,
+            0.26875000000001137,
+            0.2761660000000177,
+            0.26633300000000304
+          ],
+          "medianMilliseconds": 0.28366599999999664,
+          "retainedHeapBytes": 3926744,
+          "maximumResidentKiB": 125696,
+          "processWallMilliseconds": 185.945917
+        },
+        {
+          "variant": "generated",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 25.85204200000001,
+          "milliseconds": [
+            21.350875000000087,
+            22.40879199999995,
+            22.316374999999994,
+            21.46729199999993,
+            21.656166999999982,
+            21.573667000000114,
+            22.23024999999984
+          ],
+          "medianMilliseconds": 21.656166999999982,
+          "retainedHeapBytes": 48732320,
+          "maximumResidentKiB": 279744,
+          "processWallMilliseconds": 1405.2694579999998
+        },
+        {
+          "variant": "direct",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 27.118750000000006,
+          "milliseconds": [
+            25.666625000000067,
+            22.900125000000003,
+            24.29108400000007,
+            22.684499999999957,
+            23.249874999999975,
+            23.262249999999995,
+            22.871165999999903
+          ],
+          "medianMilliseconds": 23.249874999999975,
+          "retainedHeapBytes": 48732320,
+          "maximumResidentKiB": 277920,
+          "processWallMilliseconds": 1413.6792919999998
+        },
+        {
+          "variant": "idiomatic",
+          "name": "tokens",
+          "count": 160000,
+          "firstCallMilliseconds": 5.836832999999999,
+          "milliseconds": [
+            1.395167000000015,
+            1.3538750000000164,
+            1.2774579999999958,
+            1.3442079999999805,
+            1.3009170000000267,
+            1.256750000000011,
+            1.303416000000027
+          ],
+          "medianMilliseconds": 1.303416000000027,
+          "retainedHeapBytes": 15453600,
+          "maximumResidentKiB": 171520,
+          "processWallMilliseconds": 439.43783299999996
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 10000,
+          "firstCallMilliseconds": 0.21879199999999344,
+          "milliseconds": [
+            0.050499999999999545,
+            0.06654199999999832,
+            0.05033400000000654,
+            0.05195799999999906,
+            0.051374999999993065,
+            0.051625000000001364,
+            0.04920900000000472
+          ],
+          "medianMilliseconds": 0.051374999999993065,
+          "retainedHeapBytes": 6728,
+          "maximumResidentKiB": 88720,
+          "processWallMilliseconds": 93.71412499999951
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 10000,
+          "firstCallMilliseconds": 0.1585409999999996,
+          "milliseconds": [
+            0.045249999999995794,
+            0.07125000000000625,
+            0.046875,
+            0.04737500000000239,
+            0.04774999999999352,
+            0.045000000000001705,
+            0.04262500000000102
+          ],
+          "medianMilliseconds": 0.046875,
+          "retainedHeapBytes": 7240,
+          "maximumResidentKiB": 88592,
+          "processWallMilliseconds": 91.96287500000017
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 40000,
+          "firstCallMilliseconds": 0.40287500000000165,
+          "milliseconds": [
+            0.47766699999999673,
+            0.203125,
+            0.20095799999999997,
+            0.20029199999999037,
+            0.1858749999999958,
+            0.18925000000000125,
+            0.19225000000000136
+          ],
+          "medianMilliseconds": 0.20029199999999037,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89936,
+          "processWallMilliseconds": 85.53499999999985
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 40000,
+          "firstCallMilliseconds": 0.3803750000000008,
+          "milliseconds": [
+            0.1840830000000011,
+            0.18462500000001114,
+            0.19174999999999898,
+            0.18141699999999616,
+            0.18479200000000162,
+            0.1914160000000038,
+            0.19199999999999307
+          ],
+          "medianMilliseconds": 0.18479200000000162,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 89696,
+          "processWallMilliseconds": 94.18829100000039
+        },
+        {
+          "variant": "generated",
+          "name": "text",
+          "count": 160000,
+          "firstCallMilliseconds": 2.819917000000004,
+          "milliseconds": [
+            0.7317919999999987,
+            0.749875000000003,
+            0.7378329999999949,
+            0.7607499999999874,
+            0.872249999999994,
+            0.8127499999999941,
+            0.7882499999999908
+          ],
+          "medianMilliseconds": 0.7607499999999874,
+          "retainedHeapBytes": 159792,
+          "maximumResidentKiB": 102192,
+          "processWallMilliseconds": 106.2001250000003
+        },
+        {
+          "variant": "direct",
+          "name": "text",
+          "count": 160000,
+          "firstCallMilliseconds": 2.675042000000005,
+          "milliseconds": [
+            0.6460000000000008,
+            0.6487089999999966,
+            0.6467499999999973,
+            0.6922500000000014,
+            0.7860409999999973,
+            0.6866669999999999,
+            0.6706250000000011
+          ],
+          "medianMilliseconds": 0.6706250000000011,
+          "retainedHeapBytes": 159792,
+          "maximumResidentKiB": 102064,
+          "processWallMilliseconds": 99.56387499999983
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.26274999999999693,
+          "milliseconds": [
+            0.1126249999999942,
+            0.17058400000000518,
+            0.1790420000000097,
+            0.15550000000000352,
+            0.06074999999999875,
+            0.05983299999999758,
+            0.058417000000005714
+          ],
+          "medianMilliseconds": 0.1126249999999942,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 89392,
+          "processWallMilliseconds": 95.15654099999938
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.19324999999999193,
+          "milliseconds": [
+            0.06058299999999406,
+            0.06187500000000057,
+            0.08441700000000196,
+            0.05662499999999682,
+            0.05533400000000199,
+            0.06141700000000583,
+            0.05254200000000253
+          ],
+          "medianMilliseconds": 0.06058299999999406,
+          "retainedHeapBytes": 9856,
+          "maximumResidentKiB": 88432,
+          "processWallMilliseconds": 93.94245899999987
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 10000,
+          "firstCallMilliseconds": 0.026542000000006283,
+          "milliseconds": [
+            0.005916999999996619,
+            0.007167000000009693,
+            0.006208999999998355,
+            0.0059590000000042664,
+            0.006999999999990791,
+            0.006292000000001963,
+            0.005458000000004404
+          ],
+          "medianMilliseconds": 0.006208999999998355,
+          "retainedHeapBytes": 9792,
+          "maximumResidentKiB": 86224,
+          "processWallMilliseconds": 92.22312499999862
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.5674159999999944,
+          "milliseconds": [
+            0.7020830000000018,
+            0.23370800000000713,
+            0.22350000000000136,
+            0.2247080000000068,
+            0.26124999999998977,
+            0.2269589999999937,
+            0.36275000000000546
+          ],
+          "medianMilliseconds": 0.23370800000000713,
+          "retainedHeapBytes": 39880,
+          "maximumResidentKiB": 89856,
+          "processWallMilliseconds": 113.74229200000082
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.46912500000000534,
+          "milliseconds": [
+            0.24254200000000026,
+            0.2202909999999889,
+            0.2090830000000068,
+            0.2075410000000062,
+            0.20699999999999363,
+            0.2224159999999955,
+            0.2131249999999909
+          ],
+          "medianMilliseconds": 0.2131249999999909,
+          "retainedHeapBytes": 39856,
+          "maximumResidentKiB": 90048,
+          "processWallMilliseconds": 136.74204199999986
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 40000,
+          "firstCallMilliseconds": 0.06958400000000609,
+          "milliseconds": [
+            0.035042000000004236,
+            0.03483300000000611,
+            0.037291999999993664,
+            0.032874999999989996,
+            0.03979199999999139,
+            0.01579200000000469,
+            0.04762500000001069
+          ],
+          "medianMilliseconds": 0.035042000000004236,
+          "retainedHeapBytes": 39904,
+          "maximumResidentKiB": 88624,
+          "processWallMilliseconds": 101.32958300000064
+        },
+        {
+          "variant": "generated",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 2.8568750000000023,
+          "milliseconds": [
+            0.9733340000000084,
+            0.8269590000000022,
+            0.9175409999999999,
+            0.9150829999999956,
+            0.8156249999999972,
+            0.9598330000000033,
+            0.8907080000000036
+          ],
+          "medianMilliseconds": 0.9150829999999956,
+          "retainedHeapBytes": 159856,
+          "maximumResidentKiB": 98144,
+          "processWallMilliseconds": 109.89862499999981
+        },
+        {
+          "variant": "direct",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 2.5879170000000045,
+          "milliseconds": [
+            1.095708000000002,
+            0.8907500000000113,
+            0.8843750000000057,
+            0.8711250000000064,
+            0.8462080000000043,
+            0.977374999999995,
+            0.8224170000000015
+          ],
+          "medianMilliseconds": 0.8843750000000057,
+          "retainedHeapBytes": 159856,
+          "maximumResidentKiB": 97824,
+          "processWallMilliseconds": 104.88595800000076
+        },
+        {
+          "variant": "idiomatic",
+          "name": "slices",
+          "count": 160000,
+          "firstCallMilliseconds": 0.24562500000000398,
+          "milliseconds": [
+            0.07916600000000074,
+            0.08062499999999773,
+            0.1070840000000004,
+            0.07924999999998761,
+            0.07766599999999357,
+            0.08154099999998721,
+            0.07645800000000236
+          ],
+          "medianMilliseconds": 0.07924999999998761,
+          "retainedHeapBytes": 161640,
+          "maximumResidentKiB": 88896,
+          "processWallMilliseconds": 95.45700000000033
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.6418749999999989,
+          "milliseconds": [
+            0.30424999999999613,
+            0.28041600000000244,
+            0.30424999999999613,
+            0.20629099999999312,
+            0.20683300000000315,
+            0.2745000000000033,
+            0.21016699999999844
+          ],
+          "medianMilliseconds": 0.2745000000000033,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 89536,
+          "processWallMilliseconds": 85.97091699999874
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.3813329999999979,
+          "milliseconds": [
+            0.13808300000000173,
+            0.1402089999999987,
+            0.13995799999999292,
+            0.134208000000001,
+            0.19241700000000606,
+            0.135083999999992,
+            0.1313339999999954
+          ],
+          "medianMilliseconds": 0.13808300000000173,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 86800,
+          "processWallMilliseconds": 84.55533400000058
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 100,
+          "firstCallMilliseconds": 0.19899999999999807,
+          "milliseconds": [
+            0.14654099999999914,
+            0.14854200000000617,
+            0.15329199999999332,
+            0.15016700000001038,
+            0.15749999999999886,
+            0.15425000000000466,
+            0.14258399999999938
+          ],
+          "medianMilliseconds": 0.15016700000001038,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 86832,
+          "processWallMilliseconds": 93.99562499999956
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 1.2754170000000045,
+          "milliseconds": [
+            0.7887079999999997,
+            0.7968329999999924,
+            0.763542000000001,
+            0.5585829999999987,
+            0.5616660000000024,
+            0.5727919999999926,
+            0.5585420000000028
+          ],
+          "medianMilliseconds": 0.5727919999999926,
+          "retainedHeapBytes": -256,
+          "maximumResidentKiB": 90976,
+          "processWallMilliseconds": 102.01920799999971
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 0.8072500000000034,
+          "milliseconds": [
+            0.4888750000000073,
+            0.49450000000000216,
+            0.47616699999998957,
+            0.4755839999999978,
+            0.6612089999999995,
+            0.49295899999999904,
+            0.45454200000000355
+          ],
+          "medianMilliseconds": 0.4888750000000073,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 90640,
+          "processWallMilliseconds": 87.74883300000147
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 400,
+          "firstCallMilliseconds": 0.7608340000000027,
+          "milliseconds": [
+            0.5984169999999978,
+            0.5822920000000096,
+            0.5197910000000121,
+            0.5234999999999985,
+            0.5824590000000001,
+            0.5949580000000054,
+            0.7438329999999951
+          ],
+          "medianMilliseconds": 0.5824590000000001,
+          "retainedHeapBytes": -192,
+          "maximumResidentKiB": 88544,
+          "processWallMilliseconds": 97.57341699999961
+        },
+        {
+          "variant": "generated",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 3.3486660000000086,
+          "milliseconds": [
+            2.834167000000008,
+            2.697500000000005,
+            2.840665999999999,
+            2.677665999999988,
+            2.712167000000008,
+            2.6977080000000058,
+            2.6654999999999944
+          ],
+          "medianMilliseconds": 2.6977080000000058,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 91344,
+          "processWallMilliseconds": 126.69037500000013
+        },
+        {
+          "variant": "direct",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 2.6152080000000026,
+          "milliseconds": [
+            2.0469169999999934,
+            2.0787499999999994,
+            2.132582999999997,
+            2.0985000000000014,
+            2.1048749999999927,
+            2.112125000000006,
+            2.133125000000007
+          ],
+          "medianMilliseconds": 2.1048749999999927,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 91152,
+          "processWallMilliseconds": 108.51520900000105
+        },
+        {
+          "variant": "idiomatic",
+          "name": "scopes",
+          "count": 1600,
+          "firstCallMilliseconds": 2.5820000000000007,
+          "milliseconds": [
+            2.2351659999999924,
+            2.267124999999993,
+            2.255915999999999,
+            2.420749999999998,
+            2.308290999999997,
+            2.3698749999999933,
+            2.3458750000000066
+          ],
+          "medianMilliseconds": 2.308290999999997,
+          "retainedHeapBytes": -144,
+          "maximumResidentKiB": 91248,
+          "processWallMilliseconds": 110.52275000000009
+        }
+      ],
+      "completeCompiler": [
+        {
+          "name": "statements",
+          "count": 1000,
+          "sourceBytes": 19070,
+          "sourceHash": "b0f5357896512ca572000b9a9bd1ce8027e030f269066d4f68ba58bedafda572",
+          "generatedBytes": 21135,
+          "generatedHash": "4b4c913513a3463691355c708e4dbfae2da4429bc681802579909f894f325315",
+          "compileMilliseconds": [
+            61.49366700000064,
+            63.04512500000055,
+            60.84575000000041
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 52.69995799999924,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 52.192542000000685,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 51.385041999999885,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.80854200000067,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.115916000000652,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.212749999998778,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "statements",
+          "count": 4000,
+          "sourceBytes": 76070,
+          "sourceHash": "dee8bcb3a6e69da22e95e35311d637f5b80487bd7052db1d5c36ecef198952d5",
+          "generatedBytes": 84135,
+          "generatedHash": "84ba426e6b06db45f919ef81e866989f52f41144fe42278d47d14a67c270cead",
+          "compileMilliseconds": [
+            64.67100000000028,
+            66.46487499999967,
+            64.69062500000109
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 55.96612500000083,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 57.95650000000023,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 54.887125000001106,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.99420900000041,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.411082999999053,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.62712499999907,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "statements",
+          "count": 16000,
+          "sourceBytes": 304071,
+          "sourceHash": "021042c629fab09053a186ea17676646f4d5dfee7edf72cb0e939e92f7990037",
+          "generatedBytes": 336136,
+          "generatedHash": "bbdc45bc2f0b898ba86f2bd0109633ea928238b2cd91eced720909ad5c0ba747",
+          "compileMilliseconds": [
+            84.05754100000013,
+            81.88274999999885,
+            83.3427499999998
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 73.27183399999922,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 72.23683299999902,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 72.25120799999968,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.837499999999636,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 25.462249999998676,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 24.747083000000202,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 10000,
+          "sourceBytes": 10085,
+          "sourceHash": "cc0f6b147f54496e5514d8ed9f33d7aa28eaa3c060cdf02d188ae7435a6f372f",
+          "generatedBytes": 10146,
+          "generatedHash": "ae13b19c1d732f81bab1d74a97d6b3f19f535121be91a833fa149b9171796e51",
+          "compileMilliseconds": [
+            58.233374999999796,
+            57.58008299999892,
+            58.65308399999958
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.81175000000076,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.037374999999884,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 48.37133299999914,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.32429200000115,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.470416000000114,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.409249999998792,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 40000,
+          "sourceBytes": 40085,
+          "sourceHash": "8b44fe8736b1a41d1bdd317bbbb0b5b6d8ed712f9e7b455059687908f353a057",
+          "generatedBytes": 40146,
+          "generatedHash": "cca89a4bdcbf45e9957e6963943167de5a7fb85dd989ab7d89f70701b812b206",
+          "compileMilliseconds": [
+            66.62879200000134,
+            57.72279200000048,
+            58.56804199999897
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 45.69783400000051,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 48.191624999999476,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.1674579999999,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.250625000000582,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.395249999999578,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.035541000001103,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "long-text",
+          "count": 160000,
+          "sourceBytes": 160086,
+          "sourceHash": "b79ed30da4fe24c5ba963ddc8fefcc17b2d7e61a53123416de3c1c6850d5ed96",
+          "generatedBytes": 160147,
+          "generatedHash": "a92c946e267244c540e13b594f4e8e03d7de02349deb6876135c33b5f917e02a",
+          "compileMilliseconds": [
+            58.81104199999936,
+            57.735625000001164,
+            58.102874999998676
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 49.545749999999316,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.94258400000035,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 49.77245799999946,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.214249999999083,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.25804099999914,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.71979199999987,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": null
+        },
+        {
+          "name": "expression",
+          "count": 100,
+          "sourceBytes": 465,
+          "sourceHash": "95787d5b67b75b73924942fd618692d6c505742a178dbafd81d7f9654b255bcc",
+          "generatedBytes": 728,
+          "generatedHash": "cfcd94f2dce4ad3d8e15e43c0d58d625b692e2d735c8e2e3bea4090e3bab4293",
+          "compileMilliseconds": [
+            57.70508400000108,
+            58.56233299999985,
+            59.00850000000173
+          ],
+          "executions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.54512500000055,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 49.03233300000102,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 47.39408299999923,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "passed": true,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 23.506750000000466,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.733125000000655,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.213666999999987,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 47.96700000000055,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        },
+        {
+          "name": "expression",
+          "count": 1000,
+          "sourceBytes": 4066,
+          "sourceHash": "c2a6cfd3ef7a86f9b319829059cdb6d2111bb231f548b138f52b3a8000154496",
+          "generatedBytes": 6129,
+          "generatedHash": "a91b4406d9ce16a1b047ce3ae9f737c39beb47950a303abe85410509e73f6651",
+          "compileMilliseconds": [
+            63.55333299999984,
+            58.33366700000079,
+            58.596707999999126
+          ],
+          "executions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.8744999999999,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.090916999999536,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 46.55408299999908,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "passed": false,
+          "javascriptExecutions": [
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.155041999998502,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 21.519749999999476,
+              "stdout": "ok\n",
+              "stderr": ""
+            },
+            {
+              "status": 0,
+              "signal": null,
+              "milliseconds": 22.28479200000038,
+              "stdout": "ok\n",
+              "stderr": ""
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 47.63633300000038,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        },
+        {
+          "name": "expression",
+          "count": 4000,
+          "sourceBytes": 16066,
+          "sourceHash": "67fb1f6cceeb338776747b4aaf8060c3f86985b17c184ad52963ac5ade5610b3",
+          "generatedBytes": 24129,
+          "generatedHash": "b54b5eb10311add9c031a6f6294ac06f9d4db031cb930bf40194756e79e57393",
+          "compileMilliseconds": [
+            60.19745800000055,
+            60.443333000001076,
+            61.295334000000366
+          ],
+          "executions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 46.76274999999987,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 45.155249999999796,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 44.60250000000087,
+              "stdout": "",
+              "stderr": "node:internal/assert:17\n  throw new ERR_INTERNAL_ASSERTION(message);\n        ^\n\nError [ERR_INTERNAL_ASSERTION]: Maximum call stack size exceeded\nThis is caused by either a bug in Node.js or incorrect usage of Node.js internals.\nPlease open an issue with this stack trace at https://github.com/nodejs/node/issues\n\n    at assert.fail (node:internal/assert:17:9)\n    at parseTypeScript (node:internal/modules/typescript:79:16)\n    at processTypeScriptCode (node:internal/modules/typescript:146:42)\n    at stripTypeScriptModuleTypes (node:internal/modules/typescript:209:22)\n    at ModuleLoader.<anonymous> (node:internal/modules/esm/translators:645:29)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52) {\n  code: 'ERR_INTERNAL_ASSERTION'\n}\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "passed": false,
+          "javascriptExecutions": [
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 21.70354199999929,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 22.7377919999999,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            },
+            {
+              "status": 1,
+              "signal": null,
+              "milliseconds": 21.171374999999898,
+              "stdout": "",
+              "stderr": "node:internal/modules/esm/utils:318\n  const wrap = new ModuleWrap(url, undefined, source, 0, 0, hostDefinedOption);\n               ^\n\nRangeError: Maximum call stack size exceeded\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:90:18)\n    at #translate (node:internal/modules/esm/loader:435:20)\n    at afterLoad (node:internal/modules/esm/loader:491:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:496:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:549:36)\n    at afterResolve (node:internal/modules/esm/loader:597:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:12)\n    at node:internal/modules/esm/loader:622:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)\n\nNode.js v24.16.0\n"
+            }
+          ],
+          "flatControl": {
+            "status": 0,
+            "signal": null,
+            "milliseconds": 50.33283300000039,
+            "stdout": "ok\n",
+            "stderr": ""
+          }
+        }
+      ]
+    }
+  ]
+}

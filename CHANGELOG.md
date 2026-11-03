@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Audit generated-code performance with repeatable compiler workloads, record
+  map/storage and TS-loading costs, and require actual-candidate performance
+  evidence before retiring T0. Record a separate emitted-expression depth limit.
 - Inventory T0's implementation, all built-in lowerings, and T1 equivalents.
 - Freeze T0 feature growth, verify the port workload in Mini, and narrow the
   remaining self-hosting work to the compiler port, fixed point, and promotion.

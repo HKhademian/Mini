@@ -83,7 +83,12 @@ decisions; they must not remain in handwritten TypeScript helpers.
    Compiler1 with T0, Compiler2 with Compiler1, and Compiler3 with Compiler2.
    Require all three to be runnable and byte-identical. Use the final generation
    to compile and run the ordinary example and the current language cases.
-4. **Bootstrap promotion.** Ship the matching Mini source and generated
+4. **Compiler performance.** Follow the [generated-code audit](runtime-performance.md).
+   Compare T0 and the actual candidate on the compiler source, representative
+   larger inputs, and complete self-builds, including cold time and peak memory.
+   Investigate material regressions before retiring T0; primitive microbenchmarks
+   and byte equality alone do not establish a useful replacement.
+5. **Bootstrap promotion.** Ship the matching Mini source and generated
    `bootstrap/compiler.ts`; assign the bootstrap version and configure the
    active compiler/source identities. Update affected check/release expectations,
    verify an isolated rebuild and packaged execution, then remove handwritten
