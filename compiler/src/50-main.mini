@@ -1,0 +1,53 @@
+/// Return token JSON with two-space indentation and a final newline.
+fn token_json(tokens) {
+    var output = "[";
+    var position = 0;
+    while (position < list_length(tokens)) {
+        if (position > 0) {
+            output = output + ",";
+        }
+        var token = list_get(tokens, position);
+        output = output + "\n  {";
+        output = output + "\n    \"kind\": " + json_to_text(map_get(token, "kind")) + ",";
+        output = output + "\n    \"text\": " + json_to_text(map_get(token, "text")) + ",";
+        output = output + "\n    \"source\": " + json_to_text(map_get(token, "source")) + ",";
+        output = output + "\n    \"start\": " + number_to_text(map_get(token, "start")) + ",";
+        output = output + "\n    \"end\": " + number_to_text(map_get(token, "end")) + ",";
+        output = output + "\n    \"line\": " + number_to_text(map_get(token, "line")) + ",";
+        output = output + "\n    \"column\": " + number_to_text(map_get(token, "column")) + ",";
+        output = output + "\n    \"context\": " + json_to_text(map_get(token, "context"));
+        output = output + "\n  }";
+        position = position + 1;
+    }
+    if (list_length(tokens) > 0) {
+        output = output + "\n";
+    }
+    return output + "]\n";
+}
+
+/// Run the Mini compiler command interface.
+fn main() {
+    var args = process_args();
+    var count = list_length(args);
+    var command = list_get(args, 0);
+    var source = list_get(args, 1);
+    var output = list_get(args, 2);
+    if (count < 2 || count > 3 || !text_ends_with(source, ".mini")
+        || (command != "compile" && command != "tokens")) {
+        write_error("usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini\n");
+        process_exit(1);
+    }
+    var tokens = tokenize(file_read(source), basename(source));
+    if (command == "tokens") {
+        write(token_json(tokens));
+    } else {
+        var target = source + ".ts";
+        if (count == 3) {
+            target = output;
+        }
+        file_write(target, compile(tokens));
+    }
+    return 0;
+}
+
+main();

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { compiler, CompilerStage, root, versions } from './project.ts';
+import { composeM1, m1Source } from './build-m1.ts';
 import { verifyBootstrap } from './verify.ts';
 import { CaseKind, loadCases } from './cases.ts';
 
@@ -38,6 +39,8 @@ function portablePaths(directory: string): void {
   }
 }
 export function checkProject(): void {
+  assert.equal(readFileSync(join(root, m1Source), 'utf8'), composeM1(root),
+    'compiler/compiler.mini is stale; run node tools/build-m1.ts');
   const current = versions(root);
   const editor = JSON.parse(readFileSync(join(root, 'editors/vscode/package.json'), 'utf8')) as { version: string };
   const editorLock = JSON.parse(readFileSync(join(root, 'editors/vscode/package-lock.json'), 'utf8')) as { version: string; packages: Record<string, { version: string }> };

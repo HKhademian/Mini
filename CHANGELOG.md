@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Build M1 from ordered `compiler/src/*.mini` parts with `tools/build-m1.ts`;
+  keep `compiler/compiler.mini` as the canonical concatenated bootstrap source,
+  and make `mini check` reject stale composition. No language/module change.
 - Bootstrap/compiler 0.1.0-alpha.1 / 0.3.0-alpha.11; Mini distribution
   0.1.0-alpha.3: promote the generated T1 compiler from `compiler/compiler.mini`
   as `bootstrap/compiler.ts`. `config/bootstrap.json` and `config/compiler.json`

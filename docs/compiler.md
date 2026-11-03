@@ -221,3 +221,11 @@ The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
 active compiler; `config/bootstrap.json` pins it to `compiler/compiler.mini`.
 T0 is retained only as a reference and tooling source. Never revive T0 as the
 active compiler to bypass a bootstrap migration.
+
+## M1 source layout
+
+M1 is authored as ordered parts under [compiler/src](../compiler/src/README.md)
+and concatenated by `node tools/build-m1.ts` into the canonical
+`compiler/compiler.mini`. `node tools/build-m1.ts --check` and `mini check`
+reject a stale canonical file. Concatenation is build tooling; Mini still has no
+module or import syntax.

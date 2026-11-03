@@ -1,0 +1,246 @@
+/// Return whether name selects a builtin.
+fn builtin_exists(name) {
+    return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
+        || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
+        || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
+        || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
+        || name == "text_slice" || name == "text_split" || name == "map_copy" || name == "list_copy"
+        || name == "list_to_text" || name == "number_to_text" || name == "json_to_text"
+        || name == "readAll" || name == "write";
+}
+
+/// Return builtin parameter kinds.
+fn builtin_parameters(name) {
+    var parameters = list_new();
+    if (name == "map_get") {
+        list_set(parameters, 0, "unknown");
+        list_set(parameters, 1, "text");
+    } else {
+        if (name == "map_keys") {
+            list_set(parameters, 0, "map");
+        } else {
+            if (name == "map_set") {
+                list_set(parameters, 0, "unknown");
+                list_set(parameters, 1, "text");
+                list_set(parameters, 2, "unknown");
+            } else {
+                if (name == "map_has") {
+                    list_set(parameters, 0, "map");
+                    list_set(parameters, 1, "text");
+                } else {
+                    if (name == "list_set") {
+                        list_set(parameters, 0, "unknown");
+                        list_set(parameters, 1, "number");
+                        list_set(parameters, 2, "unknown");
+                    } else {
+                        if (name == "write_error") {
+                            list_set(parameters, 0, "text");
+                        } else {
+                            if (name == "process_exit") {
+                                list_set(parameters, 0, "number");
+                            } else {
+                                if (name == "list_get") {
+                                    list_set(parameters, 0, "unknown");
+                                    list_set(parameters, 1, "number");
+                                } else {
+                                    if (name == "list_length") {
+                                        list_set(parameters, 0, "list");
+                                    } else {
+                                        if (name == "file_write") {
+                                            list_set(parameters, 0, "text");
+                                            list_set(parameters, 1, "text");
+                                        } else {
+                                            if (name == "file_read") {
+                                                list_set(parameters, 0, "text");
+                                            } else {
+                                                if (name == "text_get") {
+                                                    list_set(parameters, 0, "unknown");
+                                                    list_set(parameters, 1, "number");
+                                                } else {
+                                                    if (name == "text_length") {
+                                                        list_set(parameters, 0, "text");
+                                                    } else {
+                                                        if (name == "text_slice") {
+                                                            list_set(parameters, 0, "text");
+                                                            list_set(parameters, 1, "number");
+                                                            list_set(parameters, 2, "number");
+                                                        } else {
+                                                            if (name == "text_find") {
+                                                                list_set(parameters, 0, "text");
+                                                                list_set(parameters, 1, "text");
+                                                            } else {
+                                                                if (name == "text_split") {
+                                                                    list_set(parameters, 0, "text");
+                                                                    list_set(parameters, 1, "text");
+                                                                } else {
+                                                                    if (name == "map_copy") {
+                                                                        list_set(parameters, 0, "map");
+                                                                    } else {
+                                                                        if (name == "list_to_text") {
+                                                                            list_set(parameters, 0, "list");
+                                                                            list_set(parameters, 1, "text");
+                                                                        } else {
+                                                                            if (name == "list_copy") {
+                                                                                list_set(parameters, 0, "list");
+                                                                            } else {
+                                                                                if (name == "number_to_text") {
+                                                                                    list_set(parameters, 0, "number");
+                                                                                } else {
+                                                                                    if (name == "json_to_text") {
+                                                                                        list_set(parameters, 0, "unknown");
+                                                                                    } else {
+                                                                                        if (name == "write") {
+                                                                                            list_set(parameters, 0, "text");
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return parameters;
+}
+
+/// Return the builtin result kind.
+fn builtin_result(name) {
+    if (name == "map_get" || name == "list_get") {
+        return "unknown";
+    }
+    if (name == "map_keys" || name == "list_new" || name == "list_copy" || name == "process_args" || name == "text_split") {
+        return "list";
+    }
+    if (name == "map_new" || name == "map_copy") {
+        return "map";
+    }
+    if (name == "map_has") {
+        return "boolean";
+    }
+    if (name == "write_error" || name == "process_exit" || name == "list_set" || name == "map_set"
+        || name == "file_write" || name == "write") {
+        return "void";
+    }
+    if (name == "list_length" || name == "text_length" || name == "text_find") {
+        return "number";
+    }
+    return "text";
+}
+
+/// Return builtin Node imports.
+fn builtin_imports(name) {
+    var imports = list_new();
+    if (name == "write_error" || name == "write") {
+        list_set(imports, 0, "writeSync");
+    } else {
+        if (name == "file_write") {
+            list_set(imports, 0, "writeFileSync");
+        } else {
+            if (name == "file_read" || name == "readAll") {
+                list_set(imports, 0, "readFileSync");
+            }
+        }
+    }
+    return imports;
+}
+
+/// Return the builtin adapter block, or empty text.
+fn builtin_helper(name) {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
+        return map_runtime;
+    }
+    if (name == "list_copy") {
+        return list_copy_helper;
+    }
+    if (name == "list_to_text") {
+        return list_to_text_helper;
+    }
+    if (name == "number_to_text") {
+        return number_to_text_helper;
+    }
+    if (name == "json_to_text") {
+        return json_to_text_helper;
+    }
+    if (name == "list_get") {
+        return list_get_helper;
+    }
+    if (name == "list_set") {
+        return list_set_helper;
+    }
+    if (name == "map_copy") {
+        return map_copy_helper;
+    }
+    if (name == "text_find") {
+        return text_find_helper;
+    }
+    if (name == "text_get") {
+        return text_get_helper;
+    }
+    if (name == "text_slice") {
+        return text_slice_helper;
+    }
+    if (name == "text_split") {
+        return text_split_helper;
+    }
+    return "";
+}
+
+/// Return the lowered TypeScript call text for a builtin.
+fn builtin_emit(name, args) {
+    var first = list_get(args, 0);
+    var second = list_get(args, 1);
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text") {
+        return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
+    }
+    if (name == "map_keys") {
+        return "Object.keys(" + first + ")";
+    }
+    if (name == "map_new") {
+        return "({ __proto__: $mini_map_proto })";
+    }
+    if (name == "list_new") {
+        return "[]";
+    }
+    if (name == "write_error") {
+        return "writeSync(2, " + first + ")";
+    }
+    if (name == "process_exit") {
+        return "process.exit(" + first + ")";
+    }
+    if (name == "list_length") {
+        return "(" + first + ").length";
+    }
+    if (name == "process_args") {
+        return "process.argv.slice(2)";
+    }
+    if (name == "file_write") {
+        return "writeFileSync(" + first + ", " + second + ", \"utf8\")";
+    }
+    if (name == "file_read") {
+        return "readFileSync(" + first + ", \"utf8\")";
+    }
+    if (name == "text_length") {
+        return "(" + first + ").length";
+    }
+    if (name == "readAll") {
+        return "readFileSync(0, \"utf8\")";
+    }
+    if (name == "write") {
+        return "writeSync(1, " + first + ")";
+    }
+    return "";
+}
+

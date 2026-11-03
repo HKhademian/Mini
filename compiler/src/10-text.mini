@@ -1,0 +1,76 @@
+/// Return lines split on LF or CRLF, retaining a final empty line.
+fn split_lines(source) {
+    var lines = text_split(source, "\n");
+    var position = 0;
+    while (position < list_length(lines) - 1) {
+        var line = list_get(lines, position);
+        if (text_length(line) > 0 && text_get(line, text_length(line) - 1) == "\r") {
+            list_set(lines, position, text_slice(line, 0, text_length(line) - 1));
+        }
+        position = position + 1;
+    }
+    return lines;
+}
+
+/// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
+fn indent_output(output) {
+    var lines = split_lines(output);
+    var result = "";
+    var first = true;
+    var position = 0;
+    while (position < list_length(lines)) {
+        var line = list_get(lines, position);
+        if (text_length(line) > 0) {
+            if (!first) {
+                result = result + "\n";
+            }
+            result = result + "    " + line;
+            first = false;
+        }
+        position = position + 1;
+    }
+    return result;
+}
+
+/// Return the final path component.
+fn basename(path) {
+    var position = text_length(path) - 1;
+    while (position >= 0) {
+        if (text_get(path, position) == "/") {
+            return text_slice(path, position + 1, text_length(path));
+        }
+        position = position - 1;
+    }
+    return path;
+}
+
+/// Return whether text ends with suffix.
+fn text_ends_with(source, suffix) {
+    var size = text_length(suffix);
+    var length = text_length(source);
+    if (size > length) {
+        return false;
+    }
+    return text_slice(source, length - size, length) == suffix;
+}
+
+/// Return whether character is an ASCII identifier start.
+fn is_letter(character) {
+    return text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0;
+}
+
+/// Return whether character is a decimal digit.
+fn is_digit(character) {
+    return text_find("0123456789", character) >= 0;
+}
+
+/// Return whether character continues an identifier.
+fn is_identifier_part(character) {
+    return is_letter(character) || is_digit(character);
+}
+
+/// Return whether value is one of the accepted two-character symbols.
+fn is_two_character_symbol(value) {
+    return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||";
+}
+

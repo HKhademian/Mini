@@ -1,0 +1,545 @@
+/// Return an expression map with emitted code and kind.
+fn expression_new(code, kind) {
+    var expression = map_new();
+    map_set(expression, "code", code);
+    map_set(expression, "kind", kind);
+    return expression;
+}
+
+/// Return the current parser token.
+fn parser_token(parser) {
+    return list_get(map_get(parser, "tokens"), map_get(parser, "position"));
+}
+
+/// Return a token offset from the current parser position.
+fn parser_peek(parser, offset) {
+    return list_get(map_get(parser, "tokens"), map_get(parser, "position") + offset);
+}
+
+/// Return the current token and advance.
+fn parser_take(parser) {
+    var token = parser_token(parser);
+    map_set(parser, "position", map_get(parser, "position") + 1);
+    return token;
+}
+
+/// Consume required punctuation or report a diagnostic.
+fn parser_expect(parser, text) {
+    if (map_get(parser_token(parser), "text") != text) {
+        fail(parser_token(parser), "expected " + text);
+    }
+    parser_take(parser);
+    return 0;
+}
+
+/// Consume an identifier or report the selected diagnostic.
+fn parser_identifier(parser, message) {
+    if (map_get(parser_token(parser), "kind") != "identifier") {
+        fail(parser_token(parser), message);
+    }
+    return parser_take(parser);
+}
+
+/// Parse logical disjunction.
+fn parser_expression(parser) {
+    var left = parser_conjunction(parser);
+    while (map_get(parser_token(parser), "text") == "||") {
+        var operator = parser_take(parser);
+        var right = parser_conjunction(parser);
+        if ((map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
+            || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown")) {
+            fail(operator, "|| needs booleans");
+        }
+        left = expression_new("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean");
+    }
+    return left;
+}
+
+/// Parse logical conjunction.
+fn parser_conjunction(parser) {
+    var left = parser_equality(parser);
+    while (map_get(parser_token(parser), "text") == "&&") {
+        var operator = parser_take(parser);
+        var right = parser_equality(parser);
+        if ((map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
+            || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown")) {
+            fail(operator, "&& needs booleans");
+        }
+        left = expression_new("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean");
+    }
+    return left;
+}
+
+/// Parse scalar equality and inequality.
+fn parser_equality(parser) {
+    var left = parser_comparison(parser);
+    while (map_get(parser_token(parser), "text") == "==" || map_get(parser_token(parser), "text") == "!=") {
+        var operator = parser_take(parser);
+        var right = parser_comparison(parser);
+        var left_kind = map_get(left, "kind");
+        var right_kind = map_get(right, "kind");
+        if (left_kind == "void" || right_kind == "void"
+            || left_kind == "list" || right_kind == "list"
+            || left_kind == "map" || right_kind == "map"
+            || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind)) {
+            fail(operator, "equality needs matching scalar kinds");
+        }
+        var symbol = "===";
+        if (map_get(operator, "text") == "!=") {
+            symbol = "!==";
+        }
+        left = expression_new("(" + map_get(left, "code") + " " + symbol + " " + map_get(right, "code") + ")", "boolean");
+    }
+    return left;
+}
+
+/// Parse numeric comparisons.
+fn parser_comparison(parser) {
+    var left = parser_additive(parser);
+    while (map_get(parser_token(parser), "text") == "<" || map_get(parser_token(parser), "text") == "<="
+        || map_get(parser_token(parser), "text") == ">" || map_get(parser_token(parser), "text") == ">=") {
+        var operator = parser_take(parser);
+        var right = parser_additive(parser);
+        if ((map_get(left, "kind") != "number" && map_get(left, "kind") != "unknown")
+            || (map_get(right, "kind") != "number" && map_get(right, "kind") != "unknown")) {
+            fail(operator, "comparison needs numbers");
+        }
+        left = expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean");
+    }
+    return left;
+}
+
+/// Return whether kind can participate in addition.
+fn additive_kind(kind) {
+    return kind == "number" || kind == "text" || kind == "unknown";
+}
+
+/// Parse numeric addition/subtraction and text concatenation.
+fn parser_additive(parser) {
+    var left = parser_unary(parser);
+    while (map_get(parser_token(parser), "text") == "+" || map_get(parser_token(parser), "text") == "-") {
+        var operator = parser_take(parser);
+        var right = parser_unary(parser);
+        var left_kind = map_get(left, "kind");
+        var right_kind = map_get(right, "kind");
+        if (map_get(operator, "text") == "-") {
+            if ((left_kind != "number" && left_kind != "unknown")
+                || (right_kind != "number" && right_kind != "unknown")) {
+                fail(operator, "- needs two numbers");
+            }
+        } else {
+            if (!additive_kind(left_kind) || !additive_kind(right_kind)
+                || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind)) {
+                fail(operator, "+ needs two numbers or two texts");
+            }
+        }
+        var result_kind = left_kind;
+        if (left_kind == "unknown") {
+            result_kind = right_kind;
+        }
+        left = expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", result_kind);
+    }
+    return left;
+}
+
+/// Parse unary negation.
+fn parser_unary(parser) {
+    if (map_get(parser_token(parser), "text") == "-" || map_get(parser_token(parser), "text") == "!") {
+        var operator = parser_take(parser);
+        var value = parser_unary(parser);
+        var kind = "boolean";
+        if (map_get(operator, "text") == "-") {
+            kind = "number";
+        }
+        if (map_get(value, "kind") != kind && map_get(value, "kind") != "unknown") {
+            fail(operator, map_get(operator, "text") + " needs a " + kind);
+        }
+        return expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind);
+    }
+    return parser_primary(parser);
+}
+
+/// Return normalized decimal text for a digit-only literal.
+fn normalize_number(text) {
+    var position = 0;
+    while (position < text_length(text) && text_get(text, position) == "0") {
+        position = position + 1;
+    }
+    if (position == text_length(text)) {
+        return "0";
+    }
+    return text_slice(text, position, text_length(text));
+}
+
+/// Parse literals, bindings, calls, and parenthesized expressions.
+fn parser_primary(parser) {
+    var token = parser_take(parser);
+    if (map_get(token, "text") == "(") {
+        var value = parser_expression(parser);
+        parser_expect(parser, ")");
+        return value;
+    }
+    if (map_get(token, "kind") == "number") {
+        return expression_new(normalize_number(map_get(token, "text")), "number");
+    }
+    if (map_get(token, "kind") == "text") {
+        return expression_new(map_get(token, "text"), "text");
+    }
+    if (map_get(token, "text") == "true" || map_get(token, "text") == "false") {
+        return expression_new(map_get(token, "text"), "boolean");
+    }
+    if (map_get(token, "kind") == "identifier" && map_get(parser_token(parser), "text") == "(") {
+        return parser_call(parser, token);
+    }
+    if (map_get(token, "kind") == "identifier" && map_has(map_get(parser, "variables"), map_get(token, "text"))) {
+        return expression_new(map_get(token, "text"), map_get(map_get(parser, "variables"), map_get(token, "text")));
+    }
+    fail(token, "expected expression");
+    return expression_new("", "unknown");
+}
+
+/// Return argument code texts.
+fn argument_code_list(args) {
+    var codes = list_new();
+    var position = 0;
+    while (position < list_length(args)) {
+        list_set(codes, list_length(codes), map_get(list_get(args, position), "code"));
+        position = position + 1;
+    }
+    return codes;
+}
+
+/// Return argument code text joined by comma-space.
+fn argument_codes(args) {
+    return list_to_text(argument_code_list(args), ", ");
+}
+
+/// Parse a call and apply builtin metadata or a user signature.
+fn parser_call(parser, name) {
+    var name_text = map_get(name, "text");
+    var is_builtin = builtin_exists(name_text);
+    var functions = map_get(parser, "functions");
+    var has_user = map_has(functions, name_text);
+    if (!is_builtin && !has_user) {
+        fail(name, "unknown function " + name_text);
+    }
+    parser_expect(parser, "(");
+    var args = list_new();
+    if (map_get(parser_token(parser), "text") != ")") {
+        list_set(args, list_length(args), parser_expression(parser));
+        while (map_get(parser_token(parser), "text") == ",") {
+            parser_take(parser);
+            list_set(args, list_length(args), parser_expression(parser));
+        }
+    }
+    parser_expect(parser, ")");
+    var arity = map_get(map_get(functions, name_text), "arity");
+    if (is_builtin) {
+        arity = list_length(builtin_parameters(name_text));
+    }
+    if (list_length(args) != arity) {
+        var suffix = "s";
+        if (arity == 1) {
+            suffix = "";
+        }
+        fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
+    }
+    if (!is_builtin) {
+        return expression_new(name_text + "(" + argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
+    }
+    var parameters = builtin_parameters(name_text);
+    var position = 0;
+    while (position < list_length(parameters)) {
+        var kind = list_get(parameters, position);
+        var actual = map_get(list_get(args, position), "kind");
+        if (kind == "unknown") {
+            if (actual == "void") {
+                fail(name, "expected value argument");
+            }
+        } else {
+            if (actual != "unknown" && actual != kind) {
+                fail(name, "expected " + kind + " argument");
+            }
+        }
+        position = position + 1;
+    }
+    var imports = builtin_imports(name_text);
+    position = 0;
+    while (position < list_length(imports)) {
+        map_set(map_get(parser, "imports"), list_get(imports, position), true);
+        position = position + 1;
+    }
+    var helper = builtin_helper(name_text);
+    if (helper != "") {
+        map_set(map_get(parser, "helpers"), helper, true);
+    }
+    return expression_new(builtin_emit(name_text, argument_code_list(args)), builtin_result(name_text));
+}
+
+/// Parse a statement and return emitted TypeScript.
+fn parser_statement(parser) {
+    if (map_get(parser_token(parser), "text") == "while") {
+        parser_take(parser);
+        var while_condition = parser_condition(parser);
+        return "while (" + map_get(while_condition, "code") + ") " + parser_block(parser) + "\n";
+    }
+    if (map_get(parser_token(parser), "text") == "if") {
+        parser_take(parser);
+        var if_condition = parser_condition(parser);
+        var output = "if (" + map_get(if_condition, "code") + ") " + parser_block(parser);
+        if (map_get(parser_token(parser), "text") == "else") {
+            parser_take(parser);
+            output = output + " else " + parser_block(parser);
+        }
+        return output + "\n";
+    }
+    if (map_get(parser_token(parser), "text") == "fn") {
+        return parser_function_declaration(parser);
+    }
+    if (map_get(parser_token(parser), "text") == "return") {
+        var return_token = parser_take(parser);
+        if (!map_get(parser, "in_function")) {
+            fail(return_token, "return outside function");
+        }
+        var return_value = parser_expression(parser);
+        if (map_get(return_value, "kind") == "void") {
+            fail(return_token, "expected a value");
+        }
+        parser_expect(parser, ";");
+        map_set(map_get(parser, "current"), "result", map_get(return_value, "kind"));
+        map_set(map_get(parser, "current"), "returned", true);
+        return "return " + map_get(return_value, "code") + ";\n";
+    }
+    if (map_get(parser_token(parser), "kind") == "identifier" && map_get(parser_peek(parser, 1), "text") == "(") {
+        var call_value = parser_expression(parser);
+        parser_expect(parser, ";");
+        return map_get(call_value, "code") + ";\n";
+    }
+    if (map_get(parser_token(parser), "text") != "var") {
+        var assignment_name = parser_identifier(parser, "expected binding name");
+        var variables = map_get(parser, "variables");
+        if (!map_has(variables, map_get(assignment_name, "text"))) {
+            fail(assignment_name, "unknown binding " + map_get(assignment_name, "text"));
+        }
+        parser_expect(parser, "=");
+        var assignment_value = parser_expression(parser);
+        if (map_get(assignment_value, "kind") == "void") {
+            fail(assignment_name, "expected a value");
+        }
+        parser_expect(parser, ";");
+        map_set(variables, map_get(assignment_name, "text"), map_get(assignment_value, "kind"));
+        return map_get(assignment_name, "text") + " = " + map_get(assignment_value, "code") + ";\n";
+    }
+    parser_expect(parser, "var");
+    var declaration_name = parser_identifier(parser, "expected binding name");
+    if (map_get(parser_token(parser), "text") != "=") {
+        fail(parser_token(parser), "expected initializer");
+    }
+    parser_take(parser);
+    var declaration_value = parser_expression(parser);
+    if (map_get(declaration_value, "kind") == "void") {
+        fail(declaration_name, "expected a value");
+    }
+    parser_expect(parser, ";");
+    map_set(map_get(parser, "variables"), map_get(declaration_name, "text"), map_get(declaration_value, "kind"));
+    return "let " + map_get(declaration_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+}
+
+/// Parse a parenthesized boolean condition.
+fn parser_condition(parser) {
+    parser_expect(parser, "(");
+    var start = parser_token(parser);
+    var condition = parser_expression(parser);
+    if (map_get(condition, "kind") != "boolean" && map_get(condition, "kind") != "unknown") {
+        fail(start, "condition must be boolean");
+    }
+    parser_expect(parser, ")");
+    return condition;
+}
+
+/// Parse a braced block with a copied binding scope.
+fn parser_block(parser) {
+    parser_expect(parser, "{");
+    var outer = map_get(parser, "variables");
+    map_set(parser, "variables", map_copy(outer));
+    map_set(parser, "depth", map_get(parser, "depth") + 1);
+    var output = "";
+    while (map_get(parser_token(parser), "text") != "}" && map_get(parser_token(parser), "kind") != "eof") {
+        output = output + parser_statement(parser);
+    }
+    parser_expect(parser, "}");
+    map_set(parser, "depth", map_get(parser, "depth") - 1);
+    map_set(parser, "variables", outer);
+    var indented = indent_output(output);
+    if (indented == "") {
+        return "{\n}";
+    }
+    return "{\n" + indented + "\n}";
+}
+
+/// Parse a top-level function declaration.
+fn parser_function_declaration(parser) {
+    var token = parser_take(parser);
+    if (map_get(parser, "depth") != 0) {
+        fail(token, "functions must be top-level");
+    }
+    var name = parser_identifier(parser, "expected function name");
+    parser_expect(parser, "(");
+    var parameters = list_new();
+    if (map_get(parser_token(parser), "text") != ")") {
+        list_set(parameters, list_length(parameters), map_get(parser_identifier(parser, "expected parameter name"), "text"));
+        while (map_get(parser_token(parser), "text") == ",") {
+            parser_take(parser);
+            list_set(parameters, list_length(parameters), map_get(parser_identifier(parser, "expected parameter name"), "text"));
+        }
+    }
+    parser_expect(parser, ")");
+    var info = map_get(map_get(parser, "functions"), map_get(name, "text"));
+    map_set(parser, "current", info);
+    map_set(parser, "in_function", true);
+    var outer = map_get(parser, "variables");
+    map_set(parser, "variables", map_copy(outer));
+    var position = 0;
+    while (position < list_length(parameters)) {
+        map_set(map_get(parser, "variables"), list_get(parameters, position), "unknown");
+        position = position + 1;
+    }
+    var body = parser_block(parser);
+    map_set(parser, "variables", outer);
+    map_set(parser, "in_function", false);
+    if (!map_get(info, "returned")) {
+        fail(name, "T0 functions require a value return");
+    }
+    return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
+}
+
+/// Return the fixed sorted import list used by T0's finite dependencies.
+fn import_names(imports) {
+    var output = "";
+    if (map_has(imports, "readFileSync")) {
+        output = output + "readFileSync";
+    }
+    if (map_has(imports, "writeFileSync")) {
+        if (output != "") {
+            output = output + ", ";
+        }
+        output = output + "writeFileSync";
+    }
+    if (map_has(imports, "writeSync")) {
+        if (output != "") {
+            output = output + ", ";
+        }
+        output = output + "writeSync";
+    }
+    return output;
+}
+
+/// Return helper blocks in T0's sorted order.
+fn helper_blocks(helpers) {
+    var output = "";
+    if (map_has(helpers, map_runtime)) {
+        output = output + map_runtime;
+    }
+    if (map_has(helpers, json_to_text_helper)) {
+        output = output + json_to_text_helper;
+    }
+    if (map_has(helpers, list_copy_helper)) {
+        output = output + list_copy_helper;
+    }
+    if (map_has(helpers, list_get_helper)) {
+        output = output + list_get_helper;
+    }
+    if (map_has(helpers, list_set_helper)) {
+        output = output + list_set_helper;
+    }
+    if (map_has(helpers, list_to_text_helper)) {
+        output = output + list_to_text_helper;
+    }
+    if (map_has(helpers, map_copy_helper)) {
+        output = output + map_copy_helper;
+    }
+    if (map_has(helpers, number_to_text_helper)) {
+        output = output + number_to_text_helper;
+    }
+    if (map_has(helpers, text_find_helper)) {
+        output = output + text_find_helper;
+    }
+    if (map_has(helpers, text_get_helper)) {
+        output = output + text_get_helper;
+    }
+    if (map_has(helpers, text_slice_helper)) {
+        output = output + text_slice_helper;
+    }
+    if (map_has(helpers, text_split_helper)) {
+        output = output + text_split_helper;
+    }
+    return output;
+}
+
+/// Parse the token list and return the complete TypeScript program.
+fn parser_program(parser) {
+    var shebang = "";
+    if (map_get(parser_token(parser), "kind") == "shebang") {
+        parser_take(parser);
+        shebang = "#!/usr/bin/env node\n";
+    }
+    var output = "";
+    while (map_get(parser_token(parser), "kind") != "eof") {
+        output = output + parser_statement(parser);
+    }
+    var imports = map_get(parser, "imports");
+    var import_text = "";
+    if (list_length(map_keys(imports)) > 0) {
+        import_text = "import { " + import_names(imports) + " } from \"node:fs\";\n";
+    }
+    return shebang + "\"use strict\";\n" + import_text + helper_blocks(map_get(parser, "helpers")) + output;
+}
+
+/// Return a parser state with pre-registered top-level function signatures.
+fn parser_new(tokens) {
+    var parser = map_new();
+    map_set(parser, "tokens", tokens);
+    map_set(parser, "position", 0);
+    map_set(parser, "variables", map_new());
+    map_set(parser, "functions", map_new());
+    map_set(parser, "imports", map_new());
+    map_set(parser, "helpers", map_new());
+    map_set(parser, "depth", 0);
+    map_set(parser, "in_function", false);
+    map_set(parser, "current", map_new());
+    var depth = 0;
+    var index = 0;
+    while (index < list_length(tokens)) {
+        var token = list_get(tokens, index);
+        if (map_get(token, "text") == "{") {
+            depth = depth + 1;
+        }
+        if (map_get(token, "text") == "}") {
+            depth = depth - 1;
+        }
+        if (depth == 0 && map_get(token, "text") == "fn" && map_get(list_get(tokens, index + 1), "kind") == "identifier") {
+            var arity = 0;
+            var cursor = index + 3;
+            while (cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")"
+                && map_get(list_get(tokens, cursor), "text") != "{") {
+                if (map_get(list_get(tokens, cursor), "kind") == "identifier") {
+                    arity = arity + 1;
+                }
+                cursor = cursor + 1;
+            }
+            var info = map_new();
+            map_set(info, "arity", arity);
+            map_set(info, "result", "unknown");
+            map_set(info, "returned", false);
+            map_set(map_get(parser, "functions"), map_get(list_get(tokens, index + 1), "text"), info);
+        }
+        index = index + 1;
+    }
+    return parser;
+}
+
+/// Compile a token list into TypeScript text.
+fn compile(tokens) {
+    return parser_program(parser_new(tokens));
+}
+
