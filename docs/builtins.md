@@ -10,16 +10,18 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. T0 implements these operations.
 
-The accepted built-ins `text_length(text)` and `text_get(text, index)` scan
-ASCII source. `text_get` uses zero-based integer indices and returns empty text
-for a non-text target or an out-of-range position, including negative indices.
-The text family uses `group_operation` names, with lowercase words separated by
-underscores. This naming convention needs no namespace mechanism.
+The accepted built-ins `text_length(text)`, `text_get(text, index)`, and
+`text_slice(text, start, end)` scan ASCII source. `text_get` uses zero-based
+integer indices and returns empty text for a non-text target or an out-of-range
+position, including negative indices. `text_slice` uses a zero-based,
+end-exclusive range; negative bounds count from the end, bounds clamp to the
+text, and an empty or reversed range returns empty text. A non-text target
+returns empty text. The text family uses `group_operation` names, with lowercase
+words separated by underscores. This naming convention needs no namespace
+mechanism.
 
-Both require primitive host access. A future `text_slice` could instead be an
-ordinary Mini function built from them and a loop, under `std/`. That helper
-remains illustrative. Prefixes do not decide whether an operation is built-in
-or library code; both use ordinary call syntax.
+The operations require primitive host access. Prefixes do not decide whether an
+operation is built-in or library code; both use ordinary call syntax.
 
 The accepted built-ins `file_read(path)` and `file_write(path, text)` provide
 whole-file UTF-8 input and exact replacement output for the compiler's file interface.

@@ -188,6 +188,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.1`: object-backed map lowering; key counts use
   `list_length(map_keys(items))` without per-write bookkeeping.
 
+- `0.3.0-alpha.2`: `text_slice` with clamped, end-exclusive bounds, negative
+  bounds from the end, and empty-text fallbacks.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

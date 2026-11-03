@@ -1,0 +1,23 @@
+{
+  "id": "language.text-slice-wrong-target",
+  "kind": "reject",
+  "source": "041-003-text-slice-wrong-target.mini",
+  "features": [
+    "text.slice"
+  ],
+  "cases": [
+    {
+      "name": "number-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "041-003-text-slice-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

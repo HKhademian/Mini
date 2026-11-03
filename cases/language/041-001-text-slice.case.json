@@ -1,0 +1,23 @@
+{
+  "id": "language.text-slice",
+  "kind": "feature",
+  "source": "041-001-text-slice.mini",
+  "features": [
+    "text.slice"
+  ],
+  "cases": [
+    {
+      "name": "slices",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "abc|bcd|e|cdef|\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

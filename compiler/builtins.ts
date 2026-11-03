@@ -13,6 +13,7 @@ const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
 const mapHas = '$mini_map_has';
 const textGet = '$mini_text_get';
+const textSlice = '$mini_text_slice';
 const listGet = '$mini_list_get';
 
 // Children of this empty prototype retain ordinary object storage without
@@ -79,6 +80,19 @@ export const builtins = new Map<string, Builtin>([
 `, emit: args => `${textGet}(${args.join(', ')})` }],
   ['text_length', { parameters: [ValueKind.Text], result: ValueKind.Number,
     imports: [], emit: args => `(${args[0]}).length` }],
+  ['text_slice', { parameters: [ValueKind.Text, ValueKind.Number, ValueKind.Number], result: ValueKind.Text,
+    imports: [], helper: `function ${textSlice}(source, start, end) {
+    if (typeof source !== "string") return "";
+    if (start < 0) start = source.length + start;
+    if (end < 0) end = source.length + end;
+    if (start < 0) start = 0;
+    if (end < 0) end = 0;
+    if (start > source.length) start = source.length;
+    if (end > source.length) end = source.length;
+    if (end <= start) return "";
+    return source.slice(start, end);
+}
+`, emit: args => `${textSlice}(${args.join(', ')})` }],
   ['readAll', { parameters: [], result: ValueKind.Text,
     imports: ['readFileSync'], emit: () => 'readFileSync(0, "utf8")' }],
   ['write', { parameters: [ValueKind.Text], result: ValueKind.Void,

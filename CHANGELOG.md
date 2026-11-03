@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language/compiler/builtins 0.3.0-alpha.2: add `text_slice(text, start, end)`
+  with zero-based end-exclusive bounds, clamping, negative bounds from the end,
+  and empty-text fallbacks. M1 uses it for token spelling and text helpers.
 - VS Code extension 0.3.1: report the attempted server command and offer to open
   `mini.serverPath` when the language server cannot start, and reject pending
   requests on launch failure instead of hanging activation.

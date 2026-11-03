@@ -1,0 +1,23 @@
+{
+  "id": "language.text-slice-wrong-index",
+  "kind": "reject",
+  "source": "041-004-text-slice-wrong-index.mini",
+  "features": [
+    "text.slice"
+  ],
+  "cases": [
+    {
+      "name": "text-index",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "041-004-text-slice-wrong-index.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "language.text-slice-sample",
+  "kind": "sample",
+  "source": "../../samples/013-text-slice.mini",
+  "features": [
+    "text.slice",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "slices",
+      "stdin": {
+        "text": "abcdef"
+      },
+      "stdout": {
+        "file": "text-slice-sample.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

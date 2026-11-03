@@ -193,8 +193,8 @@ them only when concrete compiler or tool code needs them.
 Scanning uses two primitive built-ins.
 
 Use `group_operation` names for the text family. These are flat identifiers;
-the prefix adds no namespace syntax. A future `text_slice` helper could be
-written in Mini and live in `std/`; it remains only a naming example.
+the prefix adds no namespace syntax. `text_slice` provides the common slicing
+operation; a standard library may still add conveniences on top of it.
 
 ```text
 var source = readAll();
@@ -209,7 +209,11 @@ while (position < text_length(source)) {
 - `text_get(text, index)` returns one character as text, using a zero-based index.
 - If the target is not text, or the index is negative or at/beyond its length,
   return empty text without an error or conversion.
-- The caller supplies an integer index. Both arguments are required and evaluate
+- `text_slice(text, start, end)` returns text from `start` through the exclusive
+  `end`. Bounds are zero-based integers. Negative bounds count from the end;
+  bounds clamp to the text; a non-text target or an empty/reversed range returns
+  empty text.
+- The caller supplies integer indices. All arguments are required and evaluate
   once, from left to right, even when the target is not text.
 - Start with ASCII text. Unicode indexing is outside the initial scope.
 

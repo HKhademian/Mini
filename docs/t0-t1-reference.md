@@ -52,7 +52,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): eighteen signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): nineteen signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -225,7 +225,7 @@ Those are already available in Mini.
 ## 7. Text, list, and serialization helpers used by T0
 
 - `text.length` and text indexing: `text_length` / `text_get`.
-- `slice(start, end)`: a Mini text-copy loop.
+- `slice(start, end)`: the `text_slice` built-in.
 - `split(/\r?\n/)`: scan lines, preserving the final empty line and CRLF behavior.
 - `replace(/[^\t]/g, " ")`: build the caret prefix, preserving tabs.
 - String `includes`: single-character membership.
@@ -261,6 +261,7 @@ target TS produced by the compiler, not extra syntax required in M1.
 - `write_error(text) -> no result`: `writeSync(2, arg0)`.
 - `text_length(text) -> number`: `(arg0).length`.
 - `text_get(value, number) -> text`: `$mini_text_get(arg0, arg1)` (adapter).
+- `text_slice(text, number, number) -> text`: `$mini_text_slice(arg0, arg1, arg2)` (adapter).
 
 ### Lists
 
@@ -304,6 +305,8 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 3. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
 4. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+5. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
+   the selected text or empty text for a non-text target or empty range.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.

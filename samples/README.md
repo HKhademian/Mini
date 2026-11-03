@@ -22,3 +22,4 @@ node samples/009-list-mutation.mini.ts
 - [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, and `map_keys`; count the key list with `list_length`, read replacement values, distinguish missing keys, and snapshot keys. [Cases](../cases/language/033-005-map-sample.case.json).
 - [011-read-defaults.mini](011-read-defaults.mini): Use `text_get`, `list_get`, and `map_get` defaults, read gaps as zero, and use a negative list index, without null. [Cases](../cases/language/037-007-read-defaults-sample.case.json).
 - [012-comments.mini](012-comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).
+- [013-text-slice.mini](013-text-slice.mini): Read text and print slices with clamping, negative bounds, and an empty reversed range. [Cases](../cases/language/041-005-text-slice-sample.case.json).

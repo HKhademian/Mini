@@ -29,17 +29,17 @@ var text_get_helper = "function $mini_text_get(text, index) {\n"
     + "    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n"
     + "    return \"\";\n"
     + "}\n";
-
-/// Return source characters from start through the exclusive limit.
-fn text_slice(source, start, limit) {
-    var position = start;
-    var output = "";
-    while (position < limit && position < text_length(source)) {
-        output = output + text_get(source, position);
-        position = position + 1;
-    }
-    return output;
-}
+var text_slice_helper = "function $mini_text_slice(source, start, end) {\n"
+    + "    if (typeof source !== \"string\") return \"\";\n"
+    + "    if (start < 0) start = source.length + start;\n"
+    + "    if (end < 0) end = source.length + end;\n"
+    + "    if (start < 0) start = 0;\n"
+    + "    if (end < 0) end = 0;\n"
+    + "    if (start > source.length) start = source.length;\n"
+    + "    if (end > source.length) end = source.length;\n"
+    + "    if (end <= start) return \"\";\n"
+    + "    return source.slice(start, end);\n"
+    + "}\n";
 
 /// Return whether the single-character value occurs in choices.
 fn contains(choices, value) {
@@ -855,6 +855,9 @@ fn helper_blocks(helpers) {
     if (map_has(helpers, text_get_helper)) {
         output = output + text_get_helper;
     }
+    if (map_has(helpers, text_slice_helper)) {
+        output = output + text_slice_helper;
+    }
     return output;
 }
 
@@ -925,7 +928,8 @@ fn builtin_exists(name) {
     return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
         || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
-        || name == "file_read" || name == "text_get" || name == "text_length" || name == "readAll" || name == "write";
+        || name == "file_read" || name == "text_get" || name == "text_length" || name == "text_slice"
+        || name == "readAll" || name == "write";
 }
 
 /// Return builtin parameter kinds.
@@ -979,8 +983,14 @@ fn builtin_parameters(name) {
                                                     if (name == "text_length") {
                                                         list_set(parameters, 0, "text");
                                                     } else {
-                                                        if (name == "write") {
+                                                        if (name == "text_slice") {
                                                             list_set(parameters, 0, "text");
+                                                            list_set(parameters, 1, "number");
+                                                            list_set(parameters, 2, "number");
+                                                        } else {
+                                                            if (name == "write") {
+                                                                list_set(parameters, 0, "text");
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1053,6 +1063,9 @@ fn builtin_helper(name) {
     if (name == "text_get") {
         return text_get_helper;
     }
+    if (name == "text_slice") {
+        return text_slice_helper;
+    }
     return "";
 }
 
@@ -1060,7 +1073,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice") {
         return "$mini_" + name + "(" + join_texts(args, ", ") + ")";
     }
     if (name == "map_keys") {

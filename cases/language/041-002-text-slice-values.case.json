@@ -1,0 +1,25 @@
+{
+  "id": "language.text-slice-values",
+  "kind": "feature",
+  "source": "041-002-text-slice-values.mini",
+  "features": [
+    "text.slice",
+    "text.get",
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "fallback",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "xy|||\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
