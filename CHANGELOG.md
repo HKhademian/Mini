@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add the first Mini compiler source (`compiler/compiler.mini`) as a close T0
+  port. The focused check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are
+  byte-identical. T0 remains active; candidate performance evidence and bootstrap
+  promotion are pending. No language or builtin contract changes.
 - Group 0.3.0, language/compiler/builtins 0.3.0-alpha.1: use object-backed maps
   with an empty prototype and no per-map metadata. Remove `map_length`;
   count with `list_length(map_keys(items))`. Map operations and argument order

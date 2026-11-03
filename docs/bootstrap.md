@@ -10,9 +10,12 @@ generated compiler. Other tools may remain TypeScript indefinitely, including
 the `mini` dispatcher and the verification/release harness. They are development
 utilities, not prerequisites for running the generated compiler on Node.
 
-M1 names the Mini compiler source; T1 names the generated TS compiler,
-`T1 = T0(M1)`. The first M1 follows T0's
-[structure and logic](t0-t1-reference.md#first-m1-continuity).
+M1 names the Mini compiler source in
+[compiler/compiler.mini](../compiler/compiler.mini); T1 names the generated TS
+compiler, `T1 = T0(M1)`. The first M1 follows T0's
+[structure and logic](t0-t1-reference.md#first-m1-continuity). It is not promoted:
+T0 remains active and `config/bootstrap.json` stays `null` until the candidate
+passes performance evidence and the fixed-point promotion gate.
 
 Delivery uses compilation, not a runner:
 

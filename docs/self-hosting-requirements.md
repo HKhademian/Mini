@@ -6,10 +6,11 @@ Baseline: group 0.3.0, T0/compiler 0.3.0-alpha.1.
 
 ## Verdict
 
-The current subset is sufficient to begin the Mini compiler port. No additional
+The current subset is sufficient for the Mini compiler port. No additional
 language construct or host primitive has been demonstrated to be indispensable.
-Mini is not self-hosted yet: there is no Mini compiler source, the active compiler
-is T0, and the bootstrap configuration is null.
+M1 now exists in [compiler/compiler.mini](../compiler/compiler.mini), and the
+focused fixed-point check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are byte-identical.
+Mini is not self-hosted yet: T0 remains active and the bootstrap configuration is null.
 
 Freeze T0 language additions now. A reproduced bug that blocks compiling the
 port may justify a focused T0 fix. Further language improvements should be made
@@ -35,7 +36,7 @@ and runs Mini code that checks:
 - Writing an exact self-contained TypeScript program using ordinary host I/O.
 
 These are integration checks of existing capabilities, not another compiler or
-a self-hosting claim. They do not prove the absent port's correctness or speed.
+a self-hosting claim. They do not prove the candidate's correctness or speed alone.
 
 The existing echo [example manifest](../cases/language/005-002-io-sample.case.json)
 is ready for the bootstrap example gate, including empty and multiline input.
@@ -43,13 +44,13 @@ The [verifier](../tools/verify.ts) already rebuilds an isolated compiler three
 times, compares each result to the shipped seed, and runs the ordinary example.
 The case runner already accepts a candidate compiler override.
 The [paired application results](application-performance-results.md) verify
-meaningful workloads and quantify port costs. They support beginning M1, while
-leaving actual-compiler performance and self-build acceptance outstanding.
+meaningful workloads and quantify port costs. They supported the first M1 port,
+while leaving actual-candidate performance and self-build acceptance outstanding.
 
-## Write the compiler with the existing subset
+## Mini compiler source
 
 M1 is the first Mini compiler source; T1 is the TypeScript compiler generated
-from it, `T1 = T0(M1)`. Port the five files named in
+from it, `T1 = T0(M1)`. It ports the five files named in
 [compiler configuration](../config/compiler.json) with close structural
 correspondence to T0. Preserve its routines, conditions, evaluation order, calls,
 lookups, named fields, and collection roles. Keep algorithms and storage layout
@@ -82,18 +83,17 @@ decisions; they must not remain in handwritten TypeScript helpers.
 
 ## Remaining deliverables
 
-1. **Mini compiler source (M1).** Implement the scanner/tokenizer, positioned
-   diagnostics, recursive-descent parser, current checking, TS emitter, and
-   `compile` / `tokens` interfaces in `compiler/compiler.mini`.
-   Keep T0 active while the replacement is being completed.
-2. **Output and behavior parity.** Run the active language, rejection, emission,
-   token-position, and sample cases through the candidate. Preserve deterministic
-   imports, adapters, parentheses, whitespace, and literal spelling. The first
-   self-build must reproduce T0's output for that same compiler source.
-3. **Fixed point and ordinary execution.** For unchanged source, produce
-   Compiler1 with T0, Compiler2 with Compiler1, and Compiler3 with Compiler2.
-   Require all three to be runnable and byte-identical. Use the final generation
-   to compile and run the ordinary example and the current language cases.
+1. **Mini compiler source (M1).** Implemented in `compiler/compiler.mini`: the
+   scanner/tokenizer, positioned diagnostics, recursive-descent parser, current
+   checking, TS emitter, and `compile` / `tokens` interfaces. T0 remains active
+   until promotion.
+2. **Output and behavior parity.** The candidate passes the current language,
+   rejection, emission, token-position, sample, and example cases in local
+   verification. Preserve deterministic imports, adapters, parentheses,
+   whitespace, and literal spelling.
+3. **Fixed point and ordinary execution.** The focused check produces
+   Compiler1 with T0, Compiler2 with Compiler1, and Compiler3 with Compiler2;
+   all three are runnable and byte-identical.
 4. **Compiler performance.** Follow the [generated-code audit](runtime-performance.md).
    Compare T0 and the actual candidate on the compiler source, representative
    larger inputs, and complete self-builds, including cold time and peak memory.
@@ -126,4 +126,5 @@ T0 feature. A concrete failed port case is evidence for a blocker.
 
 Enum/const syntax, optional arguments, extra arithmetic, convenience
 text APIs, modules, and future tools are deferred. Records, structs, and classes
-remain outside Mini's scope. The next implementation target is the Mini compiler.
+remain outside Mini's scope. The next targets are candidate performance evidence
+and bootstrap promotion.

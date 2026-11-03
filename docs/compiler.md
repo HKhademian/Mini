@@ -21,6 +21,8 @@ and context are preserved. Comments add no generated code.
 
 T0's completed increments implemented one feature at a time with indexed cases
 and verified version tags. T0 feature growth is now frozen for the Mini port.
+The first Mini compiler source is [compiler/compiler.mini](../compiler/compiler.mini);
+T0 remains selected until the candidate passes performance review and promotion.
 The [T0-to-T1 reference](t0-t1-reference.md) inventories its complete implementation
 and the Mini replacements. Accepted language cases are active; parameter-passing
 proposals remain pending and do not count as completed conformance coverage.

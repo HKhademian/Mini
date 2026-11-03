@@ -93,12 +93,11 @@ seven warm samples on one host do not establish universal performance.
 
 ## T1 acceptance
 
-Use the results to identify port costs and unexpected scaling before writing M1.
-Preserve the [first-port continuity requirement](t0-t1-reference.md#first-m1-continuity);
+Use the results to identify port costs and unexpected scaling; they informed the
+first M1. Preserve the [first-port continuity requirement](t0-t1-reference.md#first-m1-continuity);
 these samples do not authorize restructuring M1 or adding T0 features.
 
-Performance evidence can support beginning the port. T0 retirement still requires
-the actual M1 source, complete conformance and diagnostics, a runnable fixed
-point, and time/peak-memory measurements of the real generated compiler and all
-self-build generations. There is no automatic performance pass/fail ratio or
-invented replacement budget in this harness.
+T0 retirement still requires the actual M1 source, complete conformance and
+diagnostics, a runnable fixed point, and time/peak-memory measurements of the real
+generated compiler and all self-build generations. There is no automatic
+performance pass/fail ratio or invented replacement budget in this harness.

@@ -115,6 +115,6 @@ and its fixed point, profile the actual generated compiler and address material
 time/memory costs before promotion.
 
 T0 replacement is not established by this evidence alone: the benchmark subset
-cannot compile its own source or general functions, M1 is still absent, and no
+cannot compile its own source or general functions, M1 was still absent, and no
 actual self-build has been measured. Re-run the same application suite with the
 candidate and measure its complete self-build before removing T0.

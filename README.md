@@ -29,9 +29,12 @@ The [before/after measurements](docs/map-runtime-performance.md) record its
 compiler gains and the workloads that regress.
 
 M1 is the first compiler source written in Mini; T1 is the generated TypeScript
-compiler, `T1 = T0(M1)`. Keep the first M1 close to T0 in routine boundaries,
-control flow, calls, lookups, and data layout. Adapt forms where Mini requires it;
-defer redesign and performance refactoring until the corresponding port is verified.
+compiler, `T1 = T0(M1)`. The first M1 lives in
+[compiler/compiler.mini](compiler/compiler.mini). T0 remains active until the
+candidate passes performance review and bootstrap promotion. Keep M1 close to T0
+in routine boundaries, control flow, calls, lookups, and data layout. Adapt forms
+where Mini requires it; defer redesign and performance refactoring until the
+corresponding port is verified.
 
 Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
 existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.

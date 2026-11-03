@@ -81,7 +81,7 @@ for a dedicated count operation or per-write count maintenance.
 
 Proceed with the structurally faithful M1 port. Keep the regressions visible
 and profile the actual generated compiler after parity and its fixed point.
-M1 is still absent; this suite cannot establish that T0 can be retired.
+M1 was still absent when this suite was recorded; it cannot establish that T0 can be retired.
 
 ## Verification and provenance
 
