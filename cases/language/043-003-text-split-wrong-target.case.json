@@ -1,0 +1,23 @@
+{
+  "id": "language.text-split-wrong-target",
+  "kind": "reject",
+  "source": "043-003-text-split-wrong-target.mini",
+  "features": [
+    "text.split"
+  ],
+  "cases": [
+    {
+      "name": "number-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "043-003-text-split-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

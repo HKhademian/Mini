@@ -33,6 +33,11 @@ var text_get_helper = "function $mini_text_get(text, index) {\n"
     + "    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n"
     + "    return \"\";\n"
     + "}\n";
+var text_split_helper = "function $mini_text_split(text, divider) {\n"
+    + "    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n"
+    + "    if (divider === \"\") return [text];\n"
+    + "    return text.split(divider);\n"
+    + "}\n";
 var text_slice_helper = "function $mini_text_slice(source, start, end) {\n"
     + "    if (typeof source !== \"string\") return \"\";\n"
     + "    if (start < 0) start = source.length + start;\n"
@@ -47,21 +52,15 @@ var text_slice_helper = "function $mini_text_slice(source, start, end) {\n"
 
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
-    var lines = list_new();
-    var start = 0;
+    var lines = text_split(source, "\n");
     var position = 0;
-    while (position < text_length(source)) {
-        if (text_get(source, position) == "\n") {
-            var line = text_slice(source, start, position);
-            if (text_length(line) > 0 && text_get(line, text_length(line) - 1) == "\r") {
-                line = text_slice(line, 0, text_length(line) - 1);
-            }
-            list_set(lines, list_length(lines), line);
-            start = position + 1;
+    while (position < list_length(lines) - 1) {
+        var line = list_get(lines, position);
+        if (text_length(line) > 0 && text_get(line, text_length(line) - 1) == "\r") {
+            list_set(lines, position, text_slice(line, 0, text_length(line) - 1));
         }
         position = position + 1;
     }
-    list_set(lines, list_length(lines), text_slice(source, start, text_length(source)));
     return lines;
 }
 
@@ -853,6 +852,9 @@ fn helper_blocks(helpers) {
     if (map_has(helpers, text_slice_helper)) {
         output = output + text_slice_helper;
     }
+    if (map_has(helpers, text_split_helper)) {
+        output = output + text_split_helper;
+    }
     return output;
 }
 
@@ -923,7 +925,8 @@ fn builtin_exists(name) {
     return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
         || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
-        || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length" || name == "text_slice"
+        || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
+        || name == "text_slice" || name == "text_split"
         || name == "readAll" || name == "write";
 }
 
@@ -987,8 +990,13 @@ fn builtin_parameters(name) {
                                                                 list_set(parameters, 0, "text");
                                                                 list_set(parameters, 1, "text");
                                                             } else {
-                                                                if (name == "write") {
+                                                                if (name == "text_split") {
                                                                     list_set(parameters, 0, "text");
+                                                                    list_set(parameters, 1, "text");
+                                                                } else {
+                                                                    if (name == "write") {
+                                                                        list_set(parameters, 0, "text");
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -1013,7 +1021,7 @@ fn builtin_result(name) {
     if (name == "map_get" || name == "list_get") {
         return "unknown";
     }
-    if (name == "map_keys" || name == "list_new" || name == "process_args") {
+    if (name == "map_keys" || name == "list_new" || name == "process_args" || name == "text_split") {
         return "list";
     }
     if (name == "map_new") {
@@ -1069,6 +1077,9 @@ fn builtin_helper(name) {
     if (name == "text_slice") {
         return text_slice_helper;
     }
+    if (name == "text_split") {
+        return text_split_helper;
+    }
     return "";
 }
 
@@ -1076,7 +1087,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split") {
         return "$mini_" + name + "(" + join_texts(args, ", ") + ")";
     }
     if (name == "map_keys") {

@@ -1,0 +1,25 @@
+{
+  "id": "language.text-split-sample",
+  "kind": "sample",
+  "source": "../../samples/015-text-split.mini",
+  "features": [
+    "text.split",
+    "text.input",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "fields",
+      "stdin": {
+        "text": "a,b,,c"
+      },
+      "stdout": {
+        "text": "a\nb\n\nc\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

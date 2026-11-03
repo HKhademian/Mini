@@ -15,6 +15,7 @@ const mapHas = '$mini_map_has';
 const textGet = '$mini_text_get';
 const textFind = '$mini_text_find';
 const textSlice = '$mini_text_slice';
+const textSplit = '$mini_text_split';
 const listGet = '$mini_list_get';
 
 // Children of this empty prototype retain ordinary object storage without
@@ -87,6 +88,13 @@ export const builtins = new Map<string, Builtin>([
     return text.indexOf(needle);
 }
 `, emit: args => `${textFind}(${args.join(', ')})` }],
+  ['text_split', { parameters: [ValueKind.Text, ValueKind.Text], result: ValueKind.List,
+    imports: [], helper: `function ${textSplit}(text, divider) {
+    if (typeof text !== "string" || typeof divider !== "string") return [];
+    if (divider === "") return [text];
+    return text.split(divider);
+}
+`, emit: args => `${textSplit}(${args.join(', ')})` }],
   ['text_slice', { parameters: [ValueKind.Text, ValueKind.Number, ValueKind.Number], result: ValueKind.Text,
     imports: [], helper: `function ${textSlice}(source, start, end) {
     if (typeof source !== "string") return "";

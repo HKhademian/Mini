@@ -52,7 +52,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): twenty-one signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -227,7 +227,7 @@ Those are already available in Mini.
 - `text.length` and text indexing: `text_length` / `text_get`.
 - Substring search: `text_find`.
 - `slice(start, end)`: the `text_slice` built-in.
-- `split(/\r?\n/)`: scan lines, preserving the final empty line and CRLF behavior.
+- `split(/\r?\n/)`: `text_split` on LF plus CRLF trimming; preserve the final empty line.
 - `replace(/[^\t]/g, " ")`: build the caret prefix, preserving tabs.
 - String `includes`: single-character membership.
 - Array `includes`: compare complete elements; do not accidentally match across
@@ -264,6 +264,7 @@ target TS produced by the compiler, not extra syntax required in M1.
 - `text_find(text, text) -> number`: `$mini_text_find(arg0, arg1)` (adapter).
 - `text_get(value, number) -> text`: `$mini_text_get(arg0, arg1)` (adapter).
 - `text_slice(text, number, number) -> text`: `$mini_text_slice(arg0, arg1, arg2)` (adapter).
+- `text_split(text, text) -> list`: `$mini_text_split(arg0, arg1)` (adapter).
 
 ### Lists
 
@@ -310,6 +311,7 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 5. `$mini_text_get`: read an in-range character from text, otherwise empty text.
 6. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
    the selected text or empty text for a non-text target or empty range.
+7. `$mini_text_split`: split on a literal divider, preserving empty fields.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.

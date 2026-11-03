@@ -1,0 +1,7 @@
+/// Read comma-separated text and print each field on its own line.
+var parts = text_split(readAll(), ",");
+var position = 0;
+while (position < list_length(parts)) {
+    write(list_get(parts, position) + "\n");
+    position = position + 1;
+}

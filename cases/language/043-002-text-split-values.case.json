@@ -1,0 +1,23 @@
+{
+  "id": "language.text-split-values",
+  "kind": "feature",
+  "source": "043-002-text-split-values.mini",
+  "features": [
+    "text.split"
+  ],
+  "cases": [
+    {
+      "name": "fallback",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

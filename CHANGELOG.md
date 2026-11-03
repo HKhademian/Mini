@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language/compiler/builtins 0.3.0-alpha.4: add `text_split(text, divider)` with
+  literal-divider splitting, preserved empty fields, and empty-list fallbacks;
+  M1 uses it for line splitting.
 - Language/compiler/builtins 0.3.0-alpha.3: add `text_find(text, needle)` with
   first-position and `-1` fallback behavior, and replace M1 character-membership
   loops with it.

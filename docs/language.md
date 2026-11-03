@@ -212,6 +212,9 @@ while (position < text_length(source)) {
 - `text_find(text, needle)` returns the zero-based position of the first
   occurrence, or `-1` when absent. An empty needle returns `0`; a non-text target
   or needle returns `-1`.
+- `text_split(text, divider)` returns a list of text fields split on a literal
+  divider. Empty fields are preserved. An empty divider returns a one-element
+  list containing the source. A non-text target or divider returns an empty list.
 - `text_slice(text, start, end)` returns text from `start` through the exclusive
   `end`. Bounds are zero-based integers. Negative bounds count from the end;
   bounds clamp to the text; a non-text target or an empty/reversed range returns

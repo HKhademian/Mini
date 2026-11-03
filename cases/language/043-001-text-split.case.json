@@ -1,0 +1,23 @@
+{
+  "id": "language.text-split",
+  "kind": "feature",
+  "source": "043-001-text-split.mini",
+  "features": [
+    "text.split"
+  ],
+  "cases": [
+    {
+      "name": "parts",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

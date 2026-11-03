@@ -24,3 +24,4 @@ node samples/009-list-mutation.mini.ts
 - [012-comments.mini](012-comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).
 - [013-text-slice.mini](013-text-slice.mini): Read text and print slices with clamping, negative bounds, and an empty reversed range. [Cases](../cases/language/041-005-text-slice-sample.case.json).
 - [014-text-find.mini](014-text-find.mini): Read text and report whether it contains two sample words. [Cases](../cases/language/042-005-text-find-sample.case.json).
+- [015-text-split.mini](015-text-split.mini): Read comma-separated text and print each field on its own line. [Cases](../cases/language/043-005-text-split-sample.case.json).
