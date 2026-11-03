@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language server 0.1.0-alpha.2: add hover for functions, variables, and builtins
+  with `///` documentation, and prefix-filtered completion for declarations,
+  builtins, and keywords. Completion is suppressed in comments and text.
 - Language/compiler/builtins 0.3.0-alpha.9: add `json_to_text(value)` for compact
   deterministic JSON with sorted map keys; M1 uses it for JSON string quoting.
 - Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for

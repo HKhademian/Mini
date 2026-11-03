@@ -88,6 +88,8 @@ test('initializes, shuts down, and exits cleanly', async () => {
     assert.equal(initialized.id, 1);
     assert.equal(initialized.result.capabilities.textDocumentSync, 1);
     assert.equal(initialized.result.capabilities.documentFormattingProvider, true);
+    assert.equal(initialized.result.capabilities.hoverProvider, true);
+    assert.equal(initialized.result.capabilities.completionProvider.resolveProvider, false);
     assert.equal(initialized.result.serverInfo.name, 'mini-lang-server');
     client.send({ jsonrpc: '2.0', method: 'initialized', params: {} });
     client.send({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
@@ -187,7 +189,7 @@ test('reports unknown requests and ignores unknown notifications', async () => {
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
     client.send({ jsonrpc: '2.0', method: 'textDocument/didSave', params: {} });
-    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: {} });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: {} });
     const error = await client.next();
     assert.equal(error.id, 2);
     assert.equal(error.error?.code, -32601);
@@ -202,5 +204,103 @@ test('exiting without shutdown is an error', async () => {
     await client.next();
     client.send({ jsonrpc: '2.0', method: 'exit' });
     assert.equal(await client.close(), 1);
+  });
+});
+
+const documented = [
+  '/// Adds two numbers.',
+  'fn add(a, b) {',
+  '    return a + b;',
+  '}',
+  '',
+  '/// The answer.',
+  'var answer = 1;',
+  'var value = add(answer, 2);',
+  '',
+].join('\n');
+
+function positionOf(text: string, needle: string, occurrence = 0): { line: number; character: number } {
+  let index = -1;
+  for (let count = 0; count <= occurrence; count++) index = text.indexOf(needle, index + 1);
+  assert.notEqual(index, -1, 'missing needle: ' + needle);
+  const before = text.slice(0, index);
+  return { line: (before.match(/\n/g) ?? []).length, character: index - before.lastIndexOf('\n') - 1 };
+}
+
+async function openDocument(client: Client, uri: string, text: string): Promise<void> {
+  client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
+  await client.next();
+  client.send(open(uri, text, 1));
+  await client.next();
+}
+
+test('hovers functions and variables with their documentation', async () => {
+  await session(async client => {
+    const uri = 'file:///hover.mini';
+    await openDocument(client, uri, documented);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(documented, 'add', 1) } });
+    const fn = await client.next();
+    assert.match(fn.result.contents.value, /```mini\nfn add\(a, b\)\n```/);
+    assert.match(fn.result.contents.value, /Adds two numbers\./);
+    assert.deepEqual(fn.result.range, { start: { line: 7, character: 12 }, end: { line: 7, character: 15 } });
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(documented, 'answer', 1) } });
+    const variable = await client.next();
+    assert.match(variable.result.contents.value, /```mini\nvar answer\n```/);
+    assert.match(variable.result.contents.value, /The answer\./);
+  });
+});
+
+test('hovers builtins and returns null for unknown identifiers', async () => {
+  await session(async client => {
+    const uri = 'file:///builtin.mini';
+    const text = 'write("ok");\nvar value = missing;\n';
+    await openDocument(client, uri, text);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'write') } });
+    const builtin = await client.next();
+    assert.match(builtin.result.contents.value, /write\(text\) -> void/);
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
+    assert.equal((await client.next()).result, null);
+  });
+});
+
+test('completes declarations, builtins, and keywords by prefix', async () => {
+  await session(async client => {
+    const uri = 'file:///complete.mini';
+    const text = documented + 'wr\n';
+    await openDocument(client, uri, text);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 8, character: 2 } } });
+    const prefixed = await client.next();
+    const prefixedLabels = prefixed.result.items.map((item: { label: string }) => item.label);
+    assert.ok(prefixedLabels.includes('write'));
+    assert.ok(prefixedLabels.includes('write_error'));
+    assert.ok(!prefixedLabels.includes('add'));
+    assert.ok(prefixedLabels.every((label: string) => label.startsWith('wr')));
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 9, character: 0 } } });
+    const all = await client.next();
+    const labels = all.result.items.map((item: { label: string }) => item.label);
+    for (const label of ['add', 'answer', 'write', 'var', 'fn', 'while']) assert.ok(labels.includes(label), label);
+    const add = all.result.items.find((item: { label: string }) => item.label === 'add');
+    assert.equal(add.detail, 'fn add(a, b)');
+    assert.match(add.documentation.value, /Adds two numbers\./);
+  });
+});
+
+test('does not complete inside comments or text', async () => {
+  await session(async client => {
+    const uri = 'file:///quiet.mini';
+    const text = '// wr\nwrite("wr");\n';
+    await openDocument(client, uri, text);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/completion', params: { textDocument: { uri }, position: positionOf(text, 'wr') } });
+    assert.deepEqual((await client.next()).result.items, []);
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: positionOf(text, 'wr', 2) } });
+    assert.deepEqual((await client.next()).result.items, []);
   });
 });

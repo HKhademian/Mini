@@ -55,7 +55,7 @@ builtins-v0.3.0-v0.3.0-alpha.9
 cli-v0.3.0-v0.1.0-alpha.5
 check-v0.3.0-v0.1.0-alpha.4
 format-v0.3.0-v0.1.0-alpha.1
-lsp-v0.3.0-v0.1.0-alpha.1
+lsp-v0.3.0-v0.1.0-alpha.2
 test-v0.3.0-v0.1.0-alpha.2
 verify-v0.3.0-v0.1.0-alpha.2
 bench-v0.3.0-v0.1.0-alpha.3

@@ -1,5 +1,6 @@
 import { formatTokens } from './format.ts';
 import { analyze } from './analysis.ts';
+import { completionsAt, hoverAt, offsetAt } from './language-features.ts';
 import { releaseTag, versions, root } from './project.ts';
 import type { Diagnostic } from '../compiler/types.ts';
 
@@ -87,8 +88,12 @@ export class LanguageServer {
     }
     switch (method) {
       case 'initialize':
-        this.reply(id, { capabilities: { textDocumentSync: 1, documentFormattingProvider: true },
-          serverInfo: { name: 'mini-lang-server', version: releaseTag('lsp', versions(root)) } });
+        this.reply(id, { capabilities: {
+          textDocumentSync: 1,
+          documentFormattingProvider: true,
+          hoverProvider: true,
+          completionProvider: { resolveProvider: false },
+        }, serverInfo: { name: 'mini-lang-server', version: releaseTag('lsp', versions(root)) } });
         return;
       case 'shutdown':
         this.shuttingDown = true;
@@ -96,6 +101,12 @@ export class LanguageServer {
         return;
       case 'textDocument/formatting':
         this.reply(id, this.formatting(params));
+        return;
+      case 'textDocument/hover':
+        this.reply(id, this.hover(params));
+        return;
+      case 'textDocument/completion':
+        this.reply(id, this.completion(params));
         return;
       default:
         this.replyError(id, -32601, `method not found: ${method}`);
@@ -163,6 +174,24 @@ export class LanguageServer {
     const text = formatTokens(outcome.tokens);
     if (text === document.text) return null;
     return [{ range: { start: { line: 0, character: 0 }, end: documentEnd(document.text) }, newText: text }];
+  }
+
+  private hover(params: unknown): unknown {
+    const { textDocument, position } = (params ?? {}) as { textDocument?: { uri: string }; position?: { line: number; character: number } };
+    if (textDocument === undefined || position === undefined) return null;
+    const document = this.documents.get(textDocument.uri);
+    if (document === undefined) return null;
+    const outcome = analyze(document.text, textDocument.uri);
+    return hoverAt(outcome.tokens, offsetAt(document.text, position));
+  }
+
+  private completion(params: unknown): unknown {
+    const { textDocument, position } = (params ?? {}) as { textDocument?: { uri: string }; position?: { line: number; character: number } };
+    if (textDocument === undefined || position === undefined) return { isIncomplete: false, items: [] };
+    const document = this.documents.get(textDocument.uri);
+    if (document === undefined) return { isIncomplete: false, items: [] };
+    const outcome = analyze(document.text, textDocument.uri);
+    return { isIncomplete: false, items: completionsAt(outcome.tokens, document.text, offsetAt(document.text, position)) };
   }
 
   private publish(uri: string, version: number | undefined, diagnostics: unknown[]): void {

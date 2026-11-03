@@ -1,9 +1,9 @@
 # Mini for VS Code
 
 `.mini` file support: theme-aware syntax highlighting, light/dark file icons,
-brace, parenthesis, and double-quote pairing, live compiler diagnostics, and
-document formatting. The language picker shows **Mini**. File icon themes can
-override the supplied language icons.
+brace, parenthesis, and double-quote pairing, live compiler diagnostics, hover
+with `///` documentation, completion, and document formatting. The language
+picker shows **Mini**. File icon themes can override the supplied language icons.
 
 Highlights `var`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
@@ -44,6 +44,8 @@ If the server cannot start, the extension reports the attempted command and
 offers to open the setting.
 
 Diagnostics update as you type, including unsaved and untitled documents.
+Hover a function, variable, or builtin to see its signature and `///`
+documentation. Completion offers document declarations, builtins, and keywords.
 Formatting uses the same fixed style as `mini fmt`; enable **Format On Save** or
 run **Format Document**. Invalid source is not reformatted.
 
