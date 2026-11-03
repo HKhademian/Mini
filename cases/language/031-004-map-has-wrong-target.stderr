@@ -1,0 +1,3 @@
+031-004-map-has-wrong-target.mini:1:1: expected map argument
+map_has("hello", "name");
+^

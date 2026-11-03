@@ -1,0 +1,24 @@
+{
+  "id": "language.map-has-wrong-target",
+  "kind": "reject",
+  "source": "031-004-map-has-wrong-target.mini",
+  "features": [
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "031-004-map-has-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

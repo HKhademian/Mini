@@ -283,10 +283,26 @@ var names = map_new();
   is not selected by this constructor.
 
 T0 emits a native `Map` for each call. Other targets can choose their own
-representation. Maps are intended to hold unique text keys; membership, length,
-mutation, lookup, and key enumeration follow as separate increments. They are
-not implemented yet. Missing-key values remain open. There is no `map_empty`
-alias or record/struct/class syntax.
+representation. Maps hold unique text keys; membership follows below. Length,
+mutation, lookup, and key enumeration are not implemented yet. Missing-key values
+remain open. There is no `map_empty` alias or record/struct/class syntax.
+
+## Accepted operation: map membership
+
+```text
+var names = map_new();
+var present = map_has(names, "source");
+```
+
+- `map_has(items, key)` returns a boolean indicating whether the map contains
+  that text key. An empty map returns `false` for every key, including `""`.
+- The caller supplies a map and text key, with no key conversion. Both arguments
+  are required and evaluate once, from left to right.
+- The query does not insert a key or otherwise change the map. An absent key
+  does not require a default stored value.
+
+T0 checks known operand kinds and emits native map membership. Present-key cases
+will accompany map mutation; no Mini operation can populate a map yet.
 
 ## Accepted operation: process termination
 

@@ -1,0 +1,24 @@
+{
+  "id": "language.map-has-missing-key",
+  "kind": "reject",
+  "source": "031-003-map-has-missing-key.mini",
+  "features": [
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "031-003-map-has-missing-key.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

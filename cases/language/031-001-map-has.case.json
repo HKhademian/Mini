@@ -1,0 +1,63 @@
+{
+  "id": "language.map-has",
+  "kind": "feature",
+  "source": "031-001-map-has.mini",
+  "features": [
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "empty-key",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "absent"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "ordinary-key",
+      "stdin": {
+        "text": "name"
+      },
+      "stdout": {
+        "text": "absent"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "prototype-key",
+      "stdin": {
+        "text": "__proto__"
+      },
+      "stdout": {
+        "text": "absent"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "method-key",
+      "stdin": {
+        "text": "has"
+      },
+      "stdout": {
+        "text": "absent"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

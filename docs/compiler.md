@@ -93,6 +93,8 @@ of `list_at`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.30`: map_new() creates empty maps.
 
+- `0.1.0-alpha.31`: map_has(items, key) checks text-key membership.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

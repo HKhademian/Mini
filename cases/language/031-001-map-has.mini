@@ -1,0 +1,9 @@
+var items = map_new();
+var key = readAll();
+var first = map_has(items, key);
+var second = map_has(items, key);
+if (!first && !second) {
+    write("absent");
+} else {
+    process_exit(1);
+}

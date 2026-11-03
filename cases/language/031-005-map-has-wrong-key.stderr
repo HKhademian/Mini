@@ -1,0 +1,3 @@
+031-005-map-has-wrong-key.mini:1:1: expected text argument
+map_has(map_new(), 1);
+^

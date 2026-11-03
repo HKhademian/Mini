@@ -11,6 +11,8 @@ export type Builtin = {
 const listSet = '$mini_list_set';
 
 export const builtins = new Map<string, Builtin>([
+  ['map_has', { parameters: [ValueKind.Map, ValueKind.Text], result: ValueKind.Boolean,
+    imports: [], emit: args => `(${args[0]}).has(${args[1]})` }],
   ['map_new', { parameters: [], result: ValueKind.Map,
     imports: [], emit: () => 'new Map()' }],
   ['list_set', { parameters: [ValueKind.Unknown, ValueKind.Number, ValueKind.Unknown], result: ValueKind.Void,
