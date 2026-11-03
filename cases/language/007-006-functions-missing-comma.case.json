@@ -1,8 +1,7 @@
 {
-  "id": "language.functions-missing-body",
+  "id": "language.functions-missing-comma",
   "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "functions-missing-body.mini",
+  "source": "007-006-functions-missing-comma.mini",
   "features": [
     "functions"
   ],
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "functions-missing-body.stderr"
+        "file": "007-006-functions-missing-comma.stderr"
       },
       "exitCode": 1
     }

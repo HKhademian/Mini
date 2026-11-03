@@ -6,7 +6,7 @@ export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
 export const TextEscape = { Quote: '"', Backslash: '\\', Newline: 'n', Return: 'r', Tab: 't' } as const;
 
-export const ValueKind = { Number: 'number', Text: 'text', Boolean: 'boolean', Void: 'void' } as const;
+export const ValueKind = { Number: 'number', Text: 'text', Boolean: 'boolean', Void: 'void', Unknown: 'unknown' } as const;
 export type ValueKind = typeof ValueKind[keyof typeof ValueKind];
 
 export type Token = {
@@ -20,3 +20,4 @@ export type Token = {
   context: string;
 };
 export type Expression = { code: string; kind: ValueKind };
+export type FunctionInfo = { arity: number; result: ValueKind; returned: boolean };

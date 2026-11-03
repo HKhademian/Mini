@@ -1,0 +1,26 @@
+{
+  "id": "language.functions-composition",
+  "kind": "compile",
+  "source": "007-004-functions-composition.mini",
+  "features": [
+    "functions"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "007-004-functions-composition.expected.ts"
+      }
+    }
+  ]
+}

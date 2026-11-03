@@ -1,0 +1,3 @@
+007-007-functions-missing-body.mini:1:12: expected {
+fn start() return 0;
+           ^

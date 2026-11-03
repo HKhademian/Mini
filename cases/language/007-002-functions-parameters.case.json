@@ -1,8 +1,7 @@
 {
-  "id": "language.functions-no-parameters",
+  "id": "language.functions-parameters",
   "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "functions-no-parameters.mini",
+  "source": "007-002-functions-parameters.mini",
   "features": [
     "functions"
   ],
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "007-002-functions-parameters.expected.ts"
+      }
     }
   ]
 }

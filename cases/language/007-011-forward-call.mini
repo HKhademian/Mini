@@ -1,0 +1,4 @@
+write(join("mi", "ni"));
+fn join(left, right) {
+    return left + right;
+}

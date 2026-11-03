@@ -1,0 +1,13 @@
+{
+  "id": "language.forward-call",
+  "kind": "feature",
+  "source": "007-011-forward-call.mini",
+  "features": ["functions", "text.output"],
+  "cases": [{
+    "name": "default",
+    "stdin": { "file": "empty.stdin" },
+    "stdout": { "file": "io-word.stdout" },
+    "stderr": { "file": "empty.stderr" },
+    "exitCode": 0
+  }]
+}

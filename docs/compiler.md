@@ -21,6 +21,11 @@ Each increment implements one feature, enables its indexed JSON cases, checks
 generated code and execution, and commits before starting the next feature.
 Pending cases are the remaining work, not completed support.
 
+T0 is strict TypeScript. Mini parameter typing is still open: parameters use an
+explicit internal `Unknown` kind, and generated functions currently use ordinary
+unannotated parameters. This is not a full Mini typechecker. Functions are
+top-level, may call later definitions, and require a value return in this increment.
+
 - `0.1.0-alpha.1`: initialized bindings with text, number, boolean, and
   existing-binding values.
 
@@ -33,6 +38,8 @@ Pending cases are the remaining work, not completed support.
 - `0.1.0-alpha.5`: readAll() through EOF.
 
 - `0.1.0-alpha.6`: escaped text literals.
+
+- `0.1.0-alpha.7`: named functions, calls, and value returns.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

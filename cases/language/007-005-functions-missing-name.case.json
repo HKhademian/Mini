@@ -1,8 +1,7 @@
 {
-  "id": "language.functions-argument-count",
+  "id": "language.functions-missing-name",
   "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "functions-argument-count.mini",
+  "source": "007-005-functions-missing-name.mini",
   "features": [
     "functions"
   ],
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "functions-argument-count.stderr"
+        "file": "007-005-functions-missing-name.stderr"
       },
       "exitCode": 1
     }

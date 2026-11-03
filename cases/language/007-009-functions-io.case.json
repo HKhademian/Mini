@@ -1,8 +1,7 @@
 {
   "id": "language.functions-io",
   "kind": "feature",
-  "pending": "Compiler and host I/O unavailable.",
-  "source": "functions-io.mini",
+  "source": "007-009-functions-io.mini",
   "features": [
     "functions",
     "text.input",

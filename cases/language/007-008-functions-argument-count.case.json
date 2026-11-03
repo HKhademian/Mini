@@ -1,8 +1,7 @@
 {
-  "id": "language.functions-nested-calls",
-  "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "functions-nested-calls.mini",
+  "id": "language.functions-argument-count",
+  "kind": "reject",
+  "source": "007-008-functions-argument-count.mini",
   "features": [
     "functions"
   ],
@@ -16,9 +15,9 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "empty.stderr"
+        "file": "007-008-functions-argument-count.stderr"
       },
-      "exitCode": 0
+      "exitCode": 1
     }
   ]
 }

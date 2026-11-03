@@ -1,8 +1,7 @@
 {
-  "id": "language.functions-missing-name",
+  "id": "language.functions-missing-body",
   "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "functions-missing-name.mini",
+  "source": "007-007-functions-missing-body.mini",
   "features": [
     "functions"
   ],
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "functions-missing-name.stderr"
+        "file": "007-007-functions-missing-body.stderr"
       },
       "exitCode": 1
     }
