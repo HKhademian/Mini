@@ -1,0 +1,41 @@
+/// Count case-sensitive ASCII words in a document, retaining one count per distinct word.
+
+/// Return a membership map for letters, digits, and underscore.
+fn word_letters() {
+    var letters = map_new();
+    var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+    var index = 0;
+    while (index < text_length(alphabet)) {
+        map_set(letters, text_get(alphabet, index), true);
+        index = index + 1;
+    }
+    return letters;
+}
+
+/// Add a nonempty word to counts; mutate only that map and return zero.
+fn word_store(counts, word) {
+    if (text_length(word) > 0) {
+        map_set(counts, word, map_get(counts, word) + 1);
+    }
+    return 0;
+}
+
+/// Return word frequencies from source; punctuation and whitespace separate words.
+fn app_run(source) {
+    var letters = word_letters();
+    var counts = map_new();
+    var word = "";
+    var index = 0;
+    while (index < text_length(source)) {
+        var character = text_get(source, index);
+        if (map_has(letters, character)) {
+            word = word + character;
+        } else {
+            word_store(counts, word);
+            word = "";
+        }
+        index = index + 1;
+    }
+    word_store(counts, word);
+    return counts;
+}

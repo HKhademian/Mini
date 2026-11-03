@@ -1,0 +1,108 @@
+/// Evaluate semicolon-separated integer expressions with +, -, unary minus, and parentheses.
+
+/// Return value times ten using the same arithmetic available to Mini.
+fn expr_ten(value) {
+    var twice = value + value;
+    var four = twice + twice;
+    return four + four + twice;
+}
+
+/// Return the decimal digit value of character, or -1 for a nondigit.
+fn expr_digit(character) {
+    var index = 0;
+    while (index < 10) {
+        if (text_get("0123456789", index) == character) {
+            return index;
+        }
+        index = index + 1;
+    }
+    return -1;
+}
+
+/// Skip ASCII whitespace by advancing state.position; return zero.
+fn expr_space(state) {
+    var source = map_get(state, "source");
+    var position = map_get(state, "position");
+    var character = text_get(source, position);
+    while (character == " " || character == "\t" || character == "\r" || character == "\n") {
+        position = position + 1;
+        character = text_get(source, position);
+    }
+    map_set(state, "position", position);
+    return 0;
+}
+
+/// Return a primary value and advance shared parser state; invalid input exits unsuccessfully.
+fn expr_primary(state) {
+    expr_space(state);
+    var source = map_get(state, "source");
+    var character = text_get(source, map_get(state, "position"));
+    if (character == "-" || character == "(") {
+        map_set(state, "position", map_get(state, "position") + 1);
+        if (character == "-") {
+            return -expr_primary(state);
+        }
+        var value = expr_sum(state);
+        expr_space(state);
+        if (text_get(source, map_get(state, "position")) != ")") {
+            process_exit(1);
+        }
+        map_set(state, "position", map_get(state, "position") + 1);
+        return value;
+    }
+    var value = 0;
+    var digits = 0;
+    var digit = expr_digit(character);
+    while (digit >= 0) {
+        value = expr_ten(value) + digit;
+        digits = digits + 1;
+        map_set(state, "position", map_get(state, "position") + 1);
+        digit = expr_digit(text_get(source, map_get(state, "position")));
+    }
+    if (digits == 0) {
+        process_exit(1);
+    }
+    return value;
+}
+
+/// Return a left-associative sum/subtraction expression, preserving recursive local values.
+fn expr_sum(state) {
+    var value = expr_primary(state);
+    expr_space(state);
+    var operator = text_get(map_get(state, "source"), map_get(state, "position"));
+    while (operator == "+" || operator == "-") {
+        map_set(state, "position", map_get(state, "position") + 1);
+        var right = expr_primary(state);
+        if (operator == "+") {
+            value = value + right;
+        } else {
+            value = value - right;
+        }
+        expr_space(state);
+        operator = text_get(map_get(state, "source"), map_get(state, "position"));
+    }
+    return value;
+}
+
+/// Return the number of evaluated expressions and their total, without changing source.
+fn app_run(source) {
+    var state = map_new();
+    map_set(state, "source", source);
+    map_set(state, "position", 0);
+    var total = 0;
+    var count = 0;
+    expr_space(state);
+    while (map_get(state, "position") < text_length(source)) {
+        total = total + expr_sum(state);
+        if (text_get(source, map_get(state, "position")) != ";") {
+            process_exit(1);
+        }
+        map_set(state, "position", map_get(state, "position") + 1);
+        count = count + 1;
+        expr_space(state);
+    }
+    var result = map_new();
+    map_set(result, "count", count);
+    map_set(result, "total", total);
+    return result;
+}

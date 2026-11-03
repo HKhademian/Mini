@@ -1,0 +1,21 @@
+/// Index declarations and references by identifier, retaining source order in each posting list.
+
+/// Return a map from identifier text to its occurrence offsets; comments and strings are excluded.
+fn app_run(source) {
+    var tokens = lex_tokenize(source);
+    var symbols = map_new();
+    var position = 0;
+    while (position < list_length(tokens)) {
+        var token = list_get(tokens, position);
+        if (map_get(token, "kind") == "identifier") {
+            var name = map_get(token, "text");
+            if (!map_has(symbols, name)) {
+                map_set(symbols, name, list_new());
+            }
+            var occurrences = map_get(symbols, name);
+            list_set(occurrences, list_length(occurrences), map_get(token, "start"));
+        }
+        position = position + 1;
+    }
+    return symbols;
+}

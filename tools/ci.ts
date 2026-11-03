@@ -21,6 +21,7 @@ switch (task) {
     process.stdout.write(run(process.execPath, ['--test', 'compiler/builtins.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'test/grammar.test.ts'], join(root, 'editors/vscode')));
     process.stdout.write(run(process.execPath, ['--test', 'tools/release.test.ts'], root));
+    process.stdout.write(run(process.execPath, ['tools/application-performance.ts', '--check'], root));
     break;
   case 'bench':
     mini('bench', '.cache/bench-ci.json', 'tooling.check');

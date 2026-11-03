@@ -1,0 +1,166 @@
+/// Tokenize Mini source using named token maps and explicit lexer state, following T0's scanner.
+
+/// Return whether a single character is in choices; empty text is never a member.
+fn lex_contains(choices, character) {
+    var index = 0;
+    while (index < text_length(choices)) {
+        if (text_get(choices, index) == character) {
+            return true;
+        }
+        index = index + 1;
+    }
+    return false;
+}
+
+/// Return characters in the half-open range, bounded by the source length.
+fn lex_slice(source, start, end) {
+    var output = "";
+    var position = start;
+    while (position < end && position < text_length(source)) {
+        output = output + text_get(source, position);
+        position = position + 1;
+    }
+    return output;
+}
+
+/// Return source-line contexts, removing CR before LF and retaining the final empty line.
+fn lex_lines(source) {
+    var lines = list_new();
+    var line = "";
+    var position = 0;
+    while (position <= text_length(source)) {
+        var character = text_get(source, position);
+        if (character == "\n" || character == "") {
+            if (text_get(line, text_length(line) - 1) == "\r" && character == "\n") {
+                line = lex_slice(line, 0, text_length(line) - 1);
+            }
+            list_set(lines, list_length(lines), line);
+            line = "";
+        } else {
+            line = line + character;
+        }
+        position = position + 1;
+    }
+    return lines;
+}
+
+/// Consume one character and update position, line, and column in state.
+fn lex_advance(state) {
+    var character = text_get(map_get(state, "source"), map_get(state, "position"));
+    map_set(state, "position", map_get(state, "position") + 1);
+    if (character == "\n") {
+        map_set(state, "line", map_get(state, "line") + 1);
+        map_set(state, "column", 1);
+    } else {
+        map_set(state, "column", map_get(state, "column") + 1);
+    }
+    return character;
+}
+
+/// Allocate a token with T0's eight named fields at the current source location.
+fn lex_start(state, lines) {
+    var token = map_new();
+    map_set(token, "kind", "symbol");
+    map_set(token, "text", "");
+    map_set(token, "source", "application.mini");
+    map_set(token, "start", map_get(state, "position"));
+    map_set(token, "end", map_get(state, "position"));
+    map_set(token, "line", map_get(state, "line"));
+    map_set(token, "column", map_get(state, "column"));
+    map_set(token, "context", list_get(lines, map_get(state, "line") - 1));
+    return token;
+}
+
+/// Return positioned tokens plus EOF; valid ASCII input and supported escapes match T0.
+fn lex_tokenize(source) {
+    var tokens = list_new();
+    var lines = lex_lines(source);
+    var keywords = map_new();
+    map_set(keywords, "var", true);
+    map_set(keywords, "fn", true);
+    map_set(keywords, "return", true);
+    map_set(keywords, "if", true);
+    map_set(keywords, "else", true);
+    map_set(keywords, "while", true);
+    map_set(keywords, "true", true);
+    map_set(keywords, "false", true);
+    var state = map_new();
+    map_set(state, "source", source);
+    map_set(state, "position", 0);
+    map_set(state, "line", 1);
+    map_set(state, "column", 1);
+    while (map_get(state, "position") < text_length(source)) {
+        var character = text_get(source, map_get(state, "position"));
+        var skipped = false;
+        if (lex_contains(" \t\r\n", character)) {
+            lex_advance(state);
+            skipped = true;
+        } else {
+            if (character == "/" && text_get(source, map_get(state, "position") + 1) == "/") {
+                while (map_get(state, "position") < text_length(source) && text_get(source, map_get(state, "position")) != "\r" && text_get(source, map_get(state, "position")) != "\n") {
+                    lex_advance(state);
+                }
+                skipped = true;
+            }
+        }
+        if (!skipped) {
+            var token = lex_start(state, lines);
+            if (lex_contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character)) {
+                map_set(token, "kind", "identifier");
+                while (map_get(state, "position") < text_length(source) && lex_contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_0123456789", text_get(source, map_get(state, "position")))) {
+                    lex_advance(state);
+                }
+                if (map_has(keywords, lex_slice(source, map_get(token, "start"), map_get(state, "position")))) {
+                    map_set(token, "kind", "keyword");
+                }
+            } else {
+                if (lex_contains("0123456789", character)) {
+                    map_set(token, "kind", "number");
+                    while (map_get(state, "position") < text_length(source) && lex_contains("0123456789", text_get(source, map_get(state, "position")))) {
+                        lex_advance(state);
+                    }
+                } else {
+                    if (character == "\"") {
+                        map_set(token, "kind", "text");
+                        lex_advance(state);
+                        while (map_get(state, "position") < text_length(source) && text_get(source, map_get(state, "position")) != "\"") {
+                            var current = text_get(source, map_get(state, "position"));
+                            if (current == "\n" || current == "\r") {
+                                process_exit(1);
+                            }
+                            if (current == "\\") {
+                                lex_advance(state);
+                                if (!lex_contains("\"\\nrt", text_get(source, map_get(state, "position")))) {
+                                    process_exit(1);
+                                }
+                            }
+                            lex_advance(state);
+                        }
+                        if (map_get(state, "position") == text_length(source)) {
+                            process_exit(1);
+                        }
+                        lex_advance(state);
+                    } else {
+                        var pair = lex_slice(source, map_get(state, "position"), map_get(state, "position") + 2);
+                        if (pair == "==" || pair == "!=" || pair == "<=" || pair == ">=" || pair == "&&" || pair == "||") {
+                            lex_advance(state);
+                            lex_advance(state);
+                        } else {
+                            if (!lex_contains("=+-!<>(),;{}", character)) {
+                                process_exit(1);
+                            }
+                            lex_advance(state);
+                        }
+                    }
+                }
+            }
+            map_set(token, "text", lex_slice(source, map_get(token, "start"), map_get(state, "position")));
+            map_set(token, "end", map_get(state, "position"));
+            list_set(tokens, list_length(tokens), token);
+        }
+    }
+    var end = lex_start(state, lines);
+    map_set(end, "kind", "eof");
+    list_set(tokens, list_length(tokens), end);
+    return tokens;
+}

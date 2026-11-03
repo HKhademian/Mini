@@ -1,0 +1,48 @@
+/// Aggregate whitespace-delimited LEVEL ROUTE USER log lines for a request summary.
+
+/// Increment key in counts; mutate that map and return zero.
+fn log_increment(counts, key) {
+    map_set(counts, key, map_get(counts, key) + 1);
+    return 0;
+}
+
+/// Store a complete three-field row in the three frequency maps; return zero.
+fn log_row(fields, levels, routes, users) {
+    if (list_length(fields) == 3) {
+        log_increment(levels, list_get(fields, 0));
+        log_increment(routes, list_get(fields, 1));
+        log_increment(users, list_get(fields, 2));
+    }
+    return 0;
+}
+
+/// Return level, route, and user frequencies; ignore incomplete rows and blank lines.
+fn app_run(source) {
+    var levels = map_new();
+    var routes = map_new();
+    var users = map_new();
+    var fields = list_new();
+    var word = "";
+    var index = 0;
+    while (index <= text_length(source)) {
+        var character = text_get(source, index);
+        if (character == " " || character == "\t" || character == "\r" || character == "\n" || character == "") {
+            if (word != "") {
+                list_set(fields, list_length(fields), word);
+                word = "";
+            }
+            if (character == "\n" || character == "") {
+                log_row(fields, levels, routes, users);
+                fields = list_new();
+            }
+        } else {
+            word = word + character;
+        }
+        index = index + 1;
+    }
+    var result = map_new();
+    map_set(result, "levels", levels);
+    map_set(result, "routes", routes);
+    map_set(result, "users", users);
+    return result;
+}

@@ -1,0 +1,4 @@
+/// Return positioned tokens for a source document, using the accompanying Mini lexer.
+fn app_run(source) {
+    return lex_tokenize(source);
+}

@@ -1,0 +1,217 @@
+/// Compile declarations, assignments, arithmetic, equality, if/else, and write using a T0-shaped emitter.
+/// This is a benchmark application using the accompanying lexer, not the complete M1 compiler.
+
+/// Allocate an expression descriptor with the same code/kind fields as T0.
+fn parser_value(code, kind) {
+    var value = map_new();
+    map_set(value, "code", code);
+    map_set(value, "kind", kind);
+    return value;
+}
+
+/// Inspect the current token without changing state.
+fn parser_token(state) {
+    return list_get(map_get(state, "tokens"), map_get(state, "position"));
+}
+
+/// Consume the current token, updating the parser cursor.
+fn parser_take(state) {
+    var token = parser_token(state);
+    map_set(state, "position", map_get(state, "position") + 1);
+    return token;
+}
+
+/// Consume required punctuation; invalid benchmark input exits unsuccessfully.
+fn parser_expect(state, text) {
+    if (map_get(parser_token(state), "text") != text) {
+        process_exit(1);
+    }
+    parser_take(state);
+    return 0;
+}
+
+/// Parse a literal, binding lookup, or parenthesized expression.
+fn parser_primary(state) {
+    var token = parser_take(state);
+    var text = map_get(token, "text");
+    var kind = map_get(token, "kind");
+    if (text == "(") {
+        var value = parser_expression(state);
+        parser_expect(state, ")");
+        return value;
+    }
+    if (kind == "number" || kind == "text") {
+        return parser_value(text, kind);
+    }
+    if (text == "true" || text == "false") {
+        return parser_value(text, "boolean");
+    }
+    if (kind == "identifier" && map_has(map_get(state, "variables"), text)) {
+        return parser_value(text, map_get(map_get(state, "variables"), text));
+    }
+    process_exit(1);
+    return 0;
+}
+
+/// Parse recursive numeric negation, retaining intermediate values in locals.
+fn parser_unary(state) {
+    if (map_get(parser_token(state), "text") == "-") {
+        parser_take(state);
+        var value = parser_unary(state);
+        if (map_get(value, "kind") != "number") {
+            process_exit(1);
+        }
+        return parser_value("(-" + map_get(value, "code") + ")", "number");
+    }
+    return parser_primary(state);
+}
+
+/// Parse checked, left-associative addition and subtraction.
+fn parser_additive(state) {
+    var left = parser_unary(state);
+    while (map_get(parser_token(state), "text") == "+" || map_get(parser_token(state), "text") == "-") {
+        var operator = map_get(parser_take(state), "text");
+        var right = parser_unary(state);
+        if (map_get(left, "kind") != map_get(right, "kind") || map_get(left, "kind") == "boolean" || (operator == "-" && map_get(left, "kind") != "number")) {
+            process_exit(1);
+        }
+        left = parser_value("(" + map_get(left, "code") + " " + operator + " " + map_get(right, "code") + ")", map_get(left, "kind"));
+    }
+    return left;
+}
+
+/// Parse scalar equality/inequality after arithmetic and emit strict TS operators.
+fn parser_expression(state) {
+    var left = parser_additive(state);
+    while (map_get(parser_token(state), "text") == "==" || map_get(parser_token(state), "text") == "!=") {
+        var operator = map_get(parser_take(state), "text");
+        var right = parser_additive(state);
+        if (map_get(left, "kind") != map_get(right, "kind")) {
+            process_exit(1);
+        }
+        if (operator == "==") {
+            operator = "===";
+        } else {
+            operator = "!==";
+        }
+        left = parser_value("(" + map_get(left, "code") + " " + operator + " " + map_get(right, "code") + ")", "boolean");
+    }
+    return left;
+}
+
+/// Return a shallow copy of a kind scope without changing the outer map.
+fn parser_scope(outer) {
+    var inner = map_new();
+    var keys = map_keys(outer);
+    var index = 0;
+    while (index < list_length(keys)) {
+        var key = list_get(keys, index);
+        map_set(inner, key, map_get(outer, key));
+        index = index + 1;
+    }
+    return inner;
+}
+
+/// Indent nonempty emitted lines by four spaces, including their final newline.
+fn parser_indent(source) {
+    var output = "";
+    var start = true;
+    var index = 0;
+    while (index < text_length(source)) {
+        var character = text_get(source, index);
+        if (character == "\n") {
+            if (!start) {
+                output = output + "\n";
+            }
+            start = true;
+        } else {
+            if (start) {
+                output = output + "    ";
+                start = false;
+            }
+            output = output + character;
+        }
+        index = index + 1;
+    }
+    return output;
+}
+
+/// Parse a block with T0's scope-copy and restore boundaries.
+fn parser_block(state) {
+    parser_expect(state, "{");
+    var outer = map_get(state, "variables");
+    map_set(state, "variables", parser_scope(outer));
+    var output = "";
+    while (map_get(parser_token(state), "text") != "}") {
+        output = output + parser_statement(state);
+    }
+    parser_expect(state, "}");
+    map_set(state, "variables", outer);
+    return "{\n" + parser_indent(output) + "}";
+}
+
+/// Parse a condition, write call, declaration, or assignment and emit readable TS.
+fn parser_statement(state) {
+    if (map_get(parser_token(state), "text") == "if") {
+        parser_take(state);
+        parser_expect(state, "(");
+        var condition = parser_expression(state);
+        parser_expect(state, ")");
+        if (map_get(condition, "kind") != "boolean") {
+            process_exit(1);
+        }
+        var output = "if (" + map_get(condition, "code") + ") " + parser_block(state);
+        if (map_get(parser_token(state), "text") == "else") {
+            parser_take(state);
+            output = output + " else " + parser_block(state);
+        }
+        return output + "\n";
+    }
+    var name = parser_take(state);
+    if (map_get(name, "text") == "write") {
+        parser_expect(state, "(");
+        var value = parser_expression(state);
+        parser_expect(state, ")");
+        parser_expect(state, ";");
+        if (map_get(value, "kind") != "text") {
+            process_exit(1);
+        }
+        map_set(state, "uses_write", true);
+        return "writeSync(1, " + map_get(value, "code") + ");\n";
+    }
+    var prefix = "";
+    if (map_get(name, "text") == "var") {
+        name = parser_take(state);
+        prefix = "let ";
+    } else {
+        if (!map_has(map_get(state, "variables"), map_get(name, "text"))) {
+            process_exit(1);
+        }
+    }
+    if (map_get(name, "kind") != "identifier") {
+        process_exit(1);
+    }
+    parser_expect(state, "=");
+    var value = parser_expression(state);
+    parser_expect(state, ";");
+    map_set(map_get(state, "variables"), map_get(name, "text"), map_get(value, "kind"));
+    return prefix + map_get(name, "text") + " = " + map_get(value, "code") + ";\n";
+}
+
+/// Compile the subset to complete TS; numeric benchmark literals use ordinary canonical decimal spelling.
+fn app_run(source) {
+    var state = map_new();
+    map_set(state, "tokens", lex_tokenize(source));
+    map_set(state, "position", 0);
+    map_set(state, "variables", map_new());
+    map_set(state, "uses_write", false);
+    var output = "";
+    while (map_get(parser_token(state), "kind") != "eof") {
+        output = output + parser_statement(state);
+    }
+    var imports = "";
+    if (map_get(state, "uses_write")) {
+        imports = "import { writeSync } from \"node:fs\";\n";
+    }
+    return "\"use strict\";\n" + imports + output;
+}
