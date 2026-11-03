@@ -6,6 +6,9 @@
   with an empty prototype and no per-map metadata. Remove `map_length`;
   count with `list_length(map_keys(items))`. Map operations and argument order
   retain their contracts, including special text keys and shared values.
+- Record four before/after map-runtime runs: 2,760 verified measured calls.
+  Object maps reduce compiler pipeline wall time/RSS, increase its warm CPU,
+  and slow template rendering and dependency traversal; preserve raw evidence.
 - Record two clean application benchmark runs: 1,380 verified measured calls,
   CPU/RSS evidence, and material scanner/compiler costs relative to actual T0.
 - Add ten paired Mini/handwritten-TS application benchmarks, independent result

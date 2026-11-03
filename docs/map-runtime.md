@@ -34,3 +34,7 @@ The [application benchmark suite](application-performance.md) verifies the same
 independent outputs before comparing execution, CPU, and memory. The original
 [Map-backed results](application-performance-results.md) remain an immutable
 baseline; they do not describe this backend's performance.
+
+The [before/after measurements](map-runtime-performance.md) show lower compiler
+pipeline elapsed time and RSS, higher warm CPU, and slower template/dependency
+workloads. Object storage is a measured tradeoff, not a universal speedup.
