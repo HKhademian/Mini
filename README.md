@@ -22,6 +22,11 @@ The current subset is the port baseline. Freeze T0 language additions and write
 the Mini compiler now. Limit T0 work to reproduced bugs that block that port;
 further language improvements belong after verified self-hosting.
 
+M1 is the first compiler source written in Mini; T1 is the generated TypeScript
+compiler, `T1 = T0(M1)`. Keep the first M1 close to T0 in routine boundaries,
+control flow, calls, lookups, and data layout. Adapt forms where Mini requires it;
+defer redesign and performance refactoring until the corresponding port is verified.
+
 Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
 existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records

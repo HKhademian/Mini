@@ -1,13 +1,48 @@
-# T0 implementation inventory for T1
+# T0 implementation inventory for M1 and T1
 
-Baseline: group 0.2.0, compiler 0.2.0-alpha.3. T1 means the first compiler written
-in Mini. This inventories the five files in
+Baseline: group 0.2.0, compiler 0.2.0-alpha.3. M1 is the first compiler source
+written in Mini. T1 is its generated TypeScript compiler: `T1 = T0(M1)`.
+This inventories the five files in
 [compiler configuration](../config/compiler.json), not the CLI tools, tests, or
 release system. T0 remains frozen; this is a port reference, not a feature list
 to add to Mini.
 
-T1 must preserve the compiler's responsibilities and required behavior. Its
-implementation can use ordinary Mini functions, maps, lists, and text helpers.
+M1 must preserve the compiler's responsibilities, required behavior, and
+recognizable implementation structure using Mini functions, maps, lists, and
+text helpers.
+
+## First M1 continuity
+
+The first M1 is a close port of T0. Keep the two implementations easy to compare
+routine by routine while establishing behavior parity and the fixed point.
+
+- Retain the logical source sections, function responsibilities, and call graph.
+  Keep names recognizable; method names can gain a `parser_` or `lexer_` prefix.
+- Preserve conditions, branch order, short-circuiting, evaluation order, and
+  loop progression. Do not merge checks or move lookups as an optimization.
+- Keep function pre-registration, recursive-descent precedence, direct emission,
+  and the same points for diagnostics. No new AST or parser architecture is needed.
+- Preserve storage roles and named fields: token lists, token/expression maps,
+  binding/function tables, membership sets, and parser state. Keep T0's map/set
+  lookups at corresponding locations. Avoid packed token rows or parallel arrays.
+- Preserve scope-copy boundaries and function-state transitions. Keep locals
+  local where Mini permits; introduce explicit shared state only where needed
+  to replace captured variables or `this`.
+- Adapt unsupported host forms directly: methods become top-level functions,
+  object fields become named-key map access, arrays become lists, sets become
+  membership maps, and native helpers become small corresponding Mini helpers.
+- Keep built-in signature metadata and lowering decisions recognizable. Replace
+  callback fields with named functions or a dispatcher because Mini has no
+  function values; retain the same built-in cases and output rules.
+- Document necessary deviations and their reasons in the relevant inventory
+  sections as M1 is implemented. Keep them limited to Mini's available forms
+  and reproduced blockers.
+
+Defer redesign, lookup caching, storage changes, and performance refactoring
+until parity and the fixed point are established. The
+[performance assessment](runtime-performance.md) still applies before promotion;
+a reproduced blocker warrants the smallest documented change that preserves
+clear correspondence with T0. T0 remains frozen under the existing port policy.
 
 ## 1. Source units and entry points
 
@@ -22,12 +57,12 @@ implementation can use ordinary Mini functions, maps, lists, and text helpers.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
 
-T1 can place these responsibilities in one `compiler/compiler.mini` file.
+M1 can place these responsibilities in one `compiler/compiler.mini` file.
 Existing TypeScript imports/exports and file boundaries need no Mini equivalent.
 
 ## 2. Named constants and data shapes
 
-T0 uses `as const` objects and derived TypeScript types. T1 can use named
+T0 uses `as const` objects and derived TypeScript types. M1 can use named
 bindings or maps holding the same tag strings.
 
 - Token kinds: `identifier`, `keyword`, `number`, `text`, `symbol`, `eof`.
@@ -42,7 +77,7 @@ T0's object shapes become maps with these keys:
 - Built-in information: `parameters`, `result`, `imports`, optional `helper`,
   and an `emit` callback.
 
-T1 replaces the `emit` function-valued field with a named dispatcher or top-level
+M1 replaces the `emit` function-valued field with a named dispatcher or top-level
 lowering functions. It does not need first-class functions or object methods.
 
 `void` and `unknown` are compiler bookkeeping tags. They are not new Mini values.
@@ -74,7 +109,7 @@ Contexts come from splitting on LF with an optional preceding CR removed;
 a final empty line is retained.
 
 T0 uses regex tests, `split`, `slice`, `includes`, `Set.has`, and nested closures
-here. T1 can use an explicit lexer-state map, top-level helpers taking that map,
+here. M1 can use an explicit lexer-state map, top-level helpers taking that map,
 character membership, text slicing, and list append through `list_set`.
 
 ## 4. Parser state and complete method inventory
@@ -88,7 +123,7 @@ The eight fields are:
 - `currentFunction`: optional function information.
 - `depth`: current brace/block depth.
 
-Use a parser-state map in T1. Replace the optional function object with explicit
+Use a parser-state map in M1. Replace the optional function object with explicit
 function-state data and an `in_function` boolean; no null value is needed.
 
 All constructor/method responsibilities:
@@ -136,14 +171,14 @@ expressions. These cycles require ordinary direct/mutual recursion.
 - Return is allowed only inside a function and must produce a value.
 - Each function must contain a value return somewhere. T0 does not prove every
   path returns, nor infer a consistent result across all paths.
-- A call statement may discard a result, so T1 procedure helpers can return zero.
+- A call statement may discard a result, so M1 procedure helpers can return zero.
 
 This is the existing partial kind checker. Keep its case-covered behavior during
 the port; broader scope/name/type rules remain open. The
 [scope-copy workload](../cases/compiler/port-foundation.mini) already implements
 the needed shallow map copy in Mini.
 
-## 6. TypeScript mechanisms and their T1 replacements
+## 6. TypeScript mechanisms and their M1 replacements
 
 - `const` / `let`: Mini `var`; retain intended constant use by convention.
 - Type aliases, type-only imports, annotations, generics, `readonly`,
@@ -172,7 +207,7 @@ the needed shallow map copy in Mini.
 - Optional chaining, nullish coalescing, `undefined`, object truthiness:
   explicit bounds, membership checks, and initialized boolean/state fields.
 - A default method parameter in `identifier`: pass the message explicitly at
-  every T1 call site; optional-argument syntax is unnecessary.
+  every M1 call site; optional-argument syntax is unnecessary.
 - `throw new Error` / `try...catch` / `assert`: explicit validation and
   `write_error` + `process_exit` for compiler-controlled failures.
 
@@ -210,7 +245,7 @@ Token JSON field order is `kind`, `text`, `source`, `start`, `end`, `line`,
 
 The signatures below use `value` for the internal unknown kind and `no result`
 for void. `arg0`, `arg1`, and `arg2` mean emitted argument expressions. This is
-target TS produced by the compiler, not extra syntax required in T1.
+target TS produced by the compiler, not extra syntax required in M1.
 
 ### Text and streams
 
@@ -266,7 +301,7 @@ initial-port reference, including whitespace. Their `$` prefix cannot collide
 with Mini identifiers.
 
 The only generated module import is `node:fs`. The finite named imports, sorted
-when present, are `readFileSync`, `writeFileSync`, `writeSync`. T1 can keep these
+when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
 and the five adapter names in fixed ordered lists rather than add general sorting.
 
 ## 10. Emission rules that affect fixed-point equality
@@ -350,7 +385,7 @@ write stderr, finish with status 1, and do not create or replace an output file.
 The current usage message is
 `usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini`.
 
-T1 can use `process_args`, the file primitives, `write`, `write_error`,
+M1 can use `process_args`, the file primitives, `write`, `write_error`,
 `process_exit`, and text helpers. Its single-file program can run the command
 entry point last. It does not need Mini imports, export syntax, an assertion
 library, or reflection over Error objects.
@@ -369,4 +404,4 @@ that import T0 modules directly need adaptation when T0 is retired; that is
 tooling integration, not another language feature.
 
 Use this inventory with the [readiness assessment](self-hosting-requirements.md)
-and [bootstrap gate](bootstrap.md). The next implementation is T1.
+and [bootstrap gate](bootstrap.md). The next implementation is M1, compiled into T1.

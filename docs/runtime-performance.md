@@ -96,12 +96,14 @@ representation/library differences. Scope copying repeats work proportional
 to the number of visible bindings; repeated snapshots/copies need attention
 in deeply nested or binding-heavy programs.
 
-For T1, prefer ordinary locals for hot scanner counters and parser temporaries.
-Cache stable map fields in locals within a routine, and create key snapshots
-once per traversal. Avoid repeatedly rescanning the whole source, copying growing
-prefixes, or rebuilding scopes unnecessarily. Keep token maps as a readable
-starting point; change their internal layout only if actual compiler profiling
-justifies it. These are implementation choices using existing Mini.
+The first M1 must follow T0's
+[structure and access patterns](t0-t1-reference.md#first-m1-continuity). Preserve
+its existing local counters, parser fields, token layout, lookup locations, and
+scope-copy behavior. These microbenchmarks do not justify caching parser fields,
+packing token data, or changing algorithms during that port. After parity and
+the fixed point, actual compiler profiling can justify separate optimizations
+using existing Mini. A reproduced blocker before then warrants the smallest
+documented deviation that retains clear correspondence with T0.
 
 The `.ts` loading path has a real cold-start cost on the selected Node version.
 For the smallest successful emitted programs, `.ts` execution was around

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Define M1 as Mini compiler source and T1 as its generated TS compiler; require
+  the first M1 to preserve T0's structure, control flow, lookups, and data layout.
+  Defer performance refactoring until parity and the fixed point are established.
 - Audit generated-code performance with repeatable compiler workloads, record
   map/storage and TS-loading costs, and require actual-candidate performance
   evidence before retiring T0. Record a separate emitted-expression depth limit.

@@ -12,6 +12,12 @@
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
   it to MiniLang immediately. After replacement, implement compiler behavior in
   MiniLang and regenerate the bootstrap; never hand-edit generated compiler code.
+- M1 is the Mini compiler source; T1 is its generated TS compiler. Keep the first
+  M1 close to T0: preserve routine boundaries, conditions, evaluation order,
+  call structure, lookups, named fields, and collection roles. Make only the
+  adaptations Mini requires and document necessary deviations in the port
+  reference. Defer redesign and optimization until parity and the fixed point
+  are established; a reproduced blocker warrants the smallest documented change.
 - Self-hosting applies only to the compiler path. Other tools may remain
   TypeScript until Mini or a cloned language can replace them conveniently.
   They must not hide compiler logic needed for self-hosting.

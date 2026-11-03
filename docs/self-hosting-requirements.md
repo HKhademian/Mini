@@ -43,9 +43,12 @@ The case runner already accepts a candidate compiler override.
 
 ## Write the compiler with the existing subset
 
-Port the responsibilities of the five files named in
-[compiler configuration](../config/compiler.json), rather than their TypeScript
-mechanisms:
+M1 is the first Mini compiler source; T1 is the TypeScript compiler generated
+from it, `T1 = T0(M1)`. Port the five files named in
+[compiler configuration](../config/compiler.json) with close structural
+correspondence to T0. Preserve its routines, conditions, evaluation order, calls,
+lookups, named fields, and collection roles. Keep algorithms and storage layout
+recognizable; adapt the TypeScript mechanisms only where Mini requires it:
 
 - Tokens and expressions become maps with named text keys; token streams and
   parameter/argument collections become lists.
@@ -61,6 +64,9 @@ mechanisms:
 
 The [complete T0-to-T1 inventory](t0-t1-reference.md) lists the methods, data,
 host APIs, diagnostics, and exact output rules behind these responsibilities.
+It records the [first-M1 continuity requirement](t0-t1-reference.md#first-m1-continuity).
+Defer redesign and performance refactoring until parity and the fixed point are
+established. Investigate a reproduced blocker with the smallest documented change.
 
 Map key order is unspecified. Emit the finite host-import and adapter sets in an
 explicit fixed order, matching T0, rather than introducing a sorting API.
@@ -71,7 +77,7 @@ decisions; they must not remain in handwritten TypeScript helpers.
 
 ## Remaining deliverables
 
-1. **Mini compiler source.** Implement the scanner/tokenizer, positioned
+1. **Mini compiler source (M1).** Implement the scanner/tokenizer, positioned
    diagnostics, recursive-descent parser, current checking, TS emitter, and
    `compile` / `tokens` interfaces in `compiler/compiler.mini`.
    Keep T0 active while the replacement is being completed.
