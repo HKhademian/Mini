@@ -30,6 +30,19 @@ Settings:
 - `mini.nodePath`: Node executable used when `mini.serverPath` names a script.
   Defaults to `node`.
 
+For a checkout, set `mini.serverPath` to the absolute path of
+`bin/mini-lang-server`, for example:
+
+```json
+{
+  "mini.serverPath": "/path/to/MiniLang/bin/mini-lang-server",
+  "mini.nodePath": "node"
+}
+```
+
+If the server cannot start, the extension reports the attempted command and
+offers to open the setting.
+
 Diagnostics update as you type, including unsaved and untitled documents.
 Formatting uses the same fixed style as `mini fmt`; enable **Format On Save** or
 run **Format Document**. Invalid source is not reformatted.

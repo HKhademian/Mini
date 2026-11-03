@@ -28,7 +28,8 @@ class MiniClient implements vscode.Disposable {
     this.child.stdout.on('data', (chunk: Buffer) => this.receive(chunk));
     this.child.stderr.on('data', (chunk: Buffer) => this.output.append(chunk.toString()));
     this.child.on('error', error => {
-      void vscode.window.showErrorMessage(`Mini language server failed to start: ${error.message}`);
+      for (const { reject } of this.pending.values()) reject(error);
+      this.pending.clear();
     });
     this.child.on('exit', code => {
       this.output.appendLine(`Server exited with code ${code ?? 'null'}.`);
@@ -88,8 +89,12 @@ class MiniClient implements vscode.Disposable {
   private send(message: Message): void {
     if (this.child === undefined) return;
     const body = Buffer.from(JSON.stringify(message));
-    this.child.stdin.write(`Content-Length: ${body.length}\r\n\r\n`);
-    this.child.stdin.write(body);
+    try {
+      this.child.stdin.write(`Content-Length: ${body.length}\r\n\r\n`);
+      this.child.stdin.write(body);
+    } catch {
+      // The server exited; pending requests are rejected by the exit handler.
+    }
   }
 
   private notify(method: string, params: unknown): void {
@@ -167,7 +172,15 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   try {
     await instance.start();
   } catch (error) {
-    void vscode.window.showErrorMessage(`Mini language server unavailable: ${error instanceof Error ? error.message : error}`);
+    const config = vscode.workspace.getConfiguration('mini');
+    const serverPath = config.get<string>('serverPath', '').trim();
+    const hint = serverPath === ''
+      ? 'Install mini-lang-server on PATH or set mini.serverPath to its script.'
+      : `Check mini.serverPath (${serverPath}) and mini.nodePath.`;
+    const message = `Mini language server failed to start: ${error instanceof Error ? error.message : error}. ${hint}`;
+    void vscode.window.showErrorMessage(message, 'Open Settings').then(choice => {
+      if (choice === 'Open Settings') void vscode.commands.executeCommand('workbench.action.openSettings', 'mini.serverPath');
+    });
     instance.dispose();
     return;
   }

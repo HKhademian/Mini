@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- VS Code extension 0.3.1: report the attempted server command and offer to open
+  `mini.serverPath` when the language server cannot start, and reject pending
+  requests on launch failure instead of hanging activation.
 - Verify the tooling workflow from an extracted source archive without `.git` or
   `node_modules`: repository docs check, source checking, formatting, and a live
   language-server session. Package and inspect the VSIX with its bundled client.
