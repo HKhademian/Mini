@@ -18,7 +18,13 @@ must be empty. To validate an existing annotated component tag at HEAD:
 
 The tag must match [the version registry](../config/versions.json). Packaging
 rejects dirty sources, mismatched versions, lightweight tags, and tags at another
-commit. Compiler/mini releases require a verified bootstrap.
+commit. Mini/language/bootstrap releases require a verified bootstrap. Compiler
+releases also require it except for explicitly labeled T0 prerelease previews.
+T0 previews record their stage and all implementation-source hashes and never
+claim self-hosting. Stable T0 compiler releases are rejected.
+Packaging compiles and runs the configured Mini smoke case from the extracted
+T0 distribution without dependencies. The manifest records its case/stream
+identities and emitted-program hashes separately from the self-hosting gate.
 The optional library uses `std-v*`; its unassigned version blocks release until
 the library exists. Supporting tools and libraries need not be self-hosted.
 

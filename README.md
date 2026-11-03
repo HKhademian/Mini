@@ -9,9 +9,9 @@ directly. Broad general-purpose features are outside this project's objective.
 The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 
-[T0](docs/compiler.md) implements the first language increment in direct Node
+[T0](docs/compiler.md) implements the reviewed language cases in direct Node
 TypeScript. The [language draft](docs/language.md) records the reviewed contract;
-pending cases identify features still awaiting compiler support.
+cases verify compilation, generated output, execution, and diagnostics.
 
 ## Self-hosting
 

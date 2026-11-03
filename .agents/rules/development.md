@@ -31,7 +31,8 @@
   when editor behavior changes; keep the registry, package, and lockfile aligned.
 - After approval, implement and verify the feature before the next proposal.
   Keep T0 support extremely granular: one feature, its indexed cases, and one
-  atomic commit. Never let drafts accumulate without compiler support.
+  atomic commit and annotated version tag. Never let drafts accumulate without
+  compiler support.
   Leave unresolved rules explicitly open.
 - Keep docs accurate about implemented, proposed, and unavailable capabilities.
   Document usage, runtime requirements, and changed contracts with the code.

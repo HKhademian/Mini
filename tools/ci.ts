@@ -21,7 +21,10 @@ switch (task) {
     process.stdout.write(run(process.execPath, ['--test', 'test/grammar.test.ts'], join(root, 'editors/vscode')));
     process.stdout.write(run(process.execPath, ['--test', 'tools/release.test.ts'], root));
     break;
-  case 'bench': mini('bench', '.cache/bench-ci.json', 'tooling.check'); break;
+  case 'bench':
+    mini('bench', '.cache/bench-ci.json', 'tooling.check');
+    mini('bench', '.cache/bench-t0-ci.json', 'compiler.bindings-emission');
+    break;
   case 'package': {
     const tag = process.env['GITHUB_EVENT_NAME'] === 'push' && process.env['GITHUB_REF_TYPE'] === 'tag'
       ? process.env['GITHUB_REF_NAME'] : undefined;

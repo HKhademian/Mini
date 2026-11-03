@@ -2,8 +2,9 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { root, run, selectRelease, sha256, versions } from './project.ts';
+import { compiler, compilerHash, CompilerStage, root, run, selectRelease, sha256, versions } from './project.ts';
 import { verifyBootstrap } from './verify.ts';
+import { CaseKind, caseIdentity, loadCase, verifyScenario } from './cases.ts';
 
 /** Build from source using the checkout's locked, locally installed packaging tool. */
 export function packageVscode(directory: string, output: string, tooling = directory) {
@@ -25,13 +26,16 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
   assert(run('git', ['status', '--porcelain'], directory).toString().trim() === '', 'release needs a clean checkout');
   const commit = run('git', ['rev-parse', 'HEAD'], directory).toString().trim();
   const current = versions(directory);
+  const active = compiler(directory);
   const releasedComponent = tag === undefined ? null : selectRelease(tag, current);
   if (tag !== undefined) {
     assert(run('git', ['cat-file', '-t', `refs/tags/${tag}`], directory).toString().trim() === 'tag', 'release tag must be annotated');
     assert.equal(run('git', ['rev-parse', `refs/tags/${tag}^{commit}`], directory).toString().trim(), commit);
   }
   const available = JSON.parse(readFileSync(join(directory, 'config/bootstrap.json'), 'utf8')) !== null;
-  const compilerRelease = releasedComponent !== null && ['mini', 'language', 'compiler', 'bootstrap'].includes(releasedComponent.component);
+  const t0Preview = releasedComponent?.component === 'compiler' && active.stage === CompilerStage.T0;
+  if (t0Preview) assert(releasedComponent.version.includes('-'), 'T0 previews require a prerelease version');
+  const compilerRelease = releasedComponent !== null && ['mini', 'language', 'compiler', 'bootstrap'].includes(releasedComponent.component) && !t0Preview;
   assert(available || !compilerRelease, 'this release requires a verified compiler bootstrap');
   mkdirSync(output, { recursive: true });
   assert(readdirSync(output).length === 0, 'release output directory must be empty');
@@ -45,10 +49,14 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     // No .git or node_modules: check the actual distribution, including its links.
     run(join(source, 'bin/mini-check'), ['--docs'], source);
     const bootstrap = available ? verifyBootstrap(source) : null;
+    const sample = active.stage === CompilerStage.T0 ? loadCase(join(source, active.example)) : null;
+    if (sample) assert([CaseKind.Sample, CaseKind.Example, CaseKind.Feature].some(kind => kind === sample.definition.kind), 'T0 smoke case must compile and run Mini');
+    const t0 = sample ? { identity: caseIdentity(sample), artifacts: sample.definition.cases.map(scenario => verifyScenario(sample, scenario, source)) } : null;
     const label = tag ?? `snapshot-${commit.slice(0, 12)}`;
-    const title = releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
+    const title = t0Preview ? 'Mini T0 compiler preview' : releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
     const vsix = releasedComponent?.component === 'vscode' ? packageVscode(source, output, directory) : null;
-    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent, node: process.version, bootstrap, vsix };
+    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent,
+      compiler: { ...active, hash: compilerHash(directory) }, node: process.version, bootstrap, t0, vsix };
     assert(!existsSync(join(source, 'RELEASE.json')), 'RELEASE.json is reserved for packaged metadata');
     const record = JSON.stringify(manifest, null, 2) + '\n';
     writeFileSync(join(source, 'RELEASE.json'), record);

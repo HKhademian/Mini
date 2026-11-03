@@ -19,7 +19,9 @@ column and remain tabs in the caret prefix. Parsing emits readable TS directly.
 
 Each increment implements one feature, enables its indexed JSON cases, checks
 generated code and execution, and commits before starting the next feature.
-Pending cases are the remaining work, not completed support.
+All currently reviewed cases are enabled. Future pending cases identify
+remaining work, not completed support. Verified component versions have
+annotated tags at their original feature commits.
 
 T0 is strict TypeScript. Mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
@@ -78,6 +80,8 @@ top-level, may call later definitions, and require a value return in this increm
 - `0.1.0-alpha.25`: process_exit(status).
 
 - `0.1.0-alpha.26`: write_error(text) to stderr.
+
+- `0.1.0-alpha.27`: verified source-distribution and preview-release integration.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

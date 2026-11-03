@@ -21,8 +21,9 @@ support increment advances its prerelease counter. Built-ins advance separately
 when primitive support changes.
 Language, compiler, and builtins have T0 development versions; bootstrap and std remain
 unassigned. Tool/CLI and
-implemented library releases can publish independently; language/compiler/
-bootstrap/mini releases require a verified compiler bootstrap. Reserving `std`
+implemented library and builtin releases can publish independently. T0 compiler
+prereleases are labeled previews; stable compiler, language, bootstrap, and mini
+releases require a verified compiler bootstrap. Reserving `std`
 does not introduce a library or select module/import syntax.
 
 Use `MAJOR.MINOR.PATCH`, optionally `-alpha.N`, `-beta.N`, or `-rc.N`.
@@ -36,6 +37,8 @@ version format. SemVer prerelease suffixes are not supported for this stream.
 Commit release preparation separately from implementation. An annotated tag
 must match its entity's recorded version and exact source commit. Never move
 or reuse published tags. Corrections get a new version.
+Tag each verified version increment on its atomic commit before the next feature.
+Tags created locally become GitHub release triggers when explicitly pushed.
 
 Every release includes the complete source snapshot and available tools and
 bootstrap. The manifest records all entity versions; bundling an entity does

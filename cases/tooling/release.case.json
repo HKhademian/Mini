@@ -49,7 +49,7 @@
       "name": "release-tagged",
       "args": [
         "dist/release",
-        "check-v0.1.0-alpha.1"
+        "check-v0.1.0-alpha.2"
       ],
       "stdin": {
         "text": ""
@@ -64,7 +64,7 @@
       "exitCode": 0,
       "workspace": "clean",
       "tag": {
-        "name": "check-v0.1.0-alpha.1",
+        "name": "check-v0.1.0-alpha.2",
         "annotated": true
       },
       "files": [
@@ -77,7 +77,7 @@
       "name": "release-lightweight",
       "args": [
         "dist/release",
-        "check-v0.1.0-alpha.1"
+        "check-v0.1.0-alpha.2"
       ],
       "stdin": {
         "text": ""
@@ -92,7 +92,7 @@
       "exitCode": 1,
       "workspace": "clean",
       "tag": {
-        "name": "check-v0.1.0-alpha.1",
+        "name": "check-v0.1.0-alpha.2",
         "annotated": false
       }
     },
@@ -151,6 +151,55 @@
       },
       "exitCode": 1,
       "workspace": "clean"
+    },
+    {
+      "name": "release-t0-preview",
+      "args": [
+        "dist/release",
+        "compiler-v0.1.0-alpha.27"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "release-clean.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "workspace": "clean",
+      "tag": {
+        "name": "compiler-v0.1.0-alpha.27",
+        "annotated": true
+      },
+      "files": [
+        "dist/release/manifest.json",
+        "dist/release/minilang-compiler-v0.1.0-alpha.27.tar.gz",
+        "dist/release/SHA256SUMS"
+      ]
+    },
+    {
+      "name": "release-foundation-needs-self-host",
+      "args": [
+        "dist/release",
+        "mini-v0.1.0-alpha.1"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "release-foundation.stderr"
+      },
+      "exitCode": 1,
+      "workspace": "clean",
+      "tag": {
+        "name": "mini-v0.1.0-alpha.1",
+        "annotated": true
+      }
     }
   ]
 }

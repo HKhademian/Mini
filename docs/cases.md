@@ -78,7 +78,7 @@ speculative cases outside the tiny supported subset.
 
 Include combination cases: functions containing loops and branches, expressions
 in arguments and conditions, and observable evaluation order. For example,
-[repeat](../cases/language/combination-repeat.case.json) combines bindings,
+[repeat](../cases/language/017-007-combination-repeat.case.json) combines bindings,
 functions, loops, branches, and expressions with several input/output pairs.
 Keep coverage representative: one case should check a distinct rule or
 interaction. Reuse scenarios and shared empty streams; avoid duplicate programs
@@ -132,4 +132,5 @@ architecture, source commit, entity versions, compiler hash, and case/source/
 stream hashes. Tool identities hash their command entrypoint. Timing includes
 process startup, IO, verification, and compilation
 for program cases. Compare like workloads and hosts. Current benchmark cases
-measure repository tools; there is no Mini compiler performance result yet.
+include repository tools and the real T0 binding-emission case. CI keeps both
+reports; they measure fresh-process wall time, not isolated lexer/parser speed.

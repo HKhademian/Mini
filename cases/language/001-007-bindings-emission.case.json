@@ -5,6 +5,7 @@
   "features": [
     "bindings"
   ],
+  "benchmark": { "warmups": 1, "samples": 5 },
   "cases": [
     {
       "stdin": {

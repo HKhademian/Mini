@@ -13,8 +13,10 @@
   For breaking syntax, complete the temporary bridge, source conversion, and
   verified bootstrap promotion in one atomic migration. See
   [language evolution](../../docs/evolving-language.md).
-- Do not amend others' commits or rewrite published history. Create and push
-  release tags only when the user authorizes that release.
+- Tag every verified component version on its atomic commit before the next
+  feature. Use annotated NAME-vVERSION tags and never move or reuse published
+  tags. Do not amend others' commits or rewrite published history. Push release
+  tags only when publishing is authorized.
 
 Example: a compiler fix, its regression case, and its contract update belong
 together; an unrelated CI improvement belongs in a separate commit.

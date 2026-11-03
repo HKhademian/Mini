@@ -43,7 +43,8 @@ export function checkProject(): void {
     }
   }
 documents(root);
-if (JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) === null) {
+const bootstrap = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
+if (bootstrap === null) {
   assert.equal(compiler().stage, CompilerStage.T0);
   assert(existsSync(join(root, compiler().entry)), 'T0 compiler missing');
   assert(current.language !== null && current.compiler !== null, 'assign language/compiler versions');
@@ -51,6 +52,7 @@ if (JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) === nu
   console.log('Repository checks passed. T0 available; self-hosted bootstrap unavailable.');
 } else {
   assert.equal(compiler().stage, CompilerStage.SelfHosted);
+  assert.equal(compiler().entry, bootstrap.compiler, 'active compiler must be the generated bootstrap');
   verifyBootstrap(root);
   console.log('Repository checks and bootstrap fixed point passed.');
 }
