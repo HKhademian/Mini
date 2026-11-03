@@ -90,11 +90,6 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
   emitting text, and reporting an error are naturally procedures. Supporting
   them avoids meaningless returned values. This is a small next review candidate;
   its explicit return and fallthrough rules still need to be chosen.
-- **Growable lists.** `list_new()` creates an empty list, and the accepted list
-  operations read host-produced text lists. Compiler-owned tables still need
-  growth and mutation if represented as lists. Text-element lists could be a
-  first step; number or token elements should follow actual usage. Removal,
-  arbitrary insertion, and generic type syntax are not implied.
 - **Named kind constants.** Token, value, and stage kinds should have one shared
   definition rather than repeated string literals. Existing bindings can name
   values; immutability or enum syntax should earn its cost separately.
@@ -110,8 +105,8 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
 Records, structs, and classes are outside Mini's intended scope, rather than
 deferred additions. Text-keyed maps can hold named compiler data such as token
 information without dedicated field declarations or construction syntax.
-Collection element/value rules and missing-value behavior remain open; maps
-and mutable compiler-owned lists are not implemented yet.
+Lists can now be constructed, grown, and mutated, storing scalars and other
+lists. Missing-position values remain open, and maps are not implemented yet.
 
 Lists and maps can share implementation machinery, but their observable rules
 differ. Lists have positional indices, a sequence length, growth, and indexing
@@ -124,11 +119,11 @@ can be adequate initially; a general collection/type system is unnecessary for
 the first compiler port.
 
 Capacity reservation and logical growth are different. On a fresh list, setting
-nonnegative index `r` would make its length `r + 1`; it cannot replace reserving
+nonnegative index `r` makes its length `r + 1`; it cannot replace reserving
 capacity while keeping length zero. To obtain logical length `r` by assignment,
-set index `r - 1` only when `r > 0`. This sets the last element; it does not by
-itself choose the values of skipped positions. Growth by assignment cannot shrink
-an existing list either. List mutation is not implemented yet.
+set index `r - 1`. On a fresh list, the negative-index no-op rule keeps it empty
+when `r <= 0`. This sets the last element; it does not choose values for skipped
+positions. Growth by assignment cannot shrink an existing list either.
 
 Keeping only `list_new()` and growing through assignment is an option under
 discussion. It would omit explicit capacity control rather than emulate it.

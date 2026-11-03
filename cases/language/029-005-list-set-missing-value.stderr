@@ -1,0 +1,3 @@
+029-005-list-set-missing-value.mini:1:1: expected 3 arguments
+list_set(list_new(), 0);
+^

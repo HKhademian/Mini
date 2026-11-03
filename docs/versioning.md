@@ -54,9 +54,9 @@ changes. Assignment does not mean a release was published:
 
 ```text
 mini       0.1.0-alpha.1   group unverified; no group tag
-language   0.1.0-alpha.3   specification / accepted draft
-compiler   0.1.0-alpha.28  handwritten T0
-builtins   0.1.0-alpha.12
+language   0.1.0-alpha.4   specification / accepted draft
+compiler   0.1.0-alpha.29  handwritten T0
+builtins   0.1.0-alpha.13
 cli        0.1.0-alpha.2
 check      0.1.0-alpha.2
 test       0.1.0-alpha.2

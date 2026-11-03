@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-wrong-target",
+  "kind": "feature",
+  "source": "029-003-list-set-wrong-target.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "tiv:ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 # Parameter passing proposal
 
 Status: under review, not an accepted language decision. T0 currently emits
-ordinary TypeScript parameters. Maps and list mutation are unavailable, so the
-collection cases below remain dependent on their implementations.
+ordinary TypeScript parameters. List mutation is available; maps remain
+unavailable. The review cases stay pending until the passing rule is accepted.
 
 ## Proposed rule
 

@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-no-result",
+  "kind": "reject",
+  "source": "029-007-list-set-no-result.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "029-007-list-set-no-result.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

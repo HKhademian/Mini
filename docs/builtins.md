@@ -22,10 +22,17 @@ See [the draft](language.md) for the initial success contract.
 
 The accepted built-in `process_args()` returns a text list for the generated
 compiler's command interface. Shared built-ins `list_length(items)` and
-`list_at(items, index)` expose the elements. This starts with read-only access;
+`list_at(items, index)` expose the elements.
 `list_new()` now creates a fresh empty list of length 0. T0 supports its
-zero-argument form only. Optional reserve, mutation, and broader element types
-remain for later increments; see the [language contract](language.md).
+zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
+supports negative indices from the end, and ignores targets that are not lists.
+Indices still below zero after adjustment are no-ops. Lists can hold scalar
+values and other lists; `list_at` returns the actual stored value.
+Reserve and missing-position values remain open; see the [language contract](language.md).
+
+T0 emits the list setter's small host adapter once when used. It provides array
+mutation, not compiler logic. The generated helper name uses `$`, which Mini
+identifiers cannot contain, to avoid collisions with Mini source names.
 
 The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal

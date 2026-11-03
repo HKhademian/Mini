@@ -196,9 +196,9 @@ file_write("output.txt", source);
 These operations provide file access; parsing and emission stay in Mini
 compiler code.
 
-## Accepted operations: text lists and process arguments
+## Accepted operations: lists and process arguments
 
-Use shared list operations for a text list returned by the host:
+Use shared list operations for a list returned by the host:
 
 ```text
 var args = process_args();
@@ -209,18 +209,18 @@ while (position < list_length(args)) {
 }
 ```
 
-- `process_args()` returns a list of program arguments, excluding Node and
+- `process_args()` returns a list initially containing text arguments, excluding Node and
   the script path. It is a primitive built-in.
 - `list_length(items)` returns the number of elements; an empty list has length 0.
 - `list_at(items, index)` returns one element, using a zero-based index.
-  The caller supplies an integer with `0 <= index < list_length(items)`.
+  The caller supplies an integer with `0 <= index < list_length(items)` and reads
+  an assigned position. It returns the stored value, which need not be text.
 - Empty arguments and spaces are preserved. Flag-like text is ordinary text;
   these primitives do not parse options.
 
-Start with read-only access to lists of text. Lists can be held in bindings and
-passed to functions. Empty-list construction follows below; mutation and broader
-element-type rules remain open. Equality keeps its existing scalar contract.
-The list operations are built-ins that can serve future list-producing APIs too.
+Lists can be held in bindings and passed to functions. They can store numbers,
+booleans, text, and other lists using `list_set` below. Equality keeps its existing
+scalar contract. The list operations can serve future list-producing APIs too.
 
 For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
 three elements: `compile`, `source.mini`, and `result.ts`, in that order.
@@ -236,12 +236,40 @@ var count = list_length(items);
 
 - `list_new()` returns a fresh empty list; its length is 0.
 - The list can be stored in a binding, passed to a function, and returned.
-- It uses the existing list kind. This step adds no element or mutation rules.
+- It uses the shared list kind.
 
-T0 emits a new array for each call. This increment supports the zero-argument
-form only. The selected collection direction includes an optional reserve size
-and list assignment; those operations are not implemented yet. Missing elements,
-mixed/nested values, and maps still require their own reviewed contracts.
+T0 emits a new array for each call. Only the zero-argument form is implemented.
+Explicit reserve remains under discussion. Missing elements and maps still
+require their own reviewed contracts.
+
+## Accepted operation: list assignment
+
+```text
+var items = list_new();
+list_set(items, 0, "first");
+list_set(items, -1, "replacement");
+```
+
+- `list_set(items, index, value)` assigns a value and produces no result.
+- If `items` is not a list, the operation does nothing, without an error or
+  conversion. All three arguments still evaluate once, from left to right.
+- The caller supplies an integer index. For a negative index, add the current
+  list length. If the adjusted index is still negative, do nothing.
+- An index within the list replaces that position. An index at or beyond its
+  end grows the length to `index + 1` and assigns that position.
+- Stored values retain their kind. Lists can contain different kinds and other
+  lists, without converting stored values to text.
+- Only assigned positions can be read in this increment. Reading skipped
+  positions and out-of-range positions remains outside the contract. No zero or
+  null default is selected by growth.
+
+On an empty list, assigning index `-1` or `-2` is a no-op. The same rule removes
+the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empty
+for `r <= 0`. The existing reader is `list_at`; no `list_get` alias is introduced.
+
+The selected direction for future `map_set` likewise makes a non-map target a
+no-op. Map operations are not implemented yet. Function parameter rebinding and
+the broader passing contract remain under review separately.
 
 ## Accepted operation: process termination
 

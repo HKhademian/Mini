@@ -28,6 +28,9 @@ explicit internal `Unknown` kind, and generated functions currently use ordinary
 unannotated parameters. This is not a full Mini typechecker. Functions are
 top-level, may call later definitions, and require a value return in this increment.
 
+Lists store runtime values. T0 uses its internal `Unknown` kind for the result
+of `list_at`; it does not infer an element kind from preceding mutations.
+
 - `0.1.0-alpha.1`: initialized bindings with text, number, boolean, and
   existing-binding values.
 
@@ -84,6 +87,9 @@ top-level, may call later definitions, and require a value return in this increm
 - `0.1.0-alpha.27`: verified source-distribution and preview-release integration.
 
 - `0.1.0-alpha.28`: list_new() creates empty lists.
+
+- `0.1.0-alpha.29`: list_set() grows and updates lists, with negative-index and
+  non-list no-ops; lists retain scalar and nested-list values.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

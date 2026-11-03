@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-values",
+  "kind": "feature",
+  "source": "029-004-list-set-values.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "nested"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

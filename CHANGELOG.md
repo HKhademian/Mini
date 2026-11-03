@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.29 / builtins alpha.13: list mutation with growth and uniform no-op rules.
 - Investigate reserve versus list growth and exact versus defaulted argument counts.
 - Separate parameter-sharing semantics from target-specific value representation.
 - Propose local parameter rebinding and shared collections, with pending review cases.

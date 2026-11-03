@@ -3,7 +3,7 @@
   "kind": "feature",
   "source": "028-004-parameter-list-sharing.mini",
   "features": ["parameters.sharing", "functions", "list.new", "list.at", "list.set"],
-  "pending": "Parameter-passing proposal is under review; list_set is not implemented",
+  "pending": "Parameter-passing proposal is under review",
   "cases": [
     {
       "name": "mutation-alias-and-rebinding",

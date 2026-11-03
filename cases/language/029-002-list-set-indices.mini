@@ -1,0 +1,16 @@
+var items = list_new();
+list_set(items, 0, "first");
+list_set(items, 1, "last");
+list_set(items, 1, "replaced");
+if (list_length(items) != 2 || list_at(items, 1) != "replaced") {
+    process_exit(1);
+}
+list_set(items, -1, "end");
+list_set(items, -2, "start");
+list_set(items, -3, "ignored");
+if (list_length(items) != 2) {
+    process_exit(1);
+}
+write(list_at(items, 0));
+write(":");
+write(list_at(items, 1));

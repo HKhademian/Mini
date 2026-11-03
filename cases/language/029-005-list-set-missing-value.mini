@@ -1,0 +1,1 @@
+list_set(list_new(), 0);

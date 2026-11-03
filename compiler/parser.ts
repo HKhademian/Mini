@@ -7,6 +7,7 @@ class Parser {
   position = 0;
   variables = new Map<string, ValueKind>();
   imports = new Set<string>();
+  helpers = new Set<string>();
   functions = new Map<string, FunctionInfo>();
   currentFunction?: FunctionInfo;
   depth = 0;
@@ -60,7 +61,7 @@ class Parser {
     while (this.token().text === '==' || this.token().text === '!=') {
       const operator = this.take();
       const right = this.comparison();
-      if (left.kind === ValueKind.Void || right.kind === ValueKind.Void || left.kind === ValueKind.TextList || right.kind === ValueKind.TextList || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
+      if (left.kind === ValueKind.Void || right.kind === ValueKind.Void || left.kind === ValueKind.List || right.kind === ValueKind.List || (left.kind !== ValueKind.Unknown && right.kind !== ValueKind.Unknown && left.kind !== right.kind)) fail(operator, 'equality needs matching scalar kinds');
       left = { code: `(${left.code} ${operator.text === '==' ? '===' : '!=='} ${right.code})`, kind: ValueKind.Boolean };
     }
     return left;
@@ -131,9 +132,14 @@ class Parser {
     }
     if (!builtin) return { code: `${name.text}(${args.map(arg => arg.code).join(', ')})`, kind: user!.result };
     for (const [index, kind] of builtin.parameters.entries()) {
+      if (kind === ValueKind.Unknown) {
+        if (args[index]!.kind === ValueKind.Void) fail(name, 'expected value argument');
+        continue;
+      }
       if (args[index]!.kind !== ValueKind.Unknown && args[index]!.kind !== kind) fail(name, 'expected ' + kind + ' argument');
     }
     for (const dependency of builtin.imports) this.imports.add(dependency);
+    if (builtin.helper) this.helpers.add(builtin.helper);
     return { code: builtin.emit(args.map(arg => arg.code)), kind: builtin.result };
   }
   statement(): string {
@@ -232,7 +238,7 @@ class Parser {
     let output = '';
     while (this.token().kind !== TokenKind.End) output += this.statement();
     const imports = this.imports.size ? `import { ${[...this.imports].sort().join(', ')} } from "node:fs";\n` : '';
-    return '"use strict";\n' + imports + output;
+    return '"use strict";\n' + imports + [...this.helpers].sort().join('') + output;
   }
 }
 

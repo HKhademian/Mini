@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-void-value",
+  "kind": "reject",
+  "source": "029-006-list-set-void-value.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "029-006-list-set-void-value.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-missing-value",
+  "kind": "reject",
+  "source": "029-005-list-set-missing-value.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "029-005-list-set-missing-value.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

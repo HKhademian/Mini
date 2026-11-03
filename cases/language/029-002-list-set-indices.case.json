@@ -1,0 +1,23 @@
+{
+  "id": "language.list-set-indices",
+  "kind": "feature",
+  "source": "029-002-list-set-indices.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "start:end"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

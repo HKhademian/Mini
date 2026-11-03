@@ -1,0 +1,62 @@
+{
+  "id": "language.list-set-growth",
+  "kind": "feature",
+  "source": "029-001-list-set-growth.mini",
+  "features": [
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "negative-r",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "zero-r",
+      "stdin": {
+        "text": "a"
+      },
+      "stdout": {
+        "text": "ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "one-r",
+      "stdin": {
+        "text": "aa"
+      },
+      "stdout": {
+        "text": "ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "growth-with-gaps",
+      "stdin": {
+        "text": "aaaa"
+      },
+      "stdout": {
+        "text": "ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}
