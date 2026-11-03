@@ -5,6 +5,13 @@ import * as vscode from 'vscode';
 type Position = { line: number; character: number };
 type Range = { start: Position; end: Position };
 type TextEdit = { range: Range; newText: string };
+type CompletionItem = {
+  label: string;
+  kind: number;
+  detail?: string;
+  documentation?: { kind: string; value: string };
+  insertText: string;
+};
 type LspDiagnostic = { range: Range; severity?: number; source?: string; message: string };
 type Message = { jsonrpc: '2.0'; id?: number; method?: string; params?: unknown; result?: unknown; error?: { code: number; message: string } };
 
@@ -145,6 +152,32 @@ class MiniClient implements vscode.Disposable {
     ));
   }
 
+  async hover(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.Hover | null> {
+    const result = await this.request('textDocument/hover', {
+      textDocument: { uri: document.uri.toString() },
+      position: { line: position.line, character: position.character },
+    }) as { contents: { kind: string; value: string }; range: Range } | null;
+    if (result === null) return null;
+    const range = new vscode.Range(result.range.start.line, result.range.start.character,
+      result.range.end.line, result.range.end.character);
+    return new vscode.Hover(new vscode.MarkdownString(result.contents.value), range);
+  }
+
+  async completion(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.CompletionItem[]> {
+    const result = await this.request('textDocument/completion', {
+      textDocument: { uri: document.uri.toString() },
+      position: { line: position.line, character: position.character },
+    }) as { items: CompletionItem[] } | null;
+    if (result === null) return [];
+    return result.items.map(item => {
+      const completion = new vscode.CompletionItem(item.label, item.kind as vscode.CompletionItemKind);
+      if (item.detail !== undefined) completion.detail = item.detail;
+      if (item.documentation !== undefined) completion.documentation = new vscode.MarkdownString(item.documentation.value);
+      completion.insertText = item.insertText;
+      return completion;
+    });
+  }
+
   async stop(): Promise<void> {
     if (this.child === undefined) return;
     const child = this.child;
@@ -203,6 +236,12 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }),
     vscode.languages.registerDocumentFormattingEditProvider('mini', {
       provideDocumentFormattingEdits: document => instance.format(document),
+    }),
+    vscode.languages.registerHoverProvider('mini', {
+      provideHover: (document, position) => instance.hover(document, position),
+    }),
+    vscode.languages.registerCompletionItemProvider('mini', {
+      provideCompletionItems: (document, position) => instance.completion(document, position),
     }),
   );
 }

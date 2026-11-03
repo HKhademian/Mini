@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- VS Code extension 0.3.2: expose language-server hover and completion through
+  VS Code's hover and completion providers.
 - Language server 0.1.0-alpha.2: add hover for functions, variables, and builtins
   with `///` documentation, and prefix-filtered completion for declarations,
   builtins, and keywords. Completion is suppressed in comments and text.

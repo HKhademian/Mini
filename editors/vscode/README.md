@@ -58,11 +58,11 @@ npm ci
 npm run check
 npm run build
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.3.0.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.3.2.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.3.0-v0.3.0.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.3.0-v0.3.2.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 

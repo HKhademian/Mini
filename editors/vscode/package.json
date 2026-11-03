@@ -2,7 +2,7 @@
   "name": "mini",
   "displayName": "Mini",
   "description": "Mini syntax highlighting, file icons, diagnostics, and formatting.",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "publisher": "mini-local",
   "license": "UNLICENSED",
   "type": "module",
