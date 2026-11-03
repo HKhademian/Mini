@@ -1,0 +1,1 @@
+write(list_to_text(list_new(), 1));

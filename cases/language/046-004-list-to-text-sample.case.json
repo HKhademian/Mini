@@ -1,0 +1,26 @@
+{
+  "id": "language.list-to-text-sample",
+  "kind": "sample",
+  "source": "../../samples/018-list-to-text.mini",
+  "features": [
+    "list.to-text",
+    "list.new",
+    "list.set",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "join",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "one | two | three\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

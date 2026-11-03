@@ -67,6 +67,18 @@ export const builtins = new Map<string, Builtin>([
     return items.slice();
 }
 `, emit: args => `${listCopy}(${args[0]})` }],
+  ['list_to_text', { parameters: [ValueKind.List, ValueKind.Text], result: ValueKind.Text,
+    imports: [], helper: `function $mini_list_to_text(items, separator) {
+    if (!Array.isArray(items) || typeof separator !== "string") return "";
+    let output = "";
+    for (let index = 0; index < items.length; index++) {
+        if (index > 0) output += separator;
+        const value = items[index];
+        if (typeof value === "string") output += value;
+    }
+    return output;
+}
+`, emit: args => `$mini_list_to_text(${args[0]}, ${args[1]})` }],
   ['write_error', { parameters: [ValueKind.Text], result: ValueKind.Void,
     imports: ['writeSync'], emit: args => `writeSync(2, ${args[0]})` }],
   ['process_exit', { parameters: [ValueKind.Number], result: ValueKind.Void,

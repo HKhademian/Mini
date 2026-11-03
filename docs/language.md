@@ -307,6 +307,17 @@ var copy = list_copy(items);
 - A non-list target returns an empty list.
 - The source list is unchanged. Gaps remain readable as numeric zero.
 
+## Accepted operation: list text joining
+
+```text
+var text = list_to_text(items, ", ");
+```
+
+- `list_to_text(items, separator)` joins text elements with a text separator.
+- Non-text elements contribute empty text; separators are still placed between
+  positions.
+- A non-list target or non-text separator returns empty text.
+
 ## Accepted operation: list assignment
 
 ```text

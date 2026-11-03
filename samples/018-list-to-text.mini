@@ -1,0 +1,6 @@
+/// Join a list of words with a visible separator.
+var words = list_new();
+list_set(words, 0, "one");
+list_set(words, 1, "two");
+list_set(words, 2, "three");
+write(list_to_text(words, " | ") + "\n");

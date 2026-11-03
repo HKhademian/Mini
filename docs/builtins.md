@@ -94,6 +94,9 @@ identifiers cannot contain, to avoid collisions with Mini source names.
 
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
+`list_to_text(items, separator)` joins text elements with a text separator.
+Non-text elements contribute empty text; a non-list target or non-text separator
+returns empty text.
 
 `map_new()` creates a fresh empty map with no arguments. T0 uses ordinary objects
 with a shared empty prototype; maps can be stored in lists and passed through

@@ -1,0 +1,23 @@
+{
+  "id": "language.list-to-text-wrong-separator",
+  "kind": "reject",
+  "source": "046-003-list-to-text-wrong-separator.mini",
+  "features": [
+    "list.to-text"
+  ],
+  "cases": [
+    {
+      "name": "number-separator",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "046-003-list-to-text-wrong-separator.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

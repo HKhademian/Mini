@@ -27,3 +27,4 @@ node samples/009-list-mutation.mini.ts
 - [015-text-split.mini](015-text-split.mini): Read comma-separated text and print each field on its own line. [Cases](../cases/language/043-005-text-split-sample.case.json).
 - [016-map-copy.mini](016-map-copy.mini): Copy a map and show that changing the copy leaves the original intact. [Cases](../cases/language/044-004-map-copy-sample.case.json).
 - [017-list-copy.mini](017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Cases](../cases/language/045-004-list-copy-sample.case.json).
+- [018-list-to-text.mini](018-list-to-text.mini): Join a list of words with a visible separator. [Cases](../cases/language/046-004-list-to-text-sample.case.json).

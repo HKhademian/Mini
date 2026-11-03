@@ -7,8 +7,8 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.3.0-v0.3.0-alpha.6
-builtins-v0.3.0-v0.3.0-alpha.6
+compiler-v0.3.0-v0.3.0-alpha.7
+builtins-v0.3.0-v0.3.0-alpha.7
 vscode-v0.3.0-v0.3.1
 ```
 
@@ -49,9 +49,9 @@ publication or self-hosting. Check the registry for later increments:
 
 ```text
 mini-v0.3.0-v0.1.0-alpha.2
-lang-v0.3.0-v0.3.0-alpha.6
-compiler-v0.3.0-v0.3.0-alpha.6
-builtins-v0.3.0-v0.3.0-alpha.6
+lang-v0.3.0-v0.3.0-alpha.7
+compiler-v0.3.0-v0.3.0-alpha.7
+builtins-v0.3.0-v0.3.0-alpha.7
 cli-v0.3.0-v0.1.0-alpha.5
 check-v0.3.0-v0.1.0-alpha.4
 format-v0.3.0-v0.1.0-alpha.1

@@ -1,0 +1,25 @@
+{
+  "id": "language.list-to-text",
+  "kind": "feature",
+  "source": "046-001-list-to-text.mini",
+  "features": [
+    "list.to-text",
+    "list.new",
+    "list.set"
+  ],
+  "cases": [
+    {
+      "name": "join",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

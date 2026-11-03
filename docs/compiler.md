@@ -201,6 +201,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.3.0-alpha.6`: `list_copy` returns a shallow list copy.
 
+- `0.3.0-alpha.7`: `list_to_text` joins text elements with a separator; M1 uses
+  it instead of a separate join helper.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.
