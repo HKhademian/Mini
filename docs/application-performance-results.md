@@ -2,7 +2,9 @@
 
 Historical native-Map baseline. The later
 [object-backed runtime](map-runtime.md) changes generated storage; the recorded
-samples below retain their original source and version identities.
+samples below retain their original source and version identities. The
+[M1/T1 evidence](m1-performance-results.md) records a T0/T1 run of this suite:
+all generated applications were byte-identical.
 
 Measured on 2026-11-03 with Node.js, CPU details omitted, platform details omitted. The
 [suite and method](application-performance.md) were committed as `2d8b315` before

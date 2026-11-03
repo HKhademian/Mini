@@ -8,7 +8,8 @@ This is the historical native-Map baseline. The current
 with a different representation and no per-write size counter.
 The later [application suite](application-performance.md) adds paired complete
 operations, CPU measurements, and per-process memory without correctness checks
-inflating the cold application RSS reading.
+inflating the cold application RSS reading. The [M1/T1 evidence](m1-performance-results.md)
+runs this audit against the candidate and records compiler and self-build costs.
 
 ## What emission adds
 

@@ -94,11 +94,12 @@ decisions; they must not remain in handwritten TypeScript helpers.
 3. **Fixed point and ordinary execution.** The focused check produces
    Compiler1 with T0, Compiler2 with Compiler1, and Compiler3 with Compiler2;
    all three are runnable and byte-identical.
-4. **Compiler performance.** Follow the [generated-code audit](runtime-performance.md).
-   Compare T0 and the actual candidate on the compiler source, representative
-   larger inputs, and complete self-builds, including cold time and peak memory.
-   Investigate material regressions before retiring T0; primitive microbenchmarks
-   and byte equality alone do not establish a useful replacement.
+4. **Compiler performance.** Measured in the [M1/T1 evidence](m1-performance-results.md).
+   T1 emits identical bytes and passes the complete active case corpus. Its
+   self-build wall time is within a few percent with about 5% higher RSS, while
+   large synthetic sources compile about 1.6–1.7x slower. Investigate those
+   compile-time regressions before retiring T0; byte equality alone does not
+   establish a useful replacement.
 5. **Bootstrap promotion.** Ship the matching Mini source and generated
    `bootstrap/compiler.ts`; assign the bootstrap version and configure the
    active compiler/source identities. Update affected check/release expectations,
