@@ -1,0 +1,3 @@
+001-006-expressions-unknown-escape.mini:1:15: unknown text escape
+var output = "\q";
+              ^

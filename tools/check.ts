@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { root, versions } from './project.ts';
+import { compiler, CompilerStage, root, versions } from './project.ts';
 import { verifyBootstrap } from './verify.ts';
-import { loadCases } from './cases.ts';
+import { CaseKind, loadCases } from './cases.ts';
 
 function documents(directory: string): void {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -34,7 +34,7 @@ export function checkProject(): void {
   assert.equal(Number(process.versions.node.split('.')[0]), 24, 'use Node 24; see .node-version');
   assert(Number(process.versions.node.split('.')[1]) >= 16, 'use Node 24.16.0 or newer in the 24.x line');
   const fixtures = loadCases();
-  const covered = new Set(fixtures.flatMap(item => item.definition.kind === 'tool' ? [] : [resolve(dirname(item.path), item.definition.source)]));
+  const covered = new Set(fixtures.flatMap(item => item.definition.kind === CaseKind.Tool ? [] : [resolve(dirname(item.path), item.definition.source)]));
   for (const directory of ['samples', 'examples']) {
     const path = join(root, directory);
     if (!existsSync(path)) continue;
@@ -44,9 +44,13 @@ export function checkProject(): void {
   }
 documents(root);
 if (JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) === null) {
-  for (const component of ['language', 'compiler', 'bootstrap'] as const) assert.equal(current[component], null);
-  console.log('Repository checks passed. Bootstrap unavailable (not implemented).');
+  assert.equal(compiler().stage, CompilerStage.T0);
+  assert(existsSync(join(root, compiler().entry)), 'T0 compiler missing');
+  assert(current.language !== null && current.compiler !== null, 'assign language/compiler versions');
+  assert.equal(current.bootstrap, null);
+  console.log('Repository checks passed. T0 available; self-hosted bootstrap unavailable.');
 } else {
+  assert.equal(compiler().stage, CompilerStage.SelfHosted);
   verifyBootstrap(root);
   console.log('Repository checks and bootstrap fixed point passed.');
 }

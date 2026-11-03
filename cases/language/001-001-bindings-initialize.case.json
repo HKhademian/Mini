@@ -1,11 +1,10 @@
 {
-  "id": "language.expressions-values",
-  "kind": "compile",
-  "source": "expressions-values.mini",
+  "id": "language.bindings-initialize",
+  "kind": "feature",
+  "source": "001-001-bindings-initialize.mini",
   "features": [
-    "expressions.values"
+    "bindings"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "default",

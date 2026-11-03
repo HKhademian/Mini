@@ -3,13 +3,13 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { root, run, sha256, versions } from './project.ts';
-import { caseIdentity, loadCase, verifyScenario } from './cases.ts';
+import { CaseKind, caseIdentity, loadCase, verifyScenario } from './cases.ts';
 
 type Bootstrap = { compiler: string; source: string; example: string };
 
 export function verifyBootstrap(directory: string) {
   const config = JSON.parse(readFileSync(join(directory, 'config/bootstrap.json'), 'utf8')) as Bootstrap | null;
-  assert(config !== null, 'Bootstrap unavailable: implement the compiler and populate bootstrap.json first.');
+  assert(config !== null, 'Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.');
   const current = versions(directory);
   for (const component of ['language', 'compiler', 'bootstrap'] as const) {
     assert(current[component] !== null, `assign the ${component} version before verifying the bootstrap`);
@@ -36,7 +36,7 @@ export function verifyBootstrap(directory: string) {
       previous = next;
     }
     const example = loadCase(resolve(directory, config.example));
-    assert.equal(example.definition.kind, 'example');
+    assert.equal(example.definition.kind, CaseKind.Example);
     const artifacts = example.definition.cases.map(scenario => verifyScenario(example, scenario, directory, previous));
     return { source: sha256(source), compiler: sha256(seed), generations, example: caseIdentity(example), artifacts };
   } finally {

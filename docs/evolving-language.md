@@ -5,7 +5,7 @@ language in small increments, rewriting the compiler to match as you go. Each
 completed increment ships a compiler that can compile its own current source.
 Supporting tools can remain TypeScript.
 
-This is mini's main use. The first Mini compiler is not implemented yet; the
+This is mini's main use. T0 is being implemented in [small increments](compiler.md); the
 workflow below describes how to use that foundation once available.
 
 ## Change syntax without keeping both forms

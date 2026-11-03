@@ -1,14 +1,13 @@
 {
-  "id": "language.bindings-initialize",
-  "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "bindings-initialize.mini",
+  "id": "language.position-bindings",
+  "kind": "feature",
+  "source": "001-009-position-bindings.mini",
   "features": [
-    "bindings"
+    "bindings",
+    "lexer.positions"
   ],
   "cases": [
     {
-      "name": "default",
       "stdin": {
         "file": "empty.stdin"
       },
@@ -18,7 +17,8 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "name": "default"
     }
   ]
 }

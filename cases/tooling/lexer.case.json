@@ -1,0 +1,27 @@
+{
+  "id": "compiler.tokens",
+  "kind": "tool",
+  "tool": "mini-compile",
+  "features": [
+    "lexer.positions"
+  ],
+  "cases": [
+    {
+      "name": "positioned-tokens",
+      "args": [
+        "--tokens",
+        "cases/language/001-009-position-bindings.mini"
+      ],
+      "stdin": {
+        "file": "../language/empty.stdin"
+      },
+      "stdout": {
+        "file": "lexer.stdout.json"
+      },
+      "stderr": {
+        "file": "../language/empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

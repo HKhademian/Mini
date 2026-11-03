@@ -3,9 +3,15 @@ import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
-import { root, run, sha256 } from './project.ts';
+import { compiler, root, run, sha256 } from './project.ts';
 
 export type Stream = ({ text: string } | { bytes: number[] } | { file: string }) & { hash?: string };
+export const CaseKind = {
+  Tool: 'tool', Feature: 'feature', Reject: 'reject', Compile: 'compile', Sample: 'sample', Example: 'example',
+} as const;
+export type CaseKind = typeof CaseKind[keyof typeof CaseKind];
+export const WorkspaceKind = { Clean: 'clean', Dirty: 'dirty' } as const;
+export type WorkspaceKind = typeof WorkspaceKind[keyof typeof WorkspaceKind];
 export type Scenario = {
   name: string;
   args?: string[];
@@ -16,7 +22,7 @@ export type Scenario = {
   artifact?: Stream;
   inputFiles?: Record<string, Stream>;
   outputFiles?: Record<string, Stream>;
-  workspace?: 'clean' | 'dirty';
+  workspace?: WorkspaceKind;
   tag?: { name: string; annotated: boolean };
   files?: string[];
 };
@@ -27,8 +33,8 @@ export type Case = {
   cases: Scenario[];
   benchmark?: { warmups: number; samples: number };
 } & (
-  { kind: 'tool'; tool: string; source?: never } |
-  { kind: 'feature' | 'reject' | 'compile' | 'sample' | 'example'; source: string; tool?: never }
+  { kind: typeof CaseKind.Tool; tool: string; source?: never } |
+  { kind: Exclude<CaseKind, typeof CaseKind.Tool>; source: string; tool?: never }
 );
 export type Fixture = { path: string; definition: Case };
 
@@ -55,9 +61,9 @@ export function loadCase(path: string): Fixture {
   const file = resolve(path);
   const spec = JSON.parse(readFileSync(file, 'utf8')) as Case;
   assert(typeof spec.id === 'string' && spec.id.length > 0, 'case ID required');
-  assert(['tool', 'feature', 'reject', 'compile', 'sample', 'example'].includes(spec.kind), 'invalid case kind');
-  assert(spec.pending === undefined || (spec.kind !== 'tool' && typeof spec.pending === 'string' && spec.pending.trim().length > 0), 'pending needs a language case and reason');
-  if (spec.kind === 'tool') {
+  assert(Object.values(CaseKind).includes(spec.kind), 'invalid case kind');
+  assert(spec.pending === undefined || (spec.kind !== CaseKind.Tool && typeof spec.pending === 'string' && spec.pending.trim().length > 0), 'pending needs a language case and reason');
+  if (spec.kind === CaseKind.Tool) {
     assert(spec.source === undefined, 'tool cases name a tool, not a case executable');
     assert(typeof spec.tool === 'string' && !spec.tool.includes('/') && existsSync(join(root, 'bin', spec.tool)), 'unknown tool');
   } else {
@@ -76,7 +82,7 @@ export function loadCase(path: string): Fixture {
     for (const key of ['inputFiles', 'outputFiles'] as const) {
       const files = scenario[key];
       if (files === undefined) continue;
-      assert(['feature', 'sample', 'example'].includes(spec.kind), 'file fixtures need a runnable Mini case');
+      assert(([CaseKind.Feature, CaseKind.Sample, CaseKind.Example] as CaseKind[]).includes(spec.kind), 'file fixtures need a runnable Mini case');
       assert(typeof files === 'object' && files !== null && !Array.isArray(files), 'file fixtures must be an object');
       for (const [name, value] of Object.entries(files)) {
         assert(name.length > 0 && !isAbsolute(name) && !name.split(/[\\/]/).includes('..'), 'file fixture paths must stay inside the case workspace');
@@ -84,10 +90,10 @@ export function loadCase(path: string): Fixture {
       }
     }
     if (scenario.artifact !== undefined) {
-      assert(spec.kind === 'compile', 'only compile cases compare generated artifacts');
+      assert(spec.kind === CaseKind.Compile, 'only compile cases compare generated artifacts');
       stream(scenario.artifact, dirname(file));
     }
-    assert(scenario.workspace === undefined || (spec.kind === 'tool' && ['clean', 'dirty'].includes(scenario.workspace)), 'invalid workspace');
+    assert(scenario.workspace === undefined || (spec.kind === CaseKind.Tool && Object.values(WorkspaceKind).includes(scenario.workspace)), 'invalid workspace');
     assert(scenario.tag === undefined || (scenario.workspace !== undefined && typeof scenario.tag.name === 'string' && typeof scenario.tag.annotated === 'boolean'), 'invalid fixture tag');
     assert(scenario.files === undefined || (Array.isArray(scenario.files) && scenario.files.every(file => typeof file === 'string')), 'invalid artifact paths');
   }
@@ -135,7 +141,7 @@ function toolWorkspace(project: string, scenario: Scenario, work: string): strin
     const args = scenario.tag.annotated ? ['-a', scenario.tag.name, '-m', scenario.tag.name] : [scenario.tag.name];
     git('tag', ...args);
   }
-  if (scenario.workspace === 'dirty') writeFileSync(join(directory, 'uncommitted.txt'), 'dirty\n');
+  if (scenario.workspace === WorkspaceKind.Dirty) writeFileSync(join(directory, 'uncommitted.txt'), 'dirty\n');
   return directory;
 }
 
@@ -155,18 +161,16 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
     let result;
     let artifact: string | null = null;
     let workspace = projectRoot;
-    if (spec.kind === 'tool') {
+    if (spec.kind === CaseKind.Tool) {
       workspace = toolWorkspace(projectRoot, scenario, work);
       result = execute(join(workspace, 'bin', spec.tool), scenario.args ?? [], input, workspace);
     } else {
-      const config = JSON.parse(readFileSync(join(projectRoot, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
-      assert(compilerOverride !== undefined || config !== null, spec.id + ': compiler unavailable; cases are not skipped');
-      const output = join(work, 'program.ts');
-      const compiled = execute(compilerOverride ?? resolve(projectRoot, config!.compiler), ['compile', resolve(directory, spec.source), output], Buffer.alloc(0));
+      const output = join(work, 'program.mini.ts');
+      const compiled = execute(compilerOverride ?? resolve(projectRoot, compiler(projectRoot).entry), ['compile', resolve(directory, spec.source), output], Buffer.alloc(0));
       if (compiled.status === 0) artifact = sha256(readFileSync(output));
-      if (spec.kind === 'compile' && scenario.artifact !== undefined) assert.deepEqual(readFileSync(output), stream(scenario.artifact, directory), 'generated artifact differs');
-      if (spec.kind === 'reject') assert(!existsSync(output), 'rejection created an output artifact');
-      if (spec.kind === 'reject' || spec.kind === 'compile') result = compiled;
+      if (spec.kind === CaseKind.Compile && scenario.artifact !== undefined) assert.deepEqual(readFileSync(output), stream(scenario.artifact, directory), 'generated artifact differs');
+      if (spec.kind === CaseKind.Reject) assert(!existsSync(output), 'rejection created an output artifact');
+      if (spec.kind === CaseKind.Reject || spec.kind === CaseKind.Compile) result = compiled;
       else {
         assert.equal(compiled.status, 0, compiled.stderr.toString());
         assert.equal(compiled.stderr.length, 0, 'unexpected compiler diagnostics');
@@ -188,7 +192,7 @@ export function verifyScenario(fixture: Fixture, scenario: Scenario, projectRoot
     assert.equal(result.status, scenario.exitCode, spec.id + '/' + scenario.name + ': exit status; ' + result.stderr);
     assert.deepEqual(result.stdout, stream(scenario.stdout, directory), spec.id + '/' + scenario.name + ': stdout');
     assert.deepEqual(result.stderr, stream(scenario.stderr, directory), spec.id + '/' + scenario.name + ': stderr');
-    if (spec.kind === 'reject') { assert.notEqual(scenario.exitCode, 0); assert.equal(result.stdout.length, 0); }
+    if (spec.kind === CaseKind.Reject) { assert.notEqual(scenario.exitCode, 0); assert.equal(result.stdout.length, 0); }
     for (const file of scenario.files ?? []) assert(existsSync(resolve(workspace, file)), 'missing artifact: ' + file);
     return artifact;
   } finally { rmSync(work, { recursive: true, force: true }); }
@@ -199,7 +203,7 @@ export function caseIdentity(fixture: Fixture) {
   const spec = fixture.definition;
   const hashFiles = (files: Record<string, Stream>) => Object.fromEntries(
     Object.entries(files).map(([name, value]) => [name, sha256(stream(value, base))]));
-  const source = spec.kind === 'tool' ? join(root, 'bin', spec.tool) : resolve(base, spec.source);
+  const source = spec.kind === CaseKind.Tool ? join(root, 'bin', spec.tool) : resolve(base, spec.source);
   return {
     manifest: sha256(readFileSync(fixture.path)),
     source: sha256(readFileSync(source)),

@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-unclosed-text",
   "kind": "reject",
-  "source": "expressions-unclosed-text.mini",
+  "source": "001-005-expressions-unclosed-text.mini",
   "features": [
     "expressions.text"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-unclosed-text-default.stderr"
+        "file": "001-005-expressions-unclosed-text.stderr"
       },
       "exitCode": 1
     }

@@ -1,7 +1,9 @@
 # Bootstrap
 
-[config/bootstrap.json](../config/bootstrap.json) is `null` until a real
-compiler exists. `./bin/mini verify` fails clearly in that state.
+[T0](compiler.md) is the handwritten TypeScript compiler. It is selected by
+[config/compiler.json](../config/compiler.json). The generated self-hosted
+bootstrap is unavailable: [config/bootstrap.json](../config/bootstrap.json)
+remains `null`, and bare `./bin/mini verify` fails clearly.
 
 The self-hosting requirement applies only to `mini-compile` / `minic` and the
 generated compiler. Other tools may remain TypeScript indefinitely, including
@@ -12,10 +14,10 @@ Delivery uses compilation, not a runner:
 
 ```text
 mini compile compiler.mini
-node compiler.ts compile compiler.mini
+node compiler.mini.ts compile compiler.mini
 ```
 
-Both write `compiler.ts` by default. An optional final argument selects another
+Both write `compiler.mini.ts` by default. An optional final argument selects another
 output path. `mini-compile` and `minic` are aliases for `mini compile`.
 The generated compiler implements the same `compile SOURCE.mini [OUTPUT.ts]`
 interface and writes self-contained TypeScript. Node built-ins are available;
@@ -26,7 +28,8 @@ must not contain Mini parsing or compilation logic. Any library code used by
 the compiler must be included in its source/build and generated bootstrap;
 it must not introduce another prerequisite tool or package.
 
-At first promotion, assign language/compiler/bootstrap versions and configure:
+At first promotion, assign the bootstrap version, select the generated entry in
+`config/compiler.json`, and configure:
 
 ```json
 {

@@ -1,0 +1,23 @@
+{
+  "id": "language.expressions-unknown-escape",
+  "kind": "reject",
+  "source": "001-006-expressions-unknown-escape.mini",
+  "features": [
+    "expressions.text"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "001-006-expressions-unknown-escape.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

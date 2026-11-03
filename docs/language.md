@@ -1,11 +1,11 @@
 # Mini language draft
 
 Status: accepted syntax and built-in contracts are documented below.
-Diagnostic output is proposed. No compiler is implemented. Typing and other
-open rules remain undecided.
+Diagnostic output is proposed. [T0 support](compiler.md) advances one feature
+per atomic commit. Typing and other open rules remain undecided.
 
-After approval, record the decision and present the next small proposal in an
-atomic commit. Approval covers the presented form, not its open questions.
+After approval, implement and verify that feature in an atomic commit before
+presenting the next proposal. Approval does not decide its open questions.
 Create [cases](cases.md) with every proposal, including separate Mini sources,
 expected streams, input variants, rejections, and interactions. Keep unsupported
 cases explicitly pending; refine provisional diagnostics with compiler support.

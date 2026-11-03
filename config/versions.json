@@ -1,7 +1,7 @@
 {
   "mini": "0.1.0-alpha.1",
-  "language": null,
-  "compiler": null,
+  "language": "0.1.0-alpha.1",
+  "compiler": "0.1.0-alpha.1",
   "bootstrap": null,
   "std": null,
   "check": "0.1.0-alpha.1",
@@ -10,5 +10,6 @@
   "test": "0.1.0-alpha.1",
   "bench": "0.1.0-alpha.1",
   "cli": "0.1.0-alpha.1",
-  "vscode": "0.1.1"
+  "vscode": "0.1.1",
+  "builtins": null
 }

@@ -72,7 +72,7 @@
       },
       "stdout": {
         "file": "check-docs.stdout",
-        "hash": "sha256:dd694ad825118402eac5220f10092696d223f205c043523ed889b0c2e8ee3513"
+        "hash": "sha256:d64da91489fccab3ebcbbc08269c224b6d3187bebbb4fab3b5cd34a732852c66"
       },
       "stderr": {
         "text": ""

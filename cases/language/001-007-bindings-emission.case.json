@@ -1,0 +1,26 @@
+{
+  "id": "compiler.bindings-emission",
+  "kind": "compile",
+  "source": "001-001-bindings-initialize.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "default",
+      "artifact": {
+        "file": "001-007-bindings-emission.expected.ts"
+      }
+    }
+  ]
+}

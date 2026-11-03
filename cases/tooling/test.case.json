@@ -24,7 +24,7 @@
     {
       "name": "test-pending-only",
       "args": [
-        "language.bindings-sample"
+        "language.write-error-missing-text"
       ],
       "stdin": {
         "text": ""

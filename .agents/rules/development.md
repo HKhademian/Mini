@@ -5,6 +5,8 @@
   expressiveness for readable compiler code and small self-hosted migrations.
 - Weigh concrete readability and migration benefits against implementation cost.
   Use local, temporary syntax bridges; support new forms before adopting them.
+- Use shared named kind/stage constants and derived types, not repeated literal
+  unions. Use Node-compatible enum-like as-const objects without TS transforms.
 - Keep code short, readable, direct, and easy to port. Avoid speculative layers,
   dependencies, edge-case handling, and safety systems.
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
@@ -27,8 +29,10 @@
   distinct rule or interaction; reuse fixtures and avoid redundant matrices.
 - Update VS Code support with syntax changes. Bump its independent version
   when editor behavior changes; keep the registry, package, and lockfile aligned.
-- After approval, record the decision and advance to the next small proposal
-  in an atomic commit. Leave unresolved rules explicitly open.
+- After approval, implement and verify the feature before the next proposal.
+  Keep T0 support extremely granular: one feature, its indexed cases, and one
+  atomic commit. Never let drafts accumulate without compiler support.
+  Leave unresolved rules explicitly open.
 - Keep docs accurate about implemented, proposed, and unavailable capabilities.
   Document usage, runtime requirements, and changed contracts with the code.
 - Once available, use the repository's documented check, test, bootstrap, and

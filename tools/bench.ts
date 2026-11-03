@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { caseIdentity, loadCases, verifyScenario } from './cases.ts';
-import { root, run, sha256, versions } from './project.ts';
+import { compilerHash, root, run, versions } from './project.ts';
 
 export function benchmark(output: string, filter = ''): void {
   const results = [];
@@ -22,9 +22,8 @@ export function benchmark(output: string, filter = ''): void {
     }
   }
   assert(results.length > 0, 'no benchmark cases selected');
-  const config = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
   const commit = existsSync(join(root, '.git')) ? run('git', ['rev-parse', 'HEAD'], root).toString().trim() : null;
-  const compiler = config === null ? null : sha256(readFileSync(join(root, config.compiler)));
+  const compiler = compilerHash();
   mkdirSync(dirname(output), { recursive: true });
   assert(!existsSync(output), 'benchmark output already exists; choose a new report path');
   writeFileSync(output, JSON.stringify({ node: process.version, platform: process.platform, architecture: process.arch, commit, versions: versions(root), compiler, scope: 'fresh-process wall time including startup, IO, verification, and compilation for program cases', results }, null, 2) + '\n');

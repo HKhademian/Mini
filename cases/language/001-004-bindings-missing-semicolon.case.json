@@ -1,8 +1,7 @@
 {
   "id": "language.bindings-missing-semicolon",
   "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "bindings-missing-semicolon.mini",
+  "source": "001-004-bindings-missing-semicolon.mini",
   "features": [
     "bindings"
   ],
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "bindings-missing-semicolon.stderr"
+        "file": "001-004-bindings-missing-semicolon.stderr"
       },
       "exitCode": 1
     }

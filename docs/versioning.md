@@ -6,6 +6,7 @@ Each entity advances independently:
 - `mini`: project, tag `mini-vX.Y.Z`.
 - `language`: accepted language contract, tag `lang-vX.Y.Z`.
 - `compiler`: compiler implementation, tag `compiler-vX.Y.Z`.
+- `builtins`: primitive language operations, tag `builtins-vX.Y.Z`.
 - `bootstrap`: generated compiler/source pair, tag `bootstrap-vX.Y.Z`.
 - `std`: optional standard library, tag `std-vX.Y.Z`.
 - `cli`: command dispatcher, tag `cli-vX.Y.Z`.
@@ -15,7 +16,11 @@ Each entity advances independently:
   each with its own `NAME-vX.Y.Z` tag.
 
 `null` means unimplemented/unassigned and blocks that entity's release.
-Language, compiler, bootstrap, and std are currently unassigned. Tool/CLI and
+The compiler stream versions handwritten T0 while it is active. Each small
+support increment advances its prerelease counter. Built-ins advance separately
+when primitive support changes; their version stays null until the first one.
+Language and compiler have T0 development versions; bootstrap, builtins, and std remain
+unassigned. Tool/CLI and
 implemented library releases can publish independently; language/compiler/
 bootstrap/mini releases require a verified compiler bootstrap. Reserving `std`
 does not introduce a library or select module/import syntax.

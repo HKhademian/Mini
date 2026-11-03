@@ -15,7 +15,7 @@
       },
       "stderr": {
         "file": "verify-unavailable.stderr",
-        "hash": "sha256:26c897cc4a0aab3ffeb725dcb9b019900b38b86f066bfb0deb858d5735fd188a"
+        "hash": "sha256:bb0bcef08be17e108bddb95c42fc54180eee37fb3127580a62c4d4dacbce8a3d"
       },
       "exitCode": 1
     },
@@ -90,7 +90,7 @@
     {
       "name": "verify-pending",
       "args": [
-        "cases/language/bindings-sample.case.json"
+        "cases/language/write-error-missing-text.case.json"
       ],
       "stdin": {
         "text": ""
@@ -120,20 +120,20 @@
       "exitCode": 1
     },
     {
-      "name": "verify-language-unavailable",
+      "name": "verify-language-supported",
       "args": [
-        "cases/tooling/compiler-unavailable.invalid.json"
+        "cases/language/001-001-bindings-initialize.case.json"
       ],
       "stdin": {
         "text": ""
       },
       "stdout": {
-        "file": "verify-language-unavailable.stdout"
+        "file": "verify-language-supported.stdout"
       },
       "stderr": {
-        "file": "verify-language-unavailable.stderr"
+        "text": ""
       },
-      "exitCode": 1
+      "exitCode": 0
     },
     {
       "name": "verify-files-path",

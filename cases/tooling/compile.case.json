@@ -5,9 +5,9 @@
   "features": [],
   "cases": [
     {
-      "name": "compile-unavailable",
+      "name": "compile-default",
       "args": [
-        "source.mini"
+        "cases/language/001-001-bindings-initialize.mini"
       ],
       "stdin": {
         "text": ""
@@ -16,10 +16,34 @@
         "text": ""
       },
       "stderr": {
-        "file": "compile-unavailable.stderr",
-        "hash": "sha256:6f99b946ec609c9061a090ee64ad5d48d726c122eb7fd012419e9b282314a08e"
+        "text": ""
       },
-      "exitCode": 1
+      "exitCode": 0,
+      "workspace": "clean",
+      "files": [
+        "cases/language/001-001-bindings-initialize.mini.ts"
+      ]
+    },
+    {
+      "name": "compile-output",
+      "args": [
+        "cases/language/001-001-bindings-initialize.mini",
+        "out.mini.ts"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0,
+      "workspace": "clean",
+      "files": [
+        "out.mini.ts"
+      ]
     }
   ]
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { join, resolve } from 'node:path';
-import { root, run, versions, type Component } from './project.ts';
+import { compiler, root, run, versions, type Component } from './project.ts';
 
 const names: Record<string, Component> = { check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', compile: 'compiler' };
 const help = 'mini: tiny self-hosting foundation for language projects\nUsage: mini check [--docs] | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile\nAliases: mini-check, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n';
@@ -42,14 +42,19 @@ export async function main(executable: string): Promise<void> {
         console.log('Release prepared.');
         break;
       case 'compile': {
+        if (args[0] === '--tokens') {
+          assert(args.length === 2, 'usage: mini-compile --tokens SOURCE.mini');
+          process.stdout.write(run(process.execPath, [join(root, compiler().entry), 'tokens', resolve(args[1]!)], process.cwd()));
+          break;
+        }
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-compile SOURCE.mini [OUTPUT.ts]');
-        const { readFileSync } = await import('node:fs');
-        const config = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
-        assert(config !== null, 'Mini compiler unavailable: not implemented yet.');
         const source = resolve(args[0]);
         assert(source.endsWith('.mini'), 'Mini source must use .mini');
-        const output = args[1] === undefined ? source.slice(0, -5) + '.ts' : resolve(args[1]);
-        process.stdout.write(run(process.execPath, [join(root, config.compiler), 'compile', source, output], process.cwd()));
+        const output = args[1] === undefined ? source + '.ts' : resolve(args[1]);
+        const { spawnSync } = await import('node:child_process');
+        const result = spawnSync(process.execPath, [join(root, compiler().entry), 'compile', source, output], { stdio: 'inherit' });
+        if (result.error) throw result.error;
+        process.exitCode = result.status ?? 1;
         break;
       }
     }

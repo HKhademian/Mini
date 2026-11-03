@@ -1,0 +1,26 @@
+{
+  "id": "language.expressions-values",
+  "kind": "compile",
+  "source": "001-002-expressions-values.mini",
+  "features": [
+    "expressions.values"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "001-002-expressions-values.expected.ts"
+      }
+    }
+  ]
+}

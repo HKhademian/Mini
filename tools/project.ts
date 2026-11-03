@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 export const root = fileURLToPath(new URL('../', import.meta.url));
 export const streams = {
   mini: 'mini', lang: 'language', compiler: 'compiler', bootstrap: 'bootstrap',
-  std: 'std', vscode: 'vscode',
+  std: 'std', builtins: 'builtins', vscode: 'vscode',
   check: 'check', verify: 'verify', release: 'release', test: 'test', bench: 'bench', cli: 'cli',
 } as const;
 export type Component = typeof streams[keyof typeof streams];
@@ -25,7 +25,7 @@ export function versions(directory: string): Versions {
 }
 
 export function selectRelease(tag: string, current: Versions): { component: Component; version: string } {
-  const match = /^(mini|lang|compiler|bootstrap|std|check|verify|release|test|bench|cli|vscode)-v(.+)$/.exec(tag);
+  const match = /^(mini|lang|compiler|bootstrap|builtins|std|check|verify|release|test|bench|cli|vscode)-v(.+)$/.exec(tag);
   assert(match, `invalid component tag: ${tag}`);
   const component = streams[match[1] as keyof typeof streams];
   const version = match[2]!;
@@ -43,4 +43,15 @@ export function run(command: string, args: string[], cwd: string, input?: string
 
 export function sha256(bytes: string | Buffer): string {
   return createHash('sha256').update(bytes).digest('hex');
+}
+
+export const CompilerStage = { T0: 'T0', SelfHosted: 'self-hosted' } as const;
+export type CompilerStage = typeof CompilerStage[keyof typeof CompilerStage];
+export type Compiler = { stage: CompilerStage; entry: string; sources: string[] };
+export function compiler(directory = root): Compiler {
+  return JSON.parse(readFileSync(join(directory, 'config/compiler.json'), 'utf8'));
+}
+
+export function compilerHash(directory = root): string {
+  return sha256(compiler(directory).sources.map(path => path + '\0' + readFileSync(join(directory, path), 'utf8')).join('\0'));
 }

@@ -9,8 +9,9 @@ directly. Broad general-purpose features are outside this project's objective.
 The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 
-No grammar or compiler is implemented yet. Maintenance tools are available.
-The [language draft](docs/language.md) starts the construct review.
+[T0](docs/compiler.md) implements the first language increment in direct Node
+TypeScript. The [language draft](docs/language.md) records the reviewed contract;
+pending cases identify features still awaiting compiler support.
 
 ## Self-hosting
 
@@ -83,8 +84,7 @@ npm ci
 
 npm installs development dependencies only. Commands live in `bin/`:
 `mini`, `mini-check`, `mini-test`, `mini-bench`, `mini-verify`,
-`mini-release`, `mini-compile`, and `minic`. Compiler commands report
-unavailability until the compiler exists.
+`mini-release`, `mini-compile`, and `minic`.
 
 Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
 syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX;
