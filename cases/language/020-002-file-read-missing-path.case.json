@@ -1,11 +1,10 @@
 {
   "id": "language.file-read-missing-path",
   "kind": "reject",
-  "source": "file-read-missing-path.mini",
+  "source": "020-002-file-read-missing-path.mini",
   "features": [
     "file.read"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "stdin": {
@@ -15,7 +14,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "file-read-missing-path.stderr"
+        "file": "020-002-file-read-missing-path.stderr"
       },
       "exitCode": 1,
       "name": "default"

@@ -65,6 +65,8 @@ top-level, may call later definitions, and require a value return in this increm
 
 - `0.1.0-alpha.19`: text_at(text, index).
 
+- `0.1.0-alpha.20`: file_read(path).
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

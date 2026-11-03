@@ -8,6 +8,8 @@ export type Builtin = {
 };
 
 export const builtins = new Map<string, Builtin>([
+  ['file_read', { parameters: [ValueKind.Text], result: ValueKind.Text,
+    imports: ['readFileSync'], emit: args => `readFileSync(${args[0]}, "utf8")` }],
   ['text_at', { parameters: [ValueKind.Text, ValueKind.Number], result: ValueKind.Text,
     imports: [], emit: args => `(${args[0]})[${args[1]}]` }],
   ['text_length', { parameters: [ValueKind.Text], result: ValueKind.Number,

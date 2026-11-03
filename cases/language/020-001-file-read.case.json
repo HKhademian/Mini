@@ -1,11 +1,10 @@
 {
   "id": "language.file-read",
   "kind": "feature",
-  "source": "file-read.mini",
+  "source": "020-001-file-read.mini",
   "features": [
     "file.read"
   ],
-  "pending": "Compiler and file built-ins unavailable.",
   "cases": [
     {
       "stdin": {
