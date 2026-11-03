@@ -1,0 +1,23 @@
+{
+  "id": "language.map-copy-wrong-target",
+  "kind": "reject",
+  "source": "044-003-map-copy-wrong-target.mini",
+  "features": [
+    "map.copy"
+  ],
+  "cases": [
+    {
+      "name": "number-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "044-003-map-copy-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

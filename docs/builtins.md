@@ -51,8 +51,11 @@ identifiers cannot contain, to avoid collisions with Mini source names.
 with a shared empty prototype; maps can be stored in lists and passed through
 functions. There is no per-map metadata or wrapper. The prototype prevents
 inherited string keys and makes `"__proto__"` an ordinary stored key.
-`map_has(items, key)` checks a text key and returns a boolean without changing
-the map. Empty maps return false; membership does not decide a missing-key value.
+`map_copy(items)` returns a shallow copy with the same text keys. Values are
+shared, so nested lists and maps remain aliases. A non-map target returns an
+empty map. `map_has(items, key)` checks a text key and returns a boolean without
+changing the map. Empty maps return false; membership does not decide a
+missing-key value.
 
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared

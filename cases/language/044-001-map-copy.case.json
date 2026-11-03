@@ -1,0 +1,27 @@
+{
+  "id": "language.map-copy",
+  "kind": "feature",
+  "source": "044-001-map-copy.mini",
+  "features": [
+    "map.copy",
+    "map.new",
+    "map.get",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "shallow",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nshared\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

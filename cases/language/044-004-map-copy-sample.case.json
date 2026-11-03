@@ -1,0 +1,27 @@
+{
+  "id": "language.map-copy-sample",
+  "kind": "sample",
+  "source": "../../samples/016-map-copy.mini",
+  "features": [
+    "map.copy",
+    "map.new",
+    "map.get",
+    "map.set",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "independent",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "original\ncopy\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

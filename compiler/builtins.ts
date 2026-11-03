@@ -45,6 +45,12 @@ export const builtins = new Map<string, Builtin>([
     imports: [], helper: mapRuntime, emit: args => `${mapHas}(${args.join(', ')})` }],
   ['map_new', { parameters: [], result: ValueKind.Map,
     imports: [], helper: mapRuntime, emit: () => '({ __proto__: $mini_map_proto })' }],
+  ['map_copy', { parameters: [ValueKind.Map], result: ValueKind.Map,
+    imports: [], helper: `function $mini_map_copy(items) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
+    return Object.assign(Object.create(null), items);
+}
+`, emit: args => `$mini_map_copy(${args[0]})` }],
   ['list_set', { parameters: [ValueKind.Unknown, ValueKind.Number, ValueKind.Unknown], result: ValueKind.Void,
     imports: [], helper: `function ${listSet}(items, index, value) {
     if (!Array.isArray(items)) return;

@@ -14,6 +14,10 @@ var map_runtime = "const $mini_map_proto = { __proto__: null };\n"
     + "function $mini_map_set(items, key, value) {\n"
     + "    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n"
     + "}\n";
+var map_copy_helper = "function $mini_map_copy(items) {\n"
+    + "    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n"
+    + "    return Object.assign(Object.create(null), items);\n"
+    + "}\n";
 var list_get_helper = "function $mini_list_get(items, index) {\n"
     + "    if (!Array.isArray(items)) return 0;\n"
     + "    if (index < 0) index = items.length + index;\n"
@@ -96,19 +100,6 @@ fn join_texts(items, separator) {
         position = position + 1;
     }
     return output;
-}
-
-/// Return a shallow copy of scope.
-fn copy_scope(scope) {
-    var result = map_new();
-    var keys = map_keys(scope);
-    var position = 0;
-    while (position < list_length(keys)) {
-        var key = list_get(keys, position);
-        map_set(result, key, map_get(scope, key));
-        position = position + 1;
-    }
-    return result;
 }
 
 /// Return ten times value using only addition.
@@ -758,7 +749,7 @@ fn parser_condition(parser) {
 fn parser_block(parser) {
     parser_expect(parser, "{");
     var outer = map_get(parser, "variables");
-    map_set(parser, "variables", copy_scope(outer));
+    map_set(parser, "variables", map_copy(outer));
     map_set(parser, "depth", map_get(parser, "depth") + 1);
     var output = "";
     while (map_get(parser_token(parser), "text") != "}" && map_get(parser_token(parser), "kind") != "eof") {
@@ -795,7 +786,7 @@ fn parser_function_declaration(parser) {
     map_set(parser, "current", info);
     map_set(parser, "in_function", true);
     var outer = map_get(parser, "variables");
-    map_set(parser, "variables", copy_scope(outer));
+    map_set(parser, "variables", map_copy(outer));
     var position = 0;
     while (position < list_length(parameters)) {
         map_set(map_get(parser, "variables"), list_get(parameters, position), "unknown");
@@ -842,6 +833,9 @@ fn helper_blocks(helpers) {
     }
     if (map_has(helpers, list_set_helper)) {
         output = output + list_set_helper;
+    }
+    if (map_has(helpers, map_copy_helper)) {
+        output = output + map_copy_helper;
     }
     if (map_has(helpers, text_find_helper)) {
         output = output + text_find_helper;
@@ -926,7 +920,7 @@ fn builtin_exists(name) {
         || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
         || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
-        || name == "text_slice" || name == "text_split"
+        || name == "text_slice" || name == "text_split" || name == "map_copy"
         || name == "readAll" || name == "write";
 }
 
@@ -994,8 +988,12 @@ fn builtin_parameters(name) {
                                                                     list_set(parameters, 0, "text");
                                                                     list_set(parameters, 1, "text");
                                                                 } else {
-                                                                    if (name == "write") {
-                                                                        list_set(parameters, 0, "text");
+                                                                    if (name == "map_copy") {
+                                                                        list_set(parameters, 0, "map");
+                                                                    } else {
+                                                                        if (name == "write") {
+                                                                            list_set(parameters, 0, "text");
+                                                                        }
                                                                     }
                                                                 }
                                                             }
@@ -1024,7 +1022,7 @@ fn builtin_result(name) {
     if (name == "map_keys" || name == "list_new" || name == "process_args" || name == "text_split") {
         return "list";
     }
-    if (name == "map_new") {
+    if (name == "map_new" || name == "map_copy") {
         return "map";
     }
     if (name == "map_has") {
@@ -1068,6 +1066,9 @@ fn builtin_helper(name) {
     if (name == "list_set") {
         return list_set_helper;
     }
+    if (name == "map_copy") {
+        return map_copy_helper;
+    }
     if (name == "text_find") {
         return text_find_helper;
     }
@@ -1087,7 +1088,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy") {
         return "$mini_" + name + "(" + join_texts(args, ", ") + ")";
     }
     if (name == "map_keys") {

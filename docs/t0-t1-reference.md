@@ -52,7 +52,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty-one signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): twenty-two signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -202,7 +202,7 @@ the needed shallow map copy in Mini.
 - `for` / `for...of` / `entries()` / `continue`: indexed `while` loops and braced
   conditions, keeping cursor advancement explicit.
 - `Map.get/set/has`: the existing Mini map operations.
-- `new Map(existing)`: copy entries with `map_keys`, `map_get`, `map_set`.
+- `new Map(existing)`: `map_copy`.
 - `Set.add/has/size`: map entries holding a membership flag.
 - Spread of sets into arrays: obtain keys, but choose an explicit output order.
 - Template literals and conditional expressions: text concatenation and `if`.
@@ -280,6 +280,7 @@ target TS produced by the compiler, not extra syntax required in M1.
 - `map_get(value, text) -> value`: `$mini_map_get(arg0, arg1)` (adapter).
 - `map_set(value, text, value) -> no result`: `$mini_map_set(arg0, arg1, arg2)` (adapter).
 - `map_keys(map) -> list`: `Object.keys(arg0)`.
+- `map_copy(map) -> map`: `$mini_map_copy(arg0)` (adapter).
 
 Count keys with `list_length(map_keys(items))`; no map size counter is maintained.
 
@@ -303,6 +304,7 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 
 1. The shared map block: `$mini_map_proto`, `$mini_map_get`, `$mini_map_has`,
    `$mini_map_set`. The membership helper preserves argument evaluation order.
+   A separate `$mini_map_copy` adapter copies own text keys into a fresh map.
 2. `$mini_list_get`: check list target, normalize a negative index, check bounds
    and assigned slot, otherwise return numeric zero.
 3. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index

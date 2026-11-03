@@ -340,6 +340,17 @@ representation. Maps hold unique text keys; membership and assignment follow bel
 Missing-key lookup returns numeric zero, without introducing null. There is no
 `map_empty` alias or record/struct/class syntax.
 
+## Accepted operation: map copying
+
+```text
+var copy = map_copy(items);
+```
+
+- `map_copy(items)` returns a fresh map with the same text keys and values.
+- The copy is shallow: nested lists and maps are shared, not cloned.
+- A non-map target returns an empty map.
+- The source map is unchanged.
+
 ## Accepted operation: map membership
 
 ```text

@@ -1,0 +1,18 @@
+fn copy(value) {
+    return map_copy(value);
+}
+var empty = copy(12);
+if (list_length(map_keys(empty)) == 0) {
+    write("ok\n");
+} else {
+    write("bad\n");
+}
+var special = map_new();
+map_set(special, "__proto__", "value");
+map_set(special, "has", "method");
+var copied = map_copy(special);
+if (map_get(copied, "__proto__") == "value" && map_get(copied, "has") == "method") {
+    write("ok\n");
+} else {
+    write("bad\n");
+}

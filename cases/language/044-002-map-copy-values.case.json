@@ -1,0 +1,27 @@
+{
+  "id": "language.map-copy-values",
+  "kind": "feature",
+  "source": "044-002-map-copy-values.mini",
+  "features": [
+    "map.copy",
+    "map.new",
+    "map.get",
+    "map.set",
+    "map.keys"
+  ],
+  "cases": [
+    {
+      "name": "fallback-and-special-keys",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
