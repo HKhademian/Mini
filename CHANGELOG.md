@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.5, compiler 0.3.0-alpha.12, bootstrap 0.1.0-alpha.2,
+  check 0.1.0-alpha.5, format 0.1.0-alpha.2, lsp 0.1.0-alpha.4: verify the
+  migrated tooling, self-hosted compiler, generated adapters, and shared builtin
+  metadata.
 - Share builtin signatures through `compiler/builtin-metadata.ts`; tooling
   hover/completion no longer imports T0 lowering callbacks. T0 lowering reads the
   same metadata.

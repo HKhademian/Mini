@@ -1,11 +1,11 @@
 {
   "group": "0.3.0",
-  "mini": "0.1.0-alpha.4",
+  "mini": "0.1.0-alpha.5",
   "language": "0.3.0-alpha.10",
-  "compiler": "0.3.0-alpha.11",
-  "bootstrap": "0.1.0-alpha.1",
+  "compiler": "0.3.0-alpha.12",
+  "bootstrap": "0.1.0-alpha.2",
   "std": null,
-  "check": "0.1.0-alpha.4",
+  "check": "0.1.0-alpha.5",
   "verify": "0.1.0-alpha.2",
   "release": "0.1.0-alpha.3",
   "test": "0.1.0-alpha.2",
@@ -13,6 +13,6 @@
   "cli": "0.1.0-alpha.6",
   "vscode": "0.3.3",
   "builtins": "0.3.0-alpha.9",
-  "format": "0.1.0-alpha.1",
-  "lsp": "0.1.0-alpha.3"
+  "format": "0.1.0-alpha.2",
+  "lsp": "0.1.0-alpha.4"
 }
