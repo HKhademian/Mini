@@ -28,6 +28,7 @@ export function checkProject(): void {
   const editor = JSON.parse(readFileSync(join(root, 'editors/vscode/package.json'), 'utf8')) as { version: string };
   const editorLock = JSON.parse(readFileSync(join(root, 'editors/vscode/package-lock.json'), 'utf8')) as { version: string; packages: Record<string, { version: string }> };
   assert.equal(editor.version, current.vscode, 'VS Code version must match the registry');
+  assert(!editor.version.includes('-'), 'VS Code versions require plain MAJOR.MINOR.PATCH');
   assert.equal(editorLock.version, editor.version, 'VS Code lockfile version differs');
   assert.equal(editorLock.packages['']?.version, editor.version, 'VS Code lockfile package version differs');
   assert.equal(Number(process.versions.node.split('.')[0]), 24, 'use Node 24; see .node-version');

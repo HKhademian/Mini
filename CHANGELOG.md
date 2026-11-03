@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Package checksummed VSIX assets from tagged extension sources and verify releases in CI.
 - Accept expression forms; balance single/combination cases and share empty fixtures.
 - Version VS Code support independently at 0.1.1, validate escapes, and test it in CI.
 - Record control-flow approval and propose basic values/operators with combination cases.

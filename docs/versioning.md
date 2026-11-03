@@ -25,6 +25,9 @@ No leading zeros or build metadata. After 1.0, incompatible changes bump MAJOR,
 compatible additions MINOR, and compatible fixes PATCH. Before 1.0, incompatible
 changes bump MINOR and are documented; do not hide them in PATCH.
 
+The `vscode` stream uses plain `MAJOR.MINOR.PATCH`, matching VS Code's extension
+version format. SemVer prerelease suffixes are not supported for this stream.
+
 Commit release preparation separately from implementation. An annotated tag
 must match its entity's recorded version and exact source commit. Never move
 or reuse published tags. Corrections get a new version.

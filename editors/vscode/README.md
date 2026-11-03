@@ -44,7 +44,9 @@ Packaging excludes tests, development dependencies, and preview configuration.
 CI runs these checks on Linux and macOS. The independent version is recorded in
 `config/versions.json`, `package.json`, and `package-lock.json`; update them
 together when editor behavior changes. `vscode-v*` identifies extension releases.
-Build a local VSIX with the command above.
+Tagged GitHub releases include an installable VSIX, the source archive, and
+checksums. Local tagged packaging uses `mini release`; see `docs/releases.md`
+in the repository. Build an untagged local VSIX with the command above.
 
 Source contracts in the repository: `docs/language.md` and `docs/builtins.md`.
 Implementation references: [syntax highlighting](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide),

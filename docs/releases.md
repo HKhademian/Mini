@@ -30,6 +30,23 @@ Packaging extracts and checks the finished archive without Git history or
 installed npm packages. Compiler output must reproduce exactly; compressed
 archive bytes across tar implementations need not.
 
+## VS Code extension
+
+An annotated `vscode-vX.Y.Z` tag releases the extension independently of the
+compiler. Install its locked development dependencies before local packaging:
+
+```text
+npm --prefix editors/vscode ci --ignore-scripts
+./bin/mini release dist/vscode vscode-v0.1.1
+```
+
+The example requires the matching annotated tag at HEAD and a clean checkout.
+The release adds `mini-X.Y.Z.vsix`, built from the committed source archive.
+Its filename and SHA-256 are recorded in both manifests; `SHA256SUMS` covers
+the VSIX alongside the source archive and release notes. GitHub installs the
+packaging dependencies and uploads the VSIX automatically for `vscode-v*` tags.
+Other streams and untagged snapshots retain source-only packaging.
+
 After verifying `SHA256SUMS` with your platform's SHA-256 utility, extract into
 an empty directory. Run `./bin/mini check --docs` without dependencies.
 Run `./bin/mini verify` when a compiler is included. For development, install

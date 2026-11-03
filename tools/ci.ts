@@ -19,6 +19,7 @@ switch (task) {
   case 'test':
     mini('test');
     process.stdout.write(run(process.execPath, ['--test', 'test/grammar.test.ts'], join(root, 'editors/vscode')));
+    process.stdout.write(run(process.execPath, ['--test', 'tools/release.test.ts'], root));
     break;
   case 'bench': mini('bench', '.cache/bench-ci.json', 'tooling.check'); break;
   case 'package': {

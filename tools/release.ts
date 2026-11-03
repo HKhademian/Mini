@@ -5,6 +5,21 @@ import { join, resolve } from 'node:path';
 import { root, run, selectRelease, sha256, versions } from './project.ts';
 import { verifyBootstrap } from './verify.ts';
 
+/** Build from source using the checkout's locked, locally installed packaging tool. */
+export function packageVscode(directory: string, output: string, tooling = directory) {
+  const version = versions(directory).vscode;
+  assert(version !== null, 'VS Code extension version is unassigned');
+  const packager = join(tooling, 'editors/vscode/node_modules/@vscode/vsce/vsce');
+  assert(existsSync(packager), 'install VS Code development dependencies with npm ci in editors/vscode');
+  mkdirSync(output, { recursive: true });
+  const file = `mini-${version}.vsix`;
+  const destination = resolve(output, file);
+  assert(!existsSync(destination), 'VSIX output already exists');
+  run(process.execPath, [packager, 'package', '--no-dependencies', '--allow-missing-repository',
+    '--skip-license', '--out', destination], join(directory, 'editors/vscode'));
+  return { file, sha256: sha256(readFileSync(destination)) };
+}
+
 /** Package committed sources only. Never creates tags or publishes a release. */
 export function prepareRelease(directory: string, output: string, tag?: string) {
   assert(run('git', ['status', '--porcelain'], directory).toString().trim() === '', 'release needs a clean checkout');
@@ -32,7 +47,8 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     const bootstrap = available ? verifyBootstrap(source) : null;
     const label = tag ?? `snapshot-${commit.slice(0, 12)}`;
     const title = releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
-    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent, node: process.version, bootstrap };
+    const vsix = releasedComponent?.component === 'vscode' ? packageVscode(source, output, directory) : null;
+    const manifest = { schemaVersion: 1, title, tag: tag ?? null, commit, componentVersions: current, releasedComponent, node: process.version, bootstrap, vsix };
     assert(!existsSync(join(source, 'RELEASE.json')), 'RELEASE.json is reserved for packaged metadata');
     const record = JSON.stringify(manifest, null, 2) + '\n';
     writeFileSync(join(source, 'RELEASE.json'), record);
