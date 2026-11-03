@@ -1,0 +1,23 @@
+{
+  "id": "language.equality-mixed",
+  "kind": "reject",
+  "source": "011-002-equality-mixed.mini",
+  "features": [
+    "expressions.equality"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "011-002-equality-mixed.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "language.equality-values",
+  "kind": "compile",
+  "source": "011-001-equality-values.mini",
+  "features": [
+    "expressions.equality"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "011-001-equality-values.expected.ts"
+      }
+    }
+  ]
+}
