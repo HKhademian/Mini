@@ -42,6 +42,8 @@ function rangeOf(token: Token): Range {
   };
 }
 
+export { rangeOf };
+
 function docAbove(tokens: Token[], index: number): string[] {
   const doc: string[] = [];
   let line = tokens[index]!.line - 1;
@@ -106,6 +108,13 @@ export function hoverAt(tokens: Token[], offset: number): Hover {
     return { contents: { kind: 'markdown', value: markdown(builtinSignature(token.text), []) }, range: rangeOf(token) };
   }
   return null;
+}
+
+/** Return the declaration for the identifier at an offset, if it is a document declaration. */
+export function definitionAt(tokens: Token[], offset: number): Declaration | null {
+  const token = tokenAt(tokens, offset);
+  if (token === undefined || token.kind !== TokenKind.Identifier) return null;
+  return declarations(tokens).filter(item => item.name === token.text).at(-1) ?? null;
 }
 
 function prefixAt(text: string, offset: number): string {

@@ -178,6 +178,16 @@ class MiniClient implements vscode.Disposable {
     });
   }
 
+  async definition(document: vscode.TextDocument, position: vscode.Position): Promise<vscode.Location | null> {
+    const result = await this.request('textDocument/definition', {
+      textDocument: { uri: document.uri.toString() },
+      position: { line: position.line, character: position.character },
+    }) as { uri: string; range: Range } | null;
+    if (result === null) return null;
+    return new vscode.Location(vscode.Uri.parse(result.uri),
+      new vscode.Range(result.range.start.line, result.range.start.character, result.range.end.line, result.range.end.character));
+  }
+
   async stop(): Promise<void> {
     if (this.child === undefined) return;
     const child = this.child;
@@ -242,6 +252,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }),
     vscode.languages.registerCompletionItemProvider('mini', {
       provideCompletionItems: (document, position) => instance.completion(document, position),
+    }),
+    vscode.languages.registerDefinitionProvider('mini', {
+      provideDefinition: (document, position) => instance.definition(document, position),
     }),
   );
 }

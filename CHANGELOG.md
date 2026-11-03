@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- VS Code extension 0.3.3: expose language-server go-to-definition through
+  VS Code's definition provider.
+- Language server 0.1.0-alpha.3: add go-to-definition for document functions and
+  variables.
 - VS Code extension 0.3.2: expose language-server hover and completion through
   VS Code's hover and completion providers.
 - Language server 0.1.0-alpha.2: add hover for functions, variables, and builtins

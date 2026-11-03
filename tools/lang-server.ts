@@ -1,6 +1,6 @@
 import { formatTokens } from './format.ts';
 import { analyze } from './analysis.ts';
-import { completionsAt, hoverAt, offsetAt } from './language-features.ts';
+import { completionsAt, definitionAt, hoverAt, offsetAt, rangeOf } from './language-features.ts';
 import { releaseTag, versions, root } from './project.ts';
 import type { Diagnostic } from '../compiler/types.ts';
 
@@ -93,6 +93,7 @@ export class LanguageServer {
           documentFormattingProvider: true,
           hoverProvider: true,
           completionProvider: { resolveProvider: false },
+          definitionProvider: true,
         }, serverInfo: { name: 'mini-lang-server', version: releaseTag('lsp', versions(root)) } });
         return;
       case 'shutdown':
@@ -107,6 +108,9 @@ export class LanguageServer {
         return;
       case 'textDocument/completion':
         this.reply(id, this.completion(params));
+        return;
+      case 'textDocument/definition':
+        this.reply(id, this.definition(params));
         return;
       default:
         this.replyError(id, -32601, `method not found: ${method}`);
@@ -192,6 +196,17 @@ export class LanguageServer {
     if (document === undefined) return { isIncomplete: false, items: [] };
     const outcome = analyze(document.text, textDocument.uri);
     return { isIncomplete: false, items: completionsAt(outcome.tokens, document.text, offsetAt(document.text, position)) };
+  }
+
+  private definition(params: unknown): unknown {
+    const { textDocument, position } = (params ?? {}) as { textDocument?: { uri: string }; position?: { line: number; character: number } };
+    if (textDocument === undefined || position === undefined) return null;
+    const document = this.documents.get(textDocument.uri);
+    if (document === undefined) return null;
+    const outcome = analyze(document.text, textDocument.uri);
+    const declaration = definitionAt(outcome.tokens, offsetAt(document.text, position));
+    if (declaration === null) return null;
+    return { uri: textDocument.uri, range: rangeOf(declaration.token) };
   }
 
   private publish(uri: string, version: number | undefined, diagnostics: unknown[]): void {

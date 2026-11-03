@@ -90,6 +90,7 @@ test('initializes, shuts down, and exits cleanly', async () => {
     assert.equal(initialized.result.capabilities.documentFormattingProvider, true);
     assert.equal(initialized.result.capabilities.hoverProvider, true);
     assert.equal(initialized.result.capabilities.completionProvider.resolveProvider, false);
+    assert.equal(initialized.result.capabilities.definitionProvider, true);
     assert.equal(initialized.result.serverInfo.name, 'mini-lang-server');
     client.send({ jsonrpc: '2.0', method: 'initialized', params: {} });
     client.send({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
@@ -189,7 +190,7 @@ test('reports unknown requests and ignores unknown notifications', async () => {
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
     client.send({ jsonrpc: '2.0', method: 'textDocument/didSave', params: {} });
-    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: {} });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/references', params: {} });
     const error = await client.next();
     assert.equal(error.id, 2);
     assert.equal(error.error?.code, -32601);
@@ -302,5 +303,36 @@ test('does not complete inside comments or text', async () => {
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: positionOf(text, 'wr', 2) } });
     assert.deepEqual((await client.next()).result.items, []);
+  });
+});
+
+test('jumps to function and variable declarations', async () => {
+  await session(async client => {
+    const uri = 'file:///definition.mini';
+    await openDocument(client, uri, documented);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(documented, 'add', 1) } });
+    assert.deepEqual((await client.next()).result, {
+      uri, range: { start: { line: 1, character: 3 }, end: { line: 1, character: 6 } },
+    });
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(documented, 'answer', 2) } });
+    assert.deepEqual((await client.next()).result, {
+      uri, range: { start: { line: 6, character: 4 }, end: { line: 6, character: 10 } },
+    });
+  });
+});
+
+test('returns no definition for builtins or unknown identifiers', async () => {
+  await session(async client => {
+    const uri = 'file:///no-definition.mini';
+    const text = 'write("ok");\nvar value = missing;\n';
+    await openDocument(client, uri, text);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'write') } });
+    assert.equal((await client.next()).result, null);
+
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
+    assert.equal((await client.next()).result, null);
   });
 });

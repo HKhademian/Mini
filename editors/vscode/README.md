@@ -2,8 +2,9 @@
 
 `.mini` file support: theme-aware syntax highlighting, light/dark file icons,
 brace, parenthesis, and double-quote pairing, live compiler diagnostics, hover
-with `///` documentation, completion, and document formatting. The language
-picker shows **Mini**. File icon themes can override the supplied language icons.
+with `///` documentation, completion, go-to-definition, and document formatting.
+The language picker shows **Mini**. File icon themes can override the supplied
+language icons.
 
 Highlights `var`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
@@ -46,8 +47,9 @@ offers to open the setting.
 Diagnostics update as you type, including unsaved and untitled documents.
 Hover a function, variable, or builtin to see its signature and `///`
 documentation. Completion offers document declarations, builtins, and keywords.
-Formatting uses the same fixed style as `mini fmt`; enable **Format On Save** or
-run **Format Document**. Invalid source is not reformatted.
+Ctrl+click or **Go to Definition** jumps to a document function or variable
+declaration. Formatting uses the same fixed style as `mini fmt`; enable
+**Format On Save** or run **Format Document**. Invalid source is not reformatted.
 
 ## Install locally
 
@@ -58,11 +60,11 @@ npm ci
 npm run check
 npm run build
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.3.2.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.3.3.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.3.0-v0.3.2.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.3.0-v0.3.3.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 

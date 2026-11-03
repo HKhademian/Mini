@@ -149,17 +149,19 @@ speaks LSP 3.17 over standard input and standard output.
 
 The server implements `initialize`, `initialized`, `shutdown`, and `exit`. It
 advertises full document synchronization with open/close notifications,
-whole-document formatting, hover, and completion, using UTF-16 positions. It
-advertises no symbols, navigation, rename, diagnostics-on-type, range formatting,
-or incremental-sync capabilities. Unknown requests receive the protocol error;
-unknown notifications are ignored.
+whole-document formatting, hover, completion, and go-to-definition, using UTF-16
+positions. It advertises no symbols, references, rename, diagnostics-on-type,
+range formatting, or incremental-sync capabilities. Unknown requests receive the
+protocol error; unknown notifications are ignored.
 
 Hover on a function or variable shows its declaration and the contiguous `///`
 documentation lines immediately above it. Hover on a builtin shows its signature.
 Completion offers document functions and variables, builtins, and keywords,
 filtered by the identifier prefix at the cursor. Completion is suppressed inside
-comments and text literals. Neither feature performs type inference or resolves
-scopes; declarations are collected from the current document.
+comments and text literals. Go-to-definition returns the declaration of a
+document function or variable; builtins have no source location and return no
+definition. None of these features performs type inference or resolves scopes;
+declarations are collected from the current document.
 
 Documents are keyed by URI and retain the latest text and version. `didOpen`,
 `didChange`, and `didClose` update or remove that state; every change analyzes the

@@ -137,9 +137,9 @@ Each sample has a matching JSON verification case.
 
 Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
 syntax highlighting, bracket/quote pairing, live diagnostics, hover, completion,
-and formatting through the standalone `mini-lang-server`. Install it locally from
-a VSIX and install the server from a source distribution or set
-`mini.serverPath`.
+go-to-definition, and formatting through the standalone `mini-lang-server`.
+Install it locally from a VSIX and install the server from a source distribution
+or set `mini.serverPath`.
 
 [Future tooling](docs/tooling.md) records `mini-document` / `mini doc` and
 `mini-help` / `mini help`. These commands are not available yet.
