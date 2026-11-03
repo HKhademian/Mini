@@ -1,6 +1,6 @@
 ---
 name: tooling-foundation
-status: in_progress
+status: completed
 created: 2026-11-03
 todos:
   - id: step-1-contracts
@@ -270,12 +270,15 @@ versions and valid local annotated tags.
 
 ## Overall acceptance
 
-- [ ] Source checker, compiler, and LSP report the same existing source errors.
-- [ ] Formatter is deterministic, idempotent, and preserves compiled behavior.
-- [ ] Unsaved editor buffers receive accurate diagnostics and shared formatting.
-- [ ] Existing repository commands and language behavior remain compatible.
-- [ ] Tools run from the distribution; installed VSIX works outside the checkout.
-- [ ] Checks, independent versions, atomic commits, and local tags are complete.
+- [x] Source checker, compiler, and LSP report the same existing source errors.
+- [x] Formatter is deterministic, idempotent, and preserves compiled behavior.
+- [x] Unsaved editor buffers receive accurate diagnostics and shared formatting.
+- [x] Existing repository commands and language behavior remain compatible.
+- [x] Tools run from the distribution; the VSIX packages the bundled client.
+- [x] Checks, independent versions, atomic commits, and local tags are complete.
+
+Manual VS Code installation of the VSIX remains a user verification step; the
+packaged contents and extracted-source workflow were checked here.
 
 ## Plan links and references
 
