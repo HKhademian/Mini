@@ -1,7 +1,7 @@
 # Mini language draft
 
 Status: accepted syntax and built-in contracts are documented below.
-Diagnostic output is proposed. [T0 support](compiler.md) advances one feature
+[T0 support](compiler.md) advances one feature
 per atomic commit. Typing and other open rules remain undecided.
 
 After approval, implement and verify that feature in an atomic commit before
@@ -240,7 +240,7 @@ process_exit(1);
 Use `process_*` names for host process operations. `process_envs()` remains a
 candidate; add it only with a concrete need and a defined return shape.
 
-## Next proposal: diagnostic output
+## Accepted operation: diagnostic output
 
 The compiler needs a separate stream for diagnostics:
 

@@ -1,0 +1,22 @@
+{
+  "id": "fixture.pending",
+  "kind": "compile",
+  "source": "../language/001-001-bindings-initialize.mini",
+  "pending": "Fixture pending.",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "../language/empty.stdin"
+      },
+      "stdout": {
+        "file": "../language/empty.stdout"
+      },
+      "stderr": {
+        "file": "../language/empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

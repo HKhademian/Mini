@@ -33,6 +33,5 @@ functions, and list access, pending compiler support.
 
 [008-diagnostic.mini](008-diagnostic.mini) reports a missing argument to stderr
 and exits with status 2; otherwise it prints the argument. Its
-[case](../cases/language/write-error-sample.case.json) combines diagnostics,
-termination, and list access, pending diagnostic-output approval and compiler
-support.
+[case](../cases/language/026-003-write-error-sample.case.json) combines diagnostics,
+termination, and list access, verified with T0.

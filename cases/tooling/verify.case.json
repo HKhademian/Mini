@@ -90,7 +90,7 @@
     {
       "name": "verify-pending",
       "args": [
-        "cases/language/write-error-missing-text.case.json"
+        "cases/tooling/pending.fixture.json"
       ],
       "stdin": {
         "text": ""

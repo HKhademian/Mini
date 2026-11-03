@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.26 / builtins alpha.11: exact stderr output with `write_error`.
 - T0 alpha.25 / builtins alpha.10: `process_exit`.
 - T0 alpha.24 / builtins alpha.9: `list_at`.
 - T0 alpha.23 / builtins alpha.8: `list_length`.

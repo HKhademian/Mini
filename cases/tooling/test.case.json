@@ -22,7 +22,7 @@
       "exitCode": 0
     },
     {
-      "name": "test-pending-only",
+      "name": "test-supported-filter",
       "args": [
         "language.write-error-missing-text"
       ],
@@ -30,12 +30,12 @@
         "text": ""
       },
       "stdout": {
-        "file": "test-pending-only.stdout"
+        "file": "test-supported-filter.stdout"
       },
       "stderr": {
-        "file": "test-pending-only.stderr"
+        "file": "../language/empty.stderr"
       },
-      "exitCode": 1
+      "exitCode": 0
     }
   ]
 }

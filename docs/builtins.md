@@ -31,7 +31,7 @@ program completion gives status 0. This is a primitive host operation.
 The `process_*` family also leaves `process_envs()` as a candidate until needed;
 its return shape remains open.
 
-The next proposal is `write_error(text)`: exact UTF-8 output to stderr, without
+T0 implements `write_error(text)`: exact UTF-8 output to stderr, without
 an added newline or result value. It completes before returning so a following
 `process_exit` preserves the diagnostic. This requires primitive host access.
 

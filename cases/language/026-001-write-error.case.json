@@ -1,11 +1,10 @@
 {
   "id": "language.write-error",
   "kind": "feature",
-  "source": "write-error.mini",
+  "source": "026-001-write-error.mini",
   "features": [
     "text.error"
   ],
-  "pending": "Diagnostic output proposed; compiler unavailable.",
   "cases": [
     {
       "stdin": {

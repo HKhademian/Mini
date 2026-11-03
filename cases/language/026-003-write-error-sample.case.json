@@ -10,7 +10,6 @@
     "list.at",
     "control.if"
   ],
-  "pending": "Diagnostic output proposed; compiler unavailable.",
   "cases": [
     {
       "stdin": {
