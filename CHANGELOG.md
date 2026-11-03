@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document grouped-tag audits, explicit remote publication, and immutable history.
 - T0 alpha.32 / builtins alpha.16: map insertion/replacement with non-map no-ops.
 - Adopt group 0.1.2 and product-vGROUP-vPRODUCT tags; keep product counters across groups.
 

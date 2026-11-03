@@ -126,6 +126,8 @@ selection; shared programs preserve that selection.
 Every verified increment has one atomic commit and an annotated grouped tag.
 Never move or rename historical tags. Old tags remain valid historical
 identities; current tooling requires the new grouped format.
+Keep legacy tags on their original commits; do not manufacture group membership
+for revisions that predate the group registry. New publications use grouped tags.
 
 Release manifests use schema version 2 and record `group`, product versions,
 and the released product's group/version. VSIX filenames include both numbers,
@@ -138,3 +140,7 @@ prerelease preview. Tools and implemented libraries need not be self-hosted.
 Tag each verified product on its atomic commit before the next feature.
 Push tags only when publishing is authorized. Packaging never publishes.
 Never reuse published tags; corrections require a new product version.
+Before pushing, audit annotation, group/product values at each tag's own commit,
+and existing remote object IDs. Push explicit new refs and verify remote IDs
+afterward. Do not use a blanket legacy-tag push or force-update remote tags.
+Publishing a version tag does not bypass the self-hosting release gate.

@@ -82,3 +82,12 @@ After committing release preparation, create an annotated tag matching the
 registry and push that tag to your GitHub remote. Branch pushes never publish
 or create tags. Workflows become active when their commits reach GitHub;
 local packaging never publishes a release.
+
+Audit tags against the registry at each tagged commit, not the current checkout.
+Keep historical tags unchanged. Push only explicit grouped refs and compare
+remote tag object IDs afterward. Use batches of at most three new tags so GitHub
+creates the individual tag-push workflow events; see
+[GitHub's tag-event limit](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#push).
+Language and Mini distribution
+milestones still require self-hosting before their release jobs can publish;
+their version tags alone do not satisfy that gate.

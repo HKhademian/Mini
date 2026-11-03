@@ -18,6 +18,10 @@
   continue across groups; never reset their counters. Never move or reuse published
   tags. Do not amend others' commits or rewrite published history. Push release
   tags only when publishing is authorized.
+- Before pushing, verify every grouped tag is annotated and matches the group
+  and product version in its own commit's registry. Push explicit new refs;
+  never use a blanket tag push that publishes legacy milestones accidentally.
+  Verify the remote tag object IDs afterward. Tags do not bypass release gates.
 
 Example: a compiler fix, its regression case, and its contract update belong
 together; an unrelated CI improvement belongs in a separate commit.
