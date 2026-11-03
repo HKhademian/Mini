@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.22 / builtins alpha.7: `process_args` returns the program's text list.
 - T0 alpha.21 / builtins alpha.6: `file_write`.
 - T0 alpha.20 / builtins alpha.5: `file_read`.
 - T0 alpha.19 / builtins alpha.4: `text_at`.

@@ -8,6 +8,8 @@ export type Builtin = {
 };
 
 export const builtins = new Map<string, Builtin>([
+  ['process_args', { parameters: [], result: ValueKind.TextList,
+    imports: [], emit: () => 'process.argv.slice(2)' }],
   ['file_write', { parameters: [ValueKind.Text, ValueKind.Text], result: ValueKind.Void,
     imports: ['writeFileSync'], emit: args => `writeFileSync(${args[0]}, ${args[1]}, "utf8")` }],
   ['file_read', { parameters: [ValueKind.Text], result: ValueKind.Text,

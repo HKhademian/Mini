@@ -1,0 +1,26 @@
+{
+  "id": "language.process-args-value",
+  "kind": "compile",
+  "source": "022-002-process-args-value.mini",
+  "features": [
+    "process.args"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "022-002-process-args-value.expected.ts"
+      }
+    }
+  ]
+}

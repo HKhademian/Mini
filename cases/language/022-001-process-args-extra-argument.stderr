@@ -1,0 +1,3 @@
+022-001-process-args-extra-argument.mini:1:12: expected 0 arguments
+var args = process_args(0);
+           ^
