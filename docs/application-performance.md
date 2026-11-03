@@ -15,11 +15,13 @@ Use the repository's Node.js and locked development dependencies:
 
 ```text
 node tools/application-performance.ts --check
+node tools/application-performance.ts --check .cache/compiler.mini.ts
 node tools/application-performance.ts .cache/applications.json
 node tools/application-performance.ts .cache/candidate-applications.json bootstrap/compiler.ts
 ```
 
-Choose a fresh report path. Full runs retain the assembled Mini input and
+The `--check` form accepts the same optional candidate compiler path and runs
+scale-1 semantic verification without writing a report. Choose a fresh report path. Full runs retain the assembled Mini input and
 instrumented generated TS in `REPORT.json.assets/`; originals are identified by
 hash before appending the export used by the harness. Compilation happens once
 per application and its wall time is recorded separately from execution.

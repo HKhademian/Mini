@@ -27,6 +27,16 @@ The [T0-to-T1 reference](t0-t1-reference.md) inventories its complete implementa
 and the Mini replacements. Accepted language cases are active; parameter-passing
 proposals remain pending and do not count as completed conformance coverage.
 
+Verify a candidate against every Mini-source case:
+
+```text
+./bin/mini compile compiler/compiler.mini .cache/compiler.mini.ts
+node tools/candidate.ts .cache/compiler.mini.ts
+```
+
+The candidate check skips tool cases, which continue to use the active CLI; run
+`mini test` for those. A filter argument narrows the case IDs.
+
 T0 is strict TypeScript. Mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
 unannotated parameters. This is not a full Mini typechecker. Functions are

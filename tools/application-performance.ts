@@ -69,9 +69,8 @@ function build(application: Application, assets: string, selected: string) {
 
 async function main(): Promise<void> {
   const [, , argument, override, ...extra] = process.argv;
-  assert(argument && extra.length === 0, 'usage: node tools/application-performance.ts REPORT.json [COMPILER.ts] | --check');
+  assert(argument && extra.length === 0, 'usage: node tools/application-performance.ts REPORT.json [COMPILER.ts] | --check [COMPILER.ts]');
   const checkOnly = argument === '--check';
-  assert(!checkOnly || override === undefined, '--check takes no compiler override');
   const selected = override ? resolve(override) : join(root, compiler().entry);
   const output = resolve(argument);
   const assets = checkOnly ? mkdtempSync(join(tmpdir(), 'mini-applications-check-')) : output + '.assets';
