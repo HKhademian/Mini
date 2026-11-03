@@ -43,8 +43,9 @@ adds no language syntax and does not implement the self-hosted compiler.
 - Read the project direction, authoritative rules, tooling/versioning guides, compiler, CLI, case runner, release
   tooling, and VS Code extension.
 - Confirmed the user wants **existing compiler diagnostics first**, without new lint rules in this milestone.
-- Inspected baseline `bb8c436`; Node is `v24.16.0`. Group is `0.3.0`; language, compiler, and builtins are
-  `0.3.0-alpha.1`; the VS Code extension is `0.2.0`.
+- Inspected baseline `c7166ed` (first Mini compiler source; T0 remains active) after rebasing this work from `bb8c436`.
+  Node is `v24.16.0`. Group is `0.3.0`; language, compiler, and builtins are `0.3.0-alpha.1`; the VS Code extension
+  is `0.2.0`.
 - Selected a lexer `includeComments` mode: analysis returns comment tokens for the formatter and parses a second,
   comment-free token stream for diagnostics. The parser stays unchanged.
 - Recorded the Step 1 command, formatting, diagnostic, analysis, and LSP contracts.
