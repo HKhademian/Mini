@@ -18,6 +18,16 @@ class Parser {
     return this.take();
   }
   expression(): Expression {
+    let left = this.primary();
+    while (this.token().text === '+') {
+      const operator = this.take();
+      const right = this.primary();
+      if (left.kind !== right.kind || left.kind === ValueKind.Boolean) fail(operator, '+ needs two numbers or two texts');
+      left = { code: `(${left.code} + ${right.code})`, kind: left.kind };
+    }
+    return left;
+  }
+  primary(): Expression {
     const token = this.take();
     if (token.kind === TokenKind.Number) return { code: String(Number(token.text)), kind: ValueKind.Number };
     if (token.kind === TokenKind.Text) return { code: JSON.stringify(JSON.parse(token.text)), kind: ValueKind.Text };

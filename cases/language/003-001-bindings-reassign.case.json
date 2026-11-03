@@ -1,8 +1,7 @@
 {
   "id": "language.bindings-reassign",
   "kind": "compile",
-  "pending": "Compiler unavailable.",
-  "source": "bindings-reassign.mini",
+  "source": "003-001-bindings-reassign.mini",
   "features": [
     "bindings"
   ],
@@ -18,7 +17,10 @@
       "stderr": {
         "file": "empty.stderr"
       },
-      "exitCode": 0
+      "exitCode": 0,
+      "artifact": {
+        "file": "003-001-bindings-reassign.expected.ts"
+      }
     }
   ]
 }

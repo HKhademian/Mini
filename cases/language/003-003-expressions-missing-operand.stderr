@@ -1,0 +1,3 @@
+003-003-expressions-missing-operand.mini:1:16: expected expression
+var next = 1 + ;
+               ^

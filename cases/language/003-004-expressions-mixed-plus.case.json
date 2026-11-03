@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-mixed-plus",
   "kind": "reject",
-  "source": "expressions-mixed-plus.mini",
+  "source": "003-004-expressions-mixed-plus.mini",
   "features": [
     "expressions.text"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-mixed-plus-default.stderr"
+        "file": "003-004-expressions-mixed-plus.stderr"
       },
       "exitCode": 1
     }

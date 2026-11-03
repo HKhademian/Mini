@@ -1,0 +1,14 @@
+{
+  "id": "language.text-concat",
+  "kind": "compile",
+  "source": "003-005-text-concat.mini",
+  "features": ["expressions.add"],
+  "cases": [{
+    "name": "default",
+    "stdin": { "file": "empty.stdin" },
+    "stdout": { "file": "empty.stdout" },
+    "stderr": { "file": "empty.stderr" },
+    "exitCode": 0,
+    "artifact": { "file": "003-005-text-concat.expected.ts" }
+  }]
+}

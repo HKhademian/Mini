@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-missing-operand",
   "kind": "reject",
-  "source": "expressions-missing-operand.mini",
+  "source": "003-003-expressions-missing-operand.mini",
   "features": [
     "expressions.arithmetic"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-missing-operand-default.stderr"
+        "file": "003-003-expressions-missing-operand.stderr"
       },
       "exitCode": 1
     }

@@ -1,7 +1,6 @@
 {
   "id": "language.bindings-sample",
   "kind": "sample",
-  "pending": "Compiler unavailable.",
   "source": "../../samples/001-bindings.mini",
   "features": [
     "bindings"
