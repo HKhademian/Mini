@@ -4,6 +4,12 @@ Status: accepted syntax and built-in contracts are documented below.
 [T0 support](compiler.md) advances one feature
 per atomic commit. Typing and other open rules remain undecided.
 
+Unspecified behavior is undecided. T0 and T1 are bootstrap implementations;
+their internal choices, including numeric normalization, JSON output, map
+representation, helper lowering, and performance, do not define Mini semantics
+unless an accepted contract below states them. Do not treat a current T0/T1
+result as a promise for another target.
+
 After approval, implement and verify that feature in an atomic commit before
 presenting the next proposal. Approval does not decide its open questions.
 Create [cases](cases.md) with every proposal, including separate Mini sources,

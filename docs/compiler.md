@@ -1,6 +1,10 @@
 # T0 compiler
 
-T0 is the handwritten TypeScript compiler. Run it directly with Node:
+T0 is the handwritten TypeScript compiler and the bootstrap, not the language
+specification. Undocumented T0 behavior is an implementation choice and may
+change; only accepted language and builtin contracts are normative.
+
+Run it directly with Node:
 
 ```text
 ./bin/mini compile cases/language/001-001-bindings-initialize.mini
