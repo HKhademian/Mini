@@ -1,0 +1,15 @@
+/// Check that nested key-count compositions evaluate the map-producing call once.
+
+/// Print a call marker and return a fresh one-key map.
+fn make_map() {
+    write("m");
+    var items = map_new();
+    map_set(items, "first", 0);
+    return items;
+}
+var count = list_length(map_keys(make_map()));
+var stored = list_new();
+list_set(stored, 0, map_new());
+if (count == 1 && list_length(map_keys(list_get(stored, 0))) == 0) {
+    write(":one");
+}

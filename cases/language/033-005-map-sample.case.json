@@ -3,12 +3,12 @@
   "kind": "sample",
   "source": "../../samples/010-map.mini",
   "features": [
-    "map.length",
     "map.new",
     "map.set",
     "map.has",
     "map.keys",
-    "map.get"
+    "map.get",
+    "list.length"
   ],
   "cases": [
     {

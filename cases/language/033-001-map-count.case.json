@@ -1,12 +1,13 @@
 {
-  "id": "language.map-length",
+  "id": "language.map-count",
   "kind": "feature",
-  "source": "033-001-map-length.mini",
+  "source": "033-001-map-count.mini",
   "features": [
-    "map.length",
     "map.new",
     "map.set",
-    "map.has"
+    "map.has",
+    "map.keys",
+    "list.length"
   ],
   "cases": [
     {

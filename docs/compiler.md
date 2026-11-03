@@ -100,7 +100,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.1.0-alpha.32`: map_set(items, key, value) inserts/replaces values and ignores
   non-map targets.
 
-- `0.1.0-alpha.33`: map_length(items) counts unique stored keys.
+- `0.1.0-alpha.33`: introduced unique-key counting, now expressed with key snapshots.
 
 - `0.1.0-alpha.34`: map_keys(items) returns independent key-list snapshots.
 
@@ -116,6 +116,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.2.0-alpha.4`: `//` line comments and `///` documentation comments, including
   inline comments, with quoted markers and source positions preserved.
+
+- `0.3.0-alpha.1`: object-backed map lowering; key counts use
+  `list_length(map_keys(items))` without per-write bookkeeping.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

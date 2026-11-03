@@ -156,7 +156,7 @@ async function main(): Promise<void> {
         warm: 'application call and top-level string flattening; excludes import, input read, normalization/hash verification',
         memory: 'maximum of cold per-process RSS high-water before normalization (applicationPeak) and after output (processPeak); includes Node/worker/import/input. Heap is a live snapshot including garbage, not retained or peak JS heap.',
         instrumentation: 'append only export { app_run } to an isolated generated copy; original emitted bytes hashed',
-        baseline: 'handwritten same algorithms/helpers/map layouts, using unchecked native operations; actual T0 separately includes objects, regex, slice, and its full parser',
+        baseline: 'handwritten matching algorithms/helpers with native Map/list storage; generated representation follows the selected backend. Actual T0 separately includes objects, regex, slice, and its full parser',
         limitations: 'one host; no actual M1, fixed point, OS cold-cache control, I/O durability workload, or concurrency test; checks are outside application timing' },
       semanticChecks, verifiedMeasuredCalls: results.length * 10, sources, results, comparisons, emittedProgramChecks };
     mkdirSync(dirname(output), { recursive: true }); writeFileSync(output, JSON.stringify(report, null, 2) + '\n', { flag: 'wx' });

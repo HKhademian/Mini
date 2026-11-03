@@ -1,6 +1,6 @@
 # T0 implementation inventory for M1 and T1
 
-Baseline: group 0.2.0, compiler 0.2.0-alpha.4. M1 is the first compiler source
+Baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler source
 written in Mini. T1 is its generated TypeScript compiler: `T1 = T0(M1)`.
 This inventories the five files in
 [compiler configuration](../config/compiler.json), not the CLI tools, tests, or
@@ -52,8 +52,8 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): nineteen signatures, lowering callbacks,
-  required Node imports, and five optional generated adapters.
+- [builtins.ts](../compiler/builtins.ts): eighteen signatures, lowering callbacks,
+  required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
 
@@ -267,12 +267,13 @@ target TS produced by the compiler, not extra syntax required in M1.
 
 ### Maps
 
-- `map_new() -> map`: `new Map()`.
-- `map_has(map, text) -> boolean`: `(arg0).has(arg1)`.
+- `map_new() -> map`: `({ __proto__: $mini_map_proto })` (shared runtime block).
+- `map_has(map, text) -> boolean`: `$mini_map_has(arg0, arg1)` (adapter).
 - `map_get(value, text) -> value`: `$mini_map_get(arg0, arg1)` (adapter).
 - `map_set(value, text, value) -> no result`: `$mini_map_set(arg0, arg1, arg2)` (adapter).
-- `map_length(map) -> number`: `(arg0).size`.
-- `map_keys(map) -> list`: `[...(arg0).keys()]`.
+- `map_keys(map) -> list`: `Object.keys(arg0)`.
+
+Count keys with `list_length(map_keys(items))`; no map size counter is maintained.
 
 ### Files and process
 
@@ -283,29 +284,35 @@ target TS produced by the compiler, not extra syntax required in M1.
 
 ## 9. Generated host adapters and imports
 
-Five adapters are emitted only when needed, once each. Their current sort order is:
+The shared map block is emitted once when map construction, lookup, membership,
+or mutation is used. It declares an empty prototype and three helpers: get,
+has, and set. All Mini map values are non-array objects; getters/setters reject
+the other Mini value kinds. Missing keys return zero while stored values retain
+their identity. The prototype has no inherited string keys or `__proto__` setter.
+There is no brand, per-map counter, hidden field, or wrapper.
 
-1. `$mini_list_get`: check list target, normalize a negative index, check bounds
+Adapter blocks sort by their emitted text, giving this order when all are used:
+
+1. The shared map block: `$mini_map_proto`, `$mini_map_get`, `$mini_map_has`,
+   `$mini_map_set`. The membership helper preserves argument evaluation order.
+2. `$mini_list_get`: check list target, normalize a negative index, check bounds
    and assigned slot, otherwise return numeric zero.
-2. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
+3. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
-3. `$mini_map_get`: ignore non-maps or absent keys by returning zero; otherwise
-   return the stored value, preserving false/empty text and collection references.
-4. `$mini_map_set`: update only native map targets.
-5. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+4. `$mini_text_get`: read an in-range character from text, otherwise empty text.
 
-The emitted TS uses `Array.isArray`, `instanceof Map`, `typeof`, property/index
-access, `in` for slot presence, ordinary early returns, and native Map methods.
+The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
+presence, ordinary early returns, object prototypes, and `Object.keys`.
 These mechanisms live in target adapter text. Mini does not need these source
 constructs to emit that text.
 
-The five implementations in [builtins.ts](../compiler/builtins.ts) are the exact
+The adapter implementations in [builtins.ts](../compiler/builtins.ts) are the exact
 initial-port reference, including whitespace. Their `$` prefix cannot collide
 with Mini identifiers.
 
 The only generated module import is `node:fs`. The finite named imports, sorted
 when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
-and the five adapter names in fixed ordered lists rather than add general sorting.
+and the adapter blocks in fixed ordered lists rather than add general sorting.
 
 ## 10. Emission rules that affect fixed-point equality
 

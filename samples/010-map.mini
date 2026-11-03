@@ -1,6 +1,6 @@
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
 var names = map_new();
-if (map_length(names) == 0) {
+if (list_length(map_keys(names)) == 0) {
     write("empty\n");
 }
 map_set(names, "source", "input.mini");
@@ -8,7 +8,7 @@ if (map_has(names, "source")) {
     write("source present\n");
 }
 map_set(names, "source", "replacement.mini");
-if (map_length(names) == 1) {
+if (list_length(map_keys(names)) == 1) {
     write("replacement keeps one key\n");
 }
 write(map_get(names, "source"));
@@ -17,7 +17,7 @@ var keys = map_keys(names); // Snapshot the keys before adding another entry.
 write(list_get(keys, 0));
 write("\n");
 map_set(names, "verbose", false);
-if (map_length(names) == 2) {
+if (list_length(map_keys(names)) == 2) {
     write("two keys\n");
 }
 if (list_length(keys) == 1) {

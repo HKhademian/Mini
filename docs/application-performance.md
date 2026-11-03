@@ -37,8 +37,10 @@ program must match those bytes and execute with the expected output.
 ## Comparisons
 
 - **Generated versus handwritten:** same algorithms, helper boundaries, source
-  traversal, maps, lists, and output shapes. This measures the cost of Mini's
-  lowering and accepted fallback behavior against unchecked native operations.
+  traversal, logical maps/lists, and output shapes. The handwritten counterpart
+  uses native `Map`; generated storage follows the selected compiler backend.
+  Compare generated before/after runs to isolate a backend change. Cross-language
+  comparisons also include storage choice and accepted fallback behavior.
 - **Generated versus actual T0:** tokenization, identifier indexing, and the
   compiler pipeline additionally invoke the current handwritten T0 modules.
   T0 uses its own object records, regex tests, slicing, and full parser. This is

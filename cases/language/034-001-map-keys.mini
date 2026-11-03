@@ -23,7 +23,7 @@ while (position < list_length(keys)) {
     }
     position = position + 1;
 }
-if (list_length(keys) != 2 || !found_first || !found_second || map_length(items) != 2) {
+if (list_length(keys) != 2 || !found_first || !found_second || list_length(map_keys(items)) != 2) {
     process_exit(1);
 }
 write("keys");

@@ -2,7 +2,7 @@
 
 Assessment: 2026-11-03. The [language contract](language.md), current compiler
 sources, and executable cases are the evidence for this assessment.
-Baseline: group 0.2.0, T0/compiler 0.2.0-alpha.4.
+Baseline: group 0.3.0, T0/compiler 0.3.0-alpha.1.
 
 ## Verdict
 

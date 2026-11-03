@@ -112,7 +112,7 @@ fn perf_scopes(count, source) {
             map_set(inner, key, map_get(scope, key));
             key_index = key_index + 1;
         }
-        result = result + map_length(inner);
+        result = result + list_length(map_keys(inner));
         index = index + 1;
     }
     return result;

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Group 0.3.0, language/compiler/builtins 0.3.0-alpha.1: use object-backed maps
+  with an empty prototype and no per-map metadata. Remove `map_length`;
+  count with `list_length(map_keys(items))`. Map operations and argument order
+  retain their contracts, including special text keys and shared values.
 - Record two clean application benchmark runs: 1,380 verified measured calls,
   CPU/RSS evidence, and material scanner/compiler costs relative to actual T0.
 - Add ten paired Mini/handwritten-TS application benchmarks, independent result

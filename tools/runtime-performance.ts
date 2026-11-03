@@ -136,7 +136,7 @@ const direct: Record<Name, Workload> = {
         const key = keys[keyIndex]!;
         inner.set(key, scope.get(key)!);
       }
-      result += inner.size;
+      result += [...inner.keys()].length;
     }
     return result;
   },
@@ -180,7 +180,7 @@ function verify(name: Name, result: Result, count: number, source: string): void
       const token: Map<string, string | number> | Token = result[index]!;
       const expected: Token = { kind: 'identifier', text: 'name', source: 'probe.mini', start: index,
         end: index + 1, line: 1, column: index + 1, context: source };
-      assert.deepEqual(token instanceof Map ? Object.fromEntries(token) : token, expected);
+      assert.deepEqual(Object.fromEntries(token instanceof Map ? token : Object.entries(token)), expected);
     }
   } else if (name === 'text' || name === 'slices') assert.equal(result, source);
   else if (name === 'list') assert.equal(result, count * (count - 1) / 2);

@@ -1,5 +1,9 @@
 # Paired application results
 
+Historical native-Map baseline. The later
+[object-backed runtime](map-runtime.md) changes generated storage; the recorded
+samples below retain their original source and version identities.
+
 Measured on 2026-11-03 with Node.js, CPU details omitted, platform details omitted. The
 [suite and method](application-performance.md) were committed as `2d8b315` before
 these two runs. Both recorded clean checkouts and matching source, generated,

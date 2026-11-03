@@ -23,6 +23,8 @@ the Mini compiler now. Limit T0 work to reproduced bugs that block that port;
 further language improvements belong after verified self-hosting.
 The baseline includes `//` line comments and `///` documentation comments.
 Keep Mini source and functions documented using these forms.
+The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
+`list_length(map_keys(items))`, keeping writes free of size bookkeeping.
 
 M1 is the first compiler source written in Mini; T1 is the generated TypeScript
 compiler, `T1 = T0(M1)`. Keep the first M1 close to T0 in routine boundaries,

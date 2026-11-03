@@ -319,7 +319,7 @@ var names = map_new();
 - Equality retains its scalar-only contract; map identity or content equality
   is not selected by this constructor.
 
-T0 emits a native `Map` for each call. Other targets can choose their own
+T0 emits an object-backed map for each call. Other targets can choose their own
 representation. Maps hold unique text keys; membership and assignment follow below.
 Missing-key lookup returns numeric zero, without introducing null. There is no
 `map_empty` alias or record/struct/class syntax.
@@ -338,7 +338,7 @@ var present = map_has(names, "source");
 - The query does not insert a key or otherwise change the map. An absent key
   does not require a default stored value.
 
-T0 checks known operand kinds and emits native map membership. Cases cover absent
+T0 checks known operand kinds and emits a membership helper. Cases cover absent
 and present keys, including keys storing zero or false.
 
 ## Accepted operation: map assignment
@@ -383,23 +383,22 @@ var missing = map_get(names, "missing");
 Zero is an ordinary number, not an absence type. No null literal, pointer syntax,
 or null-checking operation is added. Argument omission remains a separate decision.
 
-## Accepted operation: map length
+## Counting map keys with existing operations
 
 ```text
 var names = map_new();
 map_set(names, "source", "input.mini");
-var count = map_length(names);
+var count = list_length(map_keys(names));
 ```
 
-- `map_length(items)` returns the number of stored keys as a nonnegative integer.
-  An empty map has length 0.
+- `list_length(map_keys(items))` counts the stored keys. An empty map gives 0.
 - Inserting a new key increases the count by one. Replacing an existing key's
   value leaves the count unchanged, regardless of its value kind.
 - The caller supplies one map argument. It evaluates once, and the query does
   not change the map.
 
-The [map sample](../samples/010-map.mini) combines construction, membership,
-insertion, replacement, length, and key snapshots with observable output.
+Counting materializes a key snapshot. There is no stored size counter or separate
+counting primitive. The [map sample](../samples/010-map.mini) combines these operations.
 
 ## Accepted operation: map keys
 
@@ -418,7 +417,7 @@ var keys = map_keys(names);
 - Enumeration order is unspecified. Do not rely on it for deterministic compiler
   output; maintain an explicit ordered list when order matters.
 
-T0 materializes native map keys into a list. Tests check membership and uniqueness
+T0 uses `Object.keys` to materialize own text keys into a list. Tests check membership and uniqueness
 without depending on insertion order. No missing-key value is needed for enumeration.
 
 ## Accepted operation: process termination

@@ -19,6 +19,6 @@ node samples/009-list-mutation.mini.ts
 - [007-exit.mini](007-exit.mini): Use `process_exit` when an argument is missing. [Cases](../cases/language/025-004-process-exit-sample.case.json).
 - [008-diagnostic.mini](008-diagnostic.mini): Use `write_error` before an unsuccessful exit. [Cases](../cases/language/026-003-write-error-sample.case.json).
 - [009-list-mutation.mini](009-list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Cases](../cases/language/029-008-list-mutation-sample.case.json).
-- [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, `map_length`, and `map_keys`; read replacement values, distinguish missing keys, and snapshot keys. [Cases](../cases/language/033-005-map-sample.case.json).
+- [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, and `map_keys`; count the key list with `list_length`, read replacement values, distinguish missing keys, and snapshot keys. [Cases](../cases/language/033-005-map-sample.case.json).
 - [011-read-defaults.mini](011-read-defaults.mini): Use `text_get`, `list_get`, and `map_get` defaults, read gaps as zero, and use a negative list index, without null. [Cases](../cases/language/037-007-read-defaults-sample.case.json).
 - [012-comments.mini](012-comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).

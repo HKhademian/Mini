@@ -3,8 +3,9 @@
 Each pair implements `app_run(source)`, a complete document-processing operation.
 The Mini source uses the current subset; the TS counterpart is handwritten, not
 generated output with renamed functions. Keep conditions, helpers, call order,
-loops, and map/list layouts comparable. TS uses typed native operations instead
-of Mini's guarded primitive adapters. These are benchmark applications, not
+loops, and logical map/list roles comparable. TS uses typed native `Map` and
+array operations; generated storage follows the selected compiler backend.
+These are benchmark applications, not
 released commands, a standard library, or a replacement compiler.
 
 - Word frequencies: [Mini](word-count.mini), [TS](word-count.ts).

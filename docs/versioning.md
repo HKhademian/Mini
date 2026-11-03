@@ -7,12 +7,12 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.2.0-v0.2.0-alpha.1
-builtins-v0.2.0-v0.2.0-alpha.1
-vscode-v0.2.0-v0.2.0
+compiler-v0.3.0-v0.3.0-alpha.1
+builtins-v0.3.0-v0.3.0-alpha.1
+vscode-v0.3.0-v0.2.0
 ```
 
-The shared group is `0.2.0`. Each product keeps its own version.
+The shared group is `0.3.0`. Each product keeps its own version.
 The group identifies Mini's compatibility baseline, not a product counter.
 Change it when that baseline changes; changing groups does not reset products.
 A product-only fix advances only that product's version.
@@ -21,10 +21,10 @@ Product versions increase across groups. An unchanged implementation may carry
 its existing version into a new group after verification:
 
 ```text
-vscode-v0.2.0-v0.2.0  initial grouped label
-vscode-v0.2.0-v0.2.1  editor fix; same group
-vscode-v0.3.0-v0.2.1  same implementation verified for a new group
-vscode-v0.3.0-v0.2.2  next editor fix
+vscode-v0.3.0-v0.2.0  initial grouped label
+vscode-v0.3.0-v0.2.1  editor fix; same group
+vscode-v0.4.0-v0.2.1  same implementation verified for a new group
+vscode-v0.4.0-v0.2.2  next editor fix
 ```
 
 The last three labels illustrate future changes, not assigned releases.
@@ -44,21 +44,21 @@ version does not make an alpha product stable.
 
 ## Current inventory
 
-Current group: `0.2.0`. These are assigned release identities, not claims of
+Current group: `0.3.0`. These are assigned release identities, not claims of
 publication or self-hosting. Check the registry for later increments:
 
 ```text
-mini-v0.2.0-v0.1.0-alpha.2
-lang-v0.2.0-v0.2.0-alpha.4
-compiler-v0.2.0-v0.2.0-alpha.4
-builtins-v0.2.0-v0.2.0-alpha.3
-cli-v0.2.0-v0.1.0-alpha.3
-check-v0.2.0-v0.1.0-alpha.3
-test-v0.2.0-v0.1.0-alpha.2
-verify-v0.2.0-v0.1.0-alpha.2
-bench-v0.2.0-v0.1.0-alpha.3
-release-v0.2.0-v0.1.0-alpha.3
-vscode-v0.2.0-v0.2.0
+mini-v0.3.0-v0.1.0-alpha.2
+lang-v0.3.0-v0.3.0-alpha.1
+compiler-v0.3.0-v0.3.0-alpha.1
+builtins-v0.3.0-v0.3.0-alpha.1
+cli-v0.3.0-v0.1.0-alpha.3
+check-v0.3.0-v0.1.0-alpha.3
+test-v0.3.0-v0.1.0-alpha.2
+verify-v0.3.0-v0.1.0-alpha.2
+bench-v0.3.0-v0.1.0-alpha.3
+release-v0.3.0-v0.1.0-alpha.3
+vscode-v0.3.0-v0.2.0
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
@@ -72,13 +72,13 @@ Bootstrap and std remain unassigned/unavailable. Future first-release examples
 under the current group, to use only after implementation and verification:
 
 ```text
-bootstrap-v0.2.0-v0.1.0-alpha.1
-std-v0.2.0-v0.1.0-alpha.1
-format-v0.2.0-v0.1.0-alpha.1
-document-v0.2.0-v0.1.0-alpha.1
-help-v0.2.0-v0.1.0-alpha.1
-lsp-v0.2.0-v0.1.0-alpha.1
-play-v0.2.0-v0.1.0-alpha.1
+bootstrap-v0.3.0-v0.1.0-alpha.1
+std-v0.3.0-v0.1.0-alpha.1
+format-v0.3.0-v0.1.0-alpha.1
+document-v0.3.0-v0.1.0-alpha.1
+help-v0.3.0-v0.1.0-alpha.1
+lsp-v0.3.0-v0.1.0-alpha.1
+play-v0.3.0-v0.1.0-alpha.1
 ```
 
 Only bootstrap/std are already registered as unassigned streams. Register other
@@ -131,7 +131,7 @@ for revisions that predate the group registry. New publications use grouped tags
 
 Release manifests use schema version 2 and record `group`, product versions,
 and the released product's group/version. VSIX filenames include both numbers,
-for example `mini-0.2.0-v0.2.0.vsix`.
+for example `mini-0.3.0-v0.2.0.vsix`.
 
 Stable compiler, language, bootstrap, and Mini distribution releases require a
 verified self-hosted bootstrap. Handwritten T0 can ship only as a labeled compiler

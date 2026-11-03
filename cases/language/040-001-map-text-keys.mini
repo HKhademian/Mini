@@ -1,0 +1,57 @@
+/// Verify ordinary text keys, key snapshots, replacement, and argument evaluation order.
+
+/// Record receiver evaluation and return the nested map without copying it.
+fn receiver(state) {
+    map_set(state, "calls", map_get(state, "calls") + "r");
+    return map_get(state, "items");
+}
+
+/// Record key evaluation and return a missing key.
+fn key(state) {
+    map_set(state, "calls", map_get(state, "calls") + "k");
+    return "absent";
+}
+
+var items = map_new();
+if (map_has(items, "constructor") || map_has(items, "__proto__") || map_get(items, "toString") != 0) {
+    process_exit(1);
+}
+var keys = list_new();
+list_set(keys, 0, "__proto__");
+list_set(keys, 1, "constructor");
+list_set(keys, 2, "toString");
+list_set(keys, 3, "hasOwnProperty");
+list_set(keys, 4, "");
+list_set(keys, 5, "0");
+list_set(keys, 6, "01");
+list_set(keys, 7, "size");
+list_set(keys, 8, "length");
+var index = 0;
+while (index < list_length(keys)) {
+    map_set(items, list_get(keys, index), index);
+    index = index + 1;
+}
+index = 0;
+while (index < list_length(keys)) {
+    if (!map_has(items, list_get(keys, index)) || map_get(items, list_get(keys, index)) != index) {
+        process_exit(1);
+    }
+    index = index + 1;
+}
+var snapshot = map_keys(items);
+map_set(items, "__proto__", false);
+map_set(items, "extra", map_new());
+if (map_get(items, "__proto__") != false || list_length(snapshot) != 9 || list_length(map_keys(items)) != 10) {
+    process_exit(1);
+}
+list_set(snapshot, 0, "unrelated");
+if (map_has(items, "unrelated") || map_has(map_new(), "extra")) {
+    process_exit(1);
+}
+var state = map_new();
+map_set(state, "calls", "");
+map_set(state, "items", items);
+if (map_has(receiver(state), key(state)) || map_get(state, "calls") != "rk") {
+    process_exit(1);
+}
+write("text keys and order\n");

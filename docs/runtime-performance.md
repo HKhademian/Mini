@@ -3,6 +3,9 @@
 Assessment: 2026-11-03, Node.js on CPU details omitted/platform details omitted. The compiler baseline is
 group 0.2.0, compiler 0.2.0-alpha.3. T1 does not exist yet. These measurements
 identify costs to watch during the port; they do not establish T1's speed.
+This is the historical native-Map baseline. The current
+[object-backed map runtime](map-runtime.md) uses the same logical map operations
+with a different representation and no per-write size counter.
 The later [application suite](application-performance.md) adds paired complete
 operations, CPU measurements, and per-process memory without correctness checks
 inflating the cold application RSS reading.

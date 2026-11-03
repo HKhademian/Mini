@@ -1,0 +1,13 @@
+{
+  "id": "language.map-text-keys",
+  "kind": "feature",
+  "source": "040-001-map-text-keys.mini",
+  "features": ["map.new", "map.get", "map.set", "map.has", "map.keys", "list.length", "functions"],
+  "cases": [{
+    "name": "object-storage-contract",
+    "stdin": { "text": "" },
+    "stdout": { "text": "text keys and order\n" },
+    "stderr": { "text": "" },
+    "exitCode": 0
+  }]
+}

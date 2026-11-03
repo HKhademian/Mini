@@ -37,8 +37,10 @@ T0 emits the list setter's small host adapter once when used. It provides array
 mutation, not compiler logic. The generated helper name uses `$`, which Mini
 identifiers cannot contain, to avoid collisions with Mini source names.
 
-`map_new()` creates a fresh empty map with no arguments. T0 emits a native
-`Map`; maps can be stored in lists and passed through functions.
+`map_new()` creates a fresh empty map with no arguments. T0 uses ordinary objects
+with a shared empty prototype; maps can be stored in lists and passed through
+functions. There is no per-map metadata or wrapper. The prototype prevents
+inherited string keys and makes `"__proto__"` an ordinary stored key.
 `map_has(items, key)` checks a text key and returns a boolean without changing
 the map. Empty maps return false; membership does not decide a missing-key value.
 
@@ -50,9 +52,9 @@ lists and maps. T0 emits the setter adapter once when used.
 key or non-map target, without inserting anything. Stored zero, false, and empty
 text retain their kinds; use `map_has` when presence matters. No null value is added.
 
-`map_length(items)` returns the number of stored keys without changing the map.
-New keys increase it; replacing a value does not. See the
-[map sample](../samples/010-map.mini) for the implemented map operations together.
+Count keys with `list_length(map_keys(items))`. This materializes a snapshot
+only when counting is requested, without maintaining a counter on every write.
+See the [map sample](../samples/010-map.mini) for the operations together.
 
 `map_keys(items)` returns a fresh list of the map's text keys, in unspecified
 order. It is a snapshot: list edits do not change the map, and later map insertions

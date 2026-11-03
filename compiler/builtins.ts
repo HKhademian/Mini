@@ -11,29 +11,37 @@ export type Builtin = {
 const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
+const mapHas = '$mini_map_has';
 const textGet = '$mini_text_get';
 const listGet = '$mini_list_get';
 
+// Children of this empty prototype retain ordinary object storage without
+// inheriting string properties or the __proto__ setter. No per-map metadata.
+const mapRuntime = `const $mini_map_proto = { __proto__: null };
+function ${mapGet}(items, key) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
+    const value = items[key];
+    return value !== undefined || key in items ? value : 0;
+}
+function ${mapHas}(items, key) {
+    return key in items;
+}
+function ${mapSet}(items, key, value) {
+    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value;
+}
+`;
+
 export const builtins = new Map<string, Builtin>([
   ['map_get', { parameters: [ValueKind.Unknown, ValueKind.Text], result: ValueKind.Unknown,
-    imports: [], helper: `function ${mapGet}(items, key) {
-    if (!(items instanceof Map) || !items.has(key)) return 0;
-    return items.get(key);
-}
-`, emit: args => `${mapGet}(${args.join(', ')})` }],
+    imports: [], helper: mapRuntime, emit: args => `${mapGet}(${args.join(', ')})` }],
   ['map_keys', { parameters: [ValueKind.Map], result: ValueKind.List,
-    imports: [], emit: args => `[...(${args[0]}).keys()]` }],
-  ['map_length', { parameters: [ValueKind.Map], result: ValueKind.Number,
-    imports: [], emit: args => `(${args[0]}).size` }],
+    imports: [], emit: args => `Object.keys(${args[0]})` }],
   ['map_set', { parameters: [ValueKind.Unknown, ValueKind.Text, ValueKind.Unknown], result: ValueKind.Void,
-    imports: [], helper: `function ${mapSet}(items, key, value) {
-    if (items instanceof Map) items.set(key, value);
-}
-`, emit: args => `${mapSet}(${args.join(', ')})` }],
+    imports: [], helper: mapRuntime, emit: args => `${mapSet}(${args.join(', ')})` }],
   ['map_has', { parameters: [ValueKind.Map, ValueKind.Text], result: ValueKind.Boolean,
-    imports: [], emit: args => `(${args[0]}).has(${args[1]})` }],
+    imports: [], helper: mapRuntime, emit: args => `${mapHas}(${args.join(', ')})` }],
   ['map_new', { parameters: [], result: ValueKind.Map,
-    imports: [], emit: () => 'new Map()' }],
+    imports: [], helper: mapRuntime, emit: () => '({ __proto__: $mini_map_proto })' }],
   ['list_set', { parameters: [ValueKind.Unknown, ValueKind.Number, ValueKind.Unknown], result: ValueKind.Void,
     imports: [], helper: `function ${listSet}(items, index, value) {
     if (!Array.isArray(items)) return;
