@@ -1,0 +1,6 @@
+fn visit() {
+    write("visited");
+    return true;
+}
+var enabled = readAll() == "yes";
+var value = enabled && visit();

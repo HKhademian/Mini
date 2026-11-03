@@ -36,6 +36,16 @@ class Parser {
     return this.take();
   }
   expression(): Expression {
+    let left = this.equality();
+    while (this.token().text === '&&') {
+      const operator = this.take();
+      const right = this.equality();
+      if ((left.kind !== ValueKind.Boolean && left.kind !== ValueKind.Unknown) || (right.kind !== ValueKind.Boolean && right.kind !== ValueKind.Unknown)) fail(operator, '&& needs booleans');
+      left = { code: `(${left.code} && ${right.code})`, kind: ValueKind.Boolean };
+    }
+    return left;
+  }
+  equality(): Expression {
     let left = this.comparison();
     while (this.token().text === '==' || this.token().text === '!=') {
       const operator = this.take();

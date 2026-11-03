@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- T0 alpha.15: short-circuit boolean conjunction.
 - T0 alpha.14: boolean negation.
 - T0 alpha.13: braced `if`/`else` branches with boolean conditions.
 - T0 alpha.12: numeric ordering comparisons.

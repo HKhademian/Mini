@@ -1,0 +1,36 @@
+{
+  "id": "language.logical-and",
+  "kind": "feature",
+  "source": "015-001-logical-and.mini",
+  "features": [
+    "expressions.boolean"
+  ],
+  "cases": [
+    {
+      "stdin": {
+        "file": "015-001-logical-and.stdin"
+      },
+      "stdout": {
+        "file": "015-001-logical-and.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "evaluate"
+    },
+    {
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "name": "skip"
+    }
+  ]
+}

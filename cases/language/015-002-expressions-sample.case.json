@@ -5,7 +5,6 @@
   "features": [
     "expressions"
   ],
-  "pending": "Compiler unavailable.",
   "cases": [
     {
       "name": "silent",

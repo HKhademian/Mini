@@ -7,7 +7,7 @@ execution when the compiler is available; it is currently pending.
 
 [002-expressions.mini](002-expressions.mini) illustrates arithmetic,
 comparisons, booleans, and text concatenation without I/O. Its
-[case](../cases/language/expressions-sample.case.json) is pending compiler support.
+[case](../cases/language/015-002-expressions-sample.case.json) is pending compiler support.
 
 [003-io.mini](003-io.mini) copies input to output using text I/O
 operations. Its [case](../cases/language/005-002-io-sample.case.json) covers empty text,
