@@ -5,6 +5,9 @@ generated TS with handwritten TS across ten document-processing applications.
 They supplement the earlier [primitive audit](runtime-performance.md) with
 complete operations and realistic structured input. No language/compiler change
 or extra runtime dependency is introduced.
+The [recorded results](application-performance-results.md) and
+[raw baseline](application-performance-baseline.json) contain two clean runs
+from the committed suite and a provisional T1-readiness assessment.
 
 ## Reproduce
 

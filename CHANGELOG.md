@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Record two clean application benchmark runs: 1,380 verified measured calls,
+  CPU/RSS evidence, and material scanner/compiler costs relative to actual T0.
 - Add ten paired Mini/handwritten-TS application benchmarks, independent result
   models, actual-T0 comparisons, and cold/warm wall, CPU, and memory measurements.
 - Compiler/language 0.2.0-alpha.4: add `//` line comments and `///` documentation
