@@ -23,6 +23,20 @@ function documents(directory: string): void {
     }
   }
 }
+
+/** Reject committed absolute home paths; evidence must use repository-relative paths. */
+function portablePaths(directory: string): void {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    if (['.git', 'node_modules', 'dist', '.cache'].includes(entry.name)) continue;
+    const file = join(directory, entry.name);
+    if (entry.isDirectory()) { portablePaths(file); continue; }
+    if (!/\.(json|ts|md|mdc|mini|yml|yaml|stdout|stderr|stdin|svg)$/.test(entry.name)) continue;
+    const text = readFileSync(file, 'utf8');
+    assert(!/(^|["'\s])\/(Users|home)\//.test(text), `absolute home path in ${file}`);
+    assert(!/[A-Za-z]:\\Users\\/.test(text), `absolute home path in ${file}`);
+    assert(!/\$HOME\//.test(text), `home variable path in ${file}`);
+  }
+}
 export function checkProject(): void {
   const current = versions(root);
   const editor = JSON.parse(readFileSync(join(root, 'editors/vscode/package.json'), 'utf8')) as { version: string };
@@ -43,6 +57,7 @@ export function checkProject(): void {
     }
   }
 documents(root);
+portablePaths(root);
 const bootstrap = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
 if (bootstrap === null) {
   assert.equal(compiler().stage, CompilerStage.T0);
