@@ -1,8 +1,7 @@
 {
   "id": "language.bindings-missing-value",
   "kind": "reject",
-  "pending": "Compiler unavailable; diagnostic proposed.",
-  "source": "bindings-missing-value.mini",
+  "source": "002-002-bindings-missing-value.mini",
   "features": [
     "bindings"
   ],
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "bindings-missing-value.stderr"
+        "file": "002-002-bindings-missing-value.stderr"
       },
       "exitCode": 1
     }

@@ -28,6 +28,15 @@ class Parser {
     fail(token, 'expected expression');
   }
   statement(): string {
+    if (this.token().text !== 'var') {
+      const name = this.identifier();
+      if (!this.variables.has(name.text)) fail(name, 'unknown binding ' + name.text);
+      this.expect('=');
+      const value = this.expression();
+      this.expect(';');
+      this.variables.set(name.text, value.kind);
+      return `${name.text} = ${value.code};\n`;
+    }
     this.expect('var');
     const name = this.identifier();
     if (this.token().text !== '=') fail(this.token(), 'expected initializer');
