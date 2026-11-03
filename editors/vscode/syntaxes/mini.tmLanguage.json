@@ -1,0 +1,33 @@
+{
+  "name": "Mini",
+  "scopeName": "source.mini",
+  "patterns": [
+    {
+      "name": "string.quoted.double.mini",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        { "name": "constant.character.escape.mini", "match": "\\\\." }
+      ]
+    },
+    {
+      "match": "\\b(fn)\\s+([A-Za-z_][A-Za-z0-9_]*)\\b",
+      "captures": {
+        "1": { "name": "storage.type.mini" },
+        "2": { "name": "entity.name.function.mini" }
+      }
+    },
+    { "name": "storage.type.mini", "match": "\\b(?:var|fn)\\b" },
+    { "name": "keyword.control.mini", "match": "\\b(?:return|if|else|while)\\b" },
+    { "name": "constant.language.mini", "match": "\\b(?:true|false)\\b" },
+    { "name": "constant.numeric.mini", "match": "\\b[0-9]+\\b" },
+    { "name": "entity.name.function.call.mini", "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b(?=\\s*\\()" },
+    { "name": "variable.other.mini", "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b" },
+    { "name": "keyword.operator.mini", "match": "==|!=|<=|>=|&&|\\|\\||[=+<>!\\-]" },
+    { "name": "punctuation.section.block.begin.mini", "match": "\\{" },
+    { "name": "punctuation.section.block.end.mini", "match": "\\}" },
+    { "name": "punctuation.section.parens.begin.mini", "match": "\\(" },
+    { "name": "punctuation.section.parens.end.mini", "match": "\\)" },
+    { "name": "punctuation.separator.mini", "match": "[,;]" }
+  ]
+}

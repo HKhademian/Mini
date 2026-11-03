@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add local VS Code syntax highlighting, file icons, and bracket/quote pairing.
 - Add pending compile, runtime, rejection, and sample cases with each construct.
 - Report pending scenarios separately; allow compile checks without exact artifacts.
 - Draft the compiler workload and first binding/assignment construct for review.

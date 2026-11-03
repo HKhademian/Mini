@@ -1,0 +1,39 @@
+{
+  "name": "mini",
+  "displayName": "Mini",
+  "description": "Basic syntax highlighting and file icons for Mini .mini files.",
+  "version": "0.1.0",
+  "publisher": "mini-local",
+  "license": "UNLICENSED",
+  "type": "module",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Programming Languages"],
+  "contributes": {
+    "languages": [
+      {
+        "id": "mini",
+        "aliases": ["Mini", "mini"],
+        "extensions": [".mini"],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./icons/mini-light.svg",
+          "dark": "./icons/mini-dark.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "mini",
+        "scopeName": "source.mini",
+        "path": "./syntaxes/mini.tmLanguage.json"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@vscode/vsce": "4.1.0",
+    "vscode-oniguruma": "2.0.1",
+    "vscode-textmate": "9.3.2"
+  }
+}

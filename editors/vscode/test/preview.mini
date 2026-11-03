@@ -1,0 +1,14 @@
+fn join(left, right) {
+    return left + right;
+}
+
+var output = "";
+var position = 0;
+while (position < 3) {
+    if (position == 0) {
+        output = join(output, "first");
+    } else {
+        output = join(output, ", next");
+    }
+    position = position + 1;
+}

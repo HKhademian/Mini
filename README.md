@@ -86,6 +86,10 @@ npm installs development dependencies only. Commands live in `bin/`:
 `mini-release`, `mini-compile`, and `minic`. Compiler commands report
 unavailability until the compiler exists.
 
+Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
+syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX;
+there is no language server yet.
+
 Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
 [versioning](docs/versioning.md), [cases](docs/cases.md),
 [bootstrap verification](docs/bootstrap.md), and [releases](docs/releases.md).
