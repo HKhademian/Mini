@@ -39,6 +39,30 @@ These statements can map directly to readable TypeScript declarations and
 assignments. Mini's typing, scope, and declaration-order rules remain open;
 the TypeScript bootstrap being strongly typed does not decide them.
 
-Review this form before implementation. Functions/calls, control flow,
-expressions, and primitive host operations follow as separate small reviews.
-Examples here are proposals, not executable verification cases.
+## Next proposal: functions and calls
+
+Use named functions with positional parameters and brace-delimited bodies:
+
+```text
+fn join(left, right) {
+    return left + right;
+}
+
+output = join(output, token);
+```
+
+- `fn` declares a named function at the top level.
+- Parentheses contain comma-separated parameters or call arguments.
+- A call supplies one argument per parameter, in order.
+- `return expression;` ends the call with that value.
+- `{` and `}` delimit the body; no semicolon follows its closing brace.
+
+This separates scanner, parser, and emitter operations without introducing
+objects or methods. The function and call forms map directly to TypeScript.
+Parameter and result typing, scope, declaration order, and functions without
+a returned value remain open. The example illustrates the form; text operations
+will be reviewed with expressions.
+
+Review before implementation. Control flow, expressions, and primitive host
+operations follow as separate small reviews. Examples here are proposals,
+not executable verification cases.

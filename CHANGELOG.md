@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Draft the compiler workload and first binding/assignment construct for review.
+- Propose named functions, positional calls, and value returns for review.
 
 ## cli 0.1.0-alpha.1 — mini tooling preview
 
