@@ -1,11 +1,21 @@
-import { TextEscape, TokenKind, type Token } from './types.ts';
+import { TextEscape, TokenKind, type Diagnostic, type Token } from './types.ts';
 
-export function fail(token: Token, message: string): never {
-  const indent = token.context.slice(0, token.column - 1).replace(/[^\t]/g, ' ');
-  throw new Error(`${token.source}:${token.line}:${token.column}: ${message}\n${token.context}\n${indent}^`);
+export class CompilerDiagnostic extends Error {
+  readonly diagnostic: Diagnostic;
+
+  constructor(token: Token, message: string) {
+    const indent = token.context.slice(0, token.column - 1).replace(/[^\t]/g, ' ');
+    super(`${token.source}:${token.line}:${token.column}: ${message}\n${token.context}\n${indent}^`);
+    this.name = 'CompilerDiagnostic';
+    this.diagnostic = { message, source: token.source, start: token.start, end: token.end };
+  }
 }
 
-export function tokenize(text: string, source: string): Token[] {
+export function fail(token: Token, message: string): never {
+  throw new CompilerDiagnostic(token, message);
+}
+
+export function tokenize(text: string, source: string, includeComments = false): Token[] {
   const tokens: Token[] = [];
   const lines = text.split(/\r?\n/);
   const keywords = new Set(['var', 'fn', 'return', 'if', 'else', 'while', 'true', 'false']);
@@ -27,7 +37,14 @@ export function tokenize(text: string, source: string): Token[] {
     const character = text[position]!;
     if (/[ \t\r\n]/.test(character)) { advance(); continue; }
     if (character === '/' && text[position + 1] === '/') {
+      const comment = start();
       while (position < text.length && text[position] !== '\r' && text[position] !== '\n') advance();
+      if (includeComments) {
+        comment.kind = TokenKind.Comment;
+        comment.text = text.slice(comment.start, position);
+        comment.end = position;
+        tokens.push(comment);
+      }
       continue;
     }
     const token = start();
@@ -42,20 +59,32 @@ export function tokenize(text: string, source: string): Token[] {
       token.kind = TokenKind.Text;
       advance();
       while (position < text.length && text[position] !== '"') {
-        if (text[position] === '\n' || text[position] === '\r') fail(token, 'unterminated text');
+        if (text[position] === '\n' || text[position] === '\r') {
+          token.end = position;
+          fail(token, 'unterminated text');
+        }
         if (text[position] === '\\') {
           const escape = start();
           advance();
-          if (position === text.length || !escapes.has(text[position]!)) fail(escape, 'unknown text escape');
+          if (position === text.length || !escapes.has(text[position]!)) {
+            escape.end = Math.min(position + 1, text.length);
+            fail(escape, 'unknown text escape');
+          }
         }
         advance();
       }
-      if (position === text.length) fail(token, 'unterminated text');
+      if (position === text.length) {
+        token.end = position;
+        fail(token, 'unterminated text');
+      }
       advance();
     } else if (['==', '!=', '<=', '>=', '&&', '||'].includes(text.slice(position, position + 2))) {
       advance(); advance();
     } else if ('=+-!<>(),;{}'.includes(character)) advance();
-    else fail(token, 'unexpected character ' + JSON.stringify(character));
+    else {
+      token.end = token.start + 1;
+      fail(token, 'unexpected character ' + JSON.stringify(character));
+    }
     token.text = text.slice(token.start, position);
     token.end = position;
     tokens.push(token);

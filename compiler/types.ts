@@ -1,6 +1,6 @@
 export const TokenKind = {
   Identifier: 'identifier', Keyword: 'keyword', Number: 'number',
-  Text: 'text', Symbol: 'symbol', End: 'eof',
+  Text: 'text', Symbol: 'symbol', Comment: 'comment', End: 'eof',
 } as const;
 export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
@@ -22,5 +22,6 @@ export type Token = {
   column: number;
   context: string;
 };
+export type Diagnostic = { message: string; source: string; start: number; end: number };
 export type Expression = { code: string; kind: ValueKind };
 export type FunctionInfo = { arity: number; result: ValueKind; returned: boolean };

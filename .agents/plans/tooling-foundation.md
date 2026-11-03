@@ -8,7 +8,7 @@ todos:
     status: completed
   - id: step-2-analysis
     content: "Step 2 — Expose compiler-owned analysis and structured diagnostics"
-    status: pending
+    status: completed
   - id: step-3-checker
     content: "Step 3 — Add explicit Mini source checking"
     status: pending
@@ -48,7 +48,8 @@ adds no language syntax and does not implement the self-hosted compiler.
 - Selected a lexer `includeComments` mode: analysis returns comment tokens for the formatter and parses a second,
   comment-free token stream for diagnostics. The parser stays unchanged.
 - Recorded the Step 1 command, formatting, diagnostic, analysis, and LSP contracts.
-- No tooling implementation or new product versions exist from this planning session.
+- Added compiler analysis with structured diagnostics and comment-token mode. No product version changed: the
+  command is internal and adds no language behavior.
 
 ## Read first
 

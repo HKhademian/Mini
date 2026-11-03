@@ -23,8 +23,9 @@ below.
 
 ## Analysis interface
 
-Status: proposed for the tooling milestone and not implemented yet. The selected
-compiler exposes one narrow command:
+Status: the compiler command is implemented; checker, formatter, and language
+server integrations are future tooling work. The selected compiler exposes one
+narrow command:
 
 ```text
 node COMPILER analyze < REQUEST.json
@@ -57,7 +58,8 @@ into the original source. `line` and `column` are one-based; tabs count as one
 column. The EOF token has `start === end === source.length`. Lexer failures finalize
 the reported range before failing: an unexpected character covers that character,
 an unknown escape includes the backslash and offending character (or EOF), and
-unterminated text extends to EOF. A zero-width EOF range is valid.
+unterminated text extends to its line terminator or EOF. A zero-width EOF range
+is valid.
 
 The terminal renderer keeps the existing format:
 
