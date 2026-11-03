@@ -22,6 +22,9 @@ The current subset is the port baseline. Freeze T0 language additions and write
 the Mini compiler now. Limit T0 work to reproduced bugs that block that port;
 further language improvements belong after verified self-hosting.
 
+Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
+existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.
+
 For unchanged compiler source `S`:
 
 ```text

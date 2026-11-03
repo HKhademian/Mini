@@ -59,6 +59,9 @@ mechanisms:
 - Keep the first compiler in one Mini file. Helpers can live there without adding
   module syntax, a separate std library, or another prerequisite build tool.
 
+The [complete T0-to-T1 inventory](t0-t1-reference.md) lists the methods, data,
+host APIs, diagnostics, and exact output rules behind these responsibilities.
+
 Map key order is unspecified. Emit the finite host-import and adapter sets in an
 explicit fixed order, matching T0, rather than introducing a sorting API.
 

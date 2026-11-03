@@ -17,11 +17,11 @@ start/end offsets, one-based line/column, and source-line context. Diagnostics
 show that location, the line, and a caret. A row means a line; tabs count as one
 column and remain tabs in the caret prefix. Parsing emits readable TS directly.
 
-Each increment implements one feature, enables its indexed JSON cases, checks
-generated code and execution, and commits before starting the next feature.
-All currently reviewed cases are enabled. Future pending cases identify
-remaining work, not completed support. Verified component versions have
-annotated tags at their original feature commits.
+T0's completed increments implemented one feature at a time with indexed cases
+and verified version tags. T0 feature growth is now frozen for the Mini port.
+The [T0-to-T1 reference](t0-t1-reference.md) inventories its complete implementation
+and the Mini replacements. Accepted language cases are active; parameter-passing
+proposals remain pending and do not count as completed conformance coverage.
 
 T0 is strict TypeScript. Mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
