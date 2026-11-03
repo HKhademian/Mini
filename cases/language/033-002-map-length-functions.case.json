@@ -1,0 +1,26 @@
+{
+  "id": "language.map-length-functions",
+  "kind": "feature",
+  "source": "033-002-map-length-functions.mini",
+  "features": [
+    "map.length",
+    "map.new",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "m:one"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

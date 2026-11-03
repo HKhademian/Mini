@@ -283,7 +283,7 @@ var names = map_new();
 
 T0 emits a native `Map` for each call. Other targets can choose their own
 representation. Maps hold unique text keys; membership and assignment follow below.
-Length, lookup, and key enumeration are not implemented yet. Missing-key values
+Lookup and key enumeration are not implemented yet. Missing-key values
 remain open. There is no `map_empty` alias or record/struct/class syntax.
 
 ## Accepted operation: map membership
@@ -324,6 +324,24 @@ map_set(names, "source", "replacement.mini");
 T0 emits one small map-setter adapter when used. Membership can observe inserted
 keys now. A compiler host-adapter test inspects stored values and replacements
 until Mini lookup is implemented. Missing-key values remain undecided.
+
+## Accepted operation: map length
+
+```text
+var names = map_new();
+map_set(names, "source", "input.mini");
+var count = map_length(names);
+```
+
+- `map_length(items)` returns the number of stored keys as a nonnegative integer.
+  An empty map has length 0.
+- Inserting a new key increases the count by one. Replacing an existing key's
+  value leaves the count unchanged, regardless of its value kind.
+- The caller supplies one map argument. It evaluates once, and the query does
+  not change the map.
+
+The [map sample](../samples/010-map.mini) combines construction, membership,
+insertion, replacement, and length with observable output.
 
 ## Accepted operation: process termination
 

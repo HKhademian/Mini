@@ -1,0 +1,3 @@
+033-003-map-length-missing-map.mini:1:1: expected 1 argument
+map_length();
+^

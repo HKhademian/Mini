@@ -1,0 +1,26 @@
+{
+  "id": "language.map-length-wrong-target",
+  "kind": "reject",
+  "source": "033-004-map-length-wrong-target.mini",
+  "features": [
+    "map.length",
+    "map.new",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "033-004-map-length-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

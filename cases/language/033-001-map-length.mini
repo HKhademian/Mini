@@ -1,0 +1,19 @@
+var items = map_new();
+var key = readAll();
+if (map_length(items) != 0) {
+    process_exit(1);
+}
+map_set(items, key, 0);
+if (map_length(items) != 1) {
+    process_exit(1);
+}
+map_set(items, key, false);
+if (map_length(items) != 1) {
+    process_exit(1);
+}
+map_set(items, key + "!", "second");
+var count = map_length(items);
+if (count != 2 || map_length(items) != count || map_length(map_new()) != 0) {
+    process_exit(1);
+}
+write("two");

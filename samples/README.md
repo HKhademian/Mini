@@ -10,3 +10,4 @@ All samples compile and run with T0. Sources and JSON cases stay separate.
 - [006-list.mini](006-list.mini): Pass an argument list to a function and join its elements. [Cases](../cases/language/024-003-list-sample.case.json).
 - [007-exit.mini](007-exit.mini): Exit with status 2 when an argument is missing. [Cases](../cases/language/025-004-process-exit-sample.case.json).
 - [008-diagnostic.mini](008-diagnostic.mini): Write a diagnostic before an unsuccessful exit. [Cases](../cases/language/026-003-write-error-sample.case.json).
+- [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_has`, and `map_length`; replacing a value keeps the key count unchanged. [Cases](../cases/language/033-005-map-sample.case.json).

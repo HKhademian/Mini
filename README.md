@@ -97,6 +97,9 @@ npm installs development dependencies only. Commands live in `bin/`:
 `mini`, `mini-check`, `mini-test`, `mini-bench`, `mini-verify`,
 `mini-release`, `mini-compile`, and `minic`.
 
+Runnable [samples](samples/README.md) showcase language features and built-ins.
+Each sample has a matching JSON verification case.
+
 Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
 syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX;
 there is no language server yet.

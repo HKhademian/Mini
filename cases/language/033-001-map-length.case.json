@@ -1,0 +1,52 @@
+{
+  "id": "language.map-length",
+  "kind": "feature",
+  "source": "033-001-map-length.mini",
+  "features": [
+    "map.length",
+    "map.new",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "ordinary-key",
+      "stdin": {
+        "text": "source"
+      },
+      "stdout": {
+        "text": "two"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "empty-key",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "two"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "size-key",
+      "stdin": {
+        "text": "size"
+      },
+      "stdout": {
+        "text": "two"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

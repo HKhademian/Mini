@@ -1,0 +1,26 @@
+{
+  "id": "language.map-sample",
+  "kind": "sample",
+  "source": "../../samples/010-map.mini",
+  "features": [
+    "map.length",
+    "map.new",
+    "map.set",
+    "map.has"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "map-sample.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

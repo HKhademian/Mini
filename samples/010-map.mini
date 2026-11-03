@@ -1,0 +1,16 @@
+var names = map_new();
+if (map_length(names) == 0) {
+    write("empty\n");
+}
+map_set(names, "source", "input.mini");
+if (map_has(names, "source")) {
+    write("source present\n");
+}
+map_set(names, "source", "replacement.mini");
+if (map_length(names) == 1) {
+    write("replacement keeps one key\n");
+}
+map_set(names, "verbose", false);
+if (map_length(names) == 2) {
+    write("two keys\n");
+}

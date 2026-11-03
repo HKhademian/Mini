@@ -98,6 +98,8 @@ of `list_at`; it does not infer an element kind from preceding mutations.
 - `0.1.0-alpha.32`: map_set(items, key, value) inserts/replaces values and ignores
   non-map targets.
 
+- `0.1.0-alpha.33`: map_length(items) counts unique stored keys.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.
