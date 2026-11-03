@@ -15,7 +15,8 @@ function fixture() {
   });
   const git = (...args: string[]) => run('git', [
     '-c', 'user.name=Release fixture', '-c', 'user.email=fixture@example.invalid',
-    '-c', 'commit.gpgSign=false', '-c', 'tag.gpgSign=false', ...args,
+    '-c', 'commit.gpgSign=false', '-c', 'tag.gpgSign=false',
+    '-c', 'maintenance.auto=false', '-c', 'gc.auto=0', ...args,
   ], directory);
   git('init', '-b', 'main');
   git('add', '.');
