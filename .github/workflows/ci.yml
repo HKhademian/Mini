@@ -44,3 +44,4 @@ jobs:
           name: benchmark-${{ matrix.os }}
           path: .cache/bench-*.json
           if-no-files-found: error
+          include-hidden-files: true
