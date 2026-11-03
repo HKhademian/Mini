@@ -58,6 +58,9 @@ language should approach its target through small, self-hosted increments;
 
 ## Scope
 
+Records, structs, and classes are outside Mini's intended scope. Use simple
+collections for compiler data rather than adding dedicated structure syntax.
+
 Mini source uses `.mini`. Other executable project code uses TypeScript run
 directly by Node. Supporting tools may start in TypeScript and move to Mini
 incrementally. Compiler logic must not remain hidden in TypeScript helpers

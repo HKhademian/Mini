@@ -95,10 +95,6 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
   if represented as lists. Text-element lists could be a first step; number or
   token elements should follow actual usage. Removal, arbitrary insertion, and
   generic type syntax are not implied.
-- **Records with named fields.** Tokens and function information are clearer
-  with named fields than positional encodings or parallel arrays. Compare their
-  implementation cost with a streaming current-token representation before
-  selecting construction, access, and mutation rules. Classes are unnecessary.
 - **Named kind constants.** Token, value, and stage kinds should have one shared
   definition rather than repeated string literals. Existing bindings can name
   values; immutability or enum syntax should earn its cost separately.
@@ -109,17 +105,30 @@ slice demonstrates its benefit over an ordinary Mini helper or simpler design.
   bootstrap migrations. Evaluate one simple form independently. Documentation
   comments and annotations are additional choices, not prerequisites.
 
-Collections and records offer the largest potential readability improvement.
-They are not an instruction to build a general collection/type system before
-starting the Mini compiler. A short linear lookup is adequate initially; a
-dedicated dictionary is optional until real tables justify it.
+## Collection direction
+
+Records, structs, and classes are outside Mini's intended scope, rather than
+deferred additions. Text-keyed maps can hold named compiler data such as token
+information without dedicated field declarations or construction syntax.
+Collection element/value rules and missing-value behavior remain open; maps
+and mutable compiler-owned lists are not implemented yet.
+
+Lists and maps can share implementation machinery, but their observable rules
+differ. Lists have positional indices, a sequence length, growth, and indexing
+from the end. Maps have unique text keys and membership. Combining them into
+one entity must not make these rules more complicated merely to reduce the
+number of container names. No shared runtime representation is required.
+
+Keep the collection implementation small and readable. A short linear lookup
+can be adequate initially; a general collection/type system is unnecessary for
+the first compiler port.
 
 ## Useful later, without blocking the first port
 
 Modules/imports can wait while the compiler is one manageable source file.
 `break`, `continue`, `for`, `switch`, extra arithmetic, richer collections,
 structured recoverable errors, and source maps can wait for concrete pressure.
-Closures, methods, classes, generics, pattern matching, packages, concurrency,
+Closures, methods, generics, pattern matching, packages, concurrency,
 and optimization passes are not first self-hosting requirements.
 
 Primitive file failures may retain the current narrow success contract at this

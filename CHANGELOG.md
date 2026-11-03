@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Exclude records, structs, and classes from Mini's target; use simple collections.
 - Document future formatter, documentation, help, and language-server commands.
 - Assess remaining self-hosting semantics, compiler capabilities, and useful additions.
 - Prepare independently versioned T0 preview releases with source provenance.
