@@ -20,7 +20,7 @@ todos:
     status: completed
   - id: step-6-editor
     content: "Step 6 — Connect the VS Code extension to the installed server"
-    status: pending
+    status: completed
   - id: step-7-distribution
     content: "Step 7 — Verify the complete workflow from a source distribution and VSIX"
     status: pending
@@ -57,6 +57,8 @@ adds no language syntax and does not implement the self-hosted compiler.
   `0.1.0-alpha.5`, and added exact, idempotence, token-preservation, and compiled-output tests.
 - Added `mini-lang-server` over LSP 3.17 stdio with full sync, diagnostics, and shared formatting; registered the
   `lsp` stream and widened the case tool-name pattern for hyphenated commands.
+- Connected the VS Code extension to the installed server with a bundled thin client, `mini.serverPath` /
+  `mini.nodePath` settings, and release-time bundling; advanced the extension to `0.3.0`.
 
 ## Read first
 
@@ -262,7 +264,7 @@ versions and valid local annotated tags.
 | Existing check | Repository types, docs, versions, cases, available bootstrap; explicit source/stdin checking |
 | Formatter | Single-file `mini fmt`; fixed style, comment-preserving, no config |
 | Language server | `mini-lang-server`, LSP 3.17 stdio; full sync, diagnostics, whole-document formatting |
-| Editor | Declarative TextMate extension, version 0.2.0 |
+| Editor | TextMate extension 0.3.0; bundled LSP client for diagnostics and formatting |
 
 ## Overall acceptance
 

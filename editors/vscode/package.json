@@ -1,11 +1,15 @@
 {
   "name": "mini",
   "displayName": "Mini",
-  "description": "Basic syntax highlighting and file icons for Mini .mini files.",
-  "version": "0.2.0",
+  "description": "Mini syntax highlighting, file icons, diagnostics, and formatting.",
+  "version": "0.3.0",
   "publisher": "mini-local",
   "license": "UNLICENSED",
   "type": "module",
+  "main": "./dist/extension.cjs",
+  "activationEvents": [
+    "onLanguage:mini"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -29,10 +33,34 @@
         "scopeName": "source.mini",
         "path": "./syntaxes/mini.tmLanguage.json"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Mini",
+      "properties": {
+        "mini.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a mini-lang-server script. Leave empty to run mini-lang-server from PATH."
+        },
+        "mini.nodePath": {
+          "type": "string",
+          "default": "node",
+          "description": "Node executable used when mini.serverPath names a script."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "esbuild src/extension.ts --bundle --platform=node --format=cjs --external:vscode --outfile=dist/extension.cjs",
+    "package": "npm run build && vsce package --no-dependencies"
   },
   "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/vscode": "1.85.0",
     "@vscode/vsce": "4.1.0",
+    "esbuild": "0.25.10",
+    "typescript": "7.0.2",
     "vscode-oniguruma": "2.0.1",
     "vscode-textmate": "9.3.2"
   }

@@ -1,8 +1,9 @@
 # Mini for VS Code
 
-Basic `.mini` file support: theme-aware syntax highlighting, light/dark M file
-icons, and brace, parenthesis, and double-quote pairing. The language picker
-shows **Mini**. File icon themes can override the supplied language icons.
+`.mini` file support: theme-aware syntax highlighting, light/dark file icons,
+brace, parenthesis, and double-quote pairing, live compiler diagnostics, and
+document formatting. The language picker shows **Mini**. File icon themes can
+override the supplied language icons.
 
 Highlights `var`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
@@ -16,8 +17,22 @@ compiler support. The accepted text escapes are `\"`, `\\`, `\n`, `\r`, and `\t`
 other escapes receive an invalid scope. The line-comment toggle uses `//`;
 there is no block-comment toggle. Built-in names use ordinary call highlighting.
 
-This is a declarative TextMate extension with no runtime dependencies or
-language server. It provides no diagnostics, completion, formatter, or runner.
+## Language server
+
+The extension starts the standalone `mini-lang-server` and uses it for
+diagnostics and whole-document formatting. Install the server from a Mini source
+distribution so `mini-lang-server` is on `PATH`, or set an explicit script path.
+
+Settings:
+
+- `mini.serverPath`: path to a `mini-lang-server` script. Empty (the default)
+  runs `mini-lang-server` from `PATH`.
+- `mini.nodePath`: Node executable used when `mini.serverPath` names a script.
+  Defaults to `node`.
+
+Diagnostics update as you type, including unsaved and untitled documents.
+Formatting uses the same fixed style as `mini fmt`; enable **Format On Save** or
+run **Format Document**. Invalid source is not reformatted.
 
 ## Install locally
 
@@ -25,12 +40,14 @@ From this directory, using the repository's Node 24.16.0:
 
 ```text
 npm ci
+npm run check
+npm run build
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.2.0.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.3.0-v0.3.0.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.3.0-v0.2.0.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.3.0-v0.3.0.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 Mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 

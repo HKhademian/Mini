@@ -12,12 +12,18 @@ export function packageVscode(directory: string, output: string, tooling = direc
   assert(version !== null, 'VS Code extension version is unassigned');
   const packager = join(tooling, 'editors/vscode/node_modules/@vscode/vsce/vsce');
   assert(existsSync(packager), 'install VS Code development dependencies with npm ci in editors/vscode');
+  const bundler = join(tooling, 'editors/vscode/node_modules/esbuild/bin/esbuild');
+  assert(existsSync(bundler), 'install the VS Code extension bundler with npm ci in editors/vscode');
+  const extension = join(directory, 'editors/vscode');
+  mkdirSync(join(extension, 'dist'), { recursive: true });
+  run(process.execPath, [bundler, join(extension, 'src/extension.ts'), '--bundle', '--platform=node',
+    '--format=cjs', '--external:vscode', '--outfile=' + join(extension, 'dist/extension.cjs')], extension);
   mkdirSync(output, { recursive: true });
   const file = `mini-${versions(directory).group}-v${version}.vsix`;
   const destination = resolve(output, file);
   assert(!existsSync(destination), 'VSIX output already exists');
   run(process.execPath, [packager, 'package', '--no-dependencies', '--allow-missing-repository',
-    '--skip-license', '--out', destination], join(directory, 'editors/vscode'));
+    '--skip-license', '--out', destination], extension);
   return { file, sha256: sha256(readFileSync(destination)) };
 }
 

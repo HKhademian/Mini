@@ -120,6 +120,9 @@ test('language contribution includes both icons and only packaged resource paths
   for (const path of Object.values(language.icon) as string[]) {
     assert.match(readFileSync(new URL(path, root), 'utf8'), /<svg[^>]+viewBox="0 0 16 16"/);
   }
-  assert.equal(manifest.main, undefined);
+  assert.equal(manifest.main, './dist/extension.cjs');
   assert.equal(manifest.dependencies, undefined);
+  assert.deepEqual(manifest.activationEvents, ['onLanguage:mini']);
+  assert.equal(manifest.contributes.configuration.properties['mini.serverPath'].default, '');
+  assert.equal(manifest.contributes.configuration.properties['mini.nodePath'].default, 'node');
 });

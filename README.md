@@ -136,9 +136,9 @@ Runnable [samples](samples/README.md) showcase language features and built-ins.
 Each sample has a matching JSON verification case.
 
 Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
-syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX.
-The standalone `mini-lang-server` provides diagnostics and formatting for
-editors that launch it directly; the extension does not connect to it yet.
+syntax highlighting, bracket/quote pairing, live diagnostics, and formatting
+through the standalone `mini-lang-server`. Install it locally from a VSIX and
+install the server from a source distribution or set `mini.serverPath`.
 
 [Future tooling](docs/tooling.md) records `mini-document` / `mini doc` and
 `mini-help` / `mini help`. These commands are not available yet.

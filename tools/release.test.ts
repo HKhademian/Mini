@@ -74,7 +74,8 @@ test('VS Code releases build a checksummed VSIX from the annotated source revisi
       assert.deepEqual(packaged(path), readFileSync(join(directory, 'editors/vscode', path)));
     }
     assert.deepEqual(packaged('readme.md'), readFileSync(join(directory, 'editors/vscode/README.md')));
-    assert.equal(run('unzip', ['-Z1', file], work).toString().trim().split('\n').length, 8);
+    assert.match(packaged('dist/extension.cjs').toString(), /async function activate\(/);
+    assert.equal(run('unzip', ['-Z1', file], work).toString().trim().split('\n').length, 9);
     for (const line of readFileSync(join(output, 'SHA256SUMS'), 'utf8').trim().split('\n')) {
       const [hash, asset] = line.split('  ');
       assert.equal(sha256(readFileSync(join(output, asset!))), hash, asset);

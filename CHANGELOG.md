@@ -7,6 +7,9 @@
   with about 5% higher RSS, large synthetic sources compile about 1.6–1.7x
   slower, and paired application compilation ranges 0.95–1.28x. Add candidate
   verification tooling and retry transient case-workspace cleanup.
+- VS Code extension 0.3.0: connect to `mini-lang-server` for live diagnostics and
+  document formatting, with `mini.serverPath` and `mini.nodePath` settings. The
+  client is bundled into the VSIX; no checkout-local paths are required.
 - Language server 0.1.0-alpha.1: add standalone `mini-lang-server` with LSP 3.17
   over stdio, full document sync, pushed diagnostics, whole-document formatting,
   UTF-16 positions, and `--version`. Diagnostics and formatting reuse the

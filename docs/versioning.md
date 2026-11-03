@@ -9,7 +9,7 @@ Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 ```text
 compiler-v0.3.0-v0.3.0-alpha.1
 builtins-v0.3.0-v0.3.0-alpha.1
-vscode-v0.3.0-v0.2.0
+vscode-v0.3.0-v0.3.0
 ```
 
 The shared group is `0.3.0`. Each product keeps its own version.
@@ -21,10 +21,10 @@ Product versions increase across groups. An unchanged implementation may carry
 its existing version into a new group after verification:
 
 ```text
-vscode-v0.3.0-v0.2.0  initial grouped label
-vscode-v0.3.0-v0.2.1  editor fix; same group
-vscode-v0.4.0-v0.2.1  same implementation verified for a new group
-vscode-v0.4.0-v0.2.2  next editor fix
+vscode-v0.3.0-v0.3.0  initial grouped label
+vscode-v0.3.0-v0.3.1  editor fix; same group
+vscode-v0.4.0-v0.3.1  same implementation verified for a new group
+vscode-v0.4.0-v0.3.2  next editor fix
 ```
 
 The last three labels illustrate future changes, not assigned releases.
@@ -60,7 +60,7 @@ test-v0.3.0-v0.1.0-alpha.2
 verify-v0.3.0-v0.1.0-alpha.2
 bench-v0.3.0-v0.1.0-alpha.3
 release-v0.3.0-v0.1.0-alpha.3
-vscode-v0.3.0-v0.2.0
+vscode-v0.3.0-v0.3.0
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
