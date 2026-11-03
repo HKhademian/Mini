@@ -217,8 +217,11 @@ while (position < list_length(args)) {
   the script path. It is a primitive built-in.
 - `list_length(items)` returns the number of elements; an empty list has length 0.
 - `list_get(items, index)` returns one element, using a zero-based index.
-  The caller supplies an integer with `0 <= index < list_length(items)` and reads
-  an assigned position. It returns the stored value, which need not be text.
+  The caller supplies an integer index; negative indices count from the end.
+  It returns the stored value, preserving its kind and any collection reference.
+- A non-list target, skipped position, or out-of-range index returns numeric `0`
+  without changing the target. Stored `0`, `false`, and empty text retain their
+  actual kinds. Both arguments are required and evaluate once, left to right.
 - Empty arguments and spaces are preserved. Flag-like text is ordinary text;
   these primitives do not parse options.
 
@@ -243,7 +246,7 @@ var count = list_length(items);
 - It uses the shared list kind.
 
 T0 emits a new array for each call. Only the zero-argument form is implemented.
-Explicit reserve and missing-position values remain under discussion.
+Explicit reserve remains under discussion. Unassigned positions read as zero.
 
 ## Accepted operation: list assignment
 
@@ -262,9 +265,8 @@ list_set(items, -1, "replacement");
   end grows the length to `index + 1` and assigns that position.
 - Stored values retain their kind. Lists can contain different kinds, including
   lists and maps, without converting stored values to text.
-- Only assigned positions can be read in this increment. Reading skipped
-  positions and out-of-range positions remains outside the contract. No zero or
-  null default is selected by growth.
+- Skipped positions read as numeric `0` through `list_get`. Growth introduces no
+  null value or additional absence kind.
 
 On an empty list, assigning index `-1` or `-2` is a no-op. The same rule removes
 the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empty

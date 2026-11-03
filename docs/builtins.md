@@ -31,8 +31,10 @@ compiler's command interface. Shared built-ins `list_length(items)` and
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
 Indices still below zero after adjustment are no-ops. Lists can hold scalar
-values, lists, and maps; `list_get` returns the actual stored value.
-Reserve and missing-position values remain open; see the [language contract](language.md).
+values, lists, and maps; `list_get` returns the actual stored value. Non-list
+targets, gaps, and out-of-range positions read as numeric zero. Negative indices
+count from the end, as for assignment. Explicit reserve remains under discussion;
+see the [language contract](language.md).
 
 T0 emits the list setter's small host adapter once when used. It provides array
 mutation, not compiler logic. The generated helper name uses `$`, which Mini

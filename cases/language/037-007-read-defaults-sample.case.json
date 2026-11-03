@@ -4,6 +4,11 @@
   "source": "../../samples/011-read-defaults.mini",
   "features": [
     "text.get",
+    "list.get",
+    "list.new",
+    "list.set",
+    "map.get",
+    "map.new",
     "read.defaults"
   ],
   "cases": [

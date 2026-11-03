@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- 0.2.0-alpha.3: list reads return zero for gaps and invalid targets/positions;
+  negative indices count from the end.
 - 0.2.0-alpha.2: text reads return empty text for non-text targets and invalid positions.
 - Breaking, group 0.2.0: rename text_at/list_at to text_get/list_get without aliases;
   advance language, compiler, and builtins to 0.2.0-alpha.1.

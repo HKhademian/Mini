@@ -107,7 +107,8 @@ deferred additions. Text-keyed maps can hold named compiler data such as token
 information without dedicated field declarations or construction syntax.
 Lists can now be constructed, grown, and mutated, storing scalars, lists, and
 maps. Map construction, membership, mutation, lookup, counts, and keys are
-available. Missing map keys return numeric zero; list-gap reads remain open.
+available. Missing map keys and list positions return ordinary numeric zero,
+without a null value. Unavailable text reads return empty text.
 
 Lists and maps can share implementation machinery, but their observable rules
 differ. Lists have positional indices, a sequence length, growth, and indexing
@@ -123,8 +124,8 @@ Capacity reservation and logical growth are different. On a fresh list, setting
 nonnegative index `r` makes its length `r + 1`; it cannot replace reserving
 capacity while keeping length zero. To obtain logical length `r` by assignment,
 set index `r - 1`. On a fresh list, the negative-index no-op rule keeps it empty
-when `r <= 0`. This sets the last element; it does not choose values for skipped
-positions. Growth by assignment cannot shrink an existing list either.
+when `r <= 0`. Skipped positions read as zero. Growth by assignment cannot shrink
+an existing list.
 
 Keeping only `list_new()` and growing through assignment is an option under
 discussion. It would omit explicit capacity control rather than emulate it.

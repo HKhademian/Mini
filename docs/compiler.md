@@ -109,6 +109,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.2.0-alpha.2`: text_get returns empty text for unavailable characters.
 
+- `0.2.0-alpha.3`: list_get reads from the end with negative indices and returns
+  zero for non-list targets, gaps, and out-of-range positions.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

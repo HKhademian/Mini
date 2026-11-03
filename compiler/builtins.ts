@@ -12,6 +12,7 @@ const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
 const textGet = '$mini_text_get';
+const listGet = '$mini_list_get';
 
 export const builtins = new Map<string, Builtin>([
   ['map_get', { parameters: [ValueKind.Unknown, ValueKind.Text], result: ValueKind.Unknown,
@@ -46,8 +47,14 @@ export const builtins = new Map<string, Builtin>([
     imports: ['writeSync'], emit: args => `writeSync(2, ${args[0]})` }],
   ['process_exit', { parameters: [ValueKind.Number], result: ValueKind.Void,
     imports: [], emit: args => `process.exit(${args[0]})` }],
-  ['list_get', { parameters: [ValueKind.List, ValueKind.Number], result: ValueKind.Unknown,
-    imports: [], emit: args => `(${args[0]})[${args[1]}]` }],
+  ['list_get', { parameters: [ValueKind.Unknown, ValueKind.Number], result: ValueKind.Unknown,
+    imports: [], helper: `function ${listGet}(items, index) {
+    if (!Array.isArray(items)) return 0;
+    if (index < 0) index = items.length + index;
+    if (index >= 0 && index < items.length && index in items) return items[index];
+    return 0;
+}
+`, emit: args => `${listGet}(${args.join(', ')})` }],
   ['list_length', { parameters: [ValueKind.List], result: ValueKind.Number,
     imports: [], emit: args => `(${args[0]}).length` }],
   ['process_args', { parameters: [], result: ValueKind.List,

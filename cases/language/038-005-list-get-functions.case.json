@@ -1,0 +1,24 @@
+{
+  "id": "language.list-get-functions",
+  "kind": "feature",
+  "source": "038-005-list-get-functions.mini",
+  "features": [
+    "list.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "livalue:i:ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

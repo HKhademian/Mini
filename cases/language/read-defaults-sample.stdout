@@ -1,3 +1,6 @@
 character: e
 unavailable text: empty
+unavailable list value: zero
+gap reads zero
+last: last
 missing map value: zero

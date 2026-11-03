@@ -1,0 +1,24 @@
+{
+  "id": "language.list-get-default",
+  "kind": "feature",
+  "source": "038-001-list-get-default.mini",
+  "features": [
+    "list.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "zero"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

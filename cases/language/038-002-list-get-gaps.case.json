@@ -1,0 +1,24 @@
+{
+  "id": "language.list-get-gaps",
+  "kind": "feature",
+  "source": "038-002-list-get-gaps.mini",
+  "features": [
+    "list.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "hi"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}
