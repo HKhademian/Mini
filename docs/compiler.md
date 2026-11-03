@@ -107,6 +107,8 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.2.0-alpha.1` (group 0.2.0): rename text_at/list_at to text_get/list_get,
   migrate maintained sources and cases, and remove the former built-in names.
 
+- `0.2.0-alpha.2`: text_get returns empty text for unavailable characters.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

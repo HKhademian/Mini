@@ -1,0 +1,24 @@
+{
+  "id": "language.text-get-wrong-target",
+  "kind": "feature",
+  "source": "037-002-text-get-wrong-target.mini",
+  "features": [
+    "text.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "empty"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

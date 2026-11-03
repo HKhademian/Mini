@@ -1,0 +1,7 @@
+write("character: " + text_get("hello", 1) + "\n");
+if (text_get(0, 1) == "" && text_get("hello", 2000) == "") {
+    write("unavailable text: empty\n");
+}
+if (map_get(map_new(), "missing") == 0) {
+    write("missing map value: zero\n");
+}

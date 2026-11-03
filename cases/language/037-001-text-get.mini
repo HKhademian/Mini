@@ -1,0 +1,6 @@
+var source = readAll();
+var index = 0;
+if (text_length(source) > 1) {
+    index = 1;
+}
+write(text_get(source, index));

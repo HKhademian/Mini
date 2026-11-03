@@ -1,0 +1,1 @@
+text_get(write(""), 1);

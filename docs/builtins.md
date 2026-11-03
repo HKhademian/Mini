@@ -10,7 +10,8 @@ without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. T0 implements these operations.
 
 The accepted built-ins `text_length(text)` and `text_get(text, index)` scan
-ASCII source. Indices are zero-based and in range; scanner code guards access.
+ASCII source. `text_get` uses zero-based integer indices and returns empty text
+for a non-text target or an out-of-range position, including negative indices.
 The text family uses `group_operation` names, with lowercase words separated by
 underscores. This naming convention needs no namespace mechanism.
 

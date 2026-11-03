@@ -1,0 +1,24 @@
+{
+  "id": "language.text-get-functions",
+  "kind": "feature",
+  "source": "037-004-text-get-functions.mini",
+  "features": [
+    "text.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "tie:i:ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

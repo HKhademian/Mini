@@ -1,0 +1,1 @@
+text_get("hello", "1");

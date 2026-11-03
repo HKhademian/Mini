@@ -11,6 +11,7 @@ export type Builtin = {
 const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
+const textGet = '$mini_text_get';
 
 export const builtins = new Map<string, Builtin>([
   ['map_get', { parameters: [ValueKind.Unknown, ValueKind.Text], result: ValueKind.Unknown,
@@ -55,8 +56,12 @@ export const builtins = new Map<string, Builtin>([
     imports: ['writeFileSync'], emit: args => `writeFileSync(${args[0]}, ${args[1]}, "utf8")` }],
   ['file_read', { parameters: [ValueKind.Text], result: ValueKind.Text,
     imports: ['readFileSync'], emit: args => `readFileSync(${args[0]}, "utf8")` }],
-  ['text_get', { parameters: [ValueKind.Text, ValueKind.Number], result: ValueKind.Text,
-    imports: [], emit: args => `(${args[0]})[${args[1]}]` }],
+  ['text_get', { parameters: [ValueKind.Unknown, ValueKind.Number], result: ValueKind.Text,
+    imports: [], helper: `function ${textGet}(text, index) {
+    if (typeof text === "string" && index >= 0 && index < text.length) return text[index];
+    return "";
+}
+`, emit: args => `${textGet}(${args.join(', ')})` }],
   ['text_length', { parameters: [ValueKind.Text], result: ValueKind.Number,
     imports: [], emit: args => `(${args[0]}).length` }],
   ['readAll', { parameters: [], result: ValueKind.Text,

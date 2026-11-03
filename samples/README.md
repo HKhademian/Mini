@@ -19,3 +19,4 @@ node samples/009-list-mutation.mini.ts
 - [008-diagnostic.mini](008-diagnostic.mini): Use `write_error` before an unsuccessful exit. [Cases](../cases/language/026-003-write-error-sample.case.json).
 - [009-list-mutation.mini](009-list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Cases](../cases/language/029-008-list-mutation-sample.case.json).
 - [010-map.mini](010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, `map_length`, and `map_keys`; read replacement values, distinguish missing keys, and snapshot keys. [Cases](../cases/language/033-005-map-sample.case.json).
+- [011-read-defaults.mini](011-read-defaults.mini): Use ordinary empty text and zero for unavailable reads, without null. [Cases](../cases/language/037-007-read-defaults-sample.case.json).

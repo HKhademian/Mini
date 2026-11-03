@@ -169,12 +169,16 @@ while (position < text_length(source)) {
 
 - `text_length(text)` returns the number of characters; empty text has length 0.
 - `text_get(text, index)` returns one character as text, using a zero-based index.
-- The caller supplies an integer index with `0 <= index < text_length(text)`.
-  Out-of-range behavior is outside the initial contract; scanners guard access.
+- If the target is not text, or the index is negative or at/beyond its length,
+  return empty text without an error or conversion.
+- The caller supplies an integer index. Both arguments are required and evaluate
+  once, from left to right, even when the target is not text.
 - Start with ASCII text. Unicode indexing is outside the initial scope.
 
 These primitives let Mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
+The [read-defaults sample](../samples/011-read-defaults.mini) shows ordinary empty
+text and numeric-zero fallbacks without an absence value.
 
 ## Accepted operations: text files
 

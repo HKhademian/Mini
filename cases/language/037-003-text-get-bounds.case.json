@@ -1,0 +1,24 @@
+{
+  "id": "language.text-get-bounds",
+  "kind": "feature",
+  "source": "037-003-text-get-bounds.mini",
+  "features": [
+    "text.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "h:o"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

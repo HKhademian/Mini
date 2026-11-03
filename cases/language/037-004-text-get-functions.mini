@@ -1,0 +1,12 @@
+fn text() {
+    write("t");
+    return "hello";
+}
+fn index() {
+    write("i");
+    return 1;
+}
+write(text_get(text(), index()));
+write(":");
+write(text_get(0, index()));
+write(":ok");

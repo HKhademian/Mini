@@ -1,0 +1,50 @@
+{
+  "id": "language.text-get",
+  "kind": "feature",
+  "source": "037-001-text-get.mini",
+  "features": [
+    "text.get",
+    "read.defaults"
+  ],
+  "cases": [
+    {
+      "name": "empty",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "single",
+      "stdin": {
+        "text": "x"
+      },
+      "stdout": {
+        "text": "x"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "second",
+      "stdin": {
+        "text": "hello"
+      },
+      "stdout": {
+        "text": "e"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}
