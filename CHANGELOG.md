@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document future formatter, documentation, help, and language-server commands.
 - Assess remaining self-hosting semantics, compiler capabilities, and useful additions.
 - Prepare independently versioned T0 preview releases with source provenance.
 - T0 alpha.26 / builtins alpha.11: exact stderr output with `write_error`.

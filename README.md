@@ -94,6 +94,10 @@ Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
 syntax highlighting, and bracket/quote pairing. Install it locally from a VSIX;
 there is no language server yet.
 
+[Future tooling](docs/tooling.md) records `mini-format` / `mini fmt`,
+`mini-document` / `mini doc`, `mini-help` / `mini help`, and `mini-lang-server`.
+These commands are not available yet.
+
 Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
 [versioning](docs/versioning.md), [cases](docs/cases.md),
 [bootstrap verification](docs/bootstrap.md), and [releases](docs/releases.md).

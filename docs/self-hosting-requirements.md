@@ -149,6 +149,6 @@ The ability to make and verify a small compiler change is part of the foundation
 purpose. Subsequent increments must preserve the fixed point; a one-off compiler
 that cannot be maintained in Mini is not the intended outcome.
 
-Future tooling may remain TypeScript. A formatter, documenter,
+The [future tooling](tooling.md) may remain TypeScript. A formatter, documenter,
 help tool, and language server are useful follow-on work, not compiler bootstrap
 prerequisites.
