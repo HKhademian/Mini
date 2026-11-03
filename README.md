@@ -104,3 +104,5 @@ These commands are not available yet.
 Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
 [versioning](docs/versioning.md), [cases](docs/cases.md),
 [bootstrap verification](docs/bootstrap.md), and [releases](docs/releases.md).
+The [version inventory](docs/versioning.md#current-inventory) lists current
+products, future streams, and how specifications/docs identify their versions.

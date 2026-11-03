@@ -98,6 +98,12 @@ registry, release selector, packaging, and checks together; this guide does not
 reserve working tags or change the registry. The dispatcher changes under its
 own CLI version. See [versioning](versioning.md) and [releases](releases.md).
 
+The [version inventory](versioning.md#current-inventory) also records proposed
+stream names. A future playground has its own product version and pins the
+compiler/language/library selection used by shared programs. Its delivery is
+undecided. Docs and help content identify the versions they describe separately
+from the tools that generate or present them.
+
 Implement and verify each tool independently. Useful initial checks are formatter
 idempotence and unchanged execution, exact generated documentation/help output,
 and a small language-server session with edited source and updated diagnostics.

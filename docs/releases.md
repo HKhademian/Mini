@@ -32,6 +32,13 @@ Assets: complete `minilang-TAG.tar.gz`, embedded `RELEASE.json`, external
 `manifest.json`, `RELEASE-NOTES.md`, and `SHA256SUMS`. They identify the source
 commit, entity versions, Node version, and available bootstrap hashes.
 
+The [group/product policy](versioning.md#group-and-product-versions) also requires
+explicit compatibility and verification of a group's exact selection. Current
+packaging records the snapshot's versions; it does not yet validate compatibility
+declarations or certify a group. Independent product tags do not advance the
+Mini group or language. Documentation revisions remain tied to their source and
+applicable product versions.
+
 Packaging extracts and checks the finished archive without Git history or
 installed npm packages. Compiler output must reproduce exactly; compressed
 archive bytes across tar implementations need not.
