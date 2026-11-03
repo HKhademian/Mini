@@ -1,1 +1,1 @@
-write(text_at("mini", 1));
+write(text_get("mini", 1));

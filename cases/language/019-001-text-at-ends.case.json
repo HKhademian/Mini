@@ -3,7 +3,7 @@
   "kind": "feature",
   "source": "019-001-text-at-ends.mini",
   "features": [
-    "text.at",
+    "text.get",
     "text.length"
   ],
   "cases": [

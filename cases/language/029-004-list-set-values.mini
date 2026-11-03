@@ -8,7 +8,7 @@ list_set(items, 2, inner);
 if (list_length(untouched) != 0 || list_length(items) != 3) {
     process_exit(1);
 }
-if (list_at(items, 0) != 7 || list_at(items, 1) != true) {
+if (list_get(items, 0) != 7 || list_get(items, 1) != true) {
     process_exit(1);
 }
-write(list_at(list_at(items, 2), 0));
+write(list_get(list_get(items, 2), 0));

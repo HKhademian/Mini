@@ -3,4 +3,4 @@ if (list_length(args) == 0) {
     write_error("expected an argument\n");
     process_exit(2);
 }
-write(list_at(args, 0));
+write(list_get(args, 0));

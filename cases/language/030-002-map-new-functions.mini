@@ -7,7 +7,7 @@ fn store(value) {
     return items;
 }
 var items = store(make_map());
-list_set(list_at(items, 0), 5, "ignored");
+list_set(list_get(items, 0), 5, "ignored");
 if (list_length(items) != 1) {
     process_exit(1);
 }

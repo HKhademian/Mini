@@ -2,7 +2,7 @@
   "id": "language.list-mutation-sample",
   "kind": "sample",
   "source": "../../samples/009-list-mutation.mini",
-  "features": ["list.new", "list.set", "list.at", "list.length", "control.if"],
+  "features": ["list.new", "list.set", "list.get", "list.length", "control.if"],
   "cases": [
     {
       "name": "growth-and-values",

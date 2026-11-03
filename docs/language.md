@@ -162,13 +162,13 @@ written in Mini and live in `std/`; it remains only a naming example.
 var source = readAll();
 var position = 0;
 while (position < text_length(source)) {
-    write(text_at(source, position));
+    write(text_get(source, position));
     position = position + 1;
 }
 ```
 
 - `text_length(text)` returns the number of characters; empty text has length 0.
-- `text_at(text, index)` returns one character as text, using a zero-based index.
+- `text_get(text, index)` returns one character as text, using a zero-based index.
 - The caller supplies an integer index with `0 <= index < text_length(text)`.
   Out-of-range behavior is outside the initial contract; scanners guard access.
 - Start with ASCII text. Unicode indexing is outside the initial scope.
@@ -204,7 +204,7 @@ Use shared list operations for a list returned by the host:
 var args = process_args();
 var position = 0;
 while (position < list_length(args)) {
-    write(list_at(args, position));
+    write(list_get(args, position));
     position = position + 1;
 }
 ```
@@ -212,7 +212,7 @@ while (position < list_length(args)) {
 - `process_args()` returns a list initially containing text arguments, excluding Node and
   the script path. It is a primitive built-in.
 - `list_length(items)` returns the number of elements; an empty list has length 0.
-- `list_at(items, index)` returns one element, using a zero-based index.
+- `list_get(items, index)` returns one element, using a zero-based index.
   The caller supplies an integer with `0 <= index < list_length(items)` and reads
   an assigned position. It returns the stored value, which need not be text.
 - Empty arguments and spaces are preserved. Flag-like text is ordinary text;
@@ -264,7 +264,7 @@ list_set(items, -1, "replacement");
 
 On an empty list, assigning index `-1` or `-2` is a no-op. The same rule removes
 the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empty
-for `r <= 0`. The existing reader is `list_at`; no `list_get` alias is introduced.
+for `r <= 0`. The reader is `list_get`; the former `list_at` built-in is removed.
 
 Map assignment below likewise makes a non-map target a no-op. Function parameter
 rebinding and the broader passing contract remain under review separately.

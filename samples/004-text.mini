@@ -3,7 +3,7 @@ fn normalize(source) {
     var position = 0;
     var current = "";
     while (position < text_length(source)) {
-        current = text_at(source, position);
+        current = text_get(source, position);
         if (current == "\t" || current == "\r" || current == "\n") {
             output = output + " ";
         } else {

@@ -1,0 +1,5 @@
+var items = list_new();
+list_set(items, 0, "first");
+write(text_get("hello", 1));
+write(":");
+write(list_get(items, 0));

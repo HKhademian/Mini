@@ -4,7 +4,7 @@
   "source": "../../samples/006-list.mini",
   "features": [
     "list.length",
-    "list.at",
+    "list.get",
     "process.args",
     "bindings",
     "functions",

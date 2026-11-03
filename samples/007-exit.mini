@@ -2,6 +2,6 @@ fn first(items) {
     if (list_length(items) == 0) {
         process_exit(2);
     }
-    return list_at(items, 0);
+    return list_get(items, 0);
 }
 write(first(process_args()));

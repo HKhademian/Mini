@@ -29,7 +29,7 @@ unannotated parameters. This is not a full Mini typechecker. Functions are
 top-level, may call later definitions, and require a value return in this increment.
 
 Lists store runtime values. T0 uses its internal `Unknown` kind for the result
-of `list_at`; it does not infer an element kind from preceding mutations.
+of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.1`: initialized bindings with text, number, boolean, and
   existing-binding values.
@@ -103,6 +103,9 @@ of `list_at`; it does not infer an element kind from preceding mutations.
 - `0.1.0-alpha.34`: map_keys(items) returns independent key-list snapshots.
 
 - `0.1.0-alpha.35`: map_get(items, key) reads values, with numeric-zero fallbacks.
+
+- `0.2.0-alpha.1` (group 0.2.0): rename text_at/list_at to text_get/list_get,
+  migrate maintained sources and cases, and remove the former built-in names.
 
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated

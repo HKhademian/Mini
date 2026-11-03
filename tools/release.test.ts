@@ -32,9 +32,9 @@ test('VS Code has an independent, exact-version release stream', () => {
   assert.throws(() => selectRelease(`vscode-v9999.0.0-v${current.vscode}`, current), /tag must match assigned group version/);
   assert.throws(() => selectRelease(`vscode-v${current.vscode}`, current), /invalid component tag/);
   assert.throws(() => selectRelease(`v${current.vscode}`, current), /invalid component tag/);
-  const nextGroup = { ...current, group: '0.2.0' };
-  assert.deepEqual(selectRelease(releaseTag('vscode', nextGroup), nextGroup), { component: 'vscode', group: '0.2.0', version: current.vscode });
-  assert.equal(releaseTag('vscode', { ...nextGroup, vscode: '0.1.2' }), 'vscode-v0.2.0-v0.1.2');
+  const nextGroup = { ...current, group: '0.3.0' };
+  assert.deepEqual(selectRelease(releaseTag('vscode', nextGroup), nextGroup), { component: 'vscode', group: '0.3.0', version: current.vscode });
+  assert.equal(releaseTag('vscode', { ...nextGroup, vscode: '0.1.2' }), 'vscode-v0.3.0-v0.1.2');
 });
 
 test('VS Code releases build a checksummed VSIX from the annotated source revision', () => {

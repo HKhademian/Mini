@@ -5,4 +5,4 @@ fn make_map() {
     return items;
 }
 var keys = map_keys(make_map());
-write(list_at(keys, 0));
+write(list_get(keys, 0));

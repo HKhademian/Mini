@@ -10,6 +10,6 @@ var result = change(original);
 if (result != 0 || list_length(original) != 1) {
     process_exit(1);
 }
-write(list_at(original, 0));
+write(list_get(original, 0));
 write(":");
-write(list_at(alias, 0));
+write(list_get(alias, 0));

@@ -5,7 +5,7 @@ fn join(items) {
         if (position > 0) {
             output = output + "|";
         }
-        output = output + list_at(items, position);
+        output = output + list_get(items, position);
         position = position + 1;
     }
     return output;

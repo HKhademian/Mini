@@ -3,7 +3,7 @@
   "kind": "feature",
   "source": "019-002-text-at-middle.mini",
   "features": [
-    "text.at"
+    "text.get"
   ],
   "cases": [
     {

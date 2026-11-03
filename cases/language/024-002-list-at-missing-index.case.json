@@ -3,7 +3,7 @@
   "kind": "reject",
   "source": "024-002-list-at-missing-index.mini",
   "features": [
-    "list.at"
+    "list.get"
   ],
   "cases": [
     {

@@ -1,4 +1,4 @@
 var args = process_args();
-write(list_at(args, 0));
+write(list_get(args, 0));
 write(":");
-write(list_at(args, list_length(args) - 1));
+write(list_get(args, list_length(args) - 1));

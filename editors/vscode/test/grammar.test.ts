@@ -72,8 +72,8 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
     assert.ok(scopes(value, value).includes('constant.language.mini'));
   }
   for (const name of [
-    'readAll', 'write', 'write_error', 'text_length', 'text_at',
-    'file_read', 'file_write', 'process_args', 'list_new', 'list_set', 'list_length', 'list_at',
+    'readAll', 'write', 'write_error', 'text_length', 'text_get',
+    'file_read', 'file_write', 'process_args', 'list_new', 'list_set', 'list_length', 'list_get',
     'map_new', 'map_has', 'map_set', 'map_get', 'map_length', 'map_keys', 'process_exit',
   ]) {
     assert.ok(scopes(`${name}();`, name).includes('entity.name.function.call.mini'));

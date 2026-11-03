@@ -6,7 +6,7 @@
     "process.exit",
     "process.args",
     "list.length",
-    "list.at",
+    "list.get",
     "functions",
     "control.if",
     "text.output"

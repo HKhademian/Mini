@@ -3,7 +3,7 @@
   "kind": "reject",
   "source": "019-003-text-at-missing-index.mini",
   "features": [
-    "text.at"
+    "text.get"
   ],
   "cases": [
     {

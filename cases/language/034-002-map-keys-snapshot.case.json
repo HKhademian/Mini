@@ -6,7 +6,7 @@
     "map.keys",
     "map.new",
     "map.set",
-    "list.at",
+    "list.get",
     "list.length"
   ],
   "cases": [

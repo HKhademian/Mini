@@ -1,12 +1,15 @@
 # Built-ins and library functions
 
+Group 0.2.0 renames `text_at` and `list_at` to `text_get` and `list_get`.
+Update calls to the new names; the former names are not built-in aliases.
+
 Mini needs a small set of host operations for compiling files and writing tools.
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `write` produces no value. T0 implements these operations.
 
-The accepted built-ins `text_length(text)` and `text_at(text, index)` scan
+The accepted built-ins `text_length(text)` and `text_get(text, index)` scan
 ASCII source. Indices are zero-based and in range; scanner code guards access.
 The text family uses `group_operation` names, with lowercase words separated by
 underscores. This naming convention needs no namespace mechanism.
@@ -22,12 +25,12 @@ See [the draft](language.md) for the initial success contract.
 
 The accepted built-in `process_args()` returns a text list for the generated
 compiler's command interface. Shared built-ins `list_length(items)` and
-`list_at(items, index)` expose the elements.
+`list_get(items, index)` expose the elements.
 `list_new()` now creates a fresh empty list of length 0. T0 supports its
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
 Indices still below zero after adjustment are no-ops. Lists can hold scalar
-values, lists, and maps; `list_at` returns the actual stored value.
+values, lists, and maps; `list_get` returns the actual stored value.
 Reserve and missing-position values remain open; see the [language contract](language.md).
 
 T0 emits the list setter's small host adapter once when used. It provides array

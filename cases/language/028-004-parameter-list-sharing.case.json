@@ -2,7 +2,7 @@
   "id": "language.parameter-list-sharing",
   "kind": "feature",
   "source": "028-004-parameter-list-sharing.mini",
-  "features": ["parameters.sharing", "functions", "list.new", "list.at", "list.set"],
+  "features": ["parameters.sharing", "functions", "list.new", "list.get", "list.set"],
   "pending": "Parameter-passing proposal is under review",
   "cases": [
     {

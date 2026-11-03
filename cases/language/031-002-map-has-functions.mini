@@ -11,6 +11,6 @@ if (map_has(make_map(), key())) {
 }
 var items = list_new();
 list_set(items, 0, map_new());
-if (!map_has(list_at(items, 0), "name")) {
+if (!map_has(list_get(items, 0), "name")) {
     write(":absent");
 }

@@ -13,7 +13,7 @@ Local packaging creates snapshot assets and never publishes. Output directories
 must be empty. To validate an existing annotated component tag at HEAD:
 
 ```text
-./bin/mini release dist/tag check-v0.1.2-v0.1.0-alpha.3
+./bin/mini release dist/tag check-v0.2.0-v0.1.0-alpha.3
 ```
 
 The tag must match [the version registry](../config/versions.json). Packaging
@@ -49,7 +49,7 @@ compiler. Install its locked development dependencies before local packaging:
 
 ```text
 npm --prefix editors/vscode ci --ignore-scripts
-./bin/mini release dist/vscode vscode-v0.1.2-v0.1.1
+./bin/mini release dist/vscode vscode-v0.2.0-v0.1.1
 ```
 
 The example requires the matching annotated tag at HEAD and a clean checkout.

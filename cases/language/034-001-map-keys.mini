@@ -11,7 +11,7 @@ var position = 0;
 var found_first = false;
 var found_second = false;
 while (position < list_length(keys)) {
-    var key = list_at(keys, position);
+    var key = list_get(keys, position);
     if (!map_has(items, key)) {
         process_exit(1);
     }

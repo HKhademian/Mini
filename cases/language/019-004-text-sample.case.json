@@ -3,7 +3,7 @@
   "kind": "sample",
   "source": "../../samples/004-text.mini",
   "features": [
-    "text.at",
+    "text.get",
     "text.length",
     "bindings",
     "functions",

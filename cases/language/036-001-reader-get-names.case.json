@@ -1,0 +1,23 @@
+{
+  "id": "language.reader-rename-get-names",
+  "kind": "feature",
+  "source": "036-001-reader-get-names.mini",
+  "features": [
+    "readers.get-names"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "e:first"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

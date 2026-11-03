@@ -7,7 +7,7 @@
     "process.exit",
     "process.args",
     "list.length",
-    "list.at",
+    "list.get",
     "control.if"
   ],
   "cases": [

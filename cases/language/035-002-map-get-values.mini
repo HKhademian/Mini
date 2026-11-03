@@ -18,7 +18,7 @@ if (map_get(items, "number") != 7) {
 }
 list_set(map_get(items, "list"), 0, "shared");
 map_set(map_get(items, "map"), "flag", true);
-if (list_at(nested, 0) != "shared" || map_get(child, "flag") != true) {
+if (list_get(nested, 0) != "shared" || map_get(child, "flag") != true) {
     process_exit(1);
 }
 write(map_get(items, "text"));

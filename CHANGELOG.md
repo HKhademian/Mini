@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Breaking, group 0.2.0: rename text_at/list_at to text_get/list_get without aliases;
+  advance language, compiler, and builtins to 0.2.0-alpha.1.
 - T0 alpha.35 / builtins alpha.19: map reads use ordinary zero for missing keys.
 - T0 alpha.34 / builtins alpha.18: map key snapshots, demonstrated by the map sample.
 - Showcase all implemented built-ins in runnable samples, including list mutation.
