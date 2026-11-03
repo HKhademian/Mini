@@ -1,12 +1,11 @@
 {
   "id": "language.text-at-ends",
   "kind": "feature",
-  "source": "text-at-ends.mini",
+  "source": "019-001-text-at-ends.mini",
   "features": [
     "text.at",
     "text.length"
   ],
-  "pending": "Compiler and text built-ins unavailable.",
   "cases": [
     {
       "name": "single",

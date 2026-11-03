@@ -1,11 +1,10 @@
 {
   "id": "language.text-at-missing-index",
   "kind": "reject",
-  "source": "text-at-missing-index.mini",
+  "source": "019-003-text-at-missing-index.mini",
   "features": [
     "text.at"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "text-at-missing-index.stderr"
+        "file": "019-003-text-at-missing-index.stderr"
       },
       "exitCode": 1
     }

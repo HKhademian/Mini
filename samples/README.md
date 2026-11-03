@@ -14,7 +14,7 @@ operations. Its [case](../cases/language/005-002-io-sample.case.json) covers emp
 a word, and multiline input, pending compiler support.
 
 [004-text.mini](004-text.mini) scans input and replaces tabs and newline characters
-with spaces. Its [case](../cases/language/text-sample.case.json) combines text
+with spaces. Its [case](../cases/language/019-004-text-sample.case.json) combines text
 access, functions, loops, and branches, pending compiler support.
 
 [005-file.mini](005-file.mini) copies a text file and prints the copied content.

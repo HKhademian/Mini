@@ -1,11 +1,10 @@
 {
   "id": "language.text-at-middle",
   "kind": "feature",
-  "source": "text-at-middle.mini",
+  "source": "019-002-text-at-middle.mini",
   "features": [
     "text.at"
   ],
-  "pending": "Compiler and text built-ins unavailable.",
   "cases": [
     {
       "name": "default",
