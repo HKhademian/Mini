@@ -123,6 +123,19 @@ Keep the collection implementation small and readable. A short linear lookup
 can be adequate initially; a general collection/type system is unnecessary for
 the first compiler port.
 
+Capacity reservation and logical growth are different. On a fresh list, setting
+nonnegative index `r` would make its length `r + 1`; it cannot replace reserving
+capacity while keeping length zero. To obtain logical length `r` by assignment,
+set index `r - 1` only when `r > 0`. This sets the last element; it does not by
+itself choose the values of skipped positions. Growth by assignment cannot shrink
+an existing list either. List mutation is not implemented yet.
+
+Keeping only `list_new()` and growing through assignment is an option under
+discussion. It would omit explicit capacity control rather than emulate it.
+An optional reserve argument can wait for a measured compiler need, with targets
+managing automatic growth themselves. The existing empty constructor needs no
+optional-argument machinery; see the [argument-count investigation](parameter-passing.md).
+
 ## Useful later, without blocking the first port
 
 Modules/imports can wait while the compiler is one manageable source file.

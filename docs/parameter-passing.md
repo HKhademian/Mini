@@ -80,6 +80,43 @@ For compiler state that several functions must update, a shared map can hold the
 cursor, current token, and output. A function can also return a replacement scalar
 and let its caller assign it. Neither requires reference-parameter syntax.
 
+## Argument counts investigation
+
+The accepted contract currently requires exactly one argument per parameter.
+T0 checks this for both user functions and built-ins before emitting a call.
+Whether a parameter can be omitted is independent of sharing and reassignment.
+
+Allowing omitted trailing arguments is feasible without a special runtime calling
+convention: the compiler already knows each function's arity and could emit the
+missing default values at the call site. A native target need not receive a
+physically incomplete call. Supplying more arguments than parameters is a
+separate decision; this investigation does not propose accepting extras or holes
+between supplied arguments.
+
+Two possible defaults have different consequences:
+
+- `0` exists already and needs no new value kind. An omitted numeric counter
+  could then behave exactly like an explicit zero. Zero is not empty text, false,
+  an empty collection, or an absent value; the existing expression rules do not
+  coerce between those kinds. No default can be selected by an undeclared
+  parameter's intended kind without adding another rule.
+- `null` could represent absence consistently across omitted arguments, missing
+  map keys, and skipped list positions. Mini has not selected such a value yet.
+  Its literal, equality, storage, and use in operations would need a contract;
+  ordinary operations must not inherit accidental host-specific coercions.
+
+If omission means the default, an omitted argument and that explicit default
+are indistinguishable inside the function. Distinguishing them would require
+additional argument-presence information. Also decide whether omission applies
+to built-ins: a missing path or collection operand is not made useful merely by
+substituting zero or null. Arbitrary default expressions and declaration syntax
+are further features, not necessary for one universal default.
+
+Recommendation: retain exact arity for now. Revisit trailing omission only when
+compiler code demonstrates a recurring default, or when a shared absence value
+has been selected for collections. The filling mechanism is small; the semantic
+choice should earn its place. No omitted-argument behavior is accepted here.
+
 ## Review cases
 
 Pending cases under [cases/language](../cases/language/) cover:

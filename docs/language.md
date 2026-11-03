@@ -71,7 +71,8 @@ Parameter and result typing, scope, declaration order, and functions without
 a returned value remain open.
 
 The [parameter-passing proposal](parameter-passing.md) evaluates local parameter
-bindings with shared collections. It remains under review, with pending cases.
+bindings with shared collections and investigates omitted arguments. Passing rules
+remain under review, with pending cases; calls still require exact arity.
 
 ## Accepted form: conditionals and loops
 

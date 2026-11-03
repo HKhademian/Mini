@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Investigate reserve versus list growth and exact versus defaulted argument counts.
 - Separate parameter-sharing semantics from target-specific value representation.
 - Propose local parameter rebinding and shared collections, with pending review cases.
 - T0 alpha.28 / builtins alpha.12: zero-argument `list_new()` creates empty lists.
