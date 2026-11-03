@@ -48,6 +48,11 @@ class Parser {
   }
   primary(): Expression {
     const token = this.take();
+    if (token.text === '(') {
+      const value = this.expression();
+      this.expect(')');
+      return value;
+    }
     if (token.kind === TokenKind.Number) return { code: String(Number(token.text)), kind: ValueKind.Number };
     if (token.kind === TokenKind.Text) return { code: token.text, kind: ValueKind.Text };
     if (token.text === 'true' || token.text === 'false') return { code: token.text, kind: ValueKind.Boolean };

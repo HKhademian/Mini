@@ -1,0 +1,13 @@
+{
+  "id": "language.grouping",
+  "kind": "feature",
+  "source": "008-003-grouping.mini",
+  "features": ["expressions.grouping", "text.output"],
+  "cases": [{
+    "name": "default",
+    "stdin": { "file": "empty.stdin" },
+    "stdout": { "file": "io-word.stdout" },
+    "stderr": { "file": "empty.stderr" },
+    "exitCode": 0
+  }]
+}

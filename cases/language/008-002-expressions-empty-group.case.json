@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-empty-group",
   "kind": "reject",
-  "source": "expressions-empty-group.mini",
+  "source": "008-002-expressions-empty-group.mini",
   "features": [
     "expressions.grouping"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-empty-group-default.stderr"
+        "file": "008-002-expressions-empty-group.stderr"
       },
       "exitCode": 1
     }

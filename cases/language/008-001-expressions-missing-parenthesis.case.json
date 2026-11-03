@@ -1,11 +1,10 @@
 {
   "id": "language.expressions-missing-parenthesis",
   "kind": "reject",
-  "source": "expressions-missing-parenthesis.mini",
+  "source": "008-001-expressions-missing-parenthesis.mini",
   "features": [
     "expressions.grouping"
   ],
-  "pending": "Compiler unavailable; diagnostic proposed.",
   "cases": [
     {
       "name": "default",
@@ -16,7 +15,7 @@
         "file": "empty.stdout"
       },
       "stderr": {
-        "file": "expressions-missing-parenthesis-default.stderr"
+        "file": "008-001-expressions-missing-parenthesis.stderr"
       },
       "exitCode": 1
     }
