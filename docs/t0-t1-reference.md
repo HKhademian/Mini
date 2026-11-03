@@ -52,7 +52,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `fail(token, message)`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty-two signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): twenty-three signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -269,6 +269,7 @@ target TS produced by the compiler, not extra syntax required in M1.
 ### Lists
 
 - `list_new() -> list`: `[]`.
+- `list_copy(list) -> list`: `$mini_list_copy(arg0)` (adapter).
 - `list_length(list) -> number`: `(arg0).length`.
 - `list_get(value, number) -> value`: `$mini_list_get(arg0, arg1)` (adapter).
 - `list_set(value, number, value) -> no result`: `$mini_list_set(arg0, arg1, arg2)` (adapter).
@@ -304,16 +305,17 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 
 1. The shared map block: `$mini_map_proto`, `$mini_map_get`, `$mini_map_has`,
    `$mini_map_set`. The membership helper preserves argument evaluation order.
-   A separate `$mini_map_copy` adapter copies own text keys into a fresh map.
-2. `$mini_list_get`: check list target, normalize a negative index, check bounds
+2. `$mini_list_copy`: return a shallow array copy or an empty array.
+3. `$mini_list_get`: check list target, normalize a negative index, check bounds
    and assigned slot, otherwise return numeric zero.
-3. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
+4. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
-4. `$mini_text_find`: return the first substring position or -1.
-5. `$mini_text_get`: read an in-range character from text, otherwise empty text.
-6. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
+5. `$mini_map_copy`: copy own text keys into a fresh map.
+6. `$mini_text_find`: return the first substring position or -1.
+7. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+8. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
    the selected text or empty text for a non-text target or empty range.
-7. `$mini_text_split`: split on a literal divider, preserving empty fields.
+9. `$mini_text_split`: split on a literal divider, preserving empty fields.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.

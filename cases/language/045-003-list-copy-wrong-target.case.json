@@ -1,0 +1,23 @@
+{
+  "id": "language.list-copy-wrong-target",
+  "kind": "reject",
+  "source": "045-003-list-copy-wrong-target.mini",
+  "features": [
+    "list.copy"
+  ],
+  "cases": [
+    {
+      "name": "number-target",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "045-003-list-copy-wrong-target.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -44,8 +44,56 @@ count from the end, as for assignment. Explicit reserve remains under discussion
 see the [language contract](language.md).
 
 T0 emits the list setter's small host adapter once when used. It provides array
-mutation, not compiler logic. The generated helper name uses `$`, which Mini
+mutation, not compiler logic. The generated helper name uses `# Built-ins and library functions
+
+Mini needs a small set of host operations for compiling files and writing tools.
+Whether an operation lowers inline or through an adapter is a target choice.
+The accepted operation contract is normative; adapter text, helper names, and
+representation are not.
+
+The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
+consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
+without a newline. EOF yields empty text. Neither operation converts newlines.
+`write` produces no value. T0 implements these operations.
+
+The accepted built-ins `text_length(text)`, `text_get(text, index)`,
+`text_find(text, needle)`, `text_slice(text, start, end)`, and
+`text_split(text, divider)` scan ASCII source. `text_get` uses zero-based
+integer indices and returns empty text for a non-text target or an out-of-range
+position, including negative indices. `text_find` returns the first zero-based
+occurrence or `-1`; an empty needle returns `0`, and non-text inputs return
+`-1`. `text_slice` uses a zero-based, end-exclusive range; negative bounds count
+from the end, bounds clamp to the text, and an empty or reversed range returns
+empty text. A non-text target returns empty text. `text_split` uses a literal
+divider and preserves empty fields; an empty divider returns a one-element list
+containing the source. The text family uses `group_operation` names, with
+lowercase words separated by underscores. This naming convention needs no
+namespace mechanism.
+
+The operations require primitive host access. Prefixes do not decide whether an
+operation is built-in or library code; both use ordinary call syntax.
+
+The accepted built-ins `file_read(path)` and `file_write(path, text)` provide
+whole-file UTF-8 input and exact replacement output for the compiler's file interface.
+See [the draft](language.md) for the initial success contract.
+
+The accepted built-in `process_args()` returns a text list for the generated
+compiler's command interface. Shared built-ins `list_length(items)` and
+`list_get(items, index)` expose the elements.
+`list_new()` now creates a fresh empty list of length 0. T0 supports its
+zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
+supports negative indices from the end, and ignores targets that are not lists.
+Indices still below zero after adjustment are no-ops. Lists can hold scalar
+values, lists, and maps; `list_get` returns the actual stored value. Non-list
+targets, gaps, and out-of-range positions read as numeric zero. Negative indices
+count from the end, as for assignment. Explicit reserve remains under discussion;
+see the [language contract](language.md).
+
+, which Mini
 identifiers cannot contain, to avoid collisions with Mini source names.
+
+`list_copy(items)` returns a shallow list copy. Values are shared, so nested
+lists and maps remain aliases. A non-list target returns an empty list.
 
 `map_new()` creates a fresh empty map with no arguments. T0 uses ordinary objects
 with a shared empty prototype; maps can be stored in lists and passed through

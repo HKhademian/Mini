@@ -18,6 +18,10 @@ var map_copy_helper = "function $mini_map_copy(items) {\n"
     + "    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n"
     + "    return Object.assign(Object.create(null), items);\n"
     + "}\n";
+var list_copy_helper = "function $mini_list_copy(items) {\n"
+    + "    if (!Array.isArray(items)) return [];\n"
+    + "    return items.slice();\n"
+    + "}\n";
 var list_get_helper = "function $mini_list_get(items, index) {\n"
     + "    if (!Array.isArray(items)) return 0;\n"
     + "    if (index < 0) index = items.length + index;\n"
@@ -828,6 +832,9 @@ fn helper_blocks(helpers) {
     if (map_has(helpers, map_runtime)) {
         output = output + map_runtime;
     }
+    if (map_has(helpers, list_copy_helper)) {
+        output = output + list_copy_helper;
+    }
     if (map_has(helpers, list_get_helper)) {
         output = output + list_get_helper;
     }
@@ -920,7 +927,7 @@ fn builtin_exists(name) {
         || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
         || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
         || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
-        || name == "text_slice" || name == "text_split" || name == "map_copy"
+        || name == "text_slice" || name == "text_split" || name == "map_copy" || name == "list_copy"
         || name == "readAll" || name == "write";
 }
 
@@ -991,8 +998,12 @@ fn builtin_parameters(name) {
                                                                     if (name == "map_copy") {
                                                                         list_set(parameters, 0, "map");
                                                                     } else {
-                                                                        if (name == "write") {
-                                                                            list_set(parameters, 0, "text");
+                                                                        if (name == "list_copy") {
+                                                                            list_set(parameters, 0, "list");
+                                                                        } else {
+                                                                            if (name == "write") {
+                                                                                list_set(parameters, 0, "text");
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -1019,7 +1030,7 @@ fn builtin_result(name) {
     if (name == "map_get" || name == "list_get") {
         return "unknown";
     }
-    if (name == "map_keys" || name == "list_new" || name == "process_args" || name == "text_split") {
+    if (name == "map_keys" || name == "list_new" || name == "list_copy" || name == "process_args" || name == "text_split") {
         return "list";
     }
     if (name == "map_new" || name == "map_copy") {
@@ -1060,6 +1071,9 @@ fn builtin_helper(name) {
     if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
         return map_runtime;
     }
+    if (name == "list_copy") {
+        return list_copy_helper;
+    }
     if (name == "list_get") {
         return list_get_helper;
     }
@@ -1088,7 +1102,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy") {
         return "$mini_" + name + "(" + join_texts(args, ", ") + ")";
     }
     if (name == "map_keys") {

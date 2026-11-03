@@ -8,6 +8,7 @@ export type Builtin = {
   emit: (args: string[]) => string;
 };
 
+const listCopy = '$mini_list_copy';
 const listSet = '$mini_list_set';
 const mapSet = '$mini_map_set';
 const mapGet = '$mini_map_get';
@@ -60,6 +61,12 @@ export const builtins = new Map<string, Builtin>([
 `, emit: args => `${listSet}(${args.join(', ')})` }],
   ['list_new', { parameters: [], result: ValueKind.List,
     imports: [], emit: () => '[]' }],
+  ['list_copy', { parameters: [ValueKind.List], result: ValueKind.List,
+    imports: [], helper: `function ${listCopy}(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
+}
+`, emit: args => `${listCopy}(${args[0]})` }],
   ['write_error', { parameters: [ValueKind.Text], result: ValueKind.Void,
     imports: ['writeSync'], emit: args => `writeSync(2, ${args[0]})` }],
   ['process_exit', { parameters: [ValueKind.Number], result: ValueKind.Void,

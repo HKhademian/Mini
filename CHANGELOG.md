@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Language/compiler/builtins 0.3.0-alpha.6: add `list_copy(list)` with shallow
+  copies and empty-list fallback.
 - Language/compiler/builtins 0.3.0-alpha.5: add `map_copy(map)` with shallow
   text-keyed copies and empty-map fallback; M1 uses it for scope copies.
 - Language/compiler/builtins 0.3.0-alpha.4: add `text_split(text, divider)` with

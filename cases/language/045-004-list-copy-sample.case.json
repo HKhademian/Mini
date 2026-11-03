@@ -1,0 +1,27 @@
+{
+  "id": "language.list-copy-sample",
+  "kind": "sample",
+  "source": "../../samples/017-list-copy.mini",
+  "features": [
+    "list.copy",
+    "list.new",
+    "list.get",
+    "list.set",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "independent",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "original\ncopy\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

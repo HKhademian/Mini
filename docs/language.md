@@ -296,6 +296,17 @@ var count = list_length(items);
 T0 emits a new array for each call. Only the zero-argument form is implemented.
 Explicit reserve remains under discussion. Unassigned positions read as zero.
 
+## Accepted operation: list copying
+
+```text
+var copy = list_copy(items);
+```
+
+- `list_copy(items)` returns a fresh list with the same length and values.
+- The copy is shallow: nested lists and maps are shared, not cloned.
+- A non-list target returns an empty list.
+- The source list is unchanged. Gaps remain readable as numeric zero.
+
 ## Accepted operation: list assignment
 
 ```text

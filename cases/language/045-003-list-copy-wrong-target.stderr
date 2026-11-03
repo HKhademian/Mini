@@ -1,0 +1,3 @@
+045-003-list-copy-wrong-target.mini:1:14: expected list argument
+var copied = list_copy(1);
+             ^

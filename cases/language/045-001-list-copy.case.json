@@ -1,0 +1,28 @@
+{
+  "id": "language.list-copy",
+  "kind": "feature",
+  "source": "045-001-list-copy.mini",
+  "features": [
+    "list.copy",
+    "list.new",
+    "list.get",
+    "list.set",
+    "map.get",
+    "map.set"
+  ],
+  "cases": [
+    {
+      "name": "shallow",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nshared\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

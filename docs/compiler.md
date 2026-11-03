@@ -199,6 +199,8 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.5`: `map_copy` returns a shallow map copy; M1 uses it for scope
   copies.
 
+- `0.3.0-alpha.6`: `list_copy` returns a shallow list copy.
+
 T0 is not self-hosted. `config/compiler.json` selects it explicitly;
 `config/bootstrap.json` remains null. Promotion will select the generated
 compiler and remove T0 from the active build. Never fall back to T0 afterward.

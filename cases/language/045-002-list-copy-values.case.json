@@ -1,0 +1,27 @@
+{
+  "id": "language.list-copy-values",
+  "kind": "feature",
+  "source": "045-002-list-copy-values.mini",
+  "features": [
+    "list.copy",
+    "list.new",
+    "list.get",
+    "list.set",
+    "list.length"
+  ],
+  "cases": [
+    {
+      "name": "fallback-and-gaps",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

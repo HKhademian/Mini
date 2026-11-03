@@ -26,3 +26,4 @@ node samples/009-list-mutation.mini.ts
 - [014-text-find.mini](014-text-find.mini): Read text and report whether it contains two sample words. [Cases](../cases/language/042-005-text-find-sample.case.json).
 - [015-text-split.mini](015-text-split.mini): Read comma-separated text and print each field on its own line. [Cases](../cases/language/043-005-text-split-sample.case.json).
 - [016-map-copy.mini](016-map-copy.mini): Copy a map and show that changing the copy leaves the original intact. [Cases](../cases/language/044-004-map-copy-sample.case.json).
+- [017-list-copy.mini](017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Cases](../cases/language/045-004-list-copy-sample.case.json).
