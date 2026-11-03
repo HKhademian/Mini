@@ -1,0 +1,25 @@
+{
+  "id": "language.map-set-wrong-target",
+  "kind": "feature",
+  "source": "032-003-map-set-wrong-target.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "tkv:ok"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+var items = map_new();
+var fresh = map_new();
+var key = readAll();
+map_set(items, key, 0);
+map_set(items, key + "!", false);
+if (!map_has(items, key) || !map_has(items, key + "!")) {
+    process_exit(1);
+}
+map_set(items, key, "replacement");
+if (!map_has(items, key) || map_has(items, key + "?") || map_has(fresh, key)) {
+    process_exit(1);
+}
+write("present");

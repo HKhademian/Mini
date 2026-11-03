@@ -266,9 +266,8 @@ On an empty list, assigning index `-1` or `-2` is a no-op. The same rule removes
 the need to guard `list_set(items, r - 1, 0)` when a fresh list should stay empty
 for `r <= 0`. The existing reader is `list_at`; no `list_get` alias is introduced.
 
-The selected direction for future `map_set` likewise makes a non-map target a
-no-op. Map mutation is not implemented yet. Function parameter rebinding and the
-broader passing contract remain under review separately.
+Map assignment below likewise makes a non-map target a no-op. Function parameter
+rebinding and the broader passing contract remain under review separately.
 
 ## Accepted operation: empty-map construction
 
@@ -283,8 +282,8 @@ var names = map_new();
   is not selected by this constructor.
 
 T0 emits a native `Map` for each call. Other targets can choose their own
-representation. Maps hold unique text keys; membership follows below. Length,
-mutation, lookup, and key enumeration are not implemented yet. Missing-key values
+representation. Maps hold unique text keys; membership and assignment follow below.
+Length, lookup, and key enumeration are not implemented yet. Missing-key values
 remain open. There is no `map_empty` alias or record/struct/class syntax.
 
 ## Accepted operation: map membership
@@ -301,8 +300,30 @@ var present = map_has(names, "source");
 - The query does not insert a key or otherwise change the map. An absent key
   does not require a default stored value.
 
-T0 checks known operand kinds and emits native map membership. Present-key cases
-will accompany map mutation; no Mini operation can populate a map yet.
+T0 checks known operand kinds and emits native map membership. Cases cover absent
+and present keys, including keys storing zero or false.
+
+## Accepted operation: map assignment
+
+```text
+var names = map_new();
+map_set(names, "source", "input.mini");
+map_set(names, "source", "replacement.mini");
+```
+
+- `map_set(items, key, value)` inserts a new text key or replaces its stored
+  value if it already exists. Keys stay unique; no key conversion occurs.
+- If `items` is not a map, the operation does nothing, without an error or
+  conversion. All three arguments still evaluate once, from left to right.
+- The caller supplies a text key. Empty text and names such as `"has"` and
+  `"__proto__"` are ordinary keys, not properties or methods.
+- Values retain their kind: numbers, booleans, text, lists, and maps are stored
+  directly. Stored collections are shared, without implicit cloning.
+- The operation requires all three arguments and produces no result.
+
+T0 emits one small map-setter adapter when used. Membership can observe inserted
+keys now. A compiler host-adapter test inspects stored values and replacements
+until Mini lookup is implemented. Missing-key values remain undecided.
 
 ## Accepted operation: process termination
 

@@ -1,0 +1,25 @@
+{
+  "id": "language.map-set-values",
+  "kind": "feature",
+  "source": "032-002-map-set-values.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

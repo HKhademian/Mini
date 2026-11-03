@@ -1,0 +1,3 @@
+032-007-map-set-no-result.mini:1:5: expected a value
+var result = map_set(map_new(), "name", 1);
+    ^

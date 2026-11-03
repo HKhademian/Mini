@@ -1,0 +1,25 @@
+{
+  "id": "language.map-set-missing-value",
+  "kind": "reject",
+  "source": "032-005-map-set-missing-value.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "032-005-map-set-missing-value.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

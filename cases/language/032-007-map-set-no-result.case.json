@@ -1,0 +1,25 @@
+{
+  "id": "language.map-set-no-result",
+  "kind": "reject",
+  "source": "032-007-map-set-no-result.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "032-007-map-set-no-result.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

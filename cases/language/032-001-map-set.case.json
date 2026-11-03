@@ -1,0 +1,64 @@
+{
+  "id": "language.map-set",
+  "kind": "feature",
+  "source": "032-001-map-set.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "ordinary-key",
+      "stdin": {
+        "text": "name"
+      },
+      "stdout": {
+        "text": "present"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "empty-key",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "present"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "prototype-key",
+      "stdin": {
+        "text": "__proto__"
+      },
+      "stdout": {
+        "text": "present"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "method-key",
+      "stdin": {
+        "text": "has"
+      },
+      "stdout": {
+        "text": "present"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -37,8 +37,12 @@ identifiers cannot contain, to avoid collisions with Mini source names.
 `map_new()` creates a fresh empty map with no arguments. T0 emits a native
 `Map`; maps can be stored in lists and passed through functions.
 `map_has(items, key)` checks a text key and returns a boolean without changing
-the map. Empty maps return false. Mutation, lookup, and enumeration remain
-unimplemented; membership does not decide a missing-key value.
+the map. Empty maps return false; membership does not decide a missing-key value.
+
+`map_set(items, key, value)` inserts or replaces a text-keyed value without a
+result. Non-map targets are no-ops. Values retain their kind, including shared
+lists and maps. T0 emits the setter adapter once when used. Lookup and enumeration
+remain unimplemented; membership can now observe inserted keys.
 
 The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal

@@ -20,6 +20,9 @@ A configured bootstrap is verified in either mode. `verify CASE.json` runs one
 case manifest; bare `verify` checks the bootstrap and fails while the compiler
 is unavailable. Release output directories must be empty.
 
+Run compiler host-adapter tests with `node --test compiler/builtins.test.ts`.
+CI runs them alongside the editor and release checks.
+
 Executable project code uses direct Node TypeScript or Mini; no shell, Python,
 or other scripting languages. Extensionless commands are Node shebang entries.
 Internal TypeScript imports retain `.ts` for direct Node execution.

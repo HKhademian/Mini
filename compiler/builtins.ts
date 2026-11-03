@@ -9,8 +9,14 @@ export type Builtin = {
 };
 
 const listSet = '$mini_list_set';
+const mapSet = '$mini_map_set';
 
 export const builtins = new Map<string, Builtin>([
+  ['map_set', { parameters: [ValueKind.Unknown, ValueKind.Text, ValueKind.Unknown], result: ValueKind.Void,
+    imports: [], helper: `function ${mapSet}(items, key, value) {
+    if (items instanceof Map) items.set(key, value);
+}
+`, emit: args => `${mapSet}(${args.join(', ')})` }],
   ['map_has', { parameters: [ValueKind.Map, ValueKind.Text], result: ValueKind.Boolean,
     imports: [], emit: args => `(${args[0]}).has(${args[1]})` }],
   ['map_new', { parameters: [], result: ValueKind.Map,

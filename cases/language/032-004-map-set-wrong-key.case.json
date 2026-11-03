@@ -1,0 +1,25 @@
+{
+  "id": "language.map-set-wrong-key",
+  "kind": "reject",
+  "source": "032-004-map-set-wrong-key.mini",
+  "features": [
+    "map.set",
+    "map.has",
+    "map.new"
+  ],
+  "cases": [
+    {
+      "name": "rejected",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "032-004-map-set-wrong-key.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

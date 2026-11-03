@@ -1,8 +1,8 @@
 {
   "group": "0.1.2",
   "mini": "0.1.0-alpha.2",
-  "language": "0.1.0-alpha.6",
-  "compiler": "0.1.0-alpha.31",
+  "language": "0.1.0-alpha.7",
+  "compiler": "0.1.0-alpha.32",
   "bootstrap": null,
   "std": null,
   "check": "0.1.0-alpha.3",
@@ -12,5 +12,5 @@
   "bench": "0.1.0-alpha.3",
   "cli": "0.1.0-alpha.3",
   "vscode": "0.1.1",
-  "builtins": "0.1.0-alpha.15"
+  "builtins": "0.1.0-alpha.16"
 }
