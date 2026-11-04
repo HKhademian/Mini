@@ -38,19 +38,19 @@ Mini now has a single-unit `include` directive:
 
 ```text
 tools/compiler.mini
-include "00-constants.mini";
-include "10-text.mini";
-include "20-lexer.mini";
-include "30-parser.mini";
-include "40-builtins.mini";
-include "50-main.mini";
+include "constants.mini";
+include "text.mini";
+include "lexer.mini";
+include "parser.mini";
+include "builtins.mini";
 ```
 
 Contract:
 
 - `include "relative/path.mini";` is a top-level directive, recognized
   contextually.
-- Paths resolve relative to the including file and are canonicalized.
+- Paths resolve relative to the including file and are canonicalized. Source
+  files and tools share `tools/`; generated artifacts live in `dist/`.
 - Each canonical file is included at most once per compilation.
 - Cycles, missing files, included shebangs, and includes inside blocks are
   compiler errors.
@@ -63,7 +63,7 @@ declares `bin/` launchers. Tools declare their own dependencies:
 
 ```text
 tools/check.mini
-include "../compiler/src/10-text.mini";
+include "text.mini";
 include "cases.mini";
 ```
 
@@ -126,7 +126,7 @@ Properties:
 Add a small, single-unit `include` before considering imports:
 
 ```text
-include "compiler/src/10-text.mini";
+include "text.mini";
 ```
 
 Proposed contract:
