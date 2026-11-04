@@ -125,7 +125,7 @@ fn ci_publish(root) {
     }
     var directory = path_join(root, "dist/release");
     var parsed = json_file(path_join(directory, "manifest.json"));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         ci_fail(map_get(parsed, "message"));
     }
     var manifest = map_get(parsed, "value");

@@ -95,7 +95,7 @@ fn check_keys(value) {
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
     var parsed = json_file(path);
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         check_fail(map_get(parsed, "message"));
     }
     return map_get(parsed, "value");
@@ -409,7 +409,7 @@ fn check_repository(root, docs_only) {
     check_versions(root);
     check_node(root);
     var loaded = case_load_cases("", root);
-    if (!map_get(loaded, "ok")) {
+    if (result_is_fail(loaded)) {
         check_fail(map_get(loaded, "message"));
     }
     check_sample_cases(root, map_get(loaded, "fixtures"));

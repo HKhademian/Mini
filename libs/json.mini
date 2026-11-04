@@ -5,7 +5,7 @@ fn json_file(path) {
         return result_fail("cannot read " + path);
     }
     var parsed = json_parse(file_read(path));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         return result_fail("invalid JSON: " + path);
     }
     var result = result_ok();

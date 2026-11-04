@@ -51,7 +51,7 @@ fn release_text_list1(value) {
 /// Read a JSON file or stop.
 fn release_json(path) {
     var parsed = json_file(path);
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         release_fail(map_get(parsed, "message"));
     }
     return map_get(parsed, "value");
@@ -243,7 +243,7 @@ fn release_prepare(directory, output, tag) {
         var verify_args = list_of2(path_join(source, "dist/verify.ts"), source);
         var verified = release_run(process_exec_path(), verify_args, source);
         var parsed = json_parse(text_from_bytes(map_get(verified, "stdout")));
-        if (map_get(parsed, "ok")) {
+        if (result_is_ok(parsed)) {
             bootstrap = map_get(parsed, "value");
         }
     }

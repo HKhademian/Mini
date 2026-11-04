@@ -13,3 +13,16 @@ fn result_fail(message) {
     map_set(result, "message", message);
     return result;
 }
+
+/// Return whether a value is a successful result map.
+fn result_is_ok(result) {
+    if (value_kind(result) != "map") {
+        return false;
+    }
+    return map_get(result, "ok") == true;
+}
+
+/// Return whether a value is a failed result map.
+fn result_is_fail(result) {
+    return !result_is_ok(result);
+}

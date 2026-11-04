@@ -28,7 +28,7 @@ fn bench_half(value) {
 /// Return the compiler source hash from configuration.
 fn bench_compiler_hash(root) {
     var parsed = json_parse(file_read(path_join(root, "config/compiler.json")));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         bench_fail("invalid config/compiler.json");
     }
     var sources = map_get(map_get(parsed, "value"), "sources");
@@ -50,7 +50,7 @@ fn bench_platform() {
     list_set(args, 1, code);
     var result = process_capture(process_exec_path(), args, project_root(), list_new());
     var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         return map_new();
     }
     return map_get(parsed, "value");
@@ -76,7 +76,7 @@ fn bench_run(root, output, filter) {
         bench_fail("benchmark output already exists; choose a new report path");
     }
     var selected = case_load_cases(filter, root);
-    if (!map_get(selected, "ok")) {
+    if (result_is_fail(selected)) {
         bench_fail(map_get(selected, "message"));
     }
     var fixtures = map_get(selected, "fixtures");
@@ -97,7 +97,7 @@ fn bench_run(root, output, filter) {
                 var warmup_index = 0;
                 while (warmup_index < warmups) {
                     var warmed = case_verify_scenario(fixture, scenario, root, "");
-                    if (!map_get(warmed, "ok")) {
+                    if (result_is_fail(warmed)) {
                         bench_fail(map_get(warmed, "message"));
                     }
                     warmup_index = warmup_index + 1;
@@ -107,7 +107,7 @@ fn bench_run(root, output, filter) {
                 while (sample_index < sample_count) {
                     var started = time_millis();
                     var measured = case_verify_scenario(fixture, scenario, root, "");
-                    if (!map_get(measured, "ok")) {
+                    if (result_is_fail(measured)) {
                         bench_fail(map_get(measured, "message"));
                     }
                     list_set(samples, list_length(samples), time_millis() - started);
@@ -138,7 +138,7 @@ fn bench_run(root, output, filter) {
     map_set(report, "platform", map_get(host, "platform"));
     map_set(report, "architecture", map_get(host, "architecture"));
     map_set(report, "commit", bench_commit(root));
-    if (map_get(versions_parsed, "ok")) {
+    if (result_is_ok(versions_parsed)) {
         map_set(report, "versions", map_get(versions_parsed, "value"));
     }
     map_set(report, "compiler", bench_compiler_hash(root));

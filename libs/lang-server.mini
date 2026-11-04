@@ -205,7 +205,7 @@ fn lsp_analyze(text, name) {
         return failed;
     }
     var parsed = json_parse(text_from_bytes(map_get(tokenized, "stdout")));
-    if (map_get(parsed, "ok") && value_kind(map_get(parsed, "value")) == "list") {
+    if (result_is_ok(parsed) && value_kind(map_get(parsed, "value")) == "list") {
         tokens = map_get(parsed, "value");
     }
     var compile_args = list_new();
@@ -315,7 +315,7 @@ fn lsp_builtins() {
     var result = lsp_run(process_exec_path(), args, root, list_new());
     var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
     var cache = map_new();
-    if (map_get(parsed, "ok")) {
+    if (result_is_ok(parsed)) {
         var entries = map_get(map_get(parsed, "value"), "builtins");
         var position = 0;
         while (position < list_length(entries)) {
@@ -762,7 +762,7 @@ fn lsp_read_message() {
     }
     var body = text_from_bytes(io_read_bytes(length));
     var parsed = json_parse(body);
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         lsp_log("invalid JSON message");
         return map_new();
     }

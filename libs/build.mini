@@ -14,7 +14,7 @@ fn build_fail(message) {
 /// Read the tool manifest and return it.
 fn build_manifest(root) {
     var parsed = json_file(path_join(root, "tools/mini-tools.json"));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         build_fail(map_get(parsed, "message"));
     }
     return map_get(parsed, "value");
@@ -23,7 +23,7 @@ fn build_manifest(root) {
 /// Return the active compiler entry.
 fn build_compiler(root) {
     var parsed = json_file(path_join(root, "config/compiler.json"));
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         build_fail(map_get(parsed, "message"));
     }
     return map_get(map_get(parsed, "value"), "entry");

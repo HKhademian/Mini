@@ -515,12 +515,21 @@ function result_fail(message) {
     $mini_map_set(result, "message", message);
     return result;
 }
+function result_is_ok(result) {
+    if (($mini_value_kind(result) !== "map")) {
+        return false;
+    }
+    return ($mini_map_get(result, "ok") === true);
+}
+function result_is_fail(result) {
+    return (!result_is_ok(result));
+}
 function json_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
     let result = result_ok();
@@ -537,7 +546,7 @@ function project_root() {
 }
 function project_compiler_entry(root) {
     let parsed = json_file(path_join(root, "config/compiler.json"));
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         result_fail($mini_map_get(parsed, "message"));
         return "";
     }
@@ -713,7 +722,7 @@ function lsp_analyze(text, name) {
         return failed;
     }
     let parsed = $mini_json_parse($mini_text_from_bytes($mini_map_get(tokenized, "stdout")));
-    if (($mini_map_get(parsed, "ok") && ($mini_value_kind($mini_map_get(parsed, "value")) === "list"))) {
+    if ((result_is_ok(parsed) && ($mini_value_kind($mini_map_get(parsed, "value")) === "list"))) {
         tokens = $mini_map_get(parsed, "value");
     }
     let compile_args = [];
@@ -810,7 +819,7 @@ function lsp_builtins() {
     let result = lsp_run(process.execPath, args, root, []);
     let parsed = $mini_json_parse($mini_text_from_bytes($mini_map_get(result, "stdout")));
     let cache = ({ __proto__: $mini_map_proto });
-    if ($mini_map_get(parsed, "ok")) {
+    if (result_is_ok(parsed)) {
         let entries = $mini_map_get($mini_map_get(parsed, "value"), "builtins");
         let position = 0;
         while ((position < (entries).length)) {
@@ -1216,7 +1225,7 @@ function lsp_read_message() {
     }
     let body = $mini_text_from_bytes($mini_read_bytes(length));
     let parsed = $mini_json_parse(body);
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         lsp_log("invalid JSON message");
         return ({ __proto__: $mini_map_proto });
     }

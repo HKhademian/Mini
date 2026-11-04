@@ -117,6 +117,14 @@ function $mini_text_split(text, divider) {
     if (divider === "") return [text];
     return text.split(divider);
 }
+function $mini_value_kind(value) {
+    if (typeof value === "string") return "text";
+    if (typeof value === "number") return "number";
+    if (typeof value === "boolean") return "boolean";
+    if (Array.isArray(value)) return "list";
+    if (value !== null && typeof value === "object") return "map";
+    return "other";
+}
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -365,12 +373,21 @@ function result_fail(message) {
     $mini_map_set(result, "message", message);
     return result;
 }
+function result_is_ok(result) {
+    if (($mini_value_kind(result) !== "map")) {
+        return false;
+    }
+    return ($mini_map_get(result, "ok") === true);
+}
+function result_is_fail(result) {
+    return (!result_is_ok(result));
+}
 function json_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
     let result = result_ok();
@@ -387,7 +404,7 @@ function project_root() {
 }
 function project_compiler_entry(root) {
     let parsed = json_file(path_join(root, "config/compiler.json"));
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         result_fail($mini_map_get(parsed, "message"));
         return "";
     }
@@ -491,7 +508,7 @@ function ci_publish(root) {
     }
     let directory = path_join(root, "dist/release");
     let parsed = json_file(path_join(directory, "manifest.json"));
-    if ((!$mini_map_get(parsed, "ok"))) {
+    if (result_is_fail(parsed)) {
         ci_fail($mini_map_get(parsed, "message"));
     }
     let manifest = $mini_map_get(parsed, "value");

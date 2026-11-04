@@ -130,7 +130,7 @@ fn case_bytes_equal(left, right) {
 /// Return the byte text for a stream, or empty text on failure.
 fn case_stream_text(stream, directory) {
     var bytes = case_stream_bytes(stream, directory);
-    if (!map_get(bytes, "ok")) {
+    if (result_is_fail(bytes)) {
         return "";
     }
     return text_from_bytes(map_get(bytes, "bytes"));
@@ -139,7 +139,7 @@ fn case_stream_text(stream, directory) {
 /// Load and validate one case manifest.
 fn case_load_case(path) {
     var parsed = json_file(path);
-    if (!map_get(parsed, "ok")) {
+    if (result_is_fail(parsed)) {
         return parsed;
     }
     var spec = map_get(parsed, "value");
@@ -188,7 +188,7 @@ fn case_load_case(path) {
         }
         map_set(names, name, true);
         var check = case_validate_scenario(spec, kind, scenario, directory);
-        if (!map_get(check, "ok")) {
+        if (result_is_fail(check)) {
             return check;
         }
         position = position + 1;
@@ -224,7 +224,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
             return result_fail("invalid stream");
         }
         var bytes = case_stream_bytes(map_get(scenario, key), directory);
-        if (!map_get(bytes, "ok")) {
+        if (result_is_fail(bytes)) {
             return result_fail(map_get(bytes, "message"));
         }
         position = position + 1;
@@ -291,13 +291,13 @@ fn case_collect(directory, filter, fixtures, ids) {
         var path = path_join(directory, name);
         if (path_is_directory(path)) {
             var nested = case_collect(path, filter, fixtures, ids);
-            if (!map_get(nested, "ok")) {
+            if (result_is_fail(nested)) {
                 return nested;
             }
         } else {
             if (text_ends_with(name, ".case.json")) {
                 var loaded = case_load_case(path);
-                if (!map_get(loaded, "ok")) {
+                if (result_is_fail(loaded)) {
                     return loaded;
                 }
                 var fixture = map_get(loaded, "fixture");
@@ -321,7 +321,7 @@ fn case_load_cases(filter, project_root) {
     var fixtures = list_new();
     var ids = map_new();
     var collected = case_collect(path_join(project_root, "cases"), filter, fixtures, ids);
-    if (!map_get(collected, "ok")) {
+    if (result_is_fail(collected)) {
         return collected;
     }
     if (list_length(fixtures) == 0) {
@@ -436,7 +436,7 @@ fn case_verify_scenario(fixture, scenario, project_root, compiler_override) {
     var name = map_get(scenario, "name");
     var prefix = id + "/" + name + ": ";
     var input = case_stream_bytes(map_get(scenario, "stdin"), directory);
-    if (!map_get(input, "ok")) {
+    if (result_is_fail(input)) {
         return result_fail(prefix + map_get(input, "message"));
     }
     var work = directory_temp();
@@ -464,7 +464,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
     if (kind == "tool") {
         if (map_has(scenario, "workspace")) {
             var prepared = case_tool_workspace(project_root, scenario, work);
-            if (!map_get(prepared, "ok")) {
+            if (result_is_fail(prepared)) {
                 return result_fail(prefix + map_get(prepared, "message"));
             }
             workspace = map_get(prepared, "directory");
@@ -495,7 +495,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         }
         if (kind == "compile" && map_has(scenario, "artifact")) {
             var expected = case_stream_bytes(map_get(scenario, "artifact"), directory);
-            if (!map_get(expected, "ok")) {
+            if (result_is_fail(expected)) {
                 return result_fail(prefix + map_get(expected, "message"));
             }
             if (!path_exists(output) || !case_bytes_equal(file_read_bytes(output), map_get(expected, "bytes"))) {
@@ -512,7 +512,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             var files = path_join(work, "files");
             directory_create(files);
             var prepared_files = case_write_input_files(scenario, directory, files, prefix);
-            if (!map_get(prepared_files, "ok")) {
+            if (result_is_fail(prepared_files)) {
                 return prepared_files;
             }
             var run_args = list_new();
@@ -524,7 +524,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             }
             result = process_capture(process_exec_path(), run_args, files, map_get(input, "bytes"));
             var checked_files = case_check_output_files(scenario, directory, files, prefix);
-            if (!map_get(checked_files, "ok")) {
+            if (result_is_fail(checked_files)) {
                 return checked_files;
             }
         }
@@ -584,7 +584,7 @@ fn case_write_input_files(scenario, directory, files, prefix) {
     while (position < list_length(names)) {
         var name = list_get(names, position);
         var stream = case_stream_bytes(map_get(inputs, name), directory);
-        if (!map_get(stream, "ok")) {
+        if (result_is_fail(stream)) {
             return result_fail(prefix + map_get(stream, "message"));
         }
         var target = path_join(files, name);
@@ -606,7 +606,7 @@ fn case_check_output_files(scenario, directory, files, prefix) {
     while (position < list_length(names)) {
         var name = list_get(names, position);
         var expected = case_stream_bytes(map_get(outputs, name), directory);
-        if (!map_get(expected, "ok")) {
+        if (result_is_fail(expected)) {
             return result_fail(prefix + map_get(expected, "message"));
         }
         var target = path_join(files, name);

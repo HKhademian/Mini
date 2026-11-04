@@ -31,7 +31,7 @@ fn verify_bootstrap(root) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.");
     }
     var parsed = json_parse(file_read(bootstrap_path));
-    if (!map_get(parsed, "ok") || value_kind(map_get(parsed, "value")) != "map") {
+    if (result_is_fail(parsed) || value_kind(map_get(parsed, "value")) != "map") {
         verify_fail("invalid config/bootstrap.json");
     }
     var config = map_get(parsed, "value");
@@ -42,7 +42,7 @@ fn verify_bootstrap(root) {
         verify_fail("bootstrap.json needs compiler, source, and example");
     }
     var versions_parsed = json_parse(file_read(path_join(root, "config/versions.json")));
-    if (!map_get(versions_parsed, "ok")) {
+    if (result_is_fail(versions_parsed)) {
         verify_fail("invalid config/versions.json");
     }
     var current = map_get(versions_parsed, "value");
@@ -87,7 +87,7 @@ fn verify_bootstrap(root) {
     }
     var case_path = path_resolve(root, example);
     var loaded = case_load_case(case_path);
-    if (!map_get(loaded, "ok")) {
+    if (result_is_fail(loaded)) {
         path_remove(work);
         verify_fail(map_get(loaded, "message"));
     }
@@ -102,7 +102,7 @@ fn verify_bootstrap(root) {
     var position = 0;
     while (position < list_length(scenarios)) {
         var verified = case_verify_scenario(fixture, list_get(scenarios, position), root, previous);
-        if (!map_get(verified, "ok")) {
+        if (result_is_fail(verified)) {
             path_remove(work);
             verify_fail(map_get(verified, "message"));
         }
