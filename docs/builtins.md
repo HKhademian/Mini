@@ -34,6 +34,9 @@ result map holds `status`, `signal`, `stdout`, `stderr`, and `error`. Captured
 streams are byte lists; inherited streams are connected to the parent and stay
 empty. `status` is 1 when the command cannot start or ends by a signal.
 
+`value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
+`other` for the runtime kind of a value.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -123,6 +126,9 @@ for captured stdin), and `timeout` (milliseconds; zero waits indefinitely). The
 result map holds `status`, `signal`, `stdout`, `stderr`, and `error`. Captured
 streams are byte lists; inherited streams are connected to the parent and stay
 empty. `status` is 1 when the command cannot start or ends by a signal.
+
+`value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
+`other` for the runtime kind of a value.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON

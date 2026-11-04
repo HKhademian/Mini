@@ -472,6 +472,7 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "text_slice");
     list_set(order, list_length(order), "text_split");
     list_set(order, list_length(order), "text_to_bytes");
+    list_set(order, list_length(order), "value_kind");
     var output = "";
     var position = 0;
     while (position < list_length(order)) {

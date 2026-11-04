@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.21 / compiler 0.3.0-alpha.26 / builtins 0.3.0-alpha.20;
+  bootstrap 0.1.0-alpha.15: add `value_kind(value)` for runtime kind checks.
 - Language 0.3.0-alpha.20 / compiler 0.3.0-alpha.25 / builtins 0.3.0-alpha.19;
   bootstrap 0.1.0-alpha.14: add `process_script_path()` for repository-relative
   tool paths.

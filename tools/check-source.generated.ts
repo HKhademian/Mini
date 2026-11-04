@@ -124,6 +124,7 @@ let directory_create_helper = "function $mini_directory_create(path) {\n    proc
 let path_copy_helper = "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true });\n}\n";
 let path_remove_helper = "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n";
 let process_spawn_helper = "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n";
+let value_kind_helper = "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -752,6 +753,7 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "text_slice");
     $mini_list_set(order, (order).length, "text_split");
     $mini_list_set(order, (order).length, "text_to_bytes");
+    $mini_list_set(order, (order).length, "value_kind");
     let output = "";
     let position = 0;
     while ((position < (order).length)) {
@@ -870,6 +872,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_copy");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_spawn");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_script_path");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -917,6 +920,7 @@ $mini_map_set(builtin_name_set, "path_copy", true);
 $mini_map_set(builtin_name_set, "path_remove", true);
 $mini_map_set(builtin_name_set, "process_spawn", true);
 $mini_map_set(builtin_name_set, "process_script_path", true);
+$mini_map_set(builtin_name_set, "value_kind", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -964,6 +968,7 @@ $mini_map_set(builtin_parameter_kinds, "path_copy", "text,text");
 $mini_map_set(builtin_parameter_kinds, "path_remove", "text");
 $mini_map_set(builtin_parameter_kinds, "process_spawn", "map");
 $mini_map_set(builtin_parameter_kinds, "process_script_path", "");
+$mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -1011,6 +1016,7 @@ $mini_map_set(builtin_result_kinds, "path_copy", "void");
 $mini_map_set(builtin_result_kinds, "path_remove", "void");
 $mini_map_set(builtin_result_kinds, "process_spawn", "map");
 $mini_map_set(builtin_result_kinds, "process_script_path", "text");
+$mini_map_set(builtin_result_kinds, "value_kind", "text");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -1058,6 +1064,7 @@ $mini_map_set(builtin_import_names, "path_copy", "");
 $mini_map_set(builtin_import_names, "path_remove", "");
 $mini_map_set(builtin_import_names, "process_spawn", "");
 $mini_map_set(builtin_import_names, "process_script_path", "");
+$mini_map_set(builtin_import_names, "value_kind", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1105,6 +1112,7 @@ $mini_map_set(builtin_helper_keys, "path_copy", "path_copy");
 $mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
 $mini_map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 $mini_map_set(builtin_helper_keys, "process_script_path", "");
+$mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1231,12 +1239,15 @@ function helper_text(key) {
     if ((key === "process_spawn")) {
         return process_spawn_helper;
     }
+    if ((key === "value_kind")) {
+        return value_kind_helper;
+    }
     return "";
 }
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
-    if ((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn"))) {
+    if (((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {

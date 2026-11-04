@@ -1,0 +1,15 @@
+{
+  "id": "language.value-kind",
+  "kind": "feature",
+  "source": "058-001-value-kind.mini",
+  "features": ["value.kind", "list.new", "map.new"],
+  "cases": [
+    {
+      "name": "kinds",
+      "stdin": {"text": ""},
+      "stdout": {"text": "kind ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

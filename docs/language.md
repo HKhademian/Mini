@@ -612,6 +612,15 @@ var result = process_spawn(options);
   Captured streams are byte lists; inherited streams stay empty. `status` is 1
   when the command cannot start or ends by a signal.
 
+## Accepted operation: value kind
+
+```text
+if (value_kind(value) == "text") { ... }
+```
+
+- `value_kind(value)` returns one of `text`, `number`, `boolean`, `list`, `map`,
+  or `other`. It takes one argument and does not convert the value.
+
 ## Accepted operation: JSON parsing
 
 ```text
