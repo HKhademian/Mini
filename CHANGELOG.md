@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.10 / test 0.1.0-alpha.3 / CLI 0.1.0-alpha.8: implement the
+  case runner as a generated Mini tool. `tools/test.mini` and the shared
+  `tools/cases.mini` load manifests, run tool and Mini cases, compare byte
+  streams, and handle workspaces; `mini test` and selected `mini verify` route
+  through it. Remove `tools/test.ts`.
 - Language 0.3.0-alpha.22 / compiler 0.3.0-alpha.27 / builtins 0.3.0-alpha.21;
   bootstrap 0.1.0-alpha.16: `path_copy` dereferences symlinks and preserves
   file modes so copied repositories keep executable launchers.

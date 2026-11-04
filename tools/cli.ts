@@ -64,19 +64,31 @@ export async function main(executable: string): Promise<void> {
         process.exitCode = formatted.status ?? 1;
         break;
       }
-      case 'test':
+      case 'test': {
         assert(args.length <= 1, 'usage: mini-test [FILTER]');
-        (await import('./test.ts')).testCases(args[0]);
+        const { spawnSync } = await import('node:child_process');
+        const tested = spawnSync(process.execPath, [join(root, 'tools/test.generated.ts'), ...args], { stdio: 'inherit' });
+        if (tested.error) throw tested.error;
+        process.exitCode = tested.status ?? 1;
         break;
+      }
       case 'bench':
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-bench OUTPUT [FILTER]');
         (await import('./bench.ts')).benchmark(resolve(args[0]), args[1]);
         break;
-      case 'verify':
+      case 'verify': {
         assert(args.length <= 1, 'usage: mini-verify [CASE.json]');
-        if (args[0] === undefined) console.log(JSON.stringify((await import('./verify.ts')).verifyBootstrap(root), null, 2));
-        else (await import('./test.ts')).testCases('', resolve(args[0]));
+        if (args[0] === undefined) {
+          console.log(JSON.stringify((await import('./verify.ts')).verifyBootstrap(root), null, 2));
+          break;
+        }
+        const { spawnSync } = await import('node:child_process');
+        const verified = spawnSync(process.execPath,
+          [join(root, 'tools/test.generated.ts'), '--file', resolve(args[0])], { stdio: 'inherit' });
+        if (verified.error) throw verified.error;
+        process.exitCode = verified.status ?? 1;
         break;
+      }
       case 'release':
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-release OUTPUT [TAG]');
         (await import('./release.ts')).prepareRelease(root, resolve(args[0]), args[1]);

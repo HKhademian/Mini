@@ -31,6 +31,14 @@
       "source": "tools/run.mini",
       "parts": [],
       "generated": "tools/run.generated.ts"
+    },
+    {
+      "source": "tools/test.mini",
+      "parts": [
+        "compiler/src/10-text.mini",
+        "tools/cases.mini"
+      ],
+      "generated": "tools/test.generated.ts"
     }
   ]
 }
