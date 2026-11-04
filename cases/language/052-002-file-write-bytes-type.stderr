@@ -1,0 +1,3 @@
+052-002-file-write-bytes-type.mini:1:1: expected list argument
+file_write_bytes("out.bin", "text");
+^

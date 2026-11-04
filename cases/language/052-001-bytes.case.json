@@ -1,0 +1,15 @@
+{
+  "id": "language.bytes",
+  "kind": "feature",
+  "source": "052-001-bytes.mini",
+  "features": ["text.bytes", "bytes.text", "file.write-bytes", "file.read-bytes", "directory.temp", "file.remove", "directory.remove"],
+  "cases": [
+    {
+      "name": "utf8-and-file",
+      "stdin": {"text": ""},
+      "stdout": {"text": "text ok\nutf8 ok\nfile ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

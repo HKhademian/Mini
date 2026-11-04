@@ -7,9 +7,9 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.3.0-v0.3.0-alpha.18
-builtins-v0.3.0-v0.3.0-alpha.12
-bootstrap-v0.3.0-v0.1.0-alpha.7
+compiler-v0.3.0-v0.3.0-alpha.19
+builtins-v0.3.0-v0.3.0-alpha.13
+bootstrap-v0.3.0-v0.1.0-alpha.8
 vscode-v0.3.0-v0.3.3
 ```
 
@@ -54,10 +54,10 @@ increments:
 
 ```text
 mini-v0.3.0-v0.1.0-alpha.9
-lang-v0.3.0-v0.3.0-alpha.13
-compiler-v0.3.0-v0.3.0-alpha.18
-bootstrap-v0.3.0-v0.1.0-alpha.7
-builtins-v0.3.0-v0.3.0-alpha.12
+lang-v0.3.0-v0.3.0-alpha.14
+compiler-v0.3.0-v0.3.0-alpha.19
+bootstrap-v0.3.0-v0.1.0-alpha.8
+builtins-v0.3.0-v0.3.0-alpha.13
 cli-v0.3.0-v0.1.0-alpha.7
 check-v0.3.0-v0.1.0-alpha.6
 format-v0.3.0-v0.1.0-alpha.3

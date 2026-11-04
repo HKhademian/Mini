@@ -5,6 +5,12 @@ Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
 
+`text_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
+`bytes_text(bytes)` decodes a byte list as UTF-8. Byte operations treat
+non-integer or out-of-range elements as zero.
+`file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
+whole files as byte lists.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -65,6 +71,12 @@ Mini needs a small set of host operations for compiling files and writing tools.
 Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
+
+`text_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
+`bytes_text(bytes)` decodes a byte list as UTF-8. Byte operations treat
+non-integer or out-of-range elements as zero.
+`file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
+whole files as byte lists.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON

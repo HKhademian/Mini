@@ -1,0 +1,28 @@
+/// Round-trip text and bytes through the byte primitives.
+var encoded = text_bytes("abc");
+if (list_length(encoded) == 3 && list_get(encoded, 0) == 97 && bytes_text(encoded) == "abc") {
+    write("text ok\n");
+} else {
+    write("text bad\n");
+}
+var multibyte = text_bytes("é");
+if (list_length(multibyte) == 2 && bytes_text(multibyte) == "é") {
+    write("utf8 ok\n");
+} else {
+    write("utf8 bad\n");
+}
+var raw = list_new();
+list_set(raw, 0, 0);
+list_set(raw, 1, 255);
+list_set(raw, 2, 10);
+var directory = directory_temp();
+var file = directory + "/raw.bin";
+file_write_bytes(file, raw);
+var read_back = file_read_bytes(file);
+if (list_length(read_back) == 3 && list_get(read_back, 0) == 0 && list_get(read_back, 1) == 255 && list_get(read_back, 2) == 10) {
+    write("file ok\n");
+} else {
+    write("file bad\n");
+}
+file_remove(file);
+directory_remove(directory);
