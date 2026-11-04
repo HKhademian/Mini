@@ -32,7 +32,7 @@ todos:
     status: pending
   - id: phase-2-verify
     content: "Phase 2 — Implement bootstrap verification as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-2-release
     content: "Phase 2 — Implement release packaging as a Mini tool"
     status: pending

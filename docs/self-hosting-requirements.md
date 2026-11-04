@@ -40,7 +40,7 @@ rests on the promoted bootstrap fixed point, not on these samples alone.
 
 The existing echo [example manifest](../cases/language/005-002-io-sample.case.json)
 is ready for the bootstrap example gate, including empty and multiline input.
-The [verifier](../tools/verify.ts) already rebuilds an isolated compiler three
+The [verifier](../tools/verify.mini) already rebuilds an isolated compiler three
 times, compares each result to the shipped seed, and runs the ordinary example.
 The case runner already accepts a candidate compiler override.
 The [paired application results](application-performance-results.md) verify

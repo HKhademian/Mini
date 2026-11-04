@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.11 / verify 0.1.0-alpha.3 / CLI 0.1.0-alpha.9: implement
+  bootstrap verification as a generated Mini tool. `mini verify` prints compact
+  JSON; `mini check` and release packaging consume the same tool. Remove
+  `tools/verify.ts`.
 - Mini 0.1.0-alpha.10 / test 0.1.0-alpha.3 / CLI 0.1.0-alpha.8: implement the
   case runner as a generated Mini tool. `tools/test.mini` and the shared
   `tools/cases.mini` load manifests, run tool and Mini cases, compare byte

@@ -3,7 +3,6 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { compiler, root, run, versions } from './project.ts';
 import { verifyTools } from './mini-tools.ts';
-import { verifyBootstrap } from './verify.ts';
 import { CaseKind, loadCases } from './cases.ts';
 
 function documents(directory: string): void {
@@ -64,7 +63,7 @@ portablePaths(root);
 const bootstrap = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
 assert(bootstrap !== null, 'self-hosted bootstrap unavailable; promote a generated compiler');
 assert.equal(compiler().entry, bootstrap.compiler, 'active compiler must be the generated bootstrap');
-verifyBootstrap(root);
+run(process.execPath, [join(root, 'tools/verify.generated.ts'), root], root);
 console.log('Repository checks and bootstrap fixed point passed.');
 }
 

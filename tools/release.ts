@@ -3,7 +3,6 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, 
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { compiler, compilerHash, root, run, selectRelease, sha256, versions } from './project.ts';
-import { verifyBootstrap } from './verify.ts';
 
 /** Build from source using the checkout's locked, locally installed packaging tool. */
 export function packageVscode(directory: string, output: string, tooling = directory) {
@@ -51,7 +50,9 @@ export function prepareRelease(directory: string, output: string, tag?: string) 
     run('tar', ['-xf', tracked, '-C', source], work);
     // No .git or node_modules: check the actual distribution, including its links.
     run(join(source, 'bin/mini-check'), ['--docs'], source);
-    const bootstrap = available ? verifyBootstrap(source) : null;
+    const bootstrap = available
+      ? JSON.parse(run(process.execPath, [join(source, 'tools/verify.generated.ts'), source], source).toString())
+      : null;
     const label = tag ?? `snapshot-${commit.slice(0, 12)}`;
     const title = releasedComponent?.component === 'cli' && bootstrap === null ? 'mini tooling preview' : label;
     const vsix = releasedComponent?.component === 'vscode' ? packageVscode(source, output, directory) : null;

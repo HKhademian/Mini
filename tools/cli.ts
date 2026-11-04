@@ -78,13 +78,11 @@ export async function main(executable: string): Promise<void> {
         break;
       case 'verify': {
         assert(args.length <= 1, 'usage: mini-verify [CASE.json]');
-        if (args[0] === undefined) {
-          console.log(JSON.stringify((await import('./verify.ts')).verifyBootstrap(root), null, 2));
-          break;
-        }
         const { spawnSync } = await import('node:child_process');
-        const verified = spawnSync(process.execPath,
-          [join(root, 'tools/test.generated.ts'), '--file', resolve(args[0])], { stdio: 'inherit' });
+        const command = args[0] === undefined
+          ? [join(root, 'tools/verify.generated.ts'), root]
+          : [join(root, 'tools/test.generated.ts'), '--file', resolve(args[0])];
+        const verified = spawnSync(process.execPath, command, { stdio: 'inherit' });
         if (verified.error) throw verified.error;
         process.exitCode = verified.status ?? 1;
         break;

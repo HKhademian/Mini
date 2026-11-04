@@ -39,6 +39,14 @@
         "tools/cases.mini"
       ],
       "generated": "tools/test.generated.ts"
+    },
+    {
+      "source": "tools/verify.mini",
+      "parts": [
+        "compiler/src/10-text.mini",
+        "tools/cases.mini"
+      ],
+      "generated": "tools/verify.generated.ts"
     }
   ]
 }
