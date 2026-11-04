@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+include "../libs/text.mini";
+include "../libs/cases.mini";
+
+/// Compile and run one source in host and reference modes, then compare results.
+fn reference_compare(root, name, source_text) {
+    var work = directory_temp();
+    file_write(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n");
+    var source = case_path_join(work, name + ".mini");
+    file_write(source, source_text);
+    var compiler = case_path_join(root, "dist/compile.ts");
+    var host = case_path_join(work, name + "-host.ts");
+    var pure = case_path_join(work, name + "-pure.ts");
+    var host_args = list_new();
+    list_set(host_args, 0, compiler);
+    list_set(host_args, 1, source);
+    list_set(host_args, 2, host);
+    var host_compile = case_run(process_exec_path(), host_args, root, list_new());
+    if (map_get(host_compile, "status") != 0) {
+        path_remove(work);
+        io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
+        process_exit(1);
+    }
+    var pure_args = list_new();
+    list_set(pure_args, 0, compiler);
+    list_set(pure_args, 1, "--reference");
+    list_set(pure_args, 2, source);
+    list_set(pure_args, 3, pure);
+    var pure_compile = case_run(process_exec_path(), pure_args, root, list_new());
+    if (map_get(pure_compile, "status") != 0) {
+        path_remove(work);
+        io_write_error(name + " reference compile failed: " + text_from_bytes(map_get(pure_compile, "stderr")));
+        process_exit(1);
+    }
+    var host_run_args = list_new();
+    list_set(host_run_args, 0, host);
+    var host_run = case_run(process_exec_path(), host_run_args, work, list_new());
+    var pure_run_args = list_new();
+    list_set(pure_run_args, 0, pure);
+    var pure_run = case_run(process_exec_path(), pure_run_args, work, list_new());
+    if (map_get(host_run, "status") != map_get(pure_run, "status")
+        || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(pure_run, "stdout"))
+        || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr"))) {
+        path_remove(work);
+        io_write_error(name + " differs between host and reference modes\n");
+        process_exit(1);
+    }
+    path_remove(work);
+    return 0;
+}
+
+/// Run the reference equivalence programs.
+fn main() {
+    var args = process_args();
+    var root = list_get(args, 0);
+    reference_compare(root, "text", "io_write(text_slice(\"abcdef\", 1, 4) + \"\\n\");\nio_write(number_to_text(text_find(\"abcabc\", \"bc\")) + \"\\n\");\nvar parts = text_split(\"a,b,c\", \",\");\nio_write(number_to_text(list_length(parts)) + \"\\n\");\n");
+    reference_compare(root, "copy", "var items = list_new();\nlist_set(items, 0, \"a\");\nlist_set(items, 1, \"b\");\nvar copy = list_copy(items);\nlist_set(copy, 0, \"changed\");\nio_write(list_get(items, 0) + list_get(copy, 0) + \"\\n\");\nvar source = map_new();\nmap_set(source, \"a\", 1);\nvar target = map_copy(source);\nmap_set(target, \"b\", 2);\nio_write(number_to_text(list_length(map_keys(target))) + \"\\n\");\n");
+    io_write("reference modes agree\n");
+    return 0;
+}
+
+main();

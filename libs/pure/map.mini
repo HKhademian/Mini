@@ -1,0 +1,15 @@
+/// Reference map_copy: shallow copy, or empty map for non-maps.
+fn pure_map_copy(items) {
+    var result = map_new();
+    if (value_kind(items) != "map") {
+        return result;
+    }
+    var keys = map_keys(items);
+    var position = 0;
+    while (position < list_length(keys)) {
+        var key = list_get(keys, position);
+        map_set(result, key, map_get(items, key));
+        position = position + 1;
+    }
+    return result;
+}

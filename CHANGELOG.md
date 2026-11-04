@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.26 / compiler 0.3.0-alpha.36 / bootstrap 0.1.0-alpha.23 /
+  builtins 0.3.0-alpha.25: add builtin layer metadata, pure reference
+  implementations for text_slice, text_find, text_split, list_copy, and
+  map_copy, and the `--reference` compiler mode. Equivalence is covered by
+  `test/reference.test.mini`. JSON and byte reference paths remain pending.
 - Mini 0.1.0-alpha.25 / language 0.3.0-alpha.26 / builtins 0.3.0-alpha.24 /
   compiler 0.3.0-alpha.35 / bootstrap 0.1.0-alpha.22: establish the `io_` fake
   namespace for standard streams. `write`, `write_error`, `readAll`, `read_line`,

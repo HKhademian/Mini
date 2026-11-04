@@ -8,6 +8,7 @@ representation are not.
 See [Builtins, purity, and self-containment](self-containment.md) for the
 trusted host boundary, removable performance fast paths, pure reference
 implementations, and the numeric requirements for a pure `hash_sha256`.
+`compiler metadata` reports each builtin's layer and pure reference target.
 
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
 `text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat

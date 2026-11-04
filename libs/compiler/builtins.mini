@@ -359,6 +359,66 @@ fn builtin_imports(name) {
     return text_split(names, ",");
 }
 
+/// Reference mode lowers replaceable performance builtins to pure helpers.
+var reference_mode = false;
+
+/// Return the builtin layer: essential, representation, performance, or library.
+fn builtin_class(name) {
+    if (text_starts_with(name, "io_")
+     || text_starts_with(name, "file_")
+        || text_starts_with(name, "directory_") 
+        || text_starts_with(name, "path_")
+        || text_starts_with(name, "process_")
+         || name == "time_millis" 
+         || name == "value_kind") {
+        return "essential";
+    }
+    if (name == "text_length" 
+    || name == "text_get" 
+    || name == "list_length"
+        || name == "list_get"
+         || name == "list_set" 
+         || name == "list_new"
+        || name == "map_get"
+         || name == "map_set"
+          || name == "map_keys"
+        || name == "map_has" 
+        || name == "map_new") {
+        return "representation";
+    }
+    if (name == "text_slice" 
+    || name == "text_find" 
+    || name == "text_split"
+        || name == "list_copy"
+         || name == "map_copy" 
+         || name == "json_parse"
+        || name == "json_to_text"
+         || name == "text_to_bytes"
+          || name == "text_from_bytes"
+        || name == "number_to_text"
+         || name == "list_to_text" 
+         || name == "hash_sha256") {
+        return "performance";
+    }
+    return "library";
+}
+
+/// Reference targets implemented as pure Mini helpers.
+var builtin_reference_targets = map_new();
+map_set(builtin_reference_targets, "text_slice", "pure_text_slice");
+map_set(builtin_reference_targets, "text_find", "pure_text_find");
+map_set(builtin_reference_targets, "text_split", "pure_text_split");
+map_set(builtin_reference_targets, "list_copy", "pure_list_copy");
+map_set(builtin_reference_targets, "map_copy", "pure_map_copy");
+
+/// Return the pure target for a builtin, or empty text.
+fn builtin_reference_target(name) {
+    if (map_has(builtin_reference_targets, name)) {
+        return map_get(builtin_reference_targets, name);
+    }
+    return "";
+}
+
 /// Return the builtin adapter key, or empty text.
 fn builtin_helper_key(name) {
     if (map_has(builtin_helper_keys, name)) {
@@ -472,6 +532,10 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
+    var reference_target = builtin_reference_target(name);
+    if (reference_mode && reference_target != "") {
+        return reference_target + "(" + list_to_text(args, ", ") + ")";
+    }
     if (name == "io_read_line") {
         return "$mini_read_line()";
     }

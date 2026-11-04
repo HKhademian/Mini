@@ -1301,6 +1301,31 @@ function builtin_imports(name) {
     }
     return $mini_text_split(names, ",");
 }
+let reference_mode = false;
+function builtin_class(name) {
+    if (((((((text_starts_with(name, "io_") || text_starts_with(name, "file_")) || text_starts_with(name, "directory_")) || text_starts_with(name, "path_")) || text_starts_with(name, "process_")) || (name === "time_millis")) || (name === "value_kind"))) {
+        return "essential";
+    }
+    if ((((((((((((name === "text_length") || (name === "text_get")) || (name === "list_length")) || (name === "list_get")) || (name === "list_set")) || (name === "list_new")) || (name === "map_get")) || (name === "map_set")) || (name === "map_keys")) || (name === "map_has")) || (name === "map_new"))) {
+        return "representation";
+    }
+    if (((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256"))) {
+        return "performance";
+    }
+    return "library";
+}
+let builtin_reference_targets = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_reference_targets, "text_slice", "pure_text_slice");
+$mini_map_set(builtin_reference_targets, "text_find", "pure_text_find");
+$mini_map_set(builtin_reference_targets, "text_split", "pure_text_split");
+$mini_map_set(builtin_reference_targets, "list_copy", "pure_list_copy");
+$mini_map_set(builtin_reference_targets, "map_copy", "pure_map_copy");
+function builtin_reference_target(name) {
+    if ($mini_map_has(builtin_reference_targets, name)) {
+        return $mini_map_get(builtin_reference_targets, name);
+    }
+    return "";
+}
 function builtin_helper_key(name) {
     if ($mini_map_has(builtin_helper_keys, name)) {
         return $mini_map_get(builtin_helper_keys, name);
@@ -1409,6 +1434,10 @@ function helper_text(key) {
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
+    let reference_target = builtin_reference_target(name);
+    if ((reference_mode && (reference_target !== ""))) {
+        return (((reference_target + "(") + $mini_list_to_text(args, ", ")) + ")");
+    }
     if ((name === "io_read_line")) {
         return "$mini_read_line()";
     }
@@ -1493,8 +1522,30 @@ function token_json(tokens) {
     }
     return (output + "]\n");
 }
+function compiler_tail(items) {
+    let result = [];
+    let position = 1;
+    while ((position < (items).length)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return result;
+}
+function compiler_append_body(output, tokens) {
+    let position = 0;
+    while (((position < (tokens).length) && ($mini_map_get($mini_list_get(tokens, position), "kind") !== "eof"))) {
+        $mini_list_set(output, (output).length, $mini_list_get(tokens, position));
+        position = (position + 1);
+    }
+    return output;
+}
 function main() {
     let args = process.argv.slice(2);
+    reference_mode = false;
+    if ((((args).length > 0) && ($mini_list_get(args, 0) === "--reference"))) {
+        reference_mode = true;
+        args = compiler_tail(args);
+    }
     let command = $mini_list_get(args, 0);
     let include_comments = false;
     let offset = 0;
@@ -1512,6 +1563,8 @@ function main() {
             $mini_map_set(entry, "name", name);
             $mini_map_set(entry, "parameters", builtin_parameters(name));
             $mini_map_set(entry, "result", builtin_result(name));
+            $mini_map_set(entry, "class", builtin_class(name));
+            $mini_map_set(entry, "reference", builtin_reference_target(name));
             $mini_list_set(entries, (entries).length, entry);
             index = (index + 1);
         }
@@ -1524,7 +1577,7 @@ function main() {
         let count = ((args).length - offset);
         let token_source = $mini_list_get(args, (1 + offset));
         if ((((count < 2) || (count > 3)) || (!text_ends_with(token_source, ".mini")))) {
-            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            writeSync(2, "usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process.exit(1);
         }
         let tokens = tokenize(readFileSync(token_source, "utf8"), basename(token_source), include_comments);
@@ -1537,17 +1590,17 @@ function main() {
         source = $mini_list_get(args, 1);
         output = $mini_list_get(args, 2);
         if (((args).length > 3)) {
-            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            writeSync(2, "usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process.exit(1);
         }
     } else {
         if (((args).length > 2)) {
-            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            writeSync(2, "usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process.exit(1);
         }
     }
     if (((source === 0) || (!text_ends_with(source, ".mini")))) {
-        writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+        writeSync(2, "usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process.exit(1);
     }
     let tokens = tokenize(readFileSync(source, "utf8"), basename(source), false);
@@ -1556,6 +1609,16 @@ function main() {
         target = output;
     }
     let expanded = expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
+    if (reference_mode) {
+        let root = dirname(dirname(process.argv[1]));
+        let pure_path = (root + "/libs/pure/reference.mini");
+        let pure_tokens = expand_includes(tokenize(readFileSync(pure_path, "utf8"), "libs/pure/reference.mini", false), pure_path, [], ({ __proto__: $mini_map_proto }));
+        let combined = [];
+        compiler_append_body(combined, expanded);
+        compiler_append_body(combined, pure_tokens);
+        $mini_list_set(combined, (combined).length, $mini_list_get(expanded, ((expanded).length - 1)));
+        expanded = combined;
+    }
     writeFileSync(target, compile(expanded), "utf8");
     return 0;
 }

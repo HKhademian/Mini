@@ -33,9 +33,35 @@ fn token_json(tokens) {
     return output + "]\n";
 }
 
+/// Return a list without its first item.
+fn compiler_tail(items) {
+    var result = list_new();
+    var position = 1;
+    while (position < list_length(items)) {
+        list_set(result, list_length(result), list_get(items, position));
+        position = position + 1;
+    }
+    return result;
+}
+
+/// Append tokens, dropping their end marker.
+fn compiler_append_body(output, tokens) {
+    var position = 0;
+    while (position < list_length(tokens) && map_get(list_get(tokens, position), "kind") != "eof") {
+        list_set(output, list_length(output), list_get(tokens, position));
+        position = position + 1;
+    }
+    return output;
+}
+
 /// Run the Mini compiler command interface.
 fn main() {
     var args = process_args();
+    reference_mode = false;
+    if (list_length(args) > 0 && list_get(args, 0) == "--reference") {
+        reference_mode = true;
+        args = compiler_tail(args);
+    }
     var command = list_get(args, 0);
     var include_comments = false;
     var offset = 0;
@@ -53,6 +79,8 @@ fn main() {
             map_set(entry, "name", name);
             map_set(entry, "parameters", builtin_parameters(name));
             map_set(entry, "result", builtin_result(name));
+            map_set(entry, "class", builtin_class(name));
+            map_set(entry, "reference", builtin_reference_target(name));
             list_set(entries, list_length(entries), entry);
             index = index + 1;
         }
@@ -65,7 +93,7 @@ fn main() {
         var count = list_length(args) - offset;
         var token_source = list_get(args, 1 + offset);
         if (count < 2 || count > 3 || !text_ends_with(token_source, ".mini")) {
-            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
         var tokens = tokenize(file_read(token_source), basename(token_source), include_comments);
@@ -78,17 +106,17 @@ fn main() {
         source = list_get(args, 1);
         output = list_get(args, 2);
         if (list_length(args) > 3) {
-            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     } else {
         if (list_length(args) > 2) {
-            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     }
     if (source == 0 || !text_ends_with(source, ".mini")) {
-        io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+        io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
     var tokens = tokenize(file_read(source), basename(source), false);
@@ -97,6 +125,16 @@ fn main() {
         target = output;
     }
     var expanded = expand_includes(tokens, source, list_new(), map_new());
+    if (reference_mode) {
+        var root = dirname(dirname(process_script_path()));
+        var pure_path = root + "/libs/pure/reference.mini";
+        var pure_tokens = expand_includes(tokenize(file_read(pure_path), "libs/pure/reference.mini", false), pure_path, list_new(), map_new());
+        var combined = list_new();
+        compiler_append_body(combined, expanded);
+        compiler_append_body(combined, pure_tokens);
+        list_set(combined, list_length(combined), list_get(expanded, list_length(expanded) - 1));
+        expanded = combined;
+    }
     file_write(target, compile(expanded));
     return 0;
 }

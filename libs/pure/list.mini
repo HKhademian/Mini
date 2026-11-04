@@ -1,0 +1,13 @@
+/// Reference list_copy: shallow copy, or empty list for non-lists.
+fn pure_list_copy(items) {
+    var result = list_new();
+    if (value_kind(items) != "list") {
+        return result;
+    }
+    var position = 0;
+    while (position < list_length(items)) {
+        list_set(result, list_length(result), list_get(items, position));
+        position = position + 1;
+    }
+    return result;
+}

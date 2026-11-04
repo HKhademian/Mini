@@ -119,26 +119,41 @@ before it is considered stable.
 The idea of an "inactive implementation" is better described as a **reference
 implementation** or **pure backend**.
 
-Proposed layout:
+Implemented layout:
 
 ```text
-libs/pure/text.mini      text_slice, text_find, text_split, text_trim
-libs/pure/list.mini      list_copy, counted-list helpers
-libs/pure/map.mini       map_copy
-libs/pure/json.mini      json_parse, json_to_text
-libs/pure/bytes.mini     text_to_bytes, text_from_bytes
+libs/pure/text.mini      pure_text_slice, pure_text_find, pure_text_split
+libs/pure/list.mini      pure_list_copy
+libs/pure/map.mini       pure_map_copy
+libs/pure/reference.mini include aggregator
 ```
 
-Proposed compiler modes:
+Compiler modes:
 
 ```text
 compiler source.mini output.ts               host fast paths (default)
 compiler --reference source.mini output.ts   pure reference implementations
 ```
 
-In reference mode, a performance builtin lowers to a `$mini_pure_*` helper and
-the compiler injects the corresponding pure implementation. Default builds keep
-the host fast paths.
+In reference mode, a replaceable performance builtin lowers to its `pure_*`
+helper and the compiler appends the pure library to the compilation unit. The
+default build keeps the host fast paths.
+
+Current reference coverage:
+
+| Builtin | Reference status |
+| --- | --- |
+| `text_slice`, `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
+| `list_copy` | Implemented in `libs/pure/list.mini` |
+| `map_copy` | Implemented in `libs/pure/map.mini` |
+| `json_parse`, `json_to_text` | Pending: number/string parsing primitives still need a settlement |
+| `text_to_bytes`, `text_from_bytes` | Pending: needs a code-point primitive |
+| `hash_sha256` | Pending: needs the numeric core described below |
+
+`compiler metadata` reports each builtin's `class` (`essential`,
+`representation`, `performance`, or `library`) and its `reference` target, if
+any. `test/reference.test.mini` compiles and runs the implemented reference
+paths against the host paths and compares streams and statuses.
 
 Reference mode is not dead code. It is a second semantic implementation used to:
 
