@@ -444,7 +444,6 @@ fn helper_blocks(helpers) {
     // Keep this order equal to T0's lexicographic helper sort.
     var order = list_new();
     list_set(order, list_length(order), "map_runtime");
-    list_set(order, list_length(order), "bytes_text");
     list_set(order, list_length(order), "directory_remove");
     list_set(order, list_length(order), "file_read_bytes");
     list_set(order, list_length(order), "file_remove");
@@ -460,11 +459,12 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "number_to_text");
     list_set(order, list_length(order), "process_run");
     list_set(order, list_length(order), "directory_temp");
-    list_set(order, list_length(order), "text_bytes");
     list_set(order, list_length(order), "text_find");
+    list_set(order, list_length(order), "text_from_bytes");
     list_set(order, list_length(order), "text_get");
     list_set(order, list_length(order), "text_slice");
     list_set(order, list_length(order), "text_split");
+    list_set(order, list_length(order), "text_to_bytes");
     var output = "";
     var position = 0;
     while (position < list_length(order)) {

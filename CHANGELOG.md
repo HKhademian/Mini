@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.16 / compiler 0.3.0-alpha.21 / builtins 0.3.0-alpha.15;
+  bootstrap 0.1.0-alpha.10: rename the byte conversions to `text_to_bytes` and
+  `text_from_bytes`.
 - Language 0.3.0-alpha.15 / compiler 0.3.0-alpha.20 / builtins 0.3.0-alpha.14;
   bootstrap 0.1.0-alpha.9: add `hash_sha256(value)` for lowercase hexadecimal
   SHA-256 of text or byte lists.

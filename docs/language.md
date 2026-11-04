@@ -539,12 +539,12 @@ candidate; add it only with a concrete need and a defined return shape.
 ## Accepted operations: bytes
 
 ```text
-var bytes = text_bytes("Mini");
-write(bytes_text(bytes));
+var bytes = text_to_bytes("Mini");
+write(text_from_bytes(bytes));
 ```
 
-- `text_bytes(text)` returns UTF-8 bytes as a list of integers 0-255.
-- `bytes_text(bytes)` decodes such a list as UTF-8. Non-integer or out-of-range
+- `text_to_bytes(text)` returns UTF-8 bytes as a list of integers 0-255.
+- `text_from_bytes(bytes)` decodes such a list as UTF-8. Non-integer or out-of-range
   elements count as zero.
 - `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace a
   whole file as a byte list.

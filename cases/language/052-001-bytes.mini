@@ -1,12 +1,12 @@
 /// Round-trip text and bytes through the byte primitives.
-var encoded = text_bytes("abc");
-if (list_length(encoded) == 3 && list_get(encoded, 0) == 97 && bytes_text(encoded) == "abc") {
+var encoded = text_to_bytes("abc");
+if (list_length(encoded) == 3 && list_get(encoded, 0) == 97 && text_from_bytes(encoded) == "abc") {
     write("text ok\n");
 } else {
     write("text bad\n");
 }
-var multibyte = text_bytes("é");
-if (list_length(multibyte) == 2 && bytes_text(multibyte) == "é") {
+var multibyte = text_to_bytes("é");
+if (list_length(multibyte) == 2 && text_from_bytes(multibyte) == "é") {
     write("utf8 ok\n");
 } else {
     write("utf8 bad\n");

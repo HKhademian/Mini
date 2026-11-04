@@ -32,8 +32,8 @@ list_set(builtin_names_list, list_length(builtin_names_list), "text_slice");
 list_set(builtin_names_list, list_length(builtin_names_list), "readAll");
 list_set(builtin_names_list, list_length(builtin_names_list), "write");
 list_set(builtin_names_list, list_length(builtin_names_list), "json_parse");
-list_set(builtin_names_list, list_length(builtin_names_list), "text_bytes");
-list_set(builtin_names_list, list_length(builtin_names_list), "bytes_text");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_to_bytes");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_from_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "file_read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "file_write_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "hash_sha256");
@@ -72,8 +72,8 @@ map_set(builtin_name_set, "text_slice", true);
 map_set(builtin_name_set, "readAll", true);
 map_set(builtin_name_set, "write", true);
 map_set(builtin_name_set, "json_parse", true);
-map_set(builtin_name_set, "text_bytes", true);
-map_set(builtin_name_set, "bytes_text", true);
+map_set(builtin_name_set, "text_to_bytes", true);
+map_set(builtin_name_set, "text_from_bytes", true);
 map_set(builtin_name_set, "file_read_bytes", true);
 map_set(builtin_name_set, "file_write_bytes", true);
 map_set(builtin_name_set, "hash_sha256", true);
@@ -112,8 +112,8 @@ map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
 map_set(builtin_parameter_kinds, "readAll", "");
 map_set(builtin_parameter_kinds, "write", "text");
 map_set(builtin_parameter_kinds, "json_parse", "text");
-map_set(builtin_parameter_kinds, "text_bytes", "text");
-map_set(builtin_parameter_kinds, "bytes_text", "list");
+map_set(builtin_parameter_kinds, "text_to_bytes", "text");
+map_set(builtin_parameter_kinds, "text_from_bytes", "list");
 map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
 map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
@@ -152,8 +152,8 @@ map_set(builtin_result_kinds, "text_slice", "text");
 map_set(builtin_result_kinds, "readAll", "text");
 map_set(builtin_result_kinds, "write", "void");
 map_set(builtin_result_kinds, "json_parse", "map");
-map_set(builtin_result_kinds, "text_bytes", "list");
-map_set(builtin_result_kinds, "bytes_text", "text");
+map_set(builtin_result_kinds, "text_to_bytes", "list");
+map_set(builtin_result_kinds, "text_from_bytes", "text");
 map_set(builtin_result_kinds, "file_read_bytes", "list");
 map_set(builtin_result_kinds, "file_write_bytes", "void");
 map_set(builtin_result_kinds, "hash_sha256", "text");
@@ -192,8 +192,8 @@ map_set(builtin_import_names, "text_slice", "");
 map_set(builtin_import_names, "readAll", "readFileSync");
 map_set(builtin_import_names, "write", "writeSync");
 map_set(builtin_import_names, "json_parse", "");
-map_set(builtin_import_names, "text_bytes", "");
-map_set(builtin_import_names, "bytes_text", "");
+map_set(builtin_import_names, "text_to_bytes", "");
+map_set(builtin_import_names, "text_from_bytes", "");
 map_set(builtin_import_names, "file_read_bytes", "");
 map_set(builtin_import_names, "file_write_bytes", "");
 map_set(builtin_import_names, "hash_sha256", "");
@@ -232,8 +232,8 @@ map_set(builtin_helper_keys, "text_slice", "text_slice");
 map_set(builtin_helper_keys, "readAll", "");
 map_set(builtin_helper_keys, "write", "");
 map_set(builtin_helper_keys, "json_parse", "json_parse");
-map_set(builtin_helper_keys, "text_bytes", "text_bytes");
-map_set(builtin_helper_keys, "bytes_text", "bytes_text");
+map_set(builtin_helper_keys, "text_to_bytes", "text_to_bytes");
+map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
 map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
 map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
@@ -341,11 +341,11 @@ fn helper_text(key) {
     if (key == "json_parse") {
         return json_parse_helper;
     }
-    if (key == "text_bytes") {
-        return text_bytes_helper;
+    if (key == "text_to_bytes") {
+        return text_to_bytes_helper;
     }
-    if (key == "bytes_text") {
-        return bytes_text_helper;
+    if (key == "text_from_bytes") {
+        return text_from_bytes_helper;
     }
     if (key == "file_read_bytes") {
         return file_read_bytes_helper;
@@ -363,7 +363,7 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_bytes" || name == "bytes_text" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

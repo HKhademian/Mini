@@ -5,8 +5,8 @@ Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
 
-`text_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
-`bytes_text(bytes)` decodes a byte list as UTF-8. Byte operations treat
+`text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
+`text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat
 non-integer or out-of-range elements as zero.
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
@@ -74,8 +74,8 @@ Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
 
-`text_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
-`bytes_text(bytes)` decodes a byte list as UTF-8. Byte operations treat
+`text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
+`text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat
 non-integer or out-of-range elements as zero.
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
