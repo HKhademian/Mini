@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "017-004-while-if.expected.ts"
+        "file": "017-004-while-if.expected.js"
       }
     }
   ]

@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "003-001-bindings-reassign.expected.ts"
+        "file": "003-001-bindings-reassign.expected.js"
       }
     }
   ]

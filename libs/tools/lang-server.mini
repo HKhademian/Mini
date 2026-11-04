@@ -5,7 +5,7 @@ include "../common/path.mini";
 include "../common/process.mini";
 include "../common/project.mini";
 /// Mini language server: LSP 3.17 over standard input and output.
-/// Usage: node dist/lang-server.ts [--version]
+/// Usage: node dist/lang-server.js [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
 /// Write one server log line.
@@ -187,7 +187,7 @@ fn lsp_analyze(text, name) {
     var compiler = project_compiler_entry(root);
     var work = path_temp_directory();
     var input = path_join(work, "source.mini");
-    var output = path_join(work, "program.ts");
+    var output = path_join(work, "program.js");
     file_write(input, text);
     var token_args = list_new();
     list_set(token_args, 0, compiler);
@@ -519,7 +519,7 @@ fn lsp_publish(uri, version, diagnostics) {
 fn lsp_format_text(text) {
     var root = lsp_root();
     var args = list_new();
-    list_set(args, 0, path_join(root, "dist/format.ts"));
+    list_set(args, 0, path_join(root, "dist/format.js"));
     list_set(args, 1, "-");
     var result = lsp_run(process_exec_path(), args, root, text_to_bytes(text));
     if (map_get(result, "status") == 0) {

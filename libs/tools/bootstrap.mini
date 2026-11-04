@@ -54,18 +54,18 @@ fn bootstrap_executable(root, path) {
 fn bootstrap_all(root) {
     var work = path_temp_directory();
     var source = path_join(root, "tools/compiler.mini");
-    var first = path_join(work, "compiler1.ts");
-    var second = path_join(work, "compiler2.ts");
+    var first = path_join(work, "compiler1.js");
+    var second = path_join(work, "compiler2.js");
     file_write(first, bootstrap_compile_text(source));
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
     if (hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second))) {
         bootstrap_fail("compiler fixed point mismatch");
     }
-    var seed = path_join(root, "dist/compile.ts");
+    var seed = path_join(root, "dist/compile.js");
     path_copy(first, seed);
     bootstrap_executable(root, seed);
-    var build = path_join(root, "dist/build.ts");
+    var build = path_join(root, "dist/build.js");
     bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);

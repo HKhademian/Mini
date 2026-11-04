@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "012-001-ordering.expected.ts"
+        "file": "012-001-ordering.expected.js"
       }
     }
   ]

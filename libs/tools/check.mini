@@ -4,7 +4,7 @@ include "../common/list.mini";
 include "cases.mini";
 /// Run repository checks: strict TypeScript (unless --docs), generated tools,
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
-/// Usage: node dist/check.ts [--docs]
+/// Usage: node dist/check.js [--docs]
 
 /// Report a check failure and stop.
 fn check_fail(message) {
@@ -212,6 +212,7 @@ fn check_portable_file(name) {
     list_set(suffixes, 8, ".stderr");
     list_set(suffixes, 9, ".stdin");
     list_set(suffixes, 10, ".svg");
+    list_set(suffixes, 11, ".js");
     var position = 0;
     while (position < list_length(suffixes)) {
         if (text_ends_with(name, list_get(suffixes, position))) {
@@ -369,22 +370,17 @@ fn check_node(root) {
     list_set(args, 0, "-v");
     var result = process_capture(process_exec_path(), args, root, list_new());
     var version = text_from_bytes(map_get(result, "stdout"));
-    if (!text_starts_with(version, "v24.")) {
-        check_fail("use Node 24; see .node-version");
+    if (!text_starts_with(version, "v")) {
+        check_fail("use Node 22.18.0 or newer");
     }
     var parts = text_split(text_slice(version, 1, text_length(version)), ".");
-    var minor = "";
-    if (list_length(parts) >= 2) {
-        minor = list_get(parts, 1);
+    if (list_length(parts) < 2) {
+        check_fail("use Node 22.18.0 or newer");
     }
-    var tens = 0;
-    var units = 0;
-    if (text_length(minor) == 2) {
-        tens = text_find("0123456789", text_get(minor, 0));
-        units = text_find("0123456789", text_get(minor, 1));
-    }
-    if (text_length(minor) != 2 || tens < 1 || (tens == 1 && units < 6)) {
-        check_fail("use Node 24.16.0 or newer in the 24.x line");
+    var major = number_from_text(list_get(parts, 0));
+    var minor = number_from_text(list_get(parts, 1));
+    if (major < 22 || (major == 22 && minor < 18)) {
+        check_fail("use Node 22.18.0 or newer");
     }
     return 0;
 }
@@ -401,14 +397,14 @@ fn check_repository(root, docs_only) {
         }
     }
     var tools = list_new();
-    list_set(tools, 0, path_join(root, "dist/build.ts"));
+    list_set(tools, 0, path_join(root, "dist/build.js"));
     list_set(tools, 1, "--check");
     var verified_tools = check_inherit(process_exec_path(), tools, root);
     if (map_get(verified_tools, "status") != 0) {
         process_exit(map_get(verified_tools, "status"));
     }
     var seed = path_join(root, "bin/bootstrap");
-    var generated_seed = path_join(root, "dist/bootstrap.ts");
+    var generated_seed = path_join(root, "dist/bootstrap.js");
     if (!path_is_exists(seed) || !path_is_exists(generated_seed) || file_read(seed) != file_read(generated_seed)) {
         check_fail("bin/bootstrap is stale; run ./bin/bootstrap or rebuild the seed");
     }
@@ -430,7 +426,7 @@ fn check_repository(root, docs_only) {
         check_fail("active compiler must be the generated bootstrap");
     }
     var verify = list_new();
-    list_set(verify, 0, path_join(root, "dist/verify.ts"));
+    list_set(verify, 0, path_join(root, "dist/verify.js"));
     list_set(verify, 1, root);
     var verified = process_capture(process_exec_path(), verify, root, list_new());
     if (map_get(verified, "status") != 0) {

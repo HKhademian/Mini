@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "009-001-expressions-parentheses.expected.ts"
+        "file": "009-001-expressions-parentheses.expected.js"
       }
     }
   ]

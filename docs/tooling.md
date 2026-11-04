@@ -22,14 +22,14 @@ Status: implemented with the check and cli streams. Repository checking remains
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
 forms. Source checking is a generated Mini tool
 ([tools/check-source.mini](../tools/check-source.mini)) composed with compiler
-the compiler source through `include`; `--docs` remains TypeScript.
+the compiler source through `include`; `--docs` skips strict TypeScript checking.
 
 On success, source checking prints nothing and exits 0. On a Mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic
 is the compiler's first error and must agree with `mini compile`. A file argument
 uses the path as given; standard input uses the display name `<stdin>`. A missing
 file or invalid argument is a command error, not a source diagnostic. Checking
-never writes a `.mini.ts` file.
+never writes a `.mini.js` file.
 
 The checker accepts exactly one source argument and rejects `--docs` combined
 with a source. Empty input is valid. CRLF and tabs follow the compiler's input
@@ -112,7 +112,7 @@ whitespace-only file becomes a zero-byte file.
 
 No line-width setting, project discovery, configuration file, or new comment
 syntax is added. Formatter output need not equal the compiler's generated
-TypeScript.
+JavaScript.
 
 ### mini-document / mini doc
 
@@ -196,20 +196,20 @@ the first compiler port.
 Tool source is Mini. Entries live in `tools/`; reusable logic lives in `libs/`
 (`libs/common/text.mini`, `libs/tools/cases.mini`, and per-tool libraries such as
 `libs/tools/format.mini`); generated artifacts live in `dist/` named by command, for
-example `dist/format.ts` and `dist/mini.ts`, produced from the active compiler
+example `dist/format.js` and `dist/mini.js`, produced from the active compiler
 and excluded from the strict TypeScript check.
 
 [tools/mini-tools.json](../tools/mini-tools.json) maps each Mini source to its
-generated TypeScript file and declares the `bin/` launchers:
+generated JavaScript file and declares the `bin/` launchers:
 
 ```json
 {
   "tools": [
-    { "source": "tools/check-source.mini", "generated": "dist/check-source.ts" }
+    { "source": "tools/check-source.mini", "generated": "dist/check-source.js" }
   ],
   "launchers": [
     { "name": "mini" },
-    { "name": "mini-lang-server", "tool": "dist/lang-server.ts" }
+    { "name": "mini-lang-server", "tool": "dist/lang-server.js" }
   ]
 }
 ```
@@ -220,10 +220,10 @@ source directly with the tracked bootstrap; include expansion is part of the
 compiler.
 
 ```text
-node dist/build.ts           regenerate every generated tool and launcher
-node dist/build.ts --check   reject stale generated artifacts
-node dist/check.ts --docs    run repository checks directly
-node dist/mini.ts check      run through the dispatcher
+node dist/build.js           regenerate every generated tool and launcher
+node dist/build.js --check   reject stale generated artifacts
+node dist/check.js --docs    run repository checks directly
+node dist/mini.js check      run through the dispatcher
 ```
 
 `mini check` rebuilds every manifest entry and fails when a tracked generated
@@ -237,7 +237,7 @@ for example, need not be expressible in the first Mini subset.
 
 After bootstrap replacement, authoritative parsing, checking, and emission
 behavior must live in Mini. Tool integration reuses that behavior through the
-active compiler's `tokens --comments` and `compile` commands; `tools/analysis.ts`
+active compiler's `tokens --comments` and `compile` commands; the language server
 does not import the T0 compiler modules. Builtin signatures for hover/completion
 come from the active compiler's `metadata` command.
 A future formatter or documenter may need syntax/trivia information that a

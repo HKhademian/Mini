@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "010-001-expressions-arithmetic.expected.ts"
+        "file": "010-001-expressions-arithmetic.expected.js"
       }
     }
   ]

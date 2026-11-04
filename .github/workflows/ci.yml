@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        shell: node dist/ci.ts {0}
+        shell: node dist/ci.js {0}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -54,3 +54,27 @@ jobs:
           path: .cache/bench-*.json
           if-no-files-found: error
           include-hidden-files: true
+
+  minimum:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: node dist/ci.js {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.18.0
+          cache: npm
+      - name: Bootstrap generated tools
+        shell: bash
+        run: ./bin/bootstrap
+      - name: Install development dependencies
+        run: install
+      - name: Strict types, versions, docs, cases, and available bootstrap
+        run: check
+      - name: JSON verification scenarios
+        run: test

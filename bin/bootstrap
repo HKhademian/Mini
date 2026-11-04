@@ -1537,18 +1537,18 @@ function bootstrap_executable(root, path) {
 function bootstrap_all(root) {
     let work = $mini_path_temp_directory();
     let source = path_join(root, "tools/compiler.mini");
-    let first = path_join(work, "compiler1.ts");
-    let second = path_join(work, "compiler2.ts");
+    let first = path_join(work, "compiler1.js");
+    let second = path_join(work, "compiler2.js");
     writeFileSync(first, bootstrap_compile_text(source), "utf8");
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
     if (($mini_hash_sha256($mini_file_read_bytes(first)) !== $mini_hash_sha256($mini_file_read_bytes(second)))) {
         bootstrap_fail("compiler fixed point mismatch");
     }
-    let seed = path_join(root, "dist/compile.ts");
+    let seed = path_join(root, "dist/compile.js");
     $mini_path_copy(first, seed);
     bootstrap_executable(root, seed);
-    let build = path_join(root, "dist/build.ts");
+    let build = path_join(root, "dist/build.js");
     bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);

@@ -7,14 +7,14 @@ fn main() {
     var args = process_args();
     var root = list_get(args, 0);
     var source = path_join(root, "tools/compiler.mini");
-    var seed = path_join(root, "dist/compile.ts");
+    var seed = path_join(root, "dist/compile.js");
     var expected = hash_sha256(file_read_bytes(seed));
     var work = path_temp_directory();
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var previous = seed;
     var stage = 0;
     while (stage < 3) {
-        var output = path_join(work, "compiler" + number_to_text(stage) + ".ts");
+        var output = path_join(work, "compiler" + number_to_text(stage) + ".js");
         var compile_args = list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, source);

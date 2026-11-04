@@ -5,7 +5,7 @@ include "../libs/tools/ci.mini";
 fn main() {
     var args = process_args();
     if (list_length(args) != 1) {
-        io_write_error("usage: dist/ci.ts TASK_FILE\n");
+        io_write_error("usage: dist/ci.js TASK_FILE\n");
         process_exit(1);
     }
     var task = ci_task_name(file_read(list_get(args, 0)));

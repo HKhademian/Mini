@@ -18,7 +18,7 @@ cases explicitly pending; refine provisional diagnostics with compiler support.
 
 ## Compiler workload
 
-Start with a readable scanner/parser that emits TypeScript directly. Its basic
+Start with a readable scanner/parser that emits JavaScript directly. Its basic
 working data is source text, a cursor, the current token, and accumulated output.
 Named functions will separate scanning, parsing, and emission. Keep the first
 implementation small; introduce other data structures when concrete code needs
@@ -73,13 +73,13 @@ io_write("ok\n");
 - The tokenizer emits a first-line `shebang` token. Following tokens keep their
   original line and column numbers, so the first code token is on line 2.
 - The compiler skips the shebang for parsing and emits a Node shebang in the
-  generated TypeScript:
+  generated JavaScript:
   ```text
   #!/usr/bin/env node
   "use strict";
   ```
 - The source shebang text is not copied into generated code because Mini and
-  TypeScript use different runners. Source without a shebang is unchanged.
+  JavaScript use different runners. Source without a shebang is unchanged.
 - The formatter and analysis mode preserve the shebang token. `mini run` compiles
   and executes a Mini source directly, and `mini compile` makes shebang output
   executable where the platform supports it.
@@ -126,9 +126,9 @@ For example, advancing the source cursor:
 position = position + 1;
 ```
 
-These statements can map directly to readable TypeScript declarations and
+These statements can map directly to readable JavaScript declarations and
 assignments. Mini's typing, scope, and declaration-order rules remain open;
-the TypeScript bootstrap being strongly typed does not decide them.
+the handwritten TypeScript sources do not decide them.
 
 ## Accepted form: functions and calls
 
@@ -149,7 +149,7 @@ output = join(output, token);
 - `{` and `}` delimit the body; no semicolon follows its closing brace.
 
 This separates scanner, parser, and emitter operations without introducing
-objects or methods. The function and call forms map directly to TypeScript.
+objects or methods. The function and call forms map directly to JavaScript.
 Parameter and result typing, scope, declaration order, and functions without
 a returned value remain open.
 
@@ -181,7 +181,7 @@ while (position < limit) {
   There is no separate `elseif` or unbraced `else if` form.
 
 These forms cover parser decisions and scanner loops and map directly to
-TypeScript. The expression rules below define comparisons and boolean conditions.
+JavaScript. The expression rules below define comparisons and boolean conditions.
 
 ## Accepted form: values and expressions
 
@@ -210,7 +210,7 @@ Parentheses override grouping. Assignment remains a statement.
 This covers cursor arithmetic, token comparisons, emission, and combined parser
 conditions. More arithmetic can wait for concrete compiler needs. Numeric limits,
 Mini's typing strategy, and host operation signatures remain open. Mini `==` /
-`!=` would emit TypeScript `===` / `!==`.
+`!=` would emit JavaScript `===` / `!==`.
 
 ## Accepted operations: whole-input and text output
 
@@ -347,8 +347,8 @@ Lists can be held in bindings and passed to functions. They can store numbers,
 booleans, text, lists, and maps using `list_set` below. Equality keeps its existing
 scalar contract. The list operations can serve future list-producing APIs too.
 
-For `node compiler.ts compile source.mini result.ts`, `process_args()` contains
-three elements: `compile`, `source.mini`, and `result.ts`, in that order.
+For `node compiler.js compile source.mini result.js`, `process_args()` contains
+three elements: `compile`, `source.mini`, and `result.js`, in that order.
 The compiler can combine list access with file I/O to implement its selected
 command interface.
 

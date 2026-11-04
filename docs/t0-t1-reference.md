@@ -7,7 +7,7 @@ records the port mapping and is not a current interface.
 T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
 source written in Mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
 T1 is its generated TypeScript compiler and is promoted as
-[dist/compile.ts](../dist/compile.ts). The inventory covers the five
+[dist/compile.js](../dist/compile.js). The inventory covers the five
 retired T0 files, not the CLI tools, tests, or release system.
 
 M1 must preserve the compiler's responsibilities, required behavior, and
@@ -444,7 +444,7 @@ whole compile succeeds. Token mode writes JSON to stdout. Source/usage rejection
 write stderr, finish with status 1, and do not create or replace an output file.
 
 The current usage message is
-`usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini`.
+`usage: T0 compile SOURCE.mini [OUTPUT.js] | tokens SOURCE.mini`.
 
 M1 can use `process_args`, the file primitives, `io_write`, `io_write_error`,
 `process_exit`, and text helpers. Its single-file program can run the command

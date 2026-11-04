@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "049-002-shebang.expected.ts"
+        "file": "049-002-shebang.expected.js"
       }
     }
   ]

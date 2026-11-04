@@ -5,7 +5,7 @@ include "../libs/tools/build.mini";
 fn main() {
     var args = process_args();
     if (list_length(args) > 1 || (list_length(args) == 1 && list_get(args, 0) != "--check")) {
-        io_write_error("usage: dist/build.ts [--check]\n");
+        io_write_error("usage: dist/build.js [--check]\n");
         process_exit(1);
     }
     var check = list_length(args) == 1;

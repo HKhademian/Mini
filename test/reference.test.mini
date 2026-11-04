@@ -8,9 +8,9 @@ fn reference_compare(root, name, source_text) {
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var source = path_join(work, name + ".mini");
     file_write(source, source_text);
-    var compiler = path_join(root, "dist/compile.ts");
-    var host = path_join(work, name + "-host.ts");
-    var pure = path_join(work, name + "-pure.ts");
+    var compiler = path_join(root, "dist/compile.js");
+    var host = path_join(work, name + "-host.js");
+    var pure = path_join(work, name + "-pure.js");
     var host_args = list_new();
     list_set(host_args, 0, compiler);
     list_set(host_args, 1, source);

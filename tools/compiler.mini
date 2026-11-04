@@ -92,7 +92,7 @@ fn main() {
         var count = list_length(args) - offset;
         var token_source = list_get(args, 1 + offset);
         if (count < 2 || count > 3 || !text_ends_with(token_source, ".mini")) {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
         var tokens = tokenize(file_read(token_source), basename(token_source), include_comments);
@@ -105,21 +105,21 @@ fn main() {
         source = list_get(args, 1);
         output = list_get(args, 2);
         if (list_length(args) > 3) {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     } else {
         if (list_length(args) > 2) {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     }
     if (source == 0 || !text_ends_with(source, ".mini")) {
-        io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+        io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
     var tokens = tokenize(file_read(source), basename(source), false);
-    var target = source + ".ts";
+    var target = source + ".js";
     if (output != 0) {
         target = output;
     }

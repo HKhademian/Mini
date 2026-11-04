@@ -7,7 +7,7 @@ include "../common/json.mini";
 include "../common/result.mini";
 include "../common/project.mini";
 /// Package committed sources into a release directory.
-/// Usage: node dist/release.ts OUTPUT [COMPONENT_TAG]
+/// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.
 
 /// Report a release error and stop.
@@ -250,7 +250,7 @@ fn release_prepare(directory, output, tag) {
     release_check(path_join(source, "bin/mini-check"), source);
     var bootstrap = 0;
     if (available) {
-        var verify_args = list_of2(path_join(source, "dist/verify.ts"), source);
+        var verify_args = list_of2(path_join(source, "dist/verify.js"), source);
         var verified = release_run(process_exec_path(), verify_args, source);
         var parsed = json_parse(text_from_bytes(map_get(verified, "stdout")));
         if (result_is_ok(parsed)) {

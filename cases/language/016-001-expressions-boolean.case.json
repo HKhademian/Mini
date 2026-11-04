@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "016-001-expressions-boolean.expected.ts"
+        "file": "016-001-expressions-boolean.expected.js"
       }
     }
   ]

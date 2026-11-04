@@ -10,7 +10,7 @@ The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 
 [The generated compiler](docs/compiler.md) implements the reviewed language
-cases in direct Node TypeScript. The [language draft](docs/language.md) records
+cases in direct Node JavaScript. The [language draft](docs/language.md) records
 the reviewed contract; cases verify compilation, generated output, execution,
 and diagnostics.
 
@@ -39,10 +39,10 @@ The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
 The [before/after measurements](docs/map-runtime-performance.md) record its
 compiler gains and the workloads that regress.
 
-M1 is the compiler source written in Mini; T1 is the generated TypeScript
+M1 is the compiler source written in Mini; T1 is the generated JavaScript
 compiler produced from it. The source lives in
 [tools/compiler.mini](tools/compiler.mini); the promoted T1 is
-[dist/compile.ts](dist/compile.ts), selected by
+[dist/compile.js](dist/compile.js), selected by
 [config/compiler.json](config/compiler.json). Keep M1 close to the verified
 first-port boundaries, control flow, calls, lookups, and data layout. Defer
 redesign and performance refactoring until the corresponding change is verified.
@@ -96,7 +96,7 @@ its implementation cost. Prefer simple rules and direct compiler code. A cloned
 language should approach its target through small, self-hosted increments;
 [temporary syntax bridges](docs/evolving-language.md) can keep those steps manageable.
 
-Keep language semantics small to implement across targets. TypeScript/Node is
+Keep language semantics small to implement across targets. JavaScript/Node is
 the selected bootstrap target; its physical value representation does not define
 Mini's semantics.
 
@@ -125,7 +125,8 @@ small too. “Smallest” is a practical goal, not a mathematical claim.
 
 ## Development
 
-Use Node 24.16.0 from [.node-version](.node-version).
+Use Node 22.18.0 or newer. Development and release builds pin 24.16.0 in
+[.node-version](.node-version); see [runtime requirements](docs/runtime.md).
 
 ```text
 npm ci
@@ -141,7 +142,7 @@ npm ci
 ```
 
 Source checking uses `mini check SOURCE.mini`; `mini check -` reads standard
-input. A successful check writes nothing and creates no `.mini.ts` file. A
+input. A successful check writes nothing and creates no `.mini.js` file. A
 failure prints the compiler's first diagnostic and exits 1.
 
 `mini fmt SOURCE.mini` writes canonical source to standard output; `mini fmt -`
@@ -165,7 +166,8 @@ or set `mini.serverPath`.
 `mini-help` / `mini help`. These commands are not available yet.
 
 Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
-[versioning](docs/versioning.md), [cases](docs/cases.md),
-[bootstrap verification](docs/bootstrap.md), and [releases](docs/releases.md).
+[runtime requirements](docs/runtime.md), [versioning](docs/versioning.md),
+[cases](docs/cases.md), [bootstrap verification](docs/bootstrap.md), and
+[releases](docs/releases.md).
 The [version inventory](docs/versioning.md#current-inventory) lists current
 products, future streams, and how specifications/docs identify their versions.

@@ -42,7 +42,7 @@
       "args": [
         "compile",
         "input.mini",
-        "output.ts"
+        "output.js"
       ]
     },
     {

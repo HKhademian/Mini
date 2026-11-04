@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "022-002-process-args-value.expected.ts"
+        "file": "022-002-process-args-value.expected.js"
       }
     }
   ]

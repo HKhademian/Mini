@@ -46,7 +46,7 @@ function build(application: Application, assets: string, selected: string) {
   const parts = [...(sharedLexer.has(application) ? ['lexer.mini'] : []), `${application}.mini`];
   const source = parts.map(path => readFileSync(join(directory, path), 'utf8')).join('\n');
   const input = join(assets, `${application}.mini`);
-  const output = join(assets, `${application}.generated.ts`);
+  const output = join(assets, `${application}.generated.js`);
   writeFileSync(input, source);
   const result = child([selected, 'compile', input, output]);
   assert.equal(result.stdout, ''); assert.equal(result.stderr, '');
@@ -115,7 +115,7 @@ async function main(): Promise<void> {
               heapIncreaseBytes: median(samples.map(sample => sample.heapAfterBytes - sample.heapBeforeBytes)) } });
         }
         if (application === 'compiler-pipeline') {
-          const program = join(assets, `compiled-program-${scale}.ts`); writeFileSync(program, fixture.expected as string);
+          const program = join(assets, `compiled-program-${scale}.js`); writeFileSync(program, fixture.expected as string);
           const execution = child([program]); assert.equal(execution.stdout, 'ok\n'); assert.equal(execution.stderr, '');
           emittedProgramChecks.push({ scale, outputHash: sha256(fixture.expected as string), milliseconds: execution.milliseconds });
         }

@@ -35,7 +35,7 @@ fn format_expect(name, actual, expected) {
 /// Return a stable token signature for one source.
 fn format_signature(root, file) {
     var args = list_new();
-    list_set(args, 0, path_join(root, "dist/compile.ts"));
+    list_set(args, 0, path_join(root, "dist/compile.js"));
     list_set(args, 1, "tokens");
     list_set(args, 2, "--comments");
     list_set(args, 3, file);
@@ -61,7 +61,7 @@ fn format_signature(root, file) {
 /// Compile one source and return generated text.
 fn format_compiled(root, file, output) {
     var args = list_new();
-    list_set(args, 0, path_join(root, "dist/compile.ts"));
+    list_set(args, 0, path_join(root, "dist/compile.js"));
     list_set(args, 1, file);
     list_set(args, 2, output);
     var result = process_capture(process_exec_path(), args, root, list_new());
@@ -124,7 +124,7 @@ fn main() {
             if (format_signature(root, formatted) != format_signature(root, original)) {
                 format_fail(name, "tokens changed");
             }
-            if (format_compiled(root, formatted, path_join(work, "formatted.ts")) != format_compiled(root, original, path_join(work, "original.ts"))) {
+            if (format_compiled(root, formatted, path_join(work, "formatted.js")) != format_compiled(root, original, path_join(work, "original.js"))) {
                 format_fail(name, "generated code changed");
             }
             if (format_source(root, work, name, file_read(formatted)) != output) {

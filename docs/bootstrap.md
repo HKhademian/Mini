@@ -3,14 +3,14 @@
 The self-hosted bootstrap is the only compiler implementation and is selected by
 [config/compiler.json](../config/compiler.json).
 [config/bootstrap.json](../config/bootstrap.json) pins the generated
-`dist/compile.ts` to `tools/compiler.mini`. The handwritten T0
+`dist/compile.js` to `tools/compiler.mini`. The handwritten T0
 implementation was removed after promotion and fixed-point verification.
 
 `bin/bootstrap` is the tracked seed. It is generated from
 [tools/bootstrap.mini](../tools/bootstrap.mini), embeds the compiler and the
 bootstrap driver, and is the only tracked executable under `bin/`. Running it
-rebuilds `dist/compile.ts`, verifies the compiler fixed point, compiles
-`dist/build.ts`, and generates every other tool and launcher.
+rebuilds `dist/compile.js`, verifies the compiler fixed point, compiles
+`dist/build.js`, and generates every other tool and launcher.
 
 ```text
 ./bin/bootstrap
@@ -28,7 +28,7 @@ performance measurement, and host-specific integration tests.
 M1 names the Mini compiler source in
 [tools/compiler.mini](../tools/compiler.mini); T1 names the generated TS
 compiler produced from M1. The fixed point is `T1(M1) = T1`. T1 is promoted as
-`dist/compile.ts`; `config/bootstrap.json` records the source, compiler,
+`dist/compile.js`; `config/bootstrap.json` records the source, compiler,
 and example identities. The [historical port reference](t0-t1-reference.md)
 records the first port's continuity with the retired T0 design.
 
@@ -36,13 +36,13 @@ Delivery uses compilation, not a runner:
 
 ```text
 mini compile tools/compiler.mini
-node compiler.mini.ts compile tools/compiler.mini
+node compiler.mini.js compile tools/compiler.mini
 ```
 
-Both write `compiler.mini.ts` by default. An optional final argument selects another
+Both write `compiler.mini.js` by default. An optional final argument selects another
 output path. `mini-compile` and `minic` are aliases for `mini compile`.
-The generated compiler implements the same `compile SOURCE.mini [OUTPUT.ts]`
-interface and writes self-contained TypeScript. Node built-ins are available;
+The generated compiler implements the same `compile SOURCE.mini [OUTPUT.js]`
+interface and writes self-contained JavaScript. Node built-ins are available;
 handwritten compiler helpers must not be required.
 
 Primitive host I/O is allowed through [built-ins](builtins.md). These adapters
@@ -55,7 +55,7 @@ selected in `config/compiler.json`, and `config/bootstrap.json` records:
 
 ```json
 {
-  "compiler": "dist/compile.ts",
+  "compiler": "dist/compile.js",
   "source": "tools/compiler.mini",
   "example": "cases/language/005-002-io-sample.case.json"
 }
@@ -66,7 +66,7 @@ uses the [case format](cases.md): source and input/output streams remain separat
 files.
 
 The verifier copies the shipped compiler and Mini source into an isolated
-directory, invokes `node PREVIOUS.ts compile tools/compiler.mini NEXT.ts` three times,
+directory, invokes `node PREVIOUS.js compile tools/compiler.mini NEXT.js` three times,
 and requires each output file to equal the shipped compiler byte for byte.
 It uses the last generation to compile and run every example scenario,
 checking stdout, stderr, and exit status. Release metadata records source,

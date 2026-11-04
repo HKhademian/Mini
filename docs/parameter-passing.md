@@ -1,7 +1,7 @@
 # Parameter passing proposal
 
 Status: under review, not an accepted language decision. T0 currently emits
-ordinary TypeScript parameters. List/map mutation and map lookup are available.
+ordinary JavaScript parameters. List/map mutation and map lookup are available.
 The review cases stay pending until the passing rule is accepted.
 
 ## Proposed rule
@@ -43,7 +43,7 @@ the parameter-rebinding contract itself remains under review.
 
 ## Target-independent representation
 
-Choose behavior for Mini independently of the current TypeScript target. The
+Choose behavior for Mini independently of the current JavaScript target. The
 same parameter rule should remain small to implement in other backends.
 Undeclared source types do not require every value to be a heap reference.
 
@@ -62,7 +62,7 @@ In particular, passing text need not copy its character storage. Its immutable
 behavior is separate from whether its storage is shared. Lists/maps preserve
 their identity across assignment, calls, and returns, without implicit cloning.
 
-Ordinary TypeScript parameters already provide the proposed behavior. Literals
+Ordinary JavaScript parameters already provide the proposed behavior. Literals
 need no compiler-created reference cell. Calls still pass values/handles and use
 ordinary call storage; this is not a guarantee that no bytes are copied or that
 the runtime never allocates.

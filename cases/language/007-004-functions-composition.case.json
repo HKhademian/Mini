@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "007-004-functions-composition.expected.ts"
+        "file": "007-004-functions-composition.expected.js"
       }
     }
   ]

@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "017-003-while-nested.expected.ts"
+        "file": "017-003-while-nested.expected.js"
       }
     }
   ]

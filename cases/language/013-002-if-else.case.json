@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "013-002-if-else.expected.ts"
+        "file": "013-002-if-else.expected.js"
       }
     }
   ]

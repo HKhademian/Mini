@@ -1,12 +1,12 @@
 /// Compile and run one Mini source in a temporary module.
-/// Usage: node dist/run.ts COMPILER.ts SOURCE.mini [ARG]...
+/// Usage: node dist/run.js COMPILER.js SOURCE.mini [ARG]...
 /// The compiler path is the active generated compiler; the remaining arguments
 /// reach the program through process_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {
-    file_remove(directory + "/program.ts");
+    file_remove(directory + "/program.js");
     file_remove(directory + "/package.json");
     directory_remove(directory);
     return 0;
@@ -19,7 +19,7 @@ fn run_program(compiler, source, forwarded) {
         io_write_error("cannot create a temporary directory\n");
         process_exit(1);
     }
-    var output = directory + "/program.ts";
+    var output = directory + "/program.js";
     file_write(directory + "/package.json", "{\"type\":\"module\"}\n");
     var compile_args = list_new();
     list_set(compile_args, 0, compiler);

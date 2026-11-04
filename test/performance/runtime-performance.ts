@@ -43,7 +43,7 @@ function compilerProbes(selected: string, directory: string) {
           : 'var value = ' + Array<string>(count).fill('1').join(' + ')
             + `;\nif (value != ${count}) { process_exit(1); }\nwrite("ok\\n");\n`;
       const input = join(directory, 'compiler-probe.mini');
-      const output = join(directory, 'compiler-probe.ts');
+      const output = join(directory, 'compiler-probe.js');
       writeFileSync(input, source);
       const compilations = Array.from({ length: 3 }, () => {
         const result = processResult([selected, 'compile', input, output]);
@@ -65,7 +65,7 @@ function compilerProbes(selected: string, directory: string) {
       let flatControl = null;
       if (name === 'expression') {
         const flat = `let value = ${Array<string>(count).fill('1').join(' + ')};\nif (value !== ${count}) process.exit(1);\nprocess.stdout.write("ok\\n");\n`;
-        const path = join(directory, 'flat-control.ts');
+        const path = join(directory, 'flat-control.js');
         writeFileSync(path, flat);
         flatControl = processResult([path]);
       } else assert(passed, `compiler probe failed: ${name} ${count}`);
@@ -236,13 +236,13 @@ async function worker(): Promise<void> {
 async function audit(): Promise<void> {
   const [, , output, override, ...extra] = process.argv;
   assert(output && extra.length === 0,
-    'usage: node test/performance/runtime-performance.ts REPORT.json [COMPILER.ts]');
+    'usage: node test/performance/runtime-performance.ts REPORT.json [COMPILER.js]');
   assert(!existsSync(resolve(output)), 'report already exists; choose a fresh filename');
   const directory = mkdtempSync(join(tmpdir(), 'mini-runtime-performance-'));
   const selected = override ? resolve(override) : join(root, compiler().entry);
   try {
     writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
-    const generatedPath = join(directory, 'workloads.ts');
+    const generatedPath = join(directory, 'workloads.js');
     const compilation = spawnSync(process.execPath, [selected, 'compile', sourcePath, generatedPath],
       { encoding: 'utf8', timeout: 120_000 });
     assert.ifError(compilation.error);

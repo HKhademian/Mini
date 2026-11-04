@@ -82,7 +82,7 @@ fn mini_usage(message) {
 /// Print the dispatcher help.
 fn mini_help() {
     io_write("mini: tiny self-hosting foundation for language projects\n");
-    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check] | ci TASK_FILE\n");
+    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.js] | build [--check] | ci TASK_FILE\n");
     io_write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
     return 0;
 }
@@ -90,14 +90,14 @@ fn mini_help() {
 /// Run a selected command and return its status.
 fn mini_command(root, command, args) {
     if (command == "build") {
-        return mini_spawn(root, "dist/build.ts", args);
+        return mini_spawn(root, "dist/build.js", args);
     }
     if (command == "ci") {
-        return mini_spawn(root, "dist/ci.ts", args);
+        return mini_spawn(root, "dist/ci.js", args);
     }
     if (command == "check") {
         if (list_length(args) == 0 || (list_length(args) == 1 && list_get(args, 0) == "--docs")) {
-            return mini_spawn(root, "dist/check.ts", args);
+            return mini_spawn(root, "dist/check.js", args);
         }
         if (list_length(args) != 1) {
             return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
@@ -106,7 +106,7 @@ fn mini_command(root, command, args) {
         if (path != "-" && !path_is_exists(path)) {
             return mini_usage("cannot read " + path);
         }
-        return mini_spawn(root, "dist/check-source.ts", args);
+        return mini_spawn(root, "dist/check-source.js", args);
     }
     if (command == "format") {
         var format_path = "";
@@ -121,7 +121,7 @@ fn mini_command(root, command, args) {
         if (format_path != "" && format_path != "-" && !path_is_exists(format_path)) {
             return mini_usage("cannot read " + format_path);
         }
-        return mini_spawn(root, "dist/format.ts", args);
+        return mini_spawn(root, "dist/format.js", args);
     }
     if (command == "run") {
         if (list_length(args) < 1) {
@@ -139,31 +139,31 @@ fn mini_command(root, command, args) {
             list_set(run_args, list_length(run_args), list_get(args, position));
             position = position + 1;
         }
-        return mini_spawn(root, "dist/run.ts", run_args);
+        return mini_spawn(root, "dist/run.js", run_args);
     }
     if (command == "test") {
-        return mini_spawn(root, "dist/test.ts", args);
+        return mini_spawn(root, "dist/test.js", args);
     }
     if (command == "bench") {
         if (list_length(args) < 1) {
             return mini_usage("usage: mini-bench OUTPUT [FILTER]");
         }
-        return mini_spawn(root, "dist/bench.ts", args);
+        return mini_spawn(root, "dist/bench.js", args);
     }
     if (command == "verify") {
         if (list_length(args) == 0) {
-            return mini_spawn(root, "dist/verify.ts", list_new());
+            return mini_spawn(root, "dist/verify.js", list_new());
         }
         var file_args = list_new();
         list_set(file_args, 0, "--file");
         list_set(file_args, 1, list_get(args, 0));
-        return mini_spawn(root, "dist/test.ts", file_args);
+        return mini_spawn(root, "dist/test.js", file_args);
     }
     if (command == "release") {
         if (list_length(args) < 1) {
             return mini_usage("usage: mini-release OUTPUT [TAG]");
         }
-        var status = mini_spawn(root, "dist/release.ts", args);
+        var status = mini_spawn(root, "dist/release.js", args);
         if (status == 0) {
             io_write("Release prepared.\n");
         }
@@ -178,13 +178,13 @@ fn mini_command(root, command, args) {
             return mini_spawn(root, mini_compiler(root), token_args);
         }
         if (list_length(args) < 1) {
-            return mini_usage("usage: mini-compile SOURCE.mini [OUTPUT.ts]");
+            return mini_usage("usage: mini-compile SOURCE.mini [OUTPUT.js]");
         }
         var source = list_get(args, 0);
         if (!text_ends_with(source, ".mini")) {
             return mini_usage("Mini source must use .mini");
         }
-        var output = source + ".ts";
+        var output = source + ".js";
         if (list_length(args) > 1) {
             output = list_get(args, 1);
         }
@@ -205,7 +205,7 @@ fn mini_command(root, command, args) {
 
 /// Run the dispatcher for one executable name and argument list.
 fn mini_run(executable, args, root) {
-    if (executable == "mini.ts" || executable == "mini.generated.ts") {
+    if (executable == "mini.js" || executable == "mini.generated.js") {
         executable = "mini";
     }
     var command = executable;

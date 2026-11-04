@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "007-001-functions-no-parameters.expected.ts"
+        "file": "007-001-functions-no-parameters.expected.js"
       }
     }
   ]

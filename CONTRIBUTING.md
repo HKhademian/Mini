@@ -4,7 +4,9 @@ Follow [AGENTS.md](AGENTS.md). Keep code and communication concise.
 Always use atomic commits: one coherent change, its checks, and related docs.
 Stage owned paths, review the diff, verify, then commit before independent work.
 
-Use Node 24.16.0 and `npm ci` for locked development dependencies.
+Use Node 22.18.0 or newer and `npm ci` for locked development dependencies.
+Development and release builds pin 24.16.0 in [.node-version](.node-version);
+see [runtime requirements](docs/runtime.md).
 
 ```text
 ./bin/mini check

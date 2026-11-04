@@ -484,7 +484,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         if (compiler == "") {
             compiler = project_compiler_entry(project_root);
         }
-        var output = path_join(work, "program.mini.ts");
+        var output = path_join(work, "program.mini.js");
         var compile_args = list_new();
         list_set(compile_args, 0, compiler);
         list_set(compile_args, 1, "compile");

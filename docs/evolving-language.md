@@ -30,10 +30,10 @@ change. Work with temporary copies so it stays paired with its original source.
 In a temporary migration directory, the build sequence is:
 
 ```text
-node C1.ts compile compiler-v2-s1.mini C2.ts
-node C2.ts compile compiler-v2-s2.mini C3.ts
-node C3.ts compile compiler-v2-s2.mini C4.ts
-node C4.ts compile compiler-v2-s2.mini C5.ts
+node C1.js compile compiler-v2-s1.mini C2.js
+node C2.js compile compiler-v2-s2.mini C3.js
+node C3.js compile compiler-v2-s2.mini C4.js
+node C4.js compile compiler-v2-s2.mini C5.js
 ```
 
 Require C3, C4, and C5 to be byte-identical. C2 need not equal C3 because they

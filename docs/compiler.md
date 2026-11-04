@@ -2,7 +2,7 @@
 
 The compiler is self-hosted. [tools/compiler.mini](../tools/compiler.mini)
 is the source and the generated
-[dist/compile.ts](../dist/compile.ts) is the active compiler,
+[dist/compile.js](../dist/compile.js) is the active compiler,
 selected by [config/compiler.json](../config/compiler.json). The handwritten T0
 implementation was retired; only accepted [language](language.md) and
 [builtin](builtins.md) contracts are normative.
@@ -12,13 +12,13 @@ Run it directly with Node:
 ```text
 ./bin/mini compile cases/language/001-001-bindings-initialize.mini
 ./bin/mini cases/language/001-001-bindings-initialize.mini
-./dist/compile.ts --reference SOURCE.mini OUTPUT.ts
-node cases/language/001-001-bindings-initialize.mini.ts
+./dist/compile.js --reference SOURCE.mini OUTPUT.js
+node cases/language/001-001-bindings-initialize.mini.js
 ./bin/mini compile --tokens cases/language/001-001-bindings-initialize.mini
 ```
 
-The default output appends `.ts` to the complete source name. Generated
-`.mini.ts` files are ignored by Git; reviewed emission fixtures use `.expected.ts`.
+The default output appends `.js` to the complete source name. Generated
+`.mini.js` files are ignored by Git; reviewed emission fixtures use `.expected.js`.
 An explicit output path still works.
 
 The lexer is the tokenizer: it emits tokens with a source filename, zero-based
@@ -36,17 +36,17 @@ Tooling uses the active compiler directly:
 
 ```text
 node COMPILER tokens --comments SOURCE.mini
-node COMPILER compile SOURCE.mini OUTPUT.ts
+node COMPILER compile SOURCE.mini OUTPUT.js
 node COMPILER metadata
 ```
 
 `metadata` emits one JSON object listing every builtin name, parameter kind, and
 result kind. Tooling hover, completion, and signature text read this command
-instead of a separate TypeScript table.
+instead of a separate builtin table.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format
-below. `tools/analysis.ts` runs both commands and returns `{tokens,
+below. the language server runs both commands and returns `{tokens,
 diagnostics}` through the active compiler.
 
 The token list uses the existing shape: `kind`, `text`, `source`, `start`, `end`,
@@ -89,14 +89,14 @@ implementation and its Mini replacements.
 Verify a candidate against every Mini-source case:
 
 ```text
-./bin/mini compile tools/compiler.mini .cache/compiler.mini.ts
-./bin/mini test --candidate .cache/compiler.mini.ts
+./bin/mini compile tools/compiler.mini .cache/compiler.mini.js
+./bin/mini test --candidate .cache/compiler.mini.js
 ```
 
 The candidate check skips tool cases, which continue to use the active CLI; run
 `mini test` for those. A filter argument narrows the case IDs.
 
-The generated TypeScript compiler is strict TypeScript. Mini parameter typing is still open: parameters use an
+The generated compiler is plain JavaScript. Mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
 unannotated parameters. This is not a full Mini typechecker. Functions are
 top-level, may call later definitions, and require a value return in this increment.
@@ -214,7 +214,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
   M1 uses it for JSON string quoting while keeping token field order explicit.
 
 - `0.3.0-alpha.10`: recognize an optional first-line shebang as a `shebang`
-  token; generated TypeScript begins with a Node shebang.
+  token; generated JavaScript begins with a Node shebang.
 
 - `0.3.0-alpha.11`: `process_run(command, args, mode)` runs one child process
   with captured or inherited standard streams and returns status, signal, and
@@ -223,7 +223,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.12`: `process_exec_path()`, `path_temp_directory()`, `file_remove()`,
   and `directory_remove()` support tool process setup and cleanup.
 
-The compiler path is self-hosted. The generated `dist/compile.ts` is the
+The compiler path is self-hosted. The generated `dist/compile.js` is the
 only compiler implementation; `config/bootstrap.json` pins it to
 `tools/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
 bootstrap migration.

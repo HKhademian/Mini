@@ -40,11 +40,11 @@ From the repository root, using a fresh report filename:
 
 ```text
 node test/performance/runtime-performance.ts .cache/runtime-performance.json
-node test/performance/runtime-performance.ts .cache/runtime-candidate.json dist/compile.ts
+node test/performance/runtime-performance.ts .cache/runtime-candidate.json dist/compile.js
 ```
 
 The optional compiler path selects a candidate implementing
-`compile SOURCE.mini OUTPUT.ts`; the default is the configured compiler.
+`compile SOURCE.mini OUTPUT.js`; the default is the configured compiler.
 The audit is a developer script, not a required dependency of the generated
 compiler or a new published CLI command.
 
@@ -112,13 +112,13 @@ the fixed point, actual compiler profiling can justify separate optimizations
 using existing Mini. A reproduced blocker before then warrants the smallest
 documented deviation that retains clear correspondence with T0.
 
-The `.ts` loading path has a real cold-start cost on the selected Node version.
+In the T0 baseline, the `.ts` loading path had a real cold-start cost on the selected Node version.
 For the smallest successful emitted programs, `.ts` execution was around
 47–53 ms versus 22–24 ms for identical `.mjs` bytes in the initial recorded run.
 The 336 KB statement program took around 72 ms versus 24 ms. This includes
 startup/parsing/execution; it is not an additional cost on every function call.
-The target remains TS; the `.mjs` run is an experimental control, not a target
-or packaging change.
+The target at that time was TS; generated artifacts are now `.js`, so this
+loading cost no longer applies.
 
 The T0 baseline compiled a 304 KB, 16,000-assignment source in approximately
 84 ms including process startup. Its emitted program ran successfully. Long

@@ -20,7 +20,7 @@
       "exitCode": 0,
       "name": "default",
       "artifact": {
-        "file": "001-007-bindings-emission.expected.ts"
+        "file": "001-007-bindings-emission.expected.js"
       }
     }
   ]

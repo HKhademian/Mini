@@ -16,7 +16,7 @@
     {
       "name": "existing-subset",
       "args": [
-        "program.ts"
+        "program.js"
       ],
       "stdin": {
         "text": ""
@@ -29,8 +29,8 @@
       },
       "exitCode": 0,
       "outputFiles": {
-        "program.ts": {
-          "file": "port-foundation.expected.ts"
+        "program.js": {
+          "file": "port-foundation.expected.js"
         }
       }
     }

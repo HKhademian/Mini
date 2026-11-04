@@ -9,6 +9,6 @@
     "stdout": { "file": "empty.stdout" },
     "stderr": { "file": "empty.stderr" },
     "exitCode": 0,
-    "artifact": { "file": "003-005-text-concat.expected.ts" }
+    "artifact": { "file": "003-005-text-concat.expected.js" }
   }]
 }

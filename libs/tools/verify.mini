@@ -2,7 +2,7 @@ include "../common/value.mini";
 include "../common/text.mini";
 include "cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
-/// Usage: node dist/verify.ts [PROJECT_ROOT]
+/// Usage: node dist/verify.js [PROJECT_ROOT]
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 
@@ -60,12 +60,12 @@ fn verify_bootstrap(root) {
         verify_fail("cannot create a temporary directory");
     }
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
-    var previous = path_join(work, "compiler0.ts");
+    var previous = path_join(work, "compiler0.js");
     file_write_bytes(previous, seed_bytes);
     var generations = list_new();
     var stage = 1;
     while (stage <= 3) {
-        var next = path_join(work, "compiler" + number_to_text(stage) + ".ts");
+        var next = path_join(work, "compiler" + number_to_text(stage) + ".js");
         var compile_args = list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, "compile");

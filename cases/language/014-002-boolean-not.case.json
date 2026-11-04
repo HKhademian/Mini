@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "014-002-boolean-not.expected.ts"
+        "file": "014-002-boolean-not.expected.js"
       }
     }
   ]

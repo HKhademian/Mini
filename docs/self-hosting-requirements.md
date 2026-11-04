@@ -9,7 +9,7 @@ Baseline: group 0.3.0, compiler 0.3.0-alpha.11, bootstrap 0.1.0-alpha.1.
 The current subset is sufficient for the Mini compiler. M1 is
 [tools/compiler.mini](../tools/compiler.mini), and the fixed-point check
 proves the promoted compiler reaches a byte-identical fixed point. Mini is self-hosted
-for the compiler path: `dist/compile.ts` is selected by
+for the compiler path: `dist/compile.js` is selected by
 `config/compiler.json` and pinned by `config/bootstrap.json`.
 
 T0 has been retired. Further compiler work uses T1 and the
@@ -33,7 +33,7 @@ and runs Mini code that checks:
 - Copying a scope map using existing key enumeration and lookup.
 - Decimal rendering with addition/subtraction, text slicing, character membership,
   and quoting the supported text escapes.
-- Writing an exact self-contained TypeScript program using ordinary host I/O.
+- Writing an exact self-contained JavaScript program using ordinary host I/O.
 
 These are integration checks of existing capabilities. The self-hosting claim
 rests on the promoted bootstrap fixed point, not on these samples alone.
@@ -49,12 +49,12 @@ while leaving actual-candidate performance and self-build acceptance outstanding
 
 ## Mini compiler source
 
-M1 is the Mini compiler source; T1 is the TypeScript compiler generated from it.
+M1 is the Mini compiler source; T1 is the JavaScript compiler generated from it.
 It ports the five T0 files named in
 [compiler configuration](../config/compiler.json) with close structural
 correspondence to T0. Preserve its routines, conditions, evaluation order, calls,
 lookups, named fields, and collection roles. Keep algorithms and storage layout
-recognizable; adapt the TypeScript mechanisms only where Mini requires it:
+recognizable; adapt the JavaScript mechanisms only where Mini requires it:
 
 - Tokens and expressions become maps with named text keys; token streams and
   parameter/argument collections become lists.
@@ -101,7 +101,7 @@ decisions; they must not remain in handwritten TypeScript helpers.
    large synthetic sources compile about 1.43x slower. Investigate the remaining
    remaining large-source gap stays tracked; byte equality alone does not
    establish a useful replacement.
-5. **Bootstrap promotion.** Delivered: `dist/compile.ts` matches the Mini
+5. **Bootstrap promotion.** Delivered: `dist/compile.js` matches the Mini
    source, the bootstrap/compiler identities are assigned, the isolated rebuild
    and packaged execution pass, and T0 is removed. The CLI and other tools may
    remain TypeScript.

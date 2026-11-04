@@ -1,9 +1,9 @@
 include "../common/text.mini";
 include "cases.mini";
 /// Run case scenarios through the shared case runner.
-/// Usage: node dist/test.ts [FILTER]
-///        node dist/test.ts --file CASE.json
-///        node dist/test.ts --candidate COMPILER.ts [FILTER]
+/// Usage: node dist/test.js [FILTER]
+///        node dist/test.js --file CASE.json
+///        node dist/test.js --candidate COMPILER.js [FILTER]
 /// Prints PASS, PENDING, or FAIL for each scenario and exits 1 on mismatch.
 
 /// Report usage and stop.
@@ -138,7 +138,7 @@ fn test_units(root, filter) {
             count = count + 1;
             var source = path_join(directory, name);
             var work = path_temp_directory();
-            var output = path_join(work, "test.generated.ts");
+            var output = path_join(work, "test.generated.js");
             var compile_args = list_new();
             list_set(compile_args, 0, compiler);
             list_set(compile_args, 1, source);

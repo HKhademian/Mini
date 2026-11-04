@@ -19,7 +19,7 @@
       },
       "exitCode": 0,
       "artifact": {
-        "file": "002-001-bindings-copy.expected.ts"
+        "file": "002-001-bindings-copy.expected.js"
       }
     }
   ]

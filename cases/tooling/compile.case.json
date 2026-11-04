@@ -21,14 +21,14 @@
       "exitCode": 0,
       "workspace": "clean",
       "files": [
-        "cases/language/001-001-bindings-initialize.mini.ts"
+        "cases/language/001-001-bindings-initialize.mini.js"
       ]
     },
     {
       "name": "compile-output",
       "args": [
         "cases/language/001-001-bindings-initialize.mini",
-        "out.mini.ts"
+        "out.mini.js"
       ],
       "stdin": {
         "text": ""
@@ -42,7 +42,7 @@
       "exitCode": 0,
       "workspace": "clean",
       "files": [
-        "out.mini.ts"
+        "out.mini.js"
       ]
     }
   ]

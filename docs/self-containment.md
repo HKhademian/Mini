@@ -9,7 +9,7 @@ that distinction.
 ## Builtins are host code
 
 A builtin is a name the compiler recognizes and replaces with generated
-TypeScript or an adapter helper. It is not written in Mini. The registry lives in
+JavaScript or an adapter helper. It is not written in Mini. The registry lives in
 [libs/compiler/builtins.mini](../libs/compiler/builtins.mini); adapter text and
 lowering live next to each namespace under `libs/compiler/builtins/`.
 
@@ -131,8 +131,8 @@ libs/pure/reference.mini include aggregator
 Compiler modes:
 
 ```text
-compiler source.mini output.ts               host fast paths (default)
-compiler --reference source.mini output.ts   pure reference implementations
+compiler source.mini output.js               host fast paths (default)
+compiler --reference source.mini output.js   pure reference implementations
 ```
 
 In reference mode, a replaceable performance builtin lowers to its `pure_*`
@@ -217,8 +217,8 @@ with performance measurements, before becoming defaults.
 
 | Property | Meaning | Current state |
 | --- | --- | --- |
-| Self-hosted | The compiler source is Mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.ts` |
-| Hosted | The compiler runs on a host runtime | Yes; generated TypeScript on Node |
+| Self-hosted | The compiler source is Mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.js` |
+| Hosted | The compiler runs on a host runtime | Yes; generated JavaScript on Node |
 | Self-contained | No host beyond the language runtime | No |
 | Pure reference-capable | Performance builtins have Mini implementations selected by a mode | Not yet; proposed |
 
