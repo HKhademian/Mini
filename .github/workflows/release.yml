@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        shell: node tools/ci.ts {0}
+        shell: node dist/ci.ts {0}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -77,7 +77,7 @@ jobs:
           name: release
           path: dist/release
       - name: Upload draft assets, then publish
-        shell: node tools/ci.ts {0}
+        shell: node dist/ci.ts {0}
         run: publish
         env:
           GH_TOKEN: ${{ github.token }}

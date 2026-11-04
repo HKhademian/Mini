@@ -79,7 +79,7 @@ fn mini_usage(message) {
 /// Print the dispatcher help.
 fn mini_help() {
     write("mini: tiny self-hosting foundation for language projects\n");
-    write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check]\n");
+    write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check] | ci TASK_FILE\n");
     write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
     return 0;
 }
@@ -88,6 +88,9 @@ fn mini_help() {
 fn mini_command(root, command, args) {
     if (command == "build") {
         return mini_spawn(root, "dist/build.ts", args);
+    }
+    if (command == "ci") {
+        return mini_spawn(root, "dist/ci.ts", args);
     }
     if (command == "check") {
         if (list_length(args) == 0 || (list_length(args) == 1 && list_get(args, 0) == "--docs")) {

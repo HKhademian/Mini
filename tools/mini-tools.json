@@ -43,6 +43,10 @@
     {
       "source": "tools/mini.mini",
       "generated": "dist/mini.ts"
+    },
+    {
+      "source": "tools/ci.mini",
+      "generated": "dist/ci.ts"
     }
   ],
   "launchers": [

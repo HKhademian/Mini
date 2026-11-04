@@ -1095,13 +1095,16 @@ function mini_usage(message) {
 }
 function mini_help() {
     writeSync(1, "mini: tiny self-hosting foundation for language projects\n");
-    writeSync(1, "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check]\n");
+    writeSync(1, "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check] | ci TASK_FILE\n");
     writeSync(1, "Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
     return 0;
 }
 function mini_command(root, command, args) {
     if ((command === "build")) {
         return mini_spawn(root, "dist/build.ts", args);
+    }
+    if ((command === "ci")) {
+        return mini_spawn(root, "dist/ci.ts", args);
     }
     if ((command === "check")) {
         if ((((args).length === 0) || (((args).length === 1) && ($mini_list_get(args, 0) === "--docs")))) {

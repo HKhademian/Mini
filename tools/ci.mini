@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+include "../libs/ci.mini";
+
+/// Read the task file and run the selected CI task.
+fn main() {
+    var args = process_args();
+    if (list_length(args) != 1) {
+        write_error("usage: dist/ci.ts TASK_FILE\n");
+        process_exit(1);
+    }
+    var task = ci_task_name(file_read(list_get(args, 0)));
+    process_exit(ci_task(ci_root(), task));
+    return 0;
+}
+
+main();

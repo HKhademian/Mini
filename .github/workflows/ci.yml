@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        shell: node tools/ci.ts {0}
+        shell: node dist/ci.ts {0}
     steps:
       - uses: actions/checkout@v6
         with:

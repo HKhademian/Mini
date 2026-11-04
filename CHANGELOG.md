@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.24 / CLI 0.1.0-alpha.15: implement CI tasks as a Mini tool,
+  `dist/ci.ts` (`mini ci TASK_FILE`). Workflows invoke it directly; remove
+  `tools/ci.ts`.
 - Language 0.3.0-alpha.25 / builtins 0.3.0-alpha.23 / compiler 0.3.0-alpha.34 /
   bootstrap 0.1.0-alpha.21: add `process_env(name)` for reading host environment
   variables, returning empty text when unset.

@@ -1,0 +1,193 @@
+include "text.mini";
+include "cases.mini";
+
+/// Locate the repository root for direct or `mini run` invocation.
+fn ci_root() {
+    var workspace = process_env("GITHUB_WORKSPACE");
+    if (workspace != "") {
+        return workspace;
+    }
+    var pwd = process_env("PWD");
+    if (pwd != "") {
+        return pwd;
+    }
+    return case_root();
+}
+
+/// Run a command, forward its streams, and stop on failure.
+fn ci_run(root, command, args, directory) {
+    var options = map_new();
+    map_set(options, "command", command);
+    map_set(options, "arguments", args);
+    map_set(options, "mode", "capture");
+    map_set(options, "directory", directory);
+    map_set(options, "timeout", 0);
+    var result = process_spawn(options);
+    var stdout = text_from_bytes(map_get(result, "stdout"));
+    var stderr = text_from_bytes(map_get(result, "stderr"));
+    if (text_length(stdout) > 0) {
+        write(stdout);
+    }
+    if (text_length(stderr) > 0) {
+        write_error(stderr);
+    }
+    if (map_get(result, "status") != 0) {
+        process_exit(map_get(result, "status"));
+    }
+    return 0;
+}
+
+/// Build a one-argument list.
+fn ci_args1(a) {
+    var result = list_new();
+    list_set(result, 0, a);
+    return result;
+}
+
+/// Build a two-argument list.
+fn ci_args2(a, b) {
+    var result = list_new();
+    list_set(result, 0, a);
+    list_set(result, 1, b);
+    return result;
+}
+
+/// Build a three-argument list.
+fn ci_args3(a, b, c) {
+    var result = list_new();
+    list_set(result, 0, a);
+    list_set(result, 1, b);
+    list_set(result, 2, c);
+    return result;
+}
+
+/// Build a four-argument list.
+fn ci_args4(a, b, c, d) {
+    var result = list_new();
+    list_set(result, 0, a);
+    list_set(result, 1, b);
+    list_set(result, 2, c);
+    list_set(result, 3, d);
+    return result;
+}
+
+/// Run the repository dispatcher.
+fn ci_mini(root, args) {
+    return ci_run(root, case_path_join(root, "bin/mini"), args, root);
+}
+
+/// Run Node with arguments.
+fn ci_node(root, args, directory) {
+    return ci_run(root, process_exec_path(), args, directory);
+}
+
+/// Fail one CI task.
+fn ci_fail(message) {
+    write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Strip one trailing newline from a task name.
+fn ci_task_name(text) {
+    if (text_ends_with(text, "\n")) {
+        return text_slice(text, 0, text_length(text) - 1);
+    }
+    return text;
+}
+
+/// Package committed sources, optionally for a tag.
+fn ci_package(root) {
+    var tag = "";
+    if (process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag") {
+        tag = process_env("GITHUB_REF_NAME");
+    }
+    var args = list_new();
+    list_set(args, 0, "release");
+    list_set(args, 1, case_path_join(root, "dist/release"));
+    if (tag != "") {
+        list_set(args, 2, tag);
+    }
+    return ci_mini(root, args);
+}
+
+/// Publish the prepared draft release with gh.
+fn ci_publish(root) {
+    if (process_env("GITHUB_EVENT_NAME") != "push" || process_env("GITHUB_REF_TYPE") != "tag") {
+        ci_fail("publish requires a pushed tag");
+    }
+    var tag = process_env("GITHUB_REF_NAME");
+    if (tag == "") {
+        ci_fail("publish requires GITHUB_REF_NAME");
+    }
+    var directory = case_path_join(root, "dist/release");
+    var parsed = case_json_file(case_path_join(directory, "manifest.json"));
+    if (!map_get(parsed, "ok")) {
+        ci_fail(map_get(parsed, "message"));
+    }
+    var manifest = map_get(parsed, "value");
+    if (map_get(manifest, "tag") != tag) {
+        ci_fail("manifest tag does not match " + tag);
+    }
+    var files = directory_list(directory);
+    var args = list_new();
+    list_set(args, 0, "release");
+    list_set(args, 1, "create");
+    list_set(args, 2, tag);
+    var position = 0;
+    while (position < list_length(files)) {
+        list_set(args, list_length(args), case_path_join(directory, list_get(files, position)));
+        position = position + 1;
+    }
+    list_set(args, list_length(args), "--draft");
+    list_set(args, list_length(args), "--verify-tag");
+    list_set(args, list_length(args), "--latest=false");
+    list_set(args, list_length(args), "--title");
+    list_set(args, list_length(args), map_get(manifest, "title"));
+    list_set(args, list_length(args), "--notes-file");
+    list_set(args, list_length(args), case_path_join(directory, "RELEASE-NOTES.md"));
+    var version = map_get(map_get(manifest, "releasedComponent"), "version");
+    if (text_find(version, "-") >= 0) {
+        list_set(args, list_length(args), "--prerelease");
+    }
+    ci_run(root, "gh", args, root);
+    var edit = list_new();
+    list_set(edit, 0, "release");
+    list_set(edit, 1, "edit");
+    list_set(edit, 2, tag);
+    list_set(edit, 3, "--draft=false");
+    list_set(edit, 4, "--latest=false");
+    return ci_run(root, "gh", edit, root);
+}
+
+/// Run one named CI task.
+fn ci_task(root, task) {
+    if (task == "install") {
+        ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
+        return ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), case_path_join(root, "editors/vscode"));
+    }
+    if (task == "check") {
+        return ci_mini(root, ci_args1("check"));
+    }
+    if (task == "test") {
+        ci_mini(root, ci_args1("test"));
+        ci_mini(root, ci_args2("test", "--unit"));
+        ci_node(root, ci_args2("--test", "test/format.test.ts"), root);
+        ci_node(root, ci_args2("--test", "test/lang-server.test.ts"), root);
+        ci_run(root, "npm", ci_args2("run", "check"), case_path_join(root, "editors/vscode"));
+        ci_node(root, ci_args2("--test", "test/grammar.test.ts"), case_path_join(root, "editors/vscode"));
+        ci_node(root, ci_args2("--test", "test/release.test.ts"), root);
+        return ci_node(root, ci_args2("tools/application-performance.ts", "--check"), root);
+    }
+    if (task == "bench") {
+        ci_mini(root, ci_args3("bench", ".cache/bench-ci.json", "tooling.check"));
+        return ci_mini(root, ci_args3("bench", ".cache/bench-compiler-ci.json", "compiler.bindings-emission"));
+    }
+    if (task == "package") {
+        return ci_package(root);
+    }
+    if (task == "publish") {
+        return ci_publish(root);
+    }
+    return ci_fail("unknown CI task: " + task);
+}
