@@ -1,3 +1,4 @@
+include "value.mini";
 /// Return a successful result map.
 fn result_ok() {
     var result = map_new();
@@ -16,7 +17,7 @@ fn result_fail(message) {
 
 /// Return whether a value is a successful result map.
 fn result_is_ok(result) {
-    if (value_kind(result) != "map") {
+    if (!value_is_map(result)) {
         return false;
     }
     return map_get(result, "ok") == true;

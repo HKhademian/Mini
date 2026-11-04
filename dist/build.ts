@@ -368,6 +368,24 @@ function process_capture(command, args, directory, input) {
     $mini_map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
 }
+function value_is_text(value) {
+    return ($mini_value_kind(value) === "text");
+}
+function value_is_number(value) {
+    return ($mini_value_kind(value) === "number");
+}
+function value_is_boolean(value) {
+    return ($mini_value_kind(value) === "boolean");
+}
+function value_is_list(value) {
+    return ($mini_value_kind(value) === "list");
+}
+function value_is_map(value) {
+    return ($mini_value_kind(value) === "map");
+}
+function value_is_other(value) {
+    return ($mini_value_kind(value) === "other");
+}
 function result_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -381,7 +399,7 @@ function result_fail(message) {
     return result;
 }
 function result_is_ok(result) {
-    if (($mini_value_kind(result) !== "map")) {
+    if ((!value_is_map(result))) {
         return false;
     }
     return ($mini_map_get(result, "ok") === true);

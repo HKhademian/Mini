@@ -10,9 +10,14 @@ trusted host boundary, removable performance fast paths, pure reference
 implementations, and the numeric requirements for a pure `hash_sha256`.
 `compiler metadata` reports each builtin's layer and pure reference target.
 
+`text_code(text)` returns the Unicode code point of the first character, or 0
+for empty/non-text input. `text_from_code(code)` returns one character for a
+valid Unicode scalar value and empty text otherwise.
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
 `text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat
-non-integer or out-of-range elements as zero.
+non-integer or out-of-range elements as zero. `text_to_bytes` and
+`text_from_bytes` have pure reference implementations in
+[libs/pure/bytes.mini](../libs/pure/bytes.mini).
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
 

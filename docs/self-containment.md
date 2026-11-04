@@ -146,9 +146,9 @@ Current reference coverage:
 | `text_slice`, `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
 | `list_copy` | Implemented in `libs/pure/list.mini` |
 | `map_copy` | Implemented in `libs/pure/map.mini` |
-| `json_parse`, `json_to_text` | Pending: number/string parsing primitives still need a settlement |
-| `text_to_bytes`, `text_from_bytes` | Pending: needs a code-point primitive |
-| `hash_sha256` | Pending: needs the numeric core described below |
+| `json_parse`, `json_to_text` | Pending: parser/serializer implementation and escape/cycle policy |
+| `text_to_bytes`, `text_from_bytes` | Implemented in `libs/pure/bytes.mini` |
+| `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 
 `compiler metadata` reports each builtin's `class` (`essential`,
 `representation`, `performance`, or `library`) and its `reference` target, if

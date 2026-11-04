@@ -1,7 +1,8 @@
+include "../value.mini";
 /// Reference list_copy: shallow copy, or empty list for non-lists.
 fn pure_list_copy(items) {
     var result = list_new();
-    if (value_kind(items) != "list") {
+    if (!value_is_list(items)) {
         return result;
     }
     var position = 0;
@@ -14,7 +15,7 @@ fn pure_list_copy(items) {
 
 /// Reference list_push_back.
 fn pure_list_push_back(items, value) {
-    if (value_kind(items) == "list") {
+    if (value_is_list(items)) {
         list_set(items, list_length(items), value);
     }
     return 0;
@@ -22,7 +23,7 @@ fn pure_list_push_back(items, value) {
 
 /// Reference list_push_front.
 fn pure_list_push_front(items, value) {
-    if (value_kind(items) != "list") {
+    if (!value_is_list(items)) {
         return 0;
     }
     var position = list_length(items);
@@ -36,7 +37,7 @@ fn pure_list_push_front(items, value) {
 
 /// Reference list_pop_back.
 fn pure_list_pop_back(items) {
-    if (value_kind(items) != "list" || list_length(items) == 0) {
+    if (!value_is_list(items) || list_length(items) == 0) {
         return 0;
     }
     var length = list_length(items);
@@ -47,7 +48,7 @@ fn pure_list_pop_back(items) {
 
 /// Reference list_pop_front.
 fn pure_list_pop_front(items) {
-    if (value_kind(items) != "list" || list_length(items) == 0) {
+    if (!value_is_list(items) || list_length(items) == 0) {
         return 0;
     }
     var length = list_length(items);

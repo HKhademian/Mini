@@ -1,3 +1,4 @@
+include "value.mini";
 include "text.mini";
 include "list.mini";
 include "cases.mini";
@@ -328,17 +329,17 @@ fn check_versions(root) {
         check_fail("invalid version registry keys");
     }
     var group = map_get(current, "group");
-    if (value_kind(group) != "text" || !check_plain_version(group)) {
+    if (!value_is_text(group) || !check_plain_version(group)) {
         check_fail("group requires MAJOR.MINOR.PATCH");
     }
     position = 0;
     while (position < list_length(expected)) {
         var key = list_get(expected, position);
         var version = map_get(current, key);
-        if (key != "group" && value_kind(version) != "number" && value_kind(version) != "text") {
+        if (key != "group" && !value_is_number(version) && !value_is_text(version)) {
             check_fail("invalid version: " + key);
         }
-        if (value_kind(version) == "text" && !check_product_version(version)) {
+        if (value_is_text(version) && !check_product_version(version)) {
             check_fail("invalid version: " + version);
         }
         position = position + 1;
@@ -416,7 +417,7 @@ fn check_repository(root, docs_only) {
     check_documents(root);
     check_portable_paths(root);
     var bootstrap = check_json(path_join(root, "config/bootstrap.json"));
-    if (value_kind(bootstrap) != "map") {
+    if (!value_is_map(bootstrap)) {
         check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
     var active = check_json(path_join(root, "config/compiler.json"));

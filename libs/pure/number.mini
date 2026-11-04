@@ -1,9 +1,10 @@
+include "../value.mini";
 /// Reference numeric add derived from subtraction.
 
 
 /// Reference numeric multiply by repeated addition.
 fn pure_number_mul(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
+    if (!value_is_number(a) || !value_is_number(b)) {
         return 0;
     }
     var left = a;
@@ -30,7 +31,7 @@ fn pure_number_mul(a, b) {
 
 /// Reference numeric division truncated toward zero.
 fn pure_number_div(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number" || b == 0) {
+    if (!value_is_number(a) || !value_is_number(b) || b == 0) {
         return 0;
     }
     var left = a;
@@ -57,7 +58,7 @@ fn pure_number_div(a, b) {
 
 /// Reference numeric remainder with the dividend's sign.
 fn pure_number_mod(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number" || b == 0) {
+    if (!value_is_number(a) || !value_is_number(b) || b == 0) {
         return 0;
     }
     var left = a;
@@ -79,7 +80,7 @@ fn pure_number_mod(a, b) {
 
 /// Reference numeric floor.
 fn pure_number_floor(a) {
-    if (value_kind(a) != "number") {
+    if (!value_is_number(a)) {
         return 0;
     }
     var value = a;
@@ -100,7 +101,7 @@ fn pure_number_floor(a) {
 
 /// Reference numeric power for non-negative integer exponents.
 fn pure_number_pow(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number" || b < 0 || pure_number_floor(b) != b) {
+    if (!value_is_number(a) || !value_is_number(b) || b < 0 || pure_number_floor(b) != b) {
         return 0;
     }
     var result = 1;
@@ -118,7 +119,7 @@ fn pure_number_pow(a, b) {
 
 /// Reference decimal integer parsing for safe integers.
 fn pure_number_from_text(text) {
-    if (value_kind(text) != "text" || text_length(text) == 0) {
+    if (!value_is_text(text) || text_length(text) == 0) {
         return 0;
     }
     var start = 0;

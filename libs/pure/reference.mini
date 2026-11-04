@@ -3,3 +3,4 @@ include "text.mini";
 include "list.mini";
 include "map.mini";
 include "number.mini";
+include "bytes.mini";

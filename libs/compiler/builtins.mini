@@ -34,6 +34,8 @@ list_set(builtin_names_list, list_length(builtin_names_list), "io_write");
 list_set(builtin_names_list, list_length(builtin_names_list), "json_parse");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_to_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_from_bytes");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_from_code");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_code");
 list_set(builtin_names_list, list_length(builtin_names_list), "file_read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "file_write_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "hash_sha256");
@@ -98,6 +100,8 @@ map_set(builtin_name_set, "io_write", true);
 map_set(builtin_name_set, "json_parse", true);
 map_set(builtin_name_set, "text_to_bytes", true);
 map_set(builtin_name_set, "text_from_bytes", true);
+map_set(builtin_name_set, "text_from_code", true);
+map_set(builtin_name_set, "text_code", true);
 map_set(builtin_name_set, "file_read_bytes", true);
 map_set(builtin_name_set, "file_write_bytes", true);
 map_set(builtin_name_set, "hash_sha256", true);
@@ -162,6 +166,8 @@ map_set(builtin_parameter_kinds, "io_write", "text");
 map_set(builtin_parameter_kinds, "json_parse", "text");
 map_set(builtin_parameter_kinds, "text_to_bytes", "text");
 map_set(builtin_parameter_kinds, "text_from_bytes", "list");
+map_set(builtin_parameter_kinds, "text_from_code", "number");
+map_set(builtin_parameter_kinds, "text_code", "text");
 map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
 map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
@@ -226,6 +232,8 @@ map_set(builtin_result_kinds, "io_write", "void");
 map_set(builtin_result_kinds, "json_parse", "map");
 map_set(builtin_result_kinds, "text_to_bytes", "list");
 map_set(builtin_result_kinds, "text_from_bytes", "text");
+map_set(builtin_result_kinds, "text_from_code", "text");
+map_set(builtin_result_kinds, "text_code", "number");
 map_set(builtin_result_kinds, "file_read_bytes", "list");
 map_set(builtin_result_kinds, "file_write_bytes", "void");
 map_set(builtin_result_kinds, "hash_sha256", "text");
@@ -290,6 +298,8 @@ map_set(builtin_import_names, "io_write", "writeSync");
 map_set(builtin_import_names, "json_parse", "");
 map_set(builtin_import_names, "text_to_bytes", "");
 map_set(builtin_import_names, "text_from_bytes", "");
+map_set(builtin_import_names, "text_from_code", "");
+map_set(builtin_import_names, "text_code", "");
 map_set(builtin_import_names, "file_read_bytes", "");
 map_set(builtin_import_names, "file_write_bytes", "");
 map_set(builtin_import_names, "hash_sha256", "");
@@ -354,6 +364,8 @@ map_set(builtin_helper_keys, "io_write", "");
 map_set(builtin_helper_keys, "json_parse", "json_parse");
 map_set(builtin_helper_keys, "text_to_bytes", "text_to_bytes");
 map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
+map_set(builtin_helper_keys, "text_from_code", "text_from_code");
+map_set(builtin_helper_keys, "text_code", "text_code");
 map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
 map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
@@ -440,7 +452,7 @@ fn builtin_class(name) {
         return "essential";
     }
     if (name == "text_length" 
-    || name == "text_get" 
+    || name == "text_get" || name == "text_code" || name == "text_from_code" 
     || name == "list_length"
         || name == "list_get"
          || name == "list_set" 
@@ -473,6 +485,8 @@ fn builtin_class(name) {
 /// Reference targets implemented as pure Mini helpers.
 var builtin_reference_targets = map_new();
 map_set(builtin_reference_targets, "text_slice", "pure_text_slice");
+map_set(builtin_reference_targets, "text_to_bytes", "pure_text_to_bytes");
+map_set(builtin_reference_targets, "text_from_bytes", "pure_text_from_bytes");
 map_set(builtin_reference_targets, "text_find", "pure_text_find");
 map_set(builtin_reference_targets, "text_split", "pure_text_split");
 map_set(builtin_reference_targets, "list_copy", "pure_list_copy");
@@ -563,6 +577,12 @@ fn helper_text(key) {
     if (key == "text_from_bytes") {
         return text_from_bytes_helper;
     }
+    if (key == "text_from_code") {
+        return text_from_code_helper;
+    }
+    if (key == "text_code") {
+        return text_code_helper;
+    }
     if (key == "file_read_bytes") {
         return file_read_bytes_helper;
     }
@@ -652,7 +672,7 @@ fn builtin_emit(name, args) {
     if (name == "io_read_bytes") {
         return "$mini_read_bytes(" + first + ")";
     }
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back" || name == "list_truncate" || name == "number_mul" || name == "number_div" || name == "number_mod" || name == "number_floor" || name == "number_pow" || name == "number_from_text") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "text_code" || name == "text_from_code" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back" || name == "list_truncate" || name == "number_mul" || name == "number_div" || name == "number_mod" || name == "number_floor" || name == "number_pow" || name == "number_from_text") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

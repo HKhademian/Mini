@@ -165,6 +165,24 @@ function $mini_value_kind(value) {
     if (value !== null && typeof value === "object") return "map";
     return "other";
 }
+function value_is_text(value) {
+    return ($mini_value_kind(value) === "text");
+}
+function value_is_number(value) {
+    return ($mini_value_kind(value) === "number");
+}
+function value_is_boolean(value) {
+    return ($mini_value_kind(value) === "boolean");
+}
+function value_is_list(value) {
+    return ($mini_value_kind(value) === "list");
+}
+function value_is_map(value) {
+    return ($mini_value_kind(value) === "map");
+}
+function value_is_other(value) {
+    return ($mini_value_kind(value) === "other");
+}
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -363,7 +381,7 @@ function list_contains(items, value) {
     return false;
 }
 function list_is_text(value) {
-    if (($mini_value_kind(value) !== "list")) {
+    if ((!value_is_list(value))) {
         return false;
     }
     let position = 0;
@@ -495,7 +513,7 @@ function result_fail(message) {
     return result;
 }
 function result_is_ok(result) {
-    if (($mini_value_kind(result) !== "map")) {
+    if ((!value_is_map(result))) {
         return false;
     }
     return ($mini_map_get(result, "ok") === true);
@@ -542,7 +560,7 @@ function case_kinds() {
     return kinds;
 }
 function case_stream_valid(stream) {
-    if (($mini_value_kind(stream) !== "map")) {
+    if ((!value_is_map(stream))) {
         return false;
     }
     let count = 0;
@@ -558,7 +576,7 @@ function case_stream_valid(stream) {
     return (count === 1);
 }
 function case_stream_bytes(stream, directory) {
-    if (($mini_value_kind(stream) !== "map")) {
+    if ((!value_is_map(stream))) {
         return result_fail("stream must be an object");
     }
     let count = 0;
@@ -583,13 +601,13 @@ function case_stream_bytes(stream, directory) {
     } else {
         if ($mini_map_has(stream, "bytes")) {
             bytes = $mini_map_get(stream, "bytes");
-            if (($mini_value_kind(bytes) !== "list")) {
+            if ((!value_is_list(bytes))) {
                 return result_fail("invalid stream bytes");
             }
             let position = 0;
             while ((position < (bytes).length)) {
                 let value = $mini_list_get(bytes, position);
-                if (((($mini_value_kind(value) !== "number") || (value < 0)) || (value > 255))) {
+                if ((((!value_is_number(value)) || (value < 0)) || (value > 255))) {
                     return result_fail("invalid stream bytes");
                 }
                 position = (position + 1);
@@ -642,7 +660,7 @@ function case_load_case(path) {
     }
     let spec = $mini_map_get(parsed, "value");
     let id = $mini_map_get(spec, "id");
-    if ((((!$mini_map_has(spec, "id")) || ($mini_value_kind(id) !== "text")) || ((id).length === 0))) {
+    if ((((!$mini_map_has(spec, "id")) || (!value_is_text(id))) || ((id).length === 0))) {
         return result_fail(("case ID required: " + path));
     }
     let kind = $mini_map_get(spec, "kind");
@@ -655,12 +673,12 @@ function case_load_case(path) {
     let directory = path_parent(path);
     if ((kind === "tool")) {
         let tool = $mini_map_get(spec, "tool");
-        if (((((!$mini_map_has(spec, "tool")) || ($mini_value_kind(tool) !== "text")) || ($mini_text_find(tool, "/") >= 0)) || (!$mini_path_exists(path_join(path_join(project_root(), "bin"), tool))))) {
+        if (((((!$mini_map_has(spec, "tool")) || (!value_is_text(tool))) || ($mini_text_find(tool, "/") >= 0)) || (!$mini_path_exists(path_join(path_join(project_root(), "bin"), tool))))) {
             return result_fail(("unknown tool: " + id));
         }
     } else {
         let source = $mini_map_get(spec, "source");
-        if (((((!$mini_map_has(spec, "source")) || ($mini_value_kind(source) !== "text")) || (!text_ends_with(source, ".mini"))) || (!$mini_path_exists(path_resolve(directory, source))))) {
+        if (((((!$mini_map_has(spec, "source")) || (!value_is_text(source))) || (!text_ends_with(source, ".mini"))) || (!$mini_path_exists(path_resolve(directory, source))))) {
             return result_fail(("case source missing: " + id));
         }
     }
@@ -676,7 +694,7 @@ function case_load_case(path) {
     while ((position < (scenarios).length)) {
         let scenario = $mini_list_get(scenarios, position);
         let name = $mini_map_get(scenario, "name");
-        if (((((($mini_value_kind(scenario) !== "map") || (!$mini_map_has(scenario, "name"))) || ($mini_value_kind(name) !== "text")) || ((name).length === 0)) || $mini_map_has(names, name))) {
+        if ((((((!value_is_map(scenario)) || (!$mini_map_has(scenario, "name"))) || (!value_is_text(name))) || ((name).length === 0)) || $mini_map_has(names, name))) {
             return result_fail(("scenario names must be unique: " + id));
         }
         $mini_map_set(names, name, true);
@@ -732,7 +750,7 @@ function case_validate_scenario(spec, kind, scenario, directory) {
             let group_key = $mini_list_get(groups, position);
             if ($mini_map_has(scenario, group_key)) {
                 let files = $mini_map_get(scenario, group_key);
-                if (($mini_value_kind(files) !== "map")) {
+                if ((!value_is_map(files))) {
                     return result_fail((prefix + "file fixtures must be an object"));
                 }
                 let keys = Object.keys(files);
@@ -759,7 +777,7 @@ function case_validate_scenario(spec, kind, scenario, directory) {
     }
     if ($mini_map_has(scenario, "tag")) {
         let tag = $mini_map_get(scenario, "tag");
-        if (((((((!$mini_map_has(scenario, "workspace")) || ($mini_value_kind(tag) !== "map")) || (!$mini_map_has(tag, "name"))) || ($mini_value_kind($mini_map_get(tag, "name")) !== "text")) || (!$mini_map_has(tag, "annotated"))) || ($mini_value_kind($mini_map_get(tag, "annotated")) !== "boolean"))) {
+        if (((((((!$mini_map_has(scenario, "workspace")) || (!value_is_map(tag))) || (!$mini_map_has(tag, "name"))) || ($mini_value_kind($mini_map_get(tag, "name")) !== "text")) || (!$mini_map_has(tag, "annotated"))) || ($mini_value_kind($mini_map_get(tag, "annotated")) !== "boolean"))) {
             return result_fail((prefix + "invalid fixture tag"));
         }
     }
@@ -1408,17 +1426,17 @@ function check_versions(root) {
         check_fail("invalid version registry keys");
     }
     let group = $mini_map_get(current, "group");
-    if ((($mini_value_kind(group) !== "text") || (!check_plain_version(group)))) {
+    if (((!value_is_text(group)) || (!check_plain_version(group)))) {
         check_fail("group requires MAJOR.MINOR.PATCH");
     }
     position = 0;
     while ((position < (expected).length)) {
         let key = $mini_list_get(expected, position);
         let version = $mini_map_get(current, key);
-        if ((((key !== "group") && ($mini_value_kind(version) !== "number")) && ($mini_value_kind(version) !== "text"))) {
+        if ((((key !== "group") && (!value_is_number(version))) && (!value_is_text(version)))) {
             check_fail(("invalid version: " + key));
         }
-        if ((($mini_value_kind(version) === "text") && (!check_product_version(version)))) {
+        if ((value_is_text(version) && (!check_product_version(version)))) {
             check_fail(("invalid version: " + version));
         }
         position = (position + 1);
@@ -1492,7 +1510,7 @@ function check_repository(root, docs_only) {
     check_documents(root);
     check_portable_paths(root);
     let bootstrap = check_json(path_join(root, "config/bootstrap.json"));
-    if (($mini_value_kind(bootstrap) !== "map")) {
+    if ((!value_is_map(bootstrap))) {
         check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
     let active = check_json(path_join(root, "config/compiler.json"));

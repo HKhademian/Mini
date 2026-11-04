@@ -1,6 +1,7 @@
+include "value.mini";
 /// Total numeric addition: non-number operands return 0.
 fn number_add(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
+    if (!value_is_number(a) || !value_is_number(b)) {
         return 0;
     }
     return a + b;
@@ -8,7 +9,7 @@ fn number_add(a, b) {
 
 /// Total numeric subtraction: non-number operands return 0.
 fn number_sub(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
+    if (!value_is_number(a) || !value_is_number(b)) {
         return 0;
     }
     return a - b;
@@ -16,7 +17,7 @@ fn number_sub(a, b) {
 
 /// Total numeric minimum: non-number operands return 0.
 fn number_min(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
+    if (!value_is_number(a) || !value_is_number(b)) {
         return 0;
     }
     if (a < b) {
@@ -27,7 +28,7 @@ fn number_min(a, b) {
 
 /// Total numeric maximum: non-number operands return 0.
 fn number_max(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
+    if (!value_is_number(a) || !value_is_number(b)) {
         return 0;
     }
     if (a > b) {

@@ -1,0 +1,15 @@
+{
+  "id": "language.text-code",
+  "kind": "feature",
+  "source": "064-001-text-code.mini",
+  "features": ["text.code", "text.from-code"],
+  "cases": [
+    {
+      "name": "ascii-and-astral",
+      "stdin": {"text": ""},
+      "stdout": {"text": "233\né\n128512\n😀\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

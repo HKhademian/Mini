@@ -1,3 +1,4 @@
+include "value.mini";
 include "text.mini";
 include "list.mini";
 include "path.mini";
@@ -121,7 +122,7 @@ fn release_node_version(root) {
 fn release_vscode(directory, output, tooling) {
     var current = release_json(path_join(directory, "config/versions.json"));
     var version = map_get(current, "vscode");
-    if (value_kind(version) != "text") {
+    if (!value_is_text(version)) {
         release_fail("VS Code extension version is unassigned");
     }
     var packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
@@ -212,7 +213,7 @@ fn release_prepare(directory, output, tag) {
         }
     }
     var bootstrap_config = release_json(path_join(directory, "config/bootstrap.json"));
-    var available = value_kind(bootstrap_config) == "map";
+    var available = value_is_map(bootstrap_config);
     var compiler_release = false;
     if (released != 0) {
         var component = map_get(released, "component");

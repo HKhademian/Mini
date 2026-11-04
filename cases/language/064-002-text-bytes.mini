@@ -1,0 +1,13 @@
+/// Exercise UTF-8 byte conversion.
+var bytes = text_to_bytes("Aé😀");
+var output = "";
+var position = 0;
+while (position < list_length(bytes)) {
+    if (position > 0) {
+        output = output + ",";
+    }
+    output = output + number_to_text(list_get(bytes, position));
+    position = position + 1;
+}
+io_write(output + "\n");
+io_write(text_from_bytes(bytes) + "\n");

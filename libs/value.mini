@@ -1,0 +1,29 @@
+/// Return whether a value is text.
+fn value_is_text(value) {
+    return value_kind(value) == "text";
+}
+
+/// Return whether a value is a number.
+fn value_is_number(value) {
+    return value_kind(value) == "number";
+}
+
+/// Return whether a value is a boolean.
+fn value_is_boolean(value) {
+    return value_kind(value) == "boolean";
+}
+
+/// Return whether a value is a list.
+fn value_is_list(value) {
+    return value_kind(value) == "list";
+}
+
+/// Return whether a value is a map.
+fn value_is_map(value) {
+    return value_kind(value) == "map";
+}
+
+/// Return whether a value has no recognized scalar/container kind.
+fn value_is_other(value) {
+    return value_kind(value) == "other";
+}

@@ -46,3 +46,6 @@ var number_pow_helper = "function $mini_number_pow(a, b) {\n    if (typeof a !==
 var number_from_text_helper = "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n";
 
 
+
+var text_code_helper = "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n";
+var text_from_code_helper = "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n";

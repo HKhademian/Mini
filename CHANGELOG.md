@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.30 / language 0.3.0-alpha.30 / builtins 0.3.0-alpha.29 /
+  compiler 0.3.0-alpha.40 / bootstrap 0.1.0-alpha.27: add `text_code` and
+  `text_from_code` representation primitives, with pure UTF-8 encoding and
+  decoding in `libs/pure/bytes.mini`. Add `value_is_*` predicates and move
+  common result/path/process/JSON/project/list helpers out of `cases.mini`.
 - Mini 0.1.0-alpha.29 / language 0.3.0-alpha.29 / builtins 0.3.0-alpha.28 /
   compiler 0.3.0-alpha.39 / bootstrap 0.1.0-alpha.26: remove the trivial
   `number_add`, `number_sub`, `number_min`, and `number_max` builtins and their

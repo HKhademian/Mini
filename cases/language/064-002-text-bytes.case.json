@@ -1,0 +1,15 @@
+{
+  "id": "language.text-bytes",
+  "kind": "feature",
+  "source": "064-002-text-bytes.mini",
+  "features": ["text.to-bytes", "text.from-bytes"],
+  "cases": [
+    {
+      "name": "utf8-roundtrip",
+      "stdin": {"text": ""},
+      "stdout": {"text": "65,195,169,240,159,152,128\nAé😀\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,7 +1,8 @@
+include "../value.mini";
 /// Reference map_copy: shallow copy, or empty map for non-maps.
 fn pure_map_copy(items) {
     var result = map_new();
-    if (value_kind(items) != "map") {
+    if (!value_is_map(items)) {
         return result;
     }
     var keys = map_keys(items);

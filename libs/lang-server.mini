@@ -1,3 +1,4 @@
+include "value.mini";
 include "text.mini";
 include "list.mini";
 include "path.mini";
@@ -305,7 +306,7 @@ var lsp_builtin_cache = 0;
 
 /// Load builtin metadata from the active compiler.
 fn lsp_builtins() {
-    if (value_kind(lsp_builtin_cache) == "map") {
+    if (value_is_map(lsp_builtin_cache)) {
         return lsp_builtin_cache;
     }
     var root = lsp_root();
@@ -530,7 +531,7 @@ fn lsp_format_text(text) {
 /// Replace or update one open document and publish diagnostics.
 fn lsp_diagnose(documents, uri, text, version) {
     var document = map_get(documents, uri);
-    if (value_kind(document) != "map" || map_get(document, "version") != version) {
+    if (!value_is_map(document) || map_get(document, "version") != version) {
         return 0;
     }
     var outcome = lsp_analyze(text, uri);
@@ -558,7 +559,7 @@ fn lsp_diagnose(documents, uri, text, version) {
 fn lsp_formatting(documents, params) {
     var uri = map_get(map_get(params, "textDocument"), "uri");
     var document = map_get(documents, uri);
-    if (value_kind(document) != "map") {
+    if (!value_is_map(document)) {
         return "null";
     }
     var text = map_get(document, "text");
@@ -567,7 +568,7 @@ fn lsp_formatting(documents, params) {
         return "null";
     }
     var formatted = lsp_format_text(text);
-    if (value_kind(formatted) != "text" || formatted == text) {
+    if (!value_is_text(formatted) || formatted == text) {
         return "null";
     }
     var range = map_new();
@@ -588,11 +589,11 @@ fn lsp_formatting(documents, params) {
 fn lsp_hover_reply(documents, params) {
     var text_document = map_get(params, "textDocument");
     var position = map_get(params, "position");
-    if (value_kind(text_document) != "map" || value_kind(position) != "map") {
+    if (!value_is_map(text_document) || !value_is_map(position)) {
         return "null";
     }
     var document = map_get(documents, map_get(text_document, "uri"));
-    if (value_kind(document) != "map") {
+    if (!value_is_map(document)) {
         return "null";
     }
     var text = map_get(document, "text");
@@ -608,11 +609,11 @@ fn lsp_hover_reply(documents, params) {
 fn lsp_completion_reply(documents, params) {
     var text_document = map_get(params, "textDocument");
     var position = map_get(params, "position");
-    if (value_kind(text_document) != "map" || value_kind(position) != "map") {
+    if (!value_is_map(text_document) || !value_is_map(position)) {
         return "{\"isIncomplete\":false,\"items\":[]}";
     }
     var document = map_get(documents, map_get(text_document, "uri"));
-    if (value_kind(document) != "map") {
+    if (!value_is_map(document)) {
         return "{\"isIncomplete\":false,\"items\":[]}";
     }
     var text = map_get(document, "text");
@@ -627,11 +628,11 @@ fn lsp_completion_reply(documents, params) {
 fn lsp_definition_reply(documents, params) {
     var text_document = map_get(params, "textDocument");
     var position = map_get(params, "position");
-    if (value_kind(text_document) != "map" || value_kind(position) != "map") {
+    if (!value_is_map(text_document) || !value_is_map(position)) {
         return "null";
     }
     var document = map_get(documents, map_get(text_document, "uri"));
-    if (value_kind(document) != "map") {
+    if (!value_is_map(document)) {
         return "null";
     }
     var text = map_get(document, "text");
@@ -671,7 +672,7 @@ fn lsp_notification(documents, shutting_down, method, params) {
         var changed = map_get(params, "textDocument");
         var uri = map_get(changed, "uri");
         var document = map_get(documents, uri);
-        if (value_kind(document) != "map") {
+        if (!value_is_map(document)) {
             return 0;
         }
         var changes = map_get(params, "contentChanges");

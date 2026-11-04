@@ -179,6 +179,24 @@ function $mini_value_kind(value) {
     if (value !== null && typeof value === "object") return "map";
     return "other";
 }
+function value_is_text(value) {
+    return ($mini_value_kind(value) === "text");
+}
+function value_is_number(value) {
+    return ($mini_value_kind(value) === "number");
+}
+function value_is_boolean(value) {
+    return ($mini_value_kind(value) === "boolean");
+}
+function value_is_list(value) {
+    return ($mini_value_kind(value) === "list");
+}
+function value_is_map(value) {
+    return ($mini_value_kind(value) === "map");
+}
+function value_is_other(value) {
+    return ($mini_value_kind(value) === "other");
+}
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -377,7 +395,7 @@ function list_contains(items, value) {
     return false;
 }
 function list_is_text(value) {
-    if (($mini_value_kind(value) !== "list")) {
+    if ((!value_is_list(value))) {
         return false;
     }
     let position = 0;
@@ -509,7 +527,7 @@ function result_fail(message) {
     return result;
 }
 function result_is_ok(result) {
-    if (($mini_value_kind(result) !== "map")) {
+    if ((!value_is_map(result))) {
         return false;
     }
     return ($mini_map_get(result, "ok") === true);
@@ -631,7 +649,7 @@ function release_node_version(root) {
 function release_vscode(directory, output, tooling) {
     let current = release_json(path_join(directory, "config/versions.json"));
     let version = $mini_map_get(current, "vscode");
-    if (($mini_value_kind(version) !== "text")) {
+    if ((!value_is_text(version))) {
         release_fail("VS Code extension version is unassigned");
     }
     let packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
@@ -714,7 +732,7 @@ function release_prepare(directory, output, tag) {
         }
     }
     let bootstrap_config = release_json(path_join(directory, "config/bootstrap.json"));
-    let available = ($mini_value_kind(bootstrap_config) === "map");
+    let available = value_is_map(bootstrap_config);
     let compiler_release = false;
     if ((released !== 0)) {
         let component = $mini_map_get(released, "component");

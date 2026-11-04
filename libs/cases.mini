@@ -1,3 +1,4 @@
+include "value.mini";
 include "text.mini";
 include "path.mini";
 include "process.mini";
@@ -48,7 +49,7 @@ fn case_kinds() {
 
 /// Return whether a stream has exactly one representation.
 fn case_stream_valid(stream) {
-    if (value_kind(stream) != "map") {
+    if (!value_is_map(stream)) {
         return false;
     }
     var count = 0;
@@ -60,7 +61,7 @@ fn case_stream_valid(stream) {
 
 /// Return the byte list for a stream.
 fn case_stream_bytes(stream, directory) {
-    if (value_kind(stream) != "map") {
+    if (!value_is_map(stream)) {
         return result_fail("stream must be an object");
     }
     var count = 0;
@@ -79,13 +80,13 @@ fn case_stream_bytes(stream, directory) {
     } else {
         if (map_has(stream, "bytes")) {
             bytes = map_get(stream, "bytes");
-            if (value_kind(bytes) != "list") {
+            if (!value_is_list(bytes)) {
                 return result_fail("invalid stream bytes");
             }
             var position = 0;
             while (position < list_length(bytes)) {
                 var value = list_get(bytes, position);
-                if (value_kind(value) != "number" || value < 0 || value > 255) {
+                if (!value_is_number(value) || value < 0 || value > 255) {
                     return result_fail("invalid stream bytes");
                 }
                 position = position + 1;
@@ -144,7 +145,7 @@ fn case_load_case(path) {
     }
     var spec = map_get(parsed, "value");
     var id = map_get(spec, "id");
-    if (!map_has(spec, "id") || value_kind(id) != "text" || text_length(id) == 0) {
+    if (!map_has(spec, "id") || !value_is_text(id) || text_length(id) == 0) {
         return result_fail("case ID required: " + path);
     }
     var kind = map_get(spec, "kind");
@@ -158,13 +159,13 @@ fn case_load_case(path) {
     var directory = path_parent(path);
     if (kind == "tool") {
         var tool = map_get(spec, "tool");
-        if (!map_has(spec, "tool") || value_kind(tool) != "text" || text_find(tool, "/") >= 0
+        if (!map_has(spec, "tool") || !value_is_text(tool) || text_find(tool, "/") >= 0
             || !path_exists(path_join(path_join(project_root(), "bin"), tool))) {
             return result_fail("unknown tool: " + id);
         }
     } else {
         var source = map_get(spec, "source");
-        if (!map_has(spec, "source") || value_kind(source) != "text" || !text_ends_with(source, ".mini")
+        if (!map_has(spec, "source") || !value_is_text(source) || !text_ends_with(source, ".mini")
             || !path_exists(path_resolve(directory, source))) {
             return result_fail("case source missing: " + id);
         }
@@ -182,7 +183,7 @@ fn case_load_case(path) {
     while (position < list_length(scenarios)) {
         var scenario = list_get(scenarios, position);
         var name = map_get(scenario, "name");
-        if (value_kind(scenario) != "map" || !map_has(scenario, "name") || value_kind(name) != "text"
+        if (!value_is_map(scenario) || !map_has(scenario, "name") || !value_is_text(name)
             || text_length(name) == 0 || map_has(names, name)) {
             return result_fail("scenario names must be unique: " + id);
         }
@@ -242,7 +243,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
             var group_key = list_get(groups, position);
             if (map_has(scenario, group_key)) {
                 var files = map_get(scenario, group_key);
-                if (value_kind(files) != "map") {
+                if (!value_is_map(files)) {
                     return result_fail(prefix + "file fixtures must be an object");
                 }
                 var keys = map_keys(files);
@@ -270,7 +271,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     }
     if (map_has(scenario, "tag")) {
         var tag = map_get(scenario, "tag");
-        if (!map_has(scenario, "workspace") || value_kind(tag) != "map" || !map_has(tag, "name")
+        if (!map_has(scenario, "workspace") || !value_is_map(tag) || !map_has(tag, "name")
             || value_kind(map_get(tag, "name")) != "text" || !map_has(tag, "annotated")
             || value_kind(map_get(tag, "annotated")) != "boolean") {
             return result_fail(prefix + "invalid fixture tag");

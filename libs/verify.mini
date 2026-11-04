@@ -1,3 +1,4 @@
+include "value.mini";
 include "text.mini";
 include "cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
@@ -18,7 +19,7 @@ fn verify_text(value, key) {
         return "";
     }
     var field = map_get(value, key);
-    if (value_kind(field) != "text") {
+    if (!value_is_text(field)) {
         return "";
     }
     return field;

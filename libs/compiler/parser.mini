@@ -481,6 +481,8 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "path_remove");
     list_set(order, list_length(order), "text_find");
     list_set(order, list_length(order), "text_from_bytes");
+    list_set(order, list_length(order), "text_code");
+    list_set(order, list_length(order), "text_from_code");
     list_set(order, list_length(order), "text_get");
     list_set(order, list_length(order), "text_slice");
     list_set(order, list_length(order), "text_split");
