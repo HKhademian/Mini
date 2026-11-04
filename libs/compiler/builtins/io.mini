@@ -1,0 +1,58 @@
+/// Io builtin descriptors.
+
+
+builtin_add(
+    "io_read_all",
+    "",
+    "text",
+    "essential",
+    "readFileSync",
+    "",
+    "",
+    "",
+    "readFileSync(0, \"utf8\")"
+);
+builtin_add(
+    "io_read_bytes",
+    "number",
+    "list",
+    "essential",
+    "",
+    "read_bytes",
+    "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n",
+    "",
+    "$mini_read_bytes({0})"
+);
+builtin_add(
+    "io_read_line",
+    "",
+    "text",
+    "essential",
+    "",
+    "read_line",
+    "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n",
+    "",
+    "$mini_read_line()"
+);
+builtin_add(
+    "io_write",
+    "text",
+    "void",
+    "essential",
+    "writeSync",
+    "",
+    "",
+    "",
+    "writeSync(1, {0})"
+);
+builtin_add(
+    "io_write_error",
+    "text",
+    "void",
+    "essential",
+    "writeSync",
+    "",
+    "",
+    "",
+    "writeSync(2, {0})"
+);

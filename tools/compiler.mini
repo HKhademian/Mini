@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 /// Compose the Mini compiler from its source files.
-include "../libs/compiler/constants.mini";
 include "../libs/common/text.mini";
 include "../libs/compiler/lexer.mini";
 include "../libs/compiler/parser.mini";

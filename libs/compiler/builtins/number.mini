@@ -1,0 +1,79 @@
+/// Number builtin descriptors.
+
+builtin_add(
+    "number_div",
+    "number,number",
+    "number",
+    "performance",
+    "",
+    "number_div",
+    "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", 
+    "pure_number_div",
+    "$mini_number_div({0}, {1})"
+);
+builtin_add(
+    "number_floor",
+    "number",
+    "number",
+    "performance",
+    "",
+    "number_floor",
+    "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n",
+    "pure_number_floor",
+    "$mini_number_floor({0})"
+);
+builtin_add(
+    "number_from_text",
+    "text",
+    "number",
+    "performance",
+    "",
+    "number_from_text",
+    "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n",
+    "pure_number_from_text",
+    "$mini_number_from_text({0})"
+);
+builtin_add(
+    "number_mod",
+    "number,number",
+    "number",
+    "performance",
+    "",
+    "number_mod", 
+    "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n",
+    "pure_number_mod",
+    "$mini_number_mod({0}, {1})"
+);
+builtin_add(
+    "number_mul",
+    "number,number",
+    "number",
+    "performance",
+    "",
+    "number_mul", 
+    "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", 
+    "pure_number_mul",
+    "$mini_number_mul({0}, {1})"
+);
+builtin_add(
+    "number_pow",
+    "number,number",
+    "number",
+    "performance",
+    "",
+    "number_pow", 
+    "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", 
+    "pure_number_pow",
+    "$mini_number_pow({0}, {1})"
+);
+builtin_add(
+    "number_to_text",
+    "number",
+    "text",
+    "performance",
+    "",
+    "number_to_text", 
+    "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", 
+    "",
+    "$mini_number_to_text({0})"
+);

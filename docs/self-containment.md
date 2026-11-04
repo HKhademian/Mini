@@ -10,8 +10,8 @@ that distinction.
 
 A builtin is a name the compiler recognizes and replaces with generated
 TypeScript or an adapter helper. It is not written in Mini. The registry lives in
-[libs/compiler/builtins.mini](../libs/compiler/builtins.mini); the adapter text
-lives in [libs/compiler/constants.mini](../libs/compiler/constants.mini).
+[libs/compiler/builtins.mini](../libs/compiler/builtins.mini); adapter text and
+lowering live next to each namespace under `libs/compiler/builtins/`.
 
 Builtins fall into three practical layers:
 

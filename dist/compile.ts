@@ -107,53 +107,6 @@ function $mini_value_kind(value) {
     if (value !== null && typeof value === "object") return "map";
     return "other";
 }
-let map_runtime = "const $mini_map_proto = { __proto__: null };\nfunction $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\nfunction $mini_map_has(items, key) {\n    return key in items;\n}\nfunction $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n";
-let directory_remove_helper = "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n";
-let file_remove_helper = "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true });\n}\n";
-let map_copy_helper = "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n";
-let list_copy_helper = "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n";
-let list_to_text_helper = "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n";
-let list_get_helper = "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n";
-let list_set_helper = "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n";
-let json_to_text_helper = "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n";
-let number_to_text_helper = "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n";
-let process_run_helper = "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n";
-let path_temp_directory_helper = "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n";
-let text_find_helper = "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n";
-let text_get_helper = "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n";
-let text_split_helper = "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n";
-let text_slice_helper = "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n";
-let json_parse_helper = "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n";
-let text_to_bytes_helper = "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n";
-let text_from_bytes_helper = "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n";
-let file_read_bytes_helper = "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n";
-let file_write_bytes_helper = "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n";
-let hash_sha256_helper = "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n";
-let path_is_exists_helper = "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n";
-let path_is_directory_helper = "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n";
-let directory_list_helper = "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n";
-let directory_create_helper = "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n";
-let path_copy_helper = "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n";
-let path_remove_helper = "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n";
-let process_spawn_helper = "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n";
-let value_kind_helper = "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n";
-let read_line_helper = "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n";
-let read_bytes_helper = "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n";
-let list_push_front_helper = "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n";
-let list_push_back_helper = "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n";
-let list_pop_front_helper = "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n";
-let list_pop_back_helper = "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n";
-let list_truncate_helper = "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n";
-let number_mul_helper = "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n";
-let number_div_helper = "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n";
-let number_mod_helper = "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n";
-let number_floor_helper = "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n";
-let number_pow_helper = "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n";
-let number_from_text_helper = "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n";
-let text_code_helper = "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n";
-let text_from_code_helper = "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n";
-let path_is_file_helper = "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n";
-let path_temp_file_helper = "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -1121,401 +1074,98 @@ function compile(tokens) {
     return parser_program(parser_new(tokens));
 }
 let builtin_names_list = [];
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_create");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_list");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_remove");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read_bytes");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_remove");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write_bytes");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "hash_sha256");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_all");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_bytes");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_line");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_write");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_write_error");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "json_parse");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "json_to_text");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_copy");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_get");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_length");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_new");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_pop_back");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_pop_front");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_back");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_front");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_set");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_to_text");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_truncate");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_copy");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_get");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_has");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_keys");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_new");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_set");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_div");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_floor");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_from_text");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_mod");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_mul");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_pow");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_to_text");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_copy");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_is_directory");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_is_exists");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_is_file");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_temp_directory");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_temp_file");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_args");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_env");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_exec_path");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_exit");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_run");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_script_path");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_spawn");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_code");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_find");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_from_bytes");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_from_code");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_get");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_length");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_slice");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_split");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_to_bytes");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "time_millis");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_name_set, "directory_create", true);
-$mini_map_set(builtin_name_set, "directory_list", true);
-$mini_map_set(builtin_name_set, "directory_remove", true);
-$mini_map_set(builtin_name_set, "file_read", true);
-$mini_map_set(builtin_name_set, "file_read_bytes", true);
-$mini_map_set(builtin_name_set, "file_remove", true);
-$mini_map_set(builtin_name_set, "file_write", true);
-$mini_map_set(builtin_name_set, "file_write_bytes", true);
-$mini_map_set(builtin_name_set, "hash_sha256", true);
-$mini_map_set(builtin_name_set, "io_read_all", true);
-$mini_map_set(builtin_name_set, "io_read_bytes", true);
-$mini_map_set(builtin_name_set, "io_read_line", true);
-$mini_map_set(builtin_name_set, "io_write", true);
-$mini_map_set(builtin_name_set, "io_write_error", true);
-$mini_map_set(builtin_name_set, "json_parse", true);
-$mini_map_set(builtin_name_set, "json_to_text", true);
-$mini_map_set(builtin_name_set, "list_copy", true);
-$mini_map_set(builtin_name_set, "list_get", true);
-$mini_map_set(builtin_name_set, "list_length", true);
-$mini_map_set(builtin_name_set, "list_new", true);
-$mini_map_set(builtin_name_set, "list_pop_back", true);
-$mini_map_set(builtin_name_set, "list_pop_front", true);
-$mini_map_set(builtin_name_set, "list_push_back", true);
-$mini_map_set(builtin_name_set, "list_push_front", true);
-$mini_map_set(builtin_name_set, "list_set", true);
-$mini_map_set(builtin_name_set, "list_to_text", true);
-$mini_map_set(builtin_name_set, "list_truncate", true);
-$mini_map_set(builtin_name_set, "map_copy", true);
-$mini_map_set(builtin_name_set, "map_get", true);
-$mini_map_set(builtin_name_set, "map_has", true);
-$mini_map_set(builtin_name_set, "map_keys", true);
-$mini_map_set(builtin_name_set, "map_new", true);
-$mini_map_set(builtin_name_set, "map_set", true);
-$mini_map_set(builtin_name_set, "number_div", true);
-$mini_map_set(builtin_name_set, "number_floor", true);
-$mini_map_set(builtin_name_set, "number_from_text", true);
-$mini_map_set(builtin_name_set, "number_mod", true);
-$mini_map_set(builtin_name_set, "number_mul", true);
-$mini_map_set(builtin_name_set, "number_pow", true);
-$mini_map_set(builtin_name_set, "number_to_text", true);
-$mini_map_set(builtin_name_set, "path_copy", true);
-$mini_map_set(builtin_name_set, "path_is_directory", true);
-$mini_map_set(builtin_name_set, "path_is_exists", true);
-$mini_map_set(builtin_name_set, "path_is_file", true);
-$mini_map_set(builtin_name_set, "path_remove", true);
-$mini_map_set(builtin_name_set, "path_temp_directory", true);
-$mini_map_set(builtin_name_set, "path_temp_file", true);
-$mini_map_set(builtin_name_set, "process_args", true);
-$mini_map_set(builtin_name_set, "process_env", true);
-$mini_map_set(builtin_name_set, "process_exec_path", true);
-$mini_map_set(builtin_name_set, "process_exit", true);
-$mini_map_set(builtin_name_set, "process_run", true);
-$mini_map_set(builtin_name_set, "process_script_path", true);
-$mini_map_set(builtin_name_set, "process_spawn", true);
-$mini_map_set(builtin_name_set, "text_code", true);
-$mini_map_set(builtin_name_set, "text_find", true);
-$mini_map_set(builtin_name_set, "text_from_bytes", true);
-$mini_map_set(builtin_name_set, "text_from_code", true);
-$mini_map_set(builtin_name_set, "text_get", true);
-$mini_map_set(builtin_name_set, "text_length", true);
-$mini_map_set(builtin_name_set, "text_slice", true);
-$mini_map_set(builtin_name_set, "text_split", true);
-$mini_map_set(builtin_name_set, "text_to_bytes", true);
-$mini_map_set(builtin_name_set, "time_millis", true);
-$mini_map_set(builtin_name_set, "value_kind", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_parameter_kinds, "directory_create", "text");
-$mini_map_set(builtin_parameter_kinds, "directory_list", "text");
-$mini_map_set(builtin_parameter_kinds, "directory_remove", "text");
-$mini_map_set(builtin_parameter_kinds, "file_read", "text");
-$mini_map_set(builtin_parameter_kinds, "file_read_bytes", "text");
-$mini_map_set(builtin_parameter_kinds, "file_remove", "text");
-$mini_map_set(builtin_parameter_kinds, "file_write", "text,text");
-$mini_map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
-$mini_map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
-$mini_map_set(builtin_parameter_kinds, "io_read_all", "");
-$mini_map_set(builtin_parameter_kinds, "io_read_bytes", "number");
-$mini_map_set(builtin_parameter_kinds, "io_read_line", "");
-$mini_map_set(builtin_parameter_kinds, "io_write", "text");
-$mini_map_set(builtin_parameter_kinds, "io_write_error", "text");
-$mini_map_set(builtin_parameter_kinds, "json_parse", "text");
-$mini_map_set(builtin_parameter_kinds, "json_to_text", "unknown");
-$mini_map_set(builtin_parameter_kinds, "list_copy", "list");
-$mini_map_set(builtin_parameter_kinds, "list_get", "unknown,number");
-$mini_map_set(builtin_parameter_kinds, "list_length", "list");
-$mini_map_set(builtin_parameter_kinds, "list_new", "");
-$mini_map_set(builtin_parameter_kinds, "list_pop_back", "list");
-$mini_map_set(builtin_parameter_kinds, "list_pop_front", "list");
-$mini_map_set(builtin_parameter_kinds, "list_push_back", "list,unknown");
-$mini_map_set(builtin_parameter_kinds, "list_push_front", "list,unknown");
-$mini_map_set(builtin_parameter_kinds, "list_set", "unknown,number,unknown");
-$mini_map_set(builtin_parameter_kinds, "list_to_text", "list,text");
-$mini_map_set(builtin_parameter_kinds, "list_truncate", "list,number");
-$mini_map_set(builtin_parameter_kinds, "map_copy", "map");
-$mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
-$mini_map_set(builtin_parameter_kinds, "map_has", "map,text");
-$mini_map_set(builtin_parameter_kinds, "map_keys", "map");
-$mini_map_set(builtin_parameter_kinds, "map_new", "");
-$mini_map_set(builtin_parameter_kinds, "map_set", "unknown,text,unknown");
-$mini_map_set(builtin_parameter_kinds, "number_div", "number,number");
-$mini_map_set(builtin_parameter_kinds, "number_floor", "number");
-$mini_map_set(builtin_parameter_kinds, "number_from_text", "text");
-$mini_map_set(builtin_parameter_kinds, "number_mod", "number,number");
-$mini_map_set(builtin_parameter_kinds, "number_mul", "number,number");
-$mini_map_set(builtin_parameter_kinds, "number_pow", "number,number");
-$mini_map_set(builtin_parameter_kinds, "number_to_text", "number");
-$mini_map_set(builtin_parameter_kinds, "path_copy", "text,text");
-$mini_map_set(builtin_parameter_kinds, "path_is_directory", "text");
-$mini_map_set(builtin_parameter_kinds, "path_is_exists", "text");
-$mini_map_set(builtin_parameter_kinds, "path_is_file", "text");
-$mini_map_set(builtin_parameter_kinds, "path_remove", "text");
-$mini_map_set(builtin_parameter_kinds, "path_temp_directory", "");
-$mini_map_set(builtin_parameter_kinds, "path_temp_file", "");
-$mini_map_set(builtin_parameter_kinds, "process_args", "");
-$mini_map_set(builtin_parameter_kinds, "process_env", "text");
-$mini_map_set(builtin_parameter_kinds, "process_exec_path", "");
-$mini_map_set(builtin_parameter_kinds, "process_exit", "number");
-$mini_map_set(builtin_parameter_kinds, "process_run", "text,list,text");
-$mini_map_set(builtin_parameter_kinds, "process_script_path", "");
-$mini_map_set(builtin_parameter_kinds, "process_spawn", "map");
-$mini_map_set(builtin_parameter_kinds, "text_code", "text");
-$mini_map_set(builtin_parameter_kinds, "text_find", "text,text");
-$mini_map_set(builtin_parameter_kinds, "text_from_bytes", "list");
-$mini_map_set(builtin_parameter_kinds, "text_from_code", "number");
-$mini_map_set(builtin_parameter_kinds, "text_get", "unknown,number");
-$mini_map_set(builtin_parameter_kinds, "text_length", "text");
-$mini_map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
-$mini_map_set(builtin_parameter_kinds, "text_split", "text,text");
-$mini_map_set(builtin_parameter_kinds, "text_to_bytes", "text");
-$mini_map_set(builtin_parameter_kinds, "time_millis", "");
-$mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_result_kinds, "directory_create", "void");
-$mini_map_set(builtin_result_kinds, "directory_list", "list");
-$mini_map_set(builtin_result_kinds, "directory_remove", "void");
-$mini_map_set(builtin_result_kinds, "file_read", "text");
-$mini_map_set(builtin_result_kinds, "file_read_bytes", "list");
-$mini_map_set(builtin_result_kinds, "file_remove", "void");
-$mini_map_set(builtin_result_kinds, "file_write", "void");
-$mini_map_set(builtin_result_kinds, "file_write_bytes", "void");
-$mini_map_set(builtin_result_kinds, "hash_sha256", "text");
-$mini_map_set(builtin_result_kinds, "io_read_all", "text");
-$mini_map_set(builtin_result_kinds, "io_read_bytes", "list");
-$mini_map_set(builtin_result_kinds, "io_read_line", "text");
-$mini_map_set(builtin_result_kinds, "io_write", "void");
-$mini_map_set(builtin_result_kinds, "io_write_error", "void");
-$mini_map_set(builtin_result_kinds, "json_parse", "map");
-$mini_map_set(builtin_result_kinds, "json_to_text", "text");
-$mini_map_set(builtin_result_kinds, "list_copy", "list");
-$mini_map_set(builtin_result_kinds, "list_get", "unknown");
-$mini_map_set(builtin_result_kinds, "list_length", "number");
-$mini_map_set(builtin_result_kinds, "list_new", "list");
-$mini_map_set(builtin_result_kinds, "list_pop_back", "unknown");
-$mini_map_set(builtin_result_kinds, "list_pop_front", "unknown");
-$mini_map_set(builtin_result_kinds, "list_push_back", "void");
-$mini_map_set(builtin_result_kinds, "list_push_front", "void");
-$mini_map_set(builtin_result_kinds, "list_set", "void");
-$mini_map_set(builtin_result_kinds, "list_to_text", "text");
-$mini_map_set(builtin_result_kinds, "list_truncate", "void");
-$mini_map_set(builtin_result_kinds, "map_copy", "map");
-$mini_map_set(builtin_result_kinds, "map_get", "unknown");
-$mini_map_set(builtin_result_kinds, "map_has", "boolean");
-$mini_map_set(builtin_result_kinds, "map_keys", "list");
-$mini_map_set(builtin_result_kinds, "map_new", "map");
-$mini_map_set(builtin_result_kinds, "map_set", "void");
-$mini_map_set(builtin_result_kinds, "number_div", "number");
-$mini_map_set(builtin_result_kinds, "number_floor", "number");
-$mini_map_set(builtin_result_kinds, "number_from_text", "number");
-$mini_map_set(builtin_result_kinds, "number_mod", "number");
-$mini_map_set(builtin_result_kinds, "number_mul", "number");
-$mini_map_set(builtin_result_kinds, "number_pow", "number");
-$mini_map_set(builtin_result_kinds, "number_to_text", "text");
-$mini_map_set(builtin_result_kinds, "path_copy", "void");
-$mini_map_set(builtin_result_kinds, "path_is_directory", "boolean");
-$mini_map_set(builtin_result_kinds, "path_is_exists", "boolean");
-$mini_map_set(builtin_result_kinds, "path_is_file", "boolean");
-$mini_map_set(builtin_result_kinds, "path_remove", "void");
-$mini_map_set(builtin_result_kinds, "path_temp_directory", "text");
-$mini_map_set(builtin_result_kinds, "path_temp_file", "text");
-$mini_map_set(builtin_result_kinds, "process_args", "list");
-$mini_map_set(builtin_result_kinds, "process_env", "text");
-$mini_map_set(builtin_result_kinds, "process_exec_path", "text");
-$mini_map_set(builtin_result_kinds, "process_exit", "void");
-$mini_map_set(builtin_result_kinds, "process_run", "map");
-$mini_map_set(builtin_result_kinds, "process_script_path", "text");
-$mini_map_set(builtin_result_kinds, "process_spawn", "map");
-$mini_map_set(builtin_result_kinds, "text_code", "number");
-$mini_map_set(builtin_result_kinds, "text_find", "number");
-$mini_map_set(builtin_result_kinds, "text_from_bytes", "text");
-$mini_map_set(builtin_result_kinds, "text_from_code", "text");
-$mini_map_set(builtin_result_kinds, "text_get", "text");
-$mini_map_set(builtin_result_kinds, "text_length", "number");
-$mini_map_set(builtin_result_kinds, "text_slice", "text");
-$mini_map_set(builtin_result_kinds, "text_split", "list");
-$mini_map_set(builtin_result_kinds, "text_to_bytes", "list");
-$mini_map_set(builtin_result_kinds, "time_millis", "number");
-$mini_map_set(builtin_result_kinds, "value_kind", "text");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_import_names, "directory_create", "");
-$mini_map_set(builtin_import_names, "directory_list", "");
-$mini_map_set(builtin_import_names, "directory_remove", "");
-$mini_map_set(builtin_import_names, "file_read", "readFileSync");
-$mini_map_set(builtin_import_names, "file_read_bytes", "");
-$mini_map_set(builtin_import_names, "file_remove", "");
-$mini_map_set(builtin_import_names, "file_write", "writeFileSync");
-$mini_map_set(builtin_import_names, "file_write_bytes", "");
-$mini_map_set(builtin_import_names, "hash_sha256", "");
-$mini_map_set(builtin_import_names, "io_read_all", "readFileSync");
-$mini_map_set(builtin_import_names, "io_read_bytes", "");
-$mini_map_set(builtin_import_names, "io_read_line", "");
-$mini_map_set(builtin_import_names, "io_write", "writeSync");
-$mini_map_set(builtin_import_names, "io_write_error", "writeSync");
-$mini_map_set(builtin_import_names, "json_parse", "");
-$mini_map_set(builtin_import_names, "json_to_text", "");
-$mini_map_set(builtin_import_names, "list_copy", "");
-$mini_map_set(builtin_import_names, "list_get", "");
-$mini_map_set(builtin_import_names, "list_length", "");
-$mini_map_set(builtin_import_names, "list_new", "");
-$mini_map_set(builtin_import_names, "list_pop_back", "");
-$mini_map_set(builtin_import_names, "list_pop_front", "");
-$mini_map_set(builtin_import_names, "list_push_back", "");
-$mini_map_set(builtin_import_names, "list_push_front", "");
-$mini_map_set(builtin_import_names, "list_set", "");
-$mini_map_set(builtin_import_names, "list_to_text", "");
-$mini_map_set(builtin_import_names, "list_truncate", "");
-$mini_map_set(builtin_import_names, "map_copy", "");
-$mini_map_set(builtin_import_names, "map_get", "");
-$mini_map_set(builtin_import_names, "map_has", "");
-$mini_map_set(builtin_import_names, "map_keys", "");
-$mini_map_set(builtin_import_names, "map_new", "");
-$mini_map_set(builtin_import_names, "map_set", "");
-$mini_map_set(builtin_import_names, "number_div", "");
-$mini_map_set(builtin_import_names, "number_floor", "");
-$mini_map_set(builtin_import_names, "number_from_text", "");
-$mini_map_set(builtin_import_names, "number_mod", "");
-$mini_map_set(builtin_import_names, "number_mul", "");
-$mini_map_set(builtin_import_names, "number_pow", "");
-$mini_map_set(builtin_import_names, "number_to_text", "");
-$mini_map_set(builtin_import_names, "path_copy", "");
-$mini_map_set(builtin_import_names, "path_is_directory", "");
-$mini_map_set(builtin_import_names, "path_is_exists", "");
-$mini_map_set(builtin_import_names, "path_is_file", "");
-$mini_map_set(builtin_import_names, "path_remove", "");
-$mini_map_set(builtin_import_names, "path_temp_directory", "");
-$mini_map_set(builtin_import_names, "path_temp_file", "");
-$mini_map_set(builtin_import_names, "process_args", "");
-$mini_map_set(builtin_import_names, "process_env", "");
-$mini_map_set(builtin_import_names, "process_exec_path", "");
-$mini_map_set(builtin_import_names, "process_exit", "");
-$mini_map_set(builtin_import_names, "process_run", "");
-$mini_map_set(builtin_import_names, "process_script_path", "");
-$mini_map_set(builtin_import_names, "process_spawn", "");
-$mini_map_set(builtin_import_names, "text_code", "");
-$mini_map_set(builtin_import_names, "text_find", "");
-$mini_map_set(builtin_import_names, "text_from_bytes", "");
-$mini_map_set(builtin_import_names, "text_from_code", "");
-$mini_map_set(builtin_import_names, "text_get", "");
-$mini_map_set(builtin_import_names, "text_length", "");
-$mini_map_set(builtin_import_names, "text_slice", "");
-$mini_map_set(builtin_import_names, "text_split", "");
-$mini_map_set(builtin_import_names, "text_to_bytes", "");
-$mini_map_set(builtin_import_names, "time_millis", "");
-$mini_map_set(builtin_import_names, "value_kind", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_helper_keys, "directory_create", "directory_create");
-$mini_map_set(builtin_helper_keys, "directory_list", "directory_list");
-$mini_map_set(builtin_helper_keys, "directory_remove", "directory_remove");
-$mini_map_set(builtin_helper_keys, "file_read", "");
-$mini_map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
-$mini_map_set(builtin_helper_keys, "file_remove", "file_remove");
-$mini_map_set(builtin_helper_keys, "file_write", "");
-$mini_map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
-$mini_map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
-$mini_map_set(builtin_helper_keys, "io_read_all", "");
-$mini_map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
-$mini_map_set(builtin_helper_keys, "io_read_line", "read_line");
-$mini_map_set(builtin_helper_keys, "io_write", "");
-$mini_map_set(builtin_helper_keys, "io_write_error", "");
-$mini_map_set(builtin_helper_keys, "json_parse", "json_parse");
-$mini_map_set(builtin_helper_keys, "json_to_text", "json_to_text");
-$mini_map_set(builtin_helper_keys, "list_copy", "list_copy");
-$mini_map_set(builtin_helper_keys, "list_get", "list_get");
-$mini_map_set(builtin_helper_keys, "list_length", "");
-$mini_map_set(builtin_helper_keys, "list_new", "");
-$mini_map_set(builtin_helper_keys, "list_set", "list_set");
-$mini_map_set(builtin_helper_keys, "list_to_text", "list_to_text");
-$mini_map_set(builtin_helper_keys, "map_copy", "map_copy");
-$mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
-$mini_map_set(builtin_helper_keys, "map_has", "map_runtime");
-$mini_map_set(builtin_helper_keys, "map_keys", "");
-$mini_map_set(builtin_helper_keys, "map_new", "map_runtime");
-$mini_map_set(builtin_helper_keys, "map_set", "map_runtime");
-$mini_map_set(builtin_helper_keys, "number_to_text", "number_to_text");
-$mini_map_set(builtin_helper_keys, "path_copy", "path_copy");
-$mini_map_set(builtin_helper_keys, "path_is_directory", "path_is_directory");
-$mini_map_set(builtin_helper_keys, "path_is_exists", "path_is_exists");
-$mini_map_set(builtin_helper_keys, "path_is_file", "path_is_file");
-$mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
-$mini_map_set(builtin_helper_keys, "path_temp_directory", "path_temp_directory");
-$mini_map_set(builtin_helper_keys, "path_temp_file", "path_temp_file");
-$mini_map_set(builtin_helper_keys, "process_args", "");
-$mini_map_set(builtin_helper_keys, "process_env", "");
-$mini_map_set(builtin_helper_keys, "process_exec_path", "");
-$mini_map_set(builtin_helper_keys, "process_exit", "");
-$mini_map_set(builtin_helper_keys, "process_run", "process_run");
-$mini_map_set(builtin_helper_keys, "process_script_path", "");
-$mini_map_set(builtin_helper_keys, "process_spawn", "process_spawn");
-$mini_map_set(builtin_helper_keys, "text_code", "text_code");
-$mini_map_set(builtin_helper_keys, "text_find", "text_find");
-$mini_map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
-$mini_map_set(builtin_helper_keys, "text_from_code", "text_from_code");
-$mini_map_set(builtin_helper_keys, "text_get", "text_get");
-$mini_map_set(builtin_helper_keys, "text_length", "");
-$mini_map_set(builtin_helper_keys, "text_slice", "text_slice");
-$mini_map_set(builtin_helper_keys, "text_split", "text_split");
-$mini_map_set(builtin_helper_keys, "text_to_bytes", "text_to_bytes");
-$mini_map_set(builtin_helper_keys, "time_millis", "");
-$mini_map_set(builtin_helper_keys, "list_pop_back", "list_pop_back");
-$mini_map_set(builtin_helper_keys, "list_pop_front", "list_pop_front");
-$mini_map_set(builtin_helper_keys, "list_push_back", "list_push_back");
-$mini_map_set(builtin_helper_keys, "list_push_front", "list_push_front");
-$mini_map_set(builtin_helper_keys, "list_truncate", "list_truncate");
-$mini_map_set(builtin_helper_keys, "number_div", "number_div");
-$mini_map_set(builtin_helper_keys, "number_floor", "number_floor");
-$mini_map_set(builtin_helper_keys, "number_from_text", "number_from_text");
-$mini_map_set(builtin_helper_keys, "number_mod", "number_mod");
-$mini_map_set(builtin_helper_keys, "number_mul", "number_mul");
-$mini_map_set(builtin_helper_keys, "number_pow", "number_pow");
-$mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
+let builtin_classes = ({ __proto__: $mini_map_proto });
+let builtin_helpers = ({ __proto__: $mini_map_proto });
+let builtin_reference_targets = ({ __proto__: $mini_map_proto });
+let builtin_emit_forms = ({ __proto__: $mini_map_proto });
+function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
+    $mini_list_set(builtin_names_list, (builtin_names_list).length, name);
+    $mini_map_set(builtin_name_set, name, true);
+    $mini_map_set(builtin_parameter_kinds, name, parameters);
+    $mini_map_set(builtin_result_kinds, name, result);
+    $mini_map_set(builtin_import_names, name, import_name);
+    $mini_map_set(builtin_helper_keys, name, helper_key);
+    $mini_map_set(builtin_classes, name, layer);
+    $mini_map_set(builtin_emit_forms, name, emit_form);
+    if ((helper_key !== "")) {
+        $mini_map_set(builtin_helpers, helper_key, helper);
+    }
+    if ((reference !== "")) {
+        $mini_map_set(builtin_reference_targets, name, reference);
+    }
+    return 0;
+}
+builtin_add("directory_create", "text", "void", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n", "", "$mini_directory_create({0})");
+builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
+builtin_add("directory_remove", "text", "void", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n", "", "$mini_directory_remove({0})");
+builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
+builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
+builtin_add("file_remove", "text", "void", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true });\n}\n", "", "$mini_file_remove({0})");
+builtin_add("file_write", "text,text", "void", "essential", "writeFileSync", "", "", "", "writeFileSync({0}, {1}, \"utf8\")");
+builtin_add("file_write_bytes", "text,list", "void", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n", "", "$mini_file_write_bytes({0}, {1})");
+builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
+builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
+builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
+builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
+builtin_add("io_write", "text", "void", "essential", "writeSync", "", "", "", "writeSync(1, {0})");
+builtin_add("io_write_error", "text", "void", "essential", "writeSync", "", "", "", "writeSync(2, {0})");
+builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "", "$mini_json_parse({0})");
+builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "", "$mini_json_to_text({0})");
+builtin_add("list_copy", "list", "list", "performance", "", "list_copy", "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n", "pure_list_copy", "$mini_list_copy({0})");
+builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list_get", "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n", "", "$mini_list_get({0}, {1})");
+builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
+builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
+builtin_add("list_pop_back", "list", "unknown", "performance", "", "list_pop_back", "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n", "pure_list_pop_back", "$mini_list_pop_back({0})");
+builtin_add("list_pop_front", "list", "unknown", "performance", "", "list_pop_front", "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n", "pure_list_pop_front", "$mini_list_pop_front({0})");
+builtin_add("list_push_back", "list,unknown", "void", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n", "pure_list_push_back", "$mini_list_push_back({0}, {1})");
+builtin_add("list_push_front", "list,unknown", "void", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n", "pure_list_push_front", "$mini_list_push_front({0}, {1})");
+builtin_add("list_set", "unknown,number,unknown", "void", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
+builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "", "$mini_list_to_text({0}, {1})");
+builtin_add("list_truncate", "list,number", "void", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n", "", "$mini_list_truncate({0}, {1})");
+let map_runtime = "const $mini_map_proto = { __proto__: null };\nfunction $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\nfunction $mini_map_has(items, key) {\n    return key in items;\n}\nfunction $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n";
+builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
+builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_runtime", map_runtime, "", "$mini_map_get({0}, {1})");
+builtin_add("map_has", "map,text", "boolean", "representation", "", "map_runtime", map_runtime, "", "$mini_map_has({0}, {1})");
+builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "Object.keys({0})");
+builtin_add("map_new", "", "map", "representation", "", "map_runtime", map_runtime, "", "({ __proto__: $mini_map_proto })");
+builtin_add("map_set", "unknown,text,unknown", "void", "representation", "", "map_runtime", map_runtime, "", "$mini_map_set({0}, {1}, {2})");
+builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
+builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
+builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
+builtin_add("number_mod", "number,number", "number", "performance", "", "number_mod", "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", "pure_number_mod", "$mini_number_mod({0}, {1})");
+builtin_add("number_mul", "number,number", "number", "performance", "", "number_mul", "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", "pure_number_mul", "$mini_number_mul({0}, {1})");
+builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
+builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "", "$mini_number_to_text({0})");
+builtin_add("path_copy", "text,text", "void", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n", "", "$mini_path_copy({0}, {1})");
+builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
+builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
+builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n", "", "$mini_path_is_file({0})");
+builtin_add("path_remove", "text", "void", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n", "", "$mini_path_remove({0})");
+builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
+builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n", "", "$mini_path_temp_file()");
+builtin_add("process_args", "", "list", "essential", "", "", "", "", "process.argv.slice(2)");
+builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
+builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
+builtin_add("process_exit", "number", "void", "essential", "", "", "", "", "process.exit({0})");
+builtin_add("process_run", "text,list,text", "map", "essential", "", "process_run", "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n", "", "$mini_process_run({0}, {1}, {2})");
+builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
+builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
+builtin_add("text_code", "text", "number", "representation", "", "text_code", "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", "", "$mini_text_code({0})");
+builtin_add("text_find", "text,text", "number", "performance", "", "text_find", "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n", "pure_text_find", "$mini_text_find({0}, {1})");
+builtin_add("text_from_bytes", "list", "text", "performance", "", "text_from_bytes", "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n", "pure_text_from_bytes", "$mini_text_from_bytes({0})");
+builtin_add("text_from_code", "number", "text", "representation", "", "text_from_code", "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n", "", "$mini_text_from_code({0})");
+builtin_add("text_get", "unknown,number", "text", "representation", "", "text_get", "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n", "", "$mini_text_get({0}, {1})");
+builtin_add("text_length", "text", "number", "representation", "", "", "", "", "({0}).length");
+builtin_add("text_slice", "text,number,number", "text", "performance", "", "text_slice", "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", "pure_text_slice", "$mini_text_slice({0}, {1}, {2})");
+builtin_add("text_split", "text,text", "list", "performance", "", "text_split", "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n", "pure_text_split", "$mini_text_split({0}, {1})");
+builtin_add("text_to_bytes", "text", "list", "performance", "", "text_to_bytes", "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n", "pure_text_to_bytes", "$mini_text_to_bytes({0})");
+builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
+builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1536,49 +1186,25 @@ function builtin_result(name) {
     if ($mini_map_has(builtin_result_kinds, name)) {
         return $mini_map_get(builtin_result_kinds, name);
     }
-    return "text";
+    return "unknown";
 }
 function builtin_imports(name) {
     if ((!$mini_map_has(builtin_import_names, name))) {
         return [];
     }
-    let names = $mini_map_get(builtin_import_names, name);
-    if ((names === "")) {
+    let imports = $mini_map_get(builtin_import_names, name);
+    if ((imports === "")) {
         return [];
     }
-    return $mini_text_split(names, ",");
+    return $mini_text_split(imports, ",");
 }
 let reference_mode = false;
 function builtin_class(name) {
-    if (((((((text_starts_with(name, "io_") || text_starts_with(name, "file_")) || text_starts_with(name, "directory_")) || text_starts_with(name, "path_")) || text_starts_with(name, "process_")) || (name === "time_millis")) || (name === "value_kind"))) {
-        return "essential";
-    }
-    if (((((((((((((((name === "text_length") || (name === "text_get")) || (name === "text_code")) || (name === "text_from_code")) || (name === "list_length")) || (name === "list_get")) || (name === "list_set")) || (name === "list_new")) || (name === "list_truncate")) || (name === "map_get")) || (name === "map_set")) || (name === "map_keys")) || (name === "map_has")) || (name === "map_new"))) {
-        return "representation";
-    }
-    if (((((((((((((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "number_mul")) || (name === "number_div")) || (name === "number_mod")) || (name === "number_floor")) || (name === "number_pow")) || (name === "number_from_text"))) {
-        return "performance";
+    if ($mini_map_has(builtin_classes, name)) {
+        return $mini_map_get(builtin_classes, name);
     }
     return "library";
 }
-let builtin_reference_targets = ({ __proto__: $mini_map_proto });
-$mini_map_set(builtin_reference_targets, "text_slice", "pure_text_slice");
-$mini_map_set(builtin_reference_targets, "text_to_bytes", "pure_text_to_bytes");
-$mini_map_set(builtin_reference_targets, "text_from_bytes", "pure_text_from_bytes");
-$mini_map_set(builtin_reference_targets, "text_find", "pure_text_find");
-$mini_map_set(builtin_reference_targets, "text_split", "pure_text_split");
-$mini_map_set(builtin_reference_targets, "list_copy", "pure_list_copy");
-$mini_map_set(builtin_reference_targets, "map_copy", "pure_map_copy");
-$mini_map_set(builtin_reference_targets, "list_push_front", "pure_list_push_front");
-$mini_map_set(builtin_reference_targets, "list_push_back", "pure_list_push_back");
-$mini_map_set(builtin_reference_targets, "list_pop_front", "pure_list_pop_front");
-$mini_map_set(builtin_reference_targets, "list_pop_back", "pure_list_pop_back");
-$mini_map_set(builtin_reference_targets, "number_mul", "pure_number_mul");
-$mini_map_set(builtin_reference_targets, "number_div", "pure_number_div");
-$mini_map_set(builtin_reference_targets, "number_mod", "pure_number_mod");
-$mini_map_set(builtin_reference_targets, "number_floor", "pure_number_floor");
-$mini_map_set(builtin_reference_targets, "number_pow", "pure_number_pow");
-$mini_map_set(builtin_reference_targets, "number_from_text", "pure_number_from_text");
 function builtin_reference_target(name) {
     if ($mini_map_has(builtin_reference_targets, name)) {
         return $mini_map_get(builtin_reference_targets, name);
@@ -1592,214 +1218,43 @@ function builtin_helper_key(name) {
     return "";
 }
 function helper_text(key) {
-    if ((key === "map_runtime")) {
-        return map_runtime;
-    }
-    if ((key === "directory_remove")) {
-        return directory_remove_helper;
-    }
-    if ((key === "path_temp_directory")) {
-        return path_temp_directory_helper;
-    }
-    if ((key === "file_remove")) {
-        return file_remove_helper;
-    }
-    if ((key === "json_to_text")) {
-        return json_to_text_helper;
-    }
-    if ((key === "list_copy")) {
-        return list_copy_helper;
-    }
-    if ((key === "list_get")) {
-        return list_get_helper;
-    }
-    if ((key === "list_set")) {
-        return list_set_helper;
-    }
-    if ((key === "list_to_text")) {
-        return list_to_text_helper;
-    }
-    if ((key === "map_copy")) {
-        return map_copy_helper;
-    }
-    if ((key === "number_to_text")) {
-        return number_to_text_helper;
-    }
-    if ((key === "process_run")) {
-        return process_run_helper;
-    }
-    if ((key === "text_find")) {
-        return text_find_helper;
-    }
-    if ((key === "text_get")) {
-        return text_get_helper;
-    }
-    if ((key === "text_slice")) {
-        return text_slice_helper;
-    }
-    if ((key === "text_split")) {
-        return text_split_helper;
-    }
-    if ((key === "json_parse")) {
-        return json_parse_helper;
-    }
-    if ((key === "text_to_bytes")) {
-        return text_to_bytes_helper;
-    }
-    if ((key === "text_from_bytes")) {
-        return text_from_bytes_helper;
-    }
-    if ((key === "text_from_code")) {
-        return text_from_code_helper;
-    }
-    if ((key === "text_code")) {
-        return text_code_helper;
-    }
-    if ((key === "file_read_bytes")) {
-        return file_read_bytes_helper;
-    }
-    if ((key === "file_write_bytes")) {
-        return file_write_bytes_helper;
-    }
-    if ((key === "hash_sha256")) {
-        return hash_sha256_helper;
-    }
-    if ((key === "path_is_exists")) {
-        return path_is_exists_helper;
-    }
-    if ((key === "path_is_directory")) {
-        return path_is_directory_helper;
-    }
-    if ((key === "path_is_file")) {
-        return path_is_file_helper;
-    }
-    if ((key === "path_temp_file")) {
-        return path_temp_file_helper;
-    }
-    if ((key === "directory_list")) {
-        return directory_list_helper;
-    }
-    if ((key === "directory_create")) {
-        return directory_create_helper;
-    }
-    if ((key === "path_copy")) {
-        return path_copy_helper;
-    }
-    if ((key === "path_remove")) {
-        return path_remove_helper;
-    }
-    if ((key === "process_spawn")) {
-        return process_spawn_helper;
-    }
-    if ((key === "value_kind")) {
-        return value_kind_helper;
-    }
-    if ((key === "list_push_front")) {
-        return list_push_front_helper;
-    }
-    if ((key === "list_push_back")) {
-        return list_push_back_helper;
-    }
-    if ((key === "list_pop_front")) {
-        return list_pop_front_helper;
-    }
-    if ((key === "list_pop_back")) {
-        return list_pop_back_helper;
-    }
-    if ((key === "list_truncate")) {
-        return list_truncate_helper;
-    }
-    if ((key === "number_mul")) {
-        return number_mul_helper;
-    }
-    if ((key === "number_div")) {
-        return number_div_helper;
-    }
-    if ((key === "number_mod")) {
-        return number_mod_helper;
-    }
-    if ((key === "number_floor")) {
-        return number_floor_helper;
-    }
-    if ((key === "number_pow")) {
-        return number_pow_helper;
-    }
-    if ((key === "number_from_text")) {
-        return number_from_text_helper;
-    }
-    if (((key === "read_line") || (key === "io_read_line"))) {
-        return read_line_helper;
-    }
-    if (((key === "read_bytes") || (key === "io_read_bytes"))) {
-        return read_bytes_helper;
+    if ($mini_map_has(builtin_helpers, key)) {
+        return $mini_map_get(builtin_helpers, key);
     }
     return "";
 }
+function builtin_replace(source, needle, replacement) {
+    let output = "";
+    let position = 0;
+    while ((position < (source).length)) {
+        let rest = $mini_text_slice(source, position, (source).length);
+        let found = $mini_text_find(rest, needle);
+        if ((found < 0)) {
+            return (output + $mini_text_slice(source, position, (source).length));
+        }
+        output = ((output + $mini_text_slice(source, position, (position + found))) + replacement);
+        position = ((position + found) + (needle).length);
+    }
+    return output;
+}
+function builtin_apply(form, args) {
+    let output = form;
+    let position = 0;
+    while ((position < (args).length)) {
+        output = builtin_replace(output, (("{" + $mini_number_to_text(position)) + "}"), $mini_list_get(args, position));
+        position = (position + 1);
+    }
+    return output;
+}
 function builtin_emit(name, args) {
-    let first = $mini_list_get(args, 0);
-    let second = $mini_list_get(args, 1);
     let reference_target = builtin_reference_target(name);
     if ((reference_mode && (reference_target !== ""))) {
         return (((reference_target + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
-    if ((name === "io_read_line")) {
-        return "$mini_read_line()";
+    if ((!$mini_map_has(builtin_emit_forms, name))) {
+        return "";
     }
-    if ((name === "io_read_bytes")) {
-        return (("$mini_read_bytes(" + first) + ")");
-    }
-    if ((((((((((((((((((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "path_temp_directory")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "text_code")) || (name === "text_from_code")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_is_exists")) || (name === "path_is_directory")) || (name === "path_is_file")) || (name === "path_temp_file")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "list_truncate")) || (name === "number_mul")) || (name === "number_div")) || (name === "number_mod")) || (name === "number_floor")) || (name === "number_pow")) || (name === "number_from_text"))) {
-        return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
-    }
-    if ((name === "process_exec_path")) {
-        return "process.execPath";
-    }
-    if ((name === "process_script_path")) {
-        return "process.argv[1]";
-    }
-    if ((name === "process_env")) {
-        return (("(process.env[" + first) + "] ?? \"\")");
-    }
-    if ((name === "time_millis")) {
-        return "Date.now()";
-    }
-    if ((name === "map_keys")) {
-        return (("Object.keys(" + first) + ")");
-    }
-    if ((name === "map_new")) {
-        return "({ __proto__: $mini_map_proto })";
-    }
-    if ((name === "list_new")) {
-        return "[]";
-    }
-    if ((name === "io_write_error")) {
-        return (("writeSync(2, " + first) + ")");
-    }
-    if ((name === "process_exit")) {
-        return (("process.exit(" + first) + ")");
-    }
-    if ((name === "list_length")) {
-        return (("(" + first) + ").length");
-    }
-    if ((name === "process_args")) {
-        return "process.argv.slice(2)";
-    }
-    if ((name === "file_write")) {
-        return (((("writeFileSync(" + first) + ", ") + second) + ", \"utf8\")");
-    }
-    if ((name === "file_read")) {
-        return (("readFileSync(" + first) + ", \"utf8\")");
-    }
-    if ((name === "text_length")) {
-        return (("(" + first) + ").length");
-    }
-    if ((name === "io_read_all")) {
-        return "readFileSync(0, \"utf8\")";
-    }
-    if ((name === "io_write")) {
-        return (("writeSync(1, " + first) + ")");
-    }
-    return "";
+    return builtin_apply($mini_map_get(builtin_emit_forms, name), args);
 }
 function token_json(tokens) {
     let output = "[";

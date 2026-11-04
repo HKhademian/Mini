@@ -1,20 +1,20 @@
 ---
 name: builtin-namespaces
-status: proposed
+status: completed
 created: 2026-11-04
 todos:
   - id: descriptor
     content: Add a builtin descriptor API with emit templates and helper text in the registry
-    status: pending
+    status: completed
   - id: split
     content: Split the registry into one file per namespace, alphabetically included
-    status: pending
+    status: completed
   - id: bootstrap
     content: Rebuild the compiler, regenerate tools, and preserve the fixed point
-    status: pending
+    status: completed
   - id: verify
     content: Verify metadata, reference targets, cases, and unit tests
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []
@@ -29,7 +29,7 @@ Keep each namespace's metadata, helper implementation, and lowering text next to
 each other, and split the monolithic builtin registry into one file per
 namespace.
 
-## Proposed layout
+## Implemented layout
 
 ```text
 libs/compiler/builtins.mini          shared tables, lookup, dispatch
@@ -53,15 +53,13 @@ are alphabetical by builtin name.
 
 ## Descriptor API
 
-Each namespace file registers descriptors through one helper:
+Each namespace file calls `builtin_add` directly at top level:
 
 ```mini
-fn builtin_add(name, parameters, result, class, import_name, helper_key, helper_text, reference, emit_form) {
-    // name list, sets, parameter/result maps, class, import, helper maps
-}
+builtin_add(name, parameters, result, layer, import_name, helper_key, helper_text, reference, emit_form)
 ```
 
-`emit_form` is a template using positional arguments, for example:
+`emit_form` is a template using positional arguments:
 
 ```text
 "$mini_text_slice({0}, {1}, {2})"
@@ -70,16 +68,22 @@ fn builtin_add(name, parameters, result, class, import_name, helper_key, helper_
 ```
 
 The central `builtin_emit(name, args)` resolves the reference target first, then
-substitutes argument code into the registered template. This keeps the lowering
-next to the metadata instead of in one large conditional.
+substitutes argument code into the registered template.
 
-Helper adapter text moves out of `libs/compiler/constants.mini` into the
-namespace file that owns the builtin.
+There are no per-namespace register functions and no `builtins_register_all`
+wrapper. Include order is registration order.
+
+Helper adapter text lives in the namespace file. Unique helpers are inline
+string literals in their `builtin_add` call; the shared `map_runtime` block is
+kept in one variable because four map builtins use it.
+
+`libs/compiler/constants.mini` was removed; its helper text moved into the
+namespace files.
 
 ## Aggregation
 
-`builtins.mini` defines the shared tables and calls the namespace registration
-functions in alphabetical order:
+`builtins.mini` defines the shared tables and `builtin_add`, then includes the
+namespace files alphabetically:
 
 ```mini
 include "builtins/directory.mini";
@@ -87,17 +91,11 @@ include "builtins/file.mini";
 ...
 ```
 
-Each namespace file contains:
-
-- descriptor registrations;
-- helper adapter text;
-- reference targets.
-
 ## Bootstrap
 
-No new host primitives are required. Build the new compiler with the old
-compiler, verify two generations agree, promote it, regenerate tools, then run
-`mini check`, `mini test`, and `mini test --unit`.
+No new host primitives were required. The new compiler was built with the old
+compiler, two generations agreed, it was promoted, tools were regenerated, and
+`mini check`, `mini test`, and `mini test --unit` passed.
 
 ## Risks
 

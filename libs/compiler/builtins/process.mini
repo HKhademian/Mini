@@ -1,0 +1,79 @@
+/// Process builtin descriptors.
+
+builtin_add(
+    "process_args",
+    "",
+    "list",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "process.argv.slice(2)"
+);
+builtin_add(
+    "process_env",
+    "text",
+    "text",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "(process.env[{0}] ?? \"\")"
+);
+builtin_add(
+    "process_exec_path",
+    "",
+    "text",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "process.execPath"
+);
+builtin_add(
+    "process_exit",
+    "number",
+    "void",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "process.exit({0})"
+);
+builtin_add(
+    "process_run",
+    "text,list,text",
+    "map",
+    "essential",
+    "",
+    "process_run",
+    "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n",
+    "",
+    "$mini_process_run({0}, {1}, {2})"
+);
+builtin_add(
+    "process_script_path",
+    "",
+    "text",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "process.argv[1]"
+);
+builtin_add(
+    "process_spawn",
+    "map",
+    "map",
+    "essential",
+    "",
+    "process_spawn",
+    "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n",
+    "",
+    "$mini_process_spawn({0})"
+);

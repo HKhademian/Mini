@@ -38,7 +38,6 @@ Mini now has a single-unit `include` directive:
 
 ```text
 tools/compiler.mini
-include "../libs/compiler/constants.mini";
 include "../libs/common/text.mini";
 include "../libs/compiler/lexer.mini";
 include "../libs/compiler/parser.mini";

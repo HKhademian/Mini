@@ -1,0 +1,13 @@
+/// Time builtin descriptors.
+
+builtin_add(
+    "time_millis",
+    "",
+    "number",
+    "essential",
+    "",
+    "",
+    "",
+    "",
+    "Date.now()"
+);

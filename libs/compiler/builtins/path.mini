@@ -1,0 +1,79 @@
+/// Path builtin descriptors.
+
+builtin_add(
+    "path_copy",
+    "text,text",
+    "void",
+    "essential",
+    "",
+    "path_copy",
+    "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n",
+    "",
+    "$mini_path_copy({0}, {1})"
+);
+builtin_add(
+    "path_is_directory",
+    "text",
+    "boolean",
+    "essential",
+    "",
+    "path_is_directory",
+    "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n",
+    "",
+    "$mini_path_is_directory({0})"
+);
+builtin_add(
+    "path_is_exists",
+    "text",
+    "boolean",
+    "essential",
+    "",
+    "path_is_exists",
+    "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n",
+    "",
+    "$mini_path_is_exists({0})"
+);
+builtin_add(
+    "path_is_file",
+    "text",
+    "boolean",
+    "essential",
+    "",
+    "path_is_file",
+    "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n",
+    "",
+    "$mini_path_is_file({0})"
+);
+builtin_add(
+    "path_remove",
+    "text",
+    "void",
+    "essential",
+    "",
+    "path_remove",
+    "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n",
+    "",
+    "$mini_path_remove({0})"
+);
+builtin_add(
+    "path_temp_directory",
+    "",
+    "text",
+    "essential",
+    "",
+    "path_temp_directory",
+    "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n",
+    "",
+    "$mini_path_temp_directory()"
+);
+builtin_add(
+    "path_temp_file",
+    "",
+    "text",
+    "essential",
+    "",
+    "path_temp_file",
+    "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n",
+    "",
+    "$mini_path_temp_file()"
+);

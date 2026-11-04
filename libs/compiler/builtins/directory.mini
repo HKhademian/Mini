@@ -1,0 +1,35 @@
+/// Directory builtin descriptors.
+
+builtin_add(
+    "directory_create",
+    "text",
+    "void",
+    "essential",
+    "",
+    "directory_create",
+    "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n",
+    "",
+    "$mini_directory_create({0})"
+);
+builtin_add(
+    "directory_list",
+    "text",
+    "list",
+    "essential",
+    "",
+    "directory_list",
+    "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n",
+    "",
+    "$mini_directory_list({0})"
+);
+builtin_add(
+    "directory_remove",
+    "text",
+    "void",
+    "essential",
+    "",
+    "directory_remove",
+    "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n",
+    "",
+    "$mini_directory_remove({0})"
+);

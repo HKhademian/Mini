@@ -1,0 +1,123 @@
+/// List builtin descriptors.
+
+builtin_add(
+    "list_copy",
+    "list",
+    "list",
+    "performance",
+    "",
+    "list_copy",
+    "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n",
+    "pure_list_copy",
+    "$mini_list_copy({0})"
+);
+builtin_add(
+    "list_get",
+    "unknown,number",
+    "unknown",
+    "representation",
+    "",
+    "list_get",
+    "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n",
+    "",
+    "$mini_list_get({0}, {1})"
+);
+builtin_add(
+    "list_length",
+    "list",
+    "number",
+    "representation",
+    "",
+    "",
+    "",
+    "",
+    "({0}).length"
+);
+builtin_add(
+    "list_new",
+    "",
+    "list",
+    "representation",
+    "",
+    "",
+    "",
+    "",
+    "[]"
+);
+builtin_add(
+    "list_pop_back",
+    "list",
+    "unknown",
+    "performance",
+    "",
+    "list_pop_back",
+    "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n",
+    "pure_list_pop_back",
+    "$mini_list_pop_back({0})"
+);
+builtin_add(
+    "list_pop_front",
+    "list",
+    "unknown",
+    "performance",
+    "",
+    "list_pop_front",
+    "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n",
+    "pure_list_pop_front",
+    "$mini_list_pop_front({0})"
+);
+builtin_add(
+    "list_push_back",
+    "list,unknown",
+    "void",
+    "performance",
+    "",
+    "list_push_back",
+    "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n",
+    "pure_list_push_back",
+    "$mini_list_push_back({0}, {1})"
+);
+builtin_add(
+    "list_push_front",
+    "list,unknown",
+    "void",
+    "performance",
+    "",
+    "list_push_front",
+    "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n",
+    "pure_list_push_front",
+    "$mini_list_push_front({0}, {1})"
+);
+builtin_add(
+    "list_set",
+    "unknown,number,unknown",
+    "void",
+    "representation",
+    "",
+    "list_set",
+    "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n",
+    "",
+    "$mini_list_set({0}, {1}, {2})"
+);
+builtin_add(
+    "list_to_text",
+    "list,text",
+    "text",
+    "performance",
+    "",
+    "list_to_text",
+    "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
+    "",
+    "$mini_list_to_text({0}, {1})"
+);
+builtin_add(
+    "list_truncate",
+    "list,number",
+    "void",
+    "representation",
+    "",
+    "list_truncate",
+    "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n",
+    "",
+    "$mini_list_truncate({0}, {1})"
+);
