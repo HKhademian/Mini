@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.12 / check 0.1.0-alpha.7 / CLI 0.1.0-alpha.10: implement
+  repository checking as a generated Mini tool. `tools/check.mini` runs strict
+  TypeScript, generated-tool and composition checks, versions, editor metadata,
+  cases, documents, portable paths, and the bootstrap fixed point. Remove
+  `tools/check.ts`.
 - Mini 0.1.0-alpha.11 / verify 0.1.0-alpha.3 / CLI 0.1.0-alpha.9: implement
   bootstrap verification as a generated Mini tool. `mini verify` prints compact
   JSON; `mini check` and release packaging consume the same tool. Remove

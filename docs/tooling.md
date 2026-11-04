@@ -17,7 +17,8 @@ pairing, and can connect to the standalone language server.
 ### mini check SOURCE.mini
 
 Status: implemented with the check and cli streams. Repository checking remains
-`mini check` and `mini check --docs`. Source checking uses `mini check
+`mini check` and `mini check --docs` and is a generated Mini tool
+([tools/check.mini](../tools/check.mini)). Source checking uses `mini check
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
 forms. Source checking is a generated Mini tool
 ([tools/check-source.mini](../tools/check-source.mini)) composed with compiler

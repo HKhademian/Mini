@@ -21,13 +21,11 @@ export async function main(executable: string): Promise<void> {
     if (args[0] === '--version') { console.log(releaseTag(component, current)); return; }
     switch (command) {
       case 'check': {
-        if (args.length === 0) {
-          run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--noEmit'], root);
-          (await import('./check.ts')).checkProject();
-          break;
-        }
-        if (args.length === 1 && args[0] === '--docs') {
-          (await import('./check.ts')).checkProject();
+        if (args.length === 0 || (args.length === 1 && args[0] === '--docs')) {
+          const { spawnSync } = await import('node:child_process');
+          const checked = spawnSync(process.execPath, [join(root, 'tools/check.generated.ts'), ...args], { stdio: 'inherit' });
+          if (checked.error) throw checked.error;
+          process.exitCode = checked.status ?? 1;
           break;
         }
         assert(args.length === 1, 'usage: mini-check [--docs | SOURCE.mini | -]');

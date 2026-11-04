@@ -1,0 +1,470 @@
+#!/usr/bin/env node
+/// Run repository checks: strict TypeScript (unless --docs), generated tools,
+/// versions, editor metadata, cases, documents, portable paths, and bootstrap.
+/// Usage: node tools/check.generated.ts [--docs]
+
+/// Report a check failure and stop.
+fn check_fail(message) {
+    write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Run a command with inherited standard streams.
+fn check_inherit(command, args, directory) {
+    var options = map_new();
+    map_set(options, "command", command);
+    map_set(options, "arguments", args);
+    map_set(options, "directory", directory);
+    map_set(options, "mode", "inherit");
+    return process_spawn(options);
+}
+
+/// Find needle at or after offset.
+fn check_find_from(text, needle, offset) {
+    var position = text_find(text_slice(text, offset, text_length(text)), needle);
+    if (position < 0) {
+        return -1;
+    }
+    return offset + position;
+}
+
+/// Return whether text is decimal digits without a leading zero unless zero.
+fn check_digits(text) {
+    if (text_length(text) == 0) {
+        return false;
+    }
+    if (text_length(text) > 1 && text_get(text, 0) == "0") {
+        return false;
+    }
+    var position = 0;
+    while (position < text_length(text)) {
+        if (text_find("0123456789", text_get(text, position)) < 0) {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
+/// Return whether a dotted numeric version has three parts.
+fn check_plain_version(text) {
+    var parts = text_split(text, ".");
+    if (list_length(parts) != 3) {
+        return false;
+    }
+    var position = 0;
+    while (position < list_length(parts)) {
+        if (!check_digits(list_get(parts, position))) {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
+/// Return whether a product version is valid.
+fn check_product_version(text) {
+    var parts = text_split(text, "-");
+    if (list_length(parts) == 1) {
+        return check_plain_version(text);
+    }
+    if (list_length(parts) != 2 || !check_plain_version(list_get(parts, 0))) {
+        return false;
+    }
+    var pre = text_split(list_get(parts, 1), ".");
+    if (list_length(pre) != 2) {
+        return false;
+    }
+    var stage = list_get(pre, 0);
+    if (stage != "alpha" && stage != "beta" && stage != "rc") {
+        return false;
+    }
+    return check_digits(list_get(pre, 1));
+}
+
+/// Return a sorted text list.
+fn check_sorted(items) {
+    var result = list_copy(items);
+    var position = 0;
+    while (position < list_length(result)) {
+        var cursor = position + 1;
+        while (cursor < list_length(result)) {
+            if (list_get(result, cursor) < list_get(result, position)) {
+                var hold = list_get(result, position);
+                list_set(result, position, list_get(result, cursor));
+                list_set(result, cursor, hold);
+            }
+            cursor = cursor + 1;
+        }
+        position = position + 1;
+    }
+    return result;
+}
+
+/// Return sorted map keys.
+fn check_keys(value) {
+    return check_sorted(map_keys(value));
+}
+
+/// Read a JSON file and stop on failure.
+fn check_json(path) {
+    var parsed = case_json_file(path);
+    if (!map_get(parsed, "ok")) {
+        check_fail(map_get(parsed, "message"));
+    }
+    return map_get(parsed, "value");
+}
+
+/// Compare two text lists element by element.
+fn check_same_list(left, right) {
+    if (list_length(left) != list_length(right)) {
+        return false;
+    }
+    var position = 0;
+    while (position < list_length(left)) {
+        if (list_get(left, position) != list_get(right, position)) {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
+/// Count code fence markers and verify links in one document.
+fn check_document(path) {
+    var text = file_read(path);
+    var lines = split_lines(text);
+    var in_fence = false;
+    var directory = case_path_parent(path);
+    var position = 0;
+    while (position < list_length(lines)) {
+        var line = list_get(lines, position);
+        if (text_starts_with(line, "```")) {
+            in_fence = !in_fence;
+        } else {
+            if (!in_fence) {
+                var cursor = check_find_from(line, "](", 0);
+                while (cursor >= 0) {
+                    var start = cursor + 2;
+                    var end = check_find_from(line, ")", start);
+                    if (end < 0) {
+                        end = text_length(line);
+                    }
+                    var target = text_slice(line, start, end);
+                    var hash = text_find(target, "#");
+                    if (hash >= 0) {
+                        target = text_slice(target, 0, hash);
+                    }
+                    if (text_length(target) > 0 && !check_is_url(target)
+                        && !path_exists(case_path_resolve(directory, target))) {
+                        check_fail("broken local link in " + path + ": " + target);
+                    }
+                    cursor = check_find_from(line, "](", end);
+                }
+            }
+        }
+        position = position + 1;
+    }
+    if (in_fence) {
+        check_fail("unbalanced code fence: " + path);
+    }
+    return 0;
+}
+
+/// Return whether a link target has a URL scheme.
+fn check_is_url(target) {
+    var colon = text_find(target, ":");
+    if (colon <= 0) {
+        return false;
+    }
+    var prefix = text_slice(target, 0, colon);
+    var position = 0;
+    while (position < text_length(prefix)) {
+        var character = text_get(prefix, position);
+        if (text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0) {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
+/// Walk documents below a directory.
+fn check_documents(directory) {
+    var entries = directory_list(directory);
+    var position = 0;
+    while (position < list_length(entries)) {
+        var name = list_get(entries, position);
+        var path = case_path_join(directory, name);
+        if (case_entry_excluded(name)) {
+        } else {
+            if (path_is_directory(path)) {
+                check_documents(path);
+            } else {
+                if (text_ends_with(name, ".md") || text_ends_with(name, ".mdc")) {
+                    check_document(path);
+                }
+            }
+        }
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Return whether a file name has a checked extension.
+fn check_portable_file(name) {
+    var suffixes = list_new();
+    list_set(suffixes, 0, ".json");
+    list_set(suffixes, 1, ".ts");
+    list_set(suffixes, 2, ".md");
+    list_set(suffixes, 3, ".mdc");
+    list_set(suffixes, 4, ".mini");
+    list_set(suffixes, 5, ".yml");
+    list_set(suffixes, 6, ".yaml");
+    list_set(suffixes, 7, ".stdout");
+    list_set(suffixes, 8, ".stderr");
+    list_set(suffixes, 9, ".stdin");
+    list_set(suffixes, 10, ".svg");
+    var position = 0;
+    while (position < list_length(suffixes)) {
+        if (text_ends_with(name, list_get(suffixes, position))) {
+            return true;
+        }
+        position = position + 1;
+    }
+    return false;
+}
+
+/// Reject committed absolute home paths.
+fn check_portable_paths(directory) {
+    var entries = directory_list(directory);
+    var position = 0;
+    while (position < list_length(entries)) {
+        var name = list_get(entries, position);
+        var path = case_path_join(directory, name);
+        if (case_entry_excluded(name)) {
+        } else {
+            if (path_is_directory(path)) {
+                check_portable_paths(path);
+            } else {
+                if (check_portable_file(name)) {
+                    var text = file_read(path);
+                    var users = "/" + "Users" + "/";
+                    var homes = "/" + "home" + "/";
+                    var windows = "C:" + "\\" + "Users" + "\\";
+                    var home_variable = "$" + "HOME/";
+                    if (text_find(text, users) >= 0 || text_find(text, homes) >= 0
+                        || text_find(text, windows) >= 0 || text_find(text, home_variable) >= 0) {
+                        check_fail("absolute home path in " + path);
+                    }
+                }
+            }
+        }
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Check every sample and example has a non-tool case source.
+fn check_sample_cases(root, fixtures) {
+    var covered = map_new();
+    var position = 0;
+    while (position < list_length(fixtures)) {
+        var fixture = list_get(fixtures, position);
+        var definition = map_get(fixture, "definition");
+        if (map_get(definition, "kind") != "tool") {
+            var source = case_path_resolve(case_path_parent(map_get(fixture, "path")), map_get(definition, "source"));
+            map_set(covered, source, true);
+        }
+        position = position + 1;
+    }
+    var directories = list_new();
+    list_set(directories, 0, "samples");
+    list_set(directories, 1, "examples");
+    position = 0;
+    while (position < list_length(directories)) {
+        var name = list_get(directories, position);
+        var directory = case_path_join(root, name);
+        if (path_exists(directory)) {
+            check_sample_walk(directory, name, covered);
+        }
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Walk one sample directory and require case coverage.
+fn check_sample_walk(directory, relative, covered) {
+    var entries = directory_list(directory);
+    var position = 0;
+    while (position < list_length(entries)) {
+        var name = list_get(entries, position);
+        var path = case_path_join(directory, name);
+        if (path_is_directory(path)) {
+            check_sample_walk(path, relative + "/" + name, covered);
+        } else {
+            if (text_ends_with(name, ".mini") && !map_has(covered, path)) {
+                check_fail("missing case: " + relative + "/" + name);
+            }
+        }
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Check the version registry and editor metadata.
+fn check_versions(root) {
+    var current = check_json(case_path_join(root, "config/versions.json"));
+    var expected = list_new();
+    var names = list_new();
+    list_set(names, 0, "group");
+    list_set(names, 1, "mini");
+    list_set(names, 2, "language");
+    list_set(names, 3, "compiler");
+    list_set(names, 4, "bootstrap");
+    list_set(names, 5, "std");
+    list_set(names, 6, "check");
+    list_set(names, 7, "verify");
+    list_set(names, 8, "release");
+    list_set(names, 9, "test");
+    list_set(names, 10, "bench");
+    list_set(names, 11, "cli");
+    list_set(names, 12, "vscode");
+    list_set(names, 13, "builtins");
+    list_set(names, 14, "format");
+    list_set(names, 15, "lsp");
+    var position = 0;
+    while (position < list_length(names)) {
+        list_set(expected, position, list_get(names, position));
+        position = position + 1;
+    }
+    if (!check_same_list(check_keys(current), check_sorted(expected))) {
+        check_fail("invalid version registry keys");
+    }
+    var group = map_get(current, "group");
+    if (value_kind(group) != "text" || !check_plain_version(group)) {
+        check_fail("group requires MAJOR.MINOR.PATCH");
+    }
+    position = 0;
+    while (position < list_length(expected)) {
+        var key = list_get(expected, position);
+        var version = map_get(current, key);
+        if (key != "group" && value_kind(version) != "number" && value_kind(version) != "text") {
+            check_fail("invalid version: " + key);
+        }
+        if (value_kind(version) == "text" && !check_product_version(version)) {
+            check_fail("invalid version: " + version);
+        }
+        position = position + 1;
+    }
+    var editor = check_json(case_path_join(root, "editors/vscode/package.json"));
+    var lock = check_json(case_path_join(root, "editors/vscode/package-lock.json"));
+    var editor_version = map_get(editor, "version");
+    var lock_package = map_get(map_get(lock, "packages"), "");
+    if (editor_version != map_get(current, "vscode")) {
+        check_fail("VS Code version must match the registry");
+    }
+    if (text_find(editor_version, "-") >= 0) {
+        check_fail("VS Code versions require plain MAJOR.MINOR.PATCH");
+    }
+    if (map_get(lock, "version") != editor_version) {
+        check_fail("VS Code lockfile version differs");
+    }
+    if (map_get(lock_package, "version") != editor_version) {
+        check_fail("VS Code lockfile package version differs");
+    }
+    return 0;
+}
+
+/// Check the Node runtime version.
+fn check_node(root) {
+    var args = list_new();
+    list_set(args, 0, "-v");
+    var result = case_run(process_exec_path(), args, root, list_new());
+    var version = text_from_bytes(map_get(result, "stdout"));
+    if (!text_starts_with(version, "v24.")) {
+        check_fail("use Node 24; see .node-version");
+    }
+    var parts = text_split(text_slice(version, 1, text_length(version)), ".");
+    var minor = "";
+    if (list_length(parts) >= 2) {
+        minor = list_get(parts, 1);
+    }
+    var tens = 0;
+    var units = 0;
+    if (text_length(minor) == 2) {
+        tens = text_find("0123456789", text_get(minor, 0));
+        units = text_find("0123456789", text_get(minor, 1));
+    }
+    if (text_length(minor) != 2 || tens < 1 || (tens == 1 && units < 6)) {
+        check_fail("use Node 24.16.0 or newer in the 24.x line");
+    }
+    return 0;
+}
+
+/// Run the full repository check.
+fn main() {
+    var args = process_args();
+    var docs_only = false;
+    if (list_length(args) == 1 && list_get(args, 0) == "--docs") {
+        docs_only = true;
+    } else {
+        if (list_length(args) != 0) {
+            check_fail("usage: mini-check [--docs | SOURCE.mini | -]");
+        }
+    }
+    var root = case_root();
+    if (!docs_only) {
+        var tsc = list_new();
+        list_set(tsc, 0, case_path_join(root, "node_modules/typescript/bin/tsc"));
+        list_set(tsc, 1, "--noEmit");
+        var typed = check_inherit(process_exec_path(), tsc, root);
+        if (map_get(typed, "status") != 0) {
+            process_exit(map_get(typed, "status"));
+        }
+    }
+    var tools = list_new();
+    list_set(tools, 0, case_path_join(root, "tools/mini-tools.ts"));
+    list_set(tools, 1, "--check");
+    var verified_tools = check_inherit(process_exec_path(), tools, root);
+    if (map_get(verified_tools, "status") != 0) {
+        process_exit(map_get(verified_tools, "status"));
+    }
+    var build = list_new();
+    list_set(build, 0, case_path_join(root, "tools/build-m1.generated.ts"));
+    list_set(build, 1, "--check");
+    var composed = check_inherit(process_exec_path(), build, root);
+    if (map_get(composed, "status") != 0) {
+        process_exit(map_get(composed, "status"));
+    }
+    check_versions(root);
+    check_node(root);
+    var loaded = case_load_cases("", root);
+    if (!map_get(loaded, "ok")) {
+        check_fail(map_get(loaded, "message"));
+    }
+    check_sample_cases(root, map_get(loaded, "fixtures"));
+    check_documents(root);
+    check_portable_paths(root);
+    var bootstrap = check_json(case_path_join(root, "config/bootstrap.json"));
+    if (value_kind(bootstrap) != "map") {
+        check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
+    }
+    var active = check_json(case_path_join(root, "config/compiler.json"));
+    if (map_get(active, "entry") != map_get(bootstrap, "compiler")) {
+        check_fail("active compiler must be the generated bootstrap");
+    }
+    var verify = list_new();
+    list_set(verify, 0, case_path_join(root, "tools/verify.generated.ts"));
+    list_set(verify, 1, root);
+    var verified = case_run(process_exec_path(), verify, root, list_new());
+    if (map_get(verified, "status") != 0) {
+        write_error(text_from_bytes(map_get(verified, "stderr")));
+        process_exit(map_get(verified, "status"));
+    }
+    write("Repository checks and bootstrap fixed point passed.\n");
+    return 0;
+}
+
+main();
