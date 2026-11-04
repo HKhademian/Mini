@@ -7,9 +7,6 @@ function $mini_map_get(items, key) {
     const value = items[key];
     return value !== undefined || key in items ? value : 0;
 }
-function $mini_map_has(items, key) {
-    return key in items;
-}
 function $mini_map_set(items, key, value) {
     if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value;
 }

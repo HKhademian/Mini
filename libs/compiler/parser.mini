@@ -443,7 +443,10 @@ fn import_names(imports) {
 fn helper_blocks(helpers) {
     // Keep this order equal to T0's lexicographic helper sort.
     var order = list_new();
-    list_set(order, list_length(order), "map_runtime");
+    list_set(order, list_length(order), "map_new");
+    list_set(order, list_length(order), "map_get");
+    list_set(order, list_length(order), "map_has");
+    list_set(order, list_length(order), "map_set");
     list_set(order, list_length(order), "directory_create");
     list_set(order, list_length(order), "directory_list");
     list_set(order, list_length(order), "directory_remove");

@@ -1,5 +1,4 @@
 /// Map builtin descriptors.
-var map_runtime = "const $mini_map_proto = { __proto__: null };\nfunction $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\nfunction $mini_map_has(items, key) {\n    return key in items;\n}\nfunction $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n";
 
 builtin_add(
     "map_copy",
@@ -18,8 +17,8 @@ builtin_add(
     "unknown",
     "representation",
     "",
-    "map_runtime",
-    map_runtime,
+    "map_get",
+    "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n",
     "",
     "$mini_map_get({0}, {1})"
 );
@@ -29,8 +28,8 @@ builtin_add(
     "boolean",
     "representation",
     "",
-    "map_runtime",
-    map_runtime,
+    "map_has",
+    "function $mini_map_has(items, key) {\n    return key in items;\n}\n",
     "",
     "$mini_map_has({0}, {1})"
 );
@@ -51,8 +50,8 @@ builtin_add(
     "map",
     "representation",
     "",
-    "map_runtime", 
-    map_runtime,
+    "map_new",
+    "const $mini_map_proto = { __proto__: null };\n",
     "",
     "({ __proto__: $mini_map_proto })"
 );
@@ -62,8 +61,8 @@ builtin_add(
     "void",
     "representation",
     "",
-    "map_runtime",
-    map_runtime,
+    "map_set",
+    "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n",
     "",
     "$mini_map_set({0}, {1}, {2})"
 );

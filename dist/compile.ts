@@ -955,7 +955,10 @@ function import_names(imports) {
 }
 function helper_blocks(helpers) {
     let order = [];
-    $mini_list_set(order, (order).length, "map_runtime");
+    $mini_list_set(order, (order).length, "map_new");
+    $mini_list_set(order, (order).length, "map_get");
+    $mini_list_set(order, (order).length, "map_has");
+    $mini_list_set(order, (order).length, "map_set");
     $mini_list_set(order, (order).length, "directory_create");
     $mini_list_set(order, (order).length, "directory_list");
     $mini_list_set(order, (order).length, "directory_remove");
@@ -1127,13 +1130,12 @@ builtin_add("list_push_front", "list,unknown", "void", "performance", "", "list_
 builtin_add("list_set", "unknown,number,unknown", "void", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
 builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "", "$mini_list_to_text({0}, {1})");
 builtin_add("list_truncate", "list,number", "void", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n", "", "$mini_list_truncate({0}, {1})");
-let map_runtime = "const $mini_map_proto = { __proto__: null };\nfunction $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\nfunction $mini_map_has(items, key) {\n    return key in items;\n}\nfunction $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n";
 builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
-builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_runtime", map_runtime, "", "$mini_map_get({0}, {1})");
-builtin_add("map_has", "map,text", "boolean", "representation", "", "map_runtime", map_runtime, "", "$mini_map_has({0}, {1})");
+builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
+builtin_add("map_has", "map,text", "boolean", "representation", "", "map_has", "function $mini_map_has(items, key) {\n    return key in items;\n}\n", "", "$mini_map_has({0}, {1})");
 builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "Object.keys({0})");
-builtin_add("map_new", "", "map", "representation", "", "map_runtime", map_runtime, "", "({ __proto__: $mini_map_proto })");
-builtin_add("map_set", "unknown,text,unknown", "void", "representation", "", "map_runtime", map_runtime, "", "$mini_map_set({0}, {1}, {2})");
+builtin_add("map_new", "", "map", "representation", "", "map_new", "const $mini_map_proto = { __proto__: null };\n", "", "({ __proto__: $mini_map_proto })");
+builtin_add("map_set", "unknown,text,unknown", "void", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n", "", "$mini_map_set({0}, {1}, {2})");
 builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
 builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
 builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");

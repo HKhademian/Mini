@@ -1,17 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 import { writeFileSync, writeSync } from "node:fs";
-const $mini_map_proto = { __proto__: null };
 function $mini_map_get(items, key) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
     const value = items[key];
     return value !== undefined || key in items ? value : 0;
-}
-function $mini_map_has(items, key) {
-    return key in items;
-}
-function $mini_map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value;
 }
 function $mini_directory_remove(path) {
     const fs = process.getBuiltinModule("node:fs");
