@@ -586,6 +586,15 @@ path_remove(directory);
 - `path_copy(from, to)` copies a file or directory tree.
 - `path_remove(path)` removes a file or directory tree; a missing path is a no-op.
 
+## Accepted operation: script path
+
+```text
+var script = process_script_path();
+```
+
+- `process_script_path()` returns the path of the running script as supplied by
+  the host. It takes no arguments and adds no directory or module resolution.
+
 ## Accepted operation: process options
 
 ```text

@@ -45,6 +45,7 @@ list_set(builtin_names_list, list_length(builtin_names_list), "directory_create"
 list_set(builtin_names_list, list_length(builtin_names_list), "path_copy");
 list_set(builtin_names_list, list_length(builtin_names_list), "path_remove");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_spawn");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_script_path");
 
 /// Builtin name membership set.
 var builtin_name_set = map_new();
@@ -93,6 +94,7 @@ map_set(builtin_name_set, "directory_create", true);
 map_set(builtin_name_set, "path_copy", true);
 map_set(builtin_name_set, "path_remove", true);
 map_set(builtin_name_set, "process_spawn", true);
+map_set(builtin_name_set, "process_script_path", true);
 
 /// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
 var builtin_parameter_kinds = map_new();
@@ -141,6 +143,7 @@ map_set(builtin_parameter_kinds, "directory_create", "text");
 map_set(builtin_parameter_kinds, "path_copy", "text,text");
 map_set(builtin_parameter_kinds, "path_remove", "text");
 map_set(builtin_parameter_kinds, "process_spawn", "map");
+map_set(builtin_parameter_kinds, "process_script_path", "");
 
 /// Builtin result kinds keyed by name.
 var builtin_result_kinds = map_new();
@@ -189,6 +192,7 @@ map_set(builtin_result_kinds, "directory_create", "void");
 map_set(builtin_result_kinds, "path_copy", "void");
 map_set(builtin_result_kinds, "path_remove", "void");
 map_set(builtin_result_kinds, "process_spawn", "map");
+map_set(builtin_result_kinds, "process_script_path", "text");
 
 /// Builtin Node import names keyed by name; comma-separated, empty for none.
 var builtin_import_names = map_new();
@@ -237,6 +241,7 @@ map_set(builtin_import_names, "directory_create", "");
 map_set(builtin_import_names, "path_copy", "");
 map_set(builtin_import_names, "path_remove", "");
 map_set(builtin_import_names, "process_spawn", "");
+map_set(builtin_import_names, "process_script_path", "");
 
 /// Builtin adapter keys keyed by name; empty for inline lowering.
 var builtin_helper_keys = map_new();
@@ -285,6 +290,7 @@ map_set(builtin_helper_keys, "directory_create", "directory_create");
 map_set(builtin_helper_keys, "path_copy", "path_copy");
 map_set(builtin_helper_keys, "path_remove", "path_remove");
 map_set(builtin_helper_keys, "process_spawn", "process_spawn");
+map_set(builtin_helper_keys, "process_script_path", "");
 
 /// Return every builtin name once, in declaration order.
 fn builtin_names() {
@@ -437,6 +443,9 @@ fn builtin_emit(name, args) {
     }
     if (name == "process_exec_path") {
         return "process.execPath";
+    }
+    if (name == "process_script_path") {
+        return "process.argv[1]";
     }
     if (name == "time_millis") {
         return "Date.now()";

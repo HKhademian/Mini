@@ -2,6 +2,273 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.20 / compiler 0.3.0-alpha.25 / builtins 0.3.0-alpha.19;
+  bootstrap 0.1.0-alpha.14: add `process_script_path()` for repository-relative
+  tool paths.
+- Language 0.3.0-alpha.19 / compiler 0.3.0-alpha.24 / builtins 0.3.0-alpha.18;
+  bootstrap 0.1.0-alpha.13: add `process_spawn(options)` with working directory,
+  byte stdin, captured byte output, inherit mode, and timeout.
+- Language 0.3.0-alpha.18 / compiler 0.3.0-alpha.23 / builtins 0.3.0-alpha.17;
+  bootstrap 0.1.0-alpha.12: add `path_exists`, `path_is_directory`,
+  `directory_list`, `directory_create`, `path_copy`, and `path_remove` for tool
+  file-tree work.
+- Language 0.3.0-alpha.17 / compiler 0.3.0-alpha.22 / builtins 0.3.0-alpha.16;
+  bootstrap 0.1.0-alpha.11: add `time_millis()` for integer epoch milliseconds.
+- Language 0.3.0-alpha.16 / compiler 0.3.0-alpha.21 / builtins 0.3.0-alpha.15;
+  bootstrap 0.1.0-alpha.10: rename the byte conversions to `text_to_bytes` and
+  `text_from_bytes`.
+- Language 0.3.0-alpha.15 / compiler 0.3.0-alpha.20 / builtins 0.3.0-alpha.14;
+  bootstrap 0.1.0-alpha.9: add `hash_sha256(value)` for lowercase hexadecimal
+  SHA-256 of text or byte lists.
+- Language 0.3.0-alpha.14 / compiler 0.3.0-alpha.19 / builtins 0.3.0-alpha.13;
+  bootstrap 0.1.0-alpha.8: add `text_bytes`, `bytes_text`, `file_read_bytes`,
+  and `file_write_bytes` for UTF-8 and whole-file byte data.
+- Language 0.3.0-alpha.13 / compiler 0.3.0-alpha.18 / builtins 0.3.0-alpha.12;
+  bootstrap 0.1.0-alpha.7: add `json_parse(text)` for structured tool input,
+  returning `ok` and `value` with JSON null as numeric zero.
+- Compiler 0.3.0-alpha.17 / bootstrap 0.1.0-alpha.6: table-drive builtin names,
+  parameter kinds, result kinds, imports, and adapter keys in M1. Behavior and
+  emitted programs are unchanged; the metadata command output is byte-identical.
+- Mini 0.1.0-alpha.9 / compiler 0.3.0-alpha.16: remove the handwritten T0 compiler
+  modules, `compiler/adapters.ts`, `compiler/builtin-metadata.ts`,
+  `compiler/types.ts`, `tools/generate-adapters.ts`, and their tests. Host adapter
+  text in `compiler/src/00-constants.mini` is the source of truth; the generated
+  compiler and its `metadata` command are the only compiler interfaces. Rewrite
+  the fixed-point test around the bootstrap and drop the T0 application benchmark
+  reference.
+- Language server: format documents through the generated formatter tool instead
+  of the duplicate TypeScript token renderer. Remove `tools/format.ts`; formatter
+  tests cover the generated tool only.
+- Compiler 0.3.0-alpha.15 / bootstrap 0.1.0-alpha.5: expose `metadata` from the
+  generated compiler as deterministic builtin JSON (name, parameter kinds,
+  result kind). Language-server hover and completion read that command instead
+  of `compiler/builtin-metadata.ts`.
+- Mini 0.1.0-alpha.8 / CLI 0.1.0-alpha.7: port `mini run` and `mini-run` to
+  `tools/run.mini`. The generated tool creates a temporary module directory,
+  compiles with the active compiler, runs Node with inherited standard streams,
+  forwards program arguments, and removes its files. Behavior is unchanged.
+- Language 0.3.0-alpha.12 / compiler 0.3.0-alpha.14 / builtins 0.3.0-alpha.11;
+  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `directory_temp()`,
+  `file_remove(path)`, and `directory_remove(path)` for tool process setup and
+  cleanup. Regenerate the bootstrap and the generated tools.
+- Language 0.3.0-alpha.11 / compiler 0.3.0-alpha.13 / builtins 0.3.0-alpha.10;
+  bootstrap 0.1.0-alpha.3: add `process_run(command, args, mode)` for one-shot
+  child processes with inherited environment, captured or inherited standard
+  streams, and a map result carrying status, signal, stdout, stderr, and startup
+  error. M1 and T0 lower the same adapter; regenerate the bootstrap and the
+  generated tools.
+- Mini 0.1.0-alpha.7 / format 0.1.0-alpha.3: port formatting to
+  `tools/format.mini` composed with compiler parts `00`–`40`. `mini fmt` and
+  `mini-format` run the generated tool with unchanged stdout, stdin, `--write`,
+  `--check`, shebang, and comment behavior. The language server keeps its
+  TypeScript token renderer until its own port. Replace T0-based formatter tests
+  with generated-tool tests.
+- Mini 0.1.0-alpha.6 / check 0.1.0-alpha.6: implement source checking as a
+  generated Mini tool (`tools/check-source.mini`) composed with compiler parts
+  `00`–`40`. `mini check SOURCE.mini` and `mini check -` run the generated tool;
+  `mini check --docs` remains TypeScript. Add the tool to
+  `tools/mini-tools.json`.
+- Mini 0.1.0-alpha.5, compiler 0.3.0-alpha.12, bootstrap 0.1.0-alpha.2,
+  check 0.1.0-alpha.5, format 0.1.0-alpha.2, lsp 0.1.0-alpha.4: verify the
+  migrated tooling, self-hosted compiler, generated adapters, and shared builtin
+  metadata.
+- Share builtin signatures through `compiler/builtin-metadata.ts`; tooling
+  hover/completion no longer imports T0 lowering callbacks. T0 lowering reads the
+  same metadata.
+- Define adapter JavaScript once in `compiler/adapters.ts`, share it with T0
+  lowering, and generate `compiler/src/00-constants.mini` with
+  `tools/generate-adapters.ts`; `mini check` rejects stale adapter text.
+- Use short helper keys for compiler adapter emission instead of comparing
+  full adapter text, and emit used adapters from a fixed ordered key list.
+- Refactor compiler helper names: `token_new` instead of `new_token`, and
+  `lex_fail`/`parser_fail` instead of the shared `fail`. No emitted-code
+  behavior change.
+
+- CLI 0.1.0-alpha.6 / Mini distribution 0.1.0-alpha.4: add `mini run SOURCE.mini
+  [ARG]...` through a temporary generated TS module, and mark shebang output
+  executable on supported platforms. Add `mini-run` and tool cases.
+- Build M1 from ordered `compiler/src/*.mini` parts. The build tool is Mini
+  source (`tools/build-m1.mini`) with tracked generated
+  `tools/build-m1.generated.ts`; `compiler/m1.parts` is the order,
+  `compiler/compiler.mini` is the canonical bootstrap source, and `mini check`
+  rejects stale composition or generated TS. Generated Mini tools use the
+  `*.generated.ts` suffix and stay outside the strict TypeScript check. No
+  language/module change.
+- Bootstrap/compiler 0.1.0-alpha.1 / 0.3.0-alpha.11; Mini distribution
+  0.1.0-alpha.3: promote the generated T1 compiler from `compiler/compiler.mini`
+  as `bootstrap/compiler.ts`. `config/bootstrap.json` and `config/compiler.json`
+  select it; T0 remains the reference compiler. Tooling analysis now uses the
+  active compiler's `tokens --comments` and `compile` commands.
+- VS Code extension 0.3.3: expose language-server go-to-definition through
+  VS Code's definition provider.
+- Language server 0.1.0-alpha.3: add go-to-definition for document functions and
+  variables.
+- VS Code extension 0.3.2: expose language-server hover and completion through
+  VS Code's hover and completion providers.
+- Language server 0.1.0-alpha.2: add hover for functions, variables, and builtins
+  with `///` documentation, and prefix-filtered completion for declarations,
+  builtins, and keywords. Completion is suppressed in comments and text.
+- Language/compiler 0.3.0-alpha.10: recognize an optional first-line shebang as
+  a `shebang` token, preserve it in tokens/analysis/formatting, and emit a Node
+  shebang before `"use strict";`. Sources without a shebang are unchanged.
+- Language/compiler/builtins 0.3.0-alpha.9: add `json_to_text(value)` for compact
+  deterministic JSON with sorted map keys; M1 uses it for JSON string quoting.
+- Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for
+  canonical safe-integer decimal text; M1 uses it instead of its decimal helper.
+- Language/compiler/builtins 0.3.0-alpha.7: add `list_to_text(list, separator)`
+  and replace M1's separate join helper.
+- Language/compiler/builtins 0.3.0-alpha.6: add `list_copy(list)` with shallow
+  copies and empty-list fallback.
+- Language/compiler/builtins 0.3.0-alpha.5: add `map_copy(map)` with shallow
+  text-keyed copies and empty-map fallback; M1 uses it for scope copies.
+- Language/compiler/builtins 0.3.0-alpha.4: add `text_split(text, divider)` with
+  literal-divider splitting, preserved empty fields, and empty-list fallbacks;
+  M1 uses it for line splitting.
+- Language/compiler/builtins 0.3.0-alpha.3: add `text_find(text, needle)` with
+  first-position and `-1` fallback behavior, and replace M1 character-membership
+  loops with it.
+- Language/compiler/builtins 0.3.0-alpha.2: add `text_slice(text, start, end)`
+  with zero-based end-exclusive bounds, clamping, negative bounds from the end,
+  and empty-text fallbacks. M1 uses it for token spelling and text helpers.
+- VS Code extension 0.3.1: report the attempted server command and offer to open
+  `mini.serverPath` when the language server cannot start, and reject pending
+  requests on launch failure instead of hanging activation.
+- Verify the tooling workflow from an extracted source archive without `.git` or
+  `node_modules`: repository docs check, source checking, formatting, and a live
+  language-server session. Package and inspect the VSIX with its bundled client.
+- Measure T1 against T0: all 322 active cases, 259 candidate scenarios, 222
+  byte-identical compile/token checks, and 69 application checks pass. Builtin-era
+  self-build wall time is slightly below T0 with about 2% higher RSS; large
+  synthetic sources compile about 1.43x slower. Add candidate verification
+  tooling and retry transient case-workspace cleanup.
+- VS Code extension 0.3.0: connect to `mini-lang-server` for live diagnostics and
+  document formatting, with `mini.serverPath` and `mini.nodePath` settings. The
+  client is bundled into the VSIX; no checkout-local paths are required.
+- Language server 0.1.0-alpha.1: add standalone `mini-lang-server` with LSP 3.17
+  over stdio, full document sync, pushed diagnostics, whole-document formatting,
+  UTF-16 positions, and `--version`. Diagnostics and formatting reuse the
+  compiler analysis and shared formatter.
+- Add the first Mini compiler source (`compiler/compiler.mini`) as a close T0
+  port. The focused check proves `T0(M1)`, `T1(M1)`, and `T2(M1)` are
+  byte-identical. T0 remains active; candidate performance evidence and bootstrap
+  promotion are pending. No language or builtin contract changes.
+- Formatter 0.1.0-alpha.1: add `mini fmt` / `mini-format` with stdout, stdin,
+  `--write`, and `--check` modes; preserve comment tokens, source blank lines,
+  literals, parentheses, and token order.
+- Checker/cli 0.1.0-alpha.4: add `mini check SOURCE.mini` and `mini check -`
+  source checking with compiler diagnostics, stdin display name `<stdin>`, and
+  no generated artifacts. Formatter and language server commands remain future.
+- Group 0.3.0, language/compiler/builtins 0.3.0-alpha.1: use object-backed maps
+  with an empty prototype and no per-map metadata. Remove `map_length`;
+  count with `list_length(map_keys(items))`. Map operations and argument order
+  retain their contracts, including special text keys and shared values.
+- Record four before/after map-runtime runs: 2,760 verified measured calls.
+  Object maps reduce compiler pipeline wall time/RSS, increase its warm CPU,
+  and slow template rendering and dependency traversal; preserve raw evidence.
+- Record two clean application benchmark runs: 1,380 verified measured calls,
+  CPU/RSS evidence, and material scanner/compiler costs relative to actual T0.
+- Add ten paired Mini/handwritten-TS application benchmarks, independent result
+  models, actual-T0 comparisons, and cold/warm wall, CPU, and memory measurements.
+- Compiler/language 0.2.0-alpha.4: add `//` line comments and `///` documentation
+  comments, preserve quoted markers and positions, document Mini samples and
+  workload helpers, and add VS Code comment highlighting/toggling (0.2.0).
+- Define M1 as Mini compiler source and T1 as its generated TS compiler; require
+  the first M1 to preserve T0's structure, control flow, lookups, and data layout.
+  Defer performance refactoring until parity and the fixed point are established.
+- Audit generated-code performance with repeatable compiler workloads, record
+  map/storage and TS-loading costs, and require actual-candidate performance
+  evidence before retiring T0. Record a separate emitted-expression depth limit.
+- Inventory T0's implementation, all built-in lowerings, and T1 equivalents.
+- Freeze T0 feature growth, verify the port workload in Mini, and narrow the
+  remaining self-hosting work to the compiler port, fixed point, and promotion.
+- Focus reader documentation and cases on the current API.
+- 0.2.0-alpha.3: list reads return zero for gaps and invalid targets/positions;
+  negative indices count from the end.
+- 0.2.0-alpha.2: text reads return empty text for non-text targets and invalid positions.
+- Group 0.2.0: use consistent text_get/list_get reader names;
+  advance language, compiler, and builtins to 0.2.0-alpha.1.
+- T0 alpha.35 / builtins alpha.19: map reads use ordinary zero for missing keys.
+- T0 alpha.34 / builtins alpha.18: map key snapshots, demonstrated by the map sample.
+- Showcase all implemented built-ins in runnable samples, including list mutation.
+- T0 alpha.33 / builtins alpha.17: map key counts, with a runnable map sample.
+- Document grouped-tag audits, explicit remote publication, and immutable history.
+- T0 alpha.32 / builtins alpha.16: map insertion/replacement with non-map no-ops.
+- Adopt group 0.1.2 and product-vGROUP-vPRODUCT tags; keep product counters across groups.
+
+- T0 alpha.31 / builtins alpha.15: `map_has` checks text-key membership without mutation.
+- T0 alpha.30 / builtins alpha.14: `map_new()` creates empty maps.
+- T0 alpha.29 / builtins alpha.13: list mutation with growth and uniform no-op rules.
+- Investigate reserve versus list growth and exact versus defaulted argument counts.
+- Separate parameter-sharing semantics from target-specific value representation.
+- Propose local parameter rebinding and shared collections, with pending review cases.
+- T0 alpha.28 / builtins alpha.12: zero-argument `list_new()` creates empty lists.
+- Define group/product versioning, compatibility evidence, and the version inventory.
+- Exclude records, structs, and classes from Mini's target; use simple collections.
+- Document future formatter, documentation, help, and language-server commands.
+- Assess remaining self-hosting semantics, compiler capabilities, and useful additions.
+- Prepare independently versioned T0 preview releases with source provenance.
+- T0 alpha.26 / builtins alpha.11: exact stderr output with `write_error`.
+- T0 alpha.25 / builtins alpha.10: `process_exit`.
+- T0 alpha.24 / builtins alpha.9: indexed list reads.
+- T0 alpha.23 / builtins alpha.8: `list_length`.
+- T0 alpha.22 / builtins alpha.7: `process_args` returns the program's text list.
+- T0 alpha.21 / builtins alpha.6: `file_write`.
+- T0 alpha.20 / builtins alpha.5: `file_read`.
+- T0 alpha.19 / builtins alpha.4: indexed character reads.
+- T0 alpha.18 / builtins alpha.3: `text_length`.
+- T0 alpha.17: braced `while` loops.
+- T0 alpha.16: short-circuit boolean disjunction.
+- T0 alpha.15: short-circuit boolean conjunction.
+- T0 alpha.14: boolean negation.
+- T0 alpha.13: braced `if`/`else` branches with boolean conditions.
+- T0 alpha.12: numeric ordering comparisons.
+- T0 alpha.11: scalar equality and inequality without coercion.
+- T0 alpha.10: unary numeric negation.
+- T0 alpha.9: numeric subtraction.
+- T0 alpha.8: parenthesized expressions.
+- T0 alpha.7: named functions, positional calls, and value returns.
+- T0 alpha.6: preserve the five supported text escapes directly in emitted TS.
+- T0 alpha.5 / builtins alpha.2: read stdin through EOF with `readAll`.
+- T0 alpha.4 / builtins alpha.1: write exact text to stdout.
+- T0 alpha.3: numeric addition and text concatenation with `+`.
+- T0 alpha.2: assign replacement values to existing bindings.
+- Start T0 with initialized bindings, positioned tokens, indexed cases, and `.mini.ts` output.
+- Accept process termination; propose `write_error(text)` with diagnostic cases.
+- Propose `process_exit(status)` with immediate-termination cases; keep `process_envs` optional.
+- Accept file I/O, shared text-list operations, and process arguments.
+- Accept text-access built-ins; distinguish primitives from Mini library helpers.
+- Propose text-file operations with isolated input/output file cases.
+- Use grouped names in the text-access proposal and cases.
+- Accept `readAll`/`write`; propose two text-access primitives with scanner cases.
+- Propose whole-input/text-output primitives with focused I/O and EOF cases.
+- Package checksummed VSIX assets from tagged extension sources and verify releases in CI.
+- Accept expression forms; balance single/combination cases and share empty fixtures.
+- Version VS Code support independently at 0.1.1, validate escapes, and test it in CI.
+- Record control-flow approval and propose basic values/operators with combination cases.
+- Add local VS Code syntax highlighting, file icons, and bracket/quote pairing.
+- Add pending compile, runtime, rejection, and sample cases with each construct.
+- Report pending scenarios separately; allow compile checks without exact artifacts.
+- Draft the compiler workload and first binding/assignment construct for review.
+- Propose named functions, positional calls, and value returns for review.
+- Record accepted binding/function forms and propose `if`/`else` and `while`.
+
+## cli 0.1.0-alpha.1 — mini tooling preview
+
+- Define mini's tiny self-hosting foundation and atomic development rules.
+- Add independently versioned CLI tools, JSON verification cases, benchmarks,
+  bootstrap checks, and release packaging.
+- Add Linux/macOS GitHub CI and tag-triggered releases using direct TypeScript.
+- Scope self-hosting to the compiler and record built-in I/O/library direction.
+- Reserve the independent `std-v*` release stream; std remains unimplemented.
+- Place future standard-library source under `std/`.
+- Balance language size with compiler readability and incremental syntax migration.
+- Put stream descriptors directly in JSON cases and invoke real tools through
+  the shared runner; add `mini verify CASE.json` and remove per-case scripts.
+- Document the main clone-and-evolve workflow, including breaking syntax bridges
+  and atomic promotion of a verified compiler/source pair.
+
+This preview ships TypeScript tooling and guides. Mini grammar, compiler, and
+generated bootstrap are not implemented yet.
 - Language 0.3.0-alpha.19 / compiler 0.3.0-alpha.24 / builtins 0.3.0-alpha.18;
   bootstrap 0.1.0-alpha.13: add `process_spawn(options)` with working directory,
   byte stdin, captured byte output, inherit mode, and timeout.

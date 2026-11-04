@@ -1,0 +1,15 @@
+{
+  "id": "language.script-path",
+  "kind": "feature",
+  "source": "057-001-script-path.mini",
+  "features": ["process.script-path", "path.exists", "text.length"],
+  "cases": [
+    {
+      "name": "running-file",
+      "stdin": {"text": ""},
+      "stdout": {"text": "script ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

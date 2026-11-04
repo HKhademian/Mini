@@ -868,6 +868,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_creat
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_copy");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_spawn");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_script_path");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -914,6 +915,7 @@ $mini_map_set(builtin_name_set, "directory_create", true);
 $mini_map_set(builtin_name_set, "path_copy", true);
 $mini_map_set(builtin_name_set, "path_remove", true);
 $mini_map_set(builtin_name_set, "process_spawn", true);
+$mini_map_set(builtin_name_set, "process_script_path", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -960,6 +962,7 @@ $mini_map_set(builtin_parameter_kinds, "directory_create", "text");
 $mini_map_set(builtin_parameter_kinds, "path_copy", "text,text");
 $mini_map_set(builtin_parameter_kinds, "path_remove", "text");
 $mini_map_set(builtin_parameter_kinds, "process_spawn", "map");
+$mini_map_set(builtin_parameter_kinds, "process_script_path", "");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -1006,6 +1009,7 @@ $mini_map_set(builtin_result_kinds, "directory_create", "void");
 $mini_map_set(builtin_result_kinds, "path_copy", "void");
 $mini_map_set(builtin_result_kinds, "path_remove", "void");
 $mini_map_set(builtin_result_kinds, "process_spawn", "map");
+$mini_map_set(builtin_result_kinds, "process_script_path", "text");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -1052,6 +1056,7 @@ $mini_map_set(builtin_import_names, "directory_create", "");
 $mini_map_set(builtin_import_names, "path_copy", "");
 $mini_map_set(builtin_import_names, "path_remove", "");
 $mini_map_set(builtin_import_names, "process_spawn", "");
+$mini_map_set(builtin_import_names, "process_script_path", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1098,6 +1103,7 @@ $mini_map_set(builtin_helper_keys, "directory_create", "directory_create");
 $mini_map_set(builtin_helper_keys, "path_copy", "path_copy");
 $mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
 $mini_map_set(builtin_helper_keys, "process_spawn", "process_spawn");
+$mini_map_set(builtin_helper_keys, "process_script_path", "");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1234,6 +1240,9 @@ function builtin_emit(name, args) {
     }
     if ((name === "process_exec_path")) {
         return "process.execPath";
+    }
+    if ((name === "process_script_path")) {
+        return "process.argv[1]";
     }
     if ((name === "time_millis")) {
         return "Date.now()";

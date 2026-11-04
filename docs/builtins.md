@@ -22,6 +22,10 @@ empty list when the path is missing or not a directory.
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
+`process_script_path()` returns the absolute path of the running script, or empty
+text when the host does not provide one. Tools use it to locate repository files
+independently of the current directory.
+
 `process_spawn(options)` runs one child process from an options map. Keys are
 `command` (text), `arguments` (text list), `mode` (`capture` or `inherit`),
 `directory` (working directory; empty inherits the parent's), `input` (byte list
@@ -107,6 +111,10 @@ empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
+
+`process_script_path()` returns the absolute path of the running script, or empty
+text when the host does not provide one. Tools use it to locate repository files
+independently of the current directory.
 
 `process_spawn(options)` runs one child process from an options map. Keys are
 `command` (text), `arguments` (text list), `mode` (`capture` or `inherit`),
