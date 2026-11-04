@@ -1,4 +1,5 @@
-import { formatTokens } from './format.ts';
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
 import { analyze } from './analysis.ts';
 import { completionsAt, definitionAt, hoverAt, offsetAt, rangeOf } from './language-features.ts';
 import { releaseTag, versions, root } from './project.ts';
@@ -6,6 +7,14 @@ import type { Diagnostic } from '../compiler/types.ts';
 
 type Message = { jsonrpc: '2.0'; id?: number | string; method?: string; params?: unknown; result?: unknown; error?: unknown };
 type Document = { text: string; version: number };
+
+/** Format text through the generated formatter, or null when it is invalid. */
+function formatText(text: string): string | null {
+  const result = spawnSync(process.execPath, [join(root, 'tools/format.generated.ts'), '-'],
+    { input: text, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+  if (result.error) throw result.error;
+  return result.status === 0 ? result.stdout : null;
+}
 
 /** Convert a UTF-16 offset to an LSP zero-based line/character position. */
 export function positionAt(text: string, offset: number): { line: number; character: number } {
@@ -175,8 +184,8 @@ export class LanguageServer {
     if (document === undefined) return null;
     const outcome = analyze(document.text, textDocument.uri);
     if (outcome.diagnostics.length > 0) return null;
-    const text = formatTokens(outcome.tokens);
-    if (text === document.text) return null;
+    const text = formatText(document.text);
+    if (text === null || text === document.text) return null;
     return [{ range: { start: { line: 0, character: 0 }, end: documentEnd(document.text) }, newText: text }];
   }
 

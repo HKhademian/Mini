@@ -6,7 +6,6 @@ import { join } from 'node:path';
 import { after, test } from 'node:test';
 import type { Token } from '../compiler/types.ts';
 import { compiler, root, run } from './project.ts';
-import { formatTokens } from './format.ts';
 
 const tool = join(root, 'bin/mini-format');
 const work = mkdtempSync(join(tmpdir(), 'mini-format-test-'));
@@ -112,7 +111,7 @@ test('invalid source reports the compiler diagnostic instead of text', () => {
     'cases/tooling/format-invalid.mini:1:13: expected expression\nvar value = ;\n            ^\n');
 });
 
-test('samples keep tokens, generated code, and language-server formatting', () => {
+test('samples keep tokens and generated code', () => {
   let checked = 0;
   for (const name of readdirSync(join(root, 'samples')).filter(entry => entry.endsWith('.mini')).sort()) {
     const source = readFileSync(join(root, 'samples', name), 'utf8');
@@ -125,7 +124,6 @@ test('samples keep tokens, generated code, and language-server formatting', () =
     const originalTokens = tokensOf(original);
     const formattedTokens = tokensOf(formatted);
     assert.equal(signature(formattedTokens), signature(originalTokens), name + ': tokens');
-    assert.equal(formatTokens(formattedTokens), output.stdout, name + ': language-server formatter');
     assert.equal(compiled(formatted), compiled(original), name + ': generated code');
     assert.equal(runTool([formatted]).stdout, output.stdout, name + ': idempotence');
     checked++;

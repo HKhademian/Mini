@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language server: format documents through the generated formatter tool instead
+  of the duplicate TypeScript token renderer. Remove `tools/format.ts`; formatter
+  tests cover the generated tool only.
 - Compiler 0.3.0-alpha.15 / bootstrap 0.1.0-alpha.5: expose `metadata` from the
   generated compiler as deterministic builtin JSON (name, parameter kinds,
   result kind). Language-server hover and completion read that command instead
