@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.22 / compiler 0.3.0-alpha.33 / CLI 0.1.0-alpha.14: name
+  generated artifacts by command under `dist/` (`dist/compile.ts`, `dist/mini.ts`,
+  `dist/check.ts`, `dist/format.ts`, and so on). Generated tools are directly
+  executable; the `*.generated.ts` suffix and `dist/tools/` directory are gone.
 - Mini 0.1.0-alpha.21 / CLI 0.1.0-alpha.13: move the build helper and command
   dispatcher to Mini. `dist/tools/build.generated.ts` regenerates tools and
   launchers; `dist/tools/mini.generated.ts` provides `check`, `build`, `compile`,

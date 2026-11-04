@@ -8,7 +8,7 @@ import { root } from '../tools/project.ts';
 
 test('generated compiler reaches a fixed point', () => {
   const source = join(root, 'tools/compiler.mini');
-  const seed = join(root, 'dist/compiler.ts');
+  const seed = join(root, 'dist/compile.ts');
   const work = mkdtempSync(join(tmpdir(), 'mini-m1-'));
   try {
     const first = join(work, 'compiler1.ts');

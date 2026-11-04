@@ -1,5 +1,5 @@
 /// Compile and run one Mini source in a temporary module.
-/// Usage: node dist/tools/run.generated.ts COMPILER.ts SOURCE.mini [ARG]...
+/// Usage: node dist/run.ts COMPILER.ts SOURCE.mini [ARG]...
 /// The compiler path is the active generated compiler; the remaining arguments
 /// reach the program through process_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.

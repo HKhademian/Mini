@@ -1,8 +1,8 @@
 {
-  "entry": "dist/compiler.ts",
+  "entry": "dist/compile.ts",
   "sources": [
     "tools/compiler.mini",
-    "dist/compiler.ts"
+    "dist/compile.ts"
   ],
   "example": "cases/language/005-002-io-sample.case.json"
 }

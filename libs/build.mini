@@ -60,7 +60,7 @@ fn build_launcher(launcher) {
             + "await import(pathToFileURL(join(import.meta.dirname, '..', '" + map_get(launcher, "tool") + "')).href);\n";
     }
     return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { join } from 'node:path';\n"
-        + "await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/tools/mini.generated.ts')).href);\n";
+        + "await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/mini.ts')).href);\n";
 }
 
 /// Regenerate every generated tool and launcher.
@@ -101,7 +101,7 @@ fn build_check(root) {
         var target = case_path_join(root, map_get(tool, "generated"));
         var generated = build_compile(root, compiler, map_get(tool, "source"));
         if (!path_exists(target) || file_read(target) != generated) {
-            build_fail(map_get(tool, "generated") + " is stale; run dist/tools/build.generated.ts");
+            build_fail(map_get(tool, "generated") + " is stale; run dist/build.ts");
         }
         position = position + 1;
     }
@@ -111,7 +111,7 @@ fn build_check(root) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
         if (!path_exists(case_path_join(root, name)) || file_read(case_path_join(root, name)) != build_launcher(launcher)) {
-            build_fail(name + " is stale; run dist/tools/build.generated.ts");
+            build_fail(name + " is stale; run dist/build.ts");
         }
         position = position + 1;
     }

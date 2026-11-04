@@ -1,7 +1,7 @@
 include "text.mini";
 include "cases.mini";
 /// Run benchmark cases and write one JSON report.
-/// Usage: node dist/tools/bench.generated.ts OUTPUT [FILTER]
+/// Usage: node dist/bench.ts OUTPUT [FILTER]
 /// Output must not exist; the parent directory is created.
 
 /// Report a benchmark error and stop.

@@ -2,7 +2,7 @@ include "text.mini";
 include "cases.mini";
 /// Run repository checks: strict TypeScript (unless --docs), generated tools,
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
-/// Usage: node dist/tools/check.generated.ts [--docs]
+/// Usage: node dist/check.ts [--docs]
 
 /// Report a check failure and stop.
 fn check_fail(message) {
@@ -416,7 +416,7 @@ fn check_repository(root, docs_only) {
         }
     }
     var tools = list_new();
-    list_set(tools, 0, case_path_join(root, "dist/tools/build.generated.ts"));
+    list_set(tools, 0, case_path_join(root, "dist/build.ts"));
     list_set(tools, 1, "--check");
     var verified_tools = check_inherit(process_exec_path(), tools, root);
     if (map_get(verified_tools, "status") != 0) {
@@ -440,7 +440,7 @@ fn check_repository(root, docs_only) {
         check_fail("active compiler must be the generated bootstrap");
     }
     var verify = list_new();
-    list_set(verify, 0, case_path_join(root, "dist/tools/verify.generated.ts"));
+    list_set(verify, 0, case_path_join(root, "dist/verify.ts"));
     list_set(verify, 1, root);
     var verified = case_run(process_exec_path(), verify, root, list_new());
     if (map_get(verified, "status") != 0) {

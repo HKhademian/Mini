@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
-await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/tools/mini.generated.ts')).href);
+await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/mini.ts')).href);

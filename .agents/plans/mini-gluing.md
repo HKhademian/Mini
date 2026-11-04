@@ -67,7 +67,7 @@ include "../libs/text.mini";
 include "../libs/cases.mini";
 ```
 
-`dist/tools/build.generated.ts` compiles the source directly. The compiler's include
+`dist/build.ts` compiles the source directly. The compiler's include
 expansion replaces the former `compiler/m1.parts`, `compiler/compiler.mini`, and
 `tools/build-m1.*` composition path. `bin/` launchers are generated from the
 manifest.

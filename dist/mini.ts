@@ -53,10 +53,6 @@ function $mini_json_parse(text) {
     result.value = clean(parsed);
     return result;
 }
-function $mini_list_copy(items) {
-    if (!Array.isArray(items)) return [];
-    return items.slice();
-}
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
@@ -1037,423 +1033,224 @@ function case_file_hashes(files, directory) {
     }
     return hashes;
 }
-function check_fail(message) {
-    writeSync(2, (message + "\n"));
-    process.exit(1);
-    return 0;
+function mini_compiler(root) {
+    let parsed = case_json_file(case_path_join(root, "config/compiler.json"));
+    if ((!$mini_map_get(parsed, "ok"))) {
+        writeSync(2, ($mini_map_get(parsed, "message") + "\n"));
+        process.exit(1);
+    }
+    return $mini_map_get($mini_map_get(parsed, "value"), "entry");
 }
-function check_inherit(command, args, directory) {
+function mini_versions(root) {
+    let parsed = case_json_file(case_path_join(root, "config/versions.json"));
+    if ((!$mini_map_get(parsed, "ok"))) {
+        writeSync(2, ($mini_map_get(parsed, "message") + "\n"));
+        process.exit(1);
+    }
+    return $mini_map_get(parsed, "value");
+}
+function mini_tag(root, component) {
+    let current = mini_versions(root);
+    return ((((component + "-v") + $mini_map_get(current, "group")) + "-v") + $mini_map_get(current, component));
+}
+function mini_component(command) {
+    if ((((((((command === "check") || (command === "format")) || (command === "verify")) || (command === "release")) || (command === "test")) || (command === "bench")) || (command === "lsp"))) {
+        return command;
+    }
+    if (((command === "compile") || (command === "minic"))) {
+        return "compiler";
+    }
+    if ((command === "run")) {
+        return "cli";
+    }
+    return "";
+}
+function mini_spawn(root, tool, args) {
+    let command_args = [];
+    $mini_list_set(command_args, 0, case_path_join(root, tool));
+    let position = 0;
+    while ((position < (args).length)) {
+        $mini_list_set(command_args, (command_args).length, $mini_list_get(args, position));
+        position = (position + 1);
+    }
     let options = ({ __proto__: $mini_map_proto });
-    $mini_map_set(options, "command", command);
-    $mini_map_set(options, "arguments", args);
-    $mini_map_set(options, "directory", directory);
+    $mini_map_set(options, "command", process.execPath);
+    $mini_map_set(options, "arguments", command_args);
+    $mini_map_set(options, "directory", root);
     $mini_map_set(options, "mode", "inherit");
-    return $mini_process_spawn(options);
+    return $mini_map_get($mini_process_spawn(options), "status");
 }
-function check_find_from(text, needle, offset) {
-    let position = $mini_text_find($mini_text_slice(text, offset, (text).length), needle);
-    if ((position < 0)) {
-        return (-1);
-    }
-    return (offset + position);
-}
-function check_digits(text) {
-    if (((text).length === 0)) {
-        return false;
-    }
-    if ((((text).length > 1) && ($mini_text_get(text, 0) === "0"))) {
-        return false;
-    }
-    let position = 0;
-    while ((position < (text).length)) {
-        if (($mini_text_find("0123456789", $mini_text_get(text, position)) < 0)) {
-            return false;
-        }
-        position = (position + 1);
-    }
-    return true;
-}
-function check_plain_version(text) {
-    let parts = $mini_text_split(text, ".");
-    if (((parts).length !== 3)) {
-        return false;
-    }
-    let position = 0;
-    while ((position < (parts).length)) {
-        if ((!check_digits($mini_list_get(parts, position)))) {
-            return false;
-        }
-        position = (position + 1);
-    }
-    return true;
-}
-function check_product_version(text) {
-    let parts = $mini_text_split(text, "-");
-    if (((parts).length === 1)) {
-        return check_plain_version(text);
-    }
-    if ((((parts).length !== 2) || (!check_plain_version($mini_list_get(parts, 0))))) {
-        return false;
-    }
-    let pre = $mini_text_split($mini_list_get(parts, 1), ".");
-    if (((pre).length !== 2)) {
-        return false;
-    }
-    let stage = $mini_list_get(pre, 0);
-    if ((((stage !== "alpha") && (stage !== "beta")) && (stage !== "rc"))) {
-        return false;
-    }
-    return check_digits($mini_list_get(pre, 1));
-}
-function check_sorted(items) {
-    let result = $mini_list_copy(items);
-    let position = 0;
-    while ((position < (result).length)) {
-        let cursor = (position + 1);
-        while ((cursor < (result).length)) {
-            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
-                let hold = $mini_list_get(result, position);
-                $mini_list_set(result, position, $mini_list_get(result, cursor));
-                $mini_list_set(result, cursor, hold);
-            }
-            cursor = (cursor + 1);
-        }
+function mini_rest(items, start) {
+    let result = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
         position = (position + 1);
     }
     return result;
 }
-function check_keys(value) {
-    return check_sorted(Object.keys(value));
+function mini_usage(message) {
+    writeSync(2, (message + "\n"));
+    return 1;
 }
-function check_json(path) {
-    let parsed = case_json_file(path);
-    if ((!$mini_map_get(parsed, "ok"))) {
-        check_fail($mini_map_get(parsed, "message"));
-    }
-    return $mini_map_get(parsed, "value");
+function mini_help() {
+    writeSync(1, "mini: tiny self-hosting foundation for language projects\n");
+    writeSync(1, "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check]\n");
+    writeSync(1, "Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
+    return 0;
 }
-function check_same_list(left, right) {
-    if (((left).length !== (right).length)) {
-        return false;
+function mini_command(root, command, args) {
+    if ((command === "build")) {
+        return mini_spawn(root, "dist/build.ts", args);
     }
-    let position = 0;
-    while ((position < (left).length)) {
-        if (($mini_list_get(left, position) !== $mini_list_get(right, position))) {
-            return false;
+    if ((command === "check")) {
+        if ((((args).length === 0) || (((args).length === 1) && ($mini_list_get(args, 0) === "--docs")))) {
+            return mini_spawn(root, "dist/check.ts", args);
         }
-        position = (position + 1);
+        if (((args).length !== 1)) {
+            return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
+        }
+        let path = $mini_list_get(args, 0);
+        if (((path !== "-") && (!$mini_path_exists(path)))) {
+            return mini_usage(("cannot read " + path));
+        }
+        return mini_spawn(root, "dist/check-source.ts", args);
     }
-    return true;
+    if ((command === "format")) {
+        let format_path = "";
+        let position = 0;
+        while ((position < (args).length)) {
+            let arg = $mini_list_get(args, position);
+            if (((arg !== "--write") && (arg !== "--check"))) {
+                format_path = arg;
+            }
+            position = (position + 1);
+        }
+        if ((((format_path !== "") && (format_path !== "-")) && (!$mini_path_exists(format_path)))) {
+            return mini_usage(("cannot read " + format_path));
+        }
+        return mini_spawn(root, "dist/format.ts", args);
+    }
+    if ((command === "run")) {
+        if (((args).length < 1)) {
+            return mini_usage("usage: mini-run SOURCE.mini [ARG]...");
+        }
+        let source = $mini_list_get(args, 0);
+        if ((!text_ends_with(source, ".mini"))) {
+            return mini_usage("Mini source must use .mini");
+        }
+        let run_args = [];
+        $mini_list_set(run_args, 0, mini_compiler(root));
+        $mini_list_set(run_args, 1, source);
+        let position = 1;
+        while ((position < (args).length)) {
+            $mini_list_set(run_args, (run_args).length, $mini_list_get(args, position));
+            position = (position + 1);
+        }
+        return mini_spawn(root, "dist/run.ts", run_args);
+    }
+    if ((command === "test")) {
+        return mini_spawn(root, "dist/test.ts", args);
+    }
+    if ((command === "bench")) {
+        if (((args).length < 1)) {
+            return mini_usage("usage: mini-bench OUTPUT [FILTER]");
+        }
+        return mini_spawn(root, "dist/bench.ts", args);
+    }
+    if ((command === "verify")) {
+        if (((args).length === 0)) {
+            return mini_spawn(root, "dist/verify.ts", []);
+        }
+        let file_args = [];
+        $mini_list_set(file_args, 0, "--file");
+        $mini_list_set(file_args, 1, $mini_list_get(args, 0));
+        return mini_spawn(root, "dist/test.ts", file_args);
+    }
+    if ((command === "release")) {
+        if (((args).length < 1)) {
+            return mini_usage("usage: mini-release OUTPUT [TAG]");
+        }
+        let status = mini_spawn(root, "dist/release.ts", args);
+        if ((status === 0)) {
+            writeSync(1, "Release prepared.\n");
+        }
+        return status;
+    }
+    if ((command === "compile")) {
+        let compiler = case_path_join(root, mini_compiler(root));
+        if ((((args).length > 0) && ($mini_list_get(args, 0) === "--tokens"))) {
+            let token_args = [];
+            $mini_list_set(token_args, 0, "tokens");
+            $mini_list_set(token_args, 1, $mini_list_get(args, 1));
+            return mini_spawn(root, mini_compiler(root), token_args);
+        }
+        if (((args).length < 1)) {
+            return mini_usage("usage: mini-compile SOURCE.mini [OUTPUT.ts]");
+        }
+        let source = $mini_list_get(args, 0);
+        if ((!text_ends_with(source, ".mini"))) {
+            return mini_usage("Mini source must use .mini");
+        }
+        let output = (source + ".ts");
+        if (((args).length > 1)) {
+            output = $mini_list_get(args, 1);
+        }
+        let compile_args = [];
+        $mini_list_set(compile_args, 0, source);
+        $mini_list_set(compile_args, 1, output);
+        let status = mini_spawn(root, mini_compiler(root), compile_args);
+        if (((status === 0) && text_starts_with(readFileSync(source, "utf8"), "#!"))) {
+            let chmod_args = [];
+            $mini_list_set(chmod_args, 0, "755");
+            $mini_list_set(chmod_args, 1, output);
+            case_run("chmod", chmod_args, root, []);
+        }
+        return status;
+    }
+    return mini_usage(("unknown command: " + command));
 }
-function check_document(path) {
-    let text = readFileSync(path, "utf8");
-    let lines = split_lines(text);
-    let in_fence = false;
-    let directory = case_path_parent(path);
-    let position = 0;
-    while ((position < (lines).length)) {
-        let line = $mini_list_get(lines, position);
-        if (text_starts_with(line, "```")) {
-            in_fence = (!in_fence);
+function mini_run(executable, args, root) {
+    if (((executable === "mini.ts") || (executable === "mini.generated.ts"))) {
+        executable = "mini";
+    }
+    let command = executable;
+    let rest = args;
+    if ((executable === "mini")) {
+        if ((((args).length === 0) || ($mini_list_get(args, 0) === "--help"))) {
+            return mini_help();
+        }
+        if (($mini_list_get(args, 0) === "--version")) {
+            writeSync(1, (((mini_tag(root, "mini") + "\n") + mini_tag(root, "cli")) + "\n"));
+            return 0;
+        }
+        command = $mini_list_get(args, 0);
+        rest = mini_rest(args, 1);
+    } else {
+        if ((executable === "minic")) {
+            command = "compile";
         } else {
-            if ((!in_fence)) {
-                let cursor = check_find_from(line, "](", 0);
-                while ((cursor >= 0)) {
-                    let start = (cursor + 2);
-                    let end = check_find_from(line, ")", start);
-                    if ((end < 0)) {
-                        end = (line).length;
-                    }
-                    let target = $mini_text_slice(line, start, end);
-                    let hash = $mini_text_find(target, "#");
-                    if ((hash >= 0)) {
-                        target = $mini_text_slice(target, 0, hash);
-                    }
-                    if (((((target).length > 0) && (!check_is_url(target))) && (!$mini_path_exists(case_path_resolve(directory, target))))) {
-                        check_fail(((("broken local link in " + path) + ": ") + target));
-                    }
-                    cursor = check_find_from(line, "](", end);
-                }
+            if (text_starts_with(executable, "mini-")) {
+                command = $mini_text_slice(executable, 5, (executable).length);
             }
         }
-        position = (position + 1);
     }
-    if (in_fence) {
-        check_fail(("unbalanced code fence: " + path));
+    if ((command === "fmt")) {
+        command = "format";
     }
-    return 0;
-}
-function check_is_url(target) {
-    let colon = $mini_text_find(target, ":");
-    if ((colon <= 0)) {
-        return false;
-    }
-    let prefix = $mini_text_slice(target, 0, colon);
-    let position = 0;
-    while ((position < (prefix).length)) {
-        let character = $mini_text_get(prefix, position);
-        if (($mini_text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0)) {
-            return false;
-        }
-        position = (position + 1);
-    }
-    return true;
-}
-function check_documents(directory) {
-    let entries = $mini_directory_list(directory);
-    let position = 0;
-    while ((position < (entries).length)) {
-        let name = $mini_list_get(entries, position);
-        let path = case_path_join(directory, name);
-        if (case_entry_excluded(name)) {
-        } else {
-            if ($mini_path_is_directory(path)) {
-                check_documents(path);
-            } else {
-                if ((text_ends_with(name, ".md") || text_ends_with(name, ".mdc"))) {
-                    check_document(path);
-                }
-            }
-        }
-        position = (position + 1);
-    }
-    return 0;
-}
-function check_portable_file(name) {
-    let suffixes = [];
-    $mini_list_set(suffixes, 0, ".json");
-    $mini_list_set(suffixes, 1, ".ts");
-    $mini_list_set(suffixes, 2, ".md");
-    $mini_list_set(suffixes, 3, ".mdc");
-    $mini_list_set(suffixes, 4, ".mini");
-    $mini_list_set(suffixes, 5, ".yml");
-    $mini_list_set(suffixes, 6, ".yaml");
-    $mini_list_set(suffixes, 7, ".stdout");
-    $mini_list_set(suffixes, 8, ".stderr");
-    $mini_list_set(suffixes, 9, ".stdin");
-    $mini_list_set(suffixes, 10, ".svg");
-    let position = 0;
-    while ((position < (suffixes).length)) {
-        if (text_ends_with(name, $mini_list_get(suffixes, position))) {
-            return true;
-        }
-        position = (position + 1);
-    }
-    return false;
-}
-function check_portable_paths(directory) {
-    let entries = $mini_directory_list(directory);
-    let position = 0;
-    while ((position < (entries).length)) {
-        let name = $mini_list_get(entries, position);
-        let path = case_path_join(directory, name);
-        if (case_entry_excluded(name)) {
-        } else {
-            if ($mini_path_is_directory(path)) {
-                check_portable_paths(path);
-            } else {
-                if (check_portable_file(name)) {
-                    let text = readFileSync(path, "utf8");
-                    let users = (("/" + "Users") + "/");
-                    let homes = (("/" + "home") + "/");
-                    let windows = ((("C:" + "\\") + "Users") + "\\");
-                    let home_variable = ("$" + "HOME/");
-                    if ((((($mini_text_find(text, users) >= 0) || ($mini_text_find(text, homes) >= 0)) || ($mini_text_find(text, windows) >= 0)) || ($mini_text_find(text, home_variable) >= 0))) {
-                        check_fail(("absolute home path in " + path));
-                    }
-                }
-            }
-        }
-        position = (position + 1);
-    }
-    return 0;
-}
-function check_sample_cases(root, fixtures) {
-    let covered = ({ __proto__: $mini_map_proto });
-    let position = 0;
-    while ((position < (fixtures).length)) {
-        let fixture = $mini_list_get(fixtures, position);
-        let definition = $mini_map_get(fixture, "definition");
-        if (($mini_map_get(definition, "kind") !== "tool")) {
-            let source = case_path_resolve(case_path_parent($mini_map_get(fixture, "path")), $mini_map_get(definition, "source"));
-            $mini_map_set(covered, source, true);
-        }
-        position = (position + 1);
-    }
-    let directories = [];
-    $mini_list_set(directories, 0, "samples");
-    $mini_list_set(directories, 1, "examples");
-    position = 0;
-    while ((position < (directories).length)) {
-        let name = $mini_list_get(directories, position);
-        let directory = case_path_join(root, name);
-        if ($mini_path_exists(directory)) {
-            check_sample_walk(directory, name, covered);
-        }
-        position = (position + 1);
-    }
-    return 0;
-}
-function check_sample_walk(directory, relative, covered) {
-    let entries = $mini_directory_list(directory);
-    let position = 0;
-    while ((position < (entries).length)) {
-        let name = $mini_list_get(entries, position);
-        let path = case_path_join(directory, name);
-        if ($mini_path_is_directory(path)) {
-            check_sample_walk(path, ((relative + "/") + name), covered);
-        } else {
-            if ((text_ends_with(name, ".mini") && (!$mini_map_has(covered, path)))) {
-                check_fail(((("missing case: " + relative) + "/") + name));
-            }
-        }
-        position = (position + 1);
-    }
-    return 0;
-}
-function check_versions(root) {
-    let current = check_json(case_path_join(root, "config/versions.json"));
-    let expected = [];
-    let names = [];
-    $mini_list_set(names, 0, "group");
-    $mini_list_set(names, 1, "mini");
-    $mini_list_set(names, 2, "language");
-    $mini_list_set(names, 3, "compiler");
-    $mini_list_set(names, 4, "bootstrap");
-    $mini_list_set(names, 5, "std");
-    $mini_list_set(names, 6, "check");
-    $mini_list_set(names, 7, "verify");
-    $mini_list_set(names, 8, "release");
-    $mini_list_set(names, 9, "test");
-    $mini_list_set(names, 10, "bench");
-    $mini_list_set(names, 11, "cli");
-    $mini_list_set(names, 12, "vscode");
-    $mini_list_set(names, 13, "builtins");
-    $mini_list_set(names, 14, "format");
-    $mini_list_set(names, 15, "lsp");
-    let position = 0;
-    while ((position < (names).length)) {
-        $mini_list_set(expected, position, $mini_list_get(names, position));
-        position = (position + 1);
-    }
-    if ((!check_same_list(check_keys(current), check_sorted(expected)))) {
-        check_fail("invalid version registry keys");
-    }
-    let group = $mini_map_get(current, "group");
-    if ((($mini_value_kind(group) !== "text") || (!check_plain_version(group)))) {
-        check_fail("group requires MAJOR.MINOR.PATCH");
-    }
-    position = 0;
-    while ((position < (expected).length)) {
-        let key = $mini_list_get(expected, position);
-        let version = $mini_map_get(current, key);
-        if ((((key !== "group") && ($mini_value_kind(version) !== "number")) && ($mini_value_kind(version) !== "text"))) {
-            check_fail(("invalid version: " + key));
-        }
-        if ((($mini_value_kind(version) === "text") && (!check_product_version(version)))) {
-            check_fail(("invalid version: " + version));
-        }
-        position = (position + 1);
-    }
-    let editor = check_json(case_path_join(root, "editors/vscode/package.json"));
-    let lock = check_json(case_path_join(root, "editors/vscode/package-lock.json"));
-    let editor_version = $mini_map_get(editor, "version");
-    let lock_package = $mini_map_get($mini_map_get(lock, "packages"), "");
-    if ((editor_version !== $mini_map_get(current, "vscode"))) {
-        check_fail("VS Code version must match the registry");
-    }
-    if (($mini_text_find(editor_version, "-") >= 0)) {
-        check_fail("VS Code versions require plain MAJOR.MINOR.PATCH");
-    }
-    if (($mini_map_get(lock, "version") !== editor_version)) {
-        check_fail("VS Code lockfile version differs");
-    }
-    if (($mini_map_get(lock_package, "version") !== editor_version)) {
-        check_fail("VS Code lockfile package version differs");
-    }
-    return 0;
-}
-function check_node(root) {
-    let args = [];
-    $mini_list_set(args, 0, "-v");
-    let result = case_run(process.execPath, args, root, []);
-    let version = $mini_text_from_bytes($mini_map_get(result, "stdout"));
-    if ((!text_starts_with(version, "v24."))) {
-        check_fail("use Node 24; see .node-version");
-    }
-    let parts = $mini_text_split($mini_text_slice(version, 1, (version).length), ".");
-    let minor = "";
-    if (((parts).length >= 2)) {
-        minor = $mini_list_get(parts, 1);
-    }
-    let tens = 0;
-    let units = 0;
-    if (((minor).length === 2)) {
-        tens = $mini_text_find("0123456789", $mini_text_get(minor, 0));
-        units = $mini_text_find("0123456789", $mini_text_get(minor, 1));
-    }
-    if (((((minor).length !== 2) || (tens < 1)) || ((tens === 1) && (units < 6)))) {
-        check_fail("use Node 24.16.0 or newer in the 24.x line");
-    }
-    return 0;
-}
-function check_repository(root, docs_only) {
-    if ((!docs_only)) {
-        let tsc = [];
-        $mini_list_set(tsc, 0, case_path_join(root, "node_modules/typescript/bin/tsc"));
-        $mini_list_set(tsc, 1, "--noEmit");
-        let typed = check_inherit(process.execPath, tsc, root);
-        if (($mini_map_get(typed, "status") !== 0)) {
-            process.exit($mini_map_get(typed, "status"));
+    if ((((rest).length === 1) && ($mini_list_get(rest, 0) === "--version"))) {
+        let component = mini_component(command);
+        if ((component !== "")) {
+            writeSync(1, (mini_tag(root, component) + "\n"));
+            return 0;
         }
     }
-    let tools = [];
-    $mini_list_set(tools, 0, case_path_join(root, "dist/tools/build.generated.ts"));
-    $mini_list_set(tools, 1, "--check");
-    let verified_tools = check_inherit(process.execPath, tools, root);
-    if (($mini_map_get(verified_tools, "status") !== 0)) {
-        process.exit($mini_map_get(verified_tools, "status"));
-    }
-    check_versions(root);
-    check_node(root);
-    let loaded = case_load_cases("", root);
-    if ((!$mini_map_get(loaded, "ok"))) {
-        check_fail($mini_map_get(loaded, "message"));
-    }
-    check_sample_cases(root, $mini_map_get(loaded, "fixtures"));
-    check_documents(root);
-    check_portable_paths(root);
-    let bootstrap = check_json(case_path_join(root, "config/bootstrap.json"));
-    if (($mini_value_kind(bootstrap) !== "map")) {
-        check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
-    }
-    let active = check_json(case_path_join(root, "config/compiler.json"));
-    if (($mini_map_get(active, "entry") !== $mini_map_get(bootstrap, "compiler"))) {
-        check_fail("active compiler must be the generated bootstrap");
-    }
-    let verify = [];
-    $mini_list_set(verify, 0, case_path_join(root, "dist/tools/verify.generated.ts"));
-    $mini_list_set(verify, 1, root);
-    let verified = case_run(process.execPath, verify, root, []);
-    if (($mini_map_get(verified, "status") !== 0)) {
-        writeSync(2, $mini_text_from_bytes($mini_map_get(verified, "stderr")));
-        process.exit($mini_map_get(verified, "status"));
-    }
-    writeSync(1, "Repository checks and bootstrap fixed point passed.\n");
-    return 0;
+    return mini_command(root, command, rest);
 }
 function main() {
-    let args = process.argv.slice(2);
-    let docs_only = false;
-    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--docs"))) {
-        docs_only = true;
-    } else {
-        if (((args).length !== 0)) {
-            writeSync(2, "usage: mini-check [--docs | SOURCE.mini | -]\n");
-            process.exit(1);
-        }
-    }
-    check_repository(case_root(), docs_only);
+    let script = process.argv[1];
+    let executable = case_path_basename(script);
+    process.exit(mini_run(executable, process.argv.slice(2), case_root()));
     return 0;
 }
 main();

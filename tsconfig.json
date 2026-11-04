@@ -13,5 +13,5 @@
     "types": ["node"]
   },
   "include": ["tools/**/*.ts", "compiler/**/*.ts", "cases/applications/**/*.ts"],
-  "exclude": ["tools/**/*.generated.ts"]
+  "exclude": ["dist/**"]
 }

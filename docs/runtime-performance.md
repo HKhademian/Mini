@@ -40,7 +40,7 @@ From the repository root, using a fresh report filename:
 
 ```text
 node tools/runtime-performance.ts .cache/runtime-performance.json
-node tools/runtime-performance.ts .cache/runtime-candidate.json dist/compiler.ts
+node tools/runtime-performance.ts .cache/runtime-candidate.json dist/compile.ts
 ```
 
 The optional compiler path selects a candidate implementing

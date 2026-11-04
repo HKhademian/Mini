@@ -5,7 +5,7 @@ import { root } from './project.ts';
 /** Developer check: run Mini-source cases through a candidate compiler. */
 export function verifyCandidate(compiler: string, filter = ''): void {
   const args = filter === '' ? ['--candidate', resolve(compiler)] : ['--candidate', resolve(compiler), filter];
-  const result = spawnSync(process.execPath, [join(root, 'dist/tools/test.generated.ts'), ...args], { stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [join(root, 'dist/test.ts'), ...args], { stdio: 'inherit' });
   if (result.error) throw result.error;
   process.exitCode = result.status ?? 1;
 }

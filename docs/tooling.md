@@ -195,9 +195,9 @@ the first compiler port.
 
 Tool source is Mini. Entries live in `tools/`; reusable logic lives in `libs/`
 (`libs/text.mini`, `libs/cases.mini`, and per-tool libraries such as
-`libs/format.mini`); generated artifacts live in `dist/tools/`. Each tool has a
-tracked generated TypeScript file using the `*.generated.ts` suffix, produced
-from the active compiler and excluded from the strict TypeScript check.
+`libs/format.mini`); generated artifacts live in `dist/` named by command, for
+example `dist/format.ts` and `dist/mini.ts`, produced from the active compiler
+and excluded from the strict TypeScript check.
 
 [tools/mini-tools.json](../tools/mini-tools.json) maps each Mini source to its
 generated TypeScript file and declares the `bin/` launchers:
@@ -205,11 +205,11 @@ generated TypeScript file and declares the `bin/` launchers:
 ```json
 {
   "tools": [
-    { "source": "tools/check-source.mini", "generated": "dist/tools/check-source.generated.ts" }
+    { "source": "tools/check-source.mini", "generated": "dist/check-source.ts" }
   ],
   "launchers": [
     { "name": "mini" },
-    { "name": "mini-lang-server", "tool": "dist/tools/lang-server.generated.ts" }
+    { "name": "mini-lang-server", "tool": "dist/lang-server.ts" }
   ]
 }
 ```
@@ -220,8 +220,10 @@ source directly with the tracked bootstrap; include expansion is part of the
 compiler.
 
 ```text
-node dist/tools/build.generated.ts           regenerate every generated tool
-node dist/tools/build.generated.ts --check   reject stale generated tools
+node dist/build.ts           regenerate every generated tool and launcher
+node dist/build.ts --check   reject stale generated artifacts
+node dist/check.ts --docs    run repository checks directly
+node dist/mini.ts check      run through the dispatcher
 ```
 
 `mini check` rebuilds every manifest entry and fails when a tracked generated

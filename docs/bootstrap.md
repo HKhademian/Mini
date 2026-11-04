@@ -3,7 +3,7 @@
 The self-hosted bootstrap is the only compiler implementation and is selected by
 [config/compiler.json](../config/compiler.json).
 [config/bootstrap.json](../config/bootstrap.json) pins the generated
-`dist/compiler.ts` to `tools/compiler.mini`. The handwritten T0
+`dist/compile.ts` to `tools/compiler.mini`. The handwritten T0
 implementation was removed after promotion and fixed-point verification. Bare
 `./bin/mini verify` checks the fixed point.
 
@@ -15,7 +15,7 @@ utilities, not prerequisites for running the generated compiler on Node.
 M1 names the Mini compiler source in
 [tools/compiler.mini](../tools/compiler.mini); T1 names the generated TS
 compiler produced from M1. The fixed point is `T1(M1) = T1`. T1 is promoted as
-`dist/compiler.ts`; `config/bootstrap.json` records the source, compiler,
+`dist/compile.ts`; `config/bootstrap.json` records the source, compiler,
 and example identities. The [historical port reference](t0-t1-reference.md)
 records the first port's continuity with the retired T0 design.
 
@@ -42,7 +42,7 @@ selected in `config/compiler.json`, and `config/bootstrap.json` records:
 
 ```json
 {
-  "compiler": "dist/compiler.ts",
+  "compiler": "dist/compile.ts",
   "source": "tools/compiler.mini",
   "example": "cases/language/005-002-io-sample.case.json"
 }

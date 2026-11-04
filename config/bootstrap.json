@@ -1,5 +1,5 @@
 {
-  "compiler": "dist/compiler.ts",
+  "compiler": "dist/compile.ts",
   "source": "tools/compiler.mini",
   "example": "cases/language/005-002-io-sample.case.json"
 }

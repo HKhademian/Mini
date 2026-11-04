@@ -2,7 +2,7 @@
 
 The compiler is self-hosted. [tools/compiler.mini](../tools/compiler.mini)
 is the source and the generated
-[dist/compiler.ts](../dist/compiler.ts) is the active compiler,
+[dist/compile.ts](../dist/compile.ts) is the active compiler,
 selected by [config/compiler.json](../config/compiler.json). The handwritten T0
 implementation was retired; only accepted [language](language.md) and
 [builtin](builtins.md) contracts are normative.
@@ -222,7 +222,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.12`: `process_exec_path()`, `directory_temp()`, `file_remove()`,
   and `directory_remove()` support tool process setup and cleanup.
 
-The compiler path is self-hosted. The generated `dist/compiler.ts` is the
+The compiler path is self-hosted. The generated `dist/compile.ts` is the
 only compiler implementation; `config/bootstrap.json` pins it to
 `tools/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
 bootstrap migration.

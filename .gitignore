@@ -1,9 +1,6 @@
 node_modules/
 /dist/*
-!/dist/compiler.ts
-!/dist/tools/
-/dist/tools/*
-!/dist/tools/*.generated.ts
+!/dist/*.ts
 .cache/
 .DS_Store
 *.mini.ts
