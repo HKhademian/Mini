@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+include "../libs/build.mini";
+
+/// Parse arguments and build or check generated artifacts.
+fn main() {
+    var args = process_args();
+    if (list_length(args) > 1 || (list_length(args) == 1 && list_get(args, 0) != "--check")) {
+        write_error("usage: dist/tools/build.generated.ts [--check]\n");
+        process_exit(1);
+    }
+    var check = list_length(args) == 1;
+    build_run(case_root(), check);
+    return 0;
+}
+
+main();

@@ -220,8 +220,8 @@ source directly with the tracked bootstrap; include expansion is part of the
 compiler.
 
 ```text
-node tools/mini-tools.ts           regenerate every generated tool
-node tools/mini-tools.ts --check   reject stale generated tools
+node dist/tools/build.generated.ts           regenerate every generated tool
+node dist/tools/build.generated.ts --check   reject stale generated tools
 ```
 
 `mini check` rebuilds every manifest entry and fails when a tracked generated

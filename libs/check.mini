@@ -416,7 +416,7 @@ fn check_repository(root, docs_only) {
         }
     }
     var tools = list_new();
-    list_set(tools, 0, case_path_join(root, "tools/mini-tools.ts"));
+    list_set(tools, 0, case_path_join(root, "dist/tools/build.generated.ts"));
     list_set(tools, 1, "--check");
     var verified_tools = check_inherit(process_exec_path(), tools, root);
     if (map_get(verified_tools, "status") != 0) {

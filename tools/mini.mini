@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+include "../libs/mini.mini";
+
+/// Dispatch the invoked command.
+fn main() {
+    var script = process_script_path();
+    var executable = case_path_basename(script);
+    process_exit(mini_run(executable, process_args(), case_root()));
+    return 0;
+}
+
+main();

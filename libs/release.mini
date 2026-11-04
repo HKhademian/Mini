@@ -194,6 +194,9 @@ fn release_checksums(output) {
 
 /// Package committed sources and return success.
 fn release_prepare(directory, output, tag) {
+    if (!case_path_is_absolute(output)) {
+        output = case_path_join(directory, output);
+    }
     var released = 0;
     var status = release_run("git", case_text_list2("status", "--porcelain"), directory);
     if (release_trim(text_from_bytes(map_get(status, "stdout"))) != "") {

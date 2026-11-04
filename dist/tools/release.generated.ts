@@ -1214,6 +1214,9 @@ function release_checksums(output) {
     return 0;
 }
 function release_prepare(directory, output, tag) {
+    if ((!case_path_is_absolute(output))) {
+        output = case_path_join(directory, output);
+    }
     let released = 0;
     let status = release_run("git", case_text_list2("status", "--porcelain"), directory);
     if ((release_trim($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {

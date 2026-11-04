@@ -1,0 +1,237 @@
+include "text.mini";
+include "cases.mini";
+
+/// Return the active compiler entry.
+fn mini_compiler(root) {
+    var parsed = case_json_file(case_path_join(root, "config/compiler.json"));
+    if (!map_get(parsed, "ok")) {
+        write_error(map_get(parsed, "message") + "\n");
+        process_exit(1);
+    }
+    return map_get(map_get(parsed, "value"), "entry");
+}
+
+/// Return the version registry.
+fn mini_versions(root) {
+    var parsed = case_json_file(case_path_join(root, "config/versions.json"));
+    if (!map_get(parsed, "ok")) {
+        write_error(map_get(parsed, "message") + "\n");
+        process_exit(1);
+    }
+    return map_get(parsed, "value");
+}
+
+/// Return a release tag for a product key.
+fn mini_tag(root, component) {
+    var current = mini_versions(root);
+    return component + "-v" + map_get(current, "group") + "-v" + map_get(current, component);
+}
+
+/// Return the product key for a command.
+fn mini_component(command) {
+    if (command == "check" || command == "format" || command == "verify" || command == "release"
+        || command == "test" || command == "bench" || command == "lsp") {
+        return command;
+    }
+    if (command == "compile" || command == "minic") {
+        return "compiler";
+    }
+    if (command == "run") {
+        return "cli";
+    }
+    return "";
+}
+
+/// Run a generated tool with inherited standard streams.
+fn mini_spawn(root, tool, args) {
+    var command_args = list_new();
+    list_set(command_args, 0, case_path_join(root, tool));
+    var position = 0;
+    while (position < list_length(args)) {
+        list_set(command_args, list_length(command_args), list_get(args, position));
+        position = position + 1;
+    }
+    var options = map_new();
+    map_set(options, "command", process_exec_path());
+    map_set(options, "arguments", command_args);
+    map_set(options, "directory", root);
+    map_set(options, "mode", "inherit");
+    return map_get(process_spawn(options), "status");
+}
+
+/// Return a list from a start index.
+fn mini_rest(items, start) {
+    var result = list_new();
+    var position = start;
+    while (position < list_length(items)) {
+        list_set(result, list_length(result), list_get(items, position));
+        position = position + 1;
+    }
+    return result;
+}
+
+/// Fail with a command usage message.
+fn mini_usage(message) {
+    write_error(message + "\n");
+    return 1;
+}
+
+/// Print the dispatcher help.
+fn mini_help() {
+    write("mini: tiny self-hosting foundation for language projects\n");
+    write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check]\n");
+    write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
+    return 0;
+}
+
+/// Run a selected command and return its status.
+fn mini_command(root, command, args) {
+    if (command == "build") {
+        return mini_spawn(root, "dist/tools/build.generated.ts", args);
+    }
+    if (command == "check") {
+        if (list_length(args) == 0 || (list_length(args) == 1 && list_get(args, 0) == "--docs")) {
+            return mini_spawn(root, "dist/tools/check.generated.ts", args);
+        }
+        if (list_length(args) != 1) {
+            return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
+        }
+        var path = list_get(args, 0);
+        if (path != "-" && !path_exists(path)) {
+            return mini_usage("cannot read " + path);
+        }
+        return mini_spawn(root, "dist/tools/check-source.generated.ts", args);
+    }
+    if (command == "format") {
+        var format_path = "";
+        var position = 0;
+        while (position < list_length(args)) {
+            var arg = list_get(args, position);
+            if (arg != "--write" && arg != "--check") {
+                format_path = arg;
+            }
+            position = position + 1;
+        }
+        if (format_path != "" && format_path != "-" && !path_exists(format_path)) {
+            return mini_usage("cannot read " + format_path);
+        }
+        return mini_spawn(root, "dist/tools/format.generated.ts", args);
+    }
+    if (command == "run") {
+        if (list_length(args) < 1) {
+            return mini_usage("usage: mini-run SOURCE.mini [ARG]...");
+        }
+        var source = list_get(args, 0);
+        if (!text_ends_with(source, ".mini")) {
+            return mini_usage("Mini source must use .mini");
+        }
+        var run_args = list_new();
+        list_set(run_args, 0, mini_compiler(root));
+        list_set(run_args, 1, source);
+        var position = 1;
+        while (position < list_length(args)) {
+            list_set(run_args, list_length(run_args), list_get(args, position));
+            position = position + 1;
+        }
+        return mini_spawn(root, "dist/tools/run.generated.ts", run_args);
+    }
+    if (command == "test") {
+        return mini_spawn(root, "dist/tools/test.generated.ts", args);
+    }
+    if (command == "bench") {
+        if (list_length(args) < 1) {
+            return mini_usage("usage: mini-bench OUTPUT [FILTER]");
+        }
+        return mini_spawn(root, "dist/tools/bench.generated.ts", args);
+    }
+    if (command == "verify") {
+        if (list_length(args) == 0) {
+            return mini_spawn(root, "dist/tools/verify.generated.ts", list_new());
+        }
+        var file_args = list_new();
+        list_set(file_args, 0, "--file");
+        list_set(file_args, 1, list_get(args, 0));
+        return mini_spawn(root, "dist/tools/test.generated.ts", file_args);
+    }
+    if (command == "release") {
+        if (list_length(args) < 1) {
+            return mini_usage("usage: mini-release OUTPUT [TAG]");
+        }
+        var status = mini_spawn(root, "dist/tools/release.generated.ts", args);
+        if (status == 0) {
+            write("Release prepared.\n");
+        }
+        return status;
+    }
+    if (command == "compile") {
+        var compiler = case_path_join(root, mini_compiler(root));
+        if (list_length(args) > 0 && list_get(args, 0) == "--tokens") {
+            var token_args = list_new();
+            list_set(token_args, 0, "tokens");
+            list_set(token_args, 1, list_get(args, 1));
+            return mini_spawn(root, mini_compiler(root), token_args);
+        }
+        if (list_length(args) < 1) {
+            return mini_usage("usage: mini-compile SOURCE.mini [OUTPUT.ts]");
+        }
+        var source = list_get(args, 0);
+        if (!text_ends_with(source, ".mini")) {
+            return mini_usage("Mini source must use .mini");
+        }
+        var output = source + ".ts";
+        if (list_length(args) > 1) {
+            output = list_get(args, 1);
+        }
+        var compile_args = list_new();
+        list_set(compile_args, 0, source);
+        list_set(compile_args, 1, output);
+        var status = mini_spawn(root, mini_compiler(root), compile_args);
+        if (status == 0 && text_starts_with(file_read(source), "#!")) {
+            var chmod_args = list_new();
+            list_set(chmod_args, 0, "755");
+            list_set(chmod_args, 1, output);
+            case_run("chmod", chmod_args, root, list_new());
+        }
+        return status;
+    }
+    return mini_usage("unknown command: " + command);
+}
+
+/// Run the dispatcher for one executable name and argument list.
+fn mini_run(executable, args, root) {
+    if (executable == "mini.generated.ts") {
+        executable = "mini";
+    }
+    var command = executable;
+    var rest = args;
+    if (executable == "mini") {
+        if (list_length(args) == 0 || list_get(args, 0) == "--help") {
+            return mini_help();
+        }
+        if (list_get(args, 0) == "--version") {
+            write(mini_tag(root, "mini") + "\n" + mini_tag(root, "cli") + "\n");
+            return 0;
+        }
+        command = list_get(args, 0);
+        rest = mini_rest(args, 1);
+    } else {
+        if (executable == "minic") {
+            command = "compile";
+        } else {
+            if (text_starts_with(executable, "mini-")) {
+                command = text_slice(executable, 5, text_length(executable));
+            }
+        }
+    }
+    if (command == "fmt") {
+        command = "format";
+    }
+    if (list_length(rest) == 1 && list_get(rest, 0) == "--version") {
+        var component = mini_component(command);
+        if (component != "") {
+            write(mini_tag(root, component) + "\n");
+            return 0;
+        }
+    }
+    return mini_command(root, command, rest);
+}

@@ -1,0 +1,127 @@
+include "text.mini";
+include "cases.mini";
+
+/// Report a build failure and stop.
+fn build_fail(message) {
+    write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Read the tool manifest and return it.
+fn build_manifest(root) {
+    var parsed = case_json_file(case_path_join(root, "tools/mini-tools.json"));
+    if (!map_get(parsed, "ok")) {
+        build_fail(map_get(parsed, "message"));
+    }
+    return map_get(parsed, "value");
+}
+
+/// Return the active compiler entry.
+fn build_compiler(root) {
+    var parsed = case_json_file(case_path_join(root, "config/compiler.json"));
+    if (!map_get(parsed, "ok")) {
+        build_fail(map_get(parsed, "message"));
+    }
+    return map_get(map_get(parsed, "value"), "entry");
+}
+
+/// Compile one tool source and return its generated text.
+fn build_compile(root, compiler, source) {
+    var work = directory_temp();
+    var output = case_path_join(work, "tool.generated.ts");
+    var args = list_new();
+    list_set(args, 0, compiler);
+    list_set(args, 1, case_path_join(root, source));
+    list_set(args, 2, output);
+    var result = case_run(process_exec_path(), args, root, list_new());
+    if (map_get(result, "status") != 0) {
+        path_remove(work);
+        build_fail(source + " failed:\n" + text_from_bytes(map_get(result, "stderr")));
+    }
+    var generated = file_read(output);
+    path_remove(work);
+    return generated;
+}
+
+/// Make a file executable.
+fn build_executable(root, path) {
+    var args = list_new();
+    list_set(args, 0, "755");
+    list_set(args, 1, case_path_join(root, path));
+    case_run("chmod", args, root, list_new());
+    return 0;
+}
+
+/// Return launcher text for a manifest entry.
+fn build_launcher(launcher) {
+    if (value_kind(map_get(launcher, "tool")) == "text") {
+        return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { join } from 'node:path';\n"
+            + "await import(pathToFileURL(join(import.meta.dirname, '..', '" + map_get(launcher, "tool") + "')).href);\n";
+    }
+    return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { join } from 'node:path';\n"
+        + "await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/tools/mini.generated.ts')).href);\n";
+}
+
+/// Regenerate every generated tool and launcher.
+fn build_all(root) {
+    var manifest = build_manifest(root);
+    var compiler = build_compiler(root);
+    var tools = map_get(manifest, "tools");
+    var position = 0;
+    while (position < list_length(tools)) {
+        var tool = list_get(tools, position);
+        var generated = build_compile(root, compiler, map_get(tool, "source"));
+        var target = case_path_join(root, map_get(tool, "generated"));
+        directory_create(case_path_parent(target));
+        file_write(target, generated);
+        build_executable(root, map_get(tool, "generated"));
+        position = position + 1;
+    }
+    var launchers = map_get(manifest, "launchers");
+    position = 0;
+    while (position < list_length(launchers)) {
+        var launcher = list_get(launchers, position);
+        var name = "bin/" + map_get(launcher, "name");
+        file_write(case_path_join(root, name), build_launcher(launcher));
+        build_executable(root, name);
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Reject stale generated tools and launchers.
+fn build_check(root) {
+    var manifest = build_manifest(root);
+    var compiler = build_compiler(root);
+    var tools = map_get(manifest, "tools");
+    var position = 0;
+    while (position < list_length(tools)) {
+        var tool = list_get(tools, position);
+        var target = case_path_join(root, map_get(tool, "generated"));
+        var generated = build_compile(root, compiler, map_get(tool, "source"));
+        if (!path_exists(target) || file_read(target) != generated) {
+            build_fail(map_get(tool, "generated") + " is stale; run dist/tools/build.generated.ts");
+        }
+        position = position + 1;
+    }
+    var launchers = map_get(manifest, "launchers");
+    position = 0;
+    while (position < list_length(launchers)) {
+        var launcher = list_get(launchers, position);
+        var name = "bin/" + map_get(launcher, "name");
+        if (!path_exists(case_path_join(root, name)) || file_read(case_path_join(root, name)) != build_launcher(launcher)) {
+            build_fail(name + " is stale; run dist/tools/build.generated.ts");
+        }
+        position = position + 1;
+    }
+    return 0;
+}
+
+/// Run the build or check mode.
+fn build_run(root, check) {
+    if (check) {
+        return build_check(root);
+    }
+    return build_all(root);
+}

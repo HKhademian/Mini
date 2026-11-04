@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.21 / CLI 0.1.0-alpha.13: move the build helper and command
+  dispatcher to Mini. `dist/tools/build.generated.ts` regenerates tools and
+  launchers; `dist/tools/mini.generated.ts` provides `check`, `build`, `compile`,
+  and the other commands. Remove `tools/mini-tools.ts` and `tools/cli.ts`; all
+  generated tools are executable.
 - Compiler 0.3.0-alpha.32 / bootstrap 0.1.0-alpha.20: accept the implicit
   `compiler SOURCE.mini [OUTPUT.ts]` form alongside `compile`, and emit an
   executable Node shebang for the generated compiler.

@@ -1408,7 +1408,7 @@ function check_repository(root, docs_only) {
         }
     }
     let tools = [];
-    $mini_list_set(tools, 0, case_path_join(root, "tools/mini-tools.ts"));
+    $mini_list_set(tools, 0, case_path_join(root, "dist/tools/build.generated.ts"));
     $mini_list_set(tools, 1, "--check");
     let verified_tools = check_inherit(process.execPath, tools, root);
     if (($mini_map_get(verified_tools, "status") !== 0)) {

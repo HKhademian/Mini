@@ -35,6 +35,14 @@
     {
       "source": "tools/lang-server.mini",
       "generated": "dist/tools/lang-server.generated.ts"
+    },
+    {
+      "source": "tools/build.mini",
+      "generated": "dist/tools/build.generated.ts"
+    },
+    {
+      "source": "tools/mini.mini",
+      "generated": "dist/tools/mini.generated.ts"
     }
   ],
   "launchers": [
