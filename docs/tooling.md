@@ -19,7 +19,9 @@ pairing, and can connect to the standalone language server.
 Status: implemented with the check and cli streams. Repository checking remains
 `mini check` and `mini check --docs`. Source checking uses `mini check
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
-forms.
+forms. Source checking is a generated Mini tool
+([tools/check-source.mini](../tools/check-source.mini)) composed with compiler
+parts `00`–`40`; `--docs` remains TypeScript.
 
 On success, source checking prints nothing and exits 0. On a Mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic

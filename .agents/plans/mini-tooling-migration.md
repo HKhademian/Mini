@@ -8,7 +8,7 @@ todos:
     status: completed
   - id: phase-1-check-source
     content: "Phase 1 — Implement source checking as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-1-format
     content: "Phase 1 — Implement formatting as a Mini tool"
     status: pending

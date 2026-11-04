@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.6 / check 0.1.0-alpha.6: implement source checking as a
+  generated Mini tool (`tools/check-source.mini`) composed with compiler parts
+  `00`–`40`. `mini check SOURCE.mini` and `mini check -` run the generated tool;
+  `mini check --docs` remains TypeScript. Add the tool to
+  `tools/mini-tools.json`.
 - Mini 0.1.0-alpha.5, compiler 0.3.0-alpha.12, bootstrap 0.1.0-alpha.2,
   check 0.1.0-alpha.5, format 0.1.0-alpha.2, lsp 0.1.0-alpha.4: verify the
   migrated tooling, self-hosted compiler, generated adapters, and shared builtin

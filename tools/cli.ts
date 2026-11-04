@@ -42,12 +42,13 @@ export async function main(executable: string): Promise<void> {
         assert(args.length === 1, 'usage: mini-check [--docs | SOURCE.mini | -]');
         const path = args[0]!;
         assert(path === '-' || path.endsWith('.mini'), 'Mini source must use .mini');
-        const source = readSource(path);
-        const diagnostic = (await import('./source-check.ts')).checkSource(source, path === '-' ? '<stdin>' : path);
-        if (diagnostic !== null) {
-          console.error(diagnostic);
-          process.exitCode = 1;
+        if (path !== '-') {
+          try { readFileSync(resolve(path), 'utf8'); } catch { throw new Error(`cannot read ${path}`); }
         }
+        const { spawnSync } = await import('node:child_process');
+        const checked = spawnSync(process.execPath, [join(root, 'tools/check-source.generated.ts'), ...args], { stdio: 'inherit' });
+        if (checked.error) throw checked.error;
+        process.exitCode = checked.status ?? 1;
         break;
       }
       case 'format': {

@@ -4,6 +4,17 @@
       "source": "tools/build-m1.mini",
       "parts": [],
       "generated": "tools/build-m1.generated.ts"
+    },
+    {
+      "source": "tools/check-source.mini",
+      "parts": [
+        "compiler/src/00-constants.mini",
+        "compiler/src/10-text.mini",
+        "compiler/src/20-lexer.mini",
+        "compiler/src/30-parser.mini",
+        "compiler/src/40-builtins.mini"
+      ],
+      "generated": "tools/check-source.generated.ts"
     }
   ]
 }
