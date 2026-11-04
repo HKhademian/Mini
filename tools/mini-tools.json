@@ -55,6 +55,14 @@
         "tools/cases.mini"
       ],
       "generated": "tools/check.generated.ts"
+    },
+    {
+      "source": "tools/bench.mini",
+      "parts": [
+        "compiler/src/10-text.mini",
+        "tools/cases.mini"
+      ],
+      "generated": "tools/bench.generated.ts"
     }
   ]
 }

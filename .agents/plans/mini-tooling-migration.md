@@ -29,7 +29,7 @@ todos:
     status: completed
   - id: phase-2-bench
     content: "Phase 2 — Implement benchmarks as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-2-verify
     content: "Phase 2 — Implement bootstrap verification as a Mini tool"
     status: completed

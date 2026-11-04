@@ -1,6 +1,6 @@
 {
   "group": "0.3.0",
-  "mini": "0.1.0-alpha.12",
+  "mini": "0.1.0-alpha.13",
   "language": "0.3.0-alpha.22",
   "compiler": "0.3.0-alpha.27",
   "bootstrap": "0.1.0-alpha.16",
@@ -9,8 +9,8 @@
   "verify": "0.1.0-alpha.3",
   "release": "0.1.0-alpha.3",
   "test": "0.1.0-alpha.3",
-  "bench": "0.1.0-alpha.3",
-  "cli": "0.1.0-alpha.10",
+  "bench": "0.1.0-alpha.4",
+  "cli": "0.1.0-alpha.11",
   "vscode": "0.3.3",
   "builtins": "0.3.0-alpha.21",
   "format": "0.1.0-alpha.3",

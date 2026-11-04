@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.13 / bench 0.1.0-alpha.4 / CLI 0.1.0-alpha.11: implement
+  benchmarks as a generated Mini tool on the shared case runner. Reports are
+  compact JSON with integer sample milliseconds. Remove `tools/bench.ts`.
 - Mini 0.1.0-alpha.12 / check 0.1.0-alpha.7 / CLI 0.1.0-alpha.10: implement
   repository checking as a generated Mini tool. `tools/check.mini` runs strict
   TypeScript, generated-tool and composition checks, versions, editor metadata,
