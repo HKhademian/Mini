@@ -84,6 +84,26 @@ write("ok\n");
   and executes a Mini source directly, and `mini compile` makes shebang output
   executable where the platform supports it.
 
+## Accepted form: include directive
+
+A top-level directive splices another Mini source into the current compilation:
+
+```text
+include "compiler/src/10-text.mini";
+```
+
+- `include "relative/path.mini";` is recognized contextually at the top level.
+  The path is relative to the including file and is canonicalized before use.
+- Each canonical file is included at most once per compilation. A repeated
+  include is a no-op. Includes may nest.
+- A cycle, a missing file, a shebang in an included file, or an include inside a
+  block is a compilation error. The entry file may keep a shebang.
+- Included tokens keep their written include path as their source name, so
+  diagnostics name the included file.
+- `include` adds no values, namespaces, or runtime behavior. `tokens` reports
+  directives unexpanded; `compile` expands them before parsing. Formatting keeps
+  directives and does not inline files.
+
 ## Accepted form: bindings and assignment
 
 Use one declaration form:

@@ -1,0 +1,4 @@
+/// Return the value plus one.
+fn add_one(value) {
+    return value + 1;
+}

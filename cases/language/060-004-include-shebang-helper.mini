@@ -1,0 +1,2 @@
+#!/usr/bin/env node
+fn helper() { return 1; }

@@ -1,0 +1,15 @@
+{
+  "id": "language.include",
+  "kind": "feature",
+  "source": "060-001-include.mini",
+  "features": ["include", "include.once", "include.nested", "number.to-text", "text.output"],
+  "cases": [
+    {
+      "name": "nested-once",
+      "stdin": {"text": ""},
+      "stdout": {"text": "2|deep\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

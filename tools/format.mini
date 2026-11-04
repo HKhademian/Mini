@@ -375,9 +375,9 @@ fn format_tokens(tokens) {
 }
 
 /// Format one source text; return the canonical text.
-fn format_source(source, name) {
+fn format_source(source, name, base) {
     var tokens = tokenize(source, name, true);
-    compile(tokenize(source, name, false));
+    compile(expand_includes(tokenize(source, name, false), base, list_new(), map_new()));
     return format_tokens(tokens);
 }
 
@@ -425,7 +425,11 @@ fn main() {
     } else {
         source = file_read(path);
     }
-    var formatted = format_source(source, name);
+    var base = "";
+    if (path != "-") {
+        base = path;
+    }
+    var formatted = format_source(source, name, base);
     if (mode == "check") {
         if (formatted != source) {
             format_fail(name + ": not formatted");

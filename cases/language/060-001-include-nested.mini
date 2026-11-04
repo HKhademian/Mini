@@ -1,0 +1,5 @@
+include "060-001-include-deep.mini";
+/// Return the nested marker from the deeper file.
+fn nested_marker() {
+    return deep_marker();
+}

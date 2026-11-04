@@ -123,15 +123,6 @@ fn case_path_resolve(base, path) {
     return case_path_normalize(case_path_join(base, path));
 }
 
-/// Return whether text starts with prefix.
-fn text_starts_with(source, prefix) {
-    var size = text_length(prefix);
-    if (size > text_length(source)) {
-        return false;
-    }
-    return text_slice(source, 0, size) == prefix;
-}
-
 /// Return whether a list contains a text value.
 fn case_list_has(items, value) {
     var position = 0;

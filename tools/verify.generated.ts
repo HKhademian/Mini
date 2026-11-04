@@ -250,6 +250,58 @@ function is_identifier_part(character) {
 function is_two_character_symbol(value) {
     return ((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||"));
 }
+function text_starts_with(source, prefix) {
+    let size = (prefix).length;
+    if ((size > (source).length)) {
+        return false;
+    }
+    return ($mini_text_slice(source, 0, size) === prefix);
+}
+function dirname(path) {
+    let position = ((path).length - 1);
+    while ((position >= 0)) {
+        let character = $mini_text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return $mini_text_slice(path, 0, position);
+        }
+        position = (position - 1);
+    }
+    return "";
+}
+function normalize_path(path) {
+    let absolute = text_starts_with(path, "/");
+    let parts = $mini_text_split(path, "/");
+    let stack = [];
+    let position = 0;
+    while ((position < (parts).length)) {
+        let part = $mini_list_get(parts, position);
+        if (((part !== "") && (part !== "."))) {
+            if ((part === "..")) {
+                if ((((stack).length > 0) && ($mini_list_get(stack, ((stack).length - 1)) !== ".."))) {
+                    let kept = [];
+                    let index = 0;
+                    while ((index < ((stack).length - 1))) {
+                        $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
+                        index = (index + 1);
+                    }
+                    stack = kept;
+                } else {
+                    if ((!absolute)) {
+                        $mini_list_set(stack, (stack).length, "..");
+                    }
+                }
+            } else {
+                $mini_list_set(stack, (stack).length, part);
+            }
+        }
+        position = (position + 1);
+    }
+    let output = $mini_list_to_text(stack, "/");
+    if (absolute) {
+        return ("/" + output);
+    }
+    return output;
+}
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -350,13 +402,6 @@ function case_path_resolve(base, path) {
         return case_path_normalize(path);
     }
     return case_path_normalize(case_path_join(base, path));
-}
-function text_starts_with(source, prefix) {
-    let size = (prefix).length;
-    if ((size > (source).length)) {
-        return false;
-    }
-    return ($mini_text_slice(source, 0, size) === prefix);
 }
 function case_list_has(items, value) {
     let position = 0;

@@ -1,0 +1,4 @@
+/// Return the nested marker.
+fn deep_marker() {
+    return "deep";
+}

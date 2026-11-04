@@ -174,3 +174,90 @@ fn tokenize(source, source_name, include_comments) {
     return end_tokens;
 }
 
+
+/// Resolve an include path against the including file.
+fn resolve_include(base, path) {
+    if (text_starts_with(path, "/")) {
+        return normalize_path(path);
+    }
+    var directory = dirname(base);
+    if (directory == "") {
+        return normalize_path(path);
+    }
+    return normalize_path(directory + "/" + path);
+}
+
+/// Return whether a text list contains a value.
+fn list_has_text(items, value) {
+    var position = 0;
+    while (position < list_length(items)) {
+        if (list_get(items, position) == value) {
+            return true;
+        }
+        position = position + 1;
+    }
+    return false;
+}
+
+/// Splice included files into a token stream. Includes are top-level,
+/// include-once, and rejected on cycles or missing files.
+fn expand_includes(tokens, base, stack, seen) {
+    var output = list_new();
+    var position = 0;
+    var depth = 0;
+    while (position < list_length(tokens)) {
+        var token = list_get(tokens, position);
+        var text = map_get(token, "text");
+        if (text == "{") {
+            depth = depth + 1;
+        }
+        if (text == "}") {
+            depth = depth - 1;
+        }
+        var is_include = text == "include" && position + 2 < list_length(tokens)
+            && map_get(list_get(tokens, position + 1), "kind") == "text"
+            && map_get(list_get(tokens, position + 2), "text") == ";";
+        if (!is_include) {
+            list_set(output, list_length(output), token);
+            position = position + 1;
+        } else {
+            if (depth != 0) {
+                diagnostic_fail(token, "include must be top-level");
+            }
+            var quoted = map_get(list_get(tokens, position + 1), "text");
+            var path = text_slice(quoted, 1, text_length(quoted) - 1);
+            var resolved = resolve_include(base, path);
+            if (list_has_text(stack, resolved)) {
+                diagnostic_fail(token, "include cycle: " + path);
+            }
+            if (!map_has(seen, resolved)) {
+                if (!path_exists(resolved)) {
+                    diagnostic_fail(token, "cannot include " + path);
+                }
+                var raw = tokenize(file_read(resolved), path, false);
+                var included = list_new();
+                var raw_position = 0;
+                while (raw_position < list_length(raw)) {
+                    if (map_get(list_get(raw, raw_position), "kind") != "eof") {
+                        list_set(included, list_length(included), list_get(raw, raw_position));
+                    }
+                    raw_position = raw_position + 1;
+                }
+                if (list_length(included) > 0 && map_get(list_get(included, 0), "kind") == "shebang") {
+                    diagnostic_fail(token, "included file must not have a shebang");
+                }
+                map_set(seen, resolved, true);
+                var nested_stack = list_copy(stack);
+                list_set(nested_stack, list_length(nested_stack), resolved);
+                var expanded = expand_includes(included, resolved, nested_stack, seen);
+                var index = 0;
+                while (index < list_length(expanded)) {
+                    list_set(output, list_length(output), list_get(expanded, index));
+                    index = index + 1;
+                }
+            }
+            position = position + 3;
+        }
+    }
+    return output;
+}

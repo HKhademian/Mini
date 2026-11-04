@@ -1,0 +1,3 @@
+060-005-include-nested-block.mini:2:5: include must be top-level
+    include "060-001-include-helper.mini";
+    ^

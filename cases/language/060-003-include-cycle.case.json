@@ -1,0 +1,15 @@
+{
+  "id": "language.include-cycle",
+  "kind": "reject",
+  "source": "060-003-include-cycle.mini",
+  "features": ["include"],
+  "cases": [
+    {
+      "name": "cycle",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-003-include-cycle.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

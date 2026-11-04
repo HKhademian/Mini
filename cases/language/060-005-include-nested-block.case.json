@@ -1,0 +1,15 @@
+{
+  "id": "language.include-top-level",
+  "kind": "reject",
+  "source": "060-005-include-nested-block.mini",
+  "features": ["include"],
+  "cases": [
+    {
+      "name": "inside-function",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-005-include-nested-block.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

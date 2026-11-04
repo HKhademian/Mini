@@ -1,0 +1,15 @@
+{
+  "id": "language.include-missing",
+  "kind": "reject",
+  "source": "060-002-include-missing.mini",
+  "features": ["include"],
+  "cases": [
+    {
+      "name": "missing-file",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-002-include-missing.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

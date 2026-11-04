@@ -1,0 +1,3 @@
+060-004-include-shebang.mini:1:1: included file must not have a shebang
+include "060-004-include-shebang-helper.mini";
+^

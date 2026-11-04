@@ -7,9 +7,9 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.3.0-v0.3.0-alpha.28
+compiler-v0.3.0-v0.3.0-alpha.29
 builtins-v0.3.0-v0.3.0-alpha.22
-bootstrap-v0.3.0-v0.1.0-alpha.17
+bootstrap-v0.3.0-v0.1.0-alpha.18
 vscode-v0.3.0-v0.3.3
 ```
 
@@ -53,15 +53,15 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.3.0-v0.1.0-alpha.16
-lang-v0.3.0-v0.3.0-alpha.23
-compiler-v0.3.0-v0.3.0-alpha.28
-bootstrap-v0.3.0-v0.1.0-alpha.17
+mini-v0.3.0-v0.1.0-alpha.17
+lang-v0.3.0-v0.3.0-alpha.24
+compiler-v0.3.0-v0.3.0-alpha.29
+bootstrap-v0.3.0-v0.1.0-alpha.18
 builtins-v0.3.0-v0.3.0-alpha.22
 cli-v0.3.0-v0.1.0-alpha.12
-check-v0.3.0-v0.1.0-alpha.7
-format-v0.3.0-v0.1.0-alpha.3
-lsp-v0.3.0-v0.1.0-alpha.5
+check-v0.3.0-v0.1.0-alpha.8
+format-v0.3.0-v0.1.0-alpha.4
+lsp-v0.3.0-v0.1.0-alpha.6
 test-v0.3.0-v0.1.0-alpha.3
 verify-v0.3.0-v0.1.0-alpha.3
 bench-v0.3.0-v0.1.0-alpha.4

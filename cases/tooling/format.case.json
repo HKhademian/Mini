@@ -215,7 +215,23 @@
         "text": ""
       },
       "stdout": {
-        "text": "format-v0.3.0-v0.1.0-alpha.3\n"
+        "text": "format-v0.3.0-v0.1.0-alpha.4\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "format-include",
+      "args": [
+        "cases/tooling/format-include.mini"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "format-include.stdout"
       },
       "stderr": {
         "text": ""

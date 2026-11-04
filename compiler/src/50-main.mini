@@ -69,7 +69,8 @@ fn main() {
         if (count == 3) {
             target = output;
         }
-        file_write(target, compile(tokens));
+        var expanded = expand_includes(tokens, source, list_new(), map_new());
+        file_write(target, compile(expanded));
     }
     return 0;
 }

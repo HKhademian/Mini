@@ -1,0 +1,4 @@
+/// Format include helper.
+fn included() {
+    return 1;
+}

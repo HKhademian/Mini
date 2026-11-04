@@ -1,0 +1,2 @@
+include "format-include-helper.mini";
+var value = 1;

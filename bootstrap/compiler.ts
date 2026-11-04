@@ -70,6 +70,10 @@ function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
+function $mini_path_exists(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    try { return fs.existsSync(path); } catch { return false; }
+}
 function $mini_text_find(text, needle) {
     if (typeof text !== "string" || typeof needle !== "string") return -1;
     return text.indexOf(needle);
@@ -185,6 +189,58 @@ function is_identifier_part(character) {
 }
 function is_two_character_symbol(value) {
     return ((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||"));
+}
+function text_starts_with(source, prefix) {
+    let size = (prefix).length;
+    if ((size > (source).length)) {
+        return false;
+    }
+    return ($mini_text_slice(source, 0, size) === prefix);
+}
+function dirname(path) {
+    let position = ((path).length - 1);
+    while ((position >= 0)) {
+        let character = $mini_text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return $mini_text_slice(path, 0, position);
+        }
+        position = (position - 1);
+    }
+    return "";
+}
+function normalize_path(path) {
+    let absolute = text_starts_with(path, "/");
+    let parts = $mini_text_split(path, "/");
+    let stack = [];
+    let position = 0;
+    while ((position < (parts).length)) {
+        let part = $mini_list_get(parts, position);
+        if (((part !== "") && (part !== "."))) {
+            if ((part === "..")) {
+                if ((((stack).length > 0) && ($mini_list_get(stack, ((stack).length - 1)) !== ".."))) {
+                    let kept = [];
+                    let index = 0;
+                    while ((index < ((stack).length - 1))) {
+                        $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
+                        index = (index + 1);
+                    }
+                    stack = kept;
+                } else {
+                    if ((!absolute)) {
+                        $mini_list_set(stack, (stack).length, "..");
+                    }
+                }
+            } else {
+                $mini_list_set(stack, (stack).length, part);
+            }
+        }
+        position = (position + 1);
+    }
+    let output = $mini_list_to_text(stack, "/");
+    if (absolute) {
+        return ("/" + output);
+    }
+    return output;
 }
 function token_new(kind, text, source, start, end, line, column, context) {
     let token = ({ __proto__: $mini_map_proto });
@@ -338,6 +394,84 @@ function tokenize(source, source_name, include_comments) {
     let end_tokens = $mini_map_get(state, "tokens");
     $mini_list_set(end_tokens, (end_tokens).length, end_token);
     return end_tokens;
+}
+function resolve_include(base, path) {
+    if (text_starts_with(path, "/")) {
+        return normalize_path(path);
+    }
+    let directory = dirname(base);
+    if ((directory === "")) {
+        return normalize_path(path);
+    }
+    return normalize_path(((directory + "/") + path));
+}
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function expand_includes(tokens, base, stack, seen) {
+    let output = [];
+    let position = 0;
+    let depth = 0;
+    while ((position < (tokens).length)) {
+        let token = $mini_list_get(tokens, position);
+        let text = $mini_map_get(token, "text");
+        if ((text === "{")) {
+            depth = (depth + 1);
+        }
+        if ((text === "}")) {
+            depth = (depth - 1);
+        }
+        let is_include = ((((text === "include") && ((position + 2) < (tokens).length)) && ($mini_map_get($mini_list_get(tokens, (position + 1)), "kind") === "text")) && ($mini_map_get($mini_list_get(tokens, (position + 2)), "text") === ";"));
+        if ((!is_include)) {
+            $mini_list_set(output, (output).length, token);
+            position = (position + 1);
+        } else {
+            if ((depth !== 0)) {
+                diagnostic_fail(token, "include must be top-level");
+            }
+            let quoted = $mini_map_get($mini_list_get(tokens, (position + 1)), "text");
+            let path = $mini_text_slice(quoted, 1, ((quoted).length - 1));
+            let resolved = resolve_include(base, path);
+            if (list_has_text(stack, resolved)) {
+                diagnostic_fail(token, ("include cycle: " + path));
+            }
+            if ((!$mini_map_has(seen, resolved))) {
+                if ((!$mini_path_exists(resolved))) {
+                    diagnostic_fail(token, ("cannot include " + path));
+                }
+                let raw = tokenize(readFileSync(resolved, "utf8"), path, false);
+                let included = [];
+                let raw_position = 0;
+                while ((raw_position < (raw).length)) {
+                    if (($mini_map_get($mini_list_get(raw, raw_position), "kind") !== "eof")) {
+                        $mini_list_set(included, (included).length, $mini_list_get(raw, raw_position));
+                    }
+                    raw_position = (raw_position + 1);
+                }
+                if ((((included).length > 0) && ($mini_map_get($mini_list_get(included, 0), "kind") === "shebang"))) {
+                    diagnostic_fail(token, "included file must not have a shebang");
+                }
+                $mini_map_set(seen, resolved, true);
+                let nested_stack = $mini_list_copy(stack);
+                $mini_list_set(nested_stack, (nested_stack).length, resolved);
+                let expanded = expand_includes(included, resolved, nested_stack, seen);
+                let index = 0;
+                while ((index < (expanded).length)) {
+                    $mini_list_set(output, (output).length, $mini_list_get(expanded, index));
+                    index = (index + 1);
+                }
+            }
+            position = (position + 3);
+        }
+    }
+    return output;
 }
 function parser_fail(token, message) {
     return diagnostic_fail(token, message);
@@ -1385,7 +1519,8 @@ function main() {
         if ((count === 3)) {
             target = output;
         }
-        writeFileSync(target, compile(tokens), "utf8");
+        let expanded = expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
+        writeFileSync(target, compile(expanded), "utf8");
     }
     return 0;
 }

@@ -74,3 +74,61 @@ fn is_two_character_symbol(value) {
     return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||";
 }
 
+
+/// Return whether text starts with prefix.
+fn text_starts_with(source, prefix) {
+    var size = text_length(prefix);
+    if (size > text_length(source)) {
+        return false;
+    }
+    return text_slice(source, 0, size) == prefix;
+}
+
+/// Return the directory part of a path.
+fn dirname(path) {
+    var position = text_length(path) - 1;
+    while (position >= 0) {
+        var character = text_get(path, position);
+        if (character == "/" || character == "\\") {
+            return text_slice(path, 0, position);
+        }
+        position = position - 1;
+    }
+    return "";
+}
+
+/// Return a path with redundant dot segments collapsed.
+fn normalize_path(path) {
+    var absolute = text_starts_with(path, "/");
+    var parts = text_split(path, "/");
+    var stack = list_new();
+    var position = 0;
+    while (position < list_length(parts)) {
+        var part = list_get(parts, position);
+        if (part != "" && part != ".") {
+            if (part == "..") {
+                if (list_length(stack) > 0 && list_get(stack, list_length(stack) - 1) != "..") {
+                    var kept = list_new();
+                    var index = 0;
+                    while (index < list_length(stack) - 1) {
+                        list_set(kept, list_length(kept), list_get(stack, index));
+                        index = index + 1;
+                    }
+                    stack = kept;
+                } else {
+                    if (!absolute) {
+                        list_set(stack, list_length(stack), "..");
+                    }
+                }
+            } else {
+                list_set(stack, list_length(stack), part);
+            }
+        }
+        position = position + 1;
+    }
+    var output = list_to_text(stack, "/");
+    if (absolute) {
+        return "/" + output;
+    }
+    return output;
+}
