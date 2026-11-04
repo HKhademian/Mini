@@ -50,6 +50,16 @@ list_set(builtin_names_list, list_length(builtin_names_list), "process_env");
 list_set(builtin_names_list, list_length(builtin_names_list), "io_read_line");
 list_set(builtin_names_list, list_length(builtin_names_list), "io_read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "value_kind");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_add");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_sub");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_mul");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_div");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_mod");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_floor");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_pow");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_min");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_max");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_from_text");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_push_front");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_push_back");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_pop_front");
@@ -108,6 +118,16 @@ map_set(builtin_name_set, "process_env", true);
 map_set(builtin_name_set, "io_read_line", true);
 map_set(builtin_name_set, "io_read_bytes", true);
 map_set(builtin_name_set, "value_kind", true);
+map_set(builtin_name_set, "number_add", true);
+map_set(builtin_name_set, "number_sub", true);
+map_set(builtin_name_set, "number_mul", true);
+map_set(builtin_name_set, "number_div", true);
+map_set(builtin_name_set, "number_mod", true);
+map_set(builtin_name_set, "number_floor", true);
+map_set(builtin_name_set, "number_pow", true);
+map_set(builtin_name_set, "number_min", true);
+map_set(builtin_name_set, "number_max", true);
+map_set(builtin_name_set, "number_from_text", true);
 map_set(builtin_name_set, "list_push_front", true);
 map_set(builtin_name_set, "list_push_back", true);
 map_set(builtin_name_set, "list_pop_front", true);
@@ -166,6 +186,16 @@ map_set(builtin_parameter_kinds, "process_env", "text");
 map_set(builtin_parameter_kinds, "io_read_line", "");
 map_set(builtin_parameter_kinds, "io_read_bytes", "number");
 map_set(builtin_parameter_kinds, "value_kind", "unknown");
+map_set(builtin_parameter_kinds, "number_add", "number,number");
+map_set(builtin_parameter_kinds, "number_sub", "number,number");
+map_set(builtin_parameter_kinds, "number_mul", "number,number");
+map_set(builtin_parameter_kinds, "number_div", "number,number");
+map_set(builtin_parameter_kinds, "number_mod", "number,number");
+map_set(builtin_parameter_kinds, "number_floor", "number");
+map_set(builtin_parameter_kinds, "number_pow", "number,number");
+map_set(builtin_parameter_kinds, "number_min", "number,number");
+map_set(builtin_parameter_kinds, "number_max", "number,number");
+map_set(builtin_parameter_kinds, "number_from_text", "text");
 map_set(builtin_parameter_kinds, "list_push_front", "list,unknown");
 map_set(builtin_parameter_kinds, "list_push_back", "list,unknown");
 map_set(builtin_parameter_kinds, "list_pop_front", "list");
@@ -224,6 +254,16 @@ map_set(builtin_result_kinds, "process_env", "text");
 map_set(builtin_result_kinds, "io_read_line", "text");
 map_set(builtin_result_kinds, "io_read_bytes", "list");
 map_set(builtin_result_kinds, "value_kind", "text");
+map_set(builtin_result_kinds, "number_add", "number");
+map_set(builtin_result_kinds, "number_sub", "number");
+map_set(builtin_result_kinds, "number_mul", "number");
+map_set(builtin_result_kinds, "number_div", "number");
+map_set(builtin_result_kinds, "number_mod", "number");
+map_set(builtin_result_kinds, "number_floor", "number");
+map_set(builtin_result_kinds, "number_pow", "number");
+map_set(builtin_result_kinds, "number_min", "number");
+map_set(builtin_result_kinds, "number_max", "number");
+map_set(builtin_result_kinds, "number_from_text", "number");
 map_set(builtin_result_kinds, "list_push_front", "void");
 map_set(builtin_result_kinds, "list_push_back", "void");
 map_set(builtin_result_kinds, "list_pop_front", "unknown");
@@ -282,6 +322,16 @@ map_set(builtin_import_names, "process_env", "");
 map_set(builtin_import_names, "io_read_line", "");
 map_set(builtin_import_names, "io_read_bytes", "");
 map_set(builtin_import_names, "value_kind", "");
+map_set(builtin_import_names, "number_add", "");
+map_set(builtin_import_names, "number_sub", "");
+map_set(builtin_import_names, "number_mul", "");
+map_set(builtin_import_names, "number_div", "");
+map_set(builtin_import_names, "number_mod", "");
+map_set(builtin_import_names, "number_floor", "");
+map_set(builtin_import_names, "number_pow", "");
+map_set(builtin_import_names, "number_min", "");
+map_set(builtin_import_names, "number_max", "");
+map_set(builtin_import_names, "number_from_text", "");
 map_set(builtin_import_names, "list_push_front", "");
 map_set(builtin_import_names, "list_push_back", "");
 map_set(builtin_import_names, "list_pop_front", "");
@@ -341,6 +391,16 @@ map_set(builtin_helper_keys, "io_read_line", "read_line");
 map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
 
 map_set(builtin_helper_keys, "value_kind", "value_kind");
+map_set(builtin_helper_keys, "number_add", "number_add");
+map_set(builtin_helper_keys, "number_sub", "number_sub");
+map_set(builtin_helper_keys, "number_mul", "number_mul");
+map_set(builtin_helper_keys, "number_div", "number_div");
+map_set(builtin_helper_keys, "number_mod", "number_mod");
+map_set(builtin_helper_keys, "number_floor", "number_floor");
+map_set(builtin_helper_keys, "number_pow", "number_pow");
+map_set(builtin_helper_keys, "number_min", "number_min");
+map_set(builtin_helper_keys, "number_max", "number_max");
+map_set(builtin_helper_keys, "number_from_text", "number_from_text");
 map_set(builtin_helper_keys, "list_push_front", "list_push_front");
 map_set(builtin_helper_keys, "list_push_back", "list_push_back");
 map_set(builtin_helper_keys, "list_pop_front", "list_pop_front");
@@ -428,7 +488,7 @@ fn builtin_class(name) {
           || name == "text_from_bytes"
         || name == "number_to_text"
          || name == "list_to_text" 
-         || name == "hash_sha256" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back") {
+         || name == "hash_sha256" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back" || name == "number_add" || name == "number_sub" || name == "number_mul" || name == "number_div" || name == "number_mod" || name == "number_floor" || name == "number_pow" || name == "number_min" || name == "number_max" || name == "number_from_text") {
         return "performance";
     }
     return "library";
@@ -445,6 +505,16 @@ map_set(builtin_reference_targets, "list_push_front", "pure_list_push_front");
 map_set(builtin_reference_targets, "list_push_back", "pure_list_push_back");
 map_set(builtin_reference_targets, "list_pop_front", "pure_list_pop_front");
 map_set(builtin_reference_targets, "list_pop_back", "pure_list_pop_back");
+map_set(builtin_reference_targets, "number_add", "pure_number_add");
+map_set(builtin_reference_targets, "number_sub", "pure_number_sub");
+map_set(builtin_reference_targets, "number_mul", "pure_number_mul");
+map_set(builtin_reference_targets, "number_div", "pure_number_div");
+map_set(builtin_reference_targets, "number_mod", "pure_number_mod");
+map_set(builtin_reference_targets, "number_floor", "pure_number_floor");
+map_set(builtin_reference_targets, "number_pow", "pure_number_pow");
+map_set(builtin_reference_targets, "number_min", "pure_number_min");
+map_set(builtin_reference_targets, "number_max", "pure_number_max");
+map_set(builtin_reference_targets, "number_from_text", "pure_number_from_text");
 
 /// Return the pure target for a builtin, or empty text.
 fn builtin_reference_target(name) {
@@ -569,6 +639,36 @@ fn helper_text(key) {
     if (key == "list_truncate") {
         return list_truncate_helper;
     }
+    if (key == "number_add") {
+        return number_add_helper;
+    }
+    if (key == "number_sub") {
+        return number_sub_helper;
+    }
+    if (key == "number_mul") {
+        return number_mul_helper;
+    }
+    if (key == "number_div") {
+        return number_div_helper;
+    }
+    if (key == "number_mod") {
+        return number_mod_helper;
+    }
+    if (key == "number_floor") {
+        return number_floor_helper;
+    }
+    if (key == "number_pow") {
+        return number_pow_helper;
+    }
+    if (key == "number_min") {
+        return number_min_helper;
+    }
+    if (key == "number_max") {
+        return number_max_helper;
+    }
+    if (key == "number_from_text") {
+        return number_from_text_helper;
+    }
     if (key == "read_line" || key == "io_read_line") {
         return read_line_helper;
     }
@@ -592,7 +692,7 @@ fn builtin_emit(name, args) {
     if (name == "io_read_bytes") {
         return "$mini_read_bytes(" + first + ")";
     }
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back" || name == "list_truncate") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "list_push_front" || name == "list_push_back" || name == "list_pop_front" || name == "list_pop_back" || name == "list_truncate" || name == "number_add" || name == "number_sub" || name == "number_mul" || name == "number_div" || name == "number_mod" || name == "number_floor" || name == "number_pow" || name == "number_min" || name == "number_max" || name == "number_from_text") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

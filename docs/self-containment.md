@@ -176,14 +176,13 @@ links them.
 
 ### Numeric core and hash
 
-`hash_sha256` cannot be implemented in Mini today because Mini has no
-multiplication, division, modulo, or bitwise operations. A pure SHA-256 needs at
-least:
+`hash_sha256` cannot be implemented in Mini today because Mini still has no
+bitwise or shift operations, and its numeric width and overflow model is not
+settled. Multiplication, division, modulo, floor, and power now exist in the
+`number_*` namespace, each with a pure reference implementation. A pure SHA-256
+still needs at least:
 
 ```text
-number_mul(a, b)
-number_div(a, b)
-number_mod(a, b)
 number_bit_and(a, b)
 number_bit_or(a, b)
 number_bit_xor(a, b)

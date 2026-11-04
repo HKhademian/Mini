@@ -1,0 +1,15 @@
+{
+  "id": "language.number-ops",
+  "kind": "feature",
+  "source": "063-001-number-ops.mini",
+  "features": ["number.add", "number.mul", "number.div", "number.mod", "number.pow", "number.from-text"],
+  "cases": [
+    {
+      "name": "arithmetic",
+      "stdin": {"text": ""},
+      "stdout": {"text": "5\n-1\n42\n3\n1\n3\n1024\n4\n9\n-42\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

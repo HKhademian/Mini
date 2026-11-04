@@ -1,0 +1,181 @@
+/// Reference numeric add.
+fn pure_number_add(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    return a + b;
+}
+
+/// Reference numeric subtract.
+fn pure_number_sub(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    return a - b;
+}
+
+/// Reference numeric multiply by repeated addition.
+fn pure_number_mul(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    var left = a;
+    var right = b;
+    var negative = false;
+    if (left < 0) {
+        left = 0 - left;
+        negative = !negative;
+    }
+    if (right < 0) {
+        right = 0 - right;
+        negative = !negative;
+    }
+    var result = 0;
+    while (right > 0) {
+        result = result + left;
+        right = right - 1;
+    }
+    if (negative) {
+        return 0 - result;
+    }
+    return result;
+}
+
+/// Reference numeric division truncated toward zero.
+fn pure_number_div(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number" || b == 0) {
+        return 0;
+    }
+    var left = a;
+    var right = b;
+    var negative = false;
+    if (left < 0) {
+        left = 0 - left;
+        negative = !negative;
+    }
+    if (right < 0) {
+        right = 0 - right;
+        negative = !negative;
+    }
+    var result = 0;
+    while (left >= right) {
+        left = left - right;
+        result = result + 1;
+    }
+    if (negative) {
+        return 0 - result;
+    }
+    return result;
+}
+
+/// Reference numeric remainder with the dividend's sign.
+fn pure_number_mod(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number" || b == 0) {
+        return 0;
+    }
+    var left = a;
+    var right = b;
+    if (left < 0) {
+        left = 0 - left;
+    }
+    if (right < 0) {
+        right = 0 - right;
+    }
+    while (left >= right) {
+        left = left - right;
+    }
+    if (a < 0) {
+        return 0 - left;
+    }
+    return left;
+}
+
+/// Reference numeric floor.
+fn pure_number_floor(a) {
+    if (value_kind(a) != "number") {
+        return 0;
+    }
+    var value = a;
+    var whole = 0;
+    if (value >= 0) {
+        while (value >= 1) {
+            value = value - 1;
+            whole = whole + 1;
+        }
+    } else {
+        while (value < 0) {
+            value = value + 1;
+            whole = whole - 1;
+        }
+    }
+    return whole;
+}
+
+/// Reference numeric power for non-negative integer exponents.
+fn pure_number_pow(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number" || b < 0 || pure_number_floor(b) != b) {
+        return 0;
+    }
+    var result = 1;
+    var exponent = b;
+    while (exponent > 0) {
+        result = pure_number_mul(result, a);
+        exponent = exponent - 1;
+    }
+    return result;
+}
+
+/// Reference numeric minimum.
+fn pure_number_min(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    if (a < b) {
+        return a;
+    }
+    return b;
+}
+
+/// Reference numeric maximum.
+fn pure_number_max(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
+
+/// Reference decimal integer parsing for safe integers.
+fn pure_number_from_text(text) {
+    if (value_kind(text) != "text" || text_length(text) == 0) {
+        return 0;
+    }
+    var start = 0;
+    var negative = false;
+    if (text_get(text, 0) == "-") {
+        negative = true;
+        start = 1;
+    }
+    if (start >= text_length(text)) {
+        return 0;
+    }
+    var result = 0;
+    var position = start;
+    while (position < text_length(text)) {
+        var digit = text_find("0123456789", text_get(text, position));
+        if (digit < 0) {
+            return 0;
+        }
+        result = result + pure_number_mul(result, 9) + digit;
+        if (result > 9007199254740991) {
+            return 0;
+        }
+        position = position + 1;
+    }
+    if (negative) {
+        return 0 - result;
+    }
+    return result;
+}

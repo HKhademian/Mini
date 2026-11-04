@@ -136,6 +136,16 @@ let list_push_back_helper = "function $mini_list_push_back(items, value) {\n    
 let list_pop_front_helper = "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n";
 let list_pop_back_helper = "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n";
 let list_truncate_helper = "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n";
+let number_add_helper = "function $mini_number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n";
+let number_sub_helper = "function $mini_number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n";
+let number_mul_helper = "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n";
+let number_div_helper = "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n";
+let number_mod_helper = "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n";
+let number_floor_helper = "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n";
+let number_pow_helper = "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n";
+let number_min_helper = "function $mini_number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a < b ? a : b;\n}\n";
+let number_max_helper = "function $mini_number_max(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a > b ? a : b;\n}\n";
+let number_from_text_helper = "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -951,6 +961,16 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "list_to_text");
     $mini_list_set(order, (order).length, "map_copy");
     $mini_list_set(order, (order).length, "number_to_text");
+    $mini_list_set(order, (order).length, "number_add");
+    $mini_list_set(order, (order).length, "number_sub");
+    $mini_list_set(order, (order).length, "number_mul");
+    $mini_list_set(order, (order).length, "number_div");
+    $mini_list_set(order, (order).length, "number_mod");
+    $mini_list_set(order, (order).length, "number_floor");
+    $mini_list_set(order, (order).length, "number_pow");
+    $mini_list_set(order, (order).length, "number_min");
+    $mini_list_set(order, (order).length, "number_max");
+    $mini_list_set(order, (order).length, "number_from_text");
     $mini_list_set(order, (order).length, "process_run");
     $mini_list_set(order, (order).length, "process_spawn");
     $mini_list_set(order, (order).length, "read_bytes");
@@ -1089,6 +1109,16 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_env");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_line");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_add");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_sub");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_mul");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_div");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_mod");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_floor");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_pow");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_min");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_max");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_from_text");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_front");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_back");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_pop_front");
@@ -1145,6 +1175,16 @@ $mini_map_set(builtin_name_set, "process_env", true);
 $mini_map_set(builtin_name_set, "io_read_line", true);
 $mini_map_set(builtin_name_set, "io_read_bytes", true);
 $mini_map_set(builtin_name_set, "value_kind", true);
+$mini_map_set(builtin_name_set, "number_add", true);
+$mini_map_set(builtin_name_set, "number_sub", true);
+$mini_map_set(builtin_name_set, "number_mul", true);
+$mini_map_set(builtin_name_set, "number_div", true);
+$mini_map_set(builtin_name_set, "number_mod", true);
+$mini_map_set(builtin_name_set, "number_floor", true);
+$mini_map_set(builtin_name_set, "number_pow", true);
+$mini_map_set(builtin_name_set, "number_min", true);
+$mini_map_set(builtin_name_set, "number_max", true);
+$mini_map_set(builtin_name_set, "number_from_text", true);
 $mini_map_set(builtin_name_set, "list_push_front", true);
 $mini_map_set(builtin_name_set, "list_push_back", true);
 $mini_map_set(builtin_name_set, "list_pop_front", true);
@@ -1201,6 +1241,16 @@ $mini_map_set(builtin_parameter_kinds, "process_env", "text");
 $mini_map_set(builtin_parameter_kinds, "io_read_line", "");
 $mini_map_set(builtin_parameter_kinds, "io_read_bytes", "number");
 $mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
+$mini_map_set(builtin_parameter_kinds, "number_add", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_sub", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_mul", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_div", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_mod", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_floor", "number");
+$mini_map_set(builtin_parameter_kinds, "number_pow", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_min", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_max", "number,number");
+$mini_map_set(builtin_parameter_kinds, "number_from_text", "text");
 $mini_map_set(builtin_parameter_kinds, "list_push_front", "list,unknown");
 $mini_map_set(builtin_parameter_kinds, "list_push_back", "list,unknown");
 $mini_map_set(builtin_parameter_kinds, "list_pop_front", "list");
@@ -1257,6 +1307,16 @@ $mini_map_set(builtin_result_kinds, "process_env", "text");
 $mini_map_set(builtin_result_kinds, "io_read_line", "text");
 $mini_map_set(builtin_result_kinds, "io_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "value_kind", "text");
+$mini_map_set(builtin_result_kinds, "number_add", "number");
+$mini_map_set(builtin_result_kinds, "number_sub", "number");
+$mini_map_set(builtin_result_kinds, "number_mul", "number");
+$mini_map_set(builtin_result_kinds, "number_div", "number");
+$mini_map_set(builtin_result_kinds, "number_mod", "number");
+$mini_map_set(builtin_result_kinds, "number_floor", "number");
+$mini_map_set(builtin_result_kinds, "number_pow", "number");
+$mini_map_set(builtin_result_kinds, "number_min", "number");
+$mini_map_set(builtin_result_kinds, "number_max", "number");
+$mini_map_set(builtin_result_kinds, "number_from_text", "number");
 $mini_map_set(builtin_result_kinds, "list_push_front", "void");
 $mini_map_set(builtin_result_kinds, "list_push_back", "void");
 $mini_map_set(builtin_result_kinds, "list_pop_front", "unknown");
@@ -1313,6 +1373,16 @@ $mini_map_set(builtin_import_names, "process_env", "");
 $mini_map_set(builtin_import_names, "io_read_line", "");
 $mini_map_set(builtin_import_names, "io_read_bytes", "");
 $mini_map_set(builtin_import_names, "value_kind", "");
+$mini_map_set(builtin_import_names, "number_add", "");
+$mini_map_set(builtin_import_names, "number_sub", "");
+$mini_map_set(builtin_import_names, "number_mul", "");
+$mini_map_set(builtin_import_names, "number_div", "");
+$mini_map_set(builtin_import_names, "number_mod", "");
+$mini_map_set(builtin_import_names, "number_floor", "");
+$mini_map_set(builtin_import_names, "number_pow", "");
+$mini_map_set(builtin_import_names, "number_min", "");
+$mini_map_set(builtin_import_names, "number_max", "");
+$mini_map_set(builtin_import_names, "number_from_text", "");
 $mini_map_set(builtin_import_names, "list_push_front", "");
 $mini_map_set(builtin_import_names, "list_push_back", "");
 $mini_map_set(builtin_import_names, "list_pop_front", "");
@@ -1369,6 +1439,16 @@ $mini_map_set(builtin_helper_keys, "process_env", "");
 $mini_map_set(builtin_helper_keys, "io_read_line", "read_line");
 $mini_map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
 $mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
+$mini_map_set(builtin_helper_keys, "number_add", "number_add");
+$mini_map_set(builtin_helper_keys, "number_sub", "number_sub");
+$mini_map_set(builtin_helper_keys, "number_mul", "number_mul");
+$mini_map_set(builtin_helper_keys, "number_div", "number_div");
+$mini_map_set(builtin_helper_keys, "number_mod", "number_mod");
+$mini_map_set(builtin_helper_keys, "number_floor", "number_floor");
+$mini_map_set(builtin_helper_keys, "number_pow", "number_pow");
+$mini_map_set(builtin_helper_keys, "number_min", "number_min");
+$mini_map_set(builtin_helper_keys, "number_max", "number_max");
+$mini_map_set(builtin_helper_keys, "number_from_text", "number_from_text");
 $mini_map_set(builtin_helper_keys, "list_push_front", "list_push_front");
 $mini_map_set(builtin_helper_keys, "list_push_back", "list_push_back");
 $mini_map_set(builtin_helper_keys, "list_pop_front", "list_pop_front");
@@ -1414,7 +1494,7 @@ function builtin_class(name) {
     if (((((((((((((name === "text_length") || (name === "text_get")) || (name === "list_length")) || (name === "list_get")) || (name === "list_set")) || (name === "list_new")) || (name === "list_truncate")) || (name === "map_get")) || (name === "map_set")) || (name === "map_keys")) || (name === "map_has")) || (name === "map_new"))) {
         return "representation";
     }
-    if (((((((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back"))) {
+    if (((((((((((((((((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "number_add")) || (name === "number_sub")) || (name === "number_mul")) || (name === "number_div")) || (name === "number_mod")) || (name === "number_floor")) || (name === "number_pow")) || (name === "number_min")) || (name === "number_max")) || (name === "number_from_text"))) {
         return "performance";
     }
     return "library";
@@ -1429,6 +1509,16 @@ $mini_map_set(builtin_reference_targets, "list_push_front", "pure_list_push_fron
 $mini_map_set(builtin_reference_targets, "list_push_back", "pure_list_push_back");
 $mini_map_set(builtin_reference_targets, "list_pop_front", "pure_list_pop_front");
 $mini_map_set(builtin_reference_targets, "list_pop_back", "pure_list_pop_back");
+$mini_map_set(builtin_reference_targets, "number_add", "pure_number_add");
+$mini_map_set(builtin_reference_targets, "number_sub", "pure_number_sub");
+$mini_map_set(builtin_reference_targets, "number_mul", "pure_number_mul");
+$mini_map_set(builtin_reference_targets, "number_div", "pure_number_div");
+$mini_map_set(builtin_reference_targets, "number_mod", "pure_number_mod");
+$mini_map_set(builtin_reference_targets, "number_floor", "pure_number_floor");
+$mini_map_set(builtin_reference_targets, "number_pow", "pure_number_pow");
+$mini_map_set(builtin_reference_targets, "number_min", "pure_number_min");
+$mini_map_set(builtin_reference_targets, "number_max", "pure_number_max");
+$mini_map_set(builtin_reference_targets, "number_from_text", "pure_number_from_text");
 function builtin_reference_target(name) {
     if ($mini_map_has(builtin_reference_targets, name)) {
         return $mini_map_get(builtin_reference_targets, name);
@@ -1547,6 +1637,36 @@ function helper_text(key) {
     if ((key === "list_truncate")) {
         return list_truncate_helper;
     }
+    if ((key === "number_add")) {
+        return number_add_helper;
+    }
+    if ((key === "number_sub")) {
+        return number_sub_helper;
+    }
+    if ((key === "number_mul")) {
+        return number_mul_helper;
+    }
+    if ((key === "number_div")) {
+        return number_div_helper;
+    }
+    if ((key === "number_mod")) {
+        return number_mod_helper;
+    }
+    if ((key === "number_floor")) {
+        return number_floor_helper;
+    }
+    if ((key === "number_pow")) {
+        return number_pow_helper;
+    }
+    if ((key === "number_min")) {
+        return number_min_helper;
+    }
+    if ((key === "number_max")) {
+        return number_max_helper;
+    }
+    if ((key === "number_from_text")) {
+        return number_from_text_helper;
+    }
     if (((key === "read_line") || (key === "io_read_line"))) {
         return read_line_helper;
     }
@@ -1568,7 +1688,7 @@ function builtin_emit(name, args) {
     if ((name === "io_read_bytes")) {
         return (("$mini_read_bytes(" + first) + ")");
     }
-    if ((((((((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "list_truncate"))) {
+    if ((((((((((((((((((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "list_truncate")) || (name === "number_add")) || (name === "number_sub")) || (name === "number_mul")) || (name === "number_div")) || (name === "number_mod")) || (name === "number_floor")) || (name === "number_pow")) || (name === "number_min")) || (name === "number_max")) || (name === "number_from_text"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {

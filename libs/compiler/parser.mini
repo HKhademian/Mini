@@ -464,6 +464,16 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "list_to_text");
     list_set(order, list_length(order), "map_copy");
     list_set(order, list_length(order), "number_to_text");
+    list_set(order, list_length(order), "number_add");
+    list_set(order, list_length(order), "number_sub");
+    list_set(order, list_length(order), "number_mul");
+    list_set(order, list_length(order), "number_div");
+    list_set(order, list_length(order), "number_mod");
+    list_set(order, list_length(order), "number_floor");
+    list_set(order, list_length(order), "number_pow");
+    list_set(order, list_length(order), "number_min");
+    list_set(order, list_length(order), "number_max");
+    list_set(order, list_length(order), "number_from_text");
     list_set(order, list_length(order), "process_run");
     list_set(order, list_length(order), "process_spawn");
     list_set(order, list_length(order), "read_bytes");

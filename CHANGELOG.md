@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.28 / language 0.3.0-alpha.28 / builtins 0.3.0-alpha.27 /
+  compiler 0.3.0-alpha.38 / bootstrap 0.1.0-alpha.25: add the `number_*`
+  namespace with add, subtract, multiply, divide, modulo, floor, power, min,
+  max, and decimal text parsing, each with a pure reference implementation.
 - Mini 0.1.0-alpha.27 / language 0.3.0-alpha.27 / builtins 0.3.0-alpha.26 /
   compiler 0.3.0-alpha.37 / bootstrap 0.1.0-alpha.24: add `list_push_front`,
   `list_push_back`, `list_pop_front`, `list_pop_back`, and `list_truncate`, with
