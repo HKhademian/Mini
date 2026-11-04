@@ -1,0 +1,3 @@
+050-002-file-remove-type.mini:1:1: expected text argument
+file_remove(1);
+^

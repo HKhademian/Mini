@@ -78,6 +78,22 @@ function $mini_map_set(items, key, value) {
     return String(value);
 }
 `,
+  directory_remove: `function $mini_directory_remove(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    if (path !== "" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);
+}
+`,
+  file_remove: `function $mini_file_remove(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    if (path !== "" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true });
+}
+`,
+  directory_temp: `function $mini_directory_temp() {
+    const fs = process.getBuiltinModule("node:fs");
+    const os = process.getBuiltinModule("node:os");
+    return fs.mkdtempSync(os.tmpdir() + "/mini-");
+}
+`,
   process_run: `function $mini_process_run(command, args, mode) {
     const output = { __proto__: null, status: 1, signal: "", stdout: "", stderr: "", error: "" };
     const child = process.getBuiltinModule("node:child_process");

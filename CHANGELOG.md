@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.12 / compiler 0.3.0-alpha.14 / builtins 0.3.0-alpha.11;
+  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `directory_temp()`,
+  `file_remove(path)`, and `directory_remove(path)` for tool process setup and
+  cleanup. Regenerate the bootstrap and the generated tools.
 - Language 0.3.0-alpha.11 / compiler 0.3.0-alpha.13 / builtins 0.3.0-alpha.10;
   bootstrap 0.1.0-alpha.3: add `process_run(command, args, mode)` for one-shot
   child processes with inherited environment, captured or inherited standard

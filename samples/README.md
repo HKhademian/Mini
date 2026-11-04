@@ -32,3 +32,4 @@ node samples/009-list-mutation.mini.ts
 - [020-json-to-text.mini](020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Cases](../cases/language/048-004-json-to-text-sample.case.json).
 - [021-shebang.mini](021-shebang.mini): Use a first-line shebang header and print a line. [Cases](../cases/language/049-004-shebang-sample.case.json).
 - [022-process-run.mini](022-process-run.mini): Run Node once, capture its output and status, and print them. [Cases](../cases/language/049-004-process-run-sample.case.json).
+- [023-host-files.mini](023-host-files.mini): Write a note in a fresh temporary directory, read it back, and clean up. [Cases](../cases/language/050-003-host-files-sample.case.json).

@@ -1,0 +1,23 @@
+{
+  "id": "language.file-remove-type",
+  "kind": "reject",
+  "source": "050-002-file-remove-type.mini",
+  "features": [
+    "file.remove"
+  ],
+  "cases": [
+    {
+      "name": "number-path",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "050-002-file-remove-type.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

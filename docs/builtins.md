@@ -148,6 +148,13 @@ start or ends by a signal. `signal` names a signalled process and is otherwise
 empty; `error` holds a startup failure message and is otherwise empty. Captured
 output is bounded by a fixed implementation buffer. Execution is one-shot; there
 is no streaming, stdin piping, environment override, or timeout.
+
+The accepted built-ins `process_exec_path()` and `directory_temp()` expose the
+running Node executable path and create a fresh empty directory under the host
+temporary directory. `file_remove(path)` removes a file when present and ignores
+a missing path. `directory_remove(path)` removes an empty directory when present
+and ignores a missing path; a non-empty directory remains a host error. These
+operations back tool process setup and cleanup.
 The `process_*` family also leaves `process_envs()` as a candidate until needed;
 its return shape remains open.
 

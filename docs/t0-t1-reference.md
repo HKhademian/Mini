@@ -54,7 +54,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `lexer_fail(token, message)`; the parser aliases it as `parser_fail`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty-seven signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): thirty-one signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -302,6 +302,10 @@ Count keys with `list_length(map_keys(items))`; no map size counter is maintaine
 - `process_exit(number) -> no result`: `process.exit(arg0)`.
 - `process_run(text, list, text) -> map`: `$mini_process_run(arg0, arg1, arg2)`
   (adapter).
+- `process_exec_path() -> text`: `process.execPath`.
+- `directory_temp() -> text`: `$mini_directory_temp()` (adapter).
+- `file_remove(text) -> no result`: `$mini_file_remove(arg0)` (adapter).
+- `directory_remove(text) -> no result`: `$mini_directory_remove(arg0)` (adapter).
 
 ## 9. Generated host adapters and imports
 
@@ -316,24 +320,30 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 
 1. The shared map block: `$mini_map_proto`, `$mini_map_get`, `$mini_map_has`,
    `$mini_map_set`. The membership helper preserves argument evaluation order.
-2. `$mini_json_to_text`: encode values as compact deterministic JSON, with map
+2. `$mini_directory_remove`: remove an existing empty directory and ignore a
+   missing path.
+3. `$mini_file_remove`: remove an existing non-directory path and ignore a
+   missing path.
+4. `$mini_json_to_text`: encode values as compact deterministic JSON, with map
    keys sorted and cycles returning empty text.
-3. `$mini_list_copy`: return a shallow array copy or an empty array.
-4. `$mini_list_get`: check list target, normalize a negative index, check bounds
+5. `$mini_list_copy`: return a shallow array copy or an empty array.
+6. `$mini_list_get`: check list target, normalize a negative index, check bounds
    and assigned slot, otherwise return numeric zero.
-5. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
+7. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
-6. `$mini_list_to_text`: join text elements with a separator, treating non-text
+8. `$mini_list_to_text`: join text elements with a separator, treating non-text
    elements as empty text.
-7. `$mini_map_copy`: copy own text keys into a fresh map.
-8. `$mini_number_to_text`: render a safe integer as canonical decimal text.
-9. `$mini_process_run`: run one child process to completion and return status,
-   signal, captured output, and a startup error in a fresh map.
-10. `$mini_text_find`: return the first substring position or -1.
-11. `$mini_text_get`: read an in-range character from text, otherwise empty text.
-12. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
+9. `$mini_map_copy`: copy own text keys into a fresh map.
+10. `$mini_number_to_text`: render a safe integer as canonical decimal text.
+11. `$mini_process_run`: run one child process to completion and return status,
+    signal, captured output, and a startup error in a fresh map.
+12. `$mini_directory_temp`: create a fresh empty directory under the host
+    temporary directory and return its path.
+13. `$mini_text_find`: return the first substring position or -1.
+14. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+15. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
     the selected text or empty text for a non-text target or empty range.
-13. `$mini_text_split`: split on a literal divider, preserving empty fields.
+16. `$mini_text_split`: split on a literal divider, preserving empty fields.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.
@@ -347,7 +357,8 @@ with Mini identifiers.
 The only generated module import is `node:fs`. The finite named imports, sorted
 when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
 and the adapter blocks in fixed ordered lists rather than add general sorting.
-`process_run` reaches `node:child_process` through `process.getBuiltinModule`,
+`process_run`, `directory_temp`, `file_remove`, and `directory_remove` reach
+`node:child_process`, `node:fs`, and `node:os` through `process.getBuiltinModule`,
 so the generated import list stays limited to `node:fs`.
 
 ## 10. Emission rules that affect fixed-point equality

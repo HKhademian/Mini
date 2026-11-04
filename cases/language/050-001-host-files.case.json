@@ -1,0 +1,32 @@
+{
+  "id": "language.host-files",
+  "kind": "feature",
+  "source": "050-001-host-files.mini",
+  "features": [
+    "process.exec-path",
+    "process.run",
+    "directory.temp",
+    "file.remove",
+    "directory.remove",
+    "file.write",
+    "file.read",
+    "list.new",
+    "list.set",
+    "map.get"
+  ],
+  "cases": [
+    {
+      "name": "exec-temp-remove",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "exec ok\ntemp ok\nfile ok\nremove ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

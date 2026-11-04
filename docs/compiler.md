@@ -218,6 +218,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
   with captured or inherited standard streams and returns status, signal, and
   output text.
 
+- `0.3.0-alpha.12`: `process_exec_path()`, `directory_temp()`, `file_remove()`,
+  and `directory_remove()` support tool process setup and cleanup.
+
 The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
 active compiler; `config/bootstrap.json` pins it to `compiler/compiler.mini`.
 T0 is retained only as a reference and tooling source. Never revive T0 as the

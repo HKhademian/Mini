@@ -560,6 +560,28 @@ write(map_get(result, "stdout"));
   one-shot: there is no streaming, stdin piping, environment override, or
   timeout.
 
+## Accepted operations: host paths and temporary files
+
+Tools need a Node executable, a fresh temporary directory, and cleanup:
+
+```text
+var node = process_exec_path();
+var directory = directory_temp();
+file_write(directory + "/note.txt", "value\n");
+file_remove(directory + "/note.txt");
+directory_remove(directory);
+```
+
+- `process_exec_path()` returns the absolute path of the running Node
+  executable. It takes no arguments.
+- `directory_temp()` creates and returns a fresh empty directory under the host
+  temporary directory. It takes no arguments.
+- `file_remove(path)` removes a file when present and ignores a missing path.
+  It produces no value.
+- `directory_remove(path)` removes an empty directory when present and ignores a
+  missing path. It produces no value; removing a non-empty directory is a host
+  error.
+
 ## Accepted operation: diagnostic output
 
 The compiler needs a separate stream for diagnostics:

@@ -1,0 +1,28 @@
+{
+  "id": "language.host-files-sample",
+  "kind": "sample",
+  "source": "../../samples/023-host-files.mini",
+  "features": [
+    "directory.temp",
+    "file.write",
+    "file.read",
+    "file.remove",
+    "directory.remove",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "round-trip",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "Mini\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
