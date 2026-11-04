@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.29 / language 0.3.0-alpha.29 / builtins 0.3.0-alpha.28 /
+  compiler 0.3.0-alpha.39 / bootstrap 0.1.0-alpha.26: remove the trivial
+  `number_add`, `number_sub`, `number_min`, and `number_max` builtins and their
+  tautological pure references. Addition and subtraction remain operators;
+  minimum and maximum use comparisons. Total `number_add`, `number_sub`,
+  `number_min`, and `number_max` helpers live in `libs/number.mini` instead.
+  Only operations that add real semantics keep reference implementations.
 - Mini 0.1.0-alpha.28 / language 0.3.0-alpha.28 / builtins 0.3.0-alpha.27 /
   compiler 0.3.0-alpha.38 / bootstrap 0.1.0-alpha.25: add the `number_*`
   namespace with add, subtract, multiply, divide, modulo, floor, power, min,

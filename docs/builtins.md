@@ -61,6 +61,25 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `io_write` produces no value. The compiler implements these operations.
 
+`number_to_text(value)` returns canonical decimal text for a safe integer, or
+empty text for other values.
+
+`number_mul(a, b)`, `number_div(a, b)`, `number_mod(a, b)`, `number_floor(a)`,
+`number_pow(a, b)`, and `number_from_text(text)` cover operations that `+` and
+`-` cannot express. Addition and subtraction remain the operators; minimum and
+maximum use comparisons. Non-number operands return 0. Division and remainder
+by zero return 0. Division truncates toward zero and remainder keeps the
+dividend's sign. `number_pow` accepts a non-negative integer exponent.
+`number_from_text` accepts an optional minus sign followed by decimal digits.
+These six have pure reference implementations selected by `--reference`.
+
+`number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
+are total library functions in [libs/number.mini](../libs/number.mini), not
+builtins. They use the core operators and return 0 when either operand is not a
+number. The operators themselves reject mixed text/number operands at compile
+time, so `+` and `number_add` have different contracts even though both generate
+`a + b` for two valid numbers.
+
 The accepted built-ins `text_length(text)`, `text_get(text, index)`,
 `text_find(text, needle)`, `text_slice(text, start, end)`, and
 `text_split(text, divider)` scan ASCII source. `text_get` uses zero-based

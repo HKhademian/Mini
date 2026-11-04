@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+include "../libs/text.mini";
+include "../libs/number.mini";
+
+/// Check total numeric helpers against valid and invalid operands.
+fn main() {
+    if (number_add(2, 3) != 5 || number_sub(2, 3) != -1
+        || number_min(2, 3) != 2 || number_max(2, 3) != 3) {
+        io_write_error("valid numeric helpers failed\n");
+        process_exit(1);
+    }
+    if (number_add("hi", 5) != 0 || number_sub("hi", 5) != 0
+        || number_min("hi", 5) != 0 || number_max("hi", 5) != 0) {
+        io_write_error("invalid numeric helpers did not return zero\n");
+        process_exit(1);
+    }
+    io_write("number helpers ok\n");
+    return 0;
+}
+
+main();

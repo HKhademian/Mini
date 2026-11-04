@@ -1,18 +1,5 @@
-/// Reference numeric add.
-fn pure_number_add(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
-        return 0;
-    }
-    return a + b;
-}
+/// Reference numeric add derived from subtraction.
 
-/// Reference numeric subtract.
-fn pure_number_sub(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
-        return 0;
-    }
-    return a - b;
-}
 
 /// Reference numeric multiply by repeated addition.
 fn pure_number_mul(a, b) {
@@ -126,26 +113,8 @@ fn pure_number_pow(a, b) {
 }
 
 /// Reference numeric minimum.
-fn pure_number_min(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
-        return 0;
-    }
-    if (a < b) {
-        return a;
-    }
-    return b;
-}
 
 /// Reference numeric maximum.
-fn pure_number_max(a, b) {
-    if (value_kind(a) != "number" || value_kind(b) != "number") {
-        return 0;
-    }
-    if (a > b) {
-        return a;
-    }
-    return b;
-}
 
 /// Reference decimal integer parsing for safe integers.
 fn pure_number_from_text(text) {

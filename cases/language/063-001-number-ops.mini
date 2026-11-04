@@ -1,10 +1,7 @@
-io_write(number_to_text(number_add(2, 3)) + "\n");
-io_write(number_to_text(number_sub(2, 3)) + "\n");
+io_write(number_to_text(2 + 3) + "\n");
 io_write(number_to_text(number_mul(6, 7)) + "\n");
 io_write(number_to_text(number_div(7, 2)) + "\n");
 io_write(number_to_text(number_mod(7, 3)) + "\n");
 io_write(number_to_text(number_floor(3)) + "\n");
 io_write(number_to_text(number_pow(2, 10)) + "\n");
-io_write(number_to_text(number_min(4, 9)) + "\n");
-io_write(number_to_text(number_max(4, 9)) + "\n");
 io_write(number_to_text(number_from_text("-42")) + "\n");

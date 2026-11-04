@@ -38,13 +38,11 @@ var list_pop_front_helper = "function $mini_list_pop_front(items) {\n    if (!Ar
 var list_pop_back_helper = "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n";
 var list_truncate_helper = "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n";
 
-var number_add_helper = "function $mini_number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n";
-var number_sub_helper = "function $mini_number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n";
 var number_mul_helper = "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n";
 var number_div_helper = "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n";
 var number_mod_helper = "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n";
 var number_floor_helper = "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n";
 var number_pow_helper = "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n";
-var number_min_helper = "function $mini_number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a < b ? a : b;\n}\n";
-var number_max_helper = "function $mini_number_max(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a > b ? a : b;\n}\n";
 var number_from_text_helper = "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n";
+
+

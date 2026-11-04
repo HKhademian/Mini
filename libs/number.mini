@@ -1,0 +1,37 @@
+/// Total numeric addition: non-number operands return 0.
+fn number_add(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    return a + b;
+}
+
+/// Total numeric subtraction: non-number operands return 0.
+fn number_sub(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    return a - b;
+}
+
+/// Total numeric minimum: non-number operands return 0.
+fn number_min(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    if (a < b) {
+        return a;
+    }
+    return b;
+}
+
+/// Total numeric maximum: non-number operands return 0.
+fn number_max(a, b) {
+    if (value_kind(a) != "number" || value_kind(b) != "number") {
+        return 0;
+    }
+    if (a > b) {
+        return a;
+    }
+    return b;
+}
