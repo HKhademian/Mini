@@ -1790,17 +1790,11 @@ function lsp_read_message() {
     }
     return $mini_map_get(parsed, "value");
 }
-function main() {
-    let args = process.argv.slice(2);
-    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--version"))) {
-        let versions = $mini_map_get($mini_json_parse(readFileSync(case_path_join(lsp_root(), "config/versions.json"), "utf8")), "value");
-        writeSync(1, (((("lsp-v" + $mini_map_get(versions, "group")) + "-v") + $mini_map_get(versions, "lsp")) + "\n"));
-        return 0;
-    }
-    if (((args).length !== 0)) {
-        lsp_log("usage: mini-lang-server [--version]");
-        process.exit(1);
-    }
+function lsp_version() {
+    let versions = $mini_map_get($mini_json_parse(readFileSync(case_path_join(lsp_root(), "config/versions.json"), "utf8")), "value");
+    return ((("lsp-v" + $mini_map_get(versions, "group")) + "-v") + $mini_map_get(versions, "lsp"));
+}
+function lsp_serve() {
     let documents = ({ __proto__: $mini_map_proto });
     let shutting_down = false;
     let running = true;
@@ -1824,8 +1818,21 @@ function main() {
         }
     }
     if ((!shutting_down)) {
+        return 1;
+    }
+    return 0;
+}
+function main() {
+    let args = process.argv.slice(2);
+    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--version"))) {
+        writeSync(1, (lsp_version() + "\n"));
+        return 0;
+    }
+    if (((args).length !== 0)) {
+        lsp_log("usage: mini-lang-server [--version]");
         process.exit(1);
     }
+    process.exit(lsp_serve());
     return 0;
 }
 main();

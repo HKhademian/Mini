@@ -1213,18 +1213,8 @@ function release_checksums(output) {
     writeFileSync(case_path_join(output, "SHA256SUMS"), $mini_list_to_text(lines, ""), "utf8");
     return 0;
 }
-function main() {
-    let args = process.argv.slice(2);
-    if ((((args).length < 1) || ((args).length > 2))) {
-        release_fail("usage: mini-release OUTPUT [TAG]");
-    }
-    let directory = case_root();
-    let output = case_path_normalize($mini_list_get(args, 0));
-    let tag = "";
+function release_prepare(directory, output, tag) {
     let released = 0;
-    if (((args).length === 2)) {
-        tag = $mini_list_get(args, 1);
-    }
     let status = release_run("git", case_text_list2("status", "--porcelain"), directory);
     if ((release_trim($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {
         release_fail("release needs a clean checkout");
@@ -1332,6 +1322,21 @@ function main() {
     release_notes(output, title, label, commit, readFileSync(case_path_join(source, "CHANGELOG.md"), "utf8"));
     release_checksums(output);
     $mini_path_remove(work);
+    return 0;
+}
+function main() {
+    let args = process.argv.slice(2);
+    if ((((args).length < 1) || ((args).length > 2))) {
+        writeSync(2, "usage: mini-release OUTPUT [TAG]\n");
+        process.exit(1);
+    }
+    let directory = case_root();
+    let output = case_path_normalize($mini_list_get(args, 0));
+    let tag = "";
+    if (((args).length === 2)) {
+        tag = $mini_list_get(args, 1);
+    }
+    release_prepare(directory, output, tag);
     return 0;
 }
 main();

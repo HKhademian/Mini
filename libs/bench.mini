@@ -1,0 +1,173 @@
+include "text.mini";
+include "cases.mini";
+/// Run benchmark cases and write one JSON report.
+/// Usage: node dist/tools/bench.generated.ts OUTPUT [FILTER]
+/// Output must not exist; the parent directory is created.
+
+/// Report a benchmark error and stop.
+fn bench_fail(message) {
+    write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Return the integer half of a nonnegative count.
+fn bench_half(value) {
+    var remainder = value;
+    var half = 0;
+    while (remainder >= 2) {
+        remainder = remainder - 2;
+        half = half + 1;
+    }
+    return half;
+}
+
+/// Return a sorted copy of numeric samples.
+fn bench_sorted(samples) {
+    var result = list_copy(samples);
+    var position = 0;
+    while (position < list_length(result)) {
+        var cursor = position + 1;
+        while (cursor < list_length(result)) {
+            if (list_get(result, cursor) < list_get(result, position)) {
+                var hold = list_get(result, position);
+                list_set(result, position, list_get(result, cursor));
+                list_set(result, cursor, hold);
+            }
+            cursor = cursor + 1;
+        }
+        position = position + 1;
+    }
+    return result;
+}
+
+/// Return the compiler source hash from configuration.
+fn bench_compiler_hash(root) {
+    var parsed = json_parse(file_read(case_path_join(root, "config/compiler.json")));
+    if (!map_get(parsed, "ok")) {
+        bench_fail("invalid config/compiler.json");
+    }
+    var sources = map_get(map_get(parsed, "value"), "sources");
+    var parts = list_new();
+    var position = 0;
+    while (position < list_length(sources)) {
+        var path = list_get(sources, position);
+        list_set(parts, list_length(parts), path + "\n" + file_read(case_path_join(root, path)));
+        position = position + 1;
+    }
+    return hash_sha256(list_to_text(parts, "\n"));
+}
+
+/// Return host facts from a small Node probe.
+fn bench_platform() {
+    var code = "process.stdout.write(JSON.stringify({node:process.version,platform:process.platform,architecture:process.arch}))";
+    var args = list_new();
+    list_set(args, 0, "-e");
+    list_set(args, 1, code);
+    var result = case_run(process_exec_path(), args, case_root(), list_new());
+    var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
+    if (!map_get(parsed, "ok")) {
+        return map_new();
+    }
+    return map_get(parsed, "value");
+}
+
+/// Return the repository commit, or empty text outside a checkout.
+fn bench_commit(root) {
+    if (!path_exists(case_path_join(root, ".git"))) {
+        return "";
+    }
+    var args = list_new();
+    list_set(args, 0, "rev-parse");
+    list_set(args, 1, "HEAD");
+    var result = case_run("git", args, root, list_new());
+    return bench_trim(text_from_bytes(map_get(result, "stdout")));
+}
+
+/// Remove trailing line-ending characters.
+fn bench_trim(text) {
+    var length = text_length(text);
+    while (length > 0 && (text_get(text, length - 1) == "\n" || text_get(text, length - 1) == "\r")) {
+        length = length - 1;
+    }
+    return text_slice(text, 0, length);
+}
+
+/// Run benchmark cases and return the number of report rows written.
+fn bench_run(root, output, filter) {
+    if (path_exists(output)) {
+        bench_fail("benchmark output already exists; choose a new report path");
+    }
+    var selected = case_load_cases(filter, root);
+    if (!map_get(selected, "ok")) {
+        bench_fail(map_get(selected, "message"));
+    }
+    var fixtures = map_get(selected, "fixtures");
+    var results = list_new();
+    var fixture_index = 0;
+    while (fixture_index < list_length(fixtures)) {
+        var fixture = list_get(fixtures, fixture_index);
+        var definition = map_get(fixture, "definition");
+        if (map_has(definition, "benchmark")) {
+            var settings = map_get(definition, "benchmark");
+            var warmups = map_get(settings, "warmups");
+            var sample_count = map_get(settings, "samples");
+            var identity = case_case_identity(fixture, root);
+            var scenarios = map_get(definition, "cases");
+            var scenario_index = 0;
+            while (scenario_index < list_length(scenarios)) {
+                var scenario = list_get(scenarios, scenario_index);
+                var warmup_index = 0;
+                while (warmup_index < warmups) {
+                    var warmed = case_verify_scenario(fixture, scenario, root, "");
+                    if (!map_get(warmed, "ok")) {
+                        bench_fail(map_get(warmed, "message"));
+                    }
+                    warmup_index = warmup_index + 1;
+                }
+                var samples = list_new();
+                var sample_index = 0;
+                while (sample_index < sample_count) {
+                    var started = time_millis();
+                    var measured = case_verify_scenario(fixture, scenario, root, "");
+                    if (!map_get(measured, "ok")) {
+                        bench_fail(map_get(measured, "message"));
+                    }
+                    list_set(samples, list_length(samples), time_millis() - started);
+                    sample_index = sample_index + 1;
+                }
+                var sorted = bench_sorted(samples);
+                var row = map_new();
+                map_set(row, "id", map_get(definition, "id"));
+                map_set(row, "scenario", map_get(scenario, "name"));
+                map_set(row, "kind", map_get(definition, "kind"));
+                map_set(row, "identity", identity);
+                map_set(row, "warmups", warmups);
+                map_set(row, "milliseconds", samples);
+                map_set(row, "medianMilliseconds", list_get(sorted, bench_half(list_length(sorted))));
+                list_set(results, list_length(results), row);
+                scenario_index = scenario_index + 1;
+            }
+        }
+        fixture_index = fixture_index + 1;
+    }
+    if (list_length(results) == 0) {
+        bench_fail("no benchmark cases selected");
+    }
+    var host = bench_platform();
+    var versions_parsed = json_parse(file_read(case_path_join(root, "config/versions.json")));
+    var report = map_new();
+    map_set(report, "node", map_get(host, "node"));
+    map_set(report, "platform", map_get(host, "platform"));
+    map_set(report, "architecture", map_get(host, "architecture"));
+    map_set(report, "commit", bench_commit(root));
+    if (map_get(versions_parsed, "ok")) {
+        map_set(report, "versions", map_get(versions_parsed, "value"));
+    }
+    map_set(report, "compiler", bench_compiler_hash(root));
+    map_set(report, "scope", "fresh-process wall time including startup, IO, verification, and compilation for program cases");
+    map_set(report, "results", results);
+    directory_create(case_path_parent(output));
+    file_write(output, json_to_text(report) + "\n");
+    return list_length(results);
+}

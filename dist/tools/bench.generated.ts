@@ -1141,17 +1141,7 @@ function bench_trim(text) {
     }
     return $mini_text_slice(text, 0, length);
 }
-function main() {
-    let args = process.argv.slice(2);
-    if ((((args).length < 1) || ((args).length > 2))) {
-        bench_fail("usage: mini-bench OUTPUT [FILTER]");
-    }
-    let root = case_root();
-    let output = case_path_resolve("", $mini_list_get(args, 0));
-    let filter = "";
-    if (((args).length === 2)) {
-        filter = $mini_list_get(args, 1);
-    }
+function bench_run(root, output, filter) {
     if ($mini_path_exists(output)) {
         bench_fail("benchmark output already exists; choose a new report path");
     }
@@ -1226,7 +1216,22 @@ function main() {
     $mini_map_set(report, "results", results);
     $mini_directory_create(case_path_parent(output));
     writeFileSync(output, ($mini_json_to_text(report) + "\n"), "utf8");
-    writeSync(1, (((("Wrote " + $mini_number_to_text((results).length)) + " benchmark results to ") + output) + "\n"));
+    return (results).length;
+}
+function main() {
+    let args = process.argv.slice(2);
+    if ((((args).length < 1) || ((args).length > 2))) {
+        writeSync(2, "usage: mini-bench OUTPUT [FILTER]\n");
+        process.exit(1);
+    }
+    let root = case_root();
+    let output = case_path_resolve("", $mini_list_get(args, 0));
+    let filter = "";
+    if (((args).length === 2)) {
+        filter = $mini_list_get(args, 1);
+    }
+    let count = bench_run(root, output, filter);
+    writeSync(1, (((("Wrote " + $mini_number_to_text(count)) + " benchmark results to ") + output) + "\n"));
     return 0;
 }
 main();

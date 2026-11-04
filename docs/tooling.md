@@ -193,9 +193,11 @@ the first compiler port.
 
 ## Generated tools
 
-Tool source is Mini. Each tool has a tracked generated TypeScript file using the
-`*.generated.ts` suffix, produced from the active compiler and excluded from the
-strict TypeScript check.
+Tool source is Mini. Entries live in `tools/`; reusable logic lives in `libs/`
+(`libs/text.mini`, `libs/cases.mini`, and per-tool libraries such as
+`libs/format.mini`); generated artifacts live in `dist/tools/`. Each tool has a
+tracked generated TypeScript file using the `*.generated.ts` suffix, produced
+from the active compiler and excluded from the strict TypeScript check.
 
 [tools/mini-tools.json](../tools/mini-tools.json) maps each Mini source to its
 generated TypeScript file and declares the `bin/` launchers:

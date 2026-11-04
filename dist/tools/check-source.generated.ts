@@ -1453,6 +1453,11 @@ function builtin_emit(name, args) {
     }
     return "";
 }
+function check_source_text(source, name, base) {
+    let tokens = tokenize(source, name, false);
+    compile(expand_includes(tokens, base, [], ({ __proto__: $mini_map_proto })));
+    return 0;
+}
 function check_source_fail(message) {
     writeSync(2, (message + "\n"));
     process.exit(1);

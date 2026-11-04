@@ -1453,11 +1453,6 @@ function builtin_emit(name, args) {
     }
     return "";
 }
-function format_fail(message) {
-    writeSync(2, (message + "\n"));
-    process.exit(1);
-    return 0;
-}
 function format_indentation(depth) {
     let text = "";
     let position = 0;
@@ -1772,6 +1767,11 @@ function format_source(source, name, base) {
     let tokens = tokenize(source, name, true);
     compile(expand_includes(tokenize(source, name, false), base, [], ({ __proto__: $mini_map_proto })));
     return format_tokens(tokens);
+}
+function format_fail(message) {
+    writeSync(2, (message + "\n"));
+    process.exit(1);
+    return 0;
 }
 function main() {
     let args = process.argv.slice(2);

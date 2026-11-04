@@ -1397,17 +1397,7 @@ function check_node(root) {
     }
     return 0;
 }
-function main() {
-    let args = process.argv.slice(2);
-    let docs_only = false;
-    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--docs"))) {
-        docs_only = true;
-    } else {
-        if (((args).length !== 0)) {
-            check_fail("usage: mini-check [--docs | SOURCE.mini | -]");
-        }
-    }
-    let root = case_root();
+function check_repository(root, docs_only) {
     if ((!docs_only)) {
         let tsc = [];
         $mini_list_set(tsc, 0, case_path_join(root, "node_modules/typescript/bin/tsc"));
@@ -1450,6 +1440,20 @@ function main() {
         process.exit($mini_map_get(verified, "status"));
     }
     writeSync(1, "Repository checks and bootstrap fixed point passed.\n");
+    return 0;
+}
+function main() {
+    let args = process.argv.slice(2);
+    let docs_only = false;
+    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--docs"))) {
+        docs_only = true;
+    } else {
+        if (((args).length !== 0)) {
+            writeSync(2, "usage: mini-check [--docs | SOURCE.mini | -]\n");
+            process.exit(1);
+        }
+    }
+    check_repository(case_root(), docs_only);
     return 0;
 }
 main();

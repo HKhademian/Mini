@@ -1,13 +1,5 @@
 #!/usr/bin/env node
-include "../libs/compiler/constants.mini";
-include "../libs/text.mini";
-include "../libs/compiler/lexer.mini";
-include "../libs/compiler/parser.mini";
-include "../libs/compiler/builtins.mini";
-/// Check one Mini source file or standard input.
-/// On success this writes nothing. A failure prints the compiler's first
-/// diagnostic and exits 1; invalid arguments and unreadable files are command
-/// errors with the same status.
+include "../libs/check-source.mini";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {

@@ -1,0 +1,44 @@
+/// Compile and run one Mini source in a temporary module.
+/// Usage: node dist/tools/run.generated.ts COMPILER.ts SOURCE.mini [ARG]...
+/// The compiler path is the active generated compiler; the remaining arguments
+/// reach the program through process_args(). Standard streams are inherited.
+/// A failed compilation skips execution and keeps its exit status.
+
+/// Remove a temporary run directory and its known files.
+fn run_cleanup(directory) {
+    file_remove(directory + "/program.ts");
+    file_remove(directory + "/package.json");
+    directory_remove(directory);
+    return 0;
+}
+
+/// Compile the source and run the generated module with forwarded arguments.
+fn run_program(compiler, source, forwarded) {
+    var directory = directory_temp();
+    if (text_length(directory) == 0) {
+        write_error("cannot create a temporary directory\n");
+        process_exit(1);
+    }
+    var output = directory + "/program.ts";
+    file_write(directory + "/package.json", "{\"type\":\"module\"}\n");
+    var compile_args = list_new();
+    list_set(compile_args, 0, compiler);
+    list_set(compile_args, 1, "compile");
+    list_set(compile_args, 2, source);
+    list_set(compile_args, 3, output);
+    var compiled = process_run(process_exec_path(), compile_args, "inherit");
+    if (map_get(compiled, "status") != 0) {
+        run_cleanup(directory);
+        process_exit(map_get(compiled, "status"));
+    }
+    var run_args = list_new();
+    list_set(run_args, 0, output);
+    var position = 0;
+    while (position < list_length(forwarded)) {
+        list_set(run_args, list_length(run_args), list_get(forwarded, position));
+        position = position + 1;
+    }
+    var executed = process_run(process_exec_path(), run_args, "inherit");
+    run_cleanup(directory);
+    return map_get(executed, "status");
+}

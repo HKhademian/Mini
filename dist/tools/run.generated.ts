@@ -58,14 +58,7 @@ function run_cleanup(directory) {
     $mini_directory_remove(directory);
     return 0;
 }
-function main() {
-    let args = process.argv.slice(2);
-    if (((args).length < 2)) {
-        writeSync(2, "usage: mini-run SOURCE.mini [ARG]...\n");
-        process.exit(1);
-    }
-    let compiler = $mini_list_get(args, 0);
-    let source = $mini_list_get(args, 1);
+function run_program(compiler, source, forwarded) {
     let directory = $mini_directory_temp();
     if (((directory).length === 0)) {
         writeSync(2, "cannot create a temporary directory\n");
@@ -85,14 +78,28 @@ function main() {
     }
     let run_args = [];
     $mini_list_set(run_args, 0, output);
-    let position = 2;
-    while ((position < (args).length)) {
-        $mini_list_set(run_args, (run_args).length, $mini_list_get(args, position));
+    let position = 0;
+    while ((position < (forwarded).length)) {
+        $mini_list_set(run_args, (run_args).length, $mini_list_get(forwarded, position));
         position = (position + 1);
     }
     let executed = $mini_process_run(process.execPath, run_args, "inherit");
     run_cleanup(directory);
-    process.exit($mini_map_get(executed, "status"));
+    return $mini_map_get(executed, "status");
+}
+function main() {
+    let args = process.argv.slice(2);
+    if (((args).length < 2)) {
+        writeSync(2, "usage: mini-run SOURCE.mini [ARG]...\n");
+        process.exit(1);
+    }
+    let forwarded = [];
+    let position = 2;
+    while ((position < (args).length)) {
+        $mini_list_set(forwarded, (forwarded).length, $mini_list_get(args, position));
+        position = (position + 1);
+    }
+    process.exit(run_program($mini_list_get(args, 0), $mini_list_get(args, 1), forwarded));
     return 0;
 }
 main();

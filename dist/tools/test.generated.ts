@@ -1042,33 +1042,7 @@ function test_usage() {
     process.exit(1);
     return 0;
 }
-function main() {
-    let args = process.argv.slice(2);
-    let filter = "";
-    let file = "";
-    let candidate = "";
-    if (((args).length === 1)) {
-        filter = $mini_list_get(args, 0);
-    } else {
-        if ((((args).length === 2) && ($mini_list_get(args, 0) === "--file"))) {
-            file = $mini_list_get(args, 1);
-        } else {
-            if ((((args).length >= 2) && ($mini_list_get(args, 0) === "--candidate"))) {
-                candidate = $mini_list_get(args, 1);
-                if (((args).length > 3)) {
-                    test_usage();
-                }
-                if (((args).length === 3)) {
-                    filter = $mini_list_get(args, 2);
-                }
-            } else {
-                if (((args).length !== 0)) {
-                    test_usage();
-                }
-            }
-        }
-    }
-    let root = case_root();
+function test_run(root, filter, file, candidate) {
     let fixtures = [];
     if ((file !== "")) {
         let loaded = case_load_case(file);
@@ -1086,7 +1060,7 @@ function main() {
         fixtures = $mini_map_get(selected, "fixtures");
     }
     if ((candidate !== "")) {
-        process.exit(test_candidate(fixtures, root, candidate));
+        return test_candidate(fixtures, root, candidate);
     }
     let failures = 0;
     let count = 0;
@@ -1123,7 +1097,7 @@ function main() {
         writeSync(1, ($mini_number_to_text(pending) + " scenarios pending\n"));
     }
     if (((failures > 0) || ((pending > 0) && ((file !== "") || (count === 0))))) {
-        process.exit(1);
+        return 1;
     }
     return 0;
 }
@@ -1170,6 +1144,38 @@ function test_candidate(fixtures, root, compiler) {
     if ((failed > 0)) {
         return 1;
     }
+    return 0;
+}
+main();
+function main() {
+    let args = process.argv.slice(2);
+    let filter = "";
+    let file = "";
+    let candidate = "";
+    if (((args).length === 1)) {
+        filter = $mini_list_get(args, 0);
+    } else {
+        if ((((args).length === 2) && ($mini_list_get(args, 0) === "--file"))) {
+            file = $mini_list_get(args, 1);
+        } else {
+            if ((((args).length >= 2) && ($mini_list_get(args, 0) === "--candidate"))) {
+                candidate = $mini_list_get(args, 1);
+                if (((args).length > 3)) {
+                    writeSync(2, "usage: mini-test [FILTER]\n");
+                    process.exit(1);
+                }
+                if (((args).length === 3)) {
+                    filter = $mini_list_get(args, 2);
+                }
+            } else {
+                if (((args).length !== 0)) {
+                    writeSync(2, "usage: mini-test [FILTER]\n");
+                    process.exit(1);
+                }
+            }
+        }
+    }
+    process.exit(test_run(case_root(), filter, file, candidate));
     return 0;
 }
 main();

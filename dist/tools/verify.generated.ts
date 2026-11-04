@@ -1077,15 +1077,7 @@ function verify_text(value, key) {
     }
     return field;
 }
-function main() {
-    let args = process.argv.slice(2);
-    if (((args).length > 1)) {
-        verify_fail("usage: mini-verify");
-    }
-    let root = case_root();
-    if (((args).length === 1)) {
-        root = $mini_list_get(args, 0);
-    }
+function verify_bootstrap(root) {
     let bootstrap_path = case_path_join(root, "config/bootstrap.json");
     if ((!$mini_path_exists(bootstrap_path))) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.");
@@ -1174,7 +1166,19 @@ function main() {
     $mini_map_set(record, "example", case_case_identity(fixture, root));
     $mini_map_set(record, "artifacts", artifacts);
     $mini_path_remove(work);
-    writeSync(1, ($mini_json_to_text(record) + "\n"));
+    return ($mini_json_to_text(record) + "\n");
+}
+function main() {
+    let args = process.argv.slice(2);
+    if (((args).length > 1)) {
+        writeSync(2, "usage: mini-verify\n");
+        process.exit(1);
+    }
+    let root = case_root();
+    if (((args).length === 1)) {
+        root = $mini_list_get(args, 0);
+    }
+    writeSync(1, verify_bootstrap(root));
     return 0;
 }
 main();
