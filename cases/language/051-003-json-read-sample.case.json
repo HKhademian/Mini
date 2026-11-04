@@ -1,0 +1,15 @@
+{
+  "id": "language.json-read-sample",
+  "kind": "sample",
+  "source": "../../samples/024-json-read.mini",
+  "features": ["json.parse", "readAll", "map.get", "text.output"],
+  "cases": [
+    {
+      "name": "name-field",
+      "stdin": {"text": "{\"name\":\"Mini\"}\n"},
+      "stdout": {"text": "Mini\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

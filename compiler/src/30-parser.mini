@@ -446,6 +446,7 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "map_runtime");
     list_set(order, list_length(order), "directory_remove");
     list_set(order, list_length(order), "file_remove");
+    list_set(order, list_length(order), "json_parse");
     list_set(order, list_length(order), "json_to_text");
     list_set(order, list_length(order), "list_copy");
     list_set(order, list_length(order), "list_get");

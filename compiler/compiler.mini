@@ -15,6 +15,7 @@ var text_find_helper = "function $mini_text_find(text, needle) {\n    if (typeof
 var text_get_helper = "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n";
 var text_split_helper = "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n";
 var text_slice_helper = "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n";
+var json_parse_helper = "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n";
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
     var lines = text_split(source, "\n");
@@ -715,6 +716,7 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "map_runtime");
     list_set(order, list_length(order), "directory_remove");
     list_set(order, list_length(order), "file_remove");
+    list_set(order, list_length(order), "json_parse");
     list_set(order, list_length(order), "json_to_text");
     list_set(order, list_length(order), "list_copy");
     list_set(order, list_length(order), "list_get");
@@ -840,6 +842,7 @@ list_set(builtin_names_list, list_length(builtin_names_list), "text_split");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_slice");
 list_set(builtin_names_list, list_length(builtin_names_list), "readAll");
 list_set(builtin_names_list, list_length(builtin_names_list), "write");
+list_set(builtin_names_list, list_length(builtin_names_list), "json_parse");
 
 /// Builtin name membership set.
 var builtin_name_set = map_new();
@@ -874,6 +877,7 @@ map_set(builtin_name_set, "text_split", true);
 map_set(builtin_name_set, "text_slice", true);
 map_set(builtin_name_set, "readAll", true);
 map_set(builtin_name_set, "write", true);
+map_set(builtin_name_set, "json_parse", true);
 
 /// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
 var builtin_parameter_kinds = map_new();
@@ -908,6 +912,7 @@ map_set(builtin_parameter_kinds, "text_split", "text,text");
 map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
 map_set(builtin_parameter_kinds, "readAll", "");
 map_set(builtin_parameter_kinds, "write", "text");
+map_set(builtin_parameter_kinds, "json_parse", "text");
 
 /// Builtin result kinds keyed by name.
 var builtin_result_kinds = map_new();
@@ -942,6 +947,7 @@ map_set(builtin_result_kinds, "text_split", "list");
 map_set(builtin_result_kinds, "text_slice", "text");
 map_set(builtin_result_kinds, "readAll", "text");
 map_set(builtin_result_kinds, "write", "void");
+map_set(builtin_result_kinds, "json_parse", "map");
 
 /// Builtin Node import names keyed by name; comma-separated, empty for none.
 var builtin_import_names = map_new();
@@ -976,6 +982,7 @@ map_set(builtin_import_names, "text_split", "");
 map_set(builtin_import_names, "text_slice", "");
 map_set(builtin_import_names, "readAll", "readFileSync");
 map_set(builtin_import_names, "write", "writeSync");
+map_set(builtin_import_names, "json_parse", "");
 
 /// Builtin adapter keys keyed by name; empty for inline lowering.
 var builtin_helper_keys = map_new();
@@ -1010,6 +1017,7 @@ map_set(builtin_helper_keys, "text_split", "text_split");
 map_set(builtin_helper_keys, "text_slice", "text_slice");
 map_set(builtin_helper_keys, "readAll", "");
 map_set(builtin_helper_keys, "write", "");
+map_set(builtin_helper_keys, "json_parse", "json_parse");
 
 /// Return every builtin name once, in declaration order.
 fn builtin_names() {
@@ -1111,6 +1119,9 @@ fn helper_text(key) {
     if (key == "text_split") {
         return text_split_helper;
     }
+    if (key == "json_parse") {
+        return json_parse_helper;
+    }
     return "";
 }
 
@@ -1118,7 +1129,7 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

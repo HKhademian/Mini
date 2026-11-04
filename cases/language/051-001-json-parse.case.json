@@ -1,0 +1,15 @@
+{
+  "id": "language.json-parse",
+  "kind": "feature",
+  "source": "051-001-json-parse.mini",
+  "features": ["json.parse", "map.get", "list.get", "list.length", "text.output"],
+  "cases": [
+    {
+      "name": "object-list-invalid",
+      "stdin": {"text": ""},
+      "stdout": {"text": "object ok\nlist ok\ninvalid ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.13 / compiler 0.3.0-alpha.18 / builtins 0.3.0-alpha.12;
+  bootstrap 0.1.0-alpha.7: add `json_parse(text)` for structured tool input,
+  returning `ok` and `value` with JSON null as numeric zero.
 - Compiler 0.3.0-alpha.17 / bootstrap 0.1.0-alpha.6: table-drive builtin names,
   parameter kinds, result kinds, imports, and adapter keys in M1. Behavior and
   emitted programs are unchanged; the metadata command output is byte-identical.

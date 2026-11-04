@@ -1,0 +1,15 @@
+{
+  "id": "language.json-parse-type",
+  "kind": "reject",
+  "source": "051-002-json-parse-type.mini",
+  "features": ["json.parse"],
+  "cases": [
+    {
+      "name": "number-input",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "051-002-json-parse-type.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

@@ -536,6 +536,19 @@ process_exit(1);
 Use `process_*` names for host process operations. `process_envs()` remains a
 candidate; add it only with a concrete need and a defined return shape.
 
+## Accepted operation: JSON parsing
+
+```text
+var parsed = json_parse("{\"name\":\"Mini\"}");
+var value = map_get(parsed, "value");
+```
+
+- `json_parse(text)` parses JSON into existing value kinds. Objects become maps,
+  arrays become lists, booleans stay booleans, numbers stay numbers, and JSON
+  `null` becomes numeric zero.
+- It returns a map with `ok` and `value`; invalid JSON or non-text input returns
+  `ok` false and `value` 0. Parsing adds no JSON value kind.
+
 ## Accepted operation: process execution
 
 Run one child process and inspect its result:

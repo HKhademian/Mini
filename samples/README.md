@@ -33,3 +33,4 @@ node samples/009-list-mutation.mini.ts
 - [021-shebang.mini](021-shebang.mini): Use a first-line shebang header and print a line. [Cases](../cases/language/049-004-shebang-sample.case.json).
 - [022-process-run.mini](022-process-run.mini): Run Node once, capture its output and status, and print them. [Cases](../cases/language/049-004-process-run-sample.case.json).
 - [023-host-files.mini](023-host-files.mini): Write a note in a fresh temporary directory, read it back, and clean up. [Cases](../cases/language/050-003-host-files-sample.case.json).
+- [024-json-read.mini](024-json-read.mini): Parse standard-input JSON and print its name field. [Cases](../cases/language/051-003-json-read-sample.case.json).

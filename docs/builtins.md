@@ -5,6 +5,11 @@ Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
 
+`json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
+arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
+`null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
+true on success, and false with `value` 0 for invalid JSON or non-text input.
+
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
@@ -60,6 +65,11 @@ Mini needs a small set of host operations for compiling files and writing tools.
 Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
+
+`json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
+arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
+`null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
+true on success, and false with `value` 0 for invalid JSON or non-text input.
 
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
