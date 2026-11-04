@@ -846,6 +846,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_from_bytes
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "hash_sha256");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "time_millis");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -884,6 +885,7 @@ $mini_map_set(builtin_name_set, "text_from_bytes", true);
 $mini_map_set(builtin_name_set, "file_read_bytes", true);
 $mini_map_set(builtin_name_set, "file_write_bytes", true);
 $mini_map_set(builtin_name_set, "hash_sha256", true);
+$mini_map_set(builtin_name_set, "time_millis", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -922,6 +924,7 @@ $mini_map_set(builtin_parameter_kinds, "text_from_bytes", "list");
 $mini_map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 $mini_map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
 $mini_map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
+$mini_map_set(builtin_parameter_kinds, "time_millis", "");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -960,6 +963,7 @@ $mini_map_set(builtin_result_kinds, "text_from_bytes", "text");
 $mini_map_set(builtin_result_kinds, "file_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "file_write_bytes", "void");
 $mini_map_set(builtin_result_kinds, "hash_sha256", "text");
+$mini_map_set(builtin_result_kinds, "time_millis", "number");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -998,6 +1002,7 @@ $mini_map_set(builtin_import_names, "text_from_bytes", "");
 $mini_map_set(builtin_import_names, "file_read_bytes", "");
 $mini_map_set(builtin_import_names, "file_write_bytes", "");
 $mini_map_set(builtin_import_names, "hash_sha256", "");
+$mini_map_set(builtin_import_names, "time_millis", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1036,6 +1041,7 @@ $mini_map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
 $mini_map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 $mini_map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
 $mini_map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
+$mini_map_set(builtin_helper_keys, "time_millis", "");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1151,6 +1157,9 @@ function builtin_emit(name, args) {
     }
     if ((name === "process_exec_path")) {
         return "process.execPath";
+    }
+    if ((name === "time_millis")) {
+        return "Date.now()";
     }
     if ((name === "map_keys")) {
         return (("Object.keys(" + first) + ")");

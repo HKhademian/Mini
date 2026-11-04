@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.17 / compiler 0.3.0-alpha.22 / builtins 0.3.0-alpha.16;
+  bootstrap 0.1.0-alpha.11: add `time_millis()` for integer epoch milliseconds.
 - Language 0.3.0-alpha.16 / compiler 0.3.0-alpha.21 / builtins 0.3.0-alpha.15;
   bootstrap 0.1.0-alpha.10: rename the byte conversions to `text_to_bytes` and
   `text_from_bytes`.

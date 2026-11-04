@@ -13,6 +13,8 @@ whole files as byte lists.
 
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
 
+`time_millis()` returns the host clock as integer milliseconds since the epoch.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -81,6 +83,8 @@ non-integer or out-of-range elements as zero.
 whole files as byte lists.
 
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
+
+`time_millis()` returns the host clock as integer milliseconds since the epoch.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON

@@ -1,0 +1,15 @@
+{
+  "id": "language.time",
+  "kind": "feature",
+  "source": "054-001-time.mini",
+  "features": ["time.millis", "text.output"],
+  "cases": [
+    {
+      "name": "epoch-milliseconds",
+      "stdin": {"text": ""},
+      "stdout": {"text": "time ok\norder ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

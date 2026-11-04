@@ -558,6 +558,16 @@ write(hash_sha256("abc"));
 - `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase
   hexadecimal SHA-256 text. It takes one argument and adds no other hash.
 
+## Accepted operation: millisecond clock
+
+```text
+var started = time_millis();
+```
+
+- `time_millis()` returns integer milliseconds since the epoch from the host
+  clock. It takes no arguments and does not promise monotonicity across clock
+  adjustments.
+
 ## Accepted operation: JSON parsing
 
 ```text
