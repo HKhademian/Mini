@@ -549,6 +549,15 @@ write(bytes_text(bytes));
 - `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace a
   whole file as a byte list.
 
+## Accepted operation: SHA-256 hashing
+
+```text
+write(hash_sha256("abc"));
+```
+
+- `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase
+  hexadecimal SHA-256 text. It takes one argument and adds no other hash.
+
 ## Accepted operation: JSON parsing
 
 ```text

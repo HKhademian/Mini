@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.15 / compiler 0.3.0-alpha.20 / builtins 0.3.0-alpha.14;
+  bootstrap 0.1.0-alpha.9: add `hash_sha256(value)` for lowercase hexadecimal
+  SHA-256 of text or byte lists.
 - Language 0.3.0-alpha.14 / compiler 0.3.0-alpha.19 / builtins 0.3.0-alpha.13;
   bootstrap 0.1.0-alpha.8: add `text_bytes`, `bytes_text`, `file_read_bytes`,
   and `file_write_bytes` for UTF-8 and whole-file byte data.

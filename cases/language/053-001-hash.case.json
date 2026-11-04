@@ -1,0 +1,15 @@
+{
+  "id": "language.hash",
+  "kind": "feature",
+  "source": "053-001-hash.mini",
+  "features": ["hash.sha256", "list.new", "list.set"],
+  "cases": [
+    {
+      "name": "text-and-bytes",
+      "stdin": {"text": ""},
+      "stdout": {"text": "text ok\nbytes ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

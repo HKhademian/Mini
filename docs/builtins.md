@@ -11,6 +11,8 @@ non-integer or out-of-range elements as zero.
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
 
+`hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -77,6 +79,8 @@ representation are not.
 non-integer or out-of-range elements as zero.
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
+
+`hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON

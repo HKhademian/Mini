@@ -115,6 +115,7 @@ let text_bytes_helper = "function $mini_text_bytes(text) {\n    if (typeof text 
 let bytes_text_helper = "function $mini_bytes_text(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n";
 let file_read_bytes_helper = "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n";
 let file_write_bytes_helper = "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n";
+let hash_sha256_helper = "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -720,6 +721,7 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "file_read_bytes");
     $mini_list_set(order, (order).length, "file_remove");
     $mini_list_set(order, (order).length, "file_write_bytes");
+    $mini_list_set(order, (order).length, "hash_sha256");
     $mini_list_set(order, (order).length, "json_parse");
     $mini_list_set(order, (order).length, "json_to_text");
     $mini_list_set(order, (order).length, "list_copy");
@@ -843,6 +845,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "bytes_text");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write_bytes");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "hash_sha256");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -880,6 +883,7 @@ $mini_map_set(builtin_name_set, "text_bytes", true);
 $mini_map_set(builtin_name_set, "bytes_text", true);
 $mini_map_set(builtin_name_set, "file_read_bytes", true);
 $mini_map_set(builtin_name_set, "file_write_bytes", true);
+$mini_map_set(builtin_name_set, "hash_sha256", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -917,6 +921,7 @@ $mini_map_set(builtin_parameter_kinds, "text_bytes", "text");
 $mini_map_set(builtin_parameter_kinds, "bytes_text", "list");
 $mini_map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 $mini_map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
+$mini_map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -954,6 +959,7 @@ $mini_map_set(builtin_result_kinds, "text_bytes", "list");
 $mini_map_set(builtin_result_kinds, "bytes_text", "text");
 $mini_map_set(builtin_result_kinds, "file_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "file_write_bytes", "void");
+$mini_map_set(builtin_result_kinds, "hash_sha256", "text");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -991,6 +997,7 @@ $mini_map_set(builtin_import_names, "text_bytes", "");
 $mini_map_set(builtin_import_names, "bytes_text", "");
 $mini_map_set(builtin_import_names, "file_read_bytes", "");
 $mini_map_set(builtin_import_names, "file_write_bytes", "");
+$mini_map_set(builtin_import_names, "hash_sha256", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1028,6 +1035,7 @@ $mini_map_set(builtin_helper_keys, "text_bytes", "text_bytes");
 $mini_map_set(builtin_helper_keys, "bytes_text", "bytes_text");
 $mini_map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 $mini_map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
+$mini_map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1130,12 +1138,15 @@ function helper_text(key) {
     if ((key === "file_write_bytes")) {
         return file_write_bytes_helper;
     }
+    if ((key === "hash_sha256")) {
+        return hash_sha256_helper;
+    }
     return "";
 }
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
-    if ((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_bytes")) || (name === "bytes_text")) || (name === "file_read_bytes")) || (name === "file_write_bytes"))) {
+    if (((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_bytes")) || (name === "bytes_text")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {
