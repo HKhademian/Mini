@@ -1,20 +1,20 @@
 # M1 source parts
 
 The Mini compiler is authored as ordered parts and concatenated into the
-canonical bootstrap source. The build tool is itself Mini source with tracked
-generated TypeScript:
+canonical bootstrap source. Tools compose the same parts through
+`tools/mini-tools.json`; the build helper is TypeScript because it invokes the
+compiler:
 
 ```text
-./bin/mini compile tools/build-m1.mini tools/build-m1.generated.ts
-./tools/build-m1.generated.ts
-./tools/build-m1.generated.ts --check
+node tools/mini-tools.ts
+node tools/mini-tools.ts --check
 ```
 
 `compiler/m1.parts` is the order. The parts keep the original single-file
 structure; concatenation is a build step, not a Mini module or import system.
 Generated Mini tools use the `*.generated.ts` suffix and are excluded from the
-strict TypeScript check; `mini check` compares `tools/build-m1.generated.ts`
-against a fresh compilation.
+strict TypeScript check; `mini check` rebuilds every manifest entry and compares
+the tracked output.
 
 - `00-constants.mini`: generated adapter text from `compiler/adapters.ts`.
 - `10-text.mini`: text, line, path, and character helpers.

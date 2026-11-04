@@ -184,6 +184,46 @@ Keep protocol traffic separate from logs and diagnostics. This service does not
 require a new type system, module mechanism, or richer diagnostic model before
 the first compiler port.
 
+## Generated tools
+
+Tool source is Mini. Each tool has a tracked generated TypeScript file using the
+`*.generated.ts` suffix, produced from the active compiler and excluded from the
+strict TypeScript check.
+
+[tools/mini-tools.json](../tools/mini-tools.json) is the composition manifest:
+
+```json
+{
+  "tools": [
+    {
+      "source": "tools/check-source.mini",
+      "parts": [
+        "compiler/src/00-constants.mini",
+        "compiler/src/10-text.mini",
+        "compiler/src/20-lexer.mini",
+        "compiler/src/30-parser.mini",
+        "compiler/src/40-builtins.mini"
+      ],
+      "generated": "tools/check-source.generated.ts"
+    }
+  ]
+}
+```
+
+The build helper concatenates `parts` in dependency order, then the tool source,
+keeping a tool shebang first, and compiles the result with the tracked bootstrap.
+Parts exclude `compiler/src/50-main.mini`, which contains `main();`; the tool
+supplies its own entry. This is build-time composition, not a Mini module or
+import mechanism.
+
+```text
+node tools/mini-tools.ts           regenerate every generated tool
+node tools/mini-tools.ts --check   reject stale generated tools
+```
+
+`mini check` rebuilds every manifest entry and fails when a tracked generated
+tool differs. A generated tool is self-contained and runs with Node alone.
+
 ## Implementation boundaries
 
 Self-hosting remains a requirement for the compiler path only. These tools may

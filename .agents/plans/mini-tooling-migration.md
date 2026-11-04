@@ -5,7 +5,7 @@ created: 2026-11-04
 todos:
   - id: phase-0-tool-infrastructure
     content: "Phase 0 — Add the Mini tool manifest and generated-tool verification"
-    status: pending
+    status: completed
   - id: phase-1-check-source
     content: "Phase 1 — Implement source checking as a Mini tool"
     status: pending

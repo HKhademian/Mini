@@ -1,0 +1,9 @@
+{
+  "tools": [
+    {
+      "source": "tools/build-m1.mini",
+      "parts": [],
+      "generated": "tools/build-m1.generated.ts"
+    }
+  ]
+}
