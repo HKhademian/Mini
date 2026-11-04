@@ -54,7 +54,7 @@ increments:
 
 ```text
 mini-v0.3.0-v0.1.0-alpha.31
-lang-v0.3.0-v0.3.0-alpha.24
+lang-v0.3.0-v0.3.0-alpha.31
 compiler-v0.3.0-v0.3.0-alpha.41
 bootstrap-v0.3.0-v0.1.0-alpha.28
 builtins-v0.3.0-v0.3.0-alpha.30
