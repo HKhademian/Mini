@@ -1,0 +1,67 @@
+include "../common/text.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/project.mini";
+
+/// Report a bootstrap failure.
+fn bootstrap_fail(message) {
+    io_write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Compile one source with the selected compiler.
+fn bootstrap_compile(root, compiler, source, output) {
+    var args = list_new();
+    list_set(args, 0, compiler);
+    list_set(args, 1, source);
+    list_set(args, 2, output);
+    var result = process_capture(process_exec_path(), args, root, list_new());
+    if (map_get(result, "status") != 0) {
+        bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
+    }
+    return 0;
+}
+
+/// Run one generated Node program.
+fn bootstrap_run(root, path) {
+    var args = list_new();
+    list_set(args, 0, path);
+    var result = process_capture(process_exec_path(), args, root, list_new());
+    if (map_get(result, "status") != 0) {
+        bootstrap_fail("run failed: " + text_from_bytes(map_get(result, "stderr")));
+    }
+    return 0;
+}
+
+/// Make a generated file executable.
+fn bootstrap_executable(root, path) {
+    var args = list_new();
+    list_set(args, 0, "755");
+    list_set(args, 1, path);
+    process_capture("chmod", args, root, list_new());
+    return 0;
+}
+
+/// Rebuild the compiler, verify the fixed point, then rebuild every tool.
+fn bootstrap_all(root) {
+    var work = path_temp_directory();
+    var seed = path_join(root, "dist/compile.ts");
+    var compiler_source = path_join(root, "tools/compiler.mini");
+    var first = path_join(work, "compiler1.ts");
+    var second = path_join(work, "compiler2.ts");
+    bootstrap_compile(root, seed, compiler_source, first);
+    bootstrap_compile(root, first, compiler_source, second);
+    if (hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second))) {
+        bootstrap_fail("compiler fixed point mismatch");
+    }
+    path_copy(first, seed);
+    bootstrap_executable(root, seed);
+    var build = path_join(root, "dist/build.ts");
+    bootstrap_compile(root, seed, path_join(root, "tools/build.mini"), build);
+    bootstrap_executable(root, build);
+    bootstrap_run(root, build);
+    path_remove(work);
+    io_write("bootstrap complete\n");
+    return 0;
+}

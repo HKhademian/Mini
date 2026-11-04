@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+include "../libs/tools/bootstrap.mini";
+
+/// Rebuild the compiler and all generated tools from the checked-in bootstrap.
+fn main() {
+    return bootstrap_all(project_root());
+}
+
+main();

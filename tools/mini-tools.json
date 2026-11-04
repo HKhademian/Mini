@@ -47,6 +47,10 @@
     {
       "source": "tools/ci.mini",
       "generated": "dist/ci.ts"
+    },
+    {
+      "source": "tools/bootstrap.mini",
+      "generated": "dist/bootstrap.ts"
     }
   ],
   "launchers": [
