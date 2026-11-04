@@ -139,7 +139,7 @@ fn case_stream_text(stream, directory) {
 
 /// Load and validate one case manifest.
 fn case_load_case(path) {
-    var parsed = json_file(path);
+    var parsed = json_parse_file(path);
     if (result_is_fail(parsed)) {
         return parsed;
     }

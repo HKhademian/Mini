@@ -576,7 +576,7 @@ function result_set_value(result, value) {
     }
     return result;
 }
-function json_file(path) {
+function json_parse_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
     }
@@ -595,7 +595,7 @@ function project_root() {
     return base;
 }
 function project_compiler_entry(root) {
-    let parsed = json_file(path_join(root, "config/compiler.json"));
+    let parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
         result_fail($mini_map_get(parsed, "message"));
         return "";
@@ -707,7 +707,7 @@ function case_stream_text(stream, directory) {
     return $mini_text_from_bytes($mini_map_get(bytes, "bytes"));
 }
 function case_load_case(path) {
-    let parsed = json_file(path);
+    let parsed = json_parse_file(path);
     if (result_is_fail(parsed)) {
         return parsed;
     }

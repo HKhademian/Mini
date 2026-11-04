@@ -14,7 +14,7 @@ fn project_root() {
 
 /// Return the active compiler entry from configuration.
 fn project_compiler_entry(root) {
-    var parsed = json_file(path_join(root, "config/compiler.json"));
+    var parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
         result_fail(map_get(parsed, "message"));
         return "";

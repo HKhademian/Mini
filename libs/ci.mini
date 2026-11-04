@@ -124,7 +124,7 @@ fn ci_publish(root) {
         ci_fail("publish requires GITHUB_REF_NAME");
     }
     var directory = path_join(root, "dist/release");
-    var parsed = json_file(path_join(directory, "manifest.json"));
+    var parsed = json_parse_file(path_join(directory, "manifest.json"));
     if (result_is_fail(parsed)) {
         ci_fail(map_get(parsed, "message"));
     }

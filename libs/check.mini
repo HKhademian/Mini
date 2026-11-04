@@ -95,7 +95,7 @@ fn check_keys(value) {
 
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
-    var parsed = json_file(path);
+    var parsed = json_parse_file(path);
     if (result_is_fail(parsed)) {
         check_fail(map_get(parsed, "message"));
     }

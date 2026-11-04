@@ -1,6 +1,6 @@
 include "result.mini";
 /// Read and parse a JSON file into a result map.
-fn json_file(path) {
+fn json_parse_file(path) {
     if (!path_exists(path)) {
         return result_fail("cannot read " + path);
     }

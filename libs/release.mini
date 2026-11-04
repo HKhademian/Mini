@@ -51,7 +51,7 @@ fn release_text_list1(value) {
 
 /// Read a JSON file or stop.
 fn release_json(path) {
-    var parsed = json_file(path);
+    var parsed = json_parse_file(path);
     if (result_is_fail(parsed)) {
         release_fail(map_get(parsed, "message"));
     }

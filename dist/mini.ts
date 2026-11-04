@@ -418,7 +418,7 @@ function result_set_value(result, value) {
     }
     return result;
 }
-function json_file(path) {
+function json_parse_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
     }
@@ -437,7 +437,7 @@ function project_root() {
     return base;
 }
 function project_compiler_entry(root) {
-    let parsed = json_file(path_join(root, "config/compiler.json"));
+    let parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
         result_fail($mini_map_get(parsed, "message"));
         return "";
@@ -445,7 +445,7 @@ function project_compiler_entry(root) {
     return $mini_map_get($mini_map_get(parsed, "value"), "entry");
 }
 function mini_compiler(root) {
-    let parsed = json_file(path_join(root, "config/compiler.json"));
+    let parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
         writeSync(2, ($mini_map_get(parsed, "message") + "\n"));
         process.exit(1);
@@ -453,7 +453,7 @@ function mini_compiler(root) {
     return $mini_map_get($mini_map_get(parsed, "value"), "entry");
 }
 function mini_versions(root) {
-    let parsed = json_file(path_join(root, "config/versions.json"));
+    let parsed = json_parse_file(path_join(root, "config/versions.json"));
     if (result_is_fail(parsed)) {
         writeSync(2, ($mini_map_get(parsed, "message") + "\n"));
         process.exit(1);

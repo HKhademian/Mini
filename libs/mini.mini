@@ -6,7 +6,7 @@ include "project.mini";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {
-    var parsed = json_file(path_join(root, "config/compiler.json"));
+    var parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
@@ -16,7 +16,7 @@ fn mini_compiler(root) {
 
 /// Return the version registry.
 fn mini_versions(root) {
-    var parsed = json_file(path_join(root, "config/versions.json"));
+    var parsed = json_parse_file(path_join(root, "config/versions.json"));
     if (result_is_fail(parsed)) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
