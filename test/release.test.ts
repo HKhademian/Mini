@@ -4,7 +4,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symli
 import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
 import { test } from 'node:test';
-import { root, run, sha256, versions } from './project.ts';
+import { root, run, sha256, versions } from '../tools/project.ts';
 
 function fixture() {
   const work = mkdtempSync(join(tmpdir(), 'mini-vscode-release-'));

@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "test-version.stdout",
-        "hash": "sha256:a2a209e6e635b1441fd4d7570c3a3842bb65747399fdda7a6252e1583216b560"
+        "hash": "sha256:cf968eed63883759fc9bffcb53cdf19a2d14e1d7ac08a6b67814dcecade72b42"
       },
       "stderr": {
         "text": ""
@@ -34,6 +34,23 @@
       },
       "stderr": {
         "file": "../language/empty.stderr"
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "test-unit-mode",
+      "args": [
+        "--unit",
+        "compiler"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "test-unit.stdout"
+      },
+      "stderr": {
+        "text": ""
       },
       "exitCode": 0
     }

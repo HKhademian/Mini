@@ -7,6 +7,17 @@ fn main() {
     var filter = "";
     var file = "";
     var candidate = "";
+    if (list_length(args) >= 1 && list_get(args, 0) == "--unit") {
+        if (list_length(args) > 2) {
+            write_error("usage: mini-test [FILTER] | --unit [FILTER]\n");
+            process_exit(1);
+        }
+        if (list_length(args) == 2) {
+            filter = list_get(args, 1);
+        }
+        process_exit(test_units(case_root(), filter));
+        return 0;
+    }
     if (list_length(args) == 1) {
         filter = list_get(args, 0);
     } else {

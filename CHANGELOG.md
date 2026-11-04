@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.23 / test 0.1.0-alpha.4: add `test/*.test.mini` unit tests and
+  `mini test --unit [FILTER]`. Convert the compiler fixed-point test to Mini;
+  move Node integration tests to `test/`.
 - Mini 0.1.0-alpha.22 / compiler 0.3.0-alpha.33 / CLI 0.1.0-alpha.14: name
   generated artifacts by command under `dist/` (`dist/compile.ts`, `dist/mini.ts`,
   `dist/check.ts`, `dist/format.ts`, and so on). Generated tools are directly

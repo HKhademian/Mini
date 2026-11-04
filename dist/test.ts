@@ -1147,11 +1147,68 @@ function test_candidate(fixtures, root, compiler) {
     return 0;
 }
 main();
+function test_units(root, filter) {
+    let compiler = case_compiler_entry(root);
+    let directory = case_path_join(root, "test");
+    let entries = $mini_directory_list(directory);
+    let passed = 0;
+    let failed = 0;
+    let count = 0;
+    let position = 0;
+    while ((position < (entries).length)) {
+        let name = $mini_list_get(entries, position);
+        if ((text_ends_with(name, ".test.mini") && ((filter === "") || ($mini_text_find(name, filter) >= 0)))) {
+            count = (count + 1);
+            let source = case_path_join(directory, name);
+            let work = $mini_directory_temp();
+            let output = case_path_join(work, "test.generated.ts");
+            let compile_args = [];
+            $mini_list_set(compile_args, 0, compiler);
+            $mini_list_set(compile_args, 1, source);
+            $mini_list_set(compile_args, 2, output);
+            let compiled = case_run(process.execPath, compile_args, root, []);
+            if (($mini_map_get(compiled, "status") !== 0)) {
+                failed = (failed + 1);
+                writeSync(2, ((("FAIL " + name) + ": ") + $mini_text_from_bytes($mini_map_get(compiled, "stderr"))));
+            } else {
+                let run_args = [];
+                $mini_list_set(run_args, 0, output);
+                $mini_list_set(run_args, 1, root);
+                let result = case_run(process.execPath, run_args, root, []);
+                if (($mini_map_get(result, "status") !== 0)) {
+                    failed = (failed + 1);
+                    writeSync(2, ((("FAIL " + name) + ": ") + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
+                } else {
+                    passed = (passed + 1);
+                    writeSync(1, (("PASS " + name) + "\n"));
+                }
+            }
+            $mini_path_remove(work);
+        }
+        position = (position + 1);
+    }
+    writeSync(1, ((($mini_number_to_text(passed) + "/") + $mini_number_to_text(count)) + " unit tests passed\n"));
+    if (((failed > 0) || (count === 0))) {
+        return 1;
+    }
+    return 0;
+}
 function main() {
     let args = process.argv.slice(2);
     let filter = "";
     let file = "";
     let candidate = "";
+    if ((((args).length >= 1) && ($mini_list_get(args, 0) === "--unit"))) {
+        if (((args).length > 2)) {
+            writeSync(2, "usage: mini-test [FILTER] | --unit [FILTER]\n");
+            process.exit(1);
+        }
+        if (((args).length === 2)) {
+            filter = $mini_list_get(args, 1);
+        }
+        process.exit(test_units(case_root(), filter));
+        return 0;
+    }
     if (((args).length === 1)) {
         filter = $mini_list_get(args, 0);
     } else {

@@ -77,6 +77,17 @@ JSON case covers only standalone version/startup behavior; interactive protocol
 sessions use Node tests that spawn the real server. Do not add per-case
 executables or a general protocol scenario framework.
 
+## Mini unit tests
+
+Standalone Mini tests use the `test/*.test.mini` suffix. Run them with
+`./bin/mini test --unit [FILTER]`. Each test receives the repository root as its
+first argument, runs with captured streams, and passes when it exits 0. Compile
+failures and nonzero exits are reported as failures. Tests may include `libs/`
+helpers through `include`.
+
+`mini test` remains the JSON case runner. Node test files under `test/` cover
+host integrations such as VSIX packaging, archive extraction, and LSP sessions.
+
 ## Language changes
 
 Write the intended contract and focused cases before implementation. Cover
