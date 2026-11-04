@@ -213,7 +213,7 @@ generated TypeScript file and declares the `bin/` launchers:
 ```
 
 Each tool source declares its dependencies with Mini `include` directives, for
-example `include "text.mini";`. The build helper compiles the
+example `include "../libs/text.mini";`. The build helper compiles the
 source directly with the tracked bootstrap; include expansion is part of the
 compiler.
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-include "text.mini";
-include "cases.mini";
+include "../libs/text.mini";
+include "../libs/cases.mini";
 /// Run benchmark cases and write one JSON report.
 /// Usage: node dist/tools/bench.generated.ts OUTPUT [FILTER]
 /// Output must not exist; the parent directory is created.

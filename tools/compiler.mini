@@ -1,9 +1,9 @@
 /// Compose the Mini compiler from its source files.
-include "constants.mini";
-include "text.mini";
-include "lexer.mini";
-include "parser.mini";
-include "builtins.mini";
+include "../libs/compiler/constants.mini";
+include "../libs/text.mini";
+include "../libs/compiler/lexer.mini";
+include "../libs/compiler/parser.mini";
+include "../libs/compiler/builtins.mini";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {

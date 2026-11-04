@@ -230,7 +230,7 @@ bootstrap migration.
 
 M1 is authored as ordered sources next to the tools; [tools/compiler.mini](../tools/compiler.mini) includes `constants.mini`, `text.mini`, `lexer.mini`, `parser.mini`, and `builtins.mini`.
 `tools/compiler.mini` includes them in dependency order. Adapter text is
-source in `tools/constants.mini`, shared by the generated compiler and
+source in `libs/compiler/constants.mini`, shared by the generated compiler and
 generated tools. `mini check` verifies the generated bootstrap fixed point and
 stale generated tools. `include` is a Mini language feature; there is no module
 or import syntax.

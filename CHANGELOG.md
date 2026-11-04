@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.20 / compiler 0.3.0-alpha.31: move included code into
+  `libs/`. `tools/` holds command entries, `libs/` holds shared text and case
+  libraries plus compiler parts under `libs/compiler/`, and `dist/` holds
+  generated artifacts. No behavior change.
 - Mini 0.1.0-alpha.19: move generated artifacts into `dist/`. The bootstrap is
   `dist/compiler.ts` and generated tools are `dist/tools/*.generated.ts`;
   `bin/` launchers and configuration point there. Sources remain in `tools/`.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-include "text.mini";
-include "cases.mini";
+include "../libs/text.mini";
+include "../libs/cases.mini";
 /// Run repository checks: strict TypeScript (unless --docs), generated tools,
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
 /// Usage: node dist/tools/check.generated.ts [--docs]

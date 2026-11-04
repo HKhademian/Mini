@@ -84,11 +84,11 @@ tooling metadata.
 
 ```text
 tools/compiler.mini          compiler entry (includes adjacent sources)
-tools/constants.mini         adapter text and shared constants
-tools/text.mini              text and path helpers
-tools/lexer.mini             lexer, diagnostics, include expansion
-tools/parser.mini            parser, checking, emission
-tools/builtins.mini          builtin metadata and lowering
+libs/compiler/constants.mini         adapter text and shared constants
+libs/text.mini              text and path helpers
+libs/compiler/lexer.mini             lexer, diagnostics, include expansion
+libs/compiler/parser.mini            parser, checking, emission
+libs/compiler/builtins.mini          builtin metadata and lowering
 bootstrap/compiler.ts        tracked generated compiler
 tools/<tool>.mini            tool source (declares its own includes)
 tools/<tool>.generated.ts    tracked generated tool

@@ -13,8 +13,8 @@ runs this audit against the candidate and records compiler and self-build costs.
 
 ## What emission adds
 
-Inspecting `tools/parser.mini` and
-`tools/builtins.mini` shows direct TS output:
+Inspecting `libs/compiler/parser.mini` and
+`libs/compiler/builtins.mini` shows direct TS output:
 
 - Mini functions become ordinary functions; calls pass ordinary JS arguments.
 - Bindings, arithmetic, conditions, and loops become native TS statements.

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-include "text.mini";
-include "cases.mini";
+include "../libs/text.mini";
+include "../libs/cases.mini";
 /// Mini language server: LSP 3.17 over standard input and output.
 /// Usage: node dist/tools/lang-server.generated.ts [--version]
 /// Standard output carries only protocol frames; logs go to standard error.

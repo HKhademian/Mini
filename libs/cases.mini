@@ -1,3 +1,4 @@
+include "text.mini";
 /// Shared case loading and scenario execution for Mini tools.
 /// Inputs are case manifests under cases/ with separate source and stream files.
 /// Results are maps with `ok` and a failure `message`; scenario mismatches never

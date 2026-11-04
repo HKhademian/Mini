@@ -38,11 +38,11 @@ Mini now has a single-unit `include` directive:
 
 ```text
 tools/compiler.mini
-include "constants.mini";
-include "text.mini";
-include "lexer.mini";
-include "parser.mini";
-include "builtins.mini";
+include "../libs/compiler/constants.mini";
+include "../libs/text.mini";
+include "../libs/compiler/lexer.mini";
+include "../libs/compiler/parser.mini";
+include "../libs/compiler/builtins.mini";
 ```
 
 Contract:
@@ -63,8 +63,8 @@ declares `bin/` launchers. Tools declare their own dependencies:
 
 ```text
 tools/check.mini
-include "text.mini";
-include "cases.mini";
+include "../libs/text.mini";
+include "../libs/cases.mini";
 ```
 
 `tools/mini-tools.ts` compiles the source directly. The compiler's include
@@ -126,7 +126,7 @@ Properties:
 Add a small, single-unit `include` before considering imports:
 
 ```text
-include "text.mini";
+include "../libs/text.mini";
 ```
 
 Proposed contract:

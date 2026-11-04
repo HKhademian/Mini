@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-include "text.mini";
-include "cases.mini";
+include "../libs/text.mini";
+include "../libs/cases.mini";
 /// Run case scenarios through the shared case runner.
 /// Usage: node dist/tools/test.generated.ts [FILTER]
 ///        node dist/tools/test.generated.ts --file CASE.json
