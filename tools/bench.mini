@@ -8,8 +8,8 @@ fn main() {
         io_write_error("usage: mini-bench OUTPUT [FILTER]\n");
         process_exit(1);
     }
-    var root = case_root();
-    var output = case_path_resolve("", list_get(args, 0));
+    var root = project_root();
+    var output = path_resolve("", list_get(args, 0));
     var filter = "";
     if (list_length(args) == 2) {
         filter = list_get(args, 1);

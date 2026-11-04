@@ -99,6 +99,14 @@ function $mini_text_split(text, divider) {
     if (divider === "") return [text];
     return text.split(divider);
 }
+function $mini_value_kind(value) {
+    if (typeof value === "string") return "text";
+    if (typeof value === "number") return "number";
+    if (typeof value === "boolean") return "boolean";
+    if (Array.isArray(value)) return "list";
+    if (value !== null && typeof value === "object") return "map";
+    return "other";
+}
 let map_runtime = "const $mini_map_proto = { __proto__: null };\nfunction $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\nfunction $mini_map_has(items, key) {\n    return key in items;\n}\nfunction $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n";
 let directory_remove_helper = "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n";
 let file_remove_helper = "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true });\n}\n";
@@ -327,6 +335,42 @@ function list_sorted(items) {
         }
         position = (position + 1);
     }
+    return result;
+}
+function list_contains(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_is_text(value) {
+    if (($mini_value_kind(value) !== "list")) {
+        return false;
+    }
+    let position = 0;
+    while ((position < (value).length)) {
+        if (($mini_value_kind($mini_list_get(value, position)) !== "text")) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function list_of2(first, second) {
+    let result = [];
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
+    return result;
+}
+function list_of3(first, second, third) {
+    let result = [];
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
+    $mini_list_set(result, 2, third);
     return result;
 }
 function token_new(kind, text, source, start, end, line, column, context) {

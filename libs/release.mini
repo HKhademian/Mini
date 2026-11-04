@@ -1,5 +1,10 @@
 include "text.mini";
-include "cases.mini";
+include "list.mini";
+include "path.mini";
+include "process.mini";
+include "json.mini";
+include "result.mini";
+include "project.mini";
 /// Package committed sources into a release directory.
 /// Usage: node dist/release.ts OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.
@@ -15,12 +20,12 @@ fn release_fail(message) {
 
 /// Run a command and stop on failure.
 fn release_run(command, args, directory) {
-    var result = case_run(command, args, directory, list_new());
+    var result = process_capture(command, args, directory, list_new());
     if (map_get(result, "status") != 0) {
         release_fail(command + " " + list_to_text(args, " ") + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
     }
-    var done = case_ok();
+    var done = result_ok();
     map_set(done, "stdout", map_get(result, "stdout"));
     map_set(done, "stderr", map_get(result, "stderr"));
     return done;
@@ -28,9 +33,9 @@ fn release_run(command, args, directory) {
 
 /// Run the extracted repository check and keep its output quiet on success.
 fn release_check(check, directory) {
-    var result = case_run(process_exec_path(), case_text_list2(check, "--docs"), directory, list_new());
+    var result = process_capture(process_exec_path(), list_of2(check, "--docs"), directory, list_new());
     if (map_get(result, "status") != 0) {
-        release_fail(case_path_basename(check) + " failed:\n"
+        release_fail(path_basename(check) + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
     }
     return 0;
@@ -45,7 +50,7 @@ fn release_text_list1(value) {
 
 /// Read a JSON file or stop.
 fn release_json(path) {
-    var parsed = case_json_file(path);
+    var parsed = json_file(path);
     if (!map_get(parsed, "ok")) {
         release_fail(map_get(parsed, "message"));
     }
@@ -98,7 +103,7 @@ fn release_compiler_hash(active) {
     var position = 0;
     while (position < list_length(sources)) {
         var path = list_get(sources, position);
-        list_set(parts, list_length(parts), path + "\n" + file_read(case_path_join(case_root(), path)));
+        list_set(parts, list_length(parts), path + "\n" + file_read(path_join(project_root(), path)));
         position = position + 1;
     }
     return hash_sha256(list_to_text(parts, "\n"));
@@ -108,39 +113,39 @@ fn release_compiler_hash(active) {
 fn release_node_version(root) {
     var args = list_new();
     list_set(args, 0, "-v");
-    var result = case_run(process_exec_path(), args, root, list_new());
+    var result = process_capture(process_exec_path(), args, root, list_new());
     return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }
 
 /// Package a VS Code extension and return its asset identity.
 fn release_vscode(directory, output, tooling) {
-    var current = release_json(case_path_join(directory, "config/versions.json"));
+    var current = release_json(path_join(directory, "config/versions.json"));
     var version = map_get(current, "vscode");
     if (value_kind(version) != "text") {
         release_fail("VS Code extension version is unassigned");
     }
-    var packager = case_path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
-    var bundler = case_path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
+    var packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
+    var bundler = path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
     if (!path_exists(packager)) {
         release_fail("install VS Code development dependencies with npm ci in editors/vscode");
     }
     if (!path_exists(bundler)) {
         release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
     }
-    var extension = case_path_join(directory, "editors/vscode");
-    directory_create(case_path_join(extension, "dist"));
+    var extension = path_join(directory, "editors/vscode");
+    directory_create(path_join(extension, "dist"));
     var bundle_args = list_new();
     list_set(bundle_args, 0, bundler);
-    list_set(bundle_args, 1, case_path_join(extension, "src/extension.ts"));
+    list_set(bundle_args, 1, path_join(extension, "src/extension.ts"));
     list_set(bundle_args, 2, "--bundle");
     list_set(bundle_args, 3, "--platform=node");
     list_set(bundle_args, 4, "--format=cjs");
     list_set(bundle_args, 5, "--external:vscode");
-    list_set(bundle_args, 6, "--outfile=" + case_path_join(extension, "dist/extension.cjs"));
+    list_set(bundle_args, 6, "--outfile=" + path_join(extension, "dist/extension.cjs"));
     release_run(process_exec_path(), bundle_args, extension);
     directory_create(output);
     var file = "mini-" + map_get(current, "group") + "-v" + version + ".vsix";
-    var destination = case_path_join(output, file);
+    var destination = path_join(output, file);
     if (path_exists(destination)) {
         release_fail("VSIX output already exists");
     }
@@ -161,7 +166,7 @@ fn release_vscode(directory, output, tooling) {
 
 /// Write release notes and checksums.
 fn release_notes(output, title, label, commit, changelog) {
-    file_write(case_path_join(output, "RELEASE-NOTES.md"),
+    file_write(path_join(output, "RELEASE-NOTES.md"),
         "# " + title + "\n\nVersion: " + label + "\n\nSource: " + commit
         + "\n\nBootstrap: verified fixed point\n\n" + changelog);
     return 0;
@@ -174,39 +179,39 @@ fn release_checksums(output) {
     var position = 0;
     while (position < list_length(assets)) {
         var name = list_get(assets, position);
-        list_set(lines, list_length(lines), hash_sha256(file_read_bytes(case_path_join(output, name))) + "  " + name + "\n");
+        list_set(lines, list_length(lines), hash_sha256(file_read_bytes(path_join(output, name))) + "  " + name + "\n");
         position = position + 1;
     }
-    file_write(case_path_join(output, "SHA256SUMS"), list_to_text(lines, ""));
+    file_write(path_join(output, "SHA256SUMS"), list_to_text(lines, ""));
     return 0;
 }
 
 /// Package committed sources and return success.
 fn release_prepare(directory, output, tag) {
-    if (!case_path_is_absolute(output)) {
-        output = case_path_join(directory, output);
+    if (!path_is_absolute(output)) {
+        output = path_join(directory, output);
     }
     var released = 0;
-    var status = release_run("git", case_text_list2("status", "--porcelain"), directory);
+    var status = release_run("git", list_of2("status", "--porcelain"), directory);
     if (text_chomp(text_from_bytes(map_get(status, "stdout"))) != "") {
         release_fail("release needs a clean checkout");
     }
-    var head = release_run("git", case_text_list2("rev-parse", "HEAD"), directory);
+    var head = release_run("git", list_of2("rev-parse", "HEAD"), directory);
     var commit = text_chomp(text_from_bytes(map_get(head, "stdout")));
-    var current = release_json(case_path_join(directory, "config/versions.json"));
-    var active = release_json(case_path_join(directory, "config/compiler.json"));
+    var current = release_json(path_join(directory, "config/versions.json"));
+    var active = release_json(path_join(directory, "config/compiler.json"));
     if (tag != "") {
         released = release_select(tag, current);
-        var type = release_run("git", case_text_list3("cat-file", "-t", "refs/tags/" + tag), directory);
+        var type = release_run("git", list_of3("cat-file", "-t", "refs/tags/" + tag), directory);
         if (text_chomp(text_from_bytes(map_get(type, "stdout"))) != "tag") {
             release_fail("release tag must be annotated");
         }
-        var tagged = release_run("git", case_text_list2("rev-parse", "refs/tags/" + tag + "^{commit}"), directory);
+        var tagged = release_run("git", list_of2("rev-parse", "refs/tags/" + tag + "^{commit}"), directory);
         if (text_chomp(text_from_bytes(map_get(tagged, "stdout"))) != commit) {
             release_fail("release tag must match the current commit");
         }
     }
-    var bootstrap_config = release_json(case_path_join(directory, "config/bootstrap.json"));
+    var bootstrap_config = release_json(path_join(directory, "config/bootstrap.json"));
     var available = value_kind(bootstrap_config) == "map";
     var compiler_release = false;
     if (released != 0) {
@@ -221,10 +226,10 @@ fn release_prepare(directory, output, tag) {
         release_fail("release output directory must be empty");
     }
     var work = directory_temp();
-    var source = case_path_join(work, "source");
+    var source = path_join(work, "source");
     directory_create(source);
-    var tracked = case_path_join(work, "source.tar");
-    var archive_result = release_run("git", case_text_list3("archive", "--format=tar", commit), directory);
+    var tracked = path_join(work, "source.tar");
+    var archive_result = release_run("git", list_of3("archive", "--format=tar", commit), directory);
     file_write_bytes(tracked, map_get(archive_result, "stdout"));
     var extract_args = list_new();
     list_set(extract_args, 0, "-xf");
@@ -232,10 +237,10 @@ fn release_prepare(directory, output, tag) {
     list_set(extract_args, 2, "-C");
     list_set(extract_args, 3, source);
     release_run("tar", extract_args, work);
-    release_check(case_path_join(source, "bin/mini-check"), source);
+    release_check(path_join(source, "bin/mini-check"), source);
     var bootstrap = 0;
     if (available) {
-        var verify_args = case_text_list2(case_path_join(source, "dist/verify.ts"), source);
+        var verify_args = list_of2(path_join(source, "dist/verify.ts"), source);
         var verified = release_run(process_exec_path(), verify_args, source);
         var parsed = json_parse(text_from_bytes(map_get(verified, "stdout")));
         if (map_get(parsed, "ok")) {
@@ -268,30 +273,30 @@ fn release_prepare(directory, output, tag) {
     map_set(manifest, "node", release_node_version(directory));
     map_set(manifest, "bootstrap", bootstrap);
     map_set(manifest, "vsix", vsix);
-    if (path_exists(case_path_join(source, "RELEASE.json"))) {
+    if (path_exists(path_join(source, "RELEASE.json"))) {
         release_fail("RELEASE.json is reserved for packaged metadata");
     }
     var record = json_to_text(manifest) + "\n";
-    file_write(case_path_join(source, "RELEASE.json"), record);
+    file_write(path_join(source, "RELEASE.json"), record);
     var archive = "minilang-" + label + ".tar.gz";
     var pack_args = list_new();
     list_set(pack_args, 0, "-czf");
-    list_set(pack_args, 1, case_path_join(output, archive));
+    list_set(pack_args, 1, path_join(output, archive));
     list_set(pack_args, 2, "-C");
     list_set(pack_args, 3, source);
     list_set(pack_args, 4, ".");
     release_run("tar", pack_args, work);
-    var extracted = case_path_join(work, "extracted");
+    var extracted = path_join(work, "extracted");
     directory_create(extracted);
     var unpack_args = list_new();
     list_set(unpack_args, 0, "-xf");
-    list_set(unpack_args, 1, case_path_join(output, archive));
+    list_set(unpack_args, 1, path_join(output, archive));
     list_set(unpack_args, 2, "-C");
     list_set(unpack_args, 3, extracted);
     release_run("tar", unpack_args, work);
-    release_check(case_path_join(extracted, "bin/mini-check"), extracted);
-    file_write(case_path_join(output, "manifest.json"), record);
-    release_notes(output, title, label, commit, file_read(case_path_join(source, "CHANGELOG.md")));
+    release_check(path_join(extracted, "bin/mini-check"), extracted);
+    file_write(path_join(output, "manifest.json"), record);
+    release_notes(output, title, label, commit, file_read(path_join(source, "CHANGELOG.md")));
     release_checksums(output);
     path_remove(work);
     return 0;

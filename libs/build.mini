@@ -1,5 +1,8 @@
 include "text.mini";
-include "cases.mini";
+include "path.mini";
+include "process.mini";
+include "json.mini";
+include "project.mini";
 
 /// Report a build failure and stop.
 fn build_fail(message) {
@@ -10,7 +13,7 @@ fn build_fail(message) {
 
 /// Read the tool manifest and return it.
 fn build_manifest(root) {
-    var parsed = case_json_file(case_path_join(root, "tools/mini-tools.json"));
+    var parsed = json_file(path_join(root, "tools/mini-tools.json"));
     if (!map_get(parsed, "ok")) {
         build_fail(map_get(parsed, "message"));
     }
@@ -19,7 +22,7 @@ fn build_manifest(root) {
 
 /// Return the active compiler entry.
 fn build_compiler(root) {
-    var parsed = case_json_file(case_path_join(root, "config/compiler.json"));
+    var parsed = json_file(path_join(root, "config/compiler.json"));
     if (!map_get(parsed, "ok")) {
         build_fail(map_get(parsed, "message"));
     }
@@ -29,12 +32,12 @@ fn build_compiler(root) {
 /// Compile one tool source and return its generated text.
 fn build_compile(root, compiler, source) {
     var work = directory_temp();
-    var output = case_path_join(work, "tool.generated.ts");
+    var output = path_join(work, "tool.generated.ts");
     var args = list_new();
     list_set(args, 0, compiler);
-    list_set(args, 1, case_path_join(root, source));
+    list_set(args, 1, path_join(root, source));
     list_set(args, 2, output);
-    var result = case_run(process_exec_path(), args, root, list_new());
+    var result = process_capture(process_exec_path(), args, root, list_new());
     if (map_get(result, "status") != 0) {
         path_remove(work);
         build_fail(source + " failed:\n" + text_from_bytes(map_get(result, "stderr")));
@@ -48,8 +51,8 @@ fn build_compile(root, compiler, source) {
 fn build_executable(root, path) {
     var args = list_new();
     list_set(args, 0, "755");
-    list_set(args, 1, case_path_join(root, path));
-    case_run("chmod", args, root, list_new());
+    list_set(args, 1, path_join(root, path));
+    process_capture("chmod", args, root, list_new());
     return 0;
 }
 
@@ -72,8 +75,8 @@ fn build_all(root) {
     while (position < list_length(tools)) {
         var tool = list_get(tools, position);
         var generated = build_compile(root, compiler, map_get(tool, "source"));
-        var target = case_path_join(root, map_get(tool, "generated"));
-        directory_create(case_path_parent(target));
+        var target = path_join(root, map_get(tool, "generated"));
+        directory_create(path_parent(target));
         file_write(target, generated);
         build_executable(root, map_get(tool, "generated"));
         position = position + 1;
@@ -83,7 +86,7 @@ fn build_all(root) {
     while (position < list_length(launchers)) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
-        file_write(case_path_join(root, name), build_launcher(launcher));
+        file_write(path_join(root, name), build_launcher(launcher));
         build_executable(root, name);
         position = position + 1;
     }
@@ -98,7 +101,7 @@ fn build_check(root) {
     var position = 0;
     while (position < list_length(tools)) {
         var tool = list_get(tools, position);
-        var target = case_path_join(root, map_get(tool, "generated"));
+        var target = path_join(root, map_get(tool, "generated"));
         var generated = build_compile(root, compiler, map_get(tool, "source"));
         if (!path_exists(target) || file_read(target) != generated) {
             build_fail(map_get(tool, "generated") + " is stale; run dist/build.ts");
@@ -110,7 +113,7 @@ fn build_check(root) {
     while (position < list_length(launchers)) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
-        if (!path_exists(case_path_join(root, name)) || file_read(case_path_join(root, name)) != build_launcher(launcher)) {
+        if (!path_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher)) {
             build_fail(name + " is stale; run dist/build.ts");
         }
         position = position + 1;

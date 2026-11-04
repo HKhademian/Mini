@@ -1,0 +1,15 @@
+/// Return a successful result map.
+fn result_ok() {
+    var result = map_new();
+    map_set(result, "ok", true);
+    map_set(result, "message", "");
+    return result;
+}
+
+/// Return a failed result map.
+fn result_fail(message) {
+    var result = map_new();
+    map_set(result, "ok", false);
+    map_set(result, "message", message);
+    return result;
+}

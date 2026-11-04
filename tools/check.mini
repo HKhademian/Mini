@@ -13,7 +13,7 @@ fn main() {
             process_exit(1);
         }
     }
-    check_repository(case_root(), docs_only);
+    check_repository(project_root(), docs_only);
     return 0;
 }
 

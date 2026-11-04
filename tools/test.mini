@@ -15,7 +15,7 @@ fn main() {
         if (list_length(args) == 2) {
             filter = list_get(args, 1);
         }
-        process_exit(test_units(case_root(), filter));
+        process_exit(test_units(project_root(), filter));
         return 0;
     }
     if (list_length(args) == 1) {
@@ -41,7 +41,7 @@ fn main() {
             }
         }
     }
-    process_exit(test_run(case_root(), filter, file, candidate));
+    process_exit(test_run(project_root(), filter, file, candidate));
     return 0;
 }
 

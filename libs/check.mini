@@ -94,7 +94,7 @@ fn check_keys(value) {
 
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
-    var parsed = case_json_file(path);
+    var parsed = json_file(path);
     if (!map_get(parsed, "ok")) {
         check_fail(map_get(parsed, "message"));
     }
@@ -121,7 +121,7 @@ fn check_document(path) {
     var text = file_read(path);
     var lines = split_lines(text);
     var in_fence = false;
-    var directory = case_path_parent(path);
+    var directory = path_parent(path);
     var position = 0;
     while (position < list_length(lines)) {
         var line = list_get(lines, position);
@@ -142,7 +142,7 @@ fn check_document(path) {
                         target = text_slice(target, 0, hash);
                     }
                     if (text_length(target) > 0 && !check_is_url(target)
-                        && !path_exists(case_path_resolve(directory, target))) {
+                        && !path_exists(path_resolve(directory, target))) {
                         check_fail("broken local link in " + path + ": " + target);
                     }
                     cursor = check_find_from(line, "](", end);
@@ -181,7 +181,7 @@ fn check_documents(directory) {
     var position = 0;
     while (position < list_length(entries)) {
         var name = list_get(entries, position);
-        var path = case_path_join(directory, name);
+        var path = path_join(directory, name);
         if (case_entry_excluded(name)) {
         } else {
             if (path_is_directory(path)) {
@@ -227,7 +227,7 @@ fn check_portable_paths(directory) {
     var position = 0;
     while (position < list_length(entries)) {
         var name = list_get(entries, position);
-        var path = case_path_join(directory, name);
+        var path = path_join(directory, name);
         if (case_entry_excluded(name)) {
         } else {
             if (path_is_directory(path)) {
@@ -259,7 +259,7 @@ fn check_sample_cases(root, fixtures) {
         var fixture = list_get(fixtures, position);
         var definition = map_get(fixture, "definition");
         if (map_get(definition, "kind") != "tool") {
-            var source = case_path_resolve(case_path_parent(map_get(fixture, "path")), map_get(definition, "source"));
+            var source = path_resolve(path_parent(map_get(fixture, "path")), map_get(definition, "source"));
             map_set(covered, source, true);
         }
         position = position + 1;
@@ -270,7 +270,7 @@ fn check_sample_cases(root, fixtures) {
     position = 0;
     while (position < list_length(directories)) {
         var name = list_get(directories, position);
-        var directory = case_path_join(root, name);
+        var directory = path_join(root, name);
         if (path_exists(directory)) {
             check_sample_walk(directory, name, covered);
         }
@@ -285,7 +285,7 @@ fn check_sample_walk(directory, relative, covered) {
     var position = 0;
     while (position < list_length(entries)) {
         var name = list_get(entries, position);
-        var path = case_path_join(directory, name);
+        var path = path_join(directory, name);
         if (path_is_directory(path)) {
             check_sample_walk(path, relative + "/" + name, covered);
         } else {
@@ -300,7 +300,7 @@ fn check_sample_walk(directory, relative, covered) {
 
 /// Check the version registry and editor metadata.
 fn check_versions(root) {
-    var current = check_json(case_path_join(root, "config/versions.json"));
+    var current = check_json(path_join(root, "config/versions.json"));
     var expected = list_new();
     var names = list_new();
     list_set(names, 0, "group");
@@ -343,8 +343,8 @@ fn check_versions(root) {
         }
         position = position + 1;
     }
-    var editor = check_json(case_path_join(root, "editors/vscode/package.json"));
-    var lock = check_json(case_path_join(root, "editors/vscode/package-lock.json"));
+    var editor = check_json(path_join(root, "editors/vscode/package.json"));
+    var lock = check_json(path_join(root, "editors/vscode/package-lock.json"));
     var editor_version = map_get(editor, "version");
     var lock_package = map_get(map_get(lock, "packages"), "");
     if (editor_version != map_get(current, "vscode")) {
@@ -366,7 +366,7 @@ fn check_versions(root) {
 fn check_node(root) {
     var args = list_new();
     list_set(args, 0, "-v");
-    var result = case_run(process_exec_path(), args, root, list_new());
+    var result = process_capture(process_exec_path(), args, root, list_new());
     var version = text_from_bytes(map_get(result, "stdout"));
     if (!text_starts_with(version, "v24.")) {
         check_fail("use Node 24; see .node-version");
@@ -392,7 +392,7 @@ fn check_node(root) {
 fn check_repository(root, docs_only) {
     if (!docs_only) {
         var tsc = list_new();
-        list_set(tsc, 0, case_path_join(root, "node_modules/typescript/bin/tsc"));
+        list_set(tsc, 0, path_join(root, "node_modules/typescript/bin/tsc"));
         list_set(tsc, 1, "--noEmit");
         var typed = check_inherit(process_exec_path(), tsc, root);
         if (map_get(typed, "status") != 0) {
@@ -400,7 +400,7 @@ fn check_repository(root, docs_only) {
         }
     }
     var tools = list_new();
-    list_set(tools, 0, case_path_join(root, "dist/build.ts"));
+    list_set(tools, 0, path_join(root, "dist/build.ts"));
     list_set(tools, 1, "--check");
     var verified_tools = check_inherit(process_exec_path(), tools, root);
     if (map_get(verified_tools, "status") != 0) {
@@ -415,18 +415,18 @@ fn check_repository(root, docs_only) {
     check_sample_cases(root, map_get(loaded, "fixtures"));
     check_documents(root);
     check_portable_paths(root);
-    var bootstrap = check_json(case_path_join(root, "config/bootstrap.json"));
+    var bootstrap = check_json(path_join(root, "config/bootstrap.json"));
     if (value_kind(bootstrap) != "map") {
         check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
-    var active = check_json(case_path_join(root, "config/compiler.json"));
+    var active = check_json(path_join(root, "config/compiler.json"));
     if (map_get(active, "entry") != map_get(bootstrap, "compiler")) {
         check_fail("active compiler must be the generated bootstrap");
     }
     var verify = list_new();
-    list_set(verify, 0, case_path_join(root, "dist/verify.ts"));
+    list_set(verify, 0, path_join(root, "dist/verify.ts"));
     list_set(verify, 1, root);
-    var verified = case_run(process_exec_path(), verify, root, list_new());
+    var verified = process_capture(process_exec_path(), verify, root, list_new());
     if (map_get(verified, "status") != 0) {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));

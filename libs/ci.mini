@@ -1,5 +1,8 @@
 include "text.mini";
-include "cases.mini";
+include "path.mini";
+include "process.mini";
+include "json.mini";
+include "project.mini";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
@@ -11,7 +14,7 @@ fn ci_root() {
     if (pwd != "") {
         return pwd;
     }
-    return case_root();
+    return project_root();
 }
 
 /// Run a command, forward its streams, and stop on failure.
@@ -73,7 +76,7 @@ fn ci_args4(a, b, c, d) {
 
 /// Run the repository dispatcher.
 fn ci_mini(root, args) {
-    return ci_run(root, case_path_join(root, "bin/mini"), args, root);
+    return ci_run(root, path_join(root, "bin/mini"), args, root);
 }
 
 /// Run Node with arguments.
@@ -104,7 +107,7 @@ fn ci_package(root) {
     }
     var args = list_new();
     list_set(args, 0, "release");
-    list_set(args, 1, case_path_join(root, "dist/release"));
+    list_set(args, 1, path_join(root, "dist/release"));
     if (tag != "") {
         list_set(args, 2, tag);
     }
@@ -120,8 +123,8 @@ fn ci_publish(root) {
     if (tag == "") {
         ci_fail("publish requires GITHUB_REF_NAME");
     }
-    var directory = case_path_join(root, "dist/release");
-    var parsed = case_json_file(case_path_join(directory, "manifest.json"));
+    var directory = path_join(root, "dist/release");
+    var parsed = json_file(path_join(directory, "manifest.json"));
     if (!map_get(parsed, "ok")) {
         ci_fail(map_get(parsed, "message"));
     }
@@ -136,7 +139,7 @@ fn ci_publish(root) {
     list_set(args, 2, tag);
     var position = 0;
     while (position < list_length(files)) {
-        list_set(args, list_length(args), case_path_join(directory, list_get(files, position)));
+        list_set(args, list_length(args), path_join(directory, list_get(files, position)));
         position = position + 1;
     }
     list_set(args, list_length(args), "--draft");
@@ -145,7 +148,7 @@ fn ci_publish(root) {
     list_set(args, list_length(args), "--title");
     list_set(args, list_length(args), map_get(manifest, "title"));
     list_set(args, list_length(args), "--notes-file");
-    list_set(args, list_length(args), case_path_join(directory, "RELEASE-NOTES.md"));
+    list_set(args, list_length(args), path_join(directory, "RELEASE-NOTES.md"));
     var version = map_get(map_get(manifest, "releasedComponent"), "version");
     if (text_find(version, "-") >= 0) {
         list_set(args, list_length(args), "--prerelease");
@@ -164,7 +167,7 @@ fn ci_publish(root) {
 fn ci_task(root, task) {
     if (task == "install") {
         ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
-        return ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), case_path_join(root, "editors/vscode"));
+        return ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), path_join(root, "editors/vscode"));
     }
     if (task == "check") {
         return ci_mini(root, ci_args1("check"));
@@ -174,8 +177,8 @@ fn ci_task(root, task) {
         ci_mini(root, ci_args2("test", "--unit"));
         ci_node(root, ci_args2("--test", "test/format.test.ts"), root);
         ci_node(root, ci_args2("--test", "test/lang-server.test.ts"), root);
-        ci_run(root, "npm", ci_args2("run", "check"), case_path_join(root, "editors/vscode"));
-        ci_node(root, ci_args2("--test", "test/grammar.test.ts"), case_path_join(root, "editors/vscode"));
+        ci_run(root, "npm", ci_args2("run", "check"), path_join(root, "editors/vscode"));
+        ci_node(root, ci_args2("--test", "test/grammar.test.ts"), path_join(root, "editors/vscode"));
         ci_node(root, ci_args2("--test", "test/release.test.ts"), root);
         return ci_node(root, ci_args2("tools/application-performance.ts", "--check"), root);
     }

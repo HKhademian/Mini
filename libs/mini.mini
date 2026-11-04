@@ -1,9 +1,12 @@
 include "text.mini";
-include "cases.mini";
+include "path.mini";
+include "process.mini";
+include "json.mini";
+include "project.mini";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {
-    var parsed = case_json_file(case_path_join(root, "config/compiler.json"));
+    var parsed = json_file(path_join(root, "config/compiler.json"));
     if (!map_get(parsed, "ok")) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
@@ -13,7 +16,7 @@ fn mini_compiler(root) {
 
 /// Return the version registry.
 fn mini_versions(root) {
-    var parsed = case_json_file(case_path_join(root, "config/versions.json"));
+    var parsed = json_file(path_join(root, "config/versions.json"));
     if (!map_get(parsed, "ok")) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
@@ -45,7 +48,7 @@ fn mini_component(command) {
 /// Run a generated tool with inherited standard streams.
 fn mini_spawn(root, tool, args) {
     var command_args = list_new();
-    list_set(command_args, 0, case_path_join(root, tool));
+    list_set(command_args, 0, path_join(root, tool));
     var position = 0;
     while (position < list_length(args)) {
         list_set(command_args, list_length(command_args), list_get(args, position));
@@ -167,7 +170,7 @@ fn mini_command(root, command, args) {
         return status;
     }
     if (command == "compile") {
-        var compiler = case_path_join(root, mini_compiler(root));
+        var compiler = path_join(root, mini_compiler(root));
         if (list_length(args) > 0 && list_get(args, 0) == "--tokens") {
             var token_args = list_new();
             list_set(token_args, 0, "tokens");
@@ -193,7 +196,7 @@ fn mini_command(root, command, args) {
             var chmod_args = list_new();
             list_set(chmod_args, 0, "755");
             list_set(chmod_args, 1, output);
-            case_run("chmod", chmod_args, root, list_new());
+            process_capture("chmod", chmod_args, root, list_new());
         }
         return status;
     }

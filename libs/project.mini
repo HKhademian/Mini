@@ -1,0 +1,23 @@
+include "path.mini";
+include "json.mini";
+include "result.mini";
+
+/// Return the repository root from the running tool path.
+fn project_root() {
+    var script = process_script_path();
+    var base = path_parent(path_parent(script));
+    if (path_basename(base) == "dist") {
+        return path_parent(base);
+    }
+    return base;
+}
+
+/// Return the active compiler entry from configuration.
+fn project_compiler_entry(root) {
+    var parsed = json_file(path_join(root, "config/compiler.json"));
+    if (!map_get(parsed, "ok")) {
+        result_fail(map_get(parsed, "message"));
+        return "";
+    }
+    return map_get(map_get(parsed, "value"), "entry");
+}

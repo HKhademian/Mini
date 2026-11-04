@@ -8,7 +8,7 @@ fn main() {
         io_write_error("usage: mini-verify\n");
         process_exit(1);
     }
-    var root = case_root();
+    var root = project_root();
     if (list_length(args) == 1) {
         root = list_get(args, 0);
     }

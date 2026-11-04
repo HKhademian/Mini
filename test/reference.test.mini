@@ -5,17 +5,17 @@ include "../libs/cases.mini";
 /// Compile and run one source in host and reference modes, then compare results.
 fn reference_compare(root, name, source_text) {
     var work = directory_temp();
-    file_write(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n");
-    var source = case_path_join(work, name + ".mini");
+    file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
+    var source = path_join(work, name + ".mini");
     file_write(source, source_text);
-    var compiler = case_path_join(root, "dist/compile.ts");
-    var host = case_path_join(work, name + "-host.ts");
-    var pure = case_path_join(work, name + "-pure.ts");
+    var compiler = path_join(root, "dist/compile.ts");
+    var host = path_join(work, name + "-host.ts");
+    var pure = path_join(work, name + "-pure.ts");
     var host_args = list_new();
     list_set(host_args, 0, compiler);
     list_set(host_args, 1, source);
     list_set(host_args, 2, host);
-    var host_compile = case_run(process_exec_path(), host_args, root, list_new());
+    var host_compile = process_capture(process_exec_path(), host_args, root, list_new());
     if (map_get(host_compile, "status") != 0) {
         path_remove(work);
         io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
@@ -26,7 +26,7 @@ fn reference_compare(root, name, source_text) {
     list_set(pure_args, 1, "--reference");
     list_set(pure_args, 2, source);
     list_set(pure_args, 3, pure);
-    var pure_compile = case_run(process_exec_path(), pure_args, root, list_new());
+    var pure_compile = process_capture(process_exec_path(), pure_args, root, list_new());
     if (map_get(pure_compile, "status") != 0) {
         path_remove(work);
         io_write_error(name + " reference compile failed: " + text_from_bytes(map_get(pure_compile, "stderr")));
@@ -34,10 +34,10 @@ fn reference_compare(root, name, source_text) {
     }
     var host_run_args = list_new();
     list_set(host_run_args, 0, host);
-    var host_run = case_run(process_exec_path(), host_run_args, work, list_new());
+    var host_run = process_capture(process_exec_path(), host_run_args, work, list_new());
     var pure_run_args = list_new();
     list_set(pure_run_args, 0, pure);
-    var pure_run = case_run(process_exec_path(), pure_run_args, work, list_new());
+    var pure_run = process_capture(process_exec_path(), pure_run_args, work, list_new());
     if (map_get(host_run, "status") != map_get(pure_run, "status")
         || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(pure_run, "stdout"))
         || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr"))) {

@@ -78,6 +78,10 @@ function $mini_json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function $mini_list_copy(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
+}
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
@@ -132,16 +136,9 @@ function $mini_directory_temp() {
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
-function $mini_path_copy(from, to) {
-    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true });
-}
 function $mini_path_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
-}
-function $mini_path_is_directory(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.statSync(path).isDirectory(); } catch { return false; }
 }
 function $mini_path_remove(path) {
     process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true });
@@ -173,10 +170,6 @@ function $mini_text_split(text, divider) {
     if (typeof text !== "string" || typeof divider !== "string") return [];
     if (divider === "") return [text];
     return text.split(divider);
-}
-function $mini_text_to_bytes(text) {
-    if (typeof text !== "string") return [];
-    return Array.from(Buffer.from(text, "utf8"));
 }
 function $mini_value_kind(value) {
     if (typeof value === "string") return "text";
@@ -328,27 +321,88 @@ function text_trim(text) {
     }
     return $mini_text_slice(text, start, end);
 }
-function case_ok() {
-    let result = ({ __proto__: $mini_map_proto });
-    $mini_map_set(result, "ok", true);
-    $mini_map_set(result, "message", "");
-    return result;
-}
-function case_fail(message) {
-    let result = ({ __proto__: $mini_map_proto });
-    $mini_map_set(result, "ok", false);
-    $mini_map_set(result, "message", message);
-    return result;
-}
-function case_root() {
-    let script = process.argv[1];
-    let base = case_path_parent(case_path_parent(script));
-    if ((case_path_basename(base) === "dist")) {
-        return case_path_parent(base);
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
     }
-    return base;
+    return false;
 }
-function case_path_join(left, right) {
+function list_join_from(items, start, separator) {
+    let parts = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return $mini_list_to_text(parts, separator);
+}
+function list_reverse(items) {
+    let result = [];
+    let position = ((items).length - 1);
+    while ((position >= 0)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position - 1);
+    }
+    return result;
+}
+function list_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
+}
+function list_contains(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_is_text(value) {
+    if (($mini_value_kind(value) !== "list")) {
+        return false;
+    }
+    let position = 0;
+    while ((position < (value).length)) {
+        if (($mini_value_kind($mini_list_get(value, position)) !== "text")) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function list_of2(first, second) {
+    let result = [];
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
+    return result;
+}
+function list_of3(first, second, third) {
+    let result = [];
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
+    $mini_list_set(result, 2, third);
+    return result;
+}
+function path_join(left, right) {
     if ((left === "")) {
         return right;
     }
@@ -360,7 +414,7 @@ function case_path_join(left, right) {
     }
     return ((left + "/") + right);
 }
-function case_path_parent(path) {
+function path_parent(path) {
     let position = ((path).length - 1);
     while ((position >= 0)) {
         let character = $mini_text_get(path, position);
@@ -371,7 +425,7 @@ function case_path_parent(path) {
     }
     return "";
 }
-function case_path_basename(path) {
+function path_basename(path) {
     let position = ((path).length - 1);
     while ((position >= 0)) {
         let character = $mini_text_get(path, position);
@@ -382,13 +436,13 @@ function case_path_basename(path) {
     }
     return path;
 }
-function case_path_is_absolute(path) {
+function path_is_absolute(path) {
     if (text_starts_with(path, "/")) {
         return true;
     }
     return ((((path).length > 2) && ($mini_text_get(path, 1) === ":")) && (($mini_text_get(path, 2) === "/") || ($mini_text_get(path, 2) === "\\")));
 }
-function case_path_normalize(path) {
+function path_normalize(path) {
     let absolute = text_starts_with(path, "/");
     let parts = $mini_text_split(path, "/");
     let stack = [];
@@ -427,338 +481,13 @@ function case_path_normalize(path) {
     }
     return output;
 }
-function case_path_resolve(base, path) {
-    if (case_path_is_absolute(path)) {
-        return case_path_normalize(path);
+function path_resolve(base, path) {
+    if (path_is_absolute(path)) {
+        return path_normalize(path);
     }
-    return case_path_normalize(case_path_join(base, path));
+    return path_normalize(path_join(base, path));
 }
-function case_list_has(items, value) {
-    let position = 0;
-    while ((position < (items).length)) {
-        if (($mini_list_get(items, position) === value)) {
-            return true;
-        }
-        position = (position + 1);
-    }
-    return false;
-}
-function case_is_text_list(value) {
-    if (($mini_value_kind(value) !== "list")) {
-        return false;
-    }
-    let position = 0;
-    while ((position < (value).length)) {
-        if (($mini_value_kind($mini_list_get(value, position)) !== "text")) {
-            return false;
-        }
-        position = (position + 1);
-    }
-    return true;
-}
-function case_json_file(path) {
-    if ((!$mini_path_exists(path))) {
-        return case_fail(("cannot read " + path));
-    }
-    let parsed = $mini_json_parse(readFileSync(path, "utf8"));
-    if ((!$mini_map_get(parsed, "ok"))) {
-        return case_fail(("invalid JSON: " + path));
-    }
-    let result = case_ok();
-    $mini_map_set(result, "value", $mini_map_get(parsed, "value"));
-    return result;
-}
-function case_kinds() {
-    let kinds = [];
-    $mini_list_set(kinds, 0, "tool");
-    $mini_list_set(kinds, 1, "feature");
-    $mini_list_set(kinds, 2, "reject");
-    $mini_list_set(kinds, 3, "compile");
-    $mini_list_set(kinds, 4, "sample");
-    $mini_list_set(kinds, 5, "example");
-    return kinds;
-}
-function case_stream_valid(stream) {
-    if (($mini_value_kind(stream) !== "map")) {
-        return false;
-    }
-    let count = 0;
-    if ($mini_map_has(stream, "text")) {
-        count = (count + 1);
-    }
-    if ($mini_map_has(stream, "bytes")) {
-        count = (count + 1);
-    }
-    if ($mini_map_has(stream, "file")) {
-        count = (count + 1);
-    }
-    return (count === 1);
-}
-function case_stream_bytes(stream, directory) {
-    if (($mini_value_kind(stream) !== "map")) {
-        return case_fail("stream must be an object");
-    }
-    let count = 0;
-    if ($mini_map_has(stream, "text")) {
-        count = (count + 1);
-    }
-    if ($mini_map_has(stream, "bytes")) {
-        count = (count + 1);
-    }
-    if ($mini_map_has(stream, "file")) {
-        count = (count + 1);
-    }
-    if ((count !== 1)) {
-        return case_fail("one stream representation required");
-    }
-    let bytes = [];
-    if ($mini_map_has(stream, "text")) {
-        if (($mini_value_kind($mini_map_get(stream, "text")) !== "text")) {
-            return case_fail("stream text must be a string");
-        }
-        bytes = $mini_text_to_bytes($mini_map_get(stream, "text"));
-    } else {
-        if ($mini_map_has(stream, "bytes")) {
-            bytes = $mini_map_get(stream, "bytes");
-            if (($mini_value_kind(bytes) !== "list")) {
-                return case_fail("invalid stream bytes");
-            }
-            let position = 0;
-            while ((position < (bytes).length)) {
-                let value = $mini_list_get(bytes, position);
-                if (((($mini_value_kind(value) !== "number") || (value < 0)) || (value > 255))) {
-                    return case_fail("invalid stream bytes");
-                }
-                position = (position + 1);
-            }
-        } else {
-            if (($mini_value_kind($mini_map_get(stream, "file")) !== "text")) {
-                return case_fail("invalid stream");
-            }
-            let file = case_path_resolve(directory, $mini_map_get(stream, "file"));
-            if ((!$mini_path_exists(file))) {
-                return case_fail(("cannot read " + file));
-            }
-            bytes = $mini_file_read_bytes(file);
-        }
-    }
-    if ($mini_map_has(stream, "hash")) {
-        let expected = $mini_map_get(stream, "hash");
-        if ((expected !== ("sha256:" + $mini_hash_sha256(bytes)))) {
-            return case_fail("stream hash differs");
-        }
-    }
-    let result = case_ok();
-    $mini_map_set(result, "bytes", bytes);
-    return result;
-}
-function case_bytes_equal(left, right) {
-    if (((left).length !== (right).length)) {
-        return false;
-    }
-    let position = 0;
-    while ((position < (left).length)) {
-        if (($mini_list_get(left, position) !== $mini_list_get(right, position))) {
-            return false;
-        }
-        position = (position + 1);
-    }
-    return true;
-}
-function case_stream_text(stream, directory) {
-    let bytes = case_stream_bytes(stream, directory);
-    if ((!$mini_map_get(bytes, "ok"))) {
-        return "";
-    }
-    return $mini_text_from_bytes($mini_map_get(bytes, "bytes"));
-}
-function case_load_case(path) {
-    let parsed = case_json_file(path);
-    if ((!$mini_map_get(parsed, "ok"))) {
-        return parsed;
-    }
-    let spec = $mini_map_get(parsed, "value");
-    let id = $mini_map_get(spec, "id");
-    if ((((!$mini_map_has(spec, "id")) || ($mini_value_kind(id) !== "text")) || ((id).length === 0))) {
-        return case_fail(("case ID required: " + path));
-    }
-    let kind = $mini_map_get(spec, "kind");
-    if ((!case_list_has(case_kinds(), kind))) {
-        return case_fail(("invalid case kind: " + id));
-    }
-    if (($mini_map_has(spec, "pending") && (((kind === "tool") || ($mini_value_kind($mini_map_get(spec, "pending")) !== "text")) || (($mini_map_get(spec, "pending")).length === 0)))) {
-        return case_fail("pending needs a language case and reason");
-    }
-    let directory = case_path_parent(path);
-    if ((kind === "tool")) {
-        let tool = $mini_map_get(spec, "tool");
-        if (((((!$mini_map_has(spec, "tool")) || ($mini_value_kind(tool) !== "text")) || ($mini_text_find(tool, "/") >= 0)) || (!$mini_path_exists(case_path_join(case_path_join(case_root(), "bin"), tool))))) {
-            return case_fail(("unknown tool: " + id));
-        }
-    } else {
-        let source = $mini_map_get(spec, "source");
-        if (((((!$mini_map_has(spec, "source")) || ($mini_value_kind(source) !== "text")) || (!text_ends_with(source, ".mini"))) || (!$mini_path_exists(case_path_resolve(directory, source))))) {
-            return case_fail(("case source missing: " + id));
-        }
-    }
-    if (((!$mini_map_has(spec, "features")) || (!case_is_text_list($mini_map_get(spec, "features"))))) {
-        return case_fail(("features must be a list: " + id));
-    }
-    if ((((!$mini_map_has(spec, "cases")) || ($mini_value_kind($mini_map_get(spec, "cases")) !== "list")) || (($mini_map_get(spec, "cases")).length === 0))) {
-        return case_fail(("case scenarios required: " + id));
-    }
-    let scenarios = $mini_map_get(spec, "cases");
-    let names = ({ __proto__: $mini_map_proto });
-    let position = 0;
-    while ((position < (scenarios).length)) {
-        let scenario = $mini_list_get(scenarios, position);
-        let name = $mini_map_get(scenario, "name");
-        if (((((($mini_value_kind(scenario) !== "map") || (!$mini_map_has(scenario, "name"))) || ($mini_value_kind(name) !== "text")) || ((name).length === 0)) || $mini_map_has(names, name))) {
-            return case_fail(("scenario names must be unique: " + id));
-        }
-        $mini_map_set(names, name, true);
-        let check = case_validate_scenario(spec, kind, scenario, directory);
-        if ((!$mini_map_get(check, "ok"))) {
-            return check;
-        }
-        position = (position + 1);
-    }
-    let fixture = ({ __proto__: $mini_map_proto });
-    $mini_map_set(fixture, "path", path);
-    $mini_map_set(fixture, "definition", spec);
-    let result = case_ok();
-    $mini_map_set(result, "fixture", fixture);
-    return result;
-}
-function case_validate_scenario(spec, kind, scenario, directory) {
-    let id = $mini_map_get(spec, "id");
-    let name = $mini_map_get(scenario, "name");
-    let prefix = (((id + "/") + name) + ": ");
-    if (((((!$mini_map_has(scenario, "exitCode")) || ($mini_value_kind($mini_map_get(scenario, "exitCode")) !== "number")) || ($mini_map_get(scenario, "exitCode") < 0)) || ($mini_map_get(scenario, "exitCode") > 255))) {
-        return case_fail((prefix + "invalid exit status"));
-    }
-    if (($mini_map_has(scenario, "args") && (!case_is_text_list($mini_map_get(scenario, "args"))))) {
-        return case_fail((prefix + "invalid arguments"));
-    }
-    let streams = [];
-    $mini_list_set(streams, 0, "stdin");
-    $mini_list_set(streams, 1, "stdout");
-    $mini_list_set(streams, 2, "stderr");
-    let position = 0;
-    while ((position < (streams).length)) {
-        let key = $mini_list_get(streams, position);
-        if ((!$mini_map_has(scenario, key))) {
-            return case_fail("invalid stream");
-        }
-        let bytes = case_stream_bytes($mini_map_get(scenario, key), directory);
-        if ((!$mini_map_get(bytes, "ok"))) {
-            return case_fail($mini_map_get(bytes, "message"));
-        }
-        position = (position + 1);
-    }
-    let runnable = (((kind === "feature") || (kind === "sample")) || (kind === "example"));
-    if (($mini_map_has(scenario, "inputFiles") || $mini_map_has(scenario, "outputFiles"))) {
-        if ((!runnable)) {
-            return case_fail((prefix + "file fixtures need a runnable Mini case"));
-        }
-        let groups = [];
-        $mini_list_set(groups, 0, "inputFiles");
-        $mini_list_set(groups, 1, "outputFiles");
-        position = 0;
-        while ((position < (groups).length)) {
-            let group_key = $mini_list_get(groups, position);
-            if ($mini_map_has(scenario, group_key)) {
-                let files = $mini_map_get(scenario, group_key);
-                if (($mini_value_kind(files) !== "map")) {
-                    return case_fail((prefix + "file fixtures must be an object"));
-                }
-                let keys = Object.keys(files);
-                let index = 0;
-                while ((index < (keys).length)) {
-                    let file_name = $mini_list_get(keys, index);
-                    if (((((file_name).length === 0) || case_path_is_absolute(file_name)) || ($mini_text_find(file_name, "..") >= 0))) {
-                        return case_fail("file fixture paths must stay inside the case workspace");
-                    }
-                    if ((!case_stream_valid($mini_map_get(files, file_name)))) {
-                        return case_fail("invalid stream");
-                    }
-                    index = (index + 1);
-                }
-            }
-            position = (position + 1);
-        }
-    }
-    if (($mini_map_has(scenario, "artifact") && ((kind !== "compile") || (!case_stream_valid($mini_map_get(scenario, "artifact")))))) {
-        return case_fail((prefix + "only compile cases compare generated artifacts"));
-    }
-    if (($mini_map_has(scenario, "workspace") && (kind !== "tool"))) {
-        return case_fail((prefix + "invalid workspace"));
-    }
-    if ($mini_map_has(scenario, "tag")) {
-        let tag = $mini_map_get(scenario, "tag");
-        if (((((((!$mini_map_has(scenario, "workspace")) || ($mini_value_kind(tag) !== "map")) || (!$mini_map_has(tag, "name"))) || ($mini_value_kind($mini_map_get(tag, "name")) !== "text")) || (!$mini_map_has(tag, "annotated"))) || ($mini_value_kind($mini_map_get(tag, "annotated")) !== "boolean"))) {
-            return case_fail((prefix + "invalid fixture tag"));
-        }
-    }
-    if (($mini_map_has(scenario, "files") && (!case_is_text_list($mini_map_get(scenario, "files"))))) {
-        return case_fail((prefix + "invalid artifact paths"));
-    }
-    return case_ok();
-}
-function case_collect(directory, filter, fixtures, ids) {
-    let entries = $mini_directory_list(directory);
-    let position = 0;
-    while ((position < (entries).length)) {
-        let name = $mini_list_get(entries, position);
-        let path = case_path_join(directory, name);
-        if ($mini_path_is_directory(path)) {
-            let nested = case_collect(path, filter, fixtures, ids);
-            if ((!$mini_map_get(nested, "ok"))) {
-                return nested;
-            }
-        } else {
-            if (text_ends_with(name, ".case.json")) {
-                let loaded = case_load_case(path);
-                if ((!$mini_map_get(loaded, "ok"))) {
-                    return loaded;
-                }
-                let fixture = $mini_map_get(loaded, "fixture");
-                let id = $mini_map_get($mini_map_get(fixture, "definition"), "id");
-                if ($mini_map_has(ids, id)) {
-                    return case_fail("duplicate case IDs");
-                }
-                $mini_map_set(ids, id, true);
-                if (((filter === "") || ($mini_text_find(id, filter) >= 0))) {
-                    $mini_list_set(fixtures, (fixtures).length, fixture);
-                }
-            }
-        }
-        position = (position + 1);
-    }
-    return case_ok();
-}
-function case_load_cases(filter, project_root) {
-    let fixtures = [];
-    let ids = ({ __proto__: $mini_map_proto });
-    let collected = case_collect(case_path_join(project_root, "cases"), filter, fixtures, ids);
-    if ((!$mini_map_get(collected, "ok"))) {
-        return collected;
-    }
-    if (((fixtures).length === 0)) {
-        return case_fail(("no cases match: " + filter));
-    }
-    let result = case_ok();
-    $mini_map_set(result, "fixtures", fixtures);
-    return result;
-}
-function case_compiler_entry(project_root) {
-    let parsed = case_json_file(case_path_join(project_root, "config/compiler.json"));
-    if ((!$mini_map_get(parsed, "ok"))) {
-        return "";
-    }
-    return $mini_map_get($mini_map_get(parsed, "value"), "entry");
-}
-function case_run(command, args, directory, input) {
+function process_capture(command, args, directory, input) {
     let options = ({ __proto__: $mini_map_proto });
     $mini_map_set(options, "command", command);
     $mini_map_set(options, "arguments", args);
@@ -767,326 +496,45 @@ function case_run(command, args, directory, input) {
     $mini_map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
 }
-function case_entry_excluded(name) {
-    return (((name === ".git") || (name === "node_modules")) || (name === ".cache"));
-}
-function case_copy_tree(from, to) {
-    if ($mini_path_is_directory(from)) {
-        $mini_directory_create(to);
-        let entries = $mini_directory_list(from);
-        let position = 0;
-        while ((position < (entries).length)) {
-            let name = $mini_list_get(entries, position);
-            if (((!case_entry_excluded(name)) && (!((name === "release") && (case_path_basename(from) === "dist"))))) {
-                case_copy_tree(case_path_join(from, name), case_path_join(to, name));
-            }
-            position = (position + 1);
-        }
-    } else {
-        $mini_path_copy(from, to);
-    }
-    return 0;
-}
-function case_git(directory, args) {
-    let git_args = [];
-    $mini_list_set(git_args, 0, "-c");
-    $mini_list_set(git_args, 1, "user.name=Case fixture");
-    $mini_list_set(git_args, 2, "-c");
-    $mini_list_set(git_args, 3, "user.email=fixture@example.invalid");
-    $mini_list_set(git_args, 4, "-c");
-    $mini_list_set(git_args, 5, "commit.gpgSign=false");
-    $mini_list_set(git_args, 6, "-c");
-    $mini_list_set(git_args, 7, "tag.gpgSign=false");
-    $mini_list_set(git_args, 8, "-c");
-    $mini_list_set(git_args, 9, "maintenance.auto=false");
-    $mini_list_set(git_args, 10, "-c");
-    $mini_list_set(git_args, 11, "gc.auto=0");
-    let position = 0;
-    while ((position < (args).length)) {
-        $mini_list_set(git_args, (git_args).length, $mini_list_get(args, position));
-        position = (position + 1);
-    }
-    return case_run("git", git_args, directory, []);
-}
-function case_tool_workspace(project_root, scenario, work) {
-    let directory = case_path_join(work, "project");
-    case_copy_tree(project_root, directory);
-    let init = case_git(directory, case_text_list3("init", "-b", "main"));
-    if (($mini_map_get(init, "status") !== 0)) {
-        return case_fail(("git init failed: " + $mini_text_from_bytes($mini_map_get(init, "stderr"))));
-    }
-    let added = case_git(directory, case_text_list2("add", "."));
-    if (($mini_map_get(added, "status") !== 0)) {
-        return case_fail(("git add failed: " + $mini_text_from_bytes($mini_map_get(added, "stderr"))));
-    }
-    let committed = case_git(directory, case_text_list3("commit", "-m", "case fixture"));
-    if (($mini_map_get(committed, "status") !== 0)) {
-        return case_fail(("git commit failed: " + $mini_text_from_bytes($mini_map_get(committed, "stderr"))));
-    }
-    if ($mini_map_has(scenario, "tag")) {
-        let tag = $mini_map_get(scenario, "tag");
-        let tag_args = [];
-        $mini_list_set(tag_args, 0, "tag");
-        if ($mini_map_get(tag, "annotated")) {
-            $mini_list_set(tag_args, 1, "-a");
-            $mini_list_set(tag_args, 2, $mini_map_get(tag, "name"));
-            $mini_list_set(tag_args, 3, "-m");
-            $mini_list_set(tag_args, 4, $mini_map_get(tag, "name"));
-        } else {
-            $mini_list_set(tag_args, 1, $mini_map_get(tag, "name"));
-        }
-        let tagged = case_git(directory, tag_args);
-        if (($mini_map_get(tagged, "status") !== 0)) {
-            return case_fail(("git tag failed: " + $mini_text_from_bytes($mini_map_get(tagged, "stderr"))));
-        }
-    }
-    if (($mini_map_get(scenario, "workspace") === "dirty")) {
-        writeFileSync(case_path_join(directory, "uncommitted.txt"), "dirty\n", "utf8");
-    }
-    let result = case_ok();
-    $mini_map_set(result, "directory", directory);
-    return result;
-}
-function case_text_list2(first, second) {
-    let items = [];
-    $mini_list_set(items, 0, first);
-    $mini_list_set(items, 1, second);
-    return items;
-}
-function case_text_list3(first, second, third) {
-    let items = [];
-    $mini_list_set(items, 0, first);
-    $mini_list_set(items, 1, second);
-    $mini_list_set(items, 2, third);
-    return items;
-}
-function case_verify_scenario(fixture, scenario, project_root, compiler_override) {
-    let definition = $mini_map_get(fixture, "definition");
-    let directory = case_path_parent($mini_map_get(fixture, "path"));
-    let id = $mini_map_get(definition, "id");
-    let name = $mini_map_get(scenario, "name");
-    let prefix = (((id + "/") + name) + ": ");
-    let input = case_stream_bytes($mini_map_get(scenario, "stdin"), directory);
-    if ((!$mini_map_get(input, "ok"))) {
-        return case_fail((prefix + $mini_map_get(input, "message")));
-    }
-    let work = $mini_directory_temp();
-    if (((work).length === 0)) {
-        return case_fail((prefix + "cannot create a temporary directory"));
-    }
-    let result = case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix);
-    $mini_path_remove(work);
-    return result;
-}
-function case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix) {
-    let definition = $mini_map_get(fixture, "definition");
-    let kind = $mini_map_get(definition, "kind");
-    let directory = case_path_parent($mini_map_get(fixture, "path"));
-    let input = case_stream_bytes($mini_map_get(scenario, "stdin"), directory);
-    let args = [];
-    if ($mini_map_has(scenario, "args")) {
-        args = $mini_map_get(scenario, "args");
-    }
-    let workspace = project_root;
+function result_ok() {
     let result = ({ __proto__: $mini_map_proto });
-    let artifact = "";
-    if ((kind === "tool")) {
-        if ($mini_map_has(scenario, "workspace")) {
-            let prepared = case_tool_workspace(project_root, scenario, work);
-            if ((!$mini_map_get(prepared, "ok"))) {
-                return case_fail((prefix + $mini_map_get(prepared, "message")));
-            }
-            workspace = $mini_map_get(prepared, "directory");
-        }
-        let command_args = [];
-        $mini_list_set(command_args, 0, case_path_join(case_path_join(workspace, "bin"), $mini_map_get(definition, "tool")));
-        let position = 0;
-        while ((position < (args).length)) {
-            $mini_list_set(command_args, (command_args).length, $mini_list_get(args, position));
-            position = (position + 1);
-        }
-        result = case_run(process.execPath, command_args, workspace, $mini_map_get(input, "bytes"));
-    } else {
-        let source = case_path_resolve(directory, $mini_map_get(definition, "source"));
-        let compiler = compiler_override;
-        if ((compiler === "")) {
-            compiler = case_compiler_entry(project_root);
-        }
-        let output = case_path_join(work, "program.mini.ts");
-        let compile_args = [];
-        $mini_list_set(compile_args, 0, compiler);
-        $mini_list_set(compile_args, 1, "compile");
-        $mini_list_set(compile_args, 2, source);
-        $mini_list_set(compile_args, 3, output);
-        result = case_run(process.execPath, compile_args, project_root, []);
-        if ((($mini_map_get(result, "status") === 0) && $mini_path_exists(output))) {
-            artifact = $mini_hash_sha256($mini_file_read_bytes(output));
-        }
-        if (((kind === "compile") && $mini_map_has(scenario, "artifact"))) {
-            let expected = case_stream_bytes($mini_map_get(scenario, "artifact"), directory);
-            if ((!$mini_map_get(expected, "ok"))) {
-                return case_fail((prefix + $mini_map_get(expected, "message")));
-            }
-            if (((!$mini_path_exists(output)) || (!case_bytes_equal($mini_file_read_bytes(output), $mini_map_get(expected, "bytes"))))) {
-                return case_fail((prefix + "generated artifact differs"));
-            }
-        }
-        if (((kind === "reject") && $mini_path_exists(output))) {
-            return case_fail((prefix + "rejection created an output artifact"));
-        }
-        if (((kind !== "reject") && (kind !== "compile"))) {
-            if (($mini_map_get(result, "status") !== 0)) {
-                return case_fail((prefix + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
-            }
-            let files = case_path_join(work, "files");
-            $mini_directory_create(files);
-            let prepared_files = case_write_input_files(scenario, directory, files, prefix);
-            if ((!$mini_map_get(prepared_files, "ok"))) {
-                return prepared_files;
-            }
-            let run_args = [];
-            $mini_list_set(run_args, 0, output);
-            let position = 0;
-            while ((position < (args).length)) {
-                $mini_list_set(run_args, (run_args).length, $mini_list_get(args, position));
-                position = (position + 1);
-            }
-            result = case_run(process.execPath, run_args, files, $mini_map_get(input, "bytes"));
-            let checked_files = case_check_output_files(scenario, directory, files, prefix);
-            if ((!$mini_map_get(checked_files, "ok"))) {
-                return checked_files;
-            }
-        }
-    }
-    if (($mini_map_get(result, "status") !== $mini_map_get(scenario, "exitCode"))) {
-        return case_fail(((prefix + "exit status") + case_diagnostic(result)));
-    }
-    let stdout = case_stream_bytes($mini_map_get(scenario, "stdout"), directory);
-    if ((!case_bytes_equal($mini_map_get(result, "stdout"), $mini_map_get(stdout, "bytes")))) {
-        return case_fail((prefix + "stdout"));
-    }
-    let stderr = case_stream_bytes($mini_map_get(scenario, "stderr"), directory);
-    if ((!case_bytes_equal($mini_map_get(result, "stderr"), $mini_map_get(stderr, "bytes")))) {
-        return case_fail((prefix + "stderr"));
-    }
-    if ((kind === "reject")) {
-        if ((($mini_map_get(scenario, "exitCode") === 0) || (($mini_map_get(result, "stdout")).length !== 0))) {
-            return case_fail((prefix + "rejection result"));
-        }
-    }
-    if ($mini_map_has(scenario, "files")) {
-        let files = $mini_map_get(scenario, "files");
-        let position = 0;
-        while ((position < (files).length)) {
-            if ((!$mini_path_exists(case_path_resolve(workspace, $mini_list_get(files, position))))) {
-                return case_fail(("missing artifact: " + $mini_list_get(files, position)));
-            }
-            position = (position + 1);
-        }
-    }
-    let done = case_ok();
-    $mini_map_set(done, "artifact", artifact);
-    return done;
+    $mini_map_set(result, "ok", true);
+    $mini_map_set(result, "message", "");
+    return result;
 }
-function case_diagnostic(result) {
-    let error = $mini_map_get(result, "error");
-    if (((error).length > 0)) {
-        return (": " + error);
-    }
-    let stderr = $mini_text_from_bytes($mini_map_get(result, "stderr"));
-    if (((stderr).length > 0)) {
-        return (": " + stderr);
-    }
-    return "";
+function result_fail(message) {
+    let result = ({ __proto__: $mini_map_proto });
+    $mini_map_set(result, "ok", false);
+    $mini_map_set(result, "message", message);
+    return result;
 }
-function case_write_input_files(scenario, directory, files, prefix) {
-    if ((!$mini_map_has(scenario, "inputFiles"))) {
-        return case_ok();
+function json_file(path) {
+    if ((!$mini_path_exists(path))) {
+        return result_fail(("cannot read " + path));
     }
-    let inputs = $mini_map_get(scenario, "inputFiles");
-    let names = Object.keys(inputs);
-    let position = 0;
-    while ((position < (names).length)) {
-        let name = $mini_list_get(names, position);
-        let stream = case_stream_bytes($mini_map_get(inputs, name), directory);
-        if ((!$mini_map_get(stream, "ok"))) {
-            return case_fail((prefix + $mini_map_get(stream, "message")));
-        }
-        let target = case_path_join(files, name);
-        $mini_directory_create(case_path_parent(target));
-        $mini_file_write_bytes(target, $mini_map_get(stream, "bytes"));
-        position = (position + 1);
+    let parsed = $mini_json_parse(readFileSync(path, "utf8"));
+    if ((!$mini_map_get(parsed, "ok"))) {
+        return result_fail(("invalid JSON: " + path));
     }
-    return case_ok();
+    let result = result_ok();
+    $mini_map_set(result, "value", $mini_map_get(parsed, "value"));
+    return result;
 }
-function case_check_output_files(scenario, directory, files, prefix) {
-    if ((!$mini_map_has(scenario, "outputFiles"))) {
-        return case_ok();
+function project_root() {
+    let script = process.argv[1];
+    let base = path_parent(path_parent(script));
+    if ((path_basename(base) === "dist")) {
+        return path_parent(base);
     }
-    let outputs = $mini_map_get(scenario, "outputFiles");
-    let names = Object.keys(outputs);
-    let position = 0;
-    while ((position < (names).length)) {
-        let name = $mini_list_get(names, position);
-        let expected = case_stream_bytes($mini_map_get(outputs, name), directory);
-        if ((!$mini_map_get(expected, "ok"))) {
-            return case_fail((prefix + $mini_map_get(expected, "message")));
-        }
-        let target = case_path_join(files, name);
-        if (((!$mini_path_exists(target)) || (!case_bytes_equal($mini_file_read_bytes(target), $mini_map_get(expected, "bytes"))))) {
-            return case_fail(((prefix + "file ") + name));
-        }
-        position = (position + 1);
-    }
-    return case_ok();
+    return base;
 }
-function case_case_identity(fixture, project_root) {
-    let definition = $mini_map_get(fixture, "definition");
-    let directory = case_path_parent($mini_map_get(fixture, "path"));
-    let source = "";
-    if (($mini_map_get(definition, "kind") === "tool")) {
-        source = case_path_join(case_path_join(project_root, "bin"), $mini_map_get(definition, "tool"));
-    } else {
-        source = case_path_resolve(directory, $mini_map_get(definition, "source"));
+function project_compiler_entry(root) {
+    let parsed = json_file(path_join(root, "config/compiler.json"));
+    if ((!$mini_map_get(parsed, "ok"))) {
+        result_fail($mini_map_get(parsed, "message"));
+        return "";
     }
-    let streams = [];
-    let scenarios = $mini_map_get(definition, "cases");
-    let position = 0;
-    while ((position < (scenarios).length)) {
-        let scenario = $mini_list_get(scenarios, position);
-        let entry = ({ __proto__: $mini_map_proto });
-        $mini_map_set(entry, "name", $mini_map_get(scenario, "name"));
-        $mini_map_set(entry, "stdin", $mini_hash_sha256($mini_map_get(case_stream_bytes($mini_map_get(scenario, "stdin"), directory), "bytes")));
-        $mini_map_set(entry, "stdout", $mini_hash_sha256($mini_map_get(case_stream_bytes($mini_map_get(scenario, "stdout"), directory), "bytes")));
-        $mini_map_set(entry, "stderr", $mini_hash_sha256($mini_map_get(case_stream_bytes($mini_map_get(scenario, "stderr"), directory), "bytes")));
-        if ($mini_map_has(scenario, "artifact")) {
-            $mini_map_set(entry, "artifact", $mini_hash_sha256($mini_map_get(case_stream_bytes($mini_map_get(scenario, "artifact"), directory), "bytes")));
-        }
-        if ($mini_map_has(scenario, "inputFiles")) {
-            $mini_map_set(entry, "inputFiles", case_file_hashes($mini_map_get(scenario, "inputFiles"), directory));
-        }
-        if ($mini_map_has(scenario, "outputFiles")) {
-            $mini_map_set(entry, "outputFiles", case_file_hashes($mini_map_get(scenario, "outputFiles"), directory));
-        }
-        $mini_list_set(streams, (streams).length, entry);
-        position = (position + 1);
-    }
-    let identity = ({ __proto__: $mini_map_proto });
-    $mini_map_set(identity, "manifest", $mini_hash_sha256($mini_file_read_bytes($mini_map_get(fixture, "path"))));
-    $mini_map_set(identity, "source", $mini_hash_sha256($mini_file_read_bytes(source)));
-    $mini_map_set(identity, "streams", streams);
-    return identity;
-}
-function case_file_hashes(files, directory) {
-    let hashes = ({ __proto__: $mini_map_proto });
-    let names = Object.keys(files);
-    let position = 0;
-    while ((position < (names).length)) {
-        let name = $mini_list_get(names, position);
-        $mini_map_set(hashes, name, $mini_hash_sha256($mini_map_get(case_stream_bytes($mini_map_get(files, name), directory), "bytes")));
-        position = (position + 1);
-    }
-    return hashes;
+    return $mini_map_get($mini_map_get(parsed, "value"), "entry");
 }
 function release_fail(message) {
     writeSync(2, (message + "\n"));
@@ -1094,19 +542,19 @@ function release_fail(message) {
     return 0;
 }
 function release_run(command, args, directory) {
-    let result = case_run(command, args, directory, []);
+    let result = process_capture(command, args, directory, []);
     if (($mini_map_get(result, "status") !== 0)) {
         release_fail((((((command + " ") + $mini_list_to_text(args, " ")) + " failed:\n") + $mini_text_from_bytes($mini_map_get(result, "stdout"))) + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
     }
-    let done = case_ok();
+    let done = result_ok();
     $mini_map_set(done, "stdout", $mini_map_get(result, "stdout"));
     $mini_map_set(done, "stderr", $mini_map_get(result, "stderr"));
     return done;
 }
 function release_check(check, directory) {
-    let result = case_run(process.execPath, case_text_list2(check, "--docs"), directory, []);
+    let result = process_capture(process.execPath, list_of2(check, "--docs"), directory, []);
     if (($mini_map_get(result, "status") !== 0)) {
-        release_fail((((case_path_basename(check) + " failed:\n") + $mini_text_from_bytes($mini_map_get(result, "stdout"))) + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
+        release_fail((((path_basename(check) + " failed:\n") + $mini_text_from_bytes($mini_map_get(result, "stdout"))) + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
     }
     return 0;
 }
@@ -1116,7 +564,7 @@ function release_text_list1(value) {
     return items;
 }
 function release_json(path) {
-    let parsed = case_json_file(path);
+    let parsed = json_file(path);
     if ((!$mini_map_get(parsed, "ok"))) {
         release_fail($mini_map_get(parsed, "message"));
     }
@@ -1160,7 +608,7 @@ function release_compiler_hash(active) {
     let position = 0;
     while ((position < (sources).length)) {
         let path = $mini_list_get(sources, position);
-        $mini_list_set(parts, (parts).length, ((path + "\n") + readFileSync(case_path_join(case_root(), path), "utf8")));
+        $mini_list_set(parts, (parts).length, ((path + "\n") + readFileSync(path_join(project_root(), path), "utf8")));
         position = (position + 1);
     }
     return $mini_hash_sha256($mini_list_to_text(parts, "\n"));
@@ -1168,37 +616,37 @@ function release_compiler_hash(active) {
 function release_node_version(root) {
     let args = [];
     $mini_list_set(args, 0, "-v");
-    let result = case_run(process.execPath, args, root, []);
+    let result = process_capture(process.execPath, args, root, []);
     return text_chomp($mini_text_from_bytes($mini_map_get(result, "stdout")));
 }
 function release_vscode(directory, output, tooling) {
-    let current = release_json(case_path_join(directory, "config/versions.json"));
+    let current = release_json(path_join(directory, "config/versions.json"));
     let version = $mini_map_get(current, "vscode");
     if (($mini_value_kind(version) !== "text")) {
         release_fail("VS Code extension version is unassigned");
     }
-    let packager = case_path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
-    let bundler = case_path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
+    let packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
+    let bundler = path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
     if ((!$mini_path_exists(packager))) {
         release_fail("install VS Code development dependencies with npm ci in editors/vscode");
     }
     if ((!$mini_path_exists(bundler))) {
         release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
     }
-    let extension = case_path_join(directory, "editors/vscode");
-    $mini_directory_create(case_path_join(extension, "dist"));
+    let extension = path_join(directory, "editors/vscode");
+    $mini_directory_create(path_join(extension, "dist"));
     let bundle_args = [];
     $mini_list_set(bundle_args, 0, bundler);
-    $mini_list_set(bundle_args, 1, case_path_join(extension, "src/extension.ts"));
+    $mini_list_set(bundle_args, 1, path_join(extension, "src/extension.ts"));
     $mini_list_set(bundle_args, 2, "--bundle");
     $mini_list_set(bundle_args, 3, "--platform=node");
     $mini_list_set(bundle_args, 4, "--format=cjs");
     $mini_list_set(bundle_args, 5, "--external:vscode");
-    $mini_list_set(bundle_args, 6, ("--outfile=" + case_path_join(extension, "dist/extension.cjs")));
+    $mini_list_set(bundle_args, 6, ("--outfile=" + path_join(extension, "dist/extension.cjs")));
     release_run(process.execPath, bundle_args, extension);
     $mini_directory_create(output);
     let file = (((("mini-" + $mini_map_get(current, "group")) + "-v") + version) + ".vsix");
-    let destination = case_path_join(output, file);
+    let destination = path_join(output, file);
     if ($mini_path_exists(destination)) {
         release_fail("VSIX output already exists");
     }
@@ -1217,7 +665,7 @@ function release_vscode(directory, output, tooling) {
     return asset;
 }
 function release_notes(output, title, label, commit, changelog) {
-    writeFileSync(case_path_join(output, "RELEASE-NOTES.md"), ((((((("# " + title) + "\n\nVersion: ") + label) + "\n\nSource: ") + commit) + "\n\nBootstrap: verified fixed point\n\n") + changelog), "utf8");
+    writeFileSync(path_join(output, "RELEASE-NOTES.md"), ((((((("# " + title) + "\n\nVersion: ") + label) + "\n\nSource: ") + commit) + "\n\nBootstrap: verified fixed point\n\n") + changelog), "utf8");
     return 0;
 }
 function release_checksums(output) {
@@ -1226,37 +674,37 @@ function release_checksums(output) {
     let position = 0;
     while ((position < (assets).length)) {
         let name = $mini_list_get(assets, position);
-        $mini_list_set(lines, (lines).length, ((($mini_hash_sha256($mini_file_read_bytes(case_path_join(output, name))) + "  ") + name) + "\n"));
+        $mini_list_set(lines, (lines).length, ((($mini_hash_sha256($mini_file_read_bytes(path_join(output, name))) + "  ") + name) + "\n"));
         position = (position + 1);
     }
-    writeFileSync(case_path_join(output, "SHA256SUMS"), $mini_list_to_text(lines, ""), "utf8");
+    writeFileSync(path_join(output, "SHA256SUMS"), $mini_list_to_text(lines, ""), "utf8");
     return 0;
 }
 function release_prepare(directory, output, tag) {
-    if ((!case_path_is_absolute(output))) {
-        output = case_path_join(directory, output);
+    if ((!path_is_absolute(output))) {
+        output = path_join(directory, output);
     }
     let released = 0;
-    let status = release_run("git", case_text_list2("status", "--porcelain"), directory);
+    let status = release_run("git", list_of2("status", "--porcelain"), directory);
     if ((text_chomp($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {
         release_fail("release needs a clean checkout");
     }
-    let head = release_run("git", case_text_list2("rev-parse", "HEAD"), directory);
+    let head = release_run("git", list_of2("rev-parse", "HEAD"), directory);
     let commit = text_chomp($mini_text_from_bytes($mini_map_get(head, "stdout")));
-    let current = release_json(case_path_join(directory, "config/versions.json"));
-    let active = release_json(case_path_join(directory, "config/compiler.json"));
+    let current = release_json(path_join(directory, "config/versions.json"));
+    let active = release_json(path_join(directory, "config/compiler.json"));
     if ((tag !== "")) {
         released = release_select(tag, current);
-        let type = release_run("git", case_text_list3("cat-file", "-t", ("refs/tags/" + tag)), directory);
+        let type = release_run("git", list_of3("cat-file", "-t", ("refs/tags/" + tag)), directory);
         if ((text_chomp($mini_text_from_bytes($mini_map_get(type, "stdout"))) !== "tag")) {
             release_fail("release tag must be annotated");
         }
-        let tagged = release_run("git", case_text_list2("rev-parse", (("refs/tags/" + tag) + "^{commit}")), directory);
+        let tagged = release_run("git", list_of2("rev-parse", (("refs/tags/" + tag) + "^{commit}")), directory);
         if ((text_chomp($mini_text_from_bytes($mini_map_get(tagged, "stdout"))) !== commit)) {
             release_fail("release tag must match the current commit");
         }
     }
-    let bootstrap_config = release_json(case_path_join(directory, "config/bootstrap.json"));
+    let bootstrap_config = release_json(path_join(directory, "config/bootstrap.json"));
     let available = ($mini_value_kind(bootstrap_config) === "map");
     let compiler_release = false;
     if ((released !== 0)) {
@@ -1271,10 +719,10 @@ function release_prepare(directory, output, tag) {
         release_fail("release output directory must be empty");
     }
     let work = $mini_directory_temp();
-    let source = case_path_join(work, "source");
+    let source = path_join(work, "source");
     $mini_directory_create(source);
-    let tracked = case_path_join(work, "source.tar");
-    let archive_result = release_run("git", case_text_list3("archive", "--format=tar", commit), directory);
+    let tracked = path_join(work, "source.tar");
+    let archive_result = release_run("git", list_of3("archive", "--format=tar", commit), directory);
     $mini_file_write_bytes(tracked, $mini_map_get(archive_result, "stdout"));
     let extract_args = [];
     $mini_list_set(extract_args, 0, "-xf");
@@ -1282,10 +730,10 @@ function release_prepare(directory, output, tag) {
     $mini_list_set(extract_args, 2, "-C");
     $mini_list_set(extract_args, 3, source);
     release_run("tar", extract_args, work);
-    release_check(case_path_join(source, "bin/mini-check"), source);
+    release_check(path_join(source, "bin/mini-check"), source);
     let bootstrap = 0;
     if (available) {
-        let verify_args = case_text_list2(case_path_join(source, "dist/verify.ts"), source);
+        let verify_args = list_of2(path_join(source, "dist/verify.ts"), source);
         let verified = release_run(process.execPath, verify_args, source);
         let parsed = $mini_json_parse($mini_text_from_bytes($mini_map_get(verified, "stdout")));
         if ($mini_map_get(parsed, "ok")) {
@@ -1318,30 +766,30 @@ function release_prepare(directory, output, tag) {
     $mini_map_set(manifest, "node", release_node_version(directory));
     $mini_map_set(manifest, "bootstrap", bootstrap);
     $mini_map_set(manifest, "vsix", vsix);
-    if ($mini_path_exists(case_path_join(source, "RELEASE.json"))) {
+    if ($mini_path_exists(path_join(source, "RELEASE.json"))) {
         release_fail("RELEASE.json is reserved for packaged metadata");
     }
     let record = ($mini_json_to_text(manifest) + "\n");
-    writeFileSync(case_path_join(source, "RELEASE.json"), record, "utf8");
+    writeFileSync(path_join(source, "RELEASE.json"), record, "utf8");
     let archive = (("minilang-" + label) + ".tar.gz");
     let pack_args = [];
     $mini_list_set(pack_args, 0, "-czf");
-    $mini_list_set(pack_args, 1, case_path_join(output, archive));
+    $mini_list_set(pack_args, 1, path_join(output, archive));
     $mini_list_set(pack_args, 2, "-C");
     $mini_list_set(pack_args, 3, source);
     $mini_list_set(pack_args, 4, ".");
     release_run("tar", pack_args, work);
-    let extracted = case_path_join(work, "extracted");
+    let extracted = path_join(work, "extracted");
     $mini_directory_create(extracted);
     let unpack_args = [];
     $mini_list_set(unpack_args, 0, "-xf");
-    $mini_list_set(unpack_args, 1, case_path_join(output, archive));
+    $mini_list_set(unpack_args, 1, path_join(output, archive));
     $mini_list_set(unpack_args, 2, "-C");
     $mini_list_set(unpack_args, 3, extracted);
     release_run("tar", unpack_args, work);
-    release_check(case_path_join(extracted, "bin/mini-check"), extracted);
-    writeFileSync(case_path_join(output, "manifest.json"), record, "utf8");
-    release_notes(output, title, label, commit, readFileSync(case_path_join(source, "CHANGELOG.md"), "utf8"));
+    release_check(path_join(extracted, "bin/mini-check"), extracted);
+    writeFileSync(path_join(output, "manifest.json"), record, "utf8");
+    release_notes(output, title, label, commit, readFileSync(path_join(source, "CHANGELOG.md"), "utf8"));
     release_checksums(output);
     $mini_path_remove(work);
     return 0;
@@ -1352,8 +800,8 @@ function main() {
         writeSync(2, "usage: mini-release OUTPUT [TAG]\n");
         process.exit(1);
     }
-    let directory = case_root();
-    let output = case_path_normalize($mini_list_get(args, 0));
+    let directory = project_root();
+    let output = path_normalize($mini_list_get(args, 0));
     let tag = "";
     if (((args).length === 2)) {
         tag = $mini_list_get(args, 1);

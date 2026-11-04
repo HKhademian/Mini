@@ -8,8 +8,8 @@ fn main() {
         io_write_error("usage: mini-release OUTPUT [TAG]\n");
         process_exit(1);
     }
-    var directory = case_root();
-    var output = case_path_normalize(list_get(args, 0));
+    var directory = project_root();
+    var output = path_normalize(list_get(args, 0));
     var tag = "";
     if (list_length(args) == 2) {
         tag = list_get(args, 1);

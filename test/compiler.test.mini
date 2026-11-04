@@ -6,20 +6,20 @@ include "../libs/cases.mini";
 fn main() {
     var args = process_args();
     var root = list_get(args, 0);
-    var source = case_path_join(root, "tools/compiler.mini");
-    var seed = case_path_join(root, "dist/compile.ts");
+    var source = path_join(root, "tools/compiler.mini");
+    var seed = path_join(root, "dist/compile.ts");
     var expected = hash_sha256(file_read_bytes(seed));
     var work = directory_temp();
-    file_write(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n");
+    file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var previous = seed;
     var stage = 0;
     while (stage < 3) {
-        var output = case_path_join(work, "compiler" + number_to_text(stage) + ".ts");
+        var output = path_join(work, "compiler" + number_to_text(stage) + ".ts");
         var compile_args = list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, source);
         list_set(compile_args, 2, output);
-        var result = case_run(process_exec_path(), compile_args, root, list_new());
+        var result = process_capture(process_exec_path(), compile_args, root, list_new());
         if (map_get(result, "status") != 0) {
             path_remove(work);
             io_write_error("compiler stage " + number_to_text(stage) + " failed: "

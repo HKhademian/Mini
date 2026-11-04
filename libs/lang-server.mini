@@ -1,6 +1,8 @@
 include "text.mini";
 include "list.mini";
-include "cases.mini";
+include "path.mini";
+include "process.mini";
+include "project.mini";
 /// Mini language server: LSP 3.17 over standard input and output.
 /// Usage: node dist/lang-server.ts [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
@@ -108,12 +110,12 @@ fn lsp_diagnostic_range(text, diagnostic) {
 
 /// Return the running root from the tool path.
 fn lsp_root() {
-    return case_root();
+    return project_root();
 }
 
 /// Spawn one captured command and return its result.
 fn lsp_run(command, args, directory, input) {
-    return case_run(command, args, directory, input);
+    return process_capture(command, args, directory, input);
 }
 
 /// Parse the compiler's first diagnostic line.
@@ -181,10 +183,10 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
 /// diagnostics. Exactly the first compiler error is reported.
 fn lsp_analyze(text, name) {
     var root = lsp_root();
-    var compiler = case_compiler_entry(root);
+    var compiler = project_compiler_entry(root);
     var work = directory_temp();
-    var input = case_path_join(work, "source.mini");
-    var output = case_path_join(work, "program.ts");
+    var input = path_join(work, "source.mini");
+    var output = path_join(work, "program.ts");
     file_write(input, text);
     var token_args = list_new();
     list_set(token_args, 0, compiler);
@@ -308,7 +310,7 @@ fn lsp_builtins() {
     }
     var root = lsp_root();
     var args = list_new();
-    list_set(args, 0, case_compiler_entry(root));
+    list_set(args, 0, project_compiler_entry(root));
     list_set(args, 1, "metadata");
     var result = lsp_run(process_exec_path(), args, root, list_new());
     var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
@@ -516,7 +518,7 @@ fn lsp_publish(uri, version, diagnostics) {
 fn lsp_format_text(text) {
     var root = lsp_root();
     var args = list_new();
-    list_set(args, 0, case_path_join(root, "dist/format.ts"));
+    list_set(args, 0, path_join(root, "dist/format.ts"));
     list_set(args, 1, "-");
     var result = lsp_run(process_exec_path(), args, root, text_to_bytes(text));
     if (map_get(result, "status") == 0) {
@@ -707,7 +709,7 @@ fn lsp_request(documents, shutting_down, id, method, params) {
         map_set(completion, "resolveProvider", false);
         map_set(capabilities, "completionProvider", completion);
         map_set(capabilities, "definitionProvider", true);
-        var versions = map_get(json_parse(file_read(case_path_join(lsp_root(), "config/versions.json"))), "value");
+        var versions = map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
         var server_info = map_new();
         map_set(server_info, "name", "mini-lang-server");
         map_set(server_info, "version", "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp"));
@@ -769,7 +771,7 @@ fn lsp_read_message() {
 
 /// Return the language-server version label.
 fn lsp_version() {
-    var versions = map_get(json_parse(file_read(case_path_join(lsp_root(), "config/versions.json"))), "value");
+    var versions = map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
     return "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp");
 }
 

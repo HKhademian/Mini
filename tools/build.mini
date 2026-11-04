@@ -9,7 +9,7 @@ fn main() {
         process_exit(1);
     }
     var check = list_length(args) == 1;
-    build_run(case_root(), check);
+    build_run(project_root(), check);
     return 0;
 }
 

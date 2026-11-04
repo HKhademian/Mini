@@ -50,3 +50,47 @@ fn list_sorted(items) {
     }
     return result;
 }
+
+/// Return whether a list contains a value by equality.
+fn list_contains(items, value) {
+    var position = 0;
+    while (position < list_length(items)) {
+        if (list_get(items, position) == value) {
+            return true;
+        }
+        position = position + 1;
+    }
+    return false;
+}
+
+/// Return whether a value is a list containing only text.
+fn list_is_text(value) {
+    if (value_kind(value) != "list") {
+        return false;
+    }
+    var position = 0;
+    while (position < list_length(value)) {
+        if (value_kind(list_get(value, position)) != "text") {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
+/// Build a two-element list.
+fn list_of2(first, second) {
+    var result = list_new();
+    list_set(result, 0, first);
+    list_set(result, 1, second);
+    return result;
+}
+
+/// Build a three-element list.
+fn list_of3(first, second, third) {
+    var result = list_new();
+    list_set(result, 0, first);
+    list_set(result, 1, second);
+    list_set(result, 2, third);
+    return result;
+}

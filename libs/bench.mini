@@ -27,7 +27,7 @@ fn bench_half(value) {
 
 /// Return the compiler source hash from configuration.
 fn bench_compiler_hash(root) {
-    var parsed = json_parse(file_read(case_path_join(root, "config/compiler.json")));
+    var parsed = json_parse(file_read(path_join(root, "config/compiler.json")));
     if (!map_get(parsed, "ok")) {
         bench_fail("invalid config/compiler.json");
     }
@@ -36,7 +36,7 @@ fn bench_compiler_hash(root) {
     var position = 0;
     while (position < list_length(sources)) {
         var path = list_get(sources, position);
-        list_set(parts, list_length(parts), path + "\n" + file_read(case_path_join(root, path)));
+        list_set(parts, list_length(parts), path + "\n" + file_read(path_join(root, path)));
         position = position + 1;
     }
     return hash_sha256(list_to_text(parts, "\n"));
@@ -48,7 +48,7 @@ fn bench_platform() {
     var args = list_new();
     list_set(args, 0, "-e");
     list_set(args, 1, code);
-    var result = case_run(process_exec_path(), args, case_root(), list_new());
+    var result = process_capture(process_exec_path(), args, project_root(), list_new());
     var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
     if (!map_get(parsed, "ok")) {
         return map_new();
@@ -58,13 +58,13 @@ fn bench_platform() {
 
 /// Return the repository commit, or empty text outside a checkout.
 fn bench_commit(root) {
-    if (!path_exists(case_path_join(root, ".git"))) {
+    if (!path_exists(path_join(root, ".git"))) {
         return "";
     }
     var args = list_new();
     list_set(args, 0, "rev-parse");
     list_set(args, 1, "HEAD");
-    var result = case_run("git", args, root, list_new());
+    var result = process_capture("git", args, root, list_new());
     return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }
 
@@ -132,7 +132,7 @@ fn bench_run(root, output, filter) {
         bench_fail("no benchmark cases selected");
     }
     var host = bench_platform();
-    var versions_parsed = json_parse(file_read(case_path_join(root, "config/versions.json")));
+    var versions_parsed = json_parse(file_read(path_join(root, "config/versions.json")));
     var report = map_new();
     map_set(report, "node", map_get(host, "node"));
     map_set(report, "platform", map_get(host, "platform"));
@@ -144,7 +144,7 @@ fn bench_run(root, output, filter) {
     map_set(report, "compiler", bench_compiler_hash(root));
     map_set(report, "scope", "fresh-process wall time including startup, IO, verification, and compilation for program cases");
     map_set(report, "results", results);
-    directory_create(case_path_parent(output));
+    directory_create(path_parent(output));
     file_write(output, json_to_text(report) + "\n");
     return list_length(results);
 }
