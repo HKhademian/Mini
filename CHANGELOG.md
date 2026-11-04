@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Compiler 0.3.0-alpha.32 / bootstrap 0.1.0-alpha.20: accept the implicit
+  `compiler SOURCE.mini [OUTPUT.ts]` form alongside `compile`, and emit an
+  executable Node shebang for the generated compiler.
 - Mini 0.1.0-alpha.20 / compiler 0.3.0-alpha.31: move included code into
   `libs/`. `tools/` holds command entries, `libs/` holds shared text and case
   libraries plus compiler parts under `libs/compiler/`, and `dist/` holds

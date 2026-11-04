@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 "use strict";
 import { readFileSync, writeFileSync, writeSync } from "node:fs";
 const $mini_map_proto = { __proto__: null };
@@ -1504,24 +1505,43 @@ function main() {
         writeSync(1, ($mini_json_to_text(metadata) + "\n"));
         return 0;
     }
-    let count = ((args).length - offset);
-    let source = $mini_list_get(args, (1 + offset));
-    let output = $mini_list_get(args, (2 + offset));
-    if (((((count < 2) || (count > 3)) || (!text_ends_with(source, ".mini"))) || ((command !== "compile") && (command !== "tokens")))) {
-        writeSync(2, "usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+    if ((command === "tokens")) {
+        let count = ((args).length - offset);
+        let token_source = $mini_list_get(args, (1 + offset));
+        if ((((count < 2) || (count > 3)) || (!text_ends_with(token_source, ".mini")))) {
+            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            process.exit(1);
+        }
+        let tokens = tokenize(readFileSync(token_source, "utf8"), basename(token_source), include_comments);
+        writeSync(1, token_json(tokens));
+        return 0;
+    }
+    let source = command;
+    let output = $mini_list_get(args, 1);
+    if ((command === "compile")) {
+        source = $mini_list_get(args, 1);
+        output = $mini_list_get(args, 2);
+        if (((args).length > 3)) {
+            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            process.exit(1);
+        }
+    } else {
+        if (((args).length > 2)) {
+            writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            process.exit(1);
+        }
+    }
+    if (((source === 0) || (!text_ends_with(source, ".mini")))) {
+        writeSync(2, "usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process.exit(1);
     }
-    let tokens = tokenize(readFileSync(source, "utf8"), basename(source), include_comments);
-    if ((command === "tokens")) {
-        writeSync(1, token_json(tokens));
-    } else {
-        let target = (source + ".ts");
-        if ((count === 3)) {
-            target = output;
-        }
-        let expanded = expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
-        writeFileSync(target, compile(expanded), "utf8");
+    let tokens = tokenize(readFileSync(source, "utf8"), basename(source), false);
+    let target = (source + ".ts");
+    if ((output !== 0)) {
+        target = output;
     }
+    let expanded = expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
+    writeFileSync(target, compile(expanded), "utf8");
     return 0;
 }
 main();

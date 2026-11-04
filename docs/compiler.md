@@ -11,6 +11,7 @@ Run it directly with Node:
 
 ```text
 ./bin/mini compile cases/language/001-001-bindings-initialize.mini
+./bin/mini cases/language/001-001-bindings-initialize.mini
 node cases/language/001-001-bindings-initialize.mini.ts
 ./bin/mini compile --tokens cases/language/001-001-bindings-initialize.mini
 ```
