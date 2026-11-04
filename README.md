@@ -47,6 +47,9 @@ compiler produced from it. The source lives in
 first-port boundaries, control flow, calls, lookups, and data layout. Defer
 redesign and performance refactoring until the corresponding change is verified.
 
+The [progress page](docs/progress.md) turns the tag history into a readable
+timeline of groups, milestones, and current release identities.
+
 The [historical port reference](docs/t0-t1-reference.md) records how the retired
 T0 implementation mapped to Mini functions, maps, lists, and text helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records
