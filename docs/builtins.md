@@ -19,7 +19,8 @@ whole files as byte lists.
 and names a directory. `directory_list(path)` returns sorted entry names, or an
 empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
-directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
+directory is a no-op. `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
+and preserves file modes.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
 `process_script_path()` returns the absolute path of the running script, or empty
@@ -112,7 +113,8 @@ whole files as byte lists.
 and names a directory. `directory_list(path)` returns sorted entry names, or an
 empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
-directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
+directory is a no-op. `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
+and preserves file modes.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
 `process_script_path()` returns the absolute path of the running script, or empty

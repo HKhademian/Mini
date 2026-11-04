@@ -583,7 +583,8 @@ path_remove(directory);
   returns an empty list.
 - `directory_create(path)` creates a directory and missing parents; an existing
   directory is a no-op.
-- `path_copy(from, to)` copies a file or directory tree.
+- `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
+and preserves file modes.
 - `path_remove(path)` removes a file or directory tree; a missing path is a no-op.
 
 ## Accepted operation: script path

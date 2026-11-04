@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.22 / compiler 0.3.0-alpha.27 / builtins 0.3.0-alpha.21;
+  bootstrap 0.1.0-alpha.16: `path_copy` dereferences symlinks and preserves
+  file modes so copied repositories keep executable launchers.
 - Language 0.3.0-alpha.21 / compiler 0.3.0-alpha.26 / builtins 0.3.0-alpha.20;
   bootstrap 0.1.0-alpha.15: add `value_kind(value)` for runtime kind checks.
 - Language 0.3.0-alpha.20 / compiler 0.3.0-alpha.25 / builtins 0.3.0-alpha.19;
