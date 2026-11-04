@@ -5,6 +5,10 @@ Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
 
+See [Builtins, purity, and self-containment](self-containment.md) for the
+trusted host boundary, removable performance fast paths, pure reference
+implementations, and the numeric requirements for a pure `hash_sha256`.
+
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
 `text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat
 non-integer or out-of-range elements as zero.

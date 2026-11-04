@@ -98,6 +98,8 @@ incrementally. Compiler logic must not remain hidden in TypeScript helpers
 after bootstrap replacement.
 
 [Built-in I/O and library functions](docs/builtins.md) provide the small host
+surface; [self-containment](docs/self-containment.md) separates the irreducible
+host boundary from replaceable performance builtins.
 capabilities needed by the compiler and later tools.
 
 The [self-hosting requirements assessment](docs/self-hosting-requirements.md)
