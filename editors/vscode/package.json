@@ -4,7 +4,7 @@
   "description": "Mini syntax highlighting, file icons, diagnostics, and formatting.",
   "version": "0.3.3",
   "publisher": "mini-local",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/extension.cjs",
   "activationEvents": [

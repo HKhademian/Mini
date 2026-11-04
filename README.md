@@ -173,3 +173,7 @@ Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
 [releases](docs/releases.md).
 The [version inventory](docs/versioning.md#current-inventory) lists current
 products, future streams, and how specifications/docs identify their versions.
+
+## License
+
+Apache-2.0. See [LICENSE](LICENSE).
