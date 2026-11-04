@@ -11,7 +11,7 @@ function fixture() {
   const directory = join(work, 'project');
   cpSync(root, directory, {
     recursive: true, verbatimSymlinks: true,
-    filter: source => !['.git', 'node_modules', 'dist', '.cache'].includes(basename(source)),
+    filter: source => !['.git', 'node_modules', '.cache'].includes(basename(source)) && !source.includes('/dist/release'),
   });
   const git = (...args: string[]) => run('git', [
     '-c', 'user.name=Release fixture', '-c', 'user.email=fixture@example.invalid',
@@ -53,7 +53,7 @@ test('VS Code releases build a checksummed VSIX from the annotated source revisi
     assert.equal(manifest.group, current.group);
     assert.equal(manifest.commit, git('rev-parse', 'HEAD').toString().trim());
     assert(manifest.bootstrap !== null, 'release records the verified bootstrap');
-    assert.equal(manifest.bootstrap.compiler, sha256(readFileSync(join(directory, 'bootstrap/compiler.ts'))));
+    assert.equal(manifest.bootstrap.compiler, sha256(readFileSync(join(directory, 'dist/compiler.ts'))));
     assert.ok(manifest.vsix);
     const file = join(output, manifest.vsix.file);
     assert.equal(manifest.vsix.file, `mini-${current.group}-v${version}.vsix`);

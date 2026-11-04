@@ -2,39 +2,39 @@
   "tools": [
     {
       "source": "tools/check-source.mini",
-      "generated": "tools/check-source.generated.ts"
+      "generated": "dist/tools/check-source.generated.ts"
     },
     {
       "source": "tools/format.mini",
-      "generated": "tools/format.generated.ts"
+      "generated": "dist/tools/format.generated.ts"
     },
     {
       "source": "tools/run.mini",
-      "generated": "tools/run.generated.ts"
+      "generated": "dist/tools/run.generated.ts"
     },
     {
       "source": "tools/test.mini",
-      "generated": "tools/test.generated.ts"
+      "generated": "dist/tools/test.generated.ts"
     },
     {
       "source": "tools/verify.mini",
-      "generated": "tools/verify.generated.ts"
+      "generated": "dist/tools/verify.generated.ts"
     },
     {
       "source": "tools/check.mini",
-      "generated": "tools/check.generated.ts"
+      "generated": "dist/tools/check.generated.ts"
     },
     {
       "source": "tools/bench.mini",
-      "generated": "tools/bench.generated.ts"
+      "generated": "dist/tools/bench.generated.ts"
     },
     {
       "source": "tools/release.mini",
-      "generated": "tools/release.generated.ts"
+      "generated": "dist/tools/release.generated.ts"
     },
     {
       "source": "tools/lang-server.mini",
-      "generated": "tools/lang-server.generated.ts"
+      "generated": "dist/tools/lang-server.generated.ts"
     }
   ],
   "launchers": [
@@ -70,7 +70,7 @@
     },
     {
       "name": "mini-lang-server",
-      "tool": "tools/lang-server.generated.ts"
+      "tool": "dist/tools/lang-server.generated.ts"
     }
   ]
 }

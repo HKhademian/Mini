@@ -53,30 +53,9 @@ function $mini_json_parse(text) {
     result.value = clean(parsed);
     return result;
 }
-function $mini_json_to_text(value) {
-    const seen = new Set();
-    function encode(item) {
-        if (typeof item === "string") return JSON.stringify(item);
-        if (typeof item === "number") return Number.isSafeInteger(item) ? String(item) : "null";
-        if (typeof item === "boolean") return item ? "true" : "false";
-        if (item === null || item === undefined) return "null";
-        if (typeof item !== "object") return "null";
-        if (seen.has(item)) throw 0;
-        seen.add(item);
-        let output;
-        if (Array.isArray(item)) {
-            const parts = [];
-            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
-            output = "[" + parts.join(",") + "]";
-        } else {
-            const parts = [];
-            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
-            output = "{" + parts.join(",") + "}";
-        }
-        seen.delete(item);
-        return output;
-    }
-    try { return encode(value); } catch { return ""; }
+function $mini_list_copy(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
 }
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
@@ -98,10 +77,6 @@ function $mini_list_to_text(items, separator) {
         if (typeof value === "string") output += value;
     }
     return output;
-}
-function $mini_number_to_text(value) {
-    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
-    return String(value);
 }
 function $mini_process_spawn(options) {
     const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
@@ -316,7 +291,11 @@ function case_fail(message) {
 }
 function case_root() {
     let script = process.argv[1];
-    return case_path_parent(case_path_parent(script));
+    let base = case_path_parent(case_path_parent(script));
+    if ((case_path_basename(base) === "dist")) {
+        return case_path_parent(base);
+    }
+    return base;
 }
 function case_path_join(left, right) {
     if ((left === "")) {
@@ -738,7 +717,7 @@ function case_run(command, args, directory, input) {
     return $mini_process_spawn(options);
 }
 function case_entry_excluded(name) {
-    return ((((name === ".git") || (name === "node_modules")) || (name === "dist")) || (name === ".cache"));
+    return (((name === ".git") || (name === "node_modules")) || (name === ".cache"));
 }
 function case_copy_tree(from, to) {
     if ($mini_path_is_directory(from)) {
@@ -747,7 +726,7 @@ function case_copy_tree(from, to) {
         let position = 0;
         while ((position < (entries).length)) {
             let name = $mini_list_get(entries, position);
-            if ((!case_entry_excluded(name))) {
+            if (((!case_entry_excluded(name)) && (!((name === "release") && (case_path_basename(from) === "dist"))))) {
                 case_copy_tree(case_path_join(from, name), case_path_join(to, name));
             }
             position = (position + 1);
@@ -1058,119 +1037,419 @@ function case_file_hashes(files, directory) {
     }
     return hashes;
 }
-function verify_fail(message) {
+function check_fail(message) {
     writeSync(2, (message + "\n"));
     process.exit(1);
     return 0;
 }
-function verify_text(value, key) {
-    if ((!$mini_map_has(value, key))) {
-        return "";
+function check_inherit(command, args, directory) {
+    let options = ({ __proto__: $mini_map_proto });
+    $mini_map_set(options, "command", command);
+    $mini_map_set(options, "arguments", args);
+    $mini_map_set(options, "directory", directory);
+    $mini_map_set(options, "mode", "inherit");
+    return $mini_process_spawn(options);
+}
+function check_find_from(text, needle, offset) {
+    let position = $mini_text_find($mini_text_slice(text, offset, (text).length), needle);
+    if ((position < 0)) {
+        return (-1);
     }
-    let field = $mini_map_get(value, key);
-    if (($mini_value_kind(field) !== "text")) {
-        return "";
+    return (offset + position);
+}
+function check_digits(text) {
+    if (((text).length === 0)) {
+        return false;
     }
-    return field;
+    if ((((text).length > 1) && ($mini_text_get(text, 0) === "0"))) {
+        return false;
+    }
+    let position = 0;
+    while ((position < (text).length)) {
+        if (($mini_text_find("0123456789", $mini_text_get(text, position)) < 0)) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function check_plain_version(text) {
+    let parts = $mini_text_split(text, ".");
+    if (((parts).length !== 3)) {
+        return false;
+    }
+    let position = 0;
+    while ((position < (parts).length)) {
+        if ((!check_digits($mini_list_get(parts, position)))) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function check_product_version(text) {
+    let parts = $mini_text_split(text, "-");
+    if (((parts).length === 1)) {
+        return check_plain_version(text);
+    }
+    if ((((parts).length !== 2) || (!check_plain_version($mini_list_get(parts, 0))))) {
+        return false;
+    }
+    let pre = $mini_text_split($mini_list_get(parts, 1), ".");
+    if (((pre).length !== 2)) {
+        return false;
+    }
+    let stage = $mini_list_get(pre, 0);
+    if ((((stage !== "alpha") && (stage !== "beta")) && (stage !== "rc"))) {
+        return false;
+    }
+    return check_digits($mini_list_get(pre, 1));
+}
+function check_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
+}
+function check_keys(value) {
+    return check_sorted(Object.keys(value));
+}
+function check_json(path) {
+    let parsed = case_json_file(path);
+    if ((!$mini_map_get(parsed, "ok"))) {
+        check_fail($mini_map_get(parsed, "message"));
+    }
+    return $mini_map_get(parsed, "value");
+}
+function check_same_list(left, right) {
+    if (((left).length !== (right).length)) {
+        return false;
+    }
+    let position = 0;
+    while ((position < (left).length)) {
+        if (($mini_list_get(left, position) !== $mini_list_get(right, position))) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function check_document(path) {
+    let text = readFileSync(path, "utf8");
+    let lines = split_lines(text);
+    let in_fence = false;
+    let directory = case_path_parent(path);
+    let position = 0;
+    while ((position < (lines).length)) {
+        let line = $mini_list_get(lines, position);
+        if (text_starts_with(line, "```")) {
+            in_fence = (!in_fence);
+        } else {
+            if ((!in_fence)) {
+                let cursor = check_find_from(line, "](", 0);
+                while ((cursor >= 0)) {
+                    let start = (cursor + 2);
+                    let end = check_find_from(line, ")", start);
+                    if ((end < 0)) {
+                        end = (line).length;
+                    }
+                    let target = $mini_text_slice(line, start, end);
+                    let hash = $mini_text_find(target, "#");
+                    if ((hash >= 0)) {
+                        target = $mini_text_slice(target, 0, hash);
+                    }
+                    if (((((target).length > 0) && (!check_is_url(target))) && (!$mini_path_exists(case_path_resolve(directory, target))))) {
+                        check_fail(((("broken local link in " + path) + ": ") + target));
+                    }
+                    cursor = check_find_from(line, "](", end);
+                }
+            }
+        }
+        position = (position + 1);
+    }
+    if (in_fence) {
+        check_fail(("unbalanced code fence: " + path));
+    }
+    return 0;
+}
+function check_is_url(target) {
+    let colon = $mini_text_find(target, ":");
+    if ((colon <= 0)) {
+        return false;
+    }
+    let prefix = $mini_text_slice(target, 0, colon);
+    let position = 0;
+    while ((position < (prefix).length)) {
+        let character = $mini_text_get(prefix, position);
+        if (($mini_text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0)) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
+function check_documents(directory) {
+    let entries = $mini_directory_list(directory);
+    let position = 0;
+    while ((position < (entries).length)) {
+        let name = $mini_list_get(entries, position);
+        let path = case_path_join(directory, name);
+        if (case_entry_excluded(name)) {
+        } else {
+            if ($mini_path_is_directory(path)) {
+                check_documents(path);
+            } else {
+                if ((text_ends_with(name, ".md") || text_ends_with(name, ".mdc"))) {
+                    check_document(path);
+                }
+            }
+        }
+        position = (position + 1);
+    }
+    return 0;
+}
+function check_portable_file(name) {
+    let suffixes = [];
+    $mini_list_set(suffixes, 0, ".json");
+    $mini_list_set(suffixes, 1, ".ts");
+    $mini_list_set(suffixes, 2, ".md");
+    $mini_list_set(suffixes, 3, ".mdc");
+    $mini_list_set(suffixes, 4, ".mini");
+    $mini_list_set(suffixes, 5, ".yml");
+    $mini_list_set(suffixes, 6, ".yaml");
+    $mini_list_set(suffixes, 7, ".stdout");
+    $mini_list_set(suffixes, 8, ".stderr");
+    $mini_list_set(suffixes, 9, ".stdin");
+    $mini_list_set(suffixes, 10, ".svg");
+    let position = 0;
+    while ((position < (suffixes).length)) {
+        if (text_ends_with(name, $mini_list_get(suffixes, position))) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function check_portable_paths(directory) {
+    let entries = $mini_directory_list(directory);
+    let position = 0;
+    while ((position < (entries).length)) {
+        let name = $mini_list_get(entries, position);
+        let path = case_path_join(directory, name);
+        if (case_entry_excluded(name)) {
+        } else {
+            if ($mini_path_is_directory(path)) {
+                check_portable_paths(path);
+            } else {
+                if (check_portable_file(name)) {
+                    let text = readFileSync(path, "utf8");
+                    let users = (("/" + "Users") + "/");
+                    let homes = (("/" + "home") + "/");
+                    let windows = ((("C:" + "\\") + "Users") + "\\");
+                    let home_variable = ("$" + "HOME/");
+                    if ((((($mini_text_find(text, users) >= 0) || ($mini_text_find(text, homes) >= 0)) || ($mini_text_find(text, windows) >= 0)) || ($mini_text_find(text, home_variable) >= 0))) {
+                        check_fail(("absolute home path in " + path));
+                    }
+                }
+            }
+        }
+        position = (position + 1);
+    }
+    return 0;
+}
+function check_sample_cases(root, fixtures) {
+    let covered = ({ __proto__: $mini_map_proto });
+    let position = 0;
+    while ((position < (fixtures).length)) {
+        let fixture = $mini_list_get(fixtures, position);
+        let definition = $mini_map_get(fixture, "definition");
+        if (($mini_map_get(definition, "kind") !== "tool")) {
+            let source = case_path_resolve(case_path_parent($mini_map_get(fixture, "path")), $mini_map_get(definition, "source"));
+            $mini_map_set(covered, source, true);
+        }
+        position = (position + 1);
+    }
+    let directories = [];
+    $mini_list_set(directories, 0, "samples");
+    $mini_list_set(directories, 1, "examples");
+    position = 0;
+    while ((position < (directories).length)) {
+        let name = $mini_list_get(directories, position);
+        let directory = case_path_join(root, name);
+        if ($mini_path_exists(directory)) {
+            check_sample_walk(directory, name, covered);
+        }
+        position = (position + 1);
+    }
+    return 0;
+}
+function check_sample_walk(directory, relative, covered) {
+    let entries = $mini_directory_list(directory);
+    let position = 0;
+    while ((position < (entries).length)) {
+        let name = $mini_list_get(entries, position);
+        let path = case_path_join(directory, name);
+        if ($mini_path_is_directory(path)) {
+            check_sample_walk(path, ((relative + "/") + name), covered);
+        } else {
+            if ((text_ends_with(name, ".mini") && (!$mini_map_has(covered, path)))) {
+                check_fail(((("missing case: " + relative) + "/") + name));
+            }
+        }
+        position = (position + 1);
+    }
+    return 0;
+}
+function check_versions(root) {
+    let current = check_json(case_path_join(root, "config/versions.json"));
+    let expected = [];
+    let names = [];
+    $mini_list_set(names, 0, "group");
+    $mini_list_set(names, 1, "mini");
+    $mini_list_set(names, 2, "language");
+    $mini_list_set(names, 3, "compiler");
+    $mini_list_set(names, 4, "bootstrap");
+    $mini_list_set(names, 5, "std");
+    $mini_list_set(names, 6, "check");
+    $mini_list_set(names, 7, "verify");
+    $mini_list_set(names, 8, "release");
+    $mini_list_set(names, 9, "test");
+    $mini_list_set(names, 10, "bench");
+    $mini_list_set(names, 11, "cli");
+    $mini_list_set(names, 12, "vscode");
+    $mini_list_set(names, 13, "builtins");
+    $mini_list_set(names, 14, "format");
+    $mini_list_set(names, 15, "lsp");
+    let position = 0;
+    while ((position < (names).length)) {
+        $mini_list_set(expected, position, $mini_list_get(names, position));
+        position = (position + 1);
+    }
+    if ((!check_same_list(check_keys(current), check_sorted(expected)))) {
+        check_fail("invalid version registry keys");
+    }
+    let group = $mini_map_get(current, "group");
+    if ((($mini_value_kind(group) !== "text") || (!check_plain_version(group)))) {
+        check_fail("group requires MAJOR.MINOR.PATCH");
+    }
+    position = 0;
+    while ((position < (expected).length)) {
+        let key = $mini_list_get(expected, position);
+        let version = $mini_map_get(current, key);
+        if ((((key !== "group") && ($mini_value_kind(version) !== "number")) && ($mini_value_kind(version) !== "text"))) {
+            check_fail(("invalid version: " + key));
+        }
+        if ((($mini_value_kind(version) === "text") && (!check_product_version(version)))) {
+            check_fail(("invalid version: " + version));
+        }
+        position = (position + 1);
+    }
+    let editor = check_json(case_path_join(root, "editors/vscode/package.json"));
+    let lock = check_json(case_path_join(root, "editors/vscode/package-lock.json"));
+    let editor_version = $mini_map_get(editor, "version");
+    let lock_package = $mini_map_get($mini_map_get(lock, "packages"), "");
+    if ((editor_version !== $mini_map_get(current, "vscode"))) {
+        check_fail("VS Code version must match the registry");
+    }
+    if (($mini_text_find(editor_version, "-") >= 0)) {
+        check_fail("VS Code versions require plain MAJOR.MINOR.PATCH");
+    }
+    if (($mini_map_get(lock, "version") !== editor_version)) {
+        check_fail("VS Code lockfile version differs");
+    }
+    if (($mini_map_get(lock_package, "version") !== editor_version)) {
+        check_fail("VS Code lockfile package version differs");
+    }
+    return 0;
+}
+function check_node(root) {
+    let args = [];
+    $mini_list_set(args, 0, "-v");
+    let result = case_run(process.execPath, args, root, []);
+    let version = $mini_text_from_bytes($mini_map_get(result, "stdout"));
+    if ((!text_starts_with(version, "v24."))) {
+        check_fail("use Node 24; see .node-version");
+    }
+    let parts = $mini_text_split($mini_text_slice(version, 1, (version).length), ".");
+    let minor = "";
+    if (((parts).length >= 2)) {
+        minor = $mini_list_get(parts, 1);
+    }
+    let tens = 0;
+    let units = 0;
+    if (((minor).length === 2)) {
+        tens = $mini_text_find("0123456789", $mini_text_get(minor, 0));
+        units = $mini_text_find("0123456789", $mini_text_get(minor, 1));
+    }
+    if (((((minor).length !== 2) || (tens < 1)) || ((tens === 1) && (units < 6)))) {
+        check_fail("use Node 24.16.0 or newer in the 24.x line");
+    }
+    return 0;
 }
 function main() {
     let args = process.argv.slice(2);
-    if (((args).length > 1)) {
-        verify_fail("usage: mini-verify");
+    let docs_only = false;
+    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--docs"))) {
+        docs_only = true;
+    } else {
+        if (((args).length !== 0)) {
+            check_fail("usage: mini-check [--docs | SOURCE.mini | -]");
+        }
     }
     let root = case_root();
-    if (((args).length === 1)) {
-        root = $mini_list_get(args, 0);
-    }
-    let bootstrap_path = case_path_join(root, "config/bootstrap.json");
-    if ((!$mini_path_exists(bootstrap_path))) {
-        verify_fail("Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.");
-    }
-    let parsed = $mini_json_parse(readFileSync(bootstrap_path, "utf8"));
-    if (((!$mini_map_get(parsed, "ok")) || ($mini_value_kind($mini_map_get(parsed, "value")) !== "map"))) {
-        verify_fail("invalid config/bootstrap.json");
-    }
-    let config = $mini_map_get(parsed, "value");
-    let compiler = verify_text(config, "compiler");
-    let source = verify_text(config, "source");
-    let example = verify_text(config, "example");
-    if ((((compiler === "") || (source === "")) || (example === ""))) {
-        verify_fail("bootstrap.json needs compiler, source, and example");
-    }
-    let versions_parsed = $mini_json_parse(readFileSync(case_path_join(root, "config/versions.json"), "utf8"));
-    if ((!$mini_map_get(versions_parsed, "ok"))) {
-        verify_fail("invalid config/versions.json");
-    }
-    let current = $mini_map_get(versions_parsed, "value");
-    if ((((verify_text(current, "language") === "") || (verify_text(current, "compiler") === "")) || (verify_text(current, "bootstrap") === ""))) {
-        verify_fail("assign the language, compiler, and bootstrap versions before verifying the bootstrap");
-    }
-    let source_path = case_path_join(root, source);
-    let seed_path = case_path_join(root, compiler);
-    let source_bytes = $mini_file_read_bytes(source_path);
-    let seed_bytes = $mini_file_read_bytes(seed_path);
-    let work = $mini_directory_temp();
-    if (((work).length === 0)) {
-        verify_fail("cannot create a temporary directory");
-    }
-    writeFileSync(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n", "utf8");
-    let previous = case_path_join(work, "compiler0.ts");
-    $mini_file_write_bytes(previous, seed_bytes);
-    let generations = [];
-    let stage = 1;
-    while ((stage <= 3)) {
-        let next = case_path_join(work, (("compiler" + $mini_number_to_text(stage)) + ".ts"));
-        let compile_args = [];
-        $mini_list_set(compile_args, 0, previous);
-        $mini_list_set(compile_args, 1, "compile");
-        $mini_list_set(compile_args, 2, source_path);
-        $mini_list_set(compile_args, 3, next);
-        let result = case_run(process.execPath, compile_args, work, []);
-        if (($mini_map_get(result, "status") !== 0)) {
-            $mini_path_remove(work);
-            verify_fail(((("bootstrap generation " + $mini_number_to_text(stage)) + " failed: ") + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
+    if ((!docs_only)) {
+        let tsc = [];
+        $mini_list_set(tsc, 0, case_path_join(root, "node_modules/typescript/bin/tsc"));
+        $mini_list_set(tsc, 1, "--noEmit");
+        let typed = check_inherit(process.execPath, tsc, root);
+        if (($mini_map_get(typed, "status") !== 0)) {
+            process.exit($mini_map_get(typed, "status"));
         }
-        let output = $mini_file_read_bytes(next);
-        if ((!case_bytes_equal(output, seed_bytes))) {
-            $mini_path_remove(work);
-            verify_fail((("bootstrap differs from generation " + $mini_number_to_text(stage)) + "; regenerate and promote the matching compiler"));
-        }
-        $mini_list_set(generations, (generations).length, $mini_hash_sha256(output));
-        previous = next;
-        stage = (stage + 1);
     }
-    let case_path = case_path_resolve(root, example);
-    let loaded = case_load_case(case_path);
+    let tools = [];
+    $mini_list_set(tools, 0, case_path_join(root, "tools/mini-tools.ts"));
+    $mini_list_set(tools, 1, "--check");
+    let verified_tools = check_inherit(process.execPath, tools, root);
+    if (($mini_map_get(verified_tools, "status") !== 0)) {
+        process.exit($mini_map_get(verified_tools, "status"));
+    }
+    check_versions(root);
+    check_node(root);
+    let loaded = case_load_cases("", root);
     if ((!$mini_map_get(loaded, "ok"))) {
-        $mini_path_remove(work);
-        verify_fail($mini_map_get(loaded, "message"));
+        check_fail($mini_map_get(loaded, "message"));
     }
-    let fixture = $mini_map_get(loaded, "fixture");
-    let definition = $mini_map_get(fixture, "definition");
-    if (($mini_map_get(definition, "kind") !== "example")) {
-        $mini_path_remove(work);
-        verify_fail("bootstrap example must be an example case");
+    check_sample_cases(root, $mini_map_get(loaded, "fixtures"));
+    check_documents(root);
+    check_portable_paths(root);
+    let bootstrap = check_json(case_path_join(root, "config/bootstrap.json"));
+    if (($mini_value_kind(bootstrap) !== "map")) {
+        check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
-    let artifacts = [];
-    let scenarios = $mini_map_get(definition, "cases");
-    let position = 0;
-    while ((position < (scenarios).length)) {
-        let verified = case_verify_scenario(fixture, $mini_list_get(scenarios, position), root, previous);
-        if ((!$mini_map_get(verified, "ok"))) {
-            $mini_path_remove(work);
-            verify_fail($mini_map_get(verified, "message"));
-        }
-        $mini_list_set(artifacts, (artifacts).length, $mini_map_get(verified, "artifact"));
-        position = (position + 1);
+    let active = check_json(case_path_join(root, "config/compiler.json"));
+    if (($mini_map_get(active, "entry") !== $mini_map_get(bootstrap, "compiler"))) {
+        check_fail("active compiler must be the generated bootstrap");
     }
-    let record = ({ __proto__: $mini_map_proto });
-    $mini_map_set(record, "source", $mini_hash_sha256(source_bytes));
-    $mini_map_set(record, "compiler", $mini_hash_sha256(seed_bytes));
-    $mini_map_set(record, "generations", generations);
-    $mini_map_set(record, "example", case_case_identity(fixture, root));
-    $mini_map_set(record, "artifacts", artifacts);
-    $mini_path_remove(work);
-    writeSync(1, ($mini_json_to_text(record) + "\n"));
+    let verify = [];
+    $mini_list_set(verify, 0, case_path_join(root, "dist/tools/verify.generated.ts"));
+    $mini_list_set(verify, 1, root);
+    let verified = case_run(process.execPath, verify, root, []);
+    if (($mini_map_get(verified, "status") !== 0)) {
+        writeSync(2, $mini_text_from_bytes($mini_map_get(verified, "stderr")));
+        process.exit($mini_map_get(verified, "status"));
+    }
+    writeSync(1, "Repository checks and bootstrap fixed point passed.\n");
     return 0;
 }
 main();

@@ -2,7 +2,7 @@
 include "text.mini";
 include "cases.mini";
 /// Mini language server: LSP 3.17 over standard input and output.
-/// Usage: node tools/lang-server.generated.ts [--version]
+/// Usage: node dist/tools/lang-server.generated.ts [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
 /// Write one server log line.
@@ -545,7 +545,7 @@ fn lsp_publish(uri, version, diagnostics) {
 fn lsp_format_text(text) {
     var root = lsp_root();
     var args = list_new();
-    list_set(args, 0, case_path_join(case_path_join(root, "tools"), "format.generated.ts"));
+    list_set(args, 0, case_path_join(root, "dist/tools/format.generated.ts"));
     list_set(args, 1, "-");
     var result = lsp_run(process_exec_path(), args, root, text_to_bytes(text));
     if (map_get(result, "status") == 0) {

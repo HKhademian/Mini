@@ -2,9 +2,9 @@
 include "text.mini";
 include "cases.mini";
 /// Run case scenarios through the shared case runner.
-/// Usage: node tools/test.generated.ts [FILTER]
-///        node tools/test.generated.ts --file CASE.json
-///        node tools/test.generated.ts --candidate COMPILER.ts [FILTER]
+/// Usage: node dist/tools/test.generated.ts [FILTER]
+///        node dist/tools/test.generated.ts --file CASE.json
+///        node dist/tools/test.generated.ts --candidate COMPILER.ts [FILTER]
 /// Prints PASS, PENDING, or FAIL for each scenario and exits 1 on mismatch.
 
 /// Report usage and stop.

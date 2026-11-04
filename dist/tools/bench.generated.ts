@@ -78,6 +78,10 @@ function $mini_json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function $mini_list_copy(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
+}
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
@@ -98,6 +102,10 @@ function $mini_list_to_text(items, separator) {
         if (typeof value === "string") output += value;
     }
     return output;
+}
+function $mini_number_to_text(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
 }
 function $mini_process_spawn(options) {
     const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
@@ -312,7 +320,11 @@ function case_fail(message) {
 }
 function case_root() {
     let script = process.argv[1];
-    return case_path_parent(case_path_parent(script));
+    let base = case_path_parent(case_path_parent(script));
+    if ((case_path_basename(base) === "dist")) {
+        return case_path_parent(base);
+    }
+    return base;
 }
 function case_path_join(left, right) {
     if ((left === "")) {
@@ -734,7 +746,7 @@ function case_run(command, args, directory, input) {
     return $mini_process_spawn(options);
 }
 function case_entry_excluded(name) {
-    return ((((name === ".git") || (name === "node_modules")) || (name === "dist")) || (name === ".cache"));
+    return (((name === ".git") || (name === "node_modules")) || (name === ".cache"));
 }
 function case_copy_tree(from, to) {
     if ($mini_path_is_directory(from)) {
@@ -743,7 +755,7 @@ function case_copy_tree(from, to) {
         let position = 0;
         while ((position < (entries).length)) {
             let name = $mini_list_get(entries, position);
-            if ((!case_entry_excluded(name))) {
+            if (((!case_entry_excluded(name)) && (!((name === "release") && (case_path_basename(from) === "dist"))))) {
                 case_copy_tree(case_path_join(from, name), case_path_join(to, name));
             }
             position = (position + 1);
@@ -1054,280 +1066,167 @@ function case_file_hashes(files, directory) {
     }
     return hashes;
 }
-function release_fail(message) {
+function bench_fail(message) {
     writeSync(2, (message + "\n"));
     process.exit(1);
     return 0;
 }
-function release_trim(text) {
-    let length = (text).length;
-    while ((length > 0)) {
-        let character = $mini_text_get(text, (length - 1));
-        if (((character !== "\n") && (character !== "\r"))) {
-            return $mini_text_slice(text, 0, length);
+function bench_half(value) {
+    let remainder = value;
+    let half = 0;
+    while ((remainder >= 2)) {
+        remainder = (remainder - 2);
+        half = (half + 1);
+    }
+    return half;
+}
+function bench_sorted(samples) {
+    let result = $mini_list_copy(samples);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
         }
-        length = (length - 1);
+        position = (position + 1);
     }
-    return "";
+    return result;
 }
-function release_run(command, args, directory) {
-    let result = case_run(command, args, directory, []);
-    if (($mini_map_get(result, "status") !== 0)) {
-        release_fail((((((command + " ") + $mini_list_to_text(args, " ")) + " failed:\n") + $mini_text_from_bytes($mini_map_get(result, "stdout"))) + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
-    }
-    let done = case_ok();
-    $mini_map_set(done, "stdout", $mini_map_get(result, "stdout"));
-    $mini_map_set(done, "stderr", $mini_map_get(result, "stderr"));
-    return done;
-}
-function release_check(check, directory) {
-    let result = case_run(process.execPath, case_text_list2(check, "--docs"), directory, []);
-    if (($mini_map_get(result, "status") !== 0)) {
-        release_fail((((case_path_basename(check) + " failed:\n") + $mini_text_from_bytes($mini_map_get(result, "stdout"))) + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
-    }
-    return 0;
-}
-function release_text_list1(value) {
-    let items = [];
-    $mini_list_set(items, 0, value);
-    return items;
-}
-function release_json(path) {
-    let parsed = case_json_file(path);
+function bench_compiler_hash(root) {
+    let parsed = $mini_json_parse(readFileSync(case_path_join(root, "config/compiler.json"), "utf8"));
     if ((!$mini_map_get(parsed, "ok"))) {
-        release_fail($mini_map_get(parsed, "message"));
+        bench_fail("invalid config/compiler.json");
     }
-    return $mini_map_get(parsed, "value");
-}
-function release_component(name) {
-    if ((name === "lang")) {
-        return "language";
-    }
-    if (((((((((((((((name === "mini") || (name === "compiler")) || (name === "bootstrap")) || (name === "builtins")) || (name === "std")) || (name === "check")) || (name === "format")) || (name === "verify")) || (name === "release")) || (name === "test")) || (name === "bench")) || (name === "cli")) || (name === "lsp")) || (name === "vscode"))) {
-        return name;
-    }
-    return "";
-}
-function release_select(tag, current) {
-    let parts = $mini_text_split(tag, "-v");
-    if (((parts).length !== 3)) {
-        release_fail(("invalid component tag: " + tag));
-    }
-    let component = release_component($mini_list_get(parts, 0));
-    if ((component === "")) {
-        release_fail(("invalid component tag: " + tag));
-    }
-    let group = $mini_list_get(parts, 1);
-    let version = $mini_list_get(parts, 2);
-    if ((group !== $mini_map_get(current, "group"))) {
-        release_fail("tag must match assigned group version");
-    }
-    if ((($mini_value_kind($mini_map_get(current, component)) !== "text") || ($mini_map_get(current, component) !== version))) {
-        release_fail((("tag must match assigned " + component) + " version"));
-    }
-    let selected = ({ __proto__: $mini_map_proto });
-    $mini_map_set(selected, "component", component);
-    $mini_map_set(selected, "group", group);
-    $mini_map_set(selected, "version", version);
-    return selected;
-}
-function release_compiler_hash(active) {
-    let sources = $mini_map_get(active, "sources");
+    let sources = $mini_map_get($mini_map_get(parsed, "value"), "sources");
     let parts = [];
     let position = 0;
     while ((position < (sources).length)) {
         let path = $mini_list_get(sources, position);
-        $mini_list_set(parts, (parts).length, ((path + "\n") + readFileSync(case_path_join(case_root(), path), "utf8")));
+        $mini_list_set(parts, (parts).length, ((path + "\n") + readFileSync(case_path_join(root, path), "utf8")));
         position = (position + 1);
     }
     return $mini_hash_sha256($mini_list_to_text(parts, "\n"));
 }
-function release_node_version(root) {
+function bench_platform() {
+    let code = "process.stdout.write(JSON.stringify({node:process.version,platform:process.platform,architecture:process.arch}))";
     let args = [];
-    $mini_list_set(args, 0, "-v");
-    let result = case_run(process.execPath, args, root, []);
-    return release_trim($mini_text_from_bytes($mini_map_get(result, "stdout")));
+    $mini_list_set(args, 0, "-e");
+    $mini_list_set(args, 1, code);
+    let result = case_run(process.execPath, args, case_root(), []);
+    let parsed = $mini_json_parse($mini_text_from_bytes($mini_map_get(result, "stdout")));
+    if ((!$mini_map_get(parsed, "ok"))) {
+        return ({ __proto__: $mini_map_proto });
+    }
+    return $mini_map_get(parsed, "value");
 }
-function release_vscode(directory, output, tooling) {
-    let current = release_json(case_path_join(directory, "config/versions.json"));
-    let version = $mini_map_get(current, "vscode");
-    if (($mini_value_kind(version) !== "text")) {
-        release_fail("VS Code extension version is unassigned");
+function bench_commit(root) {
+    if ((!$mini_path_exists(case_path_join(root, ".git")))) {
+        return "";
     }
-    let packager = case_path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
-    let bundler = case_path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
-    if ((!$mini_path_exists(packager))) {
-        release_fail("install VS Code development dependencies with npm ci in editors/vscode");
-    }
-    if ((!$mini_path_exists(bundler))) {
-        release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
-    }
-    let extension = case_path_join(directory, "editors/vscode");
-    $mini_directory_create(case_path_join(extension, "dist"));
-    let bundle_args = [];
-    $mini_list_set(bundle_args, 0, bundler);
-    $mini_list_set(bundle_args, 1, case_path_join(extension, "src/extension.ts"));
-    $mini_list_set(bundle_args, 2, "--bundle");
-    $mini_list_set(bundle_args, 3, "--platform=node");
-    $mini_list_set(bundle_args, 4, "--format=cjs");
-    $mini_list_set(bundle_args, 5, "--external:vscode");
-    $mini_list_set(bundle_args, 6, ("--outfile=" + case_path_join(extension, "dist/extension.cjs")));
-    release_run(process.execPath, bundle_args, extension);
-    $mini_directory_create(output);
-    let file = (((("mini-" + $mini_map_get(current, "group")) + "-v") + version) + ".vsix");
-    let destination = case_path_join(output, file);
-    if ($mini_path_exists(destination)) {
-        release_fail("VSIX output already exists");
-    }
-    let package_args = [];
-    $mini_list_set(package_args, 0, packager);
-    $mini_list_set(package_args, 1, "package");
-    $mini_list_set(package_args, 2, "--no-dependencies");
-    $mini_list_set(package_args, 3, "--allow-missing-repository");
-    $mini_list_set(package_args, 4, "--skip-license");
-    $mini_list_set(package_args, 5, "--out");
-    $mini_list_set(package_args, 6, destination);
-    release_run(process.execPath, package_args, extension);
-    let asset = ({ __proto__: $mini_map_proto });
-    $mini_map_set(asset, "file", file);
-    $mini_map_set(asset, "sha256", $mini_hash_sha256($mini_file_read_bytes(destination)));
-    return asset;
+    let args = [];
+    $mini_list_set(args, 0, "rev-parse");
+    $mini_list_set(args, 1, "HEAD");
+    let result = case_run("git", args, root, []);
+    return bench_trim($mini_text_from_bytes($mini_map_get(result, "stdout")));
 }
-function release_notes(output, title, label, commit, changelog) {
-    writeFileSync(case_path_join(output, "RELEASE-NOTES.md"), ((((((("# " + title) + "\n\nVersion: ") + label) + "\n\nSource: ") + commit) + "\n\nBootstrap: verified fixed point\n\n") + changelog), "utf8");
-    return 0;
-}
-function release_checksums(output) {
-    let assets = $mini_directory_list(output);
-    let lines = [];
-    let position = 0;
-    while ((position < (assets).length)) {
-        let name = $mini_list_get(assets, position);
-        $mini_list_set(lines, (lines).length, ((($mini_hash_sha256($mini_file_read_bytes(case_path_join(output, name))) + "  ") + name) + "\n"));
-        position = (position + 1);
+function bench_trim(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
     }
-    writeFileSync(case_path_join(output, "SHA256SUMS"), $mini_list_to_text(lines, ""), "utf8");
-    return 0;
+    return $mini_text_slice(text, 0, length);
 }
 function main() {
     let args = process.argv.slice(2);
     if ((((args).length < 1) || ((args).length > 2))) {
-        release_fail("usage: mini-release OUTPUT [TAG]");
+        bench_fail("usage: mini-bench OUTPUT [FILTER]");
     }
-    let directory = case_root();
-    let output = case_path_normalize($mini_list_get(args, 0));
-    let tag = "";
-    let released = 0;
+    let root = case_root();
+    let output = case_path_resolve("", $mini_list_get(args, 0));
+    let filter = "";
     if (((args).length === 2)) {
-        tag = $mini_list_get(args, 1);
+        filter = $mini_list_get(args, 1);
     }
-    let status = release_run("git", case_text_list2("status", "--porcelain"), directory);
-    if ((release_trim($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {
-        release_fail("release needs a clean checkout");
+    if ($mini_path_exists(output)) {
+        bench_fail("benchmark output already exists; choose a new report path");
     }
-    let head = release_run("git", case_text_list2("rev-parse", "HEAD"), directory);
-    let commit = release_trim($mini_text_from_bytes($mini_map_get(head, "stdout")));
-    let current = release_json(case_path_join(directory, "config/versions.json"));
-    let active = release_json(case_path_join(directory, "config/compiler.json"));
-    if ((tag !== "")) {
-        released = release_select(tag, current);
-        let type = release_run("git", case_text_list3("cat-file", "-t", ("refs/tags/" + tag)), directory);
-        if ((release_trim($mini_text_from_bytes($mini_map_get(type, "stdout"))) !== "tag")) {
-            release_fail("release tag must be annotated");
+    let selected = case_load_cases(filter, root);
+    if ((!$mini_map_get(selected, "ok"))) {
+        bench_fail($mini_map_get(selected, "message"));
+    }
+    let fixtures = $mini_map_get(selected, "fixtures");
+    let results = [];
+    let fixture_index = 0;
+    while ((fixture_index < (fixtures).length)) {
+        let fixture = $mini_list_get(fixtures, fixture_index);
+        let definition = $mini_map_get(fixture, "definition");
+        if ($mini_map_has(definition, "benchmark")) {
+            let settings = $mini_map_get(definition, "benchmark");
+            let warmups = $mini_map_get(settings, "warmups");
+            let sample_count = $mini_map_get(settings, "samples");
+            let identity = case_case_identity(fixture, root);
+            let scenarios = $mini_map_get(definition, "cases");
+            let scenario_index = 0;
+            while ((scenario_index < (scenarios).length)) {
+                let scenario = $mini_list_get(scenarios, scenario_index);
+                let warmup_index = 0;
+                while ((warmup_index < warmups)) {
+                    let warmed = case_verify_scenario(fixture, scenario, root, "");
+                    if ((!$mini_map_get(warmed, "ok"))) {
+                        bench_fail($mini_map_get(warmed, "message"));
+                    }
+                    warmup_index = (warmup_index + 1);
+                }
+                let samples = [];
+                let sample_index = 0;
+                while ((sample_index < sample_count)) {
+                    let started = Date.now();
+                    let measured = case_verify_scenario(fixture, scenario, root, "");
+                    if ((!$mini_map_get(measured, "ok"))) {
+                        bench_fail($mini_map_get(measured, "message"));
+                    }
+                    $mini_list_set(samples, (samples).length, (Date.now() - started));
+                    sample_index = (sample_index + 1);
+                }
+                let sorted = bench_sorted(samples);
+                let row = ({ __proto__: $mini_map_proto });
+                $mini_map_set(row, "id", $mini_map_get(definition, "id"));
+                $mini_map_set(row, "scenario", $mini_map_get(scenario, "name"));
+                $mini_map_set(row, "kind", $mini_map_get(definition, "kind"));
+                $mini_map_set(row, "identity", identity);
+                $mini_map_set(row, "warmups", warmups);
+                $mini_map_set(row, "milliseconds", samples);
+                $mini_map_set(row, "medianMilliseconds", $mini_list_get(sorted, bench_half((sorted).length)));
+                $mini_list_set(results, (results).length, row);
+                scenario_index = (scenario_index + 1);
+            }
         }
-        let tagged = release_run("git", case_text_list2("rev-parse", (("refs/tags/" + tag) + "^{commit}")), directory);
-        if ((release_trim($mini_text_from_bytes($mini_map_get(tagged, "stdout"))) !== commit)) {
-            release_fail("release tag must match the current commit");
-        }
+        fixture_index = (fixture_index + 1);
     }
-    let bootstrap_config = release_json(case_path_join(directory, "config/bootstrap.json"));
-    let available = ($mini_value_kind(bootstrap_config) === "map");
-    let compiler_release = false;
-    if ((released !== 0)) {
-        let component = $mini_map_get(released, "component");
-        compiler_release = ((((component === "mini") || (component === "language")) || (component === "compiler")) || (component === "bootstrap"));
+    if (((results).length === 0)) {
+        bench_fail("no benchmark cases selected");
     }
-    if (((!available) && compiler_release)) {
-        release_fail("this release requires a verified compiler bootstrap");
+    let host = bench_platform();
+    let versions_parsed = $mini_json_parse(readFileSync(case_path_join(root, "config/versions.json"), "utf8"));
+    let report = ({ __proto__: $mini_map_proto });
+    $mini_map_set(report, "node", $mini_map_get(host, "node"));
+    $mini_map_set(report, "platform", $mini_map_get(host, "platform"));
+    $mini_map_set(report, "architecture", $mini_map_get(host, "architecture"));
+    $mini_map_set(report, "commit", bench_commit(root));
+    if ($mini_map_get(versions_parsed, "ok")) {
+        $mini_map_set(report, "versions", $mini_map_get(versions_parsed, "value"));
     }
-    $mini_directory_create(output);
-    if ((($mini_directory_list(output)).length !== 0)) {
-        release_fail("release output directory must be empty");
-    }
-    let work = $mini_directory_temp();
-    let source = case_path_join(work, "source");
-    $mini_directory_create(source);
-    let tracked = case_path_join(work, "source.tar");
-    let archive_result = release_run("git", case_text_list3("archive", "--format=tar", commit), directory);
-    $mini_file_write_bytes(tracked, $mini_map_get(archive_result, "stdout"));
-    let extract_args = [];
-    $mini_list_set(extract_args, 0, "-xf");
-    $mini_list_set(extract_args, 1, tracked);
-    $mini_list_set(extract_args, 2, "-C");
-    $mini_list_set(extract_args, 3, source);
-    release_run("tar", extract_args, work);
-    release_check(case_path_join(source, "bin/mini-check"), source);
-    let bootstrap = 0;
-    if (available) {
-        let verify_args = case_text_list2(case_path_join(source, "tools/verify.generated.ts"), source);
-        let verified = release_run(process.execPath, verify_args, source);
-        let parsed = $mini_json_parse($mini_text_from_bytes($mini_map_get(verified, "stdout")));
-        if ($mini_map_get(parsed, "ok")) {
-            bootstrap = $mini_map_get(parsed, "value");
-        }
-    }
-    let label = ("snapshot-" + $mini_text_slice(commit, 0, 12));
-    if ((tag !== "")) {
-        label = tag;
-    }
-    let title = label;
-    let vsix = 0;
-    if (((released !== 0) && ($mini_map_get(released, "component") === "vscode"))) {
-        vsix = release_vscode(source, output, directory);
-    }
-    let active_copy = ({ __proto__: $mini_map_proto });
-    $mini_map_set(active_copy, "entry", $mini_map_get(active, "entry"));
-    $mini_map_set(active_copy, "sources", $mini_map_get(active, "sources"));
-    $mini_map_set(active_copy, "example", $mini_map_get(active, "example"));
-    $mini_map_set(active_copy, "hash", release_compiler_hash(active));
-    let manifest = ({ __proto__: $mini_map_proto });
-    $mini_map_set(manifest, "schemaVersion", 2);
-    $mini_map_set(manifest, "title", title);
-    $mini_map_set(manifest, "tag", tag);
-    $mini_map_set(manifest, "commit", commit);
-    $mini_map_set(manifest, "group", $mini_map_get(current, "group"));
-    $mini_map_set(manifest, "componentVersions", current);
-    $mini_map_set(manifest, "releasedComponent", released);
-    $mini_map_set(manifest, "compiler", active_copy);
-    $mini_map_set(manifest, "node", release_node_version(directory));
-    $mini_map_set(manifest, "bootstrap", bootstrap);
-    $mini_map_set(manifest, "vsix", vsix);
-    if ($mini_path_exists(case_path_join(source, "RELEASE.json"))) {
-        release_fail("RELEASE.json is reserved for packaged metadata");
-    }
-    let record = ($mini_json_to_text(manifest) + "\n");
-    writeFileSync(case_path_join(source, "RELEASE.json"), record, "utf8");
-    let archive = (("minilang-" + label) + ".tar.gz");
-    let pack_args = [];
-    $mini_list_set(pack_args, 0, "-czf");
-    $mini_list_set(pack_args, 1, case_path_join(output, archive));
-    $mini_list_set(pack_args, 2, "-C");
-    $mini_list_set(pack_args, 3, source);
-    $mini_list_set(pack_args, 4, ".");
-    release_run("tar", pack_args, work);
-    let extracted = case_path_join(work, "extracted");
-    $mini_directory_create(extracted);
-    let unpack_args = [];
-    $mini_list_set(unpack_args, 0, "-xf");
-    $mini_list_set(unpack_args, 1, case_path_join(output, archive));
-    $mini_list_set(unpack_args, 2, "-C");
-    $mini_list_set(unpack_args, 3, extracted);
-    release_run("tar", unpack_args, work);
-    release_check(case_path_join(extracted, "bin/mini-check"), extracted);
-    writeFileSync(case_path_join(output, "manifest.json"), record, "utf8");
-    release_notes(output, title, label, commit, readFileSync(case_path_join(source, "CHANGELOG.md"), "utf8"));
-    release_checksums(output);
-    $mini_path_remove(work);
+    $mini_map_set(report, "compiler", bench_compiler_hash(root));
+    $mini_map_set(report, "scope", "fresh-process wall time including startup, IO, verification, and compilation for program cases");
+    $mini_map_set(report, "results", results);
+    $mini_directory_create(case_path_parent(output));
+    writeFileSync(output, ($mini_json_to_text(report) + "\n"), "utf8");
+    writeSync(1, (((("Wrote " + $mini_number_to_text((results).length)) + " benchmark results to ") + output) + "\n"));
     return 0;
 }
 main();

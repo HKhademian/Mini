@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import { chmodSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { compiler, root, run } from './project.ts';
 
 export type MiniTool = { source: string; generated: string };
@@ -43,7 +43,7 @@ export function launcherSource(launcher: MiniLauncher): string {
   if (launcher.tool === undefined) {
     return "#!/usr/bin/env node\nimport { basename } from 'node:path';\nimport { main } from '../tools/cli.ts';\nawait main(basename(process.argv[1]));\n";
   }
-  return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { join } from 'node:path';\n"
+  return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { dirname, join } from 'node:path';\n"
     + `await import(pathToFileURL(join(import.meta.dirname, '..', '${launcher.tool}')).href);\n`;
 }
 
@@ -81,7 +81,9 @@ export function generateTool(directory: string, tool: MiniTool): string {
 /** Regenerate every tracked tool from the manifest. */
 export function buildTools(directory = root): void {
   for (const tool of miniTools(directory)) {
-    writeFileSync(join(directory, tool.generated), generateTool(directory, tool));
+    const target = join(directory, tool.generated);
+    mkdirSync(dirname(target), { recursive: true });
+    writeFileSync(target, generateTool(directory, tool));
   }
 }
 

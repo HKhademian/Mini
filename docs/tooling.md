@@ -203,11 +203,11 @@ generated TypeScript file and declares the `bin/` launchers:
 ```json
 {
   "tools": [
-    { "source": "tools/check-source.mini", "generated": "tools/check-source.generated.ts" }
+    { "source": "tools/check-source.mini", "generated": "dist/tools/check-source.generated.ts" }
   ],
   "launchers": [
     { "name": "mini" },
-    { "name": "mini-lang-server", "tool": "tools/lang-server.generated.ts" }
+    { "name": "mini-lang-server", "tool": "dist/tools/lang-server.generated.ts" }
   ]
 }
 ```

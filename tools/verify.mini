@@ -2,7 +2,7 @@
 include "text.mini";
 include "cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
-/// Usage: node tools/verify.generated.ts [PROJECT_ROOT]
+/// Usage: node dist/tools/verify.generated.ts [PROJECT_ROOT]
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 

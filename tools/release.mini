@@ -2,7 +2,7 @@
 include "text.mini";
 include "cases.mini";
 /// Package committed sources into a release directory.
-/// Usage: node tools/release.generated.ts OUTPUT [COMPONENT_TAG]
+/// Usage: node dist/tools/release.generated.ts OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.
 
 /// Report a release error and stop.
@@ -254,7 +254,7 @@ fn main() {
     release_check(case_path_join(source, "bin/mini-check"), source);
     var bootstrap = 0;
     if (available) {
-        var verify_args = case_text_list2(case_path_join(source, "tools/verify.generated.ts"), source);
+        var verify_args = case_text_list2(case_path_join(source, "dist/tools/verify.generated.ts"), source);
         var verified = release_run(process_exec_path(), verify_args, source);
         var parsed = json_parse(text_from_bytes(map_get(verified, "stdout")));
         if (map_get(parsed, "ok")) {

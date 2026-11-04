@@ -22,7 +22,11 @@ fn case_fail(message) {
 /// Return the repository root from the running tool path.
 fn case_root() {
     var script = process_script_path();
-    return case_path_parent(case_path_parent(script));
+    var base = case_path_parent(case_path_parent(script));
+    if (case_path_basename(base) == "dist") {
+        return case_path_parent(base);
+    }
+    return base;
 }
 
 /// Join two path components.
@@ -484,7 +488,7 @@ fn case_run(command, args, directory, input) {
 
 /// Return whether a workspace entry is excluded from copies.
 fn case_entry_excluded(name) {
-    return name == ".git" || name == "node_modules" || name == "dist" || name == ".cache";
+    return name == ".git" || name == "node_modules" || name == ".cache";
 }
 
 /// Copy a project tree while skipping build and dependency directories.
@@ -495,7 +499,7 @@ fn case_copy_tree(from, to) {
         var position = 0;
         while (position < list_length(entries)) {
             var name = list_get(entries, position);
-            if (!case_entry_excluded(name)) {
+            if (!case_entry_excluded(name) && !(name == "release" && case_path_basename(from) == "dist")) {
                 case_copy_tree(case_path_join(from, name), case_path_join(to, name));
             }
             position = position + 1;

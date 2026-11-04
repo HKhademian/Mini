@@ -7,7 +7,7 @@ records the port mapping and is not a current interface.
 T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
 source written in Mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
 T1 is its generated TypeScript compiler and is promoted as
-[bootstrap/compiler.ts](../bootstrap/compiler.ts). The inventory covers the five
+[dist/compiler.ts](../dist/compiler.ts). The inventory covers the five
 retired T0 files, not the CLI tools, tests, or release system.
 
 M1 must preserve the compiler's responsibilities, required behavior, and

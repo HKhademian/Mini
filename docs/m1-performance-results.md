@@ -116,7 +116,7 @@ builtin-era change was rechecked with the 69-combination `--check` run.
 
 ## Promotion status
 
-T1 is the active compiler at `bootstrap/compiler.ts`, selected by
+T1 is the active compiler at `dist/compiler.ts`, selected by
 `config/compiler.json` and pinned by `config/bootstrap.json`. T0 remains the
 reference compiler and tooling analyzer.
 

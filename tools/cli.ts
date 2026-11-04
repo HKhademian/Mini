@@ -23,7 +23,7 @@ export async function main(executable: string): Promise<void> {
       case 'check': {
         if (args.length === 0 || (args.length === 1 && args[0] === '--docs')) {
           const { spawnSync } = await import('node:child_process');
-          const checked = spawnSync(process.execPath, [join(root, 'tools/check.generated.ts'), ...args], { stdio: 'inherit' });
+          const checked = spawnSync(process.execPath, [join(root, 'dist/tools/check.generated.ts'), ...args], { stdio: 'inherit' });
           if (checked.error) throw checked.error;
           process.exitCode = checked.status ?? 1;
           break;
@@ -35,7 +35,7 @@ export async function main(executable: string): Promise<void> {
           try { readFileSync(resolve(path), 'utf8'); } catch { throw new Error(`cannot read ${path}`); }
         }
         const { spawnSync } = await import('node:child_process');
-        const checked = spawnSync(process.execPath, [join(root, 'tools/check-source.generated.ts'), ...args], { stdio: 'inherit' });
+        const checked = spawnSync(process.execPath, [join(root, 'dist/tools/check-source.generated.ts'), ...args], { stdio: 'inherit' });
         if (checked.error) throw checked.error;
         process.exitCode = checked.status ?? 1;
         break;
@@ -57,7 +57,7 @@ export async function main(executable: string): Promise<void> {
           try { readFileSync(resolve(path), 'utf8'); } catch { throw new Error(`cannot read ${path}`); }
         }
         const { spawnSync } = await import('node:child_process');
-        const formatted = spawnSync(process.execPath, [join(root, 'tools/format.generated.ts'), ...args], { stdio: 'inherit' });
+        const formatted = spawnSync(process.execPath, [join(root, 'dist/tools/format.generated.ts'), ...args], { stdio: 'inherit' });
         if (formatted.error) throw formatted.error;
         process.exitCode = formatted.status ?? 1;
         break;
@@ -65,7 +65,7 @@ export async function main(executable: string): Promise<void> {
       case 'test': {
         assert(args.length <= 1, 'usage: mini-test [FILTER]');
         const { spawnSync } = await import('node:child_process');
-        const tested = spawnSync(process.execPath, [join(root, 'tools/test.generated.ts'), ...args], { stdio: 'inherit' });
+        const tested = spawnSync(process.execPath, [join(root, 'dist/tools/test.generated.ts'), ...args], { stdio: 'inherit' });
         if (tested.error) throw tested.error;
         process.exitCode = tested.status ?? 1;
         break;
@@ -74,7 +74,7 @@ export async function main(executable: string): Promise<void> {
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-bench OUTPUT [FILTER]');
         const { spawnSync } = await import('node:child_process');
         const benchmarked = spawnSync(process.execPath,
-          [join(root, 'tools/bench.generated.ts'), resolve(args[0]), ...args.slice(1)], { stdio: 'inherit' });
+          [join(root, 'dist/tools/bench.generated.ts'), resolve(args[0]), ...args.slice(1)], { stdio: 'inherit' });
         if (benchmarked.error) throw benchmarked.error;
         process.exitCode = benchmarked.status ?? 1;
         break;
@@ -83,8 +83,8 @@ export async function main(executable: string): Promise<void> {
         assert(args.length <= 1, 'usage: mini-verify [CASE.json]');
         const { spawnSync } = await import('node:child_process');
         const command = args[0] === undefined
-          ? [join(root, 'tools/verify.generated.ts'), root]
-          : [join(root, 'tools/test.generated.ts'), '--file', resolve(args[0])];
+          ? [join(root, 'dist/tools/verify.generated.ts'), root]
+          : [join(root, 'dist/tools/test.generated.ts'), '--file', resolve(args[0])];
         const verified = spawnSync(process.execPath, command, { stdio: 'inherit' });
         if (verified.error) throw verified.error;
         process.exitCode = verified.status ?? 1;
@@ -94,7 +94,7 @@ export async function main(executable: string): Promise<void> {
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-release OUTPUT [TAG]');
         const { spawnSync } = await import('node:child_process');
         const released = spawnSync(process.execPath,
-          [join(root, 'tools/release.generated.ts'), resolve(args[0]), ...args.slice(1)], { stdio: 'inherit' });
+          [join(root, 'dist/tools/release.generated.ts'), resolve(args[0]), ...args.slice(1)], { stdio: 'inherit' });
         if (released.error) throw released.error;
         if ((released.status ?? 1) !== 0) {
           process.exitCode = released.status ?? 1;
@@ -109,7 +109,7 @@ export async function main(executable: string): Promise<void> {
         assert(source.endsWith('.mini'), 'Mini source must use .mini');
         const { spawnSync } = await import('node:child_process');
         const executed = spawnSync(process.execPath,
-          [join(root, 'tools/run.generated.ts'), join(root, compiler().entry), source, ...args.slice(1)], { stdio: 'inherit' });
+          [join(root, 'dist/tools/run.generated.ts'), join(root, compiler().entry), source, ...args.slice(1)], { stdio: 'inherit' });
         if (executed.error) throw executed.error;
         process.exitCode = executed.status ?? 1;
         break;

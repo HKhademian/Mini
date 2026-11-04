@@ -17,7 +17,7 @@ Use the repository's Node.js and locked development dependencies:
 node tools/application-performance.ts --check
 node tools/application-performance.ts --check .cache/compiler.mini.ts
 node tools/application-performance.ts .cache/applications.json
-node tools/application-performance.ts .cache/candidate-applications.json bootstrap/compiler.ts
+node tools/application-performance.ts .cache/candidate-applications.json dist/compiler.ts
 ```
 
 The `--check` form accepts the same optional candidate compiler path and runs
