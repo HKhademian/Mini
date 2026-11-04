@@ -1,12 +1,11 @@
-# T0 compiler reference
+# Compiler reference
 
-T0 is the handwritten TypeScript compiler and the original bootstrap, not the
-language specification. Undocumented T0 behavior is an implementation choice and
-may change; only accepted language and builtin contracts are normative.
-
-The active compiler is the generated [bootstrap/compiler.ts](../bootstrap/compiler.ts),
-selected by [config/compiler.json](../config/compiler.json). T0 remains the
-reference implementation and the source of the TypeScript tooling analyzer.
+The compiler is self-hosted. [compiler/compiler.mini](../compiler/compiler.mini)
+is the source and the generated
+[bootstrap/compiler.ts](../bootstrap/compiler.ts) is the active compiler,
+selected by [config/compiler.json](../config/compiler.json). The handwritten T0
+implementation was retired; only accepted [language](language.md) and
+[builtin](builtins.md) contracts are normative.
 
 Run it directly with Node:
 
@@ -46,8 +45,7 @@ instead of a separate TypeScript table.
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format
 below. `tools/analysis.ts` runs both commands and returns `{tokens,
-diagnostics}`; it does not import T0 modules. The T0 `analyze` command remains in
-the reference compiler for tests and historical tooling.
+diagnostics}` through the active compiler.
 
 The token list uses the existing shape: `kind`, `text`, `source`, `start`, `end`,
 `line`, `column`, and `context`. It is in source order and includes comment
@@ -80,13 +78,11 @@ caret
 Analysis uses temporary files but does not alter source files or run generated
 code.
 
-T0's completed increments implemented one feature at a time with indexed cases
-and verified version tags. T0 feature growth is now frozen for the Mini port.
-The first Mini compiler source is [compiler/compiler.mini](../compiler/compiler.mini);
-T0 remains selected until the candidate passes performance review and promotion.
-The [T0-to-T1 reference](t0-t1-reference.md) inventories its complete implementation
-and the Mini replacements. Accepted language cases are active; parameter-passing
+Compiler increments implemented one feature at a time with indexed cases and
+verified version tags. Accepted language cases are active; parameter-passing
 proposals remain pending and do not count as completed conformance coverage.
+The [historical port reference](t0-t1-reference.md) records the retired T0
+implementation and its Mini replacements.
 
 Verify a candidate against every Mini-source case:
 
@@ -98,12 +94,12 @@ node tools/candidate.ts .cache/compiler.mini.ts
 The candidate check skips tool cases, which continue to use the active CLI; run
 `mini test` for those. A filter argument narrows the case IDs.
 
-T0 is strict TypeScript. Mini parameter typing is still open: parameters use an
+The generated TypeScript compiler is strict TypeScript. Mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
 unannotated parameters. This is not a full Mini typechecker. Functions are
 top-level, may call later definitions, and require a value return in this increment.
 
-Lists store runtime values. T0 uses its internal `Unknown` kind for the result
+Lists store runtime values. The compiler uses its internal `Unknown` kind for the result
 of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.1`: initialized bindings with text, number, boolean, and
@@ -226,17 +222,16 @@ of `list_get`; it does not infer an element kind from preceding mutations.
   and `directory_remove()` support tool process setup and cleanup.
 
 The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
-active compiler; `config/bootstrap.json` pins it to `compiler/compiler.mini`.
-T0 is retained only as a reference and tooling source. Never revive T0 as the
-active compiler to bypass a bootstrap migration.
+only compiler implementation; `config/bootstrap.json` pins it to
+`compiler/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
+bootstrap migration.
 
 ## M1 source layout
 
 M1 is authored as ordered parts under [compiler/src](../compiler/src/README.md)
 and concatenated by the Mini-source build tool `tools/build-m1.mini` into the
-canonical `compiler/compiler.mini`. Adapter text is defined once in
-`compiler/adapters.ts`, generated into `compiler/src/00-constants.mini`, and
-shared by T0 lowering and M1. Its generated TypeScript is tracked as
-`tools/build-m1.generated.ts`; `mini check` rejects stale adapter text, generated
-TypeScript, or canonical composition. Concatenation is build tooling; Mini still
+canonical `compiler/compiler.mini`. Adapter text is source in
+`compiler/src/00-constants.mini`, shared by the generated compiler and generated
+tools. Its generated TypeScript is tracked as `tools/build-m1.generated.ts`;
+`mini check` rejects stale generated TypeScript or canonical composition. Concatenation is build tooling; Mini still
 has no module or import syntax.

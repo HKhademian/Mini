@@ -1,32 +1,36 @@
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { test } from 'node:test';
-import { tokenize } from './lexer.ts';
-import { compile } from './parser.ts';
 import { root } from '../tools/project.ts';
 
-test('Mini compiler source reaches the T0 fixed point', () => {
-  const sourcePath = join(root, 'compiler/compiler.mini');
-  const source = readFileSync(sourcePath, 'utf8');
+test('canonical compiler source matches the ordered parts', () => {
+  const parts = readFileSync(join(root, 'compiler/m1.parts'), 'utf8')
+    .split('\n').filter(line => line.length > 0);
+  const composed = parts.map(part => readFileSync(join(root, part), 'utf8')).join('');
+  assert.equal(readFileSync(join(root, 'compiler/compiler.mini'), 'utf8'), composed);
+});
+
+test('generated compiler reaches a fixed point', () => {
+  const source = join(root, 'compiler/compiler.mini');
+  const seed = join(root, 'bootstrap/compiler.ts');
   const work = mkdtempSync(join(tmpdir(), 'mini-m1-'));
   try {
-    const first = compile(tokenize(source, 'compiler.mini'));
-    const firstPath = join(work, 'compiler1.ts');
-    const secondPath = join(work, 'compiler2.ts');
-    const thirdPath = join(work, 'compiler3.ts');
-    writeFileSync(firstPath, first);
-    const steps: Array<[string, string]> = [[firstPath, secondPath], [secondPath, thirdPath]];
-    for (const [compilerPath, outputPath] of steps) {
-      const result = spawnSync(process.execPath, [compilerPath, 'compile', sourcePath, outputPath], { encoding: 'utf8' });
+    const first = join(work, 'compiler1.ts');
+    const second = join(work, 'compiler2.ts');
+    const third = join(work, 'compiler3.ts');
+    for (const [compiler, output] of [[seed, first], [first, second], [second, third]] as const) {
+      const result = spawnSync(process.execPath, [compiler, 'compile', source, output], { encoding: 'utf8' });
       assert.equal(result.status, 0, result.stderr);
       assert.equal(result.stdout, '');
       assert.equal(result.stderr, '');
     }
-    assert.equal(readFileSync(secondPath, 'utf8'), first);
-    assert.equal(readFileSync(thirdPath, 'utf8'), first);
+    const promoted = readFileSync(seed);
+    assert.deepEqual(readFileSync(first), promoted);
+    assert.deepEqual(readFileSync(second), promoted);
+    assert.deepEqual(readFileSync(third), promoted);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }

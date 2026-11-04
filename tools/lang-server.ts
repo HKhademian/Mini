@@ -1,9 +1,8 @@
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
-import { analyze } from './analysis.ts';
+import { analyze, type Diagnostic } from './analysis.ts';
 import { completionsAt, definitionAt, hoverAt, offsetAt, rangeOf } from './language-features.ts';
 import { releaseTag, versions, root } from './project.ts';
-import type { Diagnostic } from '../compiler/types.ts';
 
 type Message = { jsonrpc: '2.0'; id?: number | string; method?: string; params?: unknown; result?: unknown; error?: unknown };
 type Document = { text: string; version: number };

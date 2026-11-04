@@ -3,9 +3,13 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { Diagnostic, Token } from '../compiler/types.ts';
 import { compiler, root } from './project.ts';
 
+export type Token = {
+  kind: string; text: string; source: string; start: number; end: number;
+  line: number; column: number; context: string;
+};
+export type Diagnostic = { message: string; source: string; start: number; end: number };
 export type Analysis = { tokens: Token[]; diagnostics: Diagnostic[] };
 
 function parseDiagnostic(stderr: string, source: string, name: string, tokens: Token[]): Diagnostic {

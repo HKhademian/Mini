@@ -7,7 +7,7 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.3.0-v0.3.0-alpha.15
+compiler-v0.3.0-v0.3.0-alpha.16
 builtins-v0.3.0-v0.3.0-alpha.11
 bootstrap-v0.3.0-v0.1.0-alpha.5
 vscode-v0.3.0-v0.3.3
@@ -53,9 +53,9 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.3.0-v0.1.0-alpha.8
+mini-v0.3.0-v0.1.0-alpha.9
 lang-v0.3.0-v0.3.0-alpha.12
-compiler-v0.3.0-v0.3.0-alpha.15
+compiler-v0.3.0-v0.3.0-alpha.16
 bootstrap-v0.3.0-v0.1.0-alpha.5
 builtins-v0.3.0-v0.3.0-alpha.11
 cli-v0.3.0-v0.1.0-alpha.7
@@ -71,8 +71,7 @@ vscode-v0.3.0-v0.3.3
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
 `lang` identifies the language/specification contract. `compiler` versions the
-active generated compiler; T0 remains a reference and tooling source rather than
-a product stream. `bootstrap` versions the promoted `T1` fixed point.
+active generated compiler; the retired T0 reference has no product stream. `bootstrap` versions the promoted `T1` fixed point.
 `mini-compile` and `minic` share the compiler version.
 `builtins` versions primitive support independently.
 Each other tool keeps the stream named by its tag.
@@ -140,8 +139,8 @@ and the released product's group/version. VSIX filenames include both numbers,
 for example `mini-0.3.0-v0.2.0.vsix`.
 
 Stable compiler, language, bootstrap, and Mini distribution releases require a
-verified self-hosted bootstrap. Handwritten T0 can ship only as a labeled compiler
-prerelease preview. Tools and implemented libraries need not be self-hosted.
+verified self-hosted bootstrap. Tools and implemented libraries need not be
+self-hosted.
 
 Tag each verified product on its atomic commit before the next feature.
 Push tags only when publishing is authorized. Packaging never publishes.

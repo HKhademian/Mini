@@ -1,5 +1,4 @@
 {
-  "stage": "self-hosted",
   "entry": "bootstrap/compiler.ts",
   "sources": ["compiler/compiler.mini", "bootstrap/compiler.ts"],
   "example": "cases/language/005-002-io-sample.case.json"

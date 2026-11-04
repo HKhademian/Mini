@@ -9,14 +9,12 @@ import { applications, dataset, goldens, sharedLexer, type Application, type Fix
 import { serialized } from './application-worker.ts';
 import { compiler, compilerHash, root, sha256, versions } from './project.ts';
 
-type Variant = { name: 'generated' | 'handwritten' | 'T0'; module: string; entry: string };
+type Variant = { name: 'generated' | 'handwritten'; module: string; entry: string };
 type Sample = { applicationWallMs: number; applicationUserCpuMs: number; applicationSystemCpuMs: number;
   heapBeforeBytes: number; heapAfterBytes: number; applicationPeakRssBytes: number; lastCharacter: number | null };
 type Cold = Sample & { processWallMs: number; processUserCpuMs: number; processSystemCpuMs: number; processPeakRssBytes: number };
 const directory = join(root, 'cases/applications');
 const worker = join(root, 'tools/application-worker.ts');
-const references: Partial<Record<Application, string>> = { tokenize: 'tokenize', 'source-index': 'index', 'compiler-pipeline': 'compile' };
-const referenceAvailable = existsSync(join(root, 'compiler/lexer.ts')) && existsSync(join(root, 'compiler/parser.ts'));
 const median = (values: number[]): number => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 
 function child(args: string[]) {
@@ -59,8 +57,6 @@ function build(application: Application, assets: string, selected: string) {
     { name: 'generated', module: output, entry: 'app_run' },
     { name: 'handwritten', module: join(directory, application + '.ts'), entry: 'app_run' },
   ];
-  if (referenceAvailable && references[application]) variants.push({ name: 'T0',
-    module: join(root, 'tools/application-reference.ts'), entry: references[application]! });
   return { variants, identity: { application, miniFiles: parts.map(path => ({ path, sha256: sha256(readFileSync(join(directory, path))) })),
     handwrittenFiles: nativeFiles.map(path => ({ path, sha256: sha256(readFileSync(join(directory, path))) })),
     assembledMiniHash: sha256(source), generatedHash: sha256(emitted), generatedBytes: Buffer.byteLength(emitted),
@@ -143,11 +139,8 @@ async function main(): Promise<void> {
       commit: revision.trim(),
       versions: versions(root), compilerEntry: selected, compilerHash: override ? sha256(readFileSync(selected)) : compilerHash(),
       compilerHashScope: override ? 'entry file only' : 'configured compiler source set',
-      harness: ['tools/application-performance.ts', 'tools/application-worker.ts', 'tools/application-fixtures.ts', 'tools/application-reference.ts']
+      harness: ['tools/application-performance.ts', 'tools/application-worker.ts', 'tools/application-fixtures.ts']
         .map(path => ({ path, sha256: sha256(readFileSync(join(root, path))) })),
-      referenceAvailable, referenceSources: referenceAvailable
-        ? ['compiler/types.ts', 'compiler/lexer.ts', 'compiler/parser.ts', 'compiler/builtins.ts']
-          .map(path => ({ path, sha256: sha256(readFileSync(join(root, path))) })) : [],
       method: { scales: [1, 4, 16], coldSamples: 3, warmups: 3, warmSamples: 7,
         gc: 'natural; no forced GC', order: 'rotating cold order and warm starting variant; sequential workers',
         coldWall: 'whole worker startup, TS loading, input read, application, serialization, and output',

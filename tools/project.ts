@@ -54,9 +54,7 @@ export function sha256(bytes: string | Buffer): string {
   return createHash('sha256').update(bytes).digest('hex');
 }
 
-export const CompilerStage = { T0: 'T0', SelfHosted: 'self-hosted' } as const;
-export type CompilerStage = typeof CompilerStage[keyof typeof CompilerStage];
-export type Compiler = { stage: CompilerStage; entry: string; sources: string[]; example: string };
+export type Compiler = { entry: string; sources: string[]; example: string };
 export function compiler(directory = root): Compiler {
   return JSON.parse(readFileSync(join(directory, 'config/compiler.json'), 'utf8'));
 }

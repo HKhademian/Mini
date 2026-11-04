@@ -18,8 +18,6 @@ switch (task) {
   case 'check': mini('check'); break;
   case 'test':
     mini('test');
-    process.stdout.write(run(process.execPath, ['--test', 'compiler/analysis.test.ts'], root));
-    process.stdout.write(run(process.execPath, ['--test', 'compiler/builtins.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'compiler/m1.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'tools/format.test.ts'], root));
     process.stdout.write(run(process.execPath, ['--test', 'tools/lang-server.test.ts'], root));
@@ -30,7 +28,7 @@ switch (task) {
     break;
   case 'bench':
     mini('bench', '.cache/bench-ci.json', 'tooling.check');
-    mini('bench', '.cache/bench-t0-ci.json', 'compiler.bindings-emission');
+    mini('bench', '.cache/bench-compiler-ci.json', 'compiler.bindings-emission');
     break;
   case 'package': {
     const tag = process.env['GITHUB_EVENT_NAME'] === 'push' && process.env['GITHUB_REF_TYPE'] === 'tag'

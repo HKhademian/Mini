@@ -1,8 +1,8 @@
 # Mini language draft
 
 Status: accepted syntax and built-in contracts are documented below.
-[T0 support](compiler.md) advances one feature
-per atomic commit. Typing and other open rules remain undecided.
+[Compiler increments](compiler.md) advance one
+feature per atomic commit. Typing and other open rules remain undecided.
 
 Unspecified behavior is undecided. T0 and T1 are bootstrap implementations;
 their internal choices, including numeric normalization, JSON output, map
@@ -343,7 +343,7 @@ var count = list_length(items);
 - The list can be stored in a binding, passed to a function, and returned.
 - It uses the shared list kind.
 
-T0 emits a new array for each call. Only the zero-argument form is implemented.
+The compiler emits a new array for each call. Only the zero-argument form is implemented.
 Explicit reserve remains under discussion. Unassigned positions read as zero.
 
 ## Accepted operation: list copying
@@ -407,7 +407,7 @@ var names = map_new();
 - Equality retains its scalar-only contract; map identity or content equality
   is not selected by this constructor.
 
-T0 emits an object-backed map for each call. Other targets can choose their own
+The compiler emits an object-backed map for each call. Other targets can choose their own
 representation. Maps hold unique text keys; membership and assignment follow below.
 Missing-key lookup returns numeric zero, without introducing null. There is no
 `map_empty` alias or record/struct/class syntax.
@@ -437,7 +437,7 @@ var present = map_has(names, "source");
 - The query does not insert a key or otherwise change the map. An absent key
   does not require a default stored value.
 
-T0 checks known operand kinds and emits a membership helper. Cases cover absent
+The compiler checks known operand kinds and emits a membership helper. Cases cover absent
 and present keys, including keys storing zero or false.
 
 ## Accepted operation: map assignment
@@ -458,7 +458,7 @@ map_set(names, "source", "replacement.mini");
   directly. Stored collections are shared, without implicit cloning.
 - The operation requires all three arguments and produces no result.
 
-T0 emits one small map-setter adapter when used. Membership and lookup observe
+The compiler emits one small map-setter adapter when used. Membership and lookup observe
 inserted keys and stored values; a host-adapter test also checks stored references.
 
 ## Accepted operation: map lookup
@@ -516,7 +516,7 @@ var keys = map_keys(names);
 - Enumeration order is unspecified. Do not rely on it for deterministic compiler
   output; maintain an explicit ordered list when order matters.
 
-T0 uses `Object.keys` to materialize own text keys into a list. Tests check membership and uniqueness
+The compiler uses `Object.keys` to materialize own text keys into a list. Tests check membership and uniqueness
 without depending on insertion order. No missing-key value is needed for enumeration.
 
 ## Accepted operation: process termination

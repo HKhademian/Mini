@@ -1,13 +1,14 @@
-# T0 implementation inventory for M1 and T1
+# T0-to-T1 port reference (historical)
+
+Status: historical. The handwritten T0 compiler and its TypeScript modules were
+removed once the generated compiler became the only implementation. This page
+records the port mapping and is not a current interface.
 
 T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
 source written in Mini, implemented in [compiler/compiler.mini](../compiler/compiler.mini).
-T1 is its generated TypeScript compiler: `T1 = T0(M1)`. T1 is now promoted as
-[bootstrap/compiler.ts](../bootstrap/compiler.ts); this inventory remains the T0
-port reference. It inventories the five files in
-[compiler configuration](../config/compiler.json), not the CLI tools, tests, or
-release system. T0 remains frozen; this is a port reference, not a feature list
-to add to Mini.
+T1 is its generated TypeScript compiler and is promoted as
+[bootstrap/compiler.ts](../bootstrap/compiler.ts). The inventory covers the five
+retired T0 files, not the CLI tools, tests, or release system.
 
 M1 must preserve the compiler's responsibilities, required behavior, and
 recognizable implementation structure using Mini functions, maps, lists, and
@@ -48,15 +49,15 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
 
 ## 1. Source units and entry points
 
-- [types.ts](../compiler/types.ts): named token/value kinds, escape tags, and
+- `compiler/types.ts`: named token/value kinds, escape tags, and
   TypeScript shapes for tokens, expressions, and function information.
-- [lexer.ts](../compiler/lexer.ts): `tokenize(text, source)` and
+- `compiler/lexer.ts`: `tokenize(text, source)` and
   `lexer_fail(token, message)`; the parser aliases it as `parser_fail`; two nested helpers, `advance()` and `start()`.
-- [parser.ts](../compiler/parser.ts): `Parser` and the exported
+- `compiler/parser.ts`: `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): thirty-one signatures, lowering callbacks,
+- `compiler/builtins.ts`: thirty-one signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
-- [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
+- `compiler/t0.ts`: argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
 
 M1 can place these responsibilities in one `compiler/compiler.mini` file.
@@ -350,7 +351,7 @@ presence, ordinary early returns, object prototypes, and `Object.keys`.
 These mechanisms live in target adapter text. Mini does not need these source
 constructs to emit that text.
 
-The adapter implementations in [builtins.ts](../compiler/builtins.ts) are the exact
+The adapter implementations in `compiler/builtins.ts` are the exact
 initial-port reference, including whitespace. Their `$` prefix cannot collide
 with Mini identifiers.
 

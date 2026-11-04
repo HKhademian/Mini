@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'n
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
-import type { Token } from '../compiler/types.ts';
+import type { Token } from './analysis.ts';
 import { compiler, root, run } from './project.ts';
 
 const tool = join(root, 'bin/mini-format');

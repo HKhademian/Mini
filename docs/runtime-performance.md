@@ -13,8 +13,8 @@ runs this audit against the candidate and records compiler and self-build costs.
 
 ## What emission adds
 
-Inspecting [the parser](../compiler/parser.ts) and
-[built-in lowerings](../compiler/builtins.ts) shows direct TS output:
+Inspecting `compiler/src/30-parser.mini` and
+`compiler/src/40-builtins.mini` shows direct TS output:
 
 - Mini functions become ordinary functions; calls pass ordinary JS arguments.
 - Bindings, arithmetic, conditions, and loops become native TS statements.

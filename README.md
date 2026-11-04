@@ -9,36 +9,36 @@ directly. Broad general-purpose features are outside this project's objective.
 The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 
-[T0](docs/compiler.md) implements the reviewed language cases in direct Node
-TypeScript. The [language draft](docs/language.md) records the reviewed contract;
-cases verify compilation, generated output, execution, and diagnostics.
+[The generated compiler](docs/compiler.md) implements the reviewed language
+cases in direct Node TypeScript. The [language draft](docs/language.md) records
+the reviewed contract; cases verify compilation, generated output, execution,
+and diagnostics.
 
 ## Self-hosting
 
 Start with a minimal handwritten TypeScript compiler, emitting readable
 TypeScript run directly by Node. Port the compiler to Mini immediately.
 
-M1 is implemented and T1 is promoted as the active compiler. T0 remains the
-reference compiler and the tooling analyzer. Freeze T0 language additions;
-further compiler work uses the self-hosted source and bootstrap regeneration.
-The baseline includes `//` line comments and `///` documentation comments.
-Keep Mini source and functions documented using these forms.
+M1 is implemented and T1 is promoted as the active compiler. The handwritten T0
+implementation has been retired; further compiler work uses the self-hosted
+source and bootstrap regeneration. The baseline includes `//` line comments and
+`///` documentation comments. Keep Mini source and functions documented using
+these forms.
 The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
 `list_length(map_keys(items))`, keeping writes free of size bookkeeping.
 The [before/after measurements](docs/map-runtime-performance.md) record its
 compiler gains and the workloads that regress.
 
-M1 is the first compiler source written in Mini; T1 is the generated TypeScript
-compiler, `T1 = T0(M1)`. The first M1 lives in
+M1 is the compiler source written in Mini; T1 is the generated TypeScript
+compiler produced from it. The source lives in
 [compiler/compiler.mini](compiler/compiler.mini); the promoted T1 is
 [bootstrap/compiler.ts](bootstrap/compiler.ts), selected by
-[config/compiler.json](config/compiler.json). Keep M1 close to T0 in routine
-boundaries, control flow, calls, lookups, and data layout. Adapt forms where Mini
-requires it; defer redesign and performance refactoring until the corresponding
-port is verified.
+[config/compiler.json](config/compiler.json). Keep M1 close to the verified
+first-port boundaries, control flow, calls, lookups, and data layout. Defer
+redesign and performance refactoring until the corresponding change is verified.
 
-Use the [T0-to-T1 implementation reference](docs/t0-t1-reference.md) to map the
-existing compiler's mechanisms to Mini functions, maps, lists, and text helpers.
+The [historical port reference](docs/t0-t1-reference.md) records how the retired
+T0 implementation mapped to Mini functions, maps, lists, and text helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records
 measured costs and the actual-compiler comparison; the large-source compile gap
 remains a tracked follow-up.
@@ -64,7 +64,7 @@ can replace them conveniently.
 
 The verified generated compiler is promoted to the distributed bootstrap. The
 generated compiler, matching Mini source, and rebuild instructions ship together.
-T0 remains as a reference and tooling source, not the active compiler.
+The generated compiler is the only compiler implementation.
 
 Every completed increment preserves self-hosting. A breaking change can use a
 temporary compiler written in old syntax that accepts only the new syntax;

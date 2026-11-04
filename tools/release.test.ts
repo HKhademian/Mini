@@ -66,7 +66,6 @@ test('VS Code releases build a checksummed VSIX from the annotated source revisi
     assert.equal(manifest.commit, git('rev-parse', 'HEAD').toString().trim());
     assert(manifest.bootstrap !== null, 'release records the verified bootstrap');
     assert.equal(manifest.bootstrap.compiler, sha256(readFileSync(join(directory, 'bootstrap/compiler.ts'))));
-    assert.equal(manifest.t0, null);
     assert.ok(manifest.vsix);
     const file = join(output, manifest.vsix.file);
     assert.equal(manifest.vsix.file, `mini-${current.group}-v${version}.vsix`);

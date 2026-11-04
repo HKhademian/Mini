@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.9 / compiler 0.3.0-alpha.16: remove the handwritten T0 compiler
+  modules, `compiler/adapters.ts`, `compiler/builtin-metadata.ts`,
+  `compiler/types.ts`, `tools/generate-adapters.ts`, and their tests. Host adapter
+  text in `compiler/src/00-constants.mini` is the source of truth; the generated
+  compiler and its `metadata` command are the only compiler interfaces. Rewrite
+  the fixed-point test around the bootstrap and drop the T0 application benchmark
+  reference.
 - Language server: format documents through the generated formatter tool instead
   of the duplicate TypeScript token renderer. Remove `tools/format.ts`; formatter
   tests cover the generated tool only.

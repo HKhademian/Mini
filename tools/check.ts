@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { compiler, CompilerStage, root, run, versions } from './project.ts';
-import { adapterSource } from './generate-adapters.ts';
+import { compiler, root, run, versions } from './project.ts';
 import { verifyTools } from './mini-tools.ts';
 import { verifyBootstrap } from './verify.ts';
 import { CaseKind, loadCases } from './cases.ts';
@@ -40,8 +39,6 @@ function portablePaths(directory: string): void {
   }
 }
 export function checkProject(): void {
-  assert.equal(readFileSync(join(root, 'compiler/src/00-constants.mini'), 'utf8'), adapterSource(),
-    'compiler/src/00-constants.mini is stale; run node tools/generate-adapters.ts');
   verifyTools(root);
   run(process.execPath, [join(root, 'tools/build-m1.generated.ts'), '--check'], root);
   const current = versions(root);
@@ -65,18 +62,10 @@ export function checkProject(): void {
 documents(root);
 portablePaths(root);
 const bootstrap = JSON.parse(readFileSync(join(root, 'config/bootstrap.json'), 'utf8')) as { compiler: string } | null;
-if (bootstrap === null) {
-  assert.equal(compiler().stage, CompilerStage.T0);
-  assert(existsSync(join(root, compiler().entry)), 'T0 compiler missing');
-  assert(current.language !== null && current.compiler !== null, 'assign language/compiler versions');
-  assert.equal(current.bootstrap, null);
-  console.log('Repository checks passed. T0 available; self-hosted bootstrap unavailable.');
-} else {
-  assert.equal(compiler().stage, CompilerStage.SelfHosted);
-  assert.equal(compiler().entry, bootstrap.compiler, 'active compiler must be the generated bootstrap');
-  verifyBootstrap(root);
-  console.log('Repository checks and bootstrap fixed point passed.');
-}
+assert(bootstrap !== null, 'self-hosted bootstrap unavailable; promote a generated compiler');
+assert.equal(compiler().entry, bootstrap.compiler, 'active compiler must be the generated bootstrap');
+verifyBootstrap(root);
+console.log('Repository checks and bootstrap fixed point passed.');
 }
 
 if (import.meta.main) checkProject();

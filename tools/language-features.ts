@@ -1,6 +1,12 @@
 import { join } from 'node:path';
 import { compiler, root, run } from './project.ts';
-import { TokenKind, type Token } from '../compiler/types.ts';
+import type { Token } from './analysis.ts';
+
+export const TokenKind = {
+  Identifier: 'identifier', Keyword: 'keyword', Number: 'number', Text: 'text',
+  Symbol: 'symbol', Comment: 'comment', Shebang: 'shebang', End: 'eof',
+} as const;
+export type TokenKind = typeof TokenKind[keyof typeof TokenKind];
 
 export type Position = { line: number; character: number };
 export type Range = { start: Position; end: Position };

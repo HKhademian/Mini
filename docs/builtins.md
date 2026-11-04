@@ -8,7 +8,7 @@ representation are not.
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`write` produces no value. T0 implements these operations.
+`write` produces no value. The compiler implements these operations.
 
 The accepted built-ins `text_length(text)`, `text_get(text, index)`,
 `text_find(text, needle)`, `text_slice(text, start, end)`, and
@@ -44,7 +44,7 @@ See [the draft](language.md) for the initial success contract.
 The accepted built-in `process_args()` returns a text list for the generated
 compiler's command interface. Shared built-ins `list_length(items)` and
 `list_get(items, index)` expose the elements.
-`list_new()` now creates a fresh empty list of length 0. T0 supports its
+`list_new()` now creates a fresh empty list of length 0. The compiler supports its
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
 Indices still below zero after adjustment are no-ops. Lists can hold scalar
@@ -53,7 +53,7 @@ targets, gaps, and out-of-range positions read as numeric zero. Negative indices
 count from the end, as for assignment. Explicit reserve remains under discussion;
 see the [language contract](language.md).
 
-T0 emits the list setter's small host adapter once when used. It provides array
+The compiler emits the list setter's small host adapter once when used. It provides array
 mutation, not compiler logic. The generated helper name uses `# Built-ins and library functions
 
 Mini needs a small set of host operations for compiling files and writing tools.
@@ -64,7 +64,7 @@ representation are not.
 The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`write` produces no value. T0 implements these operations.
+`write` produces no value. The compiler implements these operations.
 
 The accepted built-ins `text_length(text)`, `text_get(text, index)`,
 `text_find(text, needle)`, `text_slice(text, start, end)`, and
@@ -90,7 +90,7 @@ See [the draft](language.md) for the initial success contract.
 The accepted built-in `process_args()` returns a text list for the generated
 compiler's command interface. Shared built-ins `list_length(items)` and
 `list_get(items, index)` expose the elements.
-`list_new()` now creates a fresh empty list of length 0. T0 supports its
+`list_new()` now creates a fresh empty list of length 0. The compiler supports its
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
 Indices still below zero after adjustment are no-ops. Lists can hold scalar
@@ -108,7 +108,7 @@ lists and maps remain aliases. A non-list target returns an empty list.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.
 
-`map_new()` creates a fresh empty map with no arguments. T0 uses ordinary objects
+`map_new()` creates a fresh empty map with no arguments. The compiler uses ordinary objects
 with a shared empty prototype; maps can be stored in lists and passed through
 functions. There is no per-map metadata or wrapper. The prototype prevents
 inherited string keys and makes `"__proto__"` an ordinary stored key.
@@ -120,7 +120,7 @@ missing-key value.
 
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared
-lists and maps. T0 emits the setter adapter once when used.
+lists and maps. The compiler emits the setter adapter once when used.
 
 `map_get(items, key)` returns the stored value, or numeric zero for a missing
 key or non-map target, without inserting anything. Stored zero, false, and empty
@@ -158,7 +158,7 @@ operations back tool process setup and cleanup.
 The `process_*` family also leaves `process_envs()` as a candidate until needed;
 its return shape remains open.
 
-T0 implements `write_error(text)`: exact UTF-8 output to stderr, without
+The compiler implements `write_error(text)`: exact UTF-8 output to stderr, without
 an added newline or result value. It completes before returning so a following
 `process_exit` preserves the diagnostic. This requires primitive host access.
 
