@@ -90,7 +90,7 @@ Verify a candidate against every Mini-source case:
 
 ```text
 ./bin/mini compile tools/compiler.mini .cache/compiler.mini.ts
-node tools/candidate.ts .cache/compiler.mini.ts
+./bin/mini test --candidate .cache/compiler.mini.ts
 ```
 
 The candidate check skips tool cases, which continue to use the active CLI; run
