@@ -214,6 +214,10 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.10`: recognize an optional first-line shebang as a `shebang`
   token; generated TypeScript begins with a Node shebang.
 
+- `0.3.0-alpha.11`: `process_run(command, args, mode)` runs one child process
+  with captured or inherited standard streams and returns status, signal, and
+  output text.
+
 The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
 active compiler; `config/bootstrap.json` pins it to `compiler/compiler.mini`.
 T0 is retained only as a reference and tooling source. Never revive T0 as the

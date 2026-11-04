@@ -451,6 +451,7 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "list_to_text");
     list_set(order, list_length(order), "map_copy");
     list_set(order, list_length(order), "number_to_text");
+    list_set(order, list_length(order), "process_run");
     list_set(order, list_length(order), "text_find");
     list_set(order, list_length(order), "text_get");
     list_set(order, list_length(order), "text_slice");

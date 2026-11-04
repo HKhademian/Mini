@@ -1,0 +1,3 @@
+049-002-process-run-args.mini:1:1: expected list argument
+process_run("node", "args", "capture");
+^

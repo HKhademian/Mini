@@ -536,6 +536,30 @@ process_exit(1);
 Use `process_*` names for host process operations. `process_envs()` remains a
 candidate; add it only with a concrete need and a defined return shape.
 
+## Accepted operation: process execution
+
+Run one child process and inspect its result:
+
+```text
+var arguments = list_new();
+list_set(arguments, 0, "--version");
+var result = process_run("node", arguments, "capture");
+write(map_get(result, "stdout"));
+```
+
+- `process_run(command, args, mode)` runs one command to completion without a
+  shell. `command` is text and `args` is a list whose elements convert to text.
+- The child inherits the parent environment. `mode` is `capture` to collect
+  stdout and stderr as UTF-8 text, or `inherit` to connect the child's standard
+  streams to the parent's; inherited streams are not captured.
+- The result is a map with `status`, `signal`, `stdout`, `stderr`, and `error`.
+  `status` is the exit status, or 1 when the command cannot start or ends by a
+  signal. `signal` names a signalled process; `error` describes a startup
+  failure. Both are empty on a normal exit.
+- Captured output is bounded by a fixed implementation buffer. Execution is
+  one-shot: there is no streaming, stdin piping, environment override, or
+  timeout.
+
 ## Accepted operation: diagnostic output
 
 The compiler needs a separate stream for diagnostics:

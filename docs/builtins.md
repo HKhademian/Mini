@@ -137,6 +137,17 @@ do not update the list. This needs no missing-key default.
 The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal
 program completion gives status 0. This is a primitive host operation.
+
+The accepted built-in `process_run(command, args, mode)` runs one child process
+to completion and returns a map with `status`, `signal`, `stdout`, `stderr`, and
+`error`. `command` is text, `args` is a list whose elements convert to text, and
+the environment is inherited. `mode` is `capture` to collect UTF-8 stdout and
+stderr, or `inherit` to connect the child's standard streams to the parent, with
+empty captured fields. `status` is the exit status, or 1 when the command cannot
+start or ends by a signal. `signal` names a signalled process and is otherwise
+empty; `error` holds a startup failure message and is otherwise empty. Captured
+output is bounded by a fixed implementation buffer. Execution is one-shot; there
+is no streaming, stdin piping, environment override, or timeout.
 The `process_*` family also leaves `process_envs()` as a candidate until needed;
 its return shape remains open.
 

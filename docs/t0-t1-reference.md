@@ -54,7 +54,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   `lexer_fail(token, message)`; the parser aliases it as `parser_fail`; two nested helpers, `advance()` and `start()`.
 - [parser.ts](../compiler/parser.ts): `Parser` and the exported
   `compile(tokens)` wrapper.
-- [builtins.ts](../compiler/builtins.ts): twenty-six signatures, lowering callbacks,
+- [builtins.ts](../compiler/builtins.ts): twenty-seven signatures, lowering callbacks,
   required Node imports, and optional generated adapter blocks.
 - [t0.ts](../compiler/t0.ts): argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
@@ -300,6 +300,8 @@ Count keys with `list_length(map_keys(items))`; no map size counter is maintaine
 - `file_write(text, text) -> no result`: `writeFileSync(arg0, arg1, "utf8")`.
 - `process_args() -> list`: `process.argv.slice(2)`.
 - `process_exit(number) -> no result`: `process.exit(arg0)`.
+- `process_run(text, list, text) -> map`: `$mini_process_run(arg0, arg1, arg2)`
+  (adapter).
 
 ## 9. Generated host adapters and imports
 
@@ -325,11 +327,13 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
    elements as empty text.
 7. `$mini_map_copy`: copy own text keys into a fresh map.
 8. `$mini_number_to_text`: render a safe integer as canonical decimal text.
-9. `$mini_text_find`: return the first substring position or -1.
-10. `$mini_text_get`: read an in-range character from text, otherwise empty text.
-11. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
+9. `$mini_process_run`: run one child process to completion and return status,
+   signal, captured output, and a startup error in a fresh map.
+10. `$mini_text_find`: return the first substring position or -1.
+11. `$mini_text_get`: read an in-range character from text, otherwise empty text.
+12. `$mini_text_slice`: clamp start/end, normalize negative bounds, and return
     the selected text or empty text for a non-text target or empty range.
-12. `$mini_text_split`: split on a literal divider, preserving empty fields.
+13. `$mini_text_split`: split on a literal divider, preserving empty fields.
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.
@@ -343,6 +347,8 @@ with Mini identifiers.
 The only generated module import is `node:fs`. The finite named imports, sorted
 when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
 and the adapter blocks in fixed ordered lists rather than add general sorting.
+`process_run` reaches `node:child_process` through `process.getBuiltinModule`,
+so the generated import list stays limited to `node:fs`.
 
 ## 10. Emission rules that affect fixed-point equality
 

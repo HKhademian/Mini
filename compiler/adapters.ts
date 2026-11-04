@@ -78,6 +78,22 @@ function $mini_map_set(items, key, value) {
     return String(value);
 }
 `,
+  process_run: `function $mini_process_run(command, args, mode) {
+    const output = { __proto__: null, status: 1, signal: "", stdout: "", stderr: "", error: "" };
+    const child = process.getBuiltinModule("node:child_process");
+    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {
+        stdio: mode === "inherit" ? "inherit" : "pipe",
+        encoding: "utf8",
+        maxBuffer: 32 * 1024 * 1024,
+    });
+    if (result.error) output.error = String(result.error.message);
+    if (result.status !== null) output.status = result.status;
+    if (typeof result.signal === "string") output.signal = result.signal;
+    output.stdout = typeof result.stdout === "string" ? result.stdout : "";
+    output.stderr = typeof result.stderr === "string" ? result.stderr : "";
+    return output;
+}
+`,
   text_find: `function $mini_text_find(text, needle) {
     if (typeof text !== "string" || typeof needle !== "string") return -1;
     return text.indexOf(needle);

@@ -56,6 +56,8 @@ export const builtins = new Map<string, Builtin>([
     imports: [], emit: args => `(${args[0]}).length` }],
   ['process_args', { ...builtinMetadata.get('process_args')!,
     imports: [], emit: () => 'process.argv.slice(2)' }],
+  ['process_run', { ...builtinMetadata.get('process_run')!,
+    imports: [], helper: adapters.process_run, emit: args => `$mini_process_run(${args.join(', ')})` }],
   ['file_write', { ...builtinMetadata.get('file_write')!,
     imports: ['writeFileSync'], emit: args => `writeFileSync(${args[0]}, ${args[1]}, "utf8")` }],
   ['file_read', { ...builtinMetadata.get('file_read')!,

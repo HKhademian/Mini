@@ -23,6 +23,7 @@ export const builtinMetadata = new Map<string, BuiltinMetadata>([
   ['list_get', { parameters: [ValueKind.Unknown, ValueKind.Number], result: ValueKind.Unknown }],
   ['list_length', { parameters: [ValueKind.List], result: ValueKind.Number }],
   ['process_args', { parameters: [], result: ValueKind.List }],
+  ['process_run', { parameters: [ValueKind.Text, ValueKind.List, ValueKind.Text], result: ValueKind.Map }],
   ['file_write', { parameters: [ValueKind.Text, ValueKind.Text], result: ValueKind.Void }],
   ['file_read', { parameters: [ValueKind.Text], result: ValueKind.Text }],
   ['text_get', { parameters: [ValueKind.Unknown, ValueKind.Number], result: ValueKind.Text }],

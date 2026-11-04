@@ -1,0 +1,28 @@
+{
+  "id": "language.process-run-sample",
+  "kind": "sample",
+  "source": "../../samples/022-process-run.mini",
+  "features": [
+    "process.run",
+    "list.new",
+    "list.set",
+    "map.get",
+    "number.to-text",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "capture",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "sample 0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

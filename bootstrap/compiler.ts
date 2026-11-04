@@ -98,6 +98,7 @@ let list_get_helper = "function $mini_list_get(items, index) {\n    if (!Array.i
 let list_set_helper = "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n";
 let json_to_text_helper = "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n";
 let number_to_text_helper = "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n";
+let process_run_helper = "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n";
 let text_find_helper = "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n";
 let text_get_helper = "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n";
 let text_split_helper = "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n";
@@ -709,6 +710,7 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "list_to_text");
     $mini_list_set(order, (order).length, "map_copy");
     $mini_list_set(order, (order).length, "number_to_text");
+    $mini_list_set(order, (order).length, "process_run");
     $mini_list_set(order, (order).length, "text_find");
     $mini_list_set(order, (order).length, "text_get");
     $mini_list_set(order, (order).length, "text_slice");
@@ -785,7 +787,7 @@ function compile(tokens) {
     return parser_program(parser_new(tokens));
 }
 function builtin_exists(name) {
-    return ((((((((((((((((((((((((((name === "map_get") || (name === "map_keys")) || (name === "map_set")) || (name === "map_has")) || (name === "map_new")) || (name === "list_set")) || (name === "list_new")) || (name === "write_error")) || (name === "process_exit")) || (name === "list_get")) || (name === "list_length")) || (name === "process_args")) || (name === "file_write")) || (name === "file_read")) || (name === "text_find")) || (name === "text_get")) || (name === "text_length")) || (name === "text_slice")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "readAll")) || (name === "write"));
+    return (((((((((((((((((((((((((((name === "map_get") || (name === "map_keys")) || (name === "map_set")) || (name === "map_has")) || (name === "map_new")) || (name === "list_set")) || (name === "list_new")) || (name === "write_error")) || (name === "process_exit")) || (name === "list_get")) || (name === "list_length")) || (name === "process_args")) || (name === "file_write")) || (name === "file_read")) || (name === "text_find")) || (name === "text_get")) || (name === "text_length")) || (name === "text_slice")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "readAll")) || (name === "write"));
 }
 function builtin_parameters(name) {
     let parameters = [];
@@ -866,8 +868,14 @@ function builtin_parameters(name) {
                                                                                     if ((name === "json_to_text")) {
                                                                                         $mini_list_set(parameters, 0, "unknown");
                                                                                     } else {
-                                                                                        if ((name === "write")) {
+                                                                                        if ((name === "process_run")) {
                                                                                             $mini_list_set(parameters, 0, "text");
+                                                                                            $mini_list_set(parameters, 1, "list");
+                                                                                            $mini_list_set(parameters, 2, "text");
+                                                                                        } else {
+                                                                                            if ((name === "write")) {
+                                                                                                $mini_list_set(parameters, 0, "text");
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
@@ -902,6 +910,9 @@ function builtin_result(name) {
     if (((name === "map_new") || (name === "map_copy"))) {
         return "map";
     }
+    if ((name === "process_run")) {
+        return "map";
+    }
     if ((name === "map_has")) {
         return "boolean";
     }
@@ -932,7 +943,7 @@ function builtin_helper_key(name) {
     if (((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "map_new"))) {
         return "map_runtime";
     }
-    if ((((((((((((name === "list_copy") || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "list_get")) || (name === "list_set")) || (name === "map_copy")) || (name === "text_find")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_split"))) {
+    if (((((((((((((name === "list_copy") || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "list_get")) || (name === "list_set")) || (name === "map_copy")) || (name === "text_find")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_split"))) {
         return name;
     }
     return "";
@@ -958,6 +969,9 @@ function builtin_helper(name) {
     }
     if ((name === "json_to_text")) {
         return json_to_text_helper;
+    }
+    if ((name === "process_run")) {
+        return process_run_helper;
     }
     if ((name === "list_get")) {
         return list_get_helper;
@@ -985,7 +999,7 @@ function builtin_helper(name) {
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
-    if (((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text"))) {
+    if ((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "map_keys")) {

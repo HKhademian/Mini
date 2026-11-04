@@ -1,0 +1,23 @@
+{
+  "id": "language.process-run-mode",
+  "kind": "reject",
+  "source": "049-003-process-run-mode.mini",
+  "features": [
+    "process.run"
+  ],
+  "cases": [
+    {
+      "name": "number-mode",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "049-003-process-run-mode.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.11 / compiler 0.3.0-alpha.13 / builtins 0.3.0-alpha.10;
+  bootstrap 0.1.0-alpha.3: add `process_run(command, args, mode)` for one-shot
+  child processes with inherited environment, captured or inherited standard
+  streams, and a map result carrying status, signal, stdout, stderr, and startup
+  error. M1 and T0 lower the same adapter; regenerate the bootstrap and the
+  generated tools.
 - Mini 0.1.0-alpha.7 / format 0.1.0-alpha.3: port formatting to
   `tools/format.mini` composed with compiler parts `00`–`40`. `mini fmt` and
   `mini-format` run the generated tool with unchanged stdout, stdin, `--write`,

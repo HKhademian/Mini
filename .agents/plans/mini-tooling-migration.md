@@ -14,7 +14,7 @@ todos:
     status: completed
   - id: phase-2-process-primitive
     content: "Phase 2 — Add process execution and stream/status primitives"
-    status: pending
+    status: completed
   - id: phase-2-run
     content: "Phase 2 — Implement mini run as a Mini tool"
     status: pending

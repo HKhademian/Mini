@@ -6,7 +6,7 @@ fn builtin_exists(name) {
         || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
         || name == "text_slice" || name == "text_split" || name == "map_copy" || name == "list_copy"
         || name == "list_to_text" || name == "number_to_text" || name == "json_to_text"
-        || name == "readAll" || name == "write";
+        || name == "process_run" || name == "readAll" || name == "write";
 }
 
 /// Return builtin parameter kinds.
@@ -89,8 +89,14 @@ fn builtin_parameters(name) {
                                                                                     if (name == "json_to_text") {
                                                                                         list_set(parameters, 0, "unknown");
                                                                                     } else {
-                                                                                        if (name == "write") {
+                                                                                        if (name == "process_run") {
                                                                                             list_set(parameters, 0, "text");
+                                                                                            list_set(parameters, 1, "list");
+                                                                                            list_set(parameters, 2, "text");
+                                                                                        } else {
+                                                                                            if (name == "write") {
+                                                                                                list_set(parameters, 0, "text");
+                                                                                            }
                                                                                         }
                                                                                     }
                                                                                 }
@@ -125,6 +131,9 @@ fn builtin_result(name) {
         return "list";
     }
     if (name == "map_new" || name == "map_copy") {
+        return "map";
+    }
+    if (name == "process_run") {
         return "map";
     }
     if (name == "map_has") {
@@ -163,7 +172,7 @@ fn builtin_helper_key(name) {
         return "map_runtime";
     }
     if (name == "list_copy" || name == "list_to_text" || name == "number_to_text"
-        || name == "json_to_text" || name == "list_get" || name == "list_set"
+        || name == "json_to_text" || name == "process_run" || name == "list_get" || name == "list_set"
         || name == "map_copy" || name == "text_find" || name == "text_get"
         || name == "text_slice" || name == "text_split") {
         return name;
@@ -195,6 +204,9 @@ fn builtin_helper(name) {
     if (name == "json_to_text") {
         return json_to_text_helper;
     }
+    if (name == "process_run") {
+        return process_run_helper;
+    }
     if (name == "list_get") {
         return list_get_helper;
     }
@@ -223,7 +235,7 @@ fn builtin_helper(name) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "map_keys") {

@@ -31,3 +31,4 @@ node samples/009-list-mutation.mini.ts
 - [019-number-to-text.mini](019-number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Cases](../cases/language/047-003-number-to-text-sample.case.json).
 - [020-json-to-text.mini](020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Cases](../cases/language/048-004-json-to-text-sample.case.json).
 - [021-shebang.mini](021-shebang.mini): Use a first-line shebang header and print a line. [Cases](../cases/language/049-004-shebang-sample.case.json).
+- [022-process-run.mini](022-process-run.mini): Run Node once, capture its output and status, and print them. [Cases](../cases/language/049-004-process-run-sample.case.json).

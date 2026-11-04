@@ -156,7 +156,7 @@
       "name": "release-self-hosted-compiler",
       "args": [
         "dist/release",
-        "compiler-v0.3.0-v0.3.0-alpha.12"
+        "compiler-v0.3.0-v0.3.0-alpha.13"
       ],
       "stdin": {
         "text": ""
@@ -170,12 +170,12 @@
       "exitCode": 0,
       "workspace": "clean",
       "tag": {
-        "name": "compiler-v0.3.0-v0.3.0-alpha.12",
+        "name": "compiler-v0.3.0-v0.3.0-alpha.13",
         "annotated": true
       },
       "files": [
         "dist/release/manifest.json",
-        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.12.tar.gz",
+        "dist/release/minilang-compiler-v0.3.0-v0.3.0-alpha.13.tar.gz",
         "dist/release/SHA256SUMS"
       ]
     },

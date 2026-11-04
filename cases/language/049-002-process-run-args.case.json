@@ -1,0 +1,23 @@
+{
+  "id": "language.process-run-args",
+  "kind": "reject",
+  "source": "049-002-process-run-args.mini",
+  "features": [
+    "process.run"
+  ],
+  "cases": [
+    {
+      "name": "text-args",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "049-002-process-run-args.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}
