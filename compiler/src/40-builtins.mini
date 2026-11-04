@@ -46,6 +46,8 @@ list_set(builtin_names_list, list_length(builtin_names_list), "path_copy");
 list_set(builtin_names_list, list_length(builtin_names_list), "path_remove");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_spawn");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_script_path");
+list_set(builtin_names_list, list_length(builtin_names_list), "read_line");
+list_set(builtin_names_list, list_length(builtin_names_list), "read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "value_kind");
 
 /// Builtin name membership set.
@@ -96,6 +98,8 @@ map_set(builtin_name_set, "path_copy", true);
 map_set(builtin_name_set, "path_remove", true);
 map_set(builtin_name_set, "process_spawn", true);
 map_set(builtin_name_set, "process_script_path", true);
+map_set(builtin_name_set, "read_line", true);
+map_set(builtin_name_set, "read_bytes", true);
 map_set(builtin_name_set, "value_kind", true);
 
 /// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
@@ -146,6 +150,8 @@ map_set(builtin_parameter_kinds, "path_copy", "text,text");
 map_set(builtin_parameter_kinds, "path_remove", "text");
 map_set(builtin_parameter_kinds, "process_spawn", "map");
 map_set(builtin_parameter_kinds, "process_script_path", "");
+map_set(builtin_parameter_kinds, "read_line", "");
+map_set(builtin_parameter_kinds, "read_bytes", "number");
 map_set(builtin_parameter_kinds, "value_kind", "unknown");
 
 /// Builtin result kinds keyed by name.
@@ -196,6 +202,8 @@ map_set(builtin_result_kinds, "path_copy", "void");
 map_set(builtin_result_kinds, "path_remove", "void");
 map_set(builtin_result_kinds, "process_spawn", "map");
 map_set(builtin_result_kinds, "process_script_path", "text");
+map_set(builtin_result_kinds, "read_line", "text");
+map_set(builtin_result_kinds, "read_bytes", "list");
 map_set(builtin_result_kinds, "value_kind", "text");
 
 /// Builtin Node import names keyed by name; comma-separated, empty for none.
@@ -246,6 +254,8 @@ map_set(builtin_import_names, "path_copy", "");
 map_set(builtin_import_names, "path_remove", "");
 map_set(builtin_import_names, "process_spawn", "");
 map_set(builtin_import_names, "process_script_path", "");
+map_set(builtin_import_names, "read_line", "");
+map_set(builtin_import_names, "read_bytes", "");
 map_set(builtin_import_names, "value_kind", "");
 
 /// Builtin adapter keys keyed by name; empty for inline lowering.
@@ -296,6 +306,8 @@ map_set(builtin_helper_keys, "path_copy", "path_copy");
 map_set(builtin_helper_keys, "path_remove", "path_remove");
 map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 map_set(builtin_helper_keys, "process_script_path", "");
+map_set(builtin_helper_keys, "read_line", "read_line");
+map_set(builtin_helper_keys, "read_bytes", "read_bytes");
 map_set(builtin_helper_keys, "value_kind", "value_kind");
 
 /// Return every builtin name once, in declaration order.
@@ -440,6 +452,12 @@ fn helper_text(key) {
     if (key == "value_kind") {
         return value_kind_helper;
     }
+    if (key == "read_line") {
+        return read_line_helper;
+    }
+    if (key == "read_bytes") {
+        return read_bytes_helper;
+    }
     return "";
 }
 
@@ -447,7 +465,7 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "read_line" || name == "read_bytes") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

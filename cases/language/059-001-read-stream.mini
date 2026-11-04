@@ -1,0 +1,5 @@
+/// Read one line, a byte count, then the remaining line.
+var first = read_line();
+var three = read_bytes(3);
+var rest = read_line();
+write(first + "|" + text_from_bytes(three) + "|" + rest + "\n");

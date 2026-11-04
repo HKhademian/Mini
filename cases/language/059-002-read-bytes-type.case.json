@@ -1,0 +1,15 @@
+{
+  "id": "language.read-bytes-type",
+  "kind": "reject",
+  "source": "059-002-read-bytes-type.mini",
+  "features": ["read.bytes"],
+  "cases": [
+    {
+      "name": "text-count",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "059-002-read-bytes-type.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

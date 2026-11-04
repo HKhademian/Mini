@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.23 / compiler 0.3.0-alpha.28 / builtins 0.3.0-alpha.22;
+  bootstrap 0.1.0-alpha.17: add `read_line()` and `read_bytes(count)` for
+  streaming standard input.
 - Mini 0.1.0-alpha.14 / release 0.1.0-alpha.4 / CLI 0.1.0-alpha.12: implement
   release packaging as a generated Mini tool. It validates clean checkouts,
   annotated tags, versions, archives committed sources, verifies the extracted

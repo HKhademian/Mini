@@ -461,6 +461,8 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "number_to_text");
     list_set(order, list_length(order), "process_run");
     list_set(order, list_length(order), "process_spawn");
+    list_set(order, list_length(order), "read_bytes");
+    list_set(order, list_length(order), "read_line");
     list_set(order, list_length(order), "directory_temp");
     list_set(order, list_length(order), "path_copy");
     list_set(order, list_length(order), "path_exists");

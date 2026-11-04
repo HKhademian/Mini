@@ -622,6 +622,19 @@ if (value_kind(value) == "text") { ... }
 - `value_kind(value)` returns one of `text`, `number`, `boolean`, `list`, `map`,
   or `other`. It takes one argument and does not convert the value.
 
+## Accepted operations: streaming input
+
+```text
+var line = read_line();
+var bytes = read_bytes(16);
+```
+
+- `read_line()` reads standard input through LF and returns the UTF-8 text
+  without the line ending. A trailing CR is removed. End of input returns empty
+  text.
+- `read_bytes(count)` reads up to `count` bytes as a list of integers 0-255.
+  End of input returns fewer bytes or an empty list.
+
 ## Accepted operation: JSON parsing
 
 ```text

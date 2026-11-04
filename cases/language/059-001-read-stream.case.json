@@ -1,0 +1,15 @@
+{
+  "id": "language.read-stream",
+  "kind": "feature",
+  "source": "059-001-read-stream.mini",
+  "features": ["read.line", "read.bytes", "text.from-bytes", "text.output"],
+  "cases": [
+    {
+      "name": "line-bytes-line",
+      "stdin": {"text": "first\nXYZrest\n"},
+      "stdout": {"text": "first|XYZ|rest\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
