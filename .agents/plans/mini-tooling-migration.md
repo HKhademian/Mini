@@ -1,6 +1,6 @@
 ---
 name: mini-tooling-migration
-status: active
+status: completed
 created: 2026-11-04
 todos:
   - id: phase-0-tool-infrastructure
@@ -44,7 +44,7 @@ todos:
     status: completed
   - id: phase-4-remove-t0
     content: "Phase 4 — Remove T0 compiler modules and handwritten TypeScript tools"
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.16: generate every `bin/` launcher from the tool manifest.
+  Launchers are executable files, verified by `mini check`, and are no longer
+  handwritten symlinks.
 - Mini 0.1.0-alpha.15 / lsp 0.1.0-alpha.5: implement the language server as a
   generated Mini tool. It frames LSP over standard input, analyzes documents
   through the active compiler, publishes diagnostics, formats through the

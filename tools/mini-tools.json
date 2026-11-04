@@ -80,5 +80,18 @@
       ],
       "generated": "tools/lang-server.generated.ts"
     }
+  ],
+  "launchers": [
+    { "name": "mini" },
+    { "name": "mini-check" },
+    { "name": "mini-format" },
+    { "name": "mini-run" },
+    { "name": "mini-test" },
+    { "name": "mini-bench" },
+    { "name": "mini-verify" },
+    { "name": "mini-release" },
+    { "name": "mini-compile" },
+    { "name": "minic" },
+    { "name": "mini-lang-server", "tool": "tools/lang-server.generated.ts" }
   ]
 }
