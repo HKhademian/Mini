@@ -9,7 +9,8 @@ directly. Broad general-purpose features are outside this project's objective.
 The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
 Read [why Mini exists](docs/why-mini.md) for its purpose, audience, and
-deliberate tradeoffs.
+deliberate tradeoffs. To install a release and run a first program, see
+[getting started](docs/getting-started.md).
 
 [The generated compiler](docs/compiler.md) implements the reviewed language
 cases in direct Node JavaScript. The [language draft](docs/language.md) records
