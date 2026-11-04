@@ -149,3 +149,44 @@ fn pure_number_from_text(text) {
     }
     return result;
 }
+
+/// Reference canonical decimal formatting for safe integers.
+fn pure_number_to_text(value) {
+    if (!value_is_number(value)) {
+        return "";
+    }
+    if (value > 9007199254740991 || value < -9007199254740991) {
+        return "";
+    }
+    if (value == 0) {
+        return "0";
+    }
+    var negative = value < 0;
+    if (negative) {
+        value = 0 - value;
+    }
+    var powers = list_new();
+    list_set(powers, 0, 1);
+    var next = 10;
+    while (next <= value) {
+        list_set(powers, list_length(powers), next);
+        next = pure_number_mul(next, 10);
+    }
+    var digits = "0123456789";
+    var output = "";
+    var position = list_length(powers) - 1;
+    while (position >= 0) {
+        var power = list_get(powers, position);
+        var digit = 0;
+        while (digit < 9 && value >= pure_number_mul(power, digit + 1)) {
+            digit = digit + 1;
+        }
+        output = output + text_get(digits, digit);
+        value = value - pure_number_mul(power, digit);
+        position = position - 1;
+    }
+    if (negative) {
+        return "-" + output;
+    }
+    return output;
+}

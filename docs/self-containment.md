@@ -148,6 +148,8 @@ Current reference coverage:
 | `map_copy` | Implemented in `libs/pure/map.mini` |
 | `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |
 | `text_to_bytes`, `text_from_bytes` | Implemented in `libs/pure/bytes.mini` |
+| `number_to_text` | Implemented in `libs/pure/number.mini` |
+| `list_to_text` | Implemented in `libs/pure/list.mini` |
 | `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 
 `compiler metadata` reports each builtin's `class` (`essential`,

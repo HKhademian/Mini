@@ -74,6 +74,6 @@ builtin_add(
     "",
     "number_to_text", 
     "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", 
-    "",
+    "pure_number_to_text",
     "$mini_number_to_text({0})"
 );

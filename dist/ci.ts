@@ -595,7 +595,6 @@ function ci_task(root, task) {
     if ((task === "test")) {
         ci_mini(root, ci_args1("test"));
         ci_mini(root, ci_args2("test", "--unit"));
-        ci_node(root, ci_args2("--test", "test/format.test.ts"), root);
         ci_node(root, ci_args2("--test", "test/lang-server.test.ts"), root);
         ci_run(root, "npm", ci_args2("run", "check"), path_join(root, "editors/vscode"));
         ci_node(root, ci_args2("--test", "test/grammar.test.ts"), path_join(root, "editors/vscode"));

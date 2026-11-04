@@ -61,3 +61,23 @@ fn pure_list_pop_front(items) {
     list_truncate(items, length - 1);
     return value;
 }
+
+/// Reference list_to_text: join text items with a text separator.
+fn pure_list_to_text(items, separator) {
+    if (!value_is_list(items) || !value_is_text(separator)) {
+        return "";
+    }
+    var output = "";
+    var position = 0;
+    while (position < list_length(items)) {
+        if (position > 0) {
+            output = output + separator;
+        }
+        var item = list_get(items, position);
+        if (value_is_text(item)) {
+            output = output + item;
+        }
+        position = position + 1;
+    }
+    return output;
+}

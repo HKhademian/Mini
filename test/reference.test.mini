@@ -59,6 +59,7 @@ fn main() {
     reference_compare(root, "number", "io_write(number_to_text(number_mul(6, 7)) + \"\\n\");\nio_write(number_to_text(number_div(7, 2)) + \"\\n\");\nio_write(number_to_text(number_mod(7, 3)) + \"\\n\");\nio_write(number_to_text(number_floor(3)) + \"\\n\");\nio_write(number_to_text(number_pow(2, 10)) + \"\\n\");\nio_write(number_to_text(number_from_text(\"-42\")) + \"\\n\");\n");
     reference_compare(root, "bytes", "var bytes = text_to_bytes(\"Aé😀\");\nio_write(text_from_bytes(bytes) + \"\\n\");\nio_write(number_to_text(text_code(\"é\")) + \"\\n\");\nio_write(text_from_code(128512) + \"\\n\");\n");
     reference_compare(root, "json", "var parsed = json_parse(\"{\\\"a\\\":[1,true,null,\\\"x\\\"],\\\"b\\\":false}\");\nio_write(json_to_text(map_get(parsed, \"value\")) + \"\\n\");\nvar again = json_parse(json_to_text(map_get(parsed, \"value\")));\nio_write(json_to_text(map_get(again, \"value\")) + \"\\n\");\n");
+    reference_compare(root, "to-text", "io_write(number_to_text(0) + \"\\n\");\nio_write(number_to_text(-12345) + \"\\n\");\nio_write(number_to_text(9007199254740991) + \"\\n\");\nvar items = list_new();\nlist_set(items, 0, \"a\");\nlist_set(items, 1, 2);\nlist_set(items, 2, \"b\");\nio_write(list_to_text(items, \"-\") + \"\\n\");\n");
     io_write("reference modes agree\n");
     return 0;
 }
