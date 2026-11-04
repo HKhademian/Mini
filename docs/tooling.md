@@ -194,8 +194,8 @@ the first compiler port.
 ## Generated tools
 
 Tool source is Mini. Entries live in `tools/`; reusable logic lives in `libs/`
-(`libs/text.mini`, `libs/cases.mini`, and per-tool libraries such as
-`libs/format.mini`); generated artifacts live in `dist/` named by command, for
+(`libs/common/text.mini`, `libs/tools/cases.mini`, and per-tool libraries such as
+`libs/tools/format.mini`); generated artifacts live in `dist/` named by command, for
 example `dist/format.ts` and `dist/mini.ts`, produced from the active compiler
 and excluded from the strict TypeScript check.
 
@@ -215,7 +215,7 @@ generated TypeScript file and declares the `bin/` launchers:
 ```
 
 Each tool source declares its dependencies with Mini `include` directives, for
-example `include "../libs/text.mini";`. The build helper compiles the
+example `include "../libs/common/text.mini";`. The build helper compiles the
 source directly with the tracked bootstrap; include expansion is part of the
 compiler.
 

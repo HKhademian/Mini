@@ -1,8 +1,8 @@
-include "text.mini";
-include "path.mini";
-include "process.mini";
-include "json.mini";
-include "project.mini";
+include "../common/text.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/json.mini";
+include "../common/project.mini";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {

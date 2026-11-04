@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/bench.mini";
+include "../libs/tools/bench.mini";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main() {

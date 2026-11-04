@@ -1,4 +1,4 @@
-include "../value.mini";
+include "../common/value.mini";
 /// Reference text_find: return the first code-unit index, or -1.
 fn pure_text_find_from(text, needle, start) {
     var text_size = text_length(text);

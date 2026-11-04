@@ -85,7 +85,7 @@ tooling metadata.
 ```text
 tools/compiler.mini          compiler entry (includes adjacent sources)
 libs/compiler/constants.mini         adapter text and shared constants
-libs/text.mini              text and path helpers
+libs/common/text.mini              text and path helpers
 libs/compiler/lexer.mini             lexer, diagnostics, include expansion
 libs/compiler/parser.mini            parser, checking, emission
 libs/compiler/builtins.mini          builtin metadata and lowering

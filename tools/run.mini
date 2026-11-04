@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/run.mini";
+include "../libs/tools/run.mini";
 
 /// Parse internal arguments and run the selected program.
 fn main() {

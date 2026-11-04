@@ -1,5 +1,5 @@
-include "text.mini";
-include "list.mini";
+include "../common/text.mini";
+include "../common/list.mini";
 include "cases.mini";
 /// Run benchmark cases and write one JSON report.
 /// Usage: node dist/bench.ts OUTPUT [FILTER]
@@ -40,20 +40,6 @@ fn bench_compiler_hash(root) {
         position = position + 1;
     }
     return hash_sha256(list_to_text(parts, "\n"));
-}
-
-/// Return host facts from a small Node probe.
-fn bench_platform() {
-    var code = "process.stdout.write(JSON.stringify({node:process.version,platform:process.platform,architecture:process.arch}))";
-    var args = list_new();
-    list_set(args, 0, "-e");
-    list_set(args, 1, code);
-    var result = process_capture(process_exec_path(), args, project_root(), list_new());
-    var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
-    if (result_is_fail(parsed)) {
-        return map_new();
-    }
-    return map_get(parsed, "value");
 }
 
 /// Return the repository commit, or empty text outside a checkout.
@@ -134,9 +120,6 @@ fn bench_run(root, output, filter) {
     var host = bench_platform();
     var versions_parsed = json_parse(file_read(path_join(root, "config/versions.json")));
     var report = map_new();
-    map_set(report, "node", map_get(host, "node"));
-    map_set(report, "platform", map_get(host, "platform"));
-    map_set(report, "architecture", map_get(host, "architecture"));
     map_set(report, "commit", bench_commit(root));
     if (result_is_ok(versions_parsed)) {
         map_set(report, "versions", map_get(versions_parsed, "value"));

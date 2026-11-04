@@ -1,4 +1,4 @@
-include "../list.mini";
+include "../common/list.mini";
 /// Return a token map with the fields used by T0.
 fn token_new(kind, text, source, start, end, line, column, context) {
     var token = map_new();

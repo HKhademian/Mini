@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/build.mini";
+include "../libs/tools/build.mini";
 
 /// Parse arguments and build or check generated artifacts.
 fn main() {

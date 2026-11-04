@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/lang-server.mini";
+include "../libs/tools/lang-server.mini";
 
 /// Parse arguments and serve the language protocol.
 fn main() {

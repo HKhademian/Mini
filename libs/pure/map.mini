@@ -1,4 +1,4 @@
-include "../value.mini";
+include "../common/value.mini";
 /// Reference map_copy: shallow copy, or empty map for non-maps.
 fn pure_map_copy(items) {
     var result = map_new();

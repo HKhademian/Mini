@@ -1,5 +1,5 @@
-include "value.mini";
-include "text.mini";
+include "../common/value.mini";
+include "../common/text.mini";
 include "cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
 /// Usage: node dist/verify.ts [PROJECT_ROOT]

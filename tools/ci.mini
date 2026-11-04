@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/ci.mini";
+include "../libs/tools/ci.mini";
 
 /// Read the task file and run the selected CI task.
 fn main() {

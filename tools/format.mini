@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/format.mini";
+include "../libs/tools/format.mini";
 
 /// Report a command error and stop.
 fn format_fail(message) {

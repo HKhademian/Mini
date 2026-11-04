@@ -1,4 +1,4 @@
-include "text.mini";
+include "../common/text.mini";
 include "cases.mini";
 /// Run case scenarios through the shared case runner.
 /// Usage: node dist/test.ts [FILTER]

@@ -1,8 +1,8 @@
-include "text.mini";
-include "path.mini";
-include "process.mini";
-include "json.mini";
-include "project.mini";
+include "../common/text.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/json.mini";
+include "../common/project.mini";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {

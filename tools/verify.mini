@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/verify.mini";
+include "../libs/tools/verify.mini";
 
 /// Parse arguments and print the bootstrap identity record.
 fn main() {

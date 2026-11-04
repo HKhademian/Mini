@@ -79,7 +79,7 @@ dividend's sign. `number_pow` accepts a non-negative integer exponent.
 These six have pure reference implementations selected by `--reference`.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
-are total library functions in [libs/number.mini](../libs/number.mini), not
+are total library functions in [libs/common/number.mini](../libs/common/number.mini), not
 builtins. They use the core operators and return 0 when either operand is not a
 number. The operators themselves reject mixed text/number operands at compile
 time, so `+` and `number_add` have different contracts even though both generate

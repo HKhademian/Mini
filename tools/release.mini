@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/release.mini";
+include "../libs/tools/release.mini";
 
 /// Parse arguments and package a release.
 fn main() {
