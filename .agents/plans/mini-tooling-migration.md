@@ -20,7 +20,7 @@ todos:
     status: completed
   - id: phase-2-filesystem-primitives
     content: "Phase 2 — Add file and directory primitives"
-    status: pending
+    status: completed
   - id: phase-2-repository-check
     content: "Phase 2 — Implement repository checking as a Mini tool"
     status: completed
