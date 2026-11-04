@@ -1,14 +1,4 @@
-import { TokenKind, type Diagnostic, type Token } from '../compiler/types.ts';
-import { analyze } from './analysis.ts';
-
-export type FormatResult = { text: string } | { diagnostic: Diagnostic };
-
-/** Return canonical text, or the first compiler diagnostic for invalid source. */
-export function formatSource(source: string, name: string): FormatResult {
-  const result = analyze(source, name);
-  const diagnostic = result.diagnostics[0];
-  return diagnostic === undefined ? { text: formatTokens(result.tokens) } : { diagnostic };
-}
+import { TokenKind, type Token } from '../compiler/types.ts';
 
 /** Format an already-validated token stream. */
 export function formatTokens(tokens: Token[]): string {

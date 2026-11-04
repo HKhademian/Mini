@@ -1,0 +1,445 @@
+#!/usr/bin/env node
+/// Format one Mini source file or standard input.
+/// The bundled lexer and parser validate the source first, then the
+/// comment-preserving token stream is rendered with the fixed style contract.
+/// `--write` replaces a file only after successful formatting; `--check`
+/// reports noncanonical input without writing.
+
+/// Report a command error and stop.
+fn format_fail(message) {
+    write_error(message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Return one line's indentation text for a block depth.
+fn format_indentation(depth) {
+    var text = "";
+    var position = 0;
+    while (position < depth) {
+        text = text + "    ";
+        position = position + 1;
+    }
+    return text;
+}
+
+/// Remove trailing spaces, tabs, and carriage returns from comment text.
+fn format_trim_end(text) {
+    var length = text_length(text);
+    while (length > 0) {
+        var character = text_get(text, length - 1);
+        if (character == " " || character == "\t" || character == "\r") {
+            length = length - 1;
+        } else {
+            return text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+
+/// Join completed output lines with LF and append one final newline.
+fn format_body(lines) {
+    if (list_length(lines) == 0) {
+        return "";
+    }
+    return list_to_text(lines, "\n") + "\n";
+}
+
+/// Return whether text is a word-like token for spacing.
+fn format_is_word(token) {
+    var kind = map_get(token, "kind");
+    return kind == "identifier" || kind == "keyword" || kind == "number" || kind == "text";
+}
+
+/// Return whether text is a binary operator.
+fn format_is_binary(text) {
+    return text == "=" || text == "+" || text == "-" || text == "==" || text == "!="
+        || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+}
+
+/// Return whether text precedes a unary minus.
+fn format_unary_minus_context(text) {
+    return text == "(" || text == "," || text == "=" || text == "+" || text == "-"
+        || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
+        || text == "&&" || text == "||" || text == "!" || text == "return" || text == "{" || text == ";";
+}
+
+/// Return whether a unary operator needs a leading space.
+fn format_unary_space_context(text) {
+    return text == "return" || text == "," || text == "=" || text == "+"
+        || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
+        || text == "&&" || text == "||";
+}
+
+/// Return whether an opening parenthesis follows a call-like keyword.
+fn format_paren_context(text) {
+    return text == "if" || text == "while" || text == "return" || text == ","
+        || text == "=" || text == "+" || text == "==" || text == "!="
+        || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+}
+
+/// Append the current line to the completed lines and clear it.
+fn format_newline(state) {
+    if (map_get(state, "current") != "") {
+        var lines = map_get(state, "lines");
+        list_set(lines, list_length(lines), map_get(state, "current"));
+        map_set(state, "current", "");
+    }
+    return 0;
+}
+
+/// Start a line with the current indentation when it is empty.
+fn format_start_line(state) {
+    if (map_get(state, "current") == "") {
+        map_set(state, "current", format_indentation(map_get(state, "indentation")));
+    }
+    return 0;
+}
+
+/// Preserve at most one blank line before a construct.
+fn format_maybe_blank(state, token) {
+    if (!map_get(state, "has_previous") || map_get(state, "current") != "" || !map_get(state, "statement_start")) {
+        return 0;
+    }
+    var text = map_get(token, "text");
+    if (text == "}" || text == "else") {
+        return 0;
+    }
+    var previous = map_get(state, "previous");
+    if (map_get(token, "line") > map_get(previous, "line") + 1) {
+        var lines = map_get(state, "lines");
+        var length = list_length(lines);
+        if (length > 0 && list_get(lines, length - 1) != "") {
+            list_set(lines, length, "");
+        }
+    }
+    return 0;
+}
+
+/// Return the next non-comment, non-end token after index, or 0.
+fn format_next_code(state, index) {
+    var tokens = map_get(state, "tokens");
+    var cursor = index + 1;
+    while (cursor < list_length(tokens)) {
+        var token = list_get(tokens, cursor);
+        var kind = map_get(token, "kind");
+        if (kind != "comment" && kind != "eof") {
+            return token;
+        }
+        cursor = cursor + 1;
+    }
+    return 0;
+}
+
+/// Return whether a comment belongs after an opening brace.
+fn format_stash_comment(state, index) {
+    var next = format_next_code(state, index);
+    if (next == 0) {
+        return false;
+    }
+    var next_text = map_get(next, "text");
+    if (next_text == "else") {
+        return map_get(map_get(state, "previous_code"), "text") == "}";
+    }
+    if (next_text == "{") {
+        var previous = map_get(map_get(state, "previous_code"), "text");
+        return previous == "}" || previous == ")" || previous == "else";
+    }
+    return false;
+}
+
+/// Emit one comment at the current position.
+fn format_emit_comment(state, token) {
+    var text = format_trim_end(map_get(token, "text"));
+    if (map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line")
+        && map_get(state, "current") != "") {
+        map_set(state, "current", map_get(state, "current") + " " + text);
+        format_newline(state);
+        map_set(state, "pending_break", false);
+        map_set(state, "previous", token);
+        map_set(state, "has_previous", true);
+        return 0;
+    }
+    if (map_get(state, "pending_break")) {
+        format_newline(state);
+        map_set(state, "pending_break", false);
+    }
+    format_maybe_blank(state, token);
+    format_start_line(state);
+    map_set(state, "current", map_get(state, "current") + text);
+    format_newline(state);
+    map_set(state, "previous", token);
+    map_set(state, "has_previous", true);
+    return 0;
+}
+
+/// Emit comments held between a block opening and its first token.
+fn format_flush_stashed(state) {
+    var stashed = map_get(state, "stashed");
+    var index = 0;
+    while (index < list_length(stashed)) {
+        var comment = list_get(stashed, index);
+        var text = format_trim_end(map_get(comment, "text"));
+        if (index == 0) {
+            map_set(state, "current", map_get(state, "current") + " " + text);
+        } else {
+            format_start_line(state);
+            map_set(state, "current", map_get(state, "current") + text);
+        }
+        format_newline(state);
+        map_set(state, "previous", comment);
+        map_set(state, "has_previous", true);
+        index = index + 1;
+    }
+    map_set(state, "stashed", list_new());
+    map_set(state, "pending_break", false);
+    return 0;
+}
+
+/// Return whether a unary minus starts an expression.
+fn format_unary_minus(state) {
+    if (!map_get(state, "has_previous_code")) {
+        return true;
+    }
+    return format_unary_minus_context(map_get(map_get(state, "previous_code"), "text"));
+}
+
+/// Return whether a unary operator needs a leading space.
+fn format_unary_space(state) {
+    if (!map_get(state, "has_previous_code")) {
+        return false;
+    }
+    var previous = map_get(map_get(state, "previous_code"), "text");
+    if (previous == "-") {
+        return !map_get(state, "previous_unary");
+    }
+    return format_unary_space_context(previous);
+}
+
+/// Return whether a space is required before token.
+fn format_needs_space(state, token, unary) {
+    if (map_get(state, "current") == "" || !map_get(state, "has_previous_code")) {
+        return false;
+    }
+    if (map_get(state, "previous_unary")) {
+        return false;
+    }
+    var text = map_get(token, "text");
+    if (text == "!" || (text == "-" && unary)) {
+        return format_unary_space(state);
+    }
+    var previous = map_get(map_get(state, "previous_code"), "text");
+    if (text == "(") {
+        if (previous == "-") {
+            return !map_get(state, "previous_unary");
+        }
+        return format_paren_context(previous);
+    }
+    if (text == "{" || text == "else") {
+        return true;
+    }
+    if (text == ")" || text == "," || text == ";" || text == "}") {
+        return false;
+    }
+    if (format_is_word(token)) {
+        return format_is_word(map_get(state, "previous_code")) || previous == "," || format_is_binary(previous);
+    }
+    return format_is_binary(text);
+}
+
+/// Return a fresh formatter state for a token list.
+fn format_state(tokens) {
+    var state = map_new();
+    map_set(state, "tokens", tokens);
+    map_set(state, "lines", list_new());
+    map_set(state, "stashed", list_new());
+    map_set(state, "current", "");
+    map_set(state, "indentation", 0);
+    map_set(state, "pending_break", false);
+    map_set(state, "statement_start", true);
+    map_set(state, "has_previous", false);
+    map_set(state, "has_previous_code", false);
+    map_set(state, "previous", 0);
+    map_set(state, "previous_code", 0);
+    map_set(state, "previous_unary", false);
+    map_set(state, "shebang", "");
+    var first = list_get(tokens, 0);
+    if (map_get(first, "kind") == "shebang") {
+        map_set(state, "shebang", map_get(first, "text"));
+    }
+    return state;
+}
+
+/// Remember the last emitted token.
+fn format_previous(state, token, is_code, unary) {
+    map_set(state, "previous", token);
+    map_set(state, "has_previous", true);
+    if (is_code) {
+        map_set(state, "previous_code", token);
+        map_set(state, "has_previous_code", true);
+    }
+    map_set(state, "previous_unary", unary);
+    return 0;
+}
+
+/// Emit one regular token.
+fn format_token(state, token) {
+    if (map_get(state, "current") == "") {
+        format_maybe_blank(state, token);
+        format_start_line(state);
+    }
+    var text = map_get(token, "text");
+    var unary = text == "!" || (text == "-" && format_unary_minus(state));
+    if (format_needs_space(state, token, unary)) {
+        map_set(state, "current", map_get(state, "current") + " ");
+    }
+    map_set(state, "current", map_get(state, "current") + text);
+    if (text == "{") {
+        map_set(state, "indentation", map_get(state, "indentation") + 1);
+        if (list_length(map_get(state, "stashed")) > 0) {
+            format_flush_stashed(state);
+        } else {
+            map_set(state, "pending_break", true);
+        }
+    } else {
+        if (text == ";") {
+            map_set(state, "pending_break", true);
+            map_set(state, "statement_start", true);
+        } else {
+            map_set(state, "pending_break", false);
+            map_set(state, "statement_start", false);
+        }
+    }
+    format_previous(state, token, true, unary);
+    return 0;
+}
+
+/// Render a comment-preserving token list as canonical Mini source.
+fn format_tokens(tokens) {
+    var state = format_state(tokens);
+    var index = 0;
+    while (index < list_length(tokens)) {
+        var token = list_get(tokens, index);
+        var kind = map_get(token, "kind");
+        var text = map_get(token, "text");
+        if (kind == "eof" || kind == "shebang") {
+        } else {
+            if (kind == "comment") {
+                if (format_stash_comment(state, index)) {
+                    var stashed = map_get(state, "stashed");
+                    list_set(stashed, list_length(stashed), token);
+                } else {
+                    format_emit_comment(state, token);
+                }
+            } else {
+                if (text == "else" && map_get(map_get(state, "previous_code"), "text") == "}") {
+                    map_set(state, "pending_break", false);
+                    map_set(state, "current", map_get(state, "current") + " else");
+                    format_previous(state, token, true, false);
+                    map_set(state, "statement_start", false);
+                } else {
+                    if (map_get(state, "pending_break")) {
+                        format_newline(state);
+                        map_set(state, "pending_break", false);
+                    }
+                    if (text == "}") {
+                        if (map_get(state, "current") != "") {
+                            format_newline(state);
+                        }
+                        map_set(state, "indentation", map_get(state, "indentation") - 1);
+                        if (map_get(state, "indentation") < 0) {
+                            map_set(state, "indentation", 0);
+                        }
+                        format_start_line(state);
+                        map_set(state, "current", map_get(state, "current") + "}");
+                        format_previous(state, token, true, false);
+                        map_set(state, "pending_break", true);
+                        map_set(state, "statement_start", true);
+                    } else {
+                        format_token(state, token);
+                    }
+                }
+            }
+        }
+        index = index + 1;
+    }
+    if (map_get(state, "current") != "") {
+        format_newline(state);
+    }
+    var body = format_body(map_get(state, "lines"));
+    var shebang = map_get(state, "shebang");
+    if (shebang == "") {
+        return body;
+    }
+    return shebang + "\n" + body;
+}
+
+/// Format one source text; return the canonical text.
+fn format_source(source, name) {
+    var tokens = tokenize(source, name, true);
+    compile(tokenize(source, name, false));
+    return format_tokens(tokens);
+}
+
+/// Validate arguments, format the selected source, and apply the selected mode.
+fn main() {
+    var args = process_args();
+    var mode = "stdout";
+    var has_path = false;
+    var path = "";
+    var position = 0;
+    while (position < list_length(args)) {
+        var arg = list_get(args, position);
+        if (arg == "--write" || arg == "--check") {
+            if (mode != "stdout") {
+                format_fail("usage: mini-format [--write | --check] SOURCE.mini");
+            }
+            if (arg == "--write") {
+                mode = "write";
+            } else {
+                mode = "check";
+            }
+        } else {
+            if (has_path) {
+                format_fail("usage: mini-format [--write | --check] SOURCE.mini");
+            }
+            has_path = true;
+            path = arg;
+        }
+        position = position + 1;
+    }
+    if (!has_path) {
+        format_fail("usage: mini-format [--write | --check] SOURCE.mini");
+    }
+    if (mode == "write" && path == "-") {
+        format_fail("--write does not accept stdin");
+    }
+    if (path != "-" && !text_ends_with(path, ".mini")) {
+        format_fail("Mini source must use .mini");
+    }
+    var name = path;
+    var source = "";
+    if (path == "-") {
+        name = "<stdin>";
+        source = readAll();
+    } else {
+        source = file_read(path);
+    }
+    var formatted = format_source(source, name);
+    if (mode == "check") {
+        if (formatted != source) {
+            format_fail(name + ": not formatted");
+        }
+        return 0;
+    }
+    if (mode == "write") {
+        if (formatted != source) {
+            file_write(path, formatted);
+        }
+        return 0;
+    }
+    write(formatted);
+    return 0;
+}
+
+main();

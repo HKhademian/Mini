@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.7 / format 0.1.0-alpha.3: port formatting to
+  `tools/format.mini` composed with compiler parts `00`–`40`. `mini fmt` and
+  `mini-format` run the generated tool with unchanged stdout, stdin, `--write`,
+  `--check`, shebang, and comment behavior. The language server keeps its
+  TypeScript token renderer until its own port. Replace T0-based formatter tests
+  with generated-tool tests.
 - Mini 0.1.0-alpha.6 / check 0.1.0-alpha.6: implement source checking as a
   generated Mini tool (`tools/check-source.mini`) composed with compiler parts
   `00`–`40`. `mini check SOURCE.mini` and `mini check -` run the generated tool;

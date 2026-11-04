@@ -11,7 +11,7 @@ todos:
     status: completed
   - id: phase-1-format
     content: "Phase 1 — Implement formatting as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-2-process-primitive
     content: "Phase 2 — Add process execution and stream/status primitives"
     status: pending

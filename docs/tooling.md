@@ -38,7 +38,10 @@ behavior. Diagnostics, offsets, and ranges use the
 ### mini-format / mini fmt
 
 Status: implemented with the format and cli streams. The standalone command is
-`mini-format`; the dispatcher form is `mini fmt`.
+`mini-format`; the dispatcher form is `mini fmt`. The command is a generated
+Mini tool ([tools/format.mini](../tools/format.mini)) composed with compiler
+parts `00`–`40`; the language server keeps its TypeScript token renderer until
+its own port.
 
 Its job is consistent indentation, spacing, and line breaks for accepted Mini
 syntax. Preserve program meaning, literal values, evaluation order, and `//`

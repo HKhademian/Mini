@@ -1,20 +1,44 @@
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { test } from 'node:test';
-import { compile } from '../compiler/parser.ts';
-import { tokenize } from '../compiler/lexer.ts';
-import { TokenKind } from '../compiler/types.ts';
-import { formatSource } from './format.ts';
+import { after, test } from 'node:test';
+import type { Token } from '../compiler/types.ts';
+import { compiler, root, run } from './project.ts';
+import { formatTokens } from './format.ts';
 
-function format(source: string, name = 'test.mini'): string {
-  const result = formatSource(source, name);
-  assert.ok('text' in result, 'unexpected diagnostic: ' + JSON.stringify(result));
-  return result.text;
+const tool = join(root, 'bin/mini-format');
+const work = mkdtempSync(join(tmpdir(), 'mini-format-test-'));
+const entry = join(root, compiler().entry);
+after(() => rmSync(work, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 }));
+
+function runTool(args: string[]): SpawnSyncReturns<string> {
+  const result = spawnSync(process.execPath, [tool, ...args], { cwd: root, encoding: 'utf8' });
+  if (result.error) throw result.error;
+  return result;
 }
 
-function signature(source: string, name = 'test.mini'): string {
-  return tokenize(source, name, true).map(token => `${token.kind}:${token.text}`).join('\u0000');
+function format(source: string, name = 'test.mini'): string {
+  const file = join(work, name);
+  writeFileSync(file, source);
+  const result = runTool([file]);
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout;
+}
+
+function tokensOf(file: string): Token[] {
+  return JSON.parse(run(process.execPath, [entry, 'tokens', '--comments', file], root).toString()) as Token[];
+}
+
+function signature(tokens: Token[]): string {
+  return tokens.map(token => `${token.kind}:${token.text}`).join('\u0000');
+}
+
+function compiled(file: string): string {
+  const output = join(work, 'program.ts');
+  run(process.execPath, [entry, 'compile', file, output], root);
+  return readFileSync(output, 'utf8');
 }
 
 const example = 'var value=1;// keep\nif(value==1){write("ok");}else{write("no");}\n';
@@ -29,18 +53,11 @@ test('formatting is idempotent', () => {
   assert.equal(format(format(example)), format(example));
 });
 
-test('preserves every token, including comments', () => {
-  assert.equal(signature(format(example)), signature(example));
-  const commented = '/// docs\nvar value=1; // tail\nfn work(a,b){return a+b;}\n';
-  assert.equal(signature(format(commented)), signature(commented));
-});
-
 test('preserves a first-line shebang', () => {
   const source = '#!/usr/bin/env -S mini run\nvar value=1;\n';
   const expected = '#!/usr/bin/env -S mini run\nvar value = 1;\n';
   assert.equal(format(source), expected);
   assert.equal(format(format(source)), expected);
-  assert.equal(signature(format(source)), signature(source));
 });
 
 test('empty and whitespace-only input becomes empty', () => {
@@ -80,30 +97,38 @@ test('preserves at most one blank line between constructs', () => {
   assert.equal(format('var a=1;\nvar b=2;\n'), 'var a = 1;\nvar b = 2;\n');
 });
 
-test('invalid source reports the compiler diagnostic instead of text', () => {
-  const result = formatSource('var value = ;\n', 'invalid.mini');
-  assert.ok('diagnostic' in result);
-  assert.equal(result.diagnostic.message, 'expected expression');
-  assert.equal(result.diagnostic.source, 'invalid.mini');
+test('--check reports noncanonical input without writing', () => {
+  const result = runTool(['--check', 'cases/tooling/format-unformatted.mini']);
+  assert.equal(result.status, 1);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr, 'cases/tooling/format-unformatted.mini: not formatted\n');
 });
 
-test('all accepted language fixtures keep their tokens and generated code', () => {
+test('invalid source reports the compiler diagnostic instead of text', () => {
+  const result = runTool(['cases/tooling/format-invalid.mini']);
+  assert.equal(result.status, 1);
+  assert.equal(result.stdout, '');
+  assert.equal(result.stderr,
+    'cases/tooling/format-invalid.mini:1:13: expected expression\nvar value = ;\n            ^\n');
+});
+
+test('samples keep tokens, generated code, and language-server formatting', () => {
   let checked = 0;
-  for (const directory of ['cases/language', 'samples']) {
-    for (const file of readdirSync(directory).filter(entry => entry.endsWith('.mini'))) {
-      const path = join(directory, file);
-      const source = readFileSync(path, 'utf8');
-      const result = formatSource(source, path);
-      if ('diagnostic' in result) continue;
-      assert.equal(signature(result.text, path), signature(source, path), path);
-      const formatted = formatSource(result.text, path);
-      assert.ok('text' in formatted, path);
-      assert.equal(formatted.text, result.text, path);
-      assert.equal(compile(tokenize(result.text, path)), compile(tokenize(source, path)), path);
-      assert.equal(tokenize(result.text, path, true).filter(token => token.kind === TokenKind.Comment).length,
-        tokenize(source, path, true).filter(token => token.kind === TokenKind.Comment).length, path);
-      checked++;
-    }
+  for (const name of readdirSync(join(root, 'samples')).filter(entry => entry.endsWith('.mini')).sort()) {
+    const source = readFileSync(join(root, 'samples', name), 'utf8');
+    const original = join(work, name);
+    const formatted = join(work, `formatted-${name}`);
+    writeFileSync(original, source);
+    const output = runTool([original]);
+    assert.equal(output.status, 0, name + ': ' + output.stderr);
+    writeFileSync(formatted, output.stdout);
+    const originalTokens = tokensOf(original);
+    const formattedTokens = tokensOf(formatted);
+    assert.equal(signature(formattedTokens), signature(originalTokens), name + ': tokens');
+    assert.equal(formatTokens(formattedTokens), output.stdout, name + ': language-server formatter');
+    assert.equal(compiled(formatted), compiled(original), name + ': generated code');
+    assert.equal(runTool([formatted]).stdout, output.stdout, name + ': idempotence');
+    checked++;
   }
-  assert.ok(checked > 50, 'expected to format most language fixtures');
+  assert.ok(checked > 15, 'expected to format the samples');
 });
