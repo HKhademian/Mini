@@ -180,7 +180,7 @@ fn ci_task(root, task) {
         ci_run(root, "npm", ci_args2("run", "check"), path_join(root, "editors/vscode"));
         ci_node(root, ci_args2("--test", "test/grammar.test.ts"), path_join(root, "editors/vscode"));
         ci_node(root, ci_args2("--test", "test/release.test.ts"), root);
-        return ci_node(root, ci_args2("tools/application-performance.ts", "--check"), root);
+        return ci_node(root, ci_args2("test/performance/application-performance.ts", "--check"), root);
     }
     if (task == "bench") {
         ci_mini(root, ci_args3("bench", ".cache/bench-ci.json", "tooling.check"));

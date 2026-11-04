@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { compiler, compilerHash, root, sha256 } from './project.ts';
+import { compiler, compilerHash, root, sha256 } from '../support.ts';
 
 const names = ['scalar', 'list', 'state', 'tokens', 'text', 'slices', 'scopes'] as const;
 type Name = typeof names[number];
@@ -236,7 +236,7 @@ async function worker(): Promise<void> {
 async function audit(): Promise<void> {
   const [, , output, override, ...extra] = process.argv;
   assert(output && extra.length === 0,
-    'usage: node tools/runtime-performance.ts REPORT.json [COMPILER.ts]');
+    'usage: node test/performance/runtime-performance.ts REPORT.json [COMPILER.ts]');
   assert(!existsSync(resolve(output)), 'report already exists; choose a fresh filename');
   const directory = mkdtempSync(join(tmpdir(), 'mini-runtime-performance-'));
   const selected = override ? resolve(override) : join(root, compiler().entry);

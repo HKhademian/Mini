@@ -14,10 +14,10 @@ from the committed suite and a provisional T1-readiness assessment.
 Use the repository's Node.js and locked development dependencies:
 
 ```text
-node tools/application-performance.ts --check
-node tools/application-performance.ts --check .cache/compiler.mini.ts
-node tools/application-performance.ts .cache/applications.json
-node tools/application-performance.ts .cache/candidate-applications.json dist/compile.ts
+node test/performance/application-performance.ts --check
+node test/performance/application-performance.ts --check .cache/compiler.mini.ts
+node test/performance/application-performance.ts .cache/applications.json
+node test/performance/application-performance.ts .cache/candidate-applications.json dist/compile.ts
 ```
 
 The `--check` form accepts the same optional candidate compiler path and runs
@@ -27,7 +27,7 @@ hash before appending the export used by the harness. Compilation happens once
 per application and its wall time is recorded separately from execution.
 No generated application logic is hand-edited or implemented by the harness.
 
-The [fixtures](../tools/application-fixtures.ts) generate source documents and
+The [fixtures](../test/performance/application-fixtures.ts) generate source documents and
 expected results from independent data models. Small explicit cases cover empty
 input, CSV escaping/EOF, configuration replacement, graph cycles, missing template
 keys, expression precedence, and exclusion of identifiers inside comments/text.

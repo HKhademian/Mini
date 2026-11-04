@@ -100,7 +100,7 @@ M1 was still absent when this suite was recorded; it cannot establish that T0 ca
   revision, five source hashes, and combined hash. After runs use the configured
   five-source compiler hash, group 0.3.0/compiler 0.3.0-alpha.1.
 - Paths in raw runs identify local scratch assets. Reproduce with
-  `node tools/application-performance.ts REPORT.json OLD/compiler/t0.ts` for the
+  `node test/performance/application-performance.ts REPORT.json OLD/compiler/t0.ts` for the
   frozen old compiler, and omit the final argument for the current compiler.
   Run sequentially on the same host. Generated hashes repeat within each backend.
 - Code verification at `7cba0bf`: 258 active repository scenarios passed, four

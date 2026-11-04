@@ -108,7 +108,7 @@ fn case_stream_bytes(stream, directory) {
             return result_fail("stream hash differs");
         }
     }
-    var result = result_ok();
+    var result = result_ok(0, "");
     map_set(result, "bytes", bytes);
     return result;
 }
@@ -197,7 +197,7 @@ fn case_load_case(path) {
     var fixture = map_new();
     map_set(fixture, "path", path);
     map_set(fixture, "definition", spec);
-    var result = result_ok();
+    var result = result_ok(0, "");
     map_set(result, "fixture", fixture);
     return result;
 }
@@ -280,7 +280,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     if (map_has(scenario, "files") && !list_is_text(map_get(scenario, "files"))) {
         return result_fail(prefix + "invalid artifact paths");
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 
 /// Collect case fixtures below a directory.
@@ -314,7 +314,7 @@ fn case_collect(directory, filter, fixtures, ids) {
         }
         position = position + 1;
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 
 /// Load every case matching the filter.
@@ -328,7 +328,7 @@ fn case_load_cases(filter, project_root) {
     if (list_length(fixtures) == 0) {
         return result_fail("no cases match: " + filter);
     }
-    var result = result_ok();
+    var result = result_ok(0, "");
     map_set(result, "fixtures", fixtures);
     return result;
 }
@@ -420,7 +420,7 @@ fn case_tool_workspace(project_root, scenario, work) {
     if (map_get(scenario, "workspace") == "dirty") {
         file_write(path_join(directory, "uncommitted.txt"), "dirty\n");
     }
-    var result = result_ok();
+    var result = result_ok(0, "");
     map_set(result, "directory", directory);
     return result;
 }
@@ -556,7 +556,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             position = position + 1;
         }
     }
-    var done = result_ok();
+    var done = result_ok(0, "");
     map_set(done, "artifact", artifact);
     return done;
 }
@@ -577,7 +577,7 @@ fn case_diagnostic(result) {
 /// Write runnable input files and return a result map.
 fn case_write_input_files(scenario, directory, files, prefix) {
     if (!map_has(scenario, "inputFiles")) {
-        return result_ok();
+        return result_ok(0, "");
     }
     var inputs = map_get(scenario, "inputFiles");
     var names = map_keys(inputs);
@@ -593,13 +593,13 @@ fn case_write_input_files(scenario, directory, files, prefix) {
         file_write_bytes(target, map_get(stream, "bytes"));
         position = position + 1;
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 
 /// Compare runnable output files and return a result map.
 fn case_check_output_files(scenario, directory, files, prefix) {
     if (!map_has(scenario, "outputFiles")) {
-        return result_ok();
+        return result_ok(0, "");
     }
     var outputs = map_get(scenario, "outputFiles");
     var names = map_keys(outputs);
@@ -616,7 +616,7 @@ fn case_check_output_files(scenario, directory, files, prefix) {
         }
         position = position + 1;
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 
 /// Return the identity hashes for a case fixture.

@@ -7,14 +7,14 @@ import { dirname, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { applications, dataset, goldens, sharedLexer, type Application, type Fixture } from './application-fixtures.ts';
 import { serialized } from './application-worker.ts';
-import { compiler, compilerHash, root, sha256, versions } from './project.ts';
+import { compiler, compilerHash, root, sha256, versions } from '../support.ts';
 
 type Variant = { name: 'generated' | 'handwritten'; module: string; entry: string };
 type Sample = { applicationWallMs: number; applicationUserCpuMs: number; applicationSystemCpuMs: number;
   heapBeforeBytes: number; heapAfterBytes: number; applicationPeakRssBytes: number; lastCharacter: number | null };
 type Cold = Sample & { processWallMs: number; processUserCpuMs: number; processSystemCpuMs: number; processPeakRssBytes: number };
 const directory = join(root, 'cases/applications');
-const worker = join(root, 'tools/application-worker.ts');
+const worker = join(root, 'test/performance/application-worker.ts');
 const median = (values: number[]): number => [...values].sort((a, b) => a - b)[Math.floor(values.length / 2)]!;
 
 function child(args: string[]) {
@@ -65,7 +65,7 @@ function build(application: Application, assets: string, selected: string) {
 
 async function main(): Promise<void> {
   const [, , argument, override, ...extra] = process.argv;
-  assert(argument && extra.length === 0, 'usage: node tools/application-performance.ts REPORT.json [COMPILER.ts] | --check [COMPILER.ts]');
+  assert(argument && extra.length === 0, 'usage: node test/performance/application-performance.ts REPORT.json [COMPILER.ts] | --check [COMPILER.ts]');
   const checkOnly = argument === '--check';
   const selected = override ? resolve(override) : join(root, compiler().entry);
   const output = resolve(argument);
@@ -139,7 +139,7 @@ async function main(): Promise<void> {
       commit: revision.trim(),
       versions: versions(root), compilerEntry: selected, compilerHash: override ? sha256(readFileSync(selected)) : compilerHash(),
       compilerHashScope: override ? 'entry file only' : 'configured compiler source set',
-      harness: ['tools/application-performance.ts', 'tools/application-worker.ts', 'tools/application-fixtures.ts']
+      harness: ['tools/application-performance.ts', 'test/performance/application-worker.ts', 'tools/application-fixtures.ts']
         .map(path => ({ path, sha256: sha256(readFileSync(join(root, path))) })),
       method: { scales: [1, 4, 16], coldSamples: 3, warmups: 3, warmSamples: 7,
         gc: 'natural; no forced GC', order: 'rotating cold order and warm starting variant; sequential workers',

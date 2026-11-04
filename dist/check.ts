@@ -500,15 +500,17 @@ function process_capture(command, args, directory, input) {
     $mini_map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
 }
-function result_ok() {
+function result_ok(value, message) {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
-    $mini_map_set(result, "message", "");
+    $mini_map_set(result, "value", value);
+    $mini_map_set(result, "message", message);
     return result;
 }
 function result_fail(message) {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", false);
+    $mini_map_set(result, "value", 0);
     $mini_map_set(result, "message", message);
     return result;
 }
@@ -521,6 +523,30 @@ function result_is_ok(result) {
 function result_is_fail(result) {
     return (!result_is_ok(result));
 }
+function result_get_message(result) {
+    if ((!value_is_map(result))) {
+        return "";
+    }
+    return $mini_map_get(result, "message");
+}
+function result_set_message(result, message) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "message", message);
+    }
+    return result;
+}
+function result_get_value(result) {
+    if ((!value_is_map(result))) {
+        return 0;
+    }
+    return $mini_map_get(result, "value");
+}
+function result_set_value(result, value) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "value", value);
+    }
+    return result;
+}
 function json_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
@@ -529,9 +555,7 @@ function json_file(path) {
     if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
-    let result = result_ok();
-    $mini_map_set(result, "value", $mini_map_get(parsed, "value"));
-    return result;
+    return result_ok($mini_map_get(parsed, "value"), "");
 }
 function project_root() {
     let script = process.argv[1];
@@ -629,7 +653,7 @@ function case_stream_bytes(stream, directory) {
             return result_fail("stream hash differs");
         }
     }
-    let result = result_ok();
+    let result = result_ok(0, "");
     $mini_map_set(result, "bytes", bytes);
     return result;
 }
@@ -707,7 +731,7 @@ function case_load_case(path) {
     let fixture = ({ __proto__: $mini_map_proto });
     $mini_map_set(fixture, "path", path);
     $mini_map_set(fixture, "definition", spec);
-    let result = result_ok();
+    let result = result_ok(0, "");
     $mini_map_set(result, "fixture", fixture);
     return result;
 }
@@ -784,7 +808,7 @@ function case_validate_scenario(spec, kind, scenario, directory) {
     if (($mini_map_has(scenario, "files") && (!list_is_text($mini_map_get(scenario, "files"))))) {
         return result_fail((prefix + "invalid artifact paths"));
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 function case_collect(directory, filter, fixtures, ids) {
     let entries = $mini_directory_list(directory);
@@ -816,7 +840,7 @@ function case_collect(directory, filter, fixtures, ids) {
         }
         position = (position + 1);
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 function case_load_cases(filter, project_root) {
     let fixtures = [];
@@ -828,7 +852,7 @@ function case_load_cases(filter, project_root) {
     if (((fixtures).length === 0)) {
         return result_fail(("no cases match: " + filter));
     }
-    let result = result_ok();
+    let result = result_ok(0, "");
     $mini_map_set(result, "fixtures", fixtures);
     return result;
 }
@@ -908,7 +932,7 @@ function case_tool_workspace(project_root, scenario, work) {
     if (($mini_map_get(scenario, "workspace") === "dirty")) {
         writeFileSync(path_join(directory, "uncommitted.txt"), "dirty\n", "utf8");
     }
-    let result = result_ok();
+    let result = result_ok(0, "");
     $mini_map_set(result, "directory", directory);
     return result;
 }
@@ -1036,7 +1060,7 @@ function case_verify_in_work(fixture, scenario, project_root, compiler_override,
             position = (position + 1);
         }
     }
-    let done = result_ok();
+    let done = result_ok(0, "");
     $mini_map_set(done, "artifact", artifact);
     return done;
 }
@@ -1053,7 +1077,7 @@ function case_diagnostic(result) {
 }
 function case_write_input_files(scenario, directory, files, prefix) {
     if ((!$mini_map_has(scenario, "inputFiles"))) {
-        return result_ok();
+        return result_ok(0, "");
     }
     let inputs = $mini_map_get(scenario, "inputFiles");
     let names = Object.keys(inputs);
@@ -1069,11 +1093,11 @@ function case_write_input_files(scenario, directory, files, prefix) {
         $mini_file_write_bytes(target, $mini_map_get(stream, "bytes"));
         position = (position + 1);
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 function case_check_output_files(scenario, directory, files, prefix) {
     if ((!$mini_map_has(scenario, "outputFiles"))) {
-        return result_ok();
+        return result_ok(0, "");
     }
     let outputs = $mini_map_get(scenario, "outputFiles");
     let names = Object.keys(outputs);
@@ -1090,7 +1114,7 @@ function case_check_output_files(scenario, directory, files, prefix) {
         }
         position = (position + 1);
     }
-    return result_ok();
+    return result_ok(0, "");
 }
 function case_case_identity(fixture, project_root) {
     let definition = $mini_map_get(fixture, "definition");

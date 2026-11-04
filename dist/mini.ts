@@ -371,15 +371,17 @@ function value_is_map(value) {
 function value_is_other(value) {
     return ($mini_value_kind(value) === "other");
 }
-function result_ok() {
+function result_ok(value, message) {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
-    $mini_map_set(result, "message", "");
+    $mini_map_set(result, "value", value);
+    $mini_map_set(result, "message", message);
     return result;
 }
 function result_fail(message) {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", false);
+    $mini_map_set(result, "value", 0);
     $mini_map_set(result, "message", message);
     return result;
 }
@@ -392,6 +394,30 @@ function result_is_ok(result) {
 function result_is_fail(result) {
     return (!result_is_ok(result));
 }
+function result_get_message(result) {
+    if ((!value_is_map(result))) {
+        return "";
+    }
+    return $mini_map_get(result, "message");
+}
+function result_set_message(result, message) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "message", message);
+    }
+    return result;
+}
+function result_get_value(result) {
+    if ((!value_is_map(result))) {
+        return 0;
+    }
+    return $mini_map_get(result, "value");
+}
+function result_set_value(result, value) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "value", value);
+    }
+    return result;
+}
 function json_file(path) {
     if ((!$mini_path_exists(path))) {
         return result_fail(("cannot read " + path));
@@ -400,9 +426,7 @@ function json_file(path) {
     if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
-    let result = result_ok();
-    $mini_map_set(result, "value", $mini_map_get(parsed, "value"));
-    return result;
+    return result_ok($mini_map_get(parsed, "value"), "");
 }
 function project_root() {
     let script = process.argv[1];

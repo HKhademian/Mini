@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, test } from 'node:test';
 type Token = { kind: string; text: string };
-import { compiler, root, run } from '../tools/project.ts';
+import { compiler, root, run } from './support.ts';
 
 const tool = join(root, 'bin/mini-format');
 const work = mkdtempSync(join(tmpdir(), 'mini-format-test-'));

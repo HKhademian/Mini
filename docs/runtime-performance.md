@@ -39,8 +39,8 @@ than the handwritten compiler's locals and object fields.
 From the repository root, using a fresh report filename:
 
 ```text
-node tools/runtime-performance.ts .cache/runtime-performance.json
-node tools/runtime-performance.ts .cache/runtime-candidate.json dist/compile.ts
+node test/performance/runtime-performance.ts .cache/runtime-performance.json
+node test/performance/runtime-performance.ts .cache/runtime-candidate.json dist/compile.ts
 ```
 
 The optional compiler path selects a candidate implementing
@@ -53,7 +53,7 @@ calls/loops, dense list construction/reads, parser-state mutation, eight-field
 token maps, character copying, 24-character slices, and 63-key scope copying.
 No new Mini constructs or primitives are involved.
 
-The [harness](../tools/runtime-performance.ts) compiles those functions using
+The [harness](../test/performance/runtime-performance.ts) compiles those functions using
 the selected compiler. It appends exports to an isolated instrumented copy,
 leaving the hashed original emitted output unchanged. Three sizes are measured
 in separate workers, with a first call, three warmups, and seven samples.

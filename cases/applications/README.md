@@ -28,9 +28,9 @@ Generated inputs and emitted TS are retained beside each full benchmark report.
 Run from the repository root:
 
 ```text
-node tools/application-performance.ts --check
-node tools/application-performance.ts .cache/applications.json
-node tools/application-performance.ts .cache/candidate-applications.json bootstrap/compiler.ts
+node test/performance/application-performance.ts --check
+node test/performance/application-performance.ts .cache/applications.json
+node test/performance/application-performance.ts .cache/candidate-applications.json dist/compile.ts
 ```
 
 `--check` runs explicit small semantic fixtures and the smallest generated dataset

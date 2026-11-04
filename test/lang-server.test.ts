@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { test } from 'node:test';
 import { join } from 'node:path';
-import { root } from '../tools/project.ts';
+import { root } from './support.ts';
 
 type Message = { jsonrpc?: string; id?: number | string; method?: string; result?: any; error?: { code: number; message: string }; params?: any };
 
