@@ -71,6 +71,14 @@
         "tools/cases.mini"
       ],
       "generated": "tools/release.generated.ts"
+    },
+    {
+      "source": "tools/lang-server.mini",
+      "parts": [
+        "compiler/src/10-text.mini",
+        "tools/cases.mini"
+      ],
+      "generated": "tools/lang-server.generated.ts"
     }
   ]
 }

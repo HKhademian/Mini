@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.15 / lsp 0.1.0-alpha.5: implement the language server as a
+  generated Mini tool. It frames LSP over standard input, analyzes documents
+  through the active compiler, publishes diagnostics, formats through the
+  generated formatter, and implements hover, completion, and definition. Remove
+  `lang-server.ts`, `language-features.ts`, and `analysis.ts`.
 - Language 0.3.0-alpha.23 / compiler 0.3.0-alpha.28 / builtins 0.3.0-alpha.22;
   bootstrap 0.1.0-alpha.17: add `read_line()` and `read_bytes(count)` for
   streaming standard input.

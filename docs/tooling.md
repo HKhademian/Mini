@@ -149,7 +149,8 @@ requirement for this helper.
 
 ### mini-lang-server
 
-Status: implemented with the lsp stream as a standalone command. The command is
+Status: implemented with the lsp stream as a standalone command and a generated
+Mini tool ([tools/lang-server.mini](../tools/lang-server.mini)). The command is
 `mini-lang-server`; no dispatcher spelling is planned for this milestone. It
 speaks LSP 3.17 over standard input and standard output.
 

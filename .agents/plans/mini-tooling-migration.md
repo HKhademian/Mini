@@ -38,10 +38,10 @@ todos:
     status: completed
   - id: phase-3-json-stream-primitives
     content: "Phase 3 — Add JSON parsing and streaming input primitives"
-    status: pending
+    status: completed
   - id: phase-3-lsp
     content: "Phase 3 — Implement the language server as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-4-remove-t0
     content: "Phase 4 — Remove T0 compiler modules and handwritten TypeScript tools"
     status: pending
