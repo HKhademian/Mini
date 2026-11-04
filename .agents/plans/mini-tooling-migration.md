@@ -35,7 +35,7 @@ todos:
     status: completed
   - id: phase-2-release
     content: "Phase 2 — Implement release packaging as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-3-json-stream-primitives
     content: "Phase 3 — Add JSON parsing and streaming input primitives"
     status: pending

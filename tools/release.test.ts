@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
 import { test } from 'node:test';
-import { releaseTag, root, run, selectRelease, sha256, versions } from './project.ts';
-import { prepareRelease } from './release.ts';
+import { root, run, sha256, versions } from './project.ts';
 
 function fixture() {
   const work = mkdtempSync(join(tmpdir(), 'mini-vscode-release-'));
@@ -26,40 +26,28 @@ function fixture() {
   return { work, directory, git };
 }
 
-test('tooling streams select their own annotated tags', () => {
-  const current = versions(root);
-  for (const component of ['check', 'format', 'lsp', 'cli'] as const) {
-    const tag = releaseTag(component, current);
-    assert.deepEqual(selectRelease(tag, current), { component, group: current.group, version: current[component] });
-    assert.equal(tag, `${component}-v${current.group}-v${current[component]}`);
-  }
-  assert.throws(() => selectRelease(`format-v${current.group}-v9999.0.0`, current), /tag must match assigned format version/);
-});
-
-test('VS Code has an independent, exact-version release stream', () => {
-  const current = versions(root);
-  assert.deepEqual(selectRelease(releaseTag('vscode', current), current), { component: 'vscode', group: current.group, version: current.vscode });
-  assert.throws(() => selectRelease(`vscode-v${current.group}-v9999.0.0`, current), /tag must match assigned vscode version/);
-  assert.throws(() => selectRelease(`vscode-v9999.0.0-v${current.vscode}`, current), /tag must match assigned group version/);
-  assert.throws(() => selectRelease(`vscode-v${current.vscode}`, current), /invalid component tag/);
-  assert.throws(() => selectRelease(`v${current.vscode}`, current), /invalid component tag/);
-  const nextGroup = { ...current, group: '0.3.0' };
-  assert.deepEqual(selectRelease(releaseTag('vscode', nextGroup), nextGroup), { component: 'vscode', group: '0.3.0', version: current.vscode });
-  assert.equal(releaseTag('vscode', { ...nextGroup, vscode: '0.1.2' }), 'vscode-v0.3.0-v0.1.2');
-});
+function release(directory: string, output: string, tag?: string) {
+  return spawnSync(process.execPath, [join(directory, 'bin/mini-release'), output, ...(tag === undefined ? [] : [tag])],
+    { cwd: directory, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+}
 
 test('VS Code releases build a checksummed VSIX from the annotated source revision', () => {
   const { work, directory, git } = fixture();
   try {
     const current = versions(directory);
     const version = current.vscode;
-    const tag = releaseTag('vscode', current);
+    const tag = `vscode-v${current.group}-v${version}`;
     const output = join(work, 'release');
     git('tag', tag);
-    assert.throws(() => prepareRelease(directory, output, tag), /release tag must be annotated/);
+    const lightweight = release(directory, output, tag);
+    assert.equal(lightweight.status, 1);
+    assert.match(lightweight.stderr, /release tag must be annotated/);
     git('tag', '-d', tag);
     git('tag', '-a', tag, '-m', tag);
-    const manifest = prepareRelease(directory, output, tag);
+    const built = release(directory, output, tag);
+    assert.equal(built.status, 0, built.stderr);
+    assert.equal(built.stdout, 'Release prepared.\n');
+    const manifest = JSON.parse(readFileSync(join(output, 'manifest.json'), 'utf8'));
     assert.deepEqual(manifest.releasedComponent, { component: 'vscode', group: current.group, version });
     assert.equal(manifest.schemaVersion, 2);
     assert.equal(manifest.group, current.group);
@@ -87,9 +75,11 @@ test('VS Code releases build a checksummed VSIX from the annotated source revisi
     assert.deepEqual(JSON.parse(readFileSync(join(extracted, 'RELEASE.json'), 'utf8')), manifest);
     assert(!existsSync(join(extracted, 'editors/vscode/node_modules')));
     writeFileSync(join(directory, 'dirty.txt'), 'changed');
-    assert.throws(() => prepareRelease(directory, join(work, 'dirty'), tag), /release needs a clean checkout/);
+    const dirty = release(directory, join(work, 'dirty'), tag);
+    assert.equal(dirty.status, 1);
+    assert.match(dirty.stderr, /release needs a clean checkout/);
   } finally {
-    rmSync(work, { recursive: true, force: true, maxRetries: 3 });
+    rmSync(work, { recursive: true, force: true });
   }
 });
 
@@ -123,6 +113,6 @@ test('repository checks reject extension package and lockfile version drift', ()
     writeFileSync(lockFile, JSON.stringify(lock));
     assert.throws(check, /VS Code versions require plain MAJOR.MINOR.PATCH/);
   } finally {
-    rmSync(work, { recursive: true, force: true, maxRetries: 3 });
+    rmSync(work, { recursive: true, force: true });
   }
 });

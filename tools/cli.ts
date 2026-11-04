@@ -90,11 +90,19 @@ export async function main(executable: string): Promise<void> {
         process.exitCode = verified.status ?? 1;
         break;
       }
-      case 'release':
+      case 'release': {
         assert(args[0] !== undefined && args.length <= 2, 'usage: mini-release OUTPUT [TAG]');
-        (await import('./release.ts')).prepareRelease(root, resolve(args[0]), args[1]);
+        const { spawnSync } = await import('node:child_process');
+        const released = spawnSync(process.execPath,
+          [join(root, 'tools/release.generated.ts'), resolve(args[0]), ...args.slice(1)], { stdio: 'inherit' });
+        if (released.error) throw released.error;
+        if ((released.status ?? 1) !== 0) {
+          process.exitCode = released.status ?? 1;
+          break;
+        }
         console.log('Release prepared.');
         break;
+      }
       case 'run': {
         assert(args[0] !== undefined, 'usage: mini-run SOURCE.mini [ARG]...');
         const source = resolve(args[0]);

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { prepareRelease } from './release.ts';
 import { root, run } from './project.ts';
 
 // GitHub's custom shell passes a file containing the task name, not shell code.
@@ -33,7 +32,9 @@ switch (task) {
   case 'package': {
     const tag = process.env['GITHUB_EVENT_NAME'] === 'push' && process.env['GITHUB_REF_TYPE'] === 'tag'
       ? process.env['GITHUB_REF_NAME'] : undefined;
-    prepareRelease(root, join(root, 'dist/release'), tag);
+    const releaseArgs = [join(root, 'bin/mini'), 'release', join(root, 'dist/release')];
+    if (tag !== undefined) releaseArgs.push(tag);
+    process.stdout.write(run(process.execPath, releaseArgs, root));
     break;
   }
   case 'publish': {

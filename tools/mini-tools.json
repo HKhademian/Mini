@@ -63,6 +63,14 @@
         "tools/cases.mini"
       ],
       "generated": "tools/bench.generated.ts"
+    },
+    {
+      "source": "tools/release.mini",
+      "parts": [
+        "compiler/src/10-text.mini",
+        "tools/cases.mini"
+      ],
+      "generated": "tools/release.generated.ts"
     }
   ]
 }
