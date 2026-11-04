@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.19 / compiler 0.3.0-alpha.24 / builtins 0.3.0-alpha.18;
+  bootstrap 0.1.0-alpha.13: add `process_spawn(options)` with working directory,
+  byte stdin, captured byte output, inherit mode, and timeout.
 - Language 0.3.0-alpha.18 / compiler 0.3.0-alpha.23 / builtins 0.3.0-alpha.17;
   bootstrap 0.1.0-alpha.12: add `path_exists`, `path_is_directory`,
   `directory_list`, `directory_create`, `path_copy`, and `path_remove` for tool

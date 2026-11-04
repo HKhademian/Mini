@@ -586,6 +586,23 @@ path_remove(directory);
 - `path_copy(from, to)` copies a file or directory tree.
 - `path_remove(path)` removes a file or directory tree; a missing path is a no-op.
 
+## Accepted operation: process options
+
+```text
+var options = map_new();
+map_set(options, "command", "node");
+map_set(options, "arguments", list_new());
+var result = process_spawn(options);
+```
+
+- `process_spawn(options)` runs one child process. `command` is text,
+  `arguments` is a text list, `mode` is `capture` or `inherit`, `directory` sets
+  the working directory (empty inherits the parent's), `input` is a byte list for
+  captured stdin, and `timeout` is a millisecond limit (zero waits indefinitely).
+- The result map holds `status`, `signal`, `stdout`, `stderr`, and `error`.
+  Captured streams are byte lists; inherited streams stay empty. `status` is 1
+  when the command cannot start or ends by a signal.
+
 ## Accepted operation: JSON parsing
 
 ```text

@@ -22,6 +22,14 @@ empty list when the path is missing or not a directory.
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
+`process_spawn(options)` runs one child process from an options map. Keys are
+`command` (text), `arguments` (text list), `mode` (`capture` or `inherit`),
+`directory` (working directory; empty inherits the parent's), `input` (byte list
+for captured stdin), and `timeout` (milliseconds; zero waits indefinitely). The
+result map holds `status`, `signal`, `stdout`, `stderr`, and `error`. Captured
+streams are byte lists; inherited streams are connected to the parent and stay
+empty. `status` is 1 when the command cannot start or ends by a signal.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -99,6 +107,14 @@ empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
+
+`process_spawn(options)` runs one child process from an options map. Keys are
+`command` (text), `arguments` (text list), `mode` (`capture` or `inherit`),
+`directory` (working directory; empty inherits the parent's), `input` (byte list
+for captured stdin), and `timeout` (milliseconds; zero waits indefinitely). The
+result map holds `status`, `signal`, `stdout`, `stderr`, and `error`. Captured
+streams are byte lists; inherited streams are connected to the parent and stay
+empty. `status` is 1 when the command cannot start or ends by a signal.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON

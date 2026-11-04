@@ -1,0 +1,15 @@
+{
+  "id": "language.process-spawn",
+  "kind": "feature",
+  "source": "056-001-process-spawn.mini",
+  "features": ["process.spawn", "process.exec-path", "directory.temp", "path.remove", "map.new", "map.set", "list.new", "list.set"],
+  "cases": [
+    {
+      "name": "capture-directory-inherit-failure",
+      "stdin": {"text": ""},
+      "stdout": {"text": "capture ok\ndirectory ok\ninheritedinherit ok\nfailure ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
