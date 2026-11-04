@@ -46,6 +46,7 @@ list_set(builtin_names_list, list_length(builtin_names_list), "path_copy");
 list_set(builtin_names_list, list_length(builtin_names_list), "path_remove");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_spawn");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_script_path");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_env");
 list_set(builtin_names_list, list_length(builtin_names_list), "read_line");
 list_set(builtin_names_list, list_length(builtin_names_list), "read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "value_kind");
@@ -98,6 +99,7 @@ map_set(builtin_name_set, "path_copy", true);
 map_set(builtin_name_set, "path_remove", true);
 map_set(builtin_name_set, "process_spawn", true);
 map_set(builtin_name_set, "process_script_path", true);
+map_set(builtin_name_set, "process_env", true);
 map_set(builtin_name_set, "read_line", true);
 map_set(builtin_name_set, "read_bytes", true);
 map_set(builtin_name_set, "value_kind", true);
@@ -150,6 +152,7 @@ map_set(builtin_parameter_kinds, "path_copy", "text,text");
 map_set(builtin_parameter_kinds, "path_remove", "text");
 map_set(builtin_parameter_kinds, "process_spawn", "map");
 map_set(builtin_parameter_kinds, "process_script_path", "");
+map_set(builtin_parameter_kinds, "process_env", "text");
 map_set(builtin_parameter_kinds, "read_line", "");
 map_set(builtin_parameter_kinds, "read_bytes", "number");
 map_set(builtin_parameter_kinds, "value_kind", "unknown");
@@ -202,6 +205,7 @@ map_set(builtin_result_kinds, "path_copy", "void");
 map_set(builtin_result_kinds, "path_remove", "void");
 map_set(builtin_result_kinds, "process_spawn", "map");
 map_set(builtin_result_kinds, "process_script_path", "text");
+map_set(builtin_result_kinds, "process_env", "text");
 map_set(builtin_result_kinds, "read_line", "text");
 map_set(builtin_result_kinds, "read_bytes", "list");
 map_set(builtin_result_kinds, "value_kind", "text");
@@ -254,6 +258,7 @@ map_set(builtin_import_names, "path_copy", "");
 map_set(builtin_import_names, "path_remove", "");
 map_set(builtin_import_names, "process_spawn", "");
 map_set(builtin_import_names, "process_script_path", "");
+map_set(builtin_import_names, "process_env", "");
 map_set(builtin_import_names, "read_line", "");
 map_set(builtin_import_names, "read_bytes", "");
 map_set(builtin_import_names, "value_kind", "");
@@ -306,6 +311,7 @@ map_set(builtin_helper_keys, "path_copy", "path_copy");
 map_set(builtin_helper_keys, "path_remove", "path_remove");
 map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 map_set(builtin_helper_keys, "process_script_path", "");
+map_set(builtin_helper_keys, "process_env", "");
 map_set(builtin_helper_keys, "read_line", "read_line");
 map_set(builtin_helper_keys, "read_bytes", "read_bytes");
 map_set(builtin_helper_keys, "value_kind", "value_kind");
@@ -473,6 +479,9 @@ fn builtin_emit(name, args) {
     }
     if (name == "process_script_path") {
         return "process.argv[1]";
+    }
+    if (name == "process_env") {
+        return "(process.env[" + first + "] ?? \"\")";
     }
     if (name == "time_millis") {
         return "Date.now()";

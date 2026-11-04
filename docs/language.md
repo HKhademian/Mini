@@ -553,8 +553,8 @@ process_exit(1);
   a nonzero status means failure. The operation produces no value.
 - Reaching the end of the program normally gives status 0.
 
-Use `process_*` names for host process operations. `process_envs()` remains a
-candidate; add it only with a concrete need and a defined return shape.
+Use `process_*` names for host process operations. `process_env(name)` reads one
+variable; a bulk `process_envs()` map remains a candidate until needed.
 
 ## Accepted operations: bytes
 
@@ -606,6 +606,16 @@ path_remove(directory);
 - `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
 and preserves file modes.
 - `path_remove(path)` removes a file or directory tree; a missing path is a no-op.
+
+## Accepted operation: environment
+
+```text
+var home = process_env("HOME");
+```
+
+- `process_env(name)` returns the text value of an environment variable, or
+  empty text when it is unset. It reads the host environment; it does not change
+  the environment inherited by child processes.
 
 ## Accepted operation: script path
 

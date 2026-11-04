@@ -1,0 +1,15 @@
+{
+  "id": "language.process-env",
+  "kind": "feature",
+  "source": "061-001-process-env.mini",
+  "features": ["process.env", "text.length"],
+  "cases": [
+    {
+      "name": "present-and-missing",
+      "stdin": {"text": ""},
+      "stdout": {"text": "env ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

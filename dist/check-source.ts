@@ -1010,6 +1010,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_copy");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_spawn");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_script_path");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_env");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "read_line");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
@@ -1060,6 +1061,7 @@ $mini_map_set(builtin_name_set, "path_copy", true);
 $mini_map_set(builtin_name_set, "path_remove", true);
 $mini_map_set(builtin_name_set, "process_spawn", true);
 $mini_map_set(builtin_name_set, "process_script_path", true);
+$mini_map_set(builtin_name_set, "process_env", true);
 $mini_map_set(builtin_name_set, "read_line", true);
 $mini_map_set(builtin_name_set, "read_bytes", true);
 $mini_map_set(builtin_name_set, "value_kind", true);
@@ -1110,6 +1112,7 @@ $mini_map_set(builtin_parameter_kinds, "path_copy", "text,text");
 $mini_map_set(builtin_parameter_kinds, "path_remove", "text");
 $mini_map_set(builtin_parameter_kinds, "process_spawn", "map");
 $mini_map_set(builtin_parameter_kinds, "process_script_path", "");
+$mini_map_set(builtin_parameter_kinds, "process_env", "text");
 $mini_map_set(builtin_parameter_kinds, "read_line", "");
 $mini_map_set(builtin_parameter_kinds, "read_bytes", "number");
 $mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
@@ -1160,6 +1163,7 @@ $mini_map_set(builtin_result_kinds, "path_copy", "void");
 $mini_map_set(builtin_result_kinds, "path_remove", "void");
 $mini_map_set(builtin_result_kinds, "process_spawn", "map");
 $mini_map_set(builtin_result_kinds, "process_script_path", "text");
+$mini_map_set(builtin_result_kinds, "process_env", "text");
 $mini_map_set(builtin_result_kinds, "read_line", "text");
 $mini_map_set(builtin_result_kinds, "read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "value_kind", "text");
@@ -1210,6 +1214,7 @@ $mini_map_set(builtin_import_names, "path_copy", "");
 $mini_map_set(builtin_import_names, "path_remove", "");
 $mini_map_set(builtin_import_names, "process_spawn", "");
 $mini_map_set(builtin_import_names, "process_script_path", "");
+$mini_map_set(builtin_import_names, "process_env", "");
 $mini_map_set(builtin_import_names, "read_line", "");
 $mini_map_set(builtin_import_names, "read_bytes", "");
 $mini_map_set(builtin_import_names, "value_kind", "");
@@ -1260,6 +1265,7 @@ $mini_map_set(builtin_helper_keys, "path_copy", "path_copy");
 $mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
 $mini_map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 $mini_map_set(builtin_helper_keys, "process_script_path", "");
+$mini_map_set(builtin_helper_keys, "process_env", "");
 $mini_map_set(builtin_helper_keys, "read_line", "read_line");
 $mini_map_set(builtin_helper_keys, "read_bytes", "read_bytes");
 $mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
@@ -1411,6 +1417,9 @@ function builtin_emit(name, args) {
     }
     if ((name === "process_script_path")) {
         return "process.argv[1]";
+    }
+    if ((name === "process_env")) {
+        return (("(process.env[" + first) + "] ?? \"\")");
     }
     if ((name === "time_millis")) {
         return "Date.now()";

@@ -1,0 +1,6 @@
+/// Read present and missing environment variables.
+if (text_length(process_env("PATH")) > 0 && process_env("MINI_MISSING_ENV_NAME") == "") {
+    write("env ok\n");
+} else {
+    write("env bad\n");
+}
