@@ -1,225 +1,253 @@
+// Builtin tables are initialized when the compiler or a generated tool loads.
+var builtin_names_list = list_new();
+list_set(builtin_names_list, list_length(builtin_names_list), "map_get");
+list_set(builtin_names_list, list_length(builtin_names_list), "map_keys");
+list_set(builtin_names_list, list_length(builtin_names_list), "map_set");
+list_set(builtin_names_list, list_length(builtin_names_list), "map_has");
+list_set(builtin_names_list, list_length(builtin_names_list), "map_new");
+list_set(builtin_names_list, list_length(builtin_names_list), "map_copy");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_set");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_new");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_copy");
+list_set(builtin_names_list, list_length(builtin_names_list), "json_to_text");
+list_set(builtin_names_list, list_length(builtin_names_list), "number_to_text");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_to_text");
+list_set(builtin_names_list, list_length(builtin_names_list), "write_error");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_exit");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_get");
+list_set(builtin_names_list, list_length(builtin_names_list), "list_length");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_args");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_exec_path");
+list_set(builtin_names_list, list_length(builtin_names_list), "directory_temp");
+list_set(builtin_names_list, list_length(builtin_names_list), "file_remove");
+list_set(builtin_names_list, list_length(builtin_names_list), "directory_remove");
+list_set(builtin_names_list, list_length(builtin_names_list), "process_run");
+list_set(builtin_names_list, list_length(builtin_names_list), "file_write");
+list_set(builtin_names_list, list_length(builtin_names_list), "file_read");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_get");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_length");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_find");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_split");
+list_set(builtin_names_list, list_length(builtin_names_list), "text_slice");
+list_set(builtin_names_list, list_length(builtin_names_list), "readAll");
+list_set(builtin_names_list, list_length(builtin_names_list), "write");
+
+/// Builtin name membership set.
+var builtin_name_set = map_new();
+map_set(builtin_name_set, "map_get", true);
+map_set(builtin_name_set, "map_keys", true);
+map_set(builtin_name_set, "map_set", true);
+map_set(builtin_name_set, "map_has", true);
+map_set(builtin_name_set, "map_new", true);
+map_set(builtin_name_set, "map_copy", true);
+map_set(builtin_name_set, "list_set", true);
+map_set(builtin_name_set, "list_new", true);
+map_set(builtin_name_set, "list_copy", true);
+map_set(builtin_name_set, "json_to_text", true);
+map_set(builtin_name_set, "number_to_text", true);
+map_set(builtin_name_set, "list_to_text", true);
+map_set(builtin_name_set, "write_error", true);
+map_set(builtin_name_set, "process_exit", true);
+map_set(builtin_name_set, "list_get", true);
+map_set(builtin_name_set, "list_length", true);
+map_set(builtin_name_set, "process_args", true);
+map_set(builtin_name_set, "process_exec_path", true);
+map_set(builtin_name_set, "directory_temp", true);
+map_set(builtin_name_set, "file_remove", true);
+map_set(builtin_name_set, "directory_remove", true);
+map_set(builtin_name_set, "process_run", true);
+map_set(builtin_name_set, "file_write", true);
+map_set(builtin_name_set, "file_read", true);
+map_set(builtin_name_set, "text_get", true);
+map_set(builtin_name_set, "text_length", true);
+map_set(builtin_name_set, "text_find", true);
+map_set(builtin_name_set, "text_split", true);
+map_set(builtin_name_set, "text_slice", true);
+map_set(builtin_name_set, "readAll", true);
+map_set(builtin_name_set, "write", true);
+
+/// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
+var builtin_parameter_kinds = map_new();
+map_set(builtin_parameter_kinds, "map_get", "unknown,text");
+map_set(builtin_parameter_kinds, "map_keys", "map");
+map_set(builtin_parameter_kinds, "map_set", "unknown,text,unknown");
+map_set(builtin_parameter_kinds, "map_has", "map,text");
+map_set(builtin_parameter_kinds, "map_new", "");
+map_set(builtin_parameter_kinds, "map_copy", "map");
+map_set(builtin_parameter_kinds, "list_set", "unknown,number,unknown");
+map_set(builtin_parameter_kinds, "list_new", "");
+map_set(builtin_parameter_kinds, "list_copy", "list");
+map_set(builtin_parameter_kinds, "json_to_text", "unknown");
+map_set(builtin_parameter_kinds, "number_to_text", "number");
+map_set(builtin_parameter_kinds, "list_to_text", "list,text");
+map_set(builtin_parameter_kinds, "write_error", "text");
+map_set(builtin_parameter_kinds, "process_exit", "number");
+map_set(builtin_parameter_kinds, "list_get", "unknown,number");
+map_set(builtin_parameter_kinds, "list_length", "list");
+map_set(builtin_parameter_kinds, "process_args", "");
+map_set(builtin_parameter_kinds, "process_exec_path", "");
+map_set(builtin_parameter_kinds, "directory_temp", "");
+map_set(builtin_parameter_kinds, "file_remove", "text");
+map_set(builtin_parameter_kinds, "directory_remove", "text");
+map_set(builtin_parameter_kinds, "process_run", "text,list,text");
+map_set(builtin_parameter_kinds, "file_write", "text,text");
+map_set(builtin_parameter_kinds, "file_read", "text");
+map_set(builtin_parameter_kinds, "text_get", "unknown,number");
+map_set(builtin_parameter_kinds, "text_length", "text");
+map_set(builtin_parameter_kinds, "text_find", "text,text");
+map_set(builtin_parameter_kinds, "text_split", "text,text");
+map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
+map_set(builtin_parameter_kinds, "readAll", "");
+map_set(builtin_parameter_kinds, "write", "text");
+
+/// Builtin result kinds keyed by name.
+var builtin_result_kinds = map_new();
+map_set(builtin_result_kinds, "map_get", "unknown");
+map_set(builtin_result_kinds, "map_keys", "list");
+map_set(builtin_result_kinds, "map_set", "void");
+map_set(builtin_result_kinds, "map_has", "boolean");
+map_set(builtin_result_kinds, "map_new", "map");
+map_set(builtin_result_kinds, "map_copy", "map");
+map_set(builtin_result_kinds, "list_set", "void");
+map_set(builtin_result_kinds, "list_new", "list");
+map_set(builtin_result_kinds, "list_copy", "list");
+map_set(builtin_result_kinds, "json_to_text", "text");
+map_set(builtin_result_kinds, "number_to_text", "text");
+map_set(builtin_result_kinds, "list_to_text", "text");
+map_set(builtin_result_kinds, "write_error", "void");
+map_set(builtin_result_kinds, "process_exit", "void");
+map_set(builtin_result_kinds, "list_get", "unknown");
+map_set(builtin_result_kinds, "list_length", "number");
+map_set(builtin_result_kinds, "process_args", "list");
+map_set(builtin_result_kinds, "process_exec_path", "text");
+map_set(builtin_result_kinds, "directory_temp", "text");
+map_set(builtin_result_kinds, "file_remove", "void");
+map_set(builtin_result_kinds, "directory_remove", "void");
+map_set(builtin_result_kinds, "process_run", "map");
+map_set(builtin_result_kinds, "file_write", "void");
+map_set(builtin_result_kinds, "file_read", "text");
+map_set(builtin_result_kinds, "text_get", "text");
+map_set(builtin_result_kinds, "text_length", "number");
+map_set(builtin_result_kinds, "text_find", "number");
+map_set(builtin_result_kinds, "text_split", "list");
+map_set(builtin_result_kinds, "text_slice", "text");
+map_set(builtin_result_kinds, "readAll", "text");
+map_set(builtin_result_kinds, "write", "void");
+
+/// Builtin Node import names keyed by name; comma-separated, empty for none.
+var builtin_import_names = map_new();
+map_set(builtin_import_names, "map_get", "");
+map_set(builtin_import_names, "map_keys", "");
+map_set(builtin_import_names, "map_set", "");
+map_set(builtin_import_names, "map_has", "");
+map_set(builtin_import_names, "map_new", "");
+map_set(builtin_import_names, "map_copy", "");
+map_set(builtin_import_names, "list_set", "");
+map_set(builtin_import_names, "list_new", "");
+map_set(builtin_import_names, "list_copy", "");
+map_set(builtin_import_names, "json_to_text", "");
+map_set(builtin_import_names, "number_to_text", "");
+map_set(builtin_import_names, "list_to_text", "");
+map_set(builtin_import_names, "write_error", "writeSync");
+map_set(builtin_import_names, "process_exit", "");
+map_set(builtin_import_names, "list_get", "");
+map_set(builtin_import_names, "list_length", "");
+map_set(builtin_import_names, "process_args", "");
+map_set(builtin_import_names, "process_exec_path", "");
+map_set(builtin_import_names, "directory_temp", "");
+map_set(builtin_import_names, "file_remove", "");
+map_set(builtin_import_names, "directory_remove", "");
+map_set(builtin_import_names, "process_run", "");
+map_set(builtin_import_names, "file_write", "writeFileSync");
+map_set(builtin_import_names, "file_read", "readFileSync");
+map_set(builtin_import_names, "text_get", "");
+map_set(builtin_import_names, "text_length", "");
+map_set(builtin_import_names, "text_find", "");
+map_set(builtin_import_names, "text_split", "");
+map_set(builtin_import_names, "text_slice", "");
+map_set(builtin_import_names, "readAll", "readFileSync");
+map_set(builtin_import_names, "write", "writeSync");
+
+/// Builtin adapter keys keyed by name; empty for inline lowering.
+var builtin_helper_keys = map_new();
+map_set(builtin_helper_keys, "map_get", "map_runtime");
+map_set(builtin_helper_keys, "map_keys", "");
+map_set(builtin_helper_keys, "map_set", "map_runtime");
+map_set(builtin_helper_keys, "map_has", "map_runtime");
+map_set(builtin_helper_keys, "map_new", "map_runtime");
+map_set(builtin_helper_keys, "map_copy", "map_copy");
+map_set(builtin_helper_keys, "list_set", "list_set");
+map_set(builtin_helper_keys, "list_new", "");
+map_set(builtin_helper_keys, "list_copy", "list_copy");
+map_set(builtin_helper_keys, "json_to_text", "json_to_text");
+map_set(builtin_helper_keys, "number_to_text", "number_to_text");
+map_set(builtin_helper_keys, "list_to_text", "list_to_text");
+map_set(builtin_helper_keys, "write_error", "");
+map_set(builtin_helper_keys, "process_exit", "");
+map_set(builtin_helper_keys, "list_get", "list_get");
+map_set(builtin_helper_keys, "list_length", "");
+map_set(builtin_helper_keys, "process_args", "");
+map_set(builtin_helper_keys, "process_exec_path", "");
+map_set(builtin_helper_keys, "directory_temp", "directory_temp");
+map_set(builtin_helper_keys, "file_remove", "file_remove");
+map_set(builtin_helper_keys, "directory_remove", "directory_remove");
+map_set(builtin_helper_keys, "process_run", "process_run");
+map_set(builtin_helper_keys, "file_write", "");
+map_set(builtin_helper_keys, "file_read", "");
+map_set(builtin_helper_keys, "text_get", "text_get");
+map_set(builtin_helper_keys, "text_length", "");
+map_set(builtin_helper_keys, "text_find", "text_find");
+map_set(builtin_helper_keys, "text_split", "text_split");
+map_set(builtin_helper_keys, "text_slice", "text_slice");
+map_set(builtin_helper_keys, "readAll", "");
+map_set(builtin_helper_keys, "write", "");
+
 /// Return every builtin name once, in declaration order.
 fn builtin_names() {
-    var names = list_new();
-    list_set(names, list_length(names), "map_get");
-    list_set(names, list_length(names), "map_keys");
-    list_set(names, list_length(names), "map_set");
-    list_set(names, list_length(names), "map_has");
-    list_set(names, list_length(names), "map_new");
-    list_set(names, list_length(names), "map_copy");
-    list_set(names, list_length(names), "list_set");
-    list_set(names, list_length(names), "list_new");
-    list_set(names, list_length(names), "list_copy");
-    list_set(names, list_length(names), "json_to_text");
-    list_set(names, list_length(names), "number_to_text");
-    list_set(names, list_length(names), "list_to_text");
-    list_set(names, list_length(names), "write_error");
-    list_set(names, list_length(names), "process_exit");
-    list_set(names, list_length(names), "list_get");
-    list_set(names, list_length(names), "list_length");
-    list_set(names, list_length(names), "process_args");
-    list_set(names, list_length(names), "process_exec_path");
-    list_set(names, list_length(names), "directory_temp");
-    list_set(names, list_length(names), "file_remove");
-    list_set(names, list_length(names), "directory_remove");
-    list_set(names, list_length(names), "process_run");
-    list_set(names, list_length(names), "file_write");
-    list_set(names, list_length(names), "file_read");
-    list_set(names, list_length(names), "text_get");
-    list_set(names, list_length(names), "text_length");
-    list_set(names, list_length(names), "text_find");
-    list_set(names, list_length(names), "text_split");
-    list_set(names, list_length(names), "text_slice");
-    list_set(names, list_length(names), "readAll");
-    list_set(names, list_length(names), "write");
-    return names;
+    return list_copy(builtin_names_list);
 }
 
 /// Return whether name selects a builtin.
 fn builtin_exists(name) {
-    return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
-        || name == "list_set" || name == "list_new" || name == "write_error" || name == "process_exit"
-        || name == "list_get" || name == "list_length" || name == "process_args" || name == "file_write"
-        || name == "file_read" || name == "text_find" || name == "text_get" || name == "text_length"
-        || name == "text_slice" || name == "text_split" || name == "map_copy" || name == "list_copy"
-        || name == "list_to_text" || name == "number_to_text" || name == "json_to_text"
-        || name == "process_run" || name == "process_exec_path" || name == "directory_temp"
-        || name == "file_remove" || name == "directory_remove"
-        || name == "readAll" || name == "write";
+    return map_has(builtin_name_set, name);
 }
 
-/// Return builtin parameter kinds.
+/// Return builtin parameter kinds in declaration order.
 fn builtin_parameters(name) {
-    var parameters = list_new();
-    if (name == "map_get") {
-        list_set(parameters, 0, "unknown");
-        list_set(parameters, 1, "text");
-    } else {
-        if (name == "map_keys") {
-            list_set(parameters, 0, "map");
-        } else {
-            if (name == "map_set") {
-                list_set(parameters, 0, "unknown");
-                list_set(parameters, 1, "text");
-                list_set(parameters, 2, "unknown");
-            } else {
-                if (name == "map_has") {
-                    list_set(parameters, 0, "map");
-                    list_set(parameters, 1, "text");
-                } else {
-                    if (name == "list_set") {
-                        list_set(parameters, 0, "unknown");
-                        list_set(parameters, 1, "number");
-                        list_set(parameters, 2, "unknown");
-                    } else {
-                        if (name == "write_error") {
-                            list_set(parameters, 0, "text");
-                        } else {
-                            if (name == "process_exit") {
-                                list_set(parameters, 0, "number");
-                            } else {
-                                if (name == "list_get") {
-                                    list_set(parameters, 0, "unknown");
-                                    list_set(parameters, 1, "number");
-                                } else {
-                                    if (name == "list_length") {
-                                        list_set(parameters, 0, "list");
-                                    } else {
-                                        if (name == "file_write") {
-                                            list_set(parameters, 0, "text");
-                                            list_set(parameters, 1, "text");
-                                        } else {
-                                            if (name == "file_read") {
-                                                list_set(parameters, 0, "text");
-                                            } else {
-                                                if (name == "text_get") {
-                                                    list_set(parameters, 0, "unknown");
-                                                    list_set(parameters, 1, "number");
-                                                } else {
-                                                    if (name == "text_length") {
-                                                        list_set(parameters, 0, "text");
-                                                    } else {
-                                                        if (name == "text_slice") {
-                                                            list_set(parameters, 0, "text");
-                                                            list_set(parameters, 1, "number");
-                                                            list_set(parameters, 2, "number");
-                                                        } else {
-                                                            if (name == "text_find") {
-                                                                list_set(parameters, 0, "text");
-                                                                list_set(parameters, 1, "text");
-                                                            } else {
-                                                                if (name == "text_split") {
-                                                                    list_set(parameters, 0, "text");
-                                                                    list_set(parameters, 1, "text");
-                                                                } else {
-                                                                    if (name == "map_copy") {
-                                                                        list_set(parameters, 0, "map");
-                                                                    } else {
-                                                                        if (name == "list_to_text") {
-                                                                            list_set(parameters, 0, "list");
-                                                                            list_set(parameters, 1, "text");
-                                                                        } else {
-                                                                            if (name == "list_copy") {
-                                                                                list_set(parameters, 0, "list");
-                                                                            } else {
-                                                                                if (name == "number_to_text") {
-                                                                                    list_set(parameters, 0, "number");
-                                                                                } else {
-                                                                                    if (name == "json_to_text") {
-                                                                                        list_set(parameters, 0, "unknown");
-                                                                                    } else {
-                                                                                        if (name == "file_remove" || name == "directory_remove") {
-                                                                                            list_set(parameters, 0, "text");
-                                                                                        } else {
-                                                                                            if (name == "process_run") {
-                                                                                                list_set(parameters, 0, "text");
-                                                                                                list_set(parameters, 1, "list");
-                                                                                                list_set(parameters, 2, "text");
-                                                                                            } else {
-                                                                                                if (name == "write") {
-                                                                                                    list_set(parameters, 0, "text");
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    if (!map_has(builtin_parameter_kinds, name)) {
+        return list_new();
     }
-    return parameters;
+    var kinds = map_get(builtin_parameter_kinds, name);
+    if (kinds == "") {
+        return list_new();
+    }
+    return text_split(kinds, ",");
 }
 
 /// Return the builtin result kind.
 fn builtin_result(name) {
-    if (name == "map_get" || name == "list_get") {
-        return "unknown";
-    }
-    if (name == "map_keys" || name == "list_new" || name == "list_copy" || name == "process_args" || name == "text_split") {
-        return "list";
-    }
-    if (name == "map_new" || name == "map_copy") {
-        return "map";
-    }
-    if (name == "process_run") {
-        return "map";
-    }
-    if (name == "map_has") {
-        return "boolean";
-    }
-    if (name == "write_error" || name == "process_exit" || name == "list_set" || name == "map_set"
-        || name == "file_write" || name == "file_remove" || name == "directory_remove" || name == "write") {
-        return "void";
-    }
-    if (name == "list_length" || name == "text_length" || name == "text_find") {
-        return "number";
+    if (map_has(builtin_result_kinds, name)) {
+        return map_get(builtin_result_kinds, name);
     }
     return "text";
 }
 
 /// Return builtin Node imports.
 fn builtin_imports(name) {
-    var imports = list_new();
-    if (name == "write_error" || name == "write") {
-        list_set(imports, 0, "writeSync");
-    } else {
-        if (name == "file_write") {
-            list_set(imports, 0, "writeFileSync");
-        } else {
-            if (name == "file_read" || name == "readAll") {
-                list_set(imports, 0, "readFileSync");
-            }
-        }
+    if (!map_has(builtin_import_names, name)) {
+        return list_new();
     }
-    return imports;
+    var names = map_get(builtin_import_names, name);
+    if (names == "") {
+        return list_new();
+    }
+    return text_split(names, ",");
 }
 
-/// Return the builtin adapter block, or empty text.
+/// Return the builtin adapter key, or empty text.
 fn builtin_helper_key(name) {
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
-        return "map_runtime";
-    }
-    if (name == "list_copy" || name == "list_to_text" || name == "number_to_text"
-        || name == "json_to_text" || name == "process_run" || name == "directory_temp"
-        || name == "file_remove" || name == "directory_remove" || name == "list_get" || name == "list_set"
-        || name == "map_copy" || name == "text_find" || name == "text_get"
-        || name == "text_slice" || name == "text_split") {
-        return name;
+    if (map_has(builtin_helper_keys, name)) {
+        return map_get(builtin_helper_keys, name);
     }
     return "";
 }
@@ -229,56 +257,49 @@ fn helper_text(key) {
     if (key == "map_runtime") {
         return map_runtime;
     }
-    return builtin_helper(key);
-}
-
-fn builtin_helper(name) {
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "map_new") {
-        return map_runtime;
-    }
-    if (name == "list_copy") {
-        return list_copy_helper;
-    }
-    if (name == "list_to_text") {
-        return list_to_text_helper;
-    }
-    if (name == "number_to_text") {
-        return number_to_text_helper;
-    }
-    if (name == "json_to_text") {
-        return json_to_text_helper;
-    }
-    if (name == "process_run") {
-        return process_run_helper;
-    }
-    if (name == "directory_temp") {
-        return directory_temp_helper;
-    }
-    if (name == "file_remove") {
-        return file_remove_helper;
-    }
-    if (name == "directory_remove") {
+    if (key == "directory_remove") {
         return directory_remove_helper;
     }
-    if (name == "list_get") {
+    if (key == "directory_temp") {
+        return directory_temp_helper;
+    }
+    if (key == "file_remove") {
+        return file_remove_helper;
+    }
+    if (key == "json_to_text") {
+        return json_to_text_helper;
+    }
+    if (key == "list_copy") {
+        return list_copy_helper;
+    }
+    if (key == "list_get") {
         return list_get_helper;
     }
-    if (name == "list_set") {
+    if (key == "list_set") {
         return list_set_helper;
     }
-    if (name == "map_copy") {
+    if (key == "list_to_text") {
+        return list_to_text_helper;
+    }
+    if (key == "map_copy") {
         return map_copy_helper;
     }
-    if (name == "text_find") {
+    if (key == "number_to_text") {
+        return number_to_text_helper;
+    }
+    if (key == "process_run") {
+        return process_run_helper;
+    }
+    if (key == "text_find") {
         return text_find_helper;
     }
-    if (name == "text_get") {
+    if (key == "text_get") {
         return text_get_helper;
     }
-    if (name == "text_slice") {
+    if (key == "text_slice") {
         return text_slice_helper;
     }
-    if (name == "text_split") {
+    if (key == "text_split") {
         return text_split_helper;
     }
     return "";

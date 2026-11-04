@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Compiler 0.3.0-alpha.17 / bootstrap 0.1.0-alpha.6: table-drive builtin names,
+  parameter kinds, result kinds, imports, and adapter keys in M1. Behavior and
+  emitted programs are unchanged; the metadata command output is byte-identical.
 - Mini 0.1.0-alpha.9 / compiler 0.3.0-alpha.16: remove the handwritten T0 compiler
   modules, `compiler/adapters.ts`, `compiler/builtin-metadata.ts`,
   `compiler/types.ts`, `tools/generate-adapters.ts`, and their tests. Host adapter

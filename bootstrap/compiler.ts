@@ -37,6 +37,10 @@ function $mini_json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function $mini_list_copy(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
+}
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
@@ -792,204 +796,233 @@ function parser_new(tokens) {
 function compile(tokens) {
     return parser_program(parser_new(tokens));
 }
+let builtin_names_list = [];
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_get");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_keys");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_set");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_has");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_new");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "map_copy");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_set");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_new");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_copy");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "json_to_text");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "number_to_text");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_to_text");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "write_error");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_exit");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_get");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_length");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_args");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_exec_path");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_temp");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_remove");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_remove");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "process_run");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_get");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_length");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_find");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_split");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "text_slice");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "readAll");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "write");
+let builtin_name_set = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_name_set, "map_get", true);
+$mini_map_set(builtin_name_set, "map_keys", true);
+$mini_map_set(builtin_name_set, "map_set", true);
+$mini_map_set(builtin_name_set, "map_has", true);
+$mini_map_set(builtin_name_set, "map_new", true);
+$mini_map_set(builtin_name_set, "map_copy", true);
+$mini_map_set(builtin_name_set, "list_set", true);
+$mini_map_set(builtin_name_set, "list_new", true);
+$mini_map_set(builtin_name_set, "list_copy", true);
+$mini_map_set(builtin_name_set, "json_to_text", true);
+$mini_map_set(builtin_name_set, "number_to_text", true);
+$mini_map_set(builtin_name_set, "list_to_text", true);
+$mini_map_set(builtin_name_set, "write_error", true);
+$mini_map_set(builtin_name_set, "process_exit", true);
+$mini_map_set(builtin_name_set, "list_get", true);
+$mini_map_set(builtin_name_set, "list_length", true);
+$mini_map_set(builtin_name_set, "process_args", true);
+$mini_map_set(builtin_name_set, "process_exec_path", true);
+$mini_map_set(builtin_name_set, "directory_temp", true);
+$mini_map_set(builtin_name_set, "file_remove", true);
+$mini_map_set(builtin_name_set, "directory_remove", true);
+$mini_map_set(builtin_name_set, "process_run", true);
+$mini_map_set(builtin_name_set, "file_write", true);
+$mini_map_set(builtin_name_set, "file_read", true);
+$mini_map_set(builtin_name_set, "text_get", true);
+$mini_map_set(builtin_name_set, "text_length", true);
+$mini_map_set(builtin_name_set, "text_find", true);
+$mini_map_set(builtin_name_set, "text_split", true);
+$mini_map_set(builtin_name_set, "text_slice", true);
+$mini_map_set(builtin_name_set, "readAll", true);
+$mini_map_set(builtin_name_set, "write", true);
+let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
+$mini_map_set(builtin_parameter_kinds, "map_keys", "map");
+$mini_map_set(builtin_parameter_kinds, "map_set", "unknown,text,unknown");
+$mini_map_set(builtin_parameter_kinds, "map_has", "map,text");
+$mini_map_set(builtin_parameter_kinds, "map_new", "");
+$mini_map_set(builtin_parameter_kinds, "map_copy", "map");
+$mini_map_set(builtin_parameter_kinds, "list_set", "unknown,number,unknown");
+$mini_map_set(builtin_parameter_kinds, "list_new", "");
+$mini_map_set(builtin_parameter_kinds, "list_copy", "list");
+$mini_map_set(builtin_parameter_kinds, "json_to_text", "unknown");
+$mini_map_set(builtin_parameter_kinds, "number_to_text", "number");
+$mini_map_set(builtin_parameter_kinds, "list_to_text", "list,text");
+$mini_map_set(builtin_parameter_kinds, "write_error", "text");
+$mini_map_set(builtin_parameter_kinds, "process_exit", "number");
+$mini_map_set(builtin_parameter_kinds, "list_get", "unknown,number");
+$mini_map_set(builtin_parameter_kinds, "list_length", "list");
+$mini_map_set(builtin_parameter_kinds, "process_args", "");
+$mini_map_set(builtin_parameter_kinds, "process_exec_path", "");
+$mini_map_set(builtin_parameter_kinds, "directory_temp", "");
+$mini_map_set(builtin_parameter_kinds, "file_remove", "text");
+$mini_map_set(builtin_parameter_kinds, "directory_remove", "text");
+$mini_map_set(builtin_parameter_kinds, "process_run", "text,list,text");
+$mini_map_set(builtin_parameter_kinds, "file_write", "text,text");
+$mini_map_set(builtin_parameter_kinds, "file_read", "text");
+$mini_map_set(builtin_parameter_kinds, "text_get", "unknown,number");
+$mini_map_set(builtin_parameter_kinds, "text_length", "text");
+$mini_map_set(builtin_parameter_kinds, "text_find", "text,text");
+$mini_map_set(builtin_parameter_kinds, "text_split", "text,text");
+$mini_map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
+$mini_map_set(builtin_parameter_kinds, "readAll", "");
+$mini_map_set(builtin_parameter_kinds, "write", "text");
+let builtin_result_kinds = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_result_kinds, "map_get", "unknown");
+$mini_map_set(builtin_result_kinds, "map_keys", "list");
+$mini_map_set(builtin_result_kinds, "map_set", "void");
+$mini_map_set(builtin_result_kinds, "map_has", "boolean");
+$mini_map_set(builtin_result_kinds, "map_new", "map");
+$mini_map_set(builtin_result_kinds, "map_copy", "map");
+$mini_map_set(builtin_result_kinds, "list_set", "void");
+$mini_map_set(builtin_result_kinds, "list_new", "list");
+$mini_map_set(builtin_result_kinds, "list_copy", "list");
+$mini_map_set(builtin_result_kinds, "json_to_text", "text");
+$mini_map_set(builtin_result_kinds, "number_to_text", "text");
+$mini_map_set(builtin_result_kinds, "list_to_text", "text");
+$mini_map_set(builtin_result_kinds, "write_error", "void");
+$mini_map_set(builtin_result_kinds, "process_exit", "void");
+$mini_map_set(builtin_result_kinds, "list_get", "unknown");
+$mini_map_set(builtin_result_kinds, "list_length", "number");
+$mini_map_set(builtin_result_kinds, "process_args", "list");
+$mini_map_set(builtin_result_kinds, "process_exec_path", "text");
+$mini_map_set(builtin_result_kinds, "directory_temp", "text");
+$mini_map_set(builtin_result_kinds, "file_remove", "void");
+$mini_map_set(builtin_result_kinds, "directory_remove", "void");
+$mini_map_set(builtin_result_kinds, "process_run", "map");
+$mini_map_set(builtin_result_kinds, "file_write", "void");
+$mini_map_set(builtin_result_kinds, "file_read", "text");
+$mini_map_set(builtin_result_kinds, "text_get", "text");
+$mini_map_set(builtin_result_kinds, "text_length", "number");
+$mini_map_set(builtin_result_kinds, "text_find", "number");
+$mini_map_set(builtin_result_kinds, "text_split", "list");
+$mini_map_set(builtin_result_kinds, "text_slice", "text");
+$mini_map_set(builtin_result_kinds, "readAll", "text");
+$mini_map_set(builtin_result_kinds, "write", "void");
+let builtin_import_names = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_import_names, "map_get", "");
+$mini_map_set(builtin_import_names, "map_keys", "");
+$mini_map_set(builtin_import_names, "map_set", "");
+$mini_map_set(builtin_import_names, "map_has", "");
+$mini_map_set(builtin_import_names, "map_new", "");
+$mini_map_set(builtin_import_names, "map_copy", "");
+$mini_map_set(builtin_import_names, "list_set", "");
+$mini_map_set(builtin_import_names, "list_new", "");
+$mini_map_set(builtin_import_names, "list_copy", "");
+$mini_map_set(builtin_import_names, "json_to_text", "");
+$mini_map_set(builtin_import_names, "number_to_text", "");
+$mini_map_set(builtin_import_names, "list_to_text", "");
+$mini_map_set(builtin_import_names, "write_error", "writeSync");
+$mini_map_set(builtin_import_names, "process_exit", "");
+$mini_map_set(builtin_import_names, "list_get", "");
+$mini_map_set(builtin_import_names, "list_length", "");
+$mini_map_set(builtin_import_names, "process_args", "");
+$mini_map_set(builtin_import_names, "process_exec_path", "");
+$mini_map_set(builtin_import_names, "directory_temp", "");
+$mini_map_set(builtin_import_names, "file_remove", "");
+$mini_map_set(builtin_import_names, "directory_remove", "");
+$mini_map_set(builtin_import_names, "process_run", "");
+$mini_map_set(builtin_import_names, "file_write", "writeFileSync");
+$mini_map_set(builtin_import_names, "file_read", "readFileSync");
+$mini_map_set(builtin_import_names, "text_get", "");
+$mini_map_set(builtin_import_names, "text_length", "");
+$mini_map_set(builtin_import_names, "text_find", "");
+$mini_map_set(builtin_import_names, "text_split", "");
+$mini_map_set(builtin_import_names, "text_slice", "");
+$mini_map_set(builtin_import_names, "readAll", "readFileSync");
+$mini_map_set(builtin_import_names, "write", "writeSync");
+let builtin_helper_keys = ({ __proto__: $mini_map_proto });
+$mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
+$mini_map_set(builtin_helper_keys, "map_keys", "");
+$mini_map_set(builtin_helper_keys, "map_set", "map_runtime");
+$mini_map_set(builtin_helper_keys, "map_has", "map_runtime");
+$mini_map_set(builtin_helper_keys, "map_new", "map_runtime");
+$mini_map_set(builtin_helper_keys, "map_copy", "map_copy");
+$mini_map_set(builtin_helper_keys, "list_set", "list_set");
+$mini_map_set(builtin_helper_keys, "list_new", "");
+$mini_map_set(builtin_helper_keys, "list_copy", "list_copy");
+$mini_map_set(builtin_helper_keys, "json_to_text", "json_to_text");
+$mini_map_set(builtin_helper_keys, "number_to_text", "number_to_text");
+$mini_map_set(builtin_helper_keys, "list_to_text", "list_to_text");
+$mini_map_set(builtin_helper_keys, "write_error", "");
+$mini_map_set(builtin_helper_keys, "process_exit", "");
+$mini_map_set(builtin_helper_keys, "list_get", "list_get");
+$mini_map_set(builtin_helper_keys, "list_length", "");
+$mini_map_set(builtin_helper_keys, "process_args", "");
+$mini_map_set(builtin_helper_keys, "process_exec_path", "");
+$mini_map_set(builtin_helper_keys, "directory_temp", "directory_temp");
+$mini_map_set(builtin_helper_keys, "file_remove", "file_remove");
+$mini_map_set(builtin_helper_keys, "directory_remove", "directory_remove");
+$mini_map_set(builtin_helper_keys, "process_run", "process_run");
+$mini_map_set(builtin_helper_keys, "file_write", "");
+$mini_map_set(builtin_helper_keys, "file_read", "");
+$mini_map_set(builtin_helper_keys, "text_get", "text_get");
+$mini_map_set(builtin_helper_keys, "text_length", "");
+$mini_map_set(builtin_helper_keys, "text_find", "text_find");
+$mini_map_set(builtin_helper_keys, "text_split", "text_split");
+$mini_map_set(builtin_helper_keys, "text_slice", "text_slice");
+$mini_map_set(builtin_helper_keys, "readAll", "");
+$mini_map_set(builtin_helper_keys, "write", "");
 function builtin_names() {
-    let names = [];
-    $mini_list_set(names, (names).length, "map_get");
-    $mini_list_set(names, (names).length, "map_keys");
-    $mini_list_set(names, (names).length, "map_set");
-    $mini_list_set(names, (names).length, "map_has");
-    $mini_list_set(names, (names).length, "map_new");
-    $mini_list_set(names, (names).length, "map_copy");
-    $mini_list_set(names, (names).length, "list_set");
-    $mini_list_set(names, (names).length, "list_new");
-    $mini_list_set(names, (names).length, "list_copy");
-    $mini_list_set(names, (names).length, "json_to_text");
-    $mini_list_set(names, (names).length, "number_to_text");
-    $mini_list_set(names, (names).length, "list_to_text");
-    $mini_list_set(names, (names).length, "write_error");
-    $mini_list_set(names, (names).length, "process_exit");
-    $mini_list_set(names, (names).length, "list_get");
-    $mini_list_set(names, (names).length, "list_length");
-    $mini_list_set(names, (names).length, "process_args");
-    $mini_list_set(names, (names).length, "process_exec_path");
-    $mini_list_set(names, (names).length, "directory_temp");
-    $mini_list_set(names, (names).length, "file_remove");
-    $mini_list_set(names, (names).length, "directory_remove");
-    $mini_list_set(names, (names).length, "process_run");
-    $mini_list_set(names, (names).length, "file_write");
-    $mini_list_set(names, (names).length, "file_read");
-    $mini_list_set(names, (names).length, "text_get");
-    $mini_list_set(names, (names).length, "text_length");
-    $mini_list_set(names, (names).length, "text_find");
-    $mini_list_set(names, (names).length, "text_split");
-    $mini_list_set(names, (names).length, "text_slice");
-    $mini_list_set(names, (names).length, "readAll");
-    $mini_list_set(names, (names).length, "write");
-    return names;
+    return $mini_list_copy(builtin_names_list);
 }
 function builtin_exists(name) {
-    return (((((((((((((((((((((((((((((((name === "map_get") || (name === "map_keys")) || (name === "map_set")) || (name === "map_has")) || (name === "map_new")) || (name === "list_set")) || (name === "list_new")) || (name === "write_error")) || (name === "process_exit")) || (name === "list_get")) || (name === "list_length")) || (name === "process_args")) || (name === "file_write")) || (name === "file_read")) || (name === "text_find")) || (name === "text_get")) || (name === "text_length")) || (name === "text_slice")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "process_exec_path")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "readAll")) || (name === "write"));
+    return $mini_map_has(builtin_name_set, name);
 }
 function builtin_parameters(name) {
-    let parameters = [];
-    if ((name === "map_get")) {
-        $mini_list_set(parameters, 0, "unknown");
-        $mini_list_set(parameters, 1, "text");
-    } else {
-        if ((name === "map_keys")) {
-            $mini_list_set(parameters, 0, "map");
-        } else {
-            if ((name === "map_set")) {
-                $mini_list_set(parameters, 0, "unknown");
-                $mini_list_set(parameters, 1, "text");
-                $mini_list_set(parameters, 2, "unknown");
-            } else {
-                if ((name === "map_has")) {
-                    $mini_list_set(parameters, 0, "map");
-                    $mini_list_set(parameters, 1, "text");
-                } else {
-                    if ((name === "list_set")) {
-                        $mini_list_set(parameters, 0, "unknown");
-                        $mini_list_set(parameters, 1, "number");
-                        $mini_list_set(parameters, 2, "unknown");
-                    } else {
-                        if ((name === "write_error")) {
-                            $mini_list_set(parameters, 0, "text");
-                        } else {
-                            if ((name === "process_exit")) {
-                                $mini_list_set(parameters, 0, "number");
-                            } else {
-                                if ((name === "list_get")) {
-                                    $mini_list_set(parameters, 0, "unknown");
-                                    $mini_list_set(parameters, 1, "number");
-                                } else {
-                                    if ((name === "list_length")) {
-                                        $mini_list_set(parameters, 0, "list");
-                                    } else {
-                                        if ((name === "file_write")) {
-                                            $mini_list_set(parameters, 0, "text");
-                                            $mini_list_set(parameters, 1, "text");
-                                        } else {
-                                            if ((name === "file_read")) {
-                                                $mini_list_set(parameters, 0, "text");
-                                            } else {
-                                                if ((name === "text_get")) {
-                                                    $mini_list_set(parameters, 0, "unknown");
-                                                    $mini_list_set(parameters, 1, "number");
-                                                } else {
-                                                    if ((name === "text_length")) {
-                                                        $mini_list_set(parameters, 0, "text");
-                                                    } else {
-                                                        if ((name === "text_slice")) {
-                                                            $mini_list_set(parameters, 0, "text");
-                                                            $mini_list_set(parameters, 1, "number");
-                                                            $mini_list_set(parameters, 2, "number");
-                                                        } else {
-                                                            if ((name === "text_find")) {
-                                                                $mini_list_set(parameters, 0, "text");
-                                                                $mini_list_set(parameters, 1, "text");
-                                                            } else {
-                                                                if ((name === "text_split")) {
-                                                                    $mini_list_set(parameters, 0, "text");
-                                                                    $mini_list_set(parameters, 1, "text");
-                                                                } else {
-                                                                    if ((name === "map_copy")) {
-                                                                        $mini_list_set(parameters, 0, "map");
-                                                                    } else {
-                                                                        if ((name === "list_to_text")) {
-                                                                            $mini_list_set(parameters, 0, "list");
-                                                                            $mini_list_set(parameters, 1, "text");
-                                                                        } else {
-                                                                            if ((name === "list_copy")) {
-                                                                                $mini_list_set(parameters, 0, "list");
-                                                                            } else {
-                                                                                if ((name === "number_to_text")) {
-                                                                                    $mini_list_set(parameters, 0, "number");
-                                                                                } else {
-                                                                                    if ((name === "json_to_text")) {
-                                                                                        $mini_list_set(parameters, 0, "unknown");
-                                                                                    } else {
-                                                                                        if (((name === "file_remove") || (name === "directory_remove"))) {
-                                                                                            $mini_list_set(parameters, 0, "text");
-                                                                                        } else {
-                                                                                            if ((name === "process_run")) {
-                                                                                                $mini_list_set(parameters, 0, "text");
-                                                                                                $mini_list_set(parameters, 1, "list");
-                                                                                                $mini_list_set(parameters, 2, "text");
-                                                                                            } else {
-                                                                                                if ((name === "write")) {
-                                                                                                    $mini_list_set(parameters, 0, "text");
-                                                                                                }
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    if ((!$mini_map_has(builtin_parameter_kinds, name))) {
+        return [];
     }
-    return parameters;
+    let kinds = $mini_map_get(builtin_parameter_kinds, name);
+    if ((kinds === "")) {
+        return [];
+    }
+    return $mini_text_split(kinds, ",");
 }
 function builtin_result(name) {
-    if (((name === "map_get") || (name === "list_get"))) {
-        return "unknown";
-    }
-    if ((((((name === "map_keys") || (name === "list_new")) || (name === "list_copy")) || (name === "process_args")) || (name === "text_split"))) {
-        return "list";
-    }
-    if (((name === "map_new") || (name === "map_copy"))) {
-        return "map";
-    }
-    if ((name === "process_run")) {
-        return "map";
-    }
-    if ((name === "map_has")) {
-        return "boolean";
-    }
-    if (((((((((name === "write_error") || (name === "process_exit")) || (name === "list_set")) || (name === "map_set")) || (name === "file_write")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "write"))) {
-        return "void";
-    }
-    if ((((name === "list_length") || (name === "text_length")) || (name === "text_find"))) {
-        return "number";
+    if ($mini_map_has(builtin_result_kinds, name)) {
+        return $mini_map_get(builtin_result_kinds, name);
     }
     return "text";
 }
 function builtin_imports(name) {
-    let imports = [];
-    if (((name === "write_error") || (name === "write"))) {
-        $mini_list_set(imports, 0, "writeSync");
-    } else {
-        if ((name === "file_write")) {
-            $mini_list_set(imports, 0, "writeFileSync");
-        } else {
-            if (((name === "file_read") || (name === "readAll"))) {
-                $mini_list_set(imports, 0, "readFileSync");
-            }
-        }
+    if ((!$mini_map_has(builtin_import_names, name))) {
+        return [];
     }
-    return imports;
+    let names = $mini_map_get(builtin_import_names, name);
+    if ((names === "")) {
+        return [];
+    }
+    return $mini_text_split(names, ",");
 }
 function builtin_helper_key(name) {
-    if (((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "map_new"))) {
-        return "map_runtime";
-    }
-    if ((((((((((((((((name === "list_copy") || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "list_get")) || (name === "list_set")) || (name === "map_copy")) || (name === "text_find")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_split"))) {
-        return name;
+    if ($mini_map_has(builtin_helper_keys, name)) {
+        return $mini_map_get(builtin_helper_keys, name);
     }
     return "";
 }
@@ -997,55 +1030,49 @@ function helper_text(key) {
     if ((key === "map_runtime")) {
         return map_runtime;
     }
-    return builtin_helper(key);
-}
-function builtin_helper(name) {
-    if (((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "map_new"))) {
-        return map_runtime;
-    }
-    if ((name === "list_copy")) {
-        return list_copy_helper;
-    }
-    if ((name === "list_to_text")) {
-        return list_to_text_helper;
-    }
-    if ((name === "number_to_text")) {
-        return number_to_text_helper;
-    }
-    if ((name === "json_to_text")) {
-        return json_to_text_helper;
-    }
-    if ((name === "process_run")) {
-        return process_run_helper;
-    }
-    if ((name === "directory_temp")) {
-        return directory_temp_helper;
-    }
-    if ((name === "file_remove")) {
-        return file_remove_helper;
-    }
-    if ((name === "directory_remove")) {
+    if ((key === "directory_remove")) {
         return directory_remove_helper;
     }
-    if ((name === "list_get")) {
+    if ((key === "directory_temp")) {
+        return directory_temp_helper;
+    }
+    if ((key === "file_remove")) {
+        return file_remove_helper;
+    }
+    if ((key === "json_to_text")) {
+        return json_to_text_helper;
+    }
+    if ((key === "list_copy")) {
+        return list_copy_helper;
+    }
+    if ((key === "list_get")) {
         return list_get_helper;
     }
-    if ((name === "list_set")) {
+    if ((key === "list_set")) {
         return list_set_helper;
     }
-    if ((name === "map_copy")) {
+    if ((key === "list_to_text")) {
+        return list_to_text_helper;
+    }
+    if ((key === "map_copy")) {
         return map_copy_helper;
     }
-    if ((name === "text_find")) {
+    if ((key === "number_to_text")) {
+        return number_to_text_helper;
+    }
+    if ((key === "process_run")) {
+        return process_run_helper;
+    }
+    if ((key === "text_find")) {
         return text_find_helper;
     }
-    if ((name === "text_get")) {
+    if ((key === "text_get")) {
         return text_get_helper;
     }
-    if ((name === "text_slice")) {
+    if ((key === "text_slice")) {
         return text_slice_helper;
     }
-    if ((name === "text_split")) {
+    if ((key === "text_split")) {
         return text_split_helper;
     }
     return "";
