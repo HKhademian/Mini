@@ -35,12 +35,30 @@ fn main() {
         include_comments = true;
         offset = 1;
     }
+    if (command == "metadata" && list_length(args) == 1) {
+        var entries = list_new();
+        var names = builtin_names();
+        var index = 0;
+        while (index < list_length(names)) {
+            var name = list_get(names, index);
+            var entry = map_new();
+            map_set(entry, "name", name);
+            map_set(entry, "parameters", builtin_parameters(name));
+            map_set(entry, "result", builtin_result(name));
+            list_set(entries, list_length(entries), entry);
+            index = index + 1;
+        }
+        var metadata = map_new();
+        map_set(metadata, "builtins", entries);
+        write(json_to_text(metadata) + "\n");
+        return 0;
+    }
     var count = list_length(args) - offset;
     var source = list_get(args, 1 + offset);
     var output = list_get(args, 2 + offset);
     if (count < 2 || count > 3 || !text_ends_with(source, ".mini")
         || (command != "compile" && command != "tokens")) {
-        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
+        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
     var tokens = tokenize(file_read(source), basename(source), include_comments);

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Compiler 0.3.0-alpha.15 / bootstrap 0.1.0-alpha.5: expose `metadata` from the
+  generated compiler as deterministic builtin JSON (name, parameter kinds,
+  result kind). Language-server hover and completion read that command instead
+  of `compiler/builtin-metadata.ts`.
 - Mini 0.1.0-alpha.8 / CLI 0.1.0-alpha.7: port `mini run` and `mini-run` to
   `tools/run.mini`. The generated tool creates a temporary module directory,
   compiles with the active compiler, runs Node with inherited standard streams,

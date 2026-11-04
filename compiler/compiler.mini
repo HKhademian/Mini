@@ -807,6 +807,43 @@ fn compile(tokens) {
     return parser_program(parser_new(tokens));
 }
 
+/// Return every builtin name once, in declaration order.
+fn builtin_names() {
+    var names = list_new();
+    list_set(names, list_length(names), "map_get");
+    list_set(names, list_length(names), "map_keys");
+    list_set(names, list_length(names), "map_set");
+    list_set(names, list_length(names), "map_has");
+    list_set(names, list_length(names), "map_new");
+    list_set(names, list_length(names), "map_copy");
+    list_set(names, list_length(names), "list_set");
+    list_set(names, list_length(names), "list_new");
+    list_set(names, list_length(names), "list_copy");
+    list_set(names, list_length(names), "json_to_text");
+    list_set(names, list_length(names), "number_to_text");
+    list_set(names, list_length(names), "list_to_text");
+    list_set(names, list_length(names), "write_error");
+    list_set(names, list_length(names), "process_exit");
+    list_set(names, list_length(names), "list_get");
+    list_set(names, list_length(names), "list_length");
+    list_set(names, list_length(names), "process_args");
+    list_set(names, list_length(names), "process_exec_path");
+    list_set(names, list_length(names), "directory_temp");
+    list_set(names, list_length(names), "file_remove");
+    list_set(names, list_length(names), "directory_remove");
+    list_set(names, list_length(names), "process_run");
+    list_set(names, list_length(names), "file_write");
+    list_set(names, list_length(names), "file_read");
+    list_set(names, list_length(names), "text_get");
+    list_set(names, list_length(names), "text_length");
+    list_set(names, list_length(names), "text_find");
+    list_set(names, list_length(names), "text_split");
+    list_set(names, list_length(names), "text_slice");
+    list_set(names, list_length(names), "readAll");
+    list_set(names, list_length(names), "write");
+    return names;
+}
+
 /// Return whether name selects a builtin.
 fn builtin_exists(name) {
     return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
@@ -1142,12 +1179,30 @@ fn main() {
         include_comments = true;
         offset = 1;
     }
+    if (command == "metadata" && list_length(args) == 1) {
+        var entries = list_new();
+        var names = builtin_names();
+        var index = 0;
+        while (index < list_length(names)) {
+            var name = list_get(names, index);
+            var entry = map_new();
+            map_set(entry, "name", name);
+            map_set(entry, "parameters", builtin_parameters(name));
+            map_set(entry, "result", builtin_result(name));
+            list_set(entries, list_length(entries), entry);
+            index = index + 1;
+        }
+        var metadata = map_new();
+        map_set(metadata, "builtins", entries);
+        write(json_to_text(metadata) + "\n");
+        return 0;
+    }
     var count = list_length(args) - offset;
     var source = list_get(args, 1 + offset);
     var output = list_get(args, 2 + offset);
     if (count < 2 || count > 3 || !text_ends_with(source, ".mini")
         || (command != "compile" && command != "tokens")) {
-        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
+        write_error("usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
     var tokens = tokenize(file_read(source), basename(source), include_comments);

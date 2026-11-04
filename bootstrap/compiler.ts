@@ -792,6 +792,41 @@ function parser_new(tokens) {
 function compile(tokens) {
     return parser_program(parser_new(tokens));
 }
+function builtin_names() {
+    let names = [];
+    $mini_list_set(names, (names).length, "map_get");
+    $mini_list_set(names, (names).length, "map_keys");
+    $mini_list_set(names, (names).length, "map_set");
+    $mini_list_set(names, (names).length, "map_has");
+    $mini_list_set(names, (names).length, "map_new");
+    $mini_list_set(names, (names).length, "map_copy");
+    $mini_list_set(names, (names).length, "list_set");
+    $mini_list_set(names, (names).length, "list_new");
+    $mini_list_set(names, (names).length, "list_copy");
+    $mini_list_set(names, (names).length, "json_to_text");
+    $mini_list_set(names, (names).length, "number_to_text");
+    $mini_list_set(names, (names).length, "list_to_text");
+    $mini_list_set(names, (names).length, "write_error");
+    $mini_list_set(names, (names).length, "process_exit");
+    $mini_list_set(names, (names).length, "list_get");
+    $mini_list_set(names, (names).length, "list_length");
+    $mini_list_set(names, (names).length, "process_args");
+    $mini_list_set(names, (names).length, "process_exec_path");
+    $mini_list_set(names, (names).length, "directory_temp");
+    $mini_list_set(names, (names).length, "file_remove");
+    $mini_list_set(names, (names).length, "directory_remove");
+    $mini_list_set(names, (names).length, "process_run");
+    $mini_list_set(names, (names).length, "file_write");
+    $mini_list_set(names, (names).length, "file_read");
+    $mini_list_set(names, (names).length, "text_get");
+    $mini_list_set(names, (names).length, "text_length");
+    $mini_list_set(names, (names).length, "text_find");
+    $mini_list_set(names, (names).length, "text_split");
+    $mini_list_set(names, (names).length, "text_slice");
+    $mini_list_set(names, (names).length, "readAll");
+    $mini_list_set(names, (names).length, "write");
+    return names;
+}
 function builtin_exists(name) {
     return (((((((((((((((((((((((((((((((name === "map_get") || (name === "map_keys")) || (name === "map_set")) || (name === "map_has")) || (name === "map_new")) || (name === "list_set")) || (name === "list_new")) || (name === "write_error")) || (name === "process_exit")) || (name === "list_get")) || (name === "list_length")) || (name === "process_args")) || (name === "file_write")) || (name === "file_read")) || (name === "text_find")) || (name === "text_get")) || (name === "text_length")) || (name === "text_slice")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "process_exec_path")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "readAll")) || (name === "write"));
 }
@@ -1096,11 +1131,29 @@ function main() {
         include_comments = true;
         offset = 1;
     }
+    if (((command === "metadata") && ((args).length === 1))) {
+        let entries = [];
+        let names = builtin_names();
+        let index = 0;
+        while ((index < (names).length)) {
+            let name = $mini_list_get(names, index);
+            let entry = ({ __proto__: $mini_map_proto });
+            $mini_map_set(entry, "name", name);
+            $mini_map_set(entry, "parameters", builtin_parameters(name));
+            $mini_map_set(entry, "result", builtin_result(name));
+            $mini_list_set(entries, (entries).length, entry);
+            index = (index + 1);
+        }
+        let metadata = ({ __proto__: $mini_map_proto });
+        $mini_map_set(metadata, "builtins", entries);
+        writeSync(1, ($mini_json_to_text(metadata) + "\n"));
+        return 0;
+    }
     let count = ((args).length - offset);
     let source = $mini_list_get(args, (1 + offset));
     let output = $mini_list_get(args, (2 + offset));
     if (((((count < 2) || (count > 3)) || (!text_ends_with(source, ".mini"))) || ((command !== "compile") && (command !== "tokens")))) {
-        writeSync(2, "usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini\n");
+        writeSync(2, "usage: mini compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process.exit(1);
     }
     let tokens = tokenize(readFileSync(source, "utf8"), basename(source), include_comments);

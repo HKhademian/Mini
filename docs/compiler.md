@@ -36,8 +36,12 @@ Tooling uses the active compiler directly:
 ```text
 node COMPILER tokens --comments SOURCE.mini
 node COMPILER compile SOURCE.mini OUTPUT.ts
+node COMPILER metadata
 ```
 
+`metadata` emits one JSON object listing every builtin name, parameter kind, and
+result kind. Tooling hover, completion, and signature text read this command
+instead of a separate TypeScript table.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format

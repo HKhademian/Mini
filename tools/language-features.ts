@@ -1,4 +1,5 @@
-import { builtinMetadata as builtins } from '../compiler/builtin-metadata.ts';
+import { join } from 'node:path';
+import { compiler, root, run } from './project.ts';
 import { TokenKind, type Token } from '../compiler/types.ts';
 
 export type Position = { line: number; character: number };
@@ -20,6 +21,18 @@ export type CompletionItem = {
 };
 
 const CompletionKind = { Function: 3, Variable: 6, Keyword: 14 } as const;
+
+type BuiltinInfo = { parameters: string[]; result: string };
+let builtinCache: Map<string, BuiltinInfo> | undefined;
+
+/** Load builtin signatures from the active compiler's metadata command. */
+function builtins(): Map<string, BuiltinInfo> {
+  if (builtinCache !== undefined) return builtinCache;
+  const output = run(process.execPath, [join(root, compiler().entry), 'metadata'], root);
+  const parsed = JSON.parse(output.toString()) as { builtins: { name: string; parameters: string[]; result: string }[] };
+  builtinCache = new Map(parsed.builtins.map(item => [item.name, { parameters: item.parameters, result: item.result }]));
+  return builtinCache;
+}
 const keywords = ['var', 'fn', 'return', 'if', 'else', 'while', 'true', 'false'];
 
 /** Convert an LSP position to a UTF-16 offset. */
@@ -82,7 +95,7 @@ export function declarations(tokens: Token[]): Declaration[] {
 }
 
 function builtinSignature(name: string): string {
-  const builtin = builtins.get(name)!;
+  const builtin = builtins().get(name)!;
   const parameters = builtin.parameters.join(', ');
   return `${name}(${parameters}) -> ${builtin.result}`;
 }
@@ -104,7 +117,7 @@ export function hoverAt(tokens: Token[], offset: number): Hover {
   if (found !== undefined) {
     return { contents: { kind: 'markdown', value: markdown(found.signature, found.doc) }, range: rangeOf(token) };
   }
-  if (builtins.has(token.text)) {
+  if (builtins().has(token.text)) {
     return { contents: { kind: 'markdown', value: markdown(builtinSignature(token.text), []) }, range: rangeOf(token) };
   }
   return null;
@@ -144,7 +157,7 @@ export function completionsAt(tokens: Token[], text: string, offset: number): Co
       insertText: declaration.name,
     });
   }
-  for (const name of builtins.keys()) {
+  for (const name of builtins().keys()) {
     add({ label: name, kind: CompletionKind.Function, detail: builtinSignature(name), insertText: name });
   }
   for (const keyword of keywords) {

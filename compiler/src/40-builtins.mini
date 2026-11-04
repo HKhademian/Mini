@@ -1,3 +1,40 @@
+/// Return every builtin name once, in declaration order.
+fn builtin_names() {
+    var names = list_new();
+    list_set(names, list_length(names), "map_get");
+    list_set(names, list_length(names), "map_keys");
+    list_set(names, list_length(names), "map_set");
+    list_set(names, list_length(names), "map_has");
+    list_set(names, list_length(names), "map_new");
+    list_set(names, list_length(names), "map_copy");
+    list_set(names, list_length(names), "list_set");
+    list_set(names, list_length(names), "list_new");
+    list_set(names, list_length(names), "list_copy");
+    list_set(names, list_length(names), "json_to_text");
+    list_set(names, list_length(names), "number_to_text");
+    list_set(names, list_length(names), "list_to_text");
+    list_set(names, list_length(names), "write_error");
+    list_set(names, list_length(names), "process_exit");
+    list_set(names, list_length(names), "list_get");
+    list_set(names, list_length(names), "list_length");
+    list_set(names, list_length(names), "process_args");
+    list_set(names, list_length(names), "process_exec_path");
+    list_set(names, list_length(names), "directory_temp");
+    list_set(names, list_length(names), "file_remove");
+    list_set(names, list_length(names), "directory_remove");
+    list_set(names, list_length(names), "process_run");
+    list_set(names, list_length(names), "file_write");
+    list_set(names, list_length(names), "file_read");
+    list_set(names, list_length(names), "text_get");
+    list_set(names, list_length(names), "text_length");
+    list_set(names, list_length(names), "text_find");
+    list_set(names, list_length(names), "text_split");
+    list_set(names, list_length(names), "text_slice");
+    list_set(names, list_length(names), "readAll");
+    list_set(names, list_length(names), "write");
+    return names;
+}
+
 /// Return whether name selects a builtin.
 fn builtin_exists(name) {
     return name == "map_get" || name == "map_keys" || name == "map_set" || name == "map_has" || name == "map_new"
