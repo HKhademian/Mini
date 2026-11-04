@@ -1,12 +1,12 @@
 /// Read text and report whether it contains the two sample words.
-var source = readAll();
+var source = io_read_all();
 if (text_find(source, "Mini") >= 0) {
-    write("has Mini\n");
+    io_write("has Mini\n");
 } else {
-    write("no Mini\n");
+    io_write("no Mini\n");
 }
 if (text_find(source, "Lang") >= 0) {
-    write("has Lang\n");
+    io_write("has Lang\n");
 } else {
-    write("no Lang\n");
+    io_write("no Lang\n");
 }

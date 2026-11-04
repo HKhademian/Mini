@@ -1,3 +1,3 @@
 /// Comment markers inside quoted text remain ordinary characters.
-write("// and /// stay text\n"); // "Not an unterminated string.
-write("escaped quote: \"//\"\n"); /// fn ignored() { return 0; }
+io_write("// and /// stay text\n"); // "Not an unterminated string.
+io_write("escaped quote: \"//\"\n"); /// fn ignored() { return 0; }

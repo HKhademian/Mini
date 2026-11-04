@@ -1,1 +1,1 @@
-list_set(list_new(), 0, write(""));
+list_set(list_new(), 0, io_write(""));

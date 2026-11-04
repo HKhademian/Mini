@@ -1,1 +1,1 @@
-write(list_to_text(1, ","));
+io_write(list_to_text(1, ","));

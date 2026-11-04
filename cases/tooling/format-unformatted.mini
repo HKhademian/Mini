@@ -1,2 +1,2 @@
 var value=1;// keep
-if(value==1){write("ok");}else{write("no");}
+if(value==1){io_write("ok");}else{io_write("no");}

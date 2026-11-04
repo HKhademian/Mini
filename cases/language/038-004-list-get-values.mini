@@ -15,4 +15,4 @@ map_set(list_get(items, 4), "flag", true);
 if (list_get(nested, 0) != "shared" || map_get(child, "flag") != true) {
     process_exit(1);
 }
-write("values");
+io_write("values");

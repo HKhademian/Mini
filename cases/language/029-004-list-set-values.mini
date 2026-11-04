@@ -11,4 +11,4 @@ if (list_length(untouched) != 0 || list_length(items) != 3) {
 if (list_get(items, 0) != 7 || list_get(items, 1) != true) {
     process_exit(1);
 }
-write(list_get(list_get(items, 2), 0));
+io_write(list_get(list_get(items, 2), 0));

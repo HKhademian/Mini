@@ -12,7 +12,7 @@ list_set(builtin_names_list, list_length(builtin_names_list), "list_copy");
 list_set(builtin_names_list, list_length(builtin_names_list), "json_to_text");
 list_set(builtin_names_list, list_length(builtin_names_list), "number_to_text");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_to_text");
-list_set(builtin_names_list, list_length(builtin_names_list), "write_error");
+list_set(builtin_names_list, list_length(builtin_names_list), "io_write_error");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_exit");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_get");
 list_set(builtin_names_list, list_length(builtin_names_list), "list_length");
@@ -29,8 +29,8 @@ list_set(builtin_names_list, list_length(builtin_names_list), "text_length");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_find");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_split");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_slice");
-list_set(builtin_names_list, list_length(builtin_names_list), "readAll");
-list_set(builtin_names_list, list_length(builtin_names_list), "write");
+list_set(builtin_names_list, list_length(builtin_names_list), "io_read_all");
+list_set(builtin_names_list, list_length(builtin_names_list), "io_write");
 list_set(builtin_names_list, list_length(builtin_names_list), "json_parse");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_to_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "text_from_bytes");
@@ -47,8 +47,8 @@ list_set(builtin_names_list, list_length(builtin_names_list), "path_remove");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_spawn");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_script_path");
 list_set(builtin_names_list, list_length(builtin_names_list), "process_env");
-list_set(builtin_names_list, list_length(builtin_names_list), "read_line");
-list_set(builtin_names_list, list_length(builtin_names_list), "read_bytes");
+list_set(builtin_names_list, list_length(builtin_names_list), "io_read_line");
+list_set(builtin_names_list, list_length(builtin_names_list), "io_read_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "value_kind");
 
 /// Builtin name membership set.
@@ -65,7 +65,7 @@ map_set(builtin_name_set, "list_copy", true);
 map_set(builtin_name_set, "json_to_text", true);
 map_set(builtin_name_set, "number_to_text", true);
 map_set(builtin_name_set, "list_to_text", true);
-map_set(builtin_name_set, "write_error", true);
+map_set(builtin_name_set, "io_write_error", true);
 map_set(builtin_name_set, "process_exit", true);
 map_set(builtin_name_set, "list_get", true);
 map_set(builtin_name_set, "list_length", true);
@@ -82,8 +82,8 @@ map_set(builtin_name_set, "text_length", true);
 map_set(builtin_name_set, "text_find", true);
 map_set(builtin_name_set, "text_split", true);
 map_set(builtin_name_set, "text_slice", true);
-map_set(builtin_name_set, "readAll", true);
-map_set(builtin_name_set, "write", true);
+map_set(builtin_name_set, "io_read_all", true);
+map_set(builtin_name_set, "io_write", true);
 map_set(builtin_name_set, "json_parse", true);
 map_set(builtin_name_set, "text_to_bytes", true);
 map_set(builtin_name_set, "text_from_bytes", true);
@@ -100,8 +100,8 @@ map_set(builtin_name_set, "path_remove", true);
 map_set(builtin_name_set, "process_spawn", true);
 map_set(builtin_name_set, "process_script_path", true);
 map_set(builtin_name_set, "process_env", true);
-map_set(builtin_name_set, "read_line", true);
-map_set(builtin_name_set, "read_bytes", true);
+map_set(builtin_name_set, "io_read_line", true);
+map_set(builtin_name_set, "io_read_bytes", true);
 map_set(builtin_name_set, "value_kind", true);
 
 /// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
@@ -118,7 +118,7 @@ map_set(builtin_parameter_kinds, "list_copy", "list");
 map_set(builtin_parameter_kinds, "json_to_text", "unknown");
 map_set(builtin_parameter_kinds, "number_to_text", "number");
 map_set(builtin_parameter_kinds, "list_to_text", "list,text");
-map_set(builtin_parameter_kinds, "write_error", "text");
+map_set(builtin_parameter_kinds, "io_write_error", "text");
 map_set(builtin_parameter_kinds, "process_exit", "number");
 map_set(builtin_parameter_kinds, "list_get", "unknown,number");
 map_set(builtin_parameter_kinds, "list_length", "list");
@@ -135,8 +135,8 @@ map_set(builtin_parameter_kinds, "text_length", "text");
 map_set(builtin_parameter_kinds, "text_find", "text,text");
 map_set(builtin_parameter_kinds, "text_split", "text,text");
 map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
-map_set(builtin_parameter_kinds, "readAll", "");
-map_set(builtin_parameter_kinds, "write", "text");
+map_set(builtin_parameter_kinds, "io_read_all", "");
+map_set(builtin_parameter_kinds, "io_write", "text");
 map_set(builtin_parameter_kinds, "json_parse", "text");
 map_set(builtin_parameter_kinds, "text_to_bytes", "text");
 map_set(builtin_parameter_kinds, "text_from_bytes", "list");
@@ -153,8 +153,8 @@ map_set(builtin_parameter_kinds, "path_remove", "text");
 map_set(builtin_parameter_kinds, "process_spawn", "map");
 map_set(builtin_parameter_kinds, "process_script_path", "");
 map_set(builtin_parameter_kinds, "process_env", "text");
-map_set(builtin_parameter_kinds, "read_line", "");
-map_set(builtin_parameter_kinds, "read_bytes", "number");
+map_set(builtin_parameter_kinds, "io_read_line", "");
+map_set(builtin_parameter_kinds, "io_read_bytes", "number");
 map_set(builtin_parameter_kinds, "value_kind", "unknown");
 
 /// Builtin result kinds keyed by name.
@@ -171,7 +171,7 @@ map_set(builtin_result_kinds, "list_copy", "list");
 map_set(builtin_result_kinds, "json_to_text", "text");
 map_set(builtin_result_kinds, "number_to_text", "text");
 map_set(builtin_result_kinds, "list_to_text", "text");
-map_set(builtin_result_kinds, "write_error", "void");
+map_set(builtin_result_kinds, "io_write_error", "void");
 map_set(builtin_result_kinds, "process_exit", "void");
 map_set(builtin_result_kinds, "list_get", "unknown");
 map_set(builtin_result_kinds, "list_length", "number");
@@ -188,8 +188,8 @@ map_set(builtin_result_kinds, "text_length", "number");
 map_set(builtin_result_kinds, "text_find", "number");
 map_set(builtin_result_kinds, "text_split", "list");
 map_set(builtin_result_kinds, "text_slice", "text");
-map_set(builtin_result_kinds, "readAll", "text");
-map_set(builtin_result_kinds, "write", "void");
+map_set(builtin_result_kinds, "io_read_all", "text");
+map_set(builtin_result_kinds, "io_write", "void");
 map_set(builtin_result_kinds, "json_parse", "map");
 map_set(builtin_result_kinds, "text_to_bytes", "list");
 map_set(builtin_result_kinds, "text_from_bytes", "text");
@@ -206,8 +206,8 @@ map_set(builtin_result_kinds, "path_remove", "void");
 map_set(builtin_result_kinds, "process_spawn", "map");
 map_set(builtin_result_kinds, "process_script_path", "text");
 map_set(builtin_result_kinds, "process_env", "text");
-map_set(builtin_result_kinds, "read_line", "text");
-map_set(builtin_result_kinds, "read_bytes", "list");
+map_set(builtin_result_kinds, "io_read_line", "text");
+map_set(builtin_result_kinds, "io_read_bytes", "list");
 map_set(builtin_result_kinds, "value_kind", "text");
 
 /// Builtin Node import names keyed by name; comma-separated, empty for none.
@@ -224,7 +224,7 @@ map_set(builtin_import_names, "list_copy", "");
 map_set(builtin_import_names, "json_to_text", "");
 map_set(builtin_import_names, "number_to_text", "");
 map_set(builtin_import_names, "list_to_text", "");
-map_set(builtin_import_names, "write_error", "writeSync");
+map_set(builtin_import_names, "io_write_error", "writeSync");
 map_set(builtin_import_names, "process_exit", "");
 map_set(builtin_import_names, "list_get", "");
 map_set(builtin_import_names, "list_length", "");
@@ -241,8 +241,8 @@ map_set(builtin_import_names, "text_length", "");
 map_set(builtin_import_names, "text_find", "");
 map_set(builtin_import_names, "text_split", "");
 map_set(builtin_import_names, "text_slice", "");
-map_set(builtin_import_names, "readAll", "readFileSync");
-map_set(builtin_import_names, "write", "writeSync");
+map_set(builtin_import_names, "io_read_all", "readFileSync");
+map_set(builtin_import_names, "io_write", "writeSync");
 map_set(builtin_import_names, "json_parse", "");
 map_set(builtin_import_names, "text_to_bytes", "");
 map_set(builtin_import_names, "text_from_bytes", "");
@@ -259,8 +259,8 @@ map_set(builtin_import_names, "path_remove", "");
 map_set(builtin_import_names, "process_spawn", "");
 map_set(builtin_import_names, "process_script_path", "");
 map_set(builtin_import_names, "process_env", "");
-map_set(builtin_import_names, "read_line", "");
-map_set(builtin_import_names, "read_bytes", "");
+map_set(builtin_import_names, "io_read_line", "");
+map_set(builtin_import_names, "io_read_bytes", "");
 map_set(builtin_import_names, "value_kind", "");
 
 /// Builtin adapter keys keyed by name; empty for inline lowering.
@@ -277,7 +277,7 @@ map_set(builtin_helper_keys, "list_copy", "list_copy");
 map_set(builtin_helper_keys, "json_to_text", "json_to_text");
 map_set(builtin_helper_keys, "number_to_text", "number_to_text");
 map_set(builtin_helper_keys, "list_to_text", "list_to_text");
-map_set(builtin_helper_keys, "write_error", "");
+map_set(builtin_helper_keys, "io_write_error", "");
 map_set(builtin_helper_keys, "process_exit", "");
 map_set(builtin_helper_keys, "list_get", "list_get");
 map_set(builtin_helper_keys, "list_length", "");
@@ -294,8 +294,8 @@ map_set(builtin_helper_keys, "text_length", "");
 map_set(builtin_helper_keys, "text_find", "text_find");
 map_set(builtin_helper_keys, "text_split", "text_split");
 map_set(builtin_helper_keys, "text_slice", "text_slice");
-map_set(builtin_helper_keys, "readAll", "");
-map_set(builtin_helper_keys, "write", "");
+map_set(builtin_helper_keys, "io_read_all", "");
+map_set(builtin_helper_keys, "io_write", "");
 map_set(builtin_helper_keys, "json_parse", "json_parse");
 map_set(builtin_helper_keys, "text_to_bytes", "text_to_bytes");
 map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
@@ -312,8 +312,9 @@ map_set(builtin_helper_keys, "path_remove", "path_remove");
 map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 map_set(builtin_helper_keys, "process_script_path", "");
 map_set(builtin_helper_keys, "process_env", "");
-map_set(builtin_helper_keys, "read_line", "read_line");
-map_set(builtin_helper_keys, "read_bytes", "read_bytes");
+map_set(builtin_helper_keys, "io_read_line", "read_line");
+map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
+
 map_set(builtin_helper_keys, "value_kind", "value_kind");
 
 /// Return every builtin name once, in declaration order.
@@ -458,10 +459,10 @@ fn helper_text(key) {
     if (key == "value_kind") {
         return value_kind_helper;
     }
-    if (key == "read_line") {
+    if (key == "read_line" || key == "io_read_line") {
         return read_line_helper;
     }
-    if (key == "read_bytes") {
+    if (key == "read_bytes" || key == "io_read_bytes") {
         return read_bytes_helper;
     }
     return "";
@@ -471,7 +472,13 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind" || name == "read_line" || name == "read_bytes") {
+    if (name == "io_read_line") {
+        return "$mini_read_line()";
+    }
+    if (name == "io_read_bytes") {
+        return "$mini_read_bytes(" + first + ")";
+    }
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove" || name == "process_spawn" || name == "value_kind") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {
@@ -495,7 +502,7 @@ fn builtin_emit(name, args) {
     if (name == "list_new") {
         return "[]";
     }
-    if (name == "write_error") {
+    if (name == "io_write_error") {
         return "writeSync(2, " + first + ")";
     }
     if (name == "process_exit") {
@@ -516,10 +523,10 @@ fn builtin_emit(name, args) {
     if (name == "text_length") {
         return "(" + first + ").length";
     }
-    if (name == "readAll") {
+    if (name == "io_read_all") {
         return "readFileSync(0, \"utf8\")";
     }
-    if (name == "write") {
+    if (name == "io_write") {
         return "writeSync(1, " + first + ")";
     }
     return "";

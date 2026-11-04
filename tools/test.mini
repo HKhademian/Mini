@@ -9,7 +9,7 @@ fn main() {
     var candidate = "";
     if (list_length(args) >= 1 && list_get(args, 0) == "--unit") {
         if (list_length(args) > 2) {
-            write_error("usage: mini-test [FILTER] | --unit [FILTER]\n");
+            io_write_error("usage: mini-test [FILTER] | --unit [FILTER]\n");
             process_exit(1);
         }
         if (list_length(args) == 2) {
@@ -27,7 +27,7 @@ fn main() {
             if (list_length(args) >= 2 && list_get(args, 0) == "--candidate") {
                 candidate = list_get(args, 1);
                 if (list_length(args) > 3) {
-                    write_error("usage: mini-test [FILTER]\n");
+                    io_write_error("usage: mini-test [FILTER]\n");
                     process_exit(1);
                 }
                 if (list_length(args) == 3) {
@@ -35,7 +35,7 @@ fn main() {
                 }
             } else {
                 if (list_length(args) != 0) {
-                    write_error("usage: mini-test [FILTER]\n");
+                    io_write_error("usage: mini-test [FILTER]\n");
                     process_exit(1);
                 }
             }

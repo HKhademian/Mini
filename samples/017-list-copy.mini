@@ -3,5 +3,5 @@ var original = list_new();
 list_set(original, 0, "original");
 var copy = list_copy(original);
 list_set(copy, 0, "copy");
-write(list_get(original, 0) + "\n");
-write(list_get(copy, 0) + "\n");
+io_write(list_get(original, 0) + "\n");
+io_write(list_get(copy, 0) + "\n");

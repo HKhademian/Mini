@@ -50,7 +50,7 @@ fn diagnostic_fail(token, message) {
         }
         position = position + 1;
     }
-    write_error(map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":" + number_to_text(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
+    io_write_error(map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":" + number_to_text(column) + ": " + message + "\n" + context + "\n" + indent + "^\n");
     process_exit(1);
     return 0;
 }

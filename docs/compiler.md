@@ -110,9 +110,9 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.3`: the + operator for numbers and text.
 
-- `0.1.0-alpha.4`: write(text) to stdout.
+- `0.1.0-alpha.4`: io_write(text) to stdout.
 
-- `0.1.0-alpha.5`: readAll() through EOF.
+- `0.1.0-alpha.5`: io_read_all() through EOF.
 
 - `0.1.0-alpha.6`: escaped text literals.
 
@@ -154,7 +154,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 - `0.1.0-alpha.25`: process_exit(status).
 
-- `0.1.0-alpha.26`: write_error(text) to stderr.
+- `0.1.0-alpha.26`: io_write_error(text) to stderr.
 
 - `0.1.0-alpha.27`: verified source-distribution and preview-release integration.
 

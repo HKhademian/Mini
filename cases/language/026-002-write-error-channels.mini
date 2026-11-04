@@ -1,5 +1,5 @@
-write("out");
-write_error("er");
-write_error("r");
+io_write("out");
+io_write_error("er");
+io_write_error("r");
 process_exit(1);
-write_error("after");
+io_write_error("after");

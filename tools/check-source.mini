@@ -3,7 +3,7 @@ include "../libs/check-source.mini";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {
-    write_error(message + "\n");
+    io_write_error(message + "\n");
     process_exit(1);
     return 0;
 }
@@ -19,7 +19,7 @@ fn main() {
     var source = "";
     if (path == "-") {
         name = "<stdin>";
-        source = readAll();
+        source = io_read_all();
     } else {
         if (!text_ends_with(path, ".mini")) {
             check_source_fail("Mini source must use .mini");

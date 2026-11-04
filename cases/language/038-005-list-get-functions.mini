@@ -1,16 +1,16 @@
 fn items() {
-    write("l");
+    io_write("l");
     var result = list_new();
     list_set(result, 0, "value");
     return result;
 }
 fn index() {
-    write("i");
+    io_write("i");
     return 0;
 }
-write(list_get(items(), index()));
-write(":");
+io_write(list_get(items(), index()));
+io_write(":");
 if (list_get(0, index()) != 0) {
     process_exit(1);
 }
-write(":ok");
+io_write(":ok");

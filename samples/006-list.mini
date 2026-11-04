@@ -14,4 +14,4 @@ fn join(items) {
     return output;
 }
 var args = process_args();
-write(join(args));
+io_write(join(args));

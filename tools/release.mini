@@ -5,7 +5,7 @@ include "../libs/release.mini";
 fn main() {
     var args = process_args();
     if (list_length(args) < 1 || list_length(args) > 2) {
-        write_error("usage: mini-release OUTPUT [TAG]\n");
+        io_write_error("usage: mini-release OUTPUT [TAG]\n");
         process_exit(1);
     }
     var directory = case_root();

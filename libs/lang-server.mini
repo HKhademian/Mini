@@ -6,7 +6,7 @@ include "cases.mini";
 
 /// Write one server log line.
 fn lsp_log(message) {
-    write_error("mini-lang-server: " + message + "\n");
+    io_write_error("mini-lang-server: " + message + "\n");
     return 0;
 }
 
@@ -505,7 +505,7 @@ fn lsp_completions(tokens, text, offset) {
 
 /// Send one framed protocol message.
 fn lsp_send(body) {
-    write("Content-Length: " + number_to_text(list_length(text_to_bytes(body))) + "\r\n\r\n" + body);
+    io_write("Content-Length: " + number_to_text(list_length(text_to_bytes(body))) + "\r\n\r\n" + body);
     return 0;
 }
 
@@ -774,7 +774,7 @@ fn lsp_read_message() {
     var length = -1;
     var done = false;
     while (!done) {
-        var line = read_line();
+        var line = io_read_line();
         if (line == "") {
             done = true;
         } else {
@@ -786,7 +786,7 @@ fn lsp_read_message() {
     if (length < 0) {
         return 0;
     }
-    var body = text_from_bytes(read_bytes(length));
+    var body = text_from_bytes(io_read_bytes(length));
     var parsed = json_parse(body);
     if (!map_get(parsed, "ok")) {
         lsp_log("invalid JSON message");

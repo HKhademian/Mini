@@ -1,6 +1,6 @@
-var token = readAll();
+var token = io_read_all();
 if (token == ";") {
-    write("semicolon");
+    io_write("semicolon");
 } else {
-    write("other");
+    io_write("other");
 }

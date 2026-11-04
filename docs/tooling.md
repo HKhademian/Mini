@@ -93,7 +93,7 @@ For example:
 
 ```text
 var value=1;// keep
-if(value==1){write("ok");}else{write("no");}
+if(value==1){io_write("ok");}else{io_write("no");}
 ```
 
 becomes:
@@ -101,9 +101,9 @@ becomes:
 ```text
 var value = 1; // keep
 if (value == 1) {
-    write("ok");
+    io_write("ok");
 } else {
-    write("no");
+    io_write("no");
 }
 ```
 

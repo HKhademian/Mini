@@ -1,5 +1,5 @@
-var source = readAll();
+var source = io_read_all();
 var output = source;
 source = "";
 output = output + "!";
-write(output);
+io_write(output);

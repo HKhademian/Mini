@@ -1,6 +1,6 @@
 var items = map_new();
 var fresh = map_new();
-var key = readAll();
+var key = io_read_all();
 map_set(items, key, 0);
 map_set(items, key + "!", false);
 if (!map_has(items, key) || !map_has(items, key + "!")) {
@@ -10,4 +10,4 @@ map_set(items, key, "replacement");
 if (!map_has(items, key) || map_has(items, key + "?") || map_has(fresh, key)) {
     process_exit(1);
 }
-write("present");
+io_write("present");

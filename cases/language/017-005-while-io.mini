@@ -1,8 +1,8 @@
-var token = readAll();
+var token = io_read_all();
 var position = 0;
 var output = "";
 while (position < 3) {
     output = output + token;
     position = position + 1;
 }
-write(output);
+io_write(output);

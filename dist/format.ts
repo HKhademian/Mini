@@ -976,7 +976,7 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_copy");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "json_to_text");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "number_to_text");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_to_text");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "write_error");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_write_error");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_exit");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_get");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "list_length");
@@ -993,8 +993,8 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_length");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_find");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_split");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_slice");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "readAll");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "write");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_all");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_write");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "json_parse");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_to_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "text_from_bytes");
@@ -1011,8 +1011,8 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_spawn");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_script_path");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_env");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "read_line");
-$mini_list_set(builtin_names_list, (builtin_names_list).length, "read_bytes");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_line");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
@@ -1027,7 +1027,7 @@ $mini_map_set(builtin_name_set, "list_copy", true);
 $mini_map_set(builtin_name_set, "json_to_text", true);
 $mini_map_set(builtin_name_set, "number_to_text", true);
 $mini_map_set(builtin_name_set, "list_to_text", true);
-$mini_map_set(builtin_name_set, "write_error", true);
+$mini_map_set(builtin_name_set, "io_write_error", true);
 $mini_map_set(builtin_name_set, "process_exit", true);
 $mini_map_set(builtin_name_set, "list_get", true);
 $mini_map_set(builtin_name_set, "list_length", true);
@@ -1044,8 +1044,8 @@ $mini_map_set(builtin_name_set, "text_length", true);
 $mini_map_set(builtin_name_set, "text_find", true);
 $mini_map_set(builtin_name_set, "text_split", true);
 $mini_map_set(builtin_name_set, "text_slice", true);
-$mini_map_set(builtin_name_set, "readAll", true);
-$mini_map_set(builtin_name_set, "write", true);
+$mini_map_set(builtin_name_set, "io_read_all", true);
+$mini_map_set(builtin_name_set, "io_write", true);
 $mini_map_set(builtin_name_set, "json_parse", true);
 $mini_map_set(builtin_name_set, "text_to_bytes", true);
 $mini_map_set(builtin_name_set, "text_from_bytes", true);
@@ -1062,8 +1062,8 @@ $mini_map_set(builtin_name_set, "path_remove", true);
 $mini_map_set(builtin_name_set, "process_spawn", true);
 $mini_map_set(builtin_name_set, "process_script_path", true);
 $mini_map_set(builtin_name_set, "process_env", true);
-$mini_map_set(builtin_name_set, "read_line", true);
-$mini_map_set(builtin_name_set, "read_bytes", true);
+$mini_map_set(builtin_name_set, "io_read_line", true);
+$mini_map_set(builtin_name_set, "io_read_bytes", true);
 $mini_map_set(builtin_name_set, "value_kind", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
@@ -1078,7 +1078,7 @@ $mini_map_set(builtin_parameter_kinds, "list_copy", "list");
 $mini_map_set(builtin_parameter_kinds, "json_to_text", "unknown");
 $mini_map_set(builtin_parameter_kinds, "number_to_text", "number");
 $mini_map_set(builtin_parameter_kinds, "list_to_text", "list,text");
-$mini_map_set(builtin_parameter_kinds, "write_error", "text");
+$mini_map_set(builtin_parameter_kinds, "io_write_error", "text");
 $mini_map_set(builtin_parameter_kinds, "process_exit", "number");
 $mini_map_set(builtin_parameter_kinds, "list_get", "unknown,number");
 $mini_map_set(builtin_parameter_kinds, "list_length", "list");
@@ -1095,8 +1095,8 @@ $mini_map_set(builtin_parameter_kinds, "text_length", "text");
 $mini_map_set(builtin_parameter_kinds, "text_find", "text,text");
 $mini_map_set(builtin_parameter_kinds, "text_split", "text,text");
 $mini_map_set(builtin_parameter_kinds, "text_slice", "text,number,number");
-$mini_map_set(builtin_parameter_kinds, "readAll", "");
-$mini_map_set(builtin_parameter_kinds, "write", "text");
+$mini_map_set(builtin_parameter_kinds, "io_read_all", "");
+$mini_map_set(builtin_parameter_kinds, "io_write", "text");
 $mini_map_set(builtin_parameter_kinds, "json_parse", "text");
 $mini_map_set(builtin_parameter_kinds, "text_to_bytes", "text");
 $mini_map_set(builtin_parameter_kinds, "text_from_bytes", "list");
@@ -1113,8 +1113,8 @@ $mini_map_set(builtin_parameter_kinds, "path_remove", "text");
 $mini_map_set(builtin_parameter_kinds, "process_spawn", "map");
 $mini_map_set(builtin_parameter_kinds, "process_script_path", "");
 $mini_map_set(builtin_parameter_kinds, "process_env", "text");
-$mini_map_set(builtin_parameter_kinds, "read_line", "");
-$mini_map_set(builtin_parameter_kinds, "read_bytes", "number");
+$mini_map_set(builtin_parameter_kinds, "io_read_line", "");
+$mini_map_set(builtin_parameter_kinds, "io_read_bytes", "number");
 $mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
@@ -1129,7 +1129,7 @@ $mini_map_set(builtin_result_kinds, "list_copy", "list");
 $mini_map_set(builtin_result_kinds, "json_to_text", "text");
 $mini_map_set(builtin_result_kinds, "number_to_text", "text");
 $mini_map_set(builtin_result_kinds, "list_to_text", "text");
-$mini_map_set(builtin_result_kinds, "write_error", "void");
+$mini_map_set(builtin_result_kinds, "io_write_error", "void");
 $mini_map_set(builtin_result_kinds, "process_exit", "void");
 $mini_map_set(builtin_result_kinds, "list_get", "unknown");
 $mini_map_set(builtin_result_kinds, "list_length", "number");
@@ -1146,8 +1146,8 @@ $mini_map_set(builtin_result_kinds, "text_length", "number");
 $mini_map_set(builtin_result_kinds, "text_find", "number");
 $mini_map_set(builtin_result_kinds, "text_split", "list");
 $mini_map_set(builtin_result_kinds, "text_slice", "text");
-$mini_map_set(builtin_result_kinds, "readAll", "text");
-$mini_map_set(builtin_result_kinds, "write", "void");
+$mini_map_set(builtin_result_kinds, "io_read_all", "text");
+$mini_map_set(builtin_result_kinds, "io_write", "void");
 $mini_map_set(builtin_result_kinds, "json_parse", "map");
 $mini_map_set(builtin_result_kinds, "text_to_bytes", "list");
 $mini_map_set(builtin_result_kinds, "text_from_bytes", "text");
@@ -1164,8 +1164,8 @@ $mini_map_set(builtin_result_kinds, "path_remove", "void");
 $mini_map_set(builtin_result_kinds, "process_spawn", "map");
 $mini_map_set(builtin_result_kinds, "process_script_path", "text");
 $mini_map_set(builtin_result_kinds, "process_env", "text");
-$mini_map_set(builtin_result_kinds, "read_line", "text");
-$mini_map_set(builtin_result_kinds, "read_bytes", "list");
+$mini_map_set(builtin_result_kinds, "io_read_line", "text");
+$mini_map_set(builtin_result_kinds, "io_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "value_kind", "text");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
@@ -1180,7 +1180,7 @@ $mini_map_set(builtin_import_names, "list_copy", "");
 $mini_map_set(builtin_import_names, "json_to_text", "");
 $mini_map_set(builtin_import_names, "number_to_text", "");
 $mini_map_set(builtin_import_names, "list_to_text", "");
-$mini_map_set(builtin_import_names, "write_error", "writeSync");
+$mini_map_set(builtin_import_names, "io_write_error", "writeSync");
 $mini_map_set(builtin_import_names, "process_exit", "");
 $mini_map_set(builtin_import_names, "list_get", "");
 $mini_map_set(builtin_import_names, "list_length", "");
@@ -1197,8 +1197,8 @@ $mini_map_set(builtin_import_names, "text_length", "");
 $mini_map_set(builtin_import_names, "text_find", "");
 $mini_map_set(builtin_import_names, "text_split", "");
 $mini_map_set(builtin_import_names, "text_slice", "");
-$mini_map_set(builtin_import_names, "readAll", "readFileSync");
-$mini_map_set(builtin_import_names, "write", "writeSync");
+$mini_map_set(builtin_import_names, "io_read_all", "readFileSync");
+$mini_map_set(builtin_import_names, "io_write", "writeSync");
 $mini_map_set(builtin_import_names, "json_parse", "");
 $mini_map_set(builtin_import_names, "text_to_bytes", "");
 $mini_map_set(builtin_import_names, "text_from_bytes", "");
@@ -1215,8 +1215,8 @@ $mini_map_set(builtin_import_names, "path_remove", "");
 $mini_map_set(builtin_import_names, "process_spawn", "");
 $mini_map_set(builtin_import_names, "process_script_path", "");
 $mini_map_set(builtin_import_names, "process_env", "");
-$mini_map_set(builtin_import_names, "read_line", "");
-$mini_map_set(builtin_import_names, "read_bytes", "");
+$mini_map_set(builtin_import_names, "io_read_line", "");
+$mini_map_set(builtin_import_names, "io_read_bytes", "");
 $mini_map_set(builtin_import_names, "value_kind", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
@@ -1231,7 +1231,7 @@ $mini_map_set(builtin_helper_keys, "list_copy", "list_copy");
 $mini_map_set(builtin_helper_keys, "json_to_text", "json_to_text");
 $mini_map_set(builtin_helper_keys, "number_to_text", "number_to_text");
 $mini_map_set(builtin_helper_keys, "list_to_text", "list_to_text");
-$mini_map_set(builtin_helper_keys, "write_error", "");
+$mini_map_set(builtin_helper_keys, "io_write_error", "");
 $mini_map_set(builtin_helper_keys, "process_exit", "");
 $mini_map_set(builtin_helper_keys, "list_get", "list_get");
 $mini_map_set(builtin_helper_keys, "list_length", "");
@@ -1248,8 +1248,8 @@ $mini_map_set(builtin_helper_keys, "text_length", "");
 $mini_map_set(builtin_helper_keys, "text_find", "text_find");
 $mini_map_set(builtin_helper_keys, "text_split", "text_split");
 $mini_map_set(builtin_helper_keys, "text_slice", "text_slice");
-$mini_map_set(builtin_helper_keys, "readAll", "");
-$mini_map_set(builtin_helper_keys, "write", "");
+$mini_map_set(builtin_helper_keys, "io_read_all", "");
+$mini_map_set(builtin_helper_keys, "io_write", "");
 $mini_map_set(builtin_helper_keys, "json_parse", "json_parse");
 $mini_map_set(builtin_helper_keys, "text_to_bytes", "text_to_bytes");
 $mini_map_set(builtin_helper_keys, "text_from_bytes", "text_from_bytes");
@@ -1266,8 +1266,8 @@ $mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
 $mini_map_set(builtin_helper_keys, "process_spawn", "process_spawn");
 $mini_map_set(builtin_helper_keys, "process_script_path", "");
 $mini_map_set(builtin_helper_keys, "process_env", "");
-$mini_map_set(builtin_helper_keys, "read_line", "read_line");
-$mini_map_set(builtin_helper_keys, "read_bytes", "read_bytes");
+$mini_map_set(builtin_helper_keys, "io_read_line", "read_line");
+$mini_map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
 $mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
@@ -1398,10 +1398,10 @@ function helper_text(key) {
     if ((key === "value_kind")) {
         return value_kind_helper;
     }
-    if ((key === "read_line")) {
+    if (((key === "read_line") || (key === "io_read_line"))) {
         return read_line_helper;
     }
-    if ((key === "read_bytes")) {
+    if (((key === "read_bytes") || (key === "io_read_bytes"))) {
         return read_bytes_helper;
     }
     return "";
@@ -1409,7 +1409,13 @@ function helper_text(key) {
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
-    if (((((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind")) || (name === "read_line")) || (name === "read_bytes"))) {
+    if ((name === "io_read_line")) {
+        return "$mini_read_line()";
+    }
+    if ((name === "io_read_bytes")) {
+        return (("$mini_read_bytes(" + first) + ")");
+    }
+    if (((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {
@@ -1433,7 +1439,7 @@ function builtin_emit(name, args) {
     if ((name === "list_new")) {
         return "[]";
     }
-    if ((name === "write_error")) {
+    if ((name === "io_write_error")) {
         return (("writeSync(2, " + first) + ")");
     }
     if ((name === "process_exit")) {
@@ -1454,10 +1460,10 @@ function builtin_emit(name, args) {
     if ((name === "text_length")) {
         return (("(" + first) + ").length");
     }
-    if ((name === "readAll")) {
+    if ((name === "io_read_all")) {
         return "readFileSync(0, \"utf8\")";
     }
-    if ((name === "write")) {
+    if ((name === "io_write")) {
         return (("writeSync(1, " + first) + ")");
     }
     return "";

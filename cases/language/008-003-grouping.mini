@@ -1,1 +1,1 @@
-write((("mi") + "ni"));
+io_write((("mi") + "ni"));

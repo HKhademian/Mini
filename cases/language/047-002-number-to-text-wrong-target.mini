@@ -1,1 +1,1 @@
-write(number_to_text("1"));
+io_write(number_to_text("1"));

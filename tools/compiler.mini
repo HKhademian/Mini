@@ -58,18 +58,18 @@ fn main() {
         }
         var metadata = map_new();
         map_set(metadata, "builtins", entries);
-        write(json_to_text(metadata) + "\n");
+        io_write(json_to_text(metadata) + "\n");
         return 0;
     }
     if (command == "tokens") {
         var count = list_length(args) - offset;
         var token_source = list_get(args, 1 + offset);
         if (count < 2 || count > 3 || !text_ends_with(token_source, ".mini")) {
-            write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
         var tokens = tokenize(file_read(token_source), basename(token_source), include_comments);
-        write(token_json(tokens));
+        io_write(token_json(tokens));
         return 0;
     }
     var source = command;
@@ -78,17 +78,17 @@ fn main() {
         source = list_get(args, 1);
         output = list_get(args, 2);
         if (list_length(args) > 3) {
-            write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     } else {
         if (list_length(args) > 2) {
-            write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
     }
     if (source == 0 || !text_ends_with(source, ".mini")) {
-        write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
+        io_write_error("usage: mini SOURCE.mini [OUTPUT.ts] | compile SOURCE.mini [OUTPUT.ts] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
     var tokens = tokenize(file_read(source), basename(source), false);

@@ -41,9 +41,9 @@ empty. `status` is 1 when the command cannot start or ends by a signal.
 `value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
 `other` for the runtime kind of a value.
 
-`read_line()` reads one line from standard input through LF, strips a trailing
+`io_read_line()` reads one line from standard input through LF, strips a trailing
 CR, and returns its UTF-8 text. End of input returns empty text.
-`read_bytes(count)` reads up to `count` bytes from standard input as a list of
+`io_read_bytes(count)` reads up to `count` bytes from standard input as a list of
 integers 0-255; end of input returns a shorter list or an empty list.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
@@ -51,10 +51,10 @@ arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
 true on success, and false with `value` 0 for invalid JSON or non-text input.
 
-The accepted [text I/O contract](language.md) starts with `readAll()` and `write(text)`:
+The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`write` produces no value. The compiler implements these operations.
+`io_write` produces no value. The compiler implements these operations.
 
 The accepted built-ins `text_length(text)`, `text_get(text, index)`,
 `text_find(text, needle)`, `text_slice(text, start, end)`, and
@@ -148,7 +148,7 @@ operations back tool process setup and cleanup.
 `process_env(name)` covers the environment need; a bulk `process_envs()` map remains
 unnecessary until a concrete caller needs it.
 
-The compiler implements `write_error(text)`: exact UTF-8 output to stderr, without
+The compiler implements `io_write_error(text)`: exact UTF-8 output to stderr, without
 an added newline or result value. It completes before returning so a following
 `process_exit` preserves the diagnostic. This requires primitive host access.
 

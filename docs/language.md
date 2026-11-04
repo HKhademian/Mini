@@ -65,7 +65,7 @@ A Mini source file may begin with a shebang line:
 
 ```text
 #!/usr/bin/env -S mini run
-write("ok\n");
+io_write("ok\n");
 ```
 
 - Only a `#!` at offset 0 is a shebang. It consumes through CR, LF, or end of
@@ -217,13 +217,13 @@ Mini's typing strategy, and host operation signatures remain open. Mini `==` /
 Use ordinary calls for two primitive operations:
 
 ```text
-var source = readAll();
-write(source);
+var source = io_read_all();
+io_write(source);
 ```
 
-- `readAll()` consumes remaining standard input through EOF and returns text.
+- `io_read_all()` consumes remaining standard input through EOF and returns text.
   At EOF it returns empty text.
-- `write(text)` writes text to standard output exactly, with no added newline.
+- `io_write(text)` writes text to standard output exactly, with no added newline.
   It produces no value; use it as a call statement ending in `;`.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 
@@ -242,10 +242,10 @@ the prefix adds no namespace syntax. `text_slice` provides the common slicing
 operation; a standard library may still add conveniences on top of it.
 
 ```text
-var source = readAll();
+var source = io_read_all();
 var position = 0;
 while (position < text_length(source)) {
-    write(text_get(source, position));
+    io_write(text_get(source, position));
     position = position + 1;
 }
 ```
@@ -326,7 +326,7 @@ Use shared list operations for a list returned by the host:
 var args = process_args();
 var position = 0;
 while (position < list_length(args)) {
-    write(list_get(args, position));
+    io_write(list_get(args, position));
     position = position + 1;
 }
 ```
@@ -560,7 +560,7 @@ variable; a bulk `process_envs()` map remains a candidate until needed.
 
 ```text
 var bytes = text_to_bytes("Mini");
-write(text_from_bytes(bytes));
+io_write(text_from_bytes(bytes));
 ```
 
 - `text_to_bytes(text)` returns UTF-8 bytes as a list of integers 0-255.
@@ -572,7 +572,7 @@ write(text_from_bytes(bytes));
 ## Accepted operation: SHA-256 hashing
 
 ```text
-write(hash_sha256("abc"));
+io_write(hash_sha256("abc"));
 ```
 
 - `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase
@@ -655,14 +655,14 @@ if (value_kind(value) == "text") { ... }
 ## Accepted operations: streaming input
 
 ```text
-var line = read_line();
-var bytes = read_bytes(16);
+var line = io_read_line();
+var bytes = io_read_bytes(16);
 ```
 
-- `read_line()` reads standard input through LF and returns the UTF-8 text
+- `io_read_line()` reads standard input through LF and returns the UTF-8 text
   without the line ending. A trailing CR is removed. End of input returns empty
   text.
-- `read_bytes(count)` reads up to `count` bytes as a list of integers 0-255.
+- `io_read_bytes(count)` reads up to `count` bytes as a list of integers 0-255.
   End of input returns fewer bytes or an empty list.
 
 ## Accepted operation: JSON parsing
@@ -686,7 +686,7 @@ Run one child process and inspect its result:
 var arguments = list_new();
 list_set(arguments, 0, "--version");
 var result = process_run("node", arguments, "capture");
-write(map_get(result, "stdout"));
+io_write(map_get(result, "stdout"));
 ```
 
 - `process_run(command, args, mode)` runs one command to completion without a
@@ -729,11 +729,11 @@ directory_remove(directory);
 The compiler needs a separate stream for diagnostics:
 
 ```text
-write_error("expected ;\n");
+io_write_error("expected ;\n");
 process_exit(1);
 ```
 
-- `write_error(text)` writes UTF-8 text to standard error, exactly as supplied.
+- `io_write_error(text)` writes UTF-8 text to standard error, exactly as supplied.
 - It adds no newline and produces no value. Empty text writes nothing.
 - The write completes before the call returns, preserving the diagnostic when
   followed by `process_exit`.

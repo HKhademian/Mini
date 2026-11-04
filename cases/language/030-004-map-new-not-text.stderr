@@ -1,3 +1,3 @@
 030-004-map-new-not-text.mini:1:1: expected text argument
-write(map_new());
+io_write(map_new());
 ^

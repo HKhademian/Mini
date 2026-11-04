@@ -8,7 +8,7 @@ include "cases.mini";
 
 /// Report usage and stop.
 fn test_usage() {
-    write_error("usage: mini-test [FILTER]\n");
+    io_write_error("usage: mini-test [FILTER]\n");
     process_exit(1);
     return 0;
 }
@@ -19,14 +19,14 @@ fn test_run(root, filter, file, candidate) {
     if (file != "") {
         var loaded = case_load_case(file);
         if (!map_get(loaded, "ok")) {
-            write_error(map_get(loaded, "message") + "\n");
+            io_write_error(map_get(loaded, "message") + "\n");
             process_exit(1);
         }
         list_set(fixtures, 0, map_get(loaded, "fixture"));
     } else {
         var selected = case_load_cases(filter, root);
         if (!map_get(selected, "ok")) {
-            write_error(map_get(selected, "message") + "\n");
+            io_write_error(map_get(selected, "message") + "\n");
             process_exit(1);
         }
         fixtures = map_get(selected, "fixtures");
@@ -49,24 +49,24 @@ fn test_run(root, filter, file, candidate) {
             var name = map_get(scenario, "name");
             if (map_has(definition, "pending")) {
                 pending = pending + 1;
-                write("PENDING " + id + "/" + name + ": " + map_get(definition, "pending") + "\n");
+                io_write("PENDING " + id + "/" + name + ": " + map_get(definition, "pending") + "\n");
             } else {
                 count = count + 1;
                 var result = case_verify_scenario(fixture, scenario, root, "");
                 if (map_get(result, "ok")) {
-                    write("PASS " + id + "/" + name + "\n");
+                    io_write("PASS " + id + "/" + name + "\n");
                 } else {
                     failures = failures + 1;
-                    write_error("FAIL " + id + "/" + name + ": " + map_get(result, "message") + "\n");
+                    io_write_error("FAIL " + id + "/" + name + ": " + map_get(result, "message") + "\n");
                 }
             }
             scenario_index = scenario_index + 1;
         }
         fixture_index = fixture_index + 1;
     }
-    write(number_to_text(count - failures) + "/" + number_to_text(count) + " scenarios passed\n");
+    io_write(number_to_text(count - failures) + "/" + number_to_text(count) + " scenarios passed\n");
     if (pending > 0) {
-        write(number_to_text(pending) + " scenarios pending\n");
+        io_write(number_to_text(pending) + " scenarios pending\n");
     }
     if (failures > 0 || (pending > 0 && (file != "" || count == 0))) {
         return 1;
@@ -100,7 +100,7 @@ fn test_candidate(fixtures, root, compiler) {
                         passed = passed + 1;
                     } else {
                         failed = failed + 1;
-                        write_error("FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
+                        io_write_error("FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
                             + ": " + map_get(result, "message") + "\n");
                     }
                     scenario_index = scenario_index + 1;
@@ -109,12 +109,12 @@ fn test_candidate(fixtures, root, compiler) {
         }
         fixture_index = fixture_index + 1;
     }
-    write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " Mini-source scenarios passed\n");
+    io_write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " Mini-source scenarios passed\n");
     if (pending > 0) {
-        write(number_to_text(pending) + " cases pending\n");
+        io_write(number_to_text(pending) + " cases pending\n");
     }
     if (tools > 0) {
-        write(number_to_text(tools) + " tool cases skipped; run mini test for those\n");
+        io_write(number_to_text(tools) + " tool cases skipped; run mini test for those\n");
     }
     if (failed > 0) {
         return 1;
@@ -146,7 +146,7 @@ fn test_units(root, filter) {
             var compiled = case_run(process_exec_path(), compile_args, root, list_new());
             if (map_get(compiled, "status") != 0) {
                 failed = failed + 1;
-                write_error("FAIL " + name + ": " + text_from_bytes(map_get(compiled, "stderr")));
+                io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(compiled, "stderr")));
             } else {
                 var run_args = list_new();
                 list_set(run_args, 0, output);
@@ -154,17 +154,17 @@ fn test_units(root, filter) {
                 var result = case_run(process_exec_path(), run_args, root, list_new());
                 if (map_get(result, "status") != 0) {
                     failed = failed + 1;
-                    write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));
+                    io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));
                 } else {
                     passed = passed + 1;
-                    write("PASS " + name + "\n");
+                    io_write("PASS " + name + "\n");
                 }
             }
             path_remove(work);
         }
         position = position + 1;
     }
-    write(number_to_text(passed) + "/" + number_to_text(count) + " unit tests passed\n");
+    io_write(number_to_text(passed) + "/" + number_to_text(count) + " unit tests passed\n");
     if (failed > 0 || count == 0) {
         return 1;
     }

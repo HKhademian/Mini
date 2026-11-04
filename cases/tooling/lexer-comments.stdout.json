@@ -3,8 +3,8 @@
     "kind": "keyword",
     "text": "var",
     "source": "039-007-comments-positions.mini",
-    "start": 12,
-    "end": 15,
+    "start": 11,
+    "end": 14,
     "line": 2,
     "column": 1,
     "context": "var value = 1; /// doc"
@@ -13,8 +13,8 @@
     "kind": "identifier",
     "text": "value",
     "source": "039-007-comments-positions.mini",
-    "start": 16,
-    "end": 21,
+    "start": 15,
+    "end": 20,
     "line": 2,
     "column": 5,
     "context": "var value = 1; /// doc"
@@ -23,8 +23,8 @@
     "kind": "symbol",
     "text": "=",
     "source": "039-007-comments-positions.mini",
-    "start": 22,
-    "end": 23,
+    "start": 21,
+    "end": 22,
     "line": 2,
     "column": 11,
     "context": "var value = 1; /// doc"
@@ -33,8 +33,8 @@
     "kind": "number",
     "text": "1",
     "source": "039-007-comments-positions.mini",
-    "start": 24,
-    "end": 25,
+    "start": 23,
+    "end": 24,
     "line": 2,
     "column": 13,
     "context": "var value = 1; /// doc"
@@ -43,68 +43,68 @@
     "kind": "symbol",
     "text": ";",
     "source": "039-007-comments-positions.mini",
-    "start": 25,
-    "end": 26,
+    "start": 24,
+    "end": 25,
     "line": 2,
     "column": 14,
     "context": "var value = 1; /// doc"
   },
   {
     "kind": "identifier",
-    "text": "write",
+    "text": "io_write",
     "source": "039-007-comments-positions.mini",
-    "start": 37,
-    "end": 42,
+    "start": 35,
+    "end": 43,
     "line": 3,
     "column": 2,
-    "context": "\twrite(\"//\"); // tail"
+    "context": "\tio_write(\"//\"); // tail"
   },
   {
     "kind": "symbol",
     "text": "(",
     "source": "039-007-comments-positions.mini",
-    "start": 42,
-    "end": 43,
+    "start": 43,
+    "end": 44,
     "line": 3,
-    "column": 7,
-    "context": "\twrite(\"//\"); // tail"
+    "column": 10,
+    "context": "\tio_write(\"//\"); // tail"
   },
   {
     "kind": "text",
     "text": "\"//\"",
     "source": "039-007-comments-positions.mini",
-    "start": 43,
-    "end": 47,
+    "start": 44,
+    "end": 48,
     "line": 3,
-    "column": 8,
-    "context": "\twrite(\"//\"); // tail"
+    "column": 11,
+    "context": "\tio_write(\"//\"); // tail"
   },
   {
     "kind": "symbol",
     "text": ")",
     "source": "039-007-comments-positions.mini",
-    "start": 47,
-    "end": 48,
+    "start": 48,
+    "end": 49,
     "line": 3,
-    "column": 12,
-    "context": "\twrite(\"//\"); // tail"
+    "column": 15,
+    "context": "\tio_write(\"//\"); // tail"
   },
   {
     "kind": "symbol",
     "text": ";",
     "source": "039-007-comments-positions.mini",
-    "start": 48,
-    "end": 49,
+    "start": 49,
+    "end": 50,
     "line": 3,
-    "column": 13,
-    "context": "\twrite(\"//\"); // tail"
+    "column": 16,
+    "context": "\tio_write(\"//\"); // tail"
   },
   {
     "kind": "eof",
     "text": "",
     "source": "039-007-comments-positions.mini",
-    "start": 65,
-    "end": 65,
+    "start": 66,
+    "end": 66,
     "line": 4,
     "column": 8,
     "context": "/// eof"

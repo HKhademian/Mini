@@ -1,4 +1,4 @@
-write(join("mi", "ni"));
+io_write(join("mi", "ni"));
 fn join(left, right) {
     return left + right;
 }

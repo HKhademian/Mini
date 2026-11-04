@@ -1,1 +1,1 @@
-write(text_split(1, ","));
+io_write(text_split(1, ","));

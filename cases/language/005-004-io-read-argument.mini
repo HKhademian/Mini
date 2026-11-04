@@ -1,1 +1,1 @@
-var source = readAll("mini");
+var source = io_read_all("mini");

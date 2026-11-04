@@ -1,10 +1,10 @@
-var source = readAll();
+var source = io_read_all();
 if (text_length(source) == 0) {
-    write("empty");
+    io_write("empty");
 } else {
     if (text_length(source) == 3) {
-        write("three");
+        io_write("three");
     } else {
-        write("other");
+        io_write("other");
     }
 }

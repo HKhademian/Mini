@@ -9,7 +9,7 @@ fn main() {
         docs_only = true;
     } else {
         if (list_length(args) != 0) {
-            write_error("usage: mini-check [--docs | SOURCE.mini | -]\n");
+            io_write_error("usage: mini-check [--docs | SOURCE.mini | -]\n");
             process_exit(1);
         }
     }

@@ -16,7 +16,7 @@ fn run_cleanup(directory) {
 fn run_program(compiler, source, forwarded) {
     var directory = directory_temp();
     if (text_length(directory) == 0) {
-        write_error("cannot create a temporary directory\n");
+        io_write_error("cannot create a temporary directory\n");
         process_exit(1);
     }
     var output = directory + "/program.ts";

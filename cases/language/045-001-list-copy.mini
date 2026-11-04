@@ -5,9 +5,9 @@ var copy = list_copy(original);
 list_set(copy, 1, "changed");
 list_set(copy, 2, "added");
 if (list_length(original) == 2 && list_get(original, 1) == "second" && list_length(copy) == 3 && list_get(copy, 1) == "changed" && list_get(copy, 2) == "added") {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }
 var nested = map_new();
 map_set(nested, "value", "shared");
@@ -15,7 +15,7 @@ list_set(original, 2, nested);
 var nested_copy = list_copy(original);
 map_set(list_get(nested_copy, 2), "value", "changed");
 if (map_get(nested, "value") == "changed") {
-    write("shared\n");
+    io_write("shared\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }

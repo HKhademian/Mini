@@ -1,6 +1,6 @@
 /// Count key snapshots before/after replacement, including empty and method-like keys.
 var items = map_new();
-var key = readAll();
+var key = io_read_all();
 if (list_length(map_keys(items)) != 0) {
     process_exit(1);
 }
@@ -17,4 +17,4 @@ var count = list_length(map_keys(items));
 if (count != 2 || list_length(map_keys(items)) != count || list_length(map_keys(map_new())) != 0) {
     process_exit(1);
 }
-write("two");
+io_write("two");

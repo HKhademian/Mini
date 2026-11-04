@@ -1,1 +1,1 @@
-write(map_new());
+io_write(map_new());

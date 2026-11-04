@@ -1,8 +1,8 @@
 fn visit(value) {
-    write(value);
+    io_write(value);
     return true;
 }
-var token = readAll();
+var token = io_read_all();
 var enabled = token == "yes";
 var left = enabled && visit("A");
 var right = enabled || visit("B");

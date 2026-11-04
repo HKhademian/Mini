@@ -1,4 +1,4 @@
 include "060-001-include-helper.mini";
 include "060-001-include-helper.mini";
 include "060-001-include-nested.mini";
-write(number_to_text(add_one(1)) + "|" + nested_marker() + "\n");
+io_write(number_to_text(add_one(1)) + "|" + nested_marker() + "\n");

@@ -2,4 +2,4 @@ fn wrapper() {
     include "060-001-include-helper.mini";
     return 1;
 }
-write(number_to_text(wrapper()));
+io_write(number_to_text(wrapper()));

@@ -40,8 +40,8 @@ function compiled(file: string): string {
   return readFileSync(output, 'utf8');
 }
 
-const example = 'var value=1;// keep\nif(value==1){write("ok");}else{write("no");}\n';
-const canonical = 'var value = 1; // keep\nif (value == 1) {\n    write("ok");\n} else {\n    write("no");\n}\n';
+const example = 'var value=1;// keep\nif(value==1){io_write("ok");}else{io_write("no");}\n';
+const canonical = 'var value = 1; // keep\nif (value == 1) {\n    io_write("ok");\n} else {\n    io_write("no");\n}\n';
 
 test('formats the documented example', () => {
   assert.equal(format(example), canonical);
@@ -79,8 +79,8 @@ test('unary and binary operators keep their spacing', () => {
 });
 
 test('preserves explicit parentheses and evaluation order', () => {
-  const source = 'var value=(1+2)+3;\nif((value==6)&&(!false)){write("ok");}\n';
-  assert.equal(format(source), 'var value = (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    write("ok");\n}\n');
+  const source = 'var value=(1+2)+3;\nif((value==6)&&(!false)){io_write("ok");}\n';
+  assert.equal(format(source), 'var value = (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write("ok");\n}\n');
 });
 
 test('keeps a comment between braces and else inside the else block', () => {

@@ -5,7 +5,7 @@ include "cases.mini";
 fn mini_compiler(root) {
     var parsed = case_json_file(case_path_join(root, "config/compiler.json"));
     if (!map_get(parsed, "ok")) {
-        write_error(map_get(parsed, "message") + "\n");
+        io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
     }
     return map_get(map_get(parsed, "value"), "entry");
@@ -15,7 +15,7 @@ fn mini_compiler(root) {
 fn mini_versions(root) {
     var parsed = case_json_file(case_path_join(root, "config/versions.json"));
     if (!map_get(parsed, "ok")) {
-        write_error(map_get(parsed, "message") + "\n");
+        io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
     }
     return map_get(parsed, "value");
@@ -72,15 +72,15 @@ fn mini_rest(items, start) {
 
 /// Fail with a command usage message.
 fn mini_usage(message) {
-    write_error(message + "\n");
+    io_write_error(message + "\n");
     return 1;
 }
 
 /// Print the dispatcher help.
 fn mini_help() {
-    write("mini: tiny self-hosting foundation for language projects\n");
-    write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check] | ci TASK_FILE\n");
-    write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
+    io_write("mini: tiny self-hosting foundation for language projects\n");
+    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile SOURCE.mini [OUTPUT.ts] | build [--check] | ci TASK_FILE\n");
+    io_write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
     return 0;
 }
 
@@ -162,7 +162,7 @@ fn mini_command(root, command, args) {
         }
         var status = mini_spawn(root, "dist/release.ts", args);
         if (status == 0) {
-            write("Release prepared.\n");
+            io_write("Release prepared.\n");
         }
         return status;
     }
@@ -212,7 +212,7 @@ fn mini_run(executable, args, root) {
             return mini_help();
         }
         if (list_get(args, 0) == "--version") {
-            write(mini_tag(root, "mini") + "\n" + mini_tag(root, "cli") + "\n");
+            io_write(mini_tag(root, "mini") + "\n" + mini_tag(root, "cli") + "\n");
             return 0;
         }
         command = list_get(args, 0);
@@ -232,7 +232,7 @@ fn mini_run(executable, args, root) {
     if (list_length(rest) == 1 && list_get(rest, 0) == "--version") {
         var component = mini_component(command);
         if (component != "") {
-            write(mini_tag(root, component) + "\n");
+            io_write(mini_tag(root, component) + "\n");
             return 0;
         }
     }

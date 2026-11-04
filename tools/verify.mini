@@ -5,14 +5,14 @@ include "../libs/verify.mini";
 fn main() {
     var args = process_args();
     if (list_length(args) > 1) {
-        write_error("usage: mini-verify\n");
+        io_write_error("usage: mini-verify\n");
         process_exit(1);
     }
     var root = case_root();
     if (list_length(args) == 1) {
         root = list_get(args, 0);
     }
-    write(verify_bootstrap(root));
+    io_write(verify_bootstrap(root));
     return 0;
 }
 

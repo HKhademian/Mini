@@ -1,7 +1,7 @@
 /// Read text and print slices that demonstrate bounds and negative indices.
-var source = readAll();
-write(text_slice(source, 0, 3) + "\n");
-write(text_slice(source, 1, 4) + "\n");
-write(text_slice(source, -2, -1) + "\n");
-write(text_slice(source, 2, 100) + "\n");
-write(text_slice(source, 4, 2) + "\n");
+var source = io_read_all();
+io_write(text_slice(source, 0, 3) + "\n");
+io_write(text_slice(source, 1, 4) + "\n");
+io_write(text_slice(source, -2, -1) + "\n");
+io_write(text_slice(source, 2, 100) + "\n");
+io_write(text_slice(source, 4, 2) + "\n");

@@ -11,7 +11,7 @@ fn repeat(token, count) {
     }
     return output;
 }
-var token = readAll();
+var token = io_read_all();
 var count = 3;
 if (token == "zero") {
     count = 0;
@@ -20,4 +20,4 @@ if (token == "zero") {
         count = 1;
     }
 }
-write(repeat(token, count));
+io_write(repeat(token, count));

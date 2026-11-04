@@ -6,8 +6,8 @@ fn mark(value) {
     }
 }
 var value = 2;
-write(mark(value < 2) + mark(value <= 2));
-write(mark(value > 2) + mark(value >= 2));
-write(mark(value == 2) + mark(value != 2));
-write(mark(1 < value) + mark(3 > value));
-write(mark(3 <= value) + mark(1 >= value));
+io_write(mark(value < 2) + mark(value <= 2));
+io_write(mark(value > 2) + mark(value >= 2));
+io_write(mark(value == 2) + mark(value != 2));
+io_write(mark(1 < value) + mark(3 > value));
+io_write(mark(3 <= value) + mark(1 >= value));

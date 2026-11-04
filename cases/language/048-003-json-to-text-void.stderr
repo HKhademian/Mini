@@ -1,3 +1,3 @@
-048-003-json-to-text-void.mini:1:7: expected value argument
-write(json_to_text(list_set(list_new(), 0, "value")));
-      ^
+048-003-json-to-text-void.mini:1:10: expected value argument
+io_write(json_to_text(list_set(list_new(), 0, "value")));
+         ^

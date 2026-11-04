@@ -256,12 +256,12 @@ test('hovers functions and variables with their documentation', async () => {
 test('hovers builtins and returns null for unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///builtin.mini';
-    const text = 'write("ok");\nvar value = missing;\n';
+    const text = 'io_write("ok");\nvar value = missing;\n';
     await openDocument(client, uri, text);
 
-    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'write') } });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
     const builtin = await client.next();
-    assert.match(builtin.result.contents.value, /write\(text\) -> void/);
+    assert.match(builtin.result.contents.value, /io_write\(text\) -> void/);
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
     assert.equal((await client.next()).result, null);
@@ -271,21 +271,21 @@ test('hovers builtins and returns null for unknown identifiers', async () => {
 test('completes declarations, builtins, and keywords by prefix', async () => {
   await session(async client => {
     const uri = 'file:///complete.mini';
-    const text = documented + 'wr\n';
+    const text = documented + 'io\n';
     await openDocument(client, uri, text);
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 8, character: 2 } } });
     const prefixed = await client.next();
     const prefixedLabels = prefixed.result.items.map((item: { label: string }) => item.label);
-    assert.ok(prefixedLabels.includes('write'));
-    assert.ok(prefixedLabels.includes('write_error'));
+    assert.ok(prefixedLabels.includes('io_write'));
+    assert.ok(prefixedLabels.includes('io_write_error'));
     assert.ok(!prefixedLabels.includes('add'));
-    assert.ok(prefixedLabels.every((label: string) => label.startsWith('wr')));
+    assert.ok(prefixedLabels.every((label: string) => label.startsWith('io')));
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 9, character: 0 } } });
     const all = await client.next();
     const labels = all.result.items.map((item: { label: string }) => item.label);
-    for (const label of ['add', 'answer', 'write', 'var', 'fn', 'while']) assert.ok(labels.includes(label), label);
+    for (const label of ['add', 'answer', 'io_write', 'var', 'fn', 'while']) assert.ok(labels.includes(label), label);
     const add = all.result.items.find((item: { label: string }) => item.label === 'add');
     assert.equal(add.detail, 'fn add(a, b)');
     assert.match(add.documentation.value, /Adds two numbers\./);
@@ -326,10 +326,10 @@ test('jumps to function and variable declarations', async () => {
 test('returns no definition for builtins or unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///no-definition.mini';
-    const text = 'write("ok");\nvar value = missing;\n';
+    const text = 'io_write("ok");\nvar value = missing;\n';
     await openDocument(client, uri, text);
 
-    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'write') } });
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
     assert.equal((await client.next()).result, null);
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });

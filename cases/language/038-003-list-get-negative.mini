@@ -4,4 +4,4 @@ list_set(items, 1, "last");
 if (list_get(items, -1) != "last" || list_get(items, -2) != "first" || list_get(items, -3) != 0) {
     process_exit(1);
 }
-write(list_get(items, -2) + "|" + list_get(items, -1));
+io_write(list_get(items, -2) + "|" + list_get(items, -1));

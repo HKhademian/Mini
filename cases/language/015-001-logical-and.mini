@@ -1,6 +1,6 @@
 fn visit() {
-    write("visited");
+    io_write("visited");
     return true;
 }
-var enabled = readAll() == "yes";
+var enabled = io_read_all() == "yes";
 var value = enabled && visit();

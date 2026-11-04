@@ -16,14 +16,14 @@ var result = process_spawn(options);
 var out = map_get(result, "stdout");
 if (map_get(result, "status") == 0 && list_length(out) == 3 && list_get(out, 0) == 0 && list_get(out, 1) == 255
     && list_get(out, 2) == 10 && map_get(result, "error") == "") {
-    write("capture ok\n");
+    io_write("capture ok\n");
 } else {
-    write("capture bad\n");
+    io_write("capture bad\n");
 }
 if (file_read(dir + "/out.txt") == "x") {
-    write("directory ok\n");
+    io_write("directory ok\n");
 } else {
-    write("directory bad\n");
+    io_write("directory bad\n");
 }
 var inherited = map_new();
 map_set(inherited, "command", process_exec_path());
@@ -34,16 +34,16 @@ map_set(inherited, "arguments", inherit_args);
 map_set(inherited, "mode", "inherit");
 var shown = process_spawn(inherited);
 if (map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0) {
-    write("inherit ok\n");
+    io_write("inherit ok\n");
 } else {
-    write("inherit bad\n");
+    io_write("inherit bad\n");
 }
 var missing = map_new();
 map_set(missing, "command", "mini-no-such-command");
 var failed = process_spawn(missing);
 if (map_get(failed, "status") == 1 && text_length(map_get(failed, "error")) > 0) {
-    write("failure ok\n");
+    io_write("failure ok\n");
 } else {
-    write("failure bad\n");
+    io_write("failure bad\n");
 }
 path_remove(dir);

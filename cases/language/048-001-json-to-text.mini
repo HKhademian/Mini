@@ -1,27 +1,27 @@
 if (json_to_text("abc") == "\"abc\"" && json_to_text(42) == "42" && json_to_text(true) == "true" && json_to_text(false) == "false" && json_to_text("a\"b") == "\"a\\\"b\"") {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }
 var items = list_new();
 list_set(items, 0, 1);
 list_set(items, 1, "a");
 list_set(items, 2, true);
 if (json_to_text(items) == "[1,\"a\",true]") {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }
 var values = map_new();
 map_set(values, "b", 2);
 map_set(values, "a", 1);
 if (json_to_text(values) == "{\"a\":1,\"b\":2}") {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }
 if (json_to_text(list_new()) == "[]" && json_to_text(map_new()) == "{}") {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }

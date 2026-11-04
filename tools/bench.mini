@@ -5,7 +5,7 @@ include "../libs/bench.mini";
 fn main() {
     var args = process_args();
     if (list_length(args) < 1 || list_length(args) > 2) {
-        write_error("usage: mini-bench OUTPUT [FILTER]\n");
+        io_write_error("usage: mini-bench OUTPUT [FILTER]\n");
         process_exit(1);
     }
     var root = case_root();
@@ -15,7 +15,7 @@ fn main() {
         filter = list_get(args, 1);
     }
     var count = bench_run(root, output, filter);
-    write("Wrote " + number_to_text(count) + " benchmark results to " + output + "\n");
+    io_write("Wrote " + number_to_text(count) + " benchmark results to " + output + "\n");
     return 0;
 }
 

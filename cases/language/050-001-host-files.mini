@@ -3,24 +3,24 @@ var version_args = list_new();
 list_set(version_args, 0, "--version");
 var version = process_run(process_exec_path(), version_args, "capture");
 if (map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) > 0) {
-    write("exec ok\n");
+    io_write("exec ok\n");
 } else {
-    write("exec bad\n");
+    io_write("exec bad\n");
 }
 var directory = directory_temp();
 if (text_length(directory) > 0) {
-    write("temp ok\n");
+    io_write("temp ok\n");
 } else {
-    write("temp bad\n");
+    io_write("temp bad\n");
 }
 file_write(directory + "/note.txt", "value\n");
 if (file_read(directory + "/note.txt") == "value\n") {
-    write("file ok\n");
+    io_write("file ok\n");
 } else {
-    write("file bad\n");
+    io_write("file bad\n");
 }
 file_remove(directory + "/note.txt");
 file_remove(directory + "/note.txt");
 directory_remove(directory);
 directory_remove(directory);
-write("remove ok\n");
+io_write("remove ok\n");

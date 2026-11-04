@@ -1,7 +1,7 @@
 /// Read the running script path and confirm it exists.
 var script = process_script_path();
 if (text_length(script) > 0 && path_exists(script)) {
-    write("script ok\n");
+    io_write("script ok\n");
 } else {
-    write("script bad\n");
+    io_write("script bad\n");
 }

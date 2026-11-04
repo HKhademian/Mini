@@ -11,6 +11,6 @@ list_set(items, -3, "ignored");
 if (list_length(items) != 2) {
     process_exit(1);
 }
-write(list_get(items, 0));
-write(":");
-write(list_get(items, 1));
+io_write(list_get(items, 0));
+io_write(":");
+io_write(list_get(items, 1));

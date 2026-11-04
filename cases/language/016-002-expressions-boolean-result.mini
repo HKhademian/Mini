@@ -5,9 +5,9 @@ fn mark(value) {
         return "F";
     }
 }
-var token = readAll();
+var token = io_read_all();
 var left = token == "left";
 var right = token == "right";
-write(mark(!left) + mark(left && right) + mark(left || right));
-write(mark(true || false && false));
-write(mark((true || false) && false));
+io_write(mark(!left) + mark(left && right) + mark(left || right));
+io_write(mark(true || false && false));
+io_write(mark((true || false) && false));

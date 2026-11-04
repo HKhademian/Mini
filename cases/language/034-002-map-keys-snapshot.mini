@@ -10,4 +10,4 @@ map_set(items, "second", true);
 if (list_length(keys) != 1 || list_length(other) != 1 || list_length(map_keys(items)) != 2) {
     process_exit(1);
 }
-write("independent");
+io_write("independent");

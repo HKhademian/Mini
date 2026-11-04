@@ -1,1 +1,1 @@
-write_error(readAll());
+io_write_error(io_read_all());

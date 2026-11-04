@@ -1,9 +1,9 @@
 fn make_map() {
-    write("m");
+    io_write("m");
     return map_new();
 }
 fn key() {
-    write("k");
+    io_write("k");
     return "name";
 }
 if (map_has(make_map(), key())) {
@@ -12,5 +12,5 @@ if (map_has(make_map(), key())) {
 var items = list_new();
 list_set(items, 0, map_new());
 if (!map_has(list_get(items, 0), "name")) {
-    write(":absent");
+    io_write(":absent");
 }

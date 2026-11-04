@@ -1,1 +1,1 @@
-map_set(map_new(), "name", write(""));
+map_set(map_new(), "name", io_write(""));

@@ -1,8 +1,8 @@
 fn make_map() {
-    write("m");
+    io_write("m");
     var items = map_new();
     map_set(items, "only", 1);
     return items;
 }
 var keys = map_keys(make_map());
-write(list_get(keys, 0));
+io_write(list_get(keys, 0));

@@ -134,7 +134,7 @@ fn descend(state, depth) {
 
 var args = process_args();
 if (list_length(args) != 1) {
-    write_error("expected an output path\n");
+    io_write_error("expected an output path\n");
     process_exit(1);
 }
 var state = map_new();
@@ -151,7 +151,7 @@ while (position < 4) {
 if (map_get(state, "count") != 4 || !even(6) || !odd(5)) {
     process_exit(1);
 }
-write("recursion and state\n");
+io_write("recursion and state\n");
 
 var scope = map_new();
 map_set(scope, "name", "text");
@@ -161,14 +161,14 @@ map_set(inner, "local", "text");
 if (map_get(scope, "name") != "text" || map_has(scope, "local")) {
     process_exit(1);
 }
-write("scope copy\n");
-write(decimal(0) + "," + decimal(-1234) + "," + decimal(100000) + "\n");
-write(quoted("a\"\\\n\r\t") + "\n");
+io_write("scope copy\n");
+io_write(decimal(0) + "," + decimal(-1234) + "," + decimal(100000) + "\n");
+io_write(quoted("a\"\\\n\r\t") + "\n");
 if (slice("compiler.mini", 0, 8) != "compiler" || !contains("abc", "b") || contains("abc", "#")) {
     process_exit(1);
 }
-write("text helpers\n");
+io_write("text helpers\n");
 
 var program = "\"use strict\";\nimport { writeSync } from \"node:fs\";\nwriteSync(1, " + quoted("port probe") + ");\n";
 file_write(list_get(args, 0), program);
-write("emitted\n");
+io_write("emitted\n");

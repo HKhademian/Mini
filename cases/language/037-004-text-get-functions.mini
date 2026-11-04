@@ -1,12 +1,12 @@
 fn text() {
-    write("t");
+    io_write("t");
     return "hello";
 }
 fn index() {
-    write("i");
+    io_write("i");
     return 1;
 }
-write(text_get(text(), index()));
-write(":");
-write(text_get(0, index()));
-write(":ok");
+io_write(text_get(text(), index()));
+io_write(":");
+io_write(text_get(0, index()));
+io_write(":ok");

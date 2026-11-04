@@ -1,4 +1,4 @@
-var expected = readAll();
+var expected = io_read_all();
 var items = map_new();
 if (list_length(map_keys(items)) != 0) {
     process_exit(1);
@@ -26,4 +26,4 @@ while (position < list_length(keys)) {
 if (list_length(keys) != 2 || !found_first || !found_second || list_length(map_keys(items)) != 2) {
     process_exit(1);
 }
-write("keys");
+io_write("keys");

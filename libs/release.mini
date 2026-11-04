@@ -6,7 +6,7 @@ include "cases.mini";
 
 /// Report a release error and stop.
 fn release_fail(message) {
-    write_error(message + "\n");
+    io_write_error(message + "\n");
     process_exit(1);
     return 0;
 }

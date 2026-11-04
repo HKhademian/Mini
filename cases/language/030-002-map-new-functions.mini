@@ -11,4 +11,4 @@ list_set(list_get(items, 0), 5, "ignored");
 if (list_length(items) != 1) {
     process_exit(1);
 }
-write("stored");
+io_write("stored");

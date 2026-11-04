@@ -1,13 +1,13 @@
 fn target() {
-    write("t");
+    io_write("t");
     return "hello";
 }
 fn key() {
-    write("k");
+    io_write("k");
     return "name";
 }
 fn value() {
-    write("v");
+    io_write("v");
     return 1;
 }
 map_set(target(), key(), value());
@@ -20,4 +20,4 @@ map_set(1, "name", map_new());
 if (list_length(items) != 1 || list_get(items, 0) != "original") {
     process_exit(1);
 }
-write(":ok");
+io_write(":ok");

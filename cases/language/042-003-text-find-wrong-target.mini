@@ -1,1 +1,1 @@
-write(text_find(1, "a"));
+io_write(text_find(1, "a"));

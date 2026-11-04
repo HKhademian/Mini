@@ -1,15 +1,15 @@
 /// Hash text and byte lists with SHA-256.
 if (hash_sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad") {
-    write("text ok\n");
+    io_write("text ok\n");
 } else {
-    write("text bad\n");
+    io_write("text bad\n");
 }
 var bytes = list_new();
 list_set(bytes, 0, 97);
 list_set(bytes, 1, 98);
 list_set(bytes, 2, 99);
 if (hash_sha256(bytes) == hash_sha256("abc")) {
-    write("bytes ok\n");
+    io_write("bytes ok\n");
 } else {
-    write("bytes bad\n");
+    io_write("bytes bad\n");
 }

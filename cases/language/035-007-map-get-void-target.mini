@@ -1,1 +1,1 @@
-map_get(write(""), "key");
+map_get(io_write(""), "key");

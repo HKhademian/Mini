@@ -1,4 +1,4 @@
-write("");
-write("mi");
-write("ni");
-write("\n");
+io_write("");
+io_write("mi");
+io_write("ni");
+io_write("\n");

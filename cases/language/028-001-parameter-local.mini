@@ -6,7 +6,7 @@ fn replace(value) {
 var original = 1;
 var result = replace(original);
 if (original == 1 && result == 9 && replace(1) == 9 && replace(original + 1) == 9) {
-    write("local");
+    io_write("local");
 } else {
     process_exit(1);
 }

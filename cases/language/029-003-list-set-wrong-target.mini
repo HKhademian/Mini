@@ -1,17 +1,17 @@
 fn target() {
-    write("t");
+    io_write("t");
     return "hello";
 }
 fn index() {
-    write("i");
+    io_write("i");
     return 1;
 }
 fn value() {
-    write("v");
+    io_write("v");
     return 1;
 }
 list_set(target(), index(), value());
 list_set("hello", 1, 1);
 list_set(1, 0, true);
 list_set(false, 0, list_new());
-write(":ok");
+io_write(":ok");

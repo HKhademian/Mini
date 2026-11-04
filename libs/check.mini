@@ -6,7 +6,7 @@ include "cases.mini";
 
 /// Report a check failure and stop.
 fn check_fail(message) {
-    write_error(message + "\n");
+    io_write_error(message + "\n");
     process_exit(1);
     return 0;
 }
@@ -444,9 +444,9 @@ fn check_repository(root, docs_only) {
     list_set(verify, 1, root);
     var verified = case_run(process_exec_path(), verify, root, list_new());
     if (map_get(verified, "status") != 0) {
-        write_error(text_from_bytes(map_get(verified, "stderr")));
+        io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));
     }
-    write("Repository checks and bootstrap fixed point passed.\n");
+    io_write("Repository checks and bootstrap fixed point passed.\n");
     return 0;
 }

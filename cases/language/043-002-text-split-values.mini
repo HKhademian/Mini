@@ -5,7 +5,7 @@ var words = split("a b", " ");
 var number_target = split(12, " ");
 var number_divider = split("abc", 12);
 if (list_length(words) == 2 && list_get(words, 0) == "a" && list_get(words, 1) == "b" && list_length(number_target) == 0 && list_length(number_divider) == 0) {
-    write("ok\n");
+    io_write("ok\n");
 } else {
-    write("bad\n");
+    io_write("bad\n");
 }

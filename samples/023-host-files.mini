@@ -4,4 +4,4 @@ file_write(directory + "/note.txt", "Mini\n");
 var saved = file_read(directory + "/note.txt");
 file_remove(directory + "/note.txt");
 directory_remove(directory);
-write(saved);
+io_write(saved);

@@ -1,2 +1,2 @@
-write("x");
+io_write("x");
 # not a shebang

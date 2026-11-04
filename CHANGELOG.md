@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.25 / language 0.3.0-alpha.26 / builtins 0.3.0-alpha.24 /
+  compiler 0.3.0-alpha.35 / bootstrap 0.1.0-alpha.22: establish the `io_` fake
+  namespace for standard streams. `write`, `write_error`, `readAll`, `read_line`,
+  and `read_bytes` become `io_write`, `io_write_error`, `io_read_all`,
+  `io_read_line`, and `io_read_bytes`; old names are removed.
 - Mini 0.1.0-alpha.24 / CLI 0.1.0-alpha.15: implement CI tasks as a Mini tool,
   `dist/ci.ts` (`mini ci TASK_FILE`). Workflows invoke it directly; remove
   `tools/ci.ts`.

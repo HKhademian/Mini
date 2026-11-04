@@ -26,10 +26,10 @@ fn ci_run(root, command, args, directory) {
     var stdout = text_from_bytes(map_get(result, "stdout"));
     var stderr = text_from_bytes(map_get(result, "stderr"));
     if (text_length(stdout) > 0) {
-        write(stdout);
+        io_write(stdout);
     }
     if (text_length(stderr) > 0) {
-        write_error(stderr);
+        io_write_error(stderr);
     }
     if (map_get(result, "status") != 0) {
         process_exit(map_get(result, "status"));
@@ -83,7 +83,7 @@ fn ci_node(root, args, directory) {
 
 /// Fail one CI task.
 fn ci_fail(message) {
-    write_error(message + "\n");
+    io_write_error(message + "\n");
     process_exit(1);
     return 0;
 }

@@ -1,1 +1,1 @@
-write(text_slice(1, 0, 1));
+io_write(text_slice(1, 0, 1));

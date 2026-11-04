@@ -22,20 +22,20 @@ fn main() {
         var result = case_run(process_exec_path(), compile_args, root, list_new());
         if (map_get(result, "status") != 0) {
             path_remove(work);
-            write_error("compiler stage " + number_to_text(stage) + " failed: "
+            io_write_error("compiler stage " + number_to_text(stage) + " failed: "
                 + text_from_bytes(map_get(result, "stderr")));
             process_exit(1);
         }
         if (hash_sha256(file_read_bytes(output)) != expected) {
             path_remove(work);
-            write_error("compiler stage " + number_to_text(stage) + " differs from the promoted bootstrap\n");
+            io_write_error("compiler stage " + number_to_text(stage) + " differs from the promoted bootstrap\n");
             process_exit(1);
         }
         previous = output;
         stage = stage + 1;
     }
     path_remove(work);
-    write("fixed point ok\n");
+    io_write("fixed point ok\n");
     return 0;
 }
 

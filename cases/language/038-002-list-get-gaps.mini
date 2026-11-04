@@ -14,4 +14,4 @@ list_set(items, 2, false);
 if (list_get(items, 2) != false) {
     process_exit(1);
 }
-write(list_get(items, 5));
+io_write(list_get(items, 5));

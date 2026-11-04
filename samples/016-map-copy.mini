@@ -3,5 +3,5 @@ var original = map_new();
 map_set(original, "name", "original");
 var copy = map_copy(original);
 map_set(copy, "name", "copy");
-write(map_get(original, "name") + "\n");
-write(map_get(copy, "name") + "\n");
+io_write(map_get(original, "name") + "\n");
+io_write(map_get(copy, "name") + "\n");

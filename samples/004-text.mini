@@ -16,4 +16,4 @@ fn normalize(source) {
     }
     return output;
 }
-write(normalize(readAll()));
+io_write(normalize(io_read_all()));

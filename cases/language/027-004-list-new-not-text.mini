@@ -1,1 +1,1 @@
-write(list_new());
+io_write(list_new());

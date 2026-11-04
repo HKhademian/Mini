@@ -264,9 +264,9 @@ target TS produced by the compiler, not extra syntax required in M1.
 
 ### Text and streams
 
-- `readAll() -> text`: `readFileSync(0, "utf8")`.
-- `write(text) -> no result`: `writeSync(1, arg0)`.
-- `write_error(text) -> no result`: `writeSync(2, arg0)`.
+- `io_read_all() -> text`: `readFileSync(0, "utf8")`.
+- `io_write(text) -> no result`: `writeSync(1, arg0)`.
+- `io_write_error(text) -> no result`: `writeSync(2, arg0)`.
 - `text_length(text) -> number`: `(arg0).length`.
 - `text_find(text, text) -> number`: `$mini_text_find(arg0, arg1)` (adapter).
 - `text_get(value, number) -> text`: `$mini_text_get(arg0, arg1)` (adapter).
@@ -446,7 +446,7 @@ write stderr, finish with status 1, and do not create or replace an output file.
 The current usage message is
 `usage: T0 compile SOURCE.mini [OUTPUT.ts] | tokens SOURCE.mini`.
 
-M1 can use `process_args`, the file primitives, `write`, `write_error`,
+M1 can use `process_args`, the file primitives, `io_write`, `io_write_error`,
 `process_exit`, and text helpers. Its single-file program can run the command
 entry point last. It does not need Mini imports, export syntax, an assertion
 library, or reflection over Error objects.

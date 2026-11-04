@@ -1,1 +1,1 @@
-file_write("output.txt", readAll());
+file_write("output.txt", io_read_all());
