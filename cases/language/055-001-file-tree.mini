@@ -1,0 +1,29 @@
+/// Exercise path checks, directory listing, copying, and recursive removal.
+var root = directory_temp();
+var sub = root + "/sub";
+directory_create(sub);
+file_write(sub + "/b.txt", "b");
+file_write(sub + "/a.txt", "a");
+if (path_exists(root) && path_is_directory(root) && path_is_directory(sub)) {
+    write("exists ok\n");
+} else {
+    write("exists bad\n");
+}
+var names = directory_list(sub);
+if (list_length(names) == 2 && list_get(names, 0) == "a.txt" && list_get(names, 1) == "b.txt") {
+    write("list ok\n");
+} else {
+    write("list bad\n");
+}
+path_copy(sub, root + "/copy");
+if (path_exists(root + "/copy/a.txt") && file_read(root + "/copy/a.txt") == "a") {
+    write("copy ok\n");
+} else {
+    write("copy bad\n");
+}
+path_remove(root);
+if (!path_exists(root)) {
+    write("remove ok\n");
+} else {
+    write("remove bad\n");
+}

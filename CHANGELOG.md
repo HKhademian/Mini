@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Language 0.3.0-alpha.18 / compiler 0.3.0-alpha.23 / builtins 0.3.0-alpha.17;
+  bootstrap 0.1.0-alpha.12: add `path_exists`, `path_is_directory`,
+  `directory_list`, `directory_create`, `path_copy`, and `path_remove` for tool
+  file-tree work.
 - Language 0.3.0-alpha.17 / compiler 0.3.0-alpha.22 / builtins 0.3.0-alpha.16;
   bootstrap 0.1.0-alpha.11: add `time_millis()` for integer epoch milliseconds.
 - Language 0.3.0-alpha.16 / compiler 0.3.0-alpha.21 / builtins 0.3.0-alpha.15;

@@ -568,6 +568,24 @@ var started = time_millis();
   clock. It takes no arguments and does not promise monotonicity across clock
   adjustments.
 
+## Accepted operations: file tree
+
+```text
+var directory = directory_temp();
+directory_create(directory + "/sub");
+var names = directory_list(directory);
+path_remove(directory);
+```
+
+- `path_exists(path)` reports whether a file or directory exists.
+- `path_is_directory(path)` reports whether a path names a directory.
+- `directory_list(path)` returns sorted entry names; a missing path or non-directory
+  returns an empty list.
+- `directory_create(path)` creates a directory and missing parents; an existing
+  directory is a no-op.
+- `path_copy(from, to)` copies a file or directory tree.
+- `path_remove(path)` removes a file or directory tree; a missing path is a no-op.
+
 ## Accepted operation: JSON parsing
 
 ```text

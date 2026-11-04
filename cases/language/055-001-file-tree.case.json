@@ -1,0 +1,15 @@
+{
+  "id": "language.file-tree",
+  "kind": "feature",
+  "source": "055-001-file-tree.mini",
+  "features": ["directory.temp", "directory.create", "directory.list", "path.exists", "path.is-directory", "path.copy", "path.remove", "file.write", "file.read"],
+  "cases": [
+    {
+      "name": "exists-list-copy-remove",
+      "stdin": {"text": ""},
+      "stdout": {"text": "exists ok\nlist ok\ncopy ok\nremove ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

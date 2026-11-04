@@ -117,6 +117,12 @@ let text_from_bytes_helper = "function $mini_text_from_bytes(bytes) {\n    if (!
 let file_read_bytes_helper = "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n";
 let file_write_bytes_helper = "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n";
 let hash_sha256_helper = "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n";
+let path_exists_helper = "function $mini_path_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n";
+let path_is_directory_helper = "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n";
+let directory_list_helper = "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n";
+let directory_create_helper = "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n";
+let path_copy_helper = "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true });\n}\n";
+let path_remove_helper = "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -717,6 +723,8 @@ function import_names(imports) {
 function helper_blocks(helpers) {
     let order = [];
     $mini_list_set(order, (order).length, "map_runtime");
+    $mini_list_set(order, (order).length, "directory_create");
+    $mini_list_set(order, (order).length, "directory_list");
     $mini_list_set(order, (order).length, "directory_remove");
     $mini_list_set(order, (order).length, "file_read_bytes");
     $mini_list_set(order, (order).length, "file_remove");
@@ -732,6 +740,10 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "number_to_text");
     $mini_list_set(order, (order).length, "process_run");
     $mini_list_set(order, (order).length, "directory_temp");
+    $mini_list_set(order, (order).length, "path_copy");
+    $mini_list_set(order, (order).length, "path_exists");
+    $mini_list_set(order, (order).length, "path_is_directory");
+    $mini_list_set(order, (order).length, "path_remove");
     $mini_list_set(order, (order).length, "text_find");
     $mini_list_set(order, (order).length, "text_from_bytes");
     $mini_list_set(order, (order).length, "text_get");
@@ -848,6 +860,12 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_read_bytes
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "file_write_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "hash_sha256");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "time_millis");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_exists");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_is_directory");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_list");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "directory_create");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_copy");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "path_remove");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -887,6 +905,12 @@ $mini_map_set(builtin_name_set, "file_read_bytes", true);
 $mini_map_set(builtin_name_set, "file_write_bytes", true);
 $mini_map_set(builtin_name_set, "hash_sha256", true);
 $mini_map_set(builtin_name_set, "time_millis", true);
+$mini_map_set(builtin_name_set, "path_exists", true);
+$mini_map_set(builtin_name_set, "path_is_directory", true);
+$mini_map_set(builtin_name_set, "directory_list", true);
+$mini_map_set(builtin_name_set, "directory_create", true);
+$mini_map_set(builtin_name_set, "path_copy", true);
+$mini_map_set(builtin_name_set, "path_remove", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -926,6 +950,12 @@ $mini_map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 $mini_map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
 $mini_map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
 $mini_map_set(builtin_parameter_kinds, "time_millis", "");
+$mini_map_set(builtin_parameter_kinds, "path_exists", "text");
+$mini_map_set(builtin_parameter_kinds, "path_is_directory", "text");
+$mini_map_set(builtin_parameter_kinds, "directory_list", "text");
+$mini_map_set(builtin_parameter_kinds, "directory_create", "text");
+$mini_map_set(builtin_parameter_kinds, "path_copy", "text,text");
+$mini_map_set(builtin_parameter_kinds, "path_remove", "text");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -965,6 +995,12 @@ $mini_map_set(builtin_result_kinds, "file_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "file_write_bytes", "void");
 $mini_map_set(builtin_result_kinds, "hash_sha256", "text");
 $mini_map_set(builtin_result_kinds, "time_millis", "number");
+$mini_map_set(builtin_result_kinds, "path_exists", "boolean");
+$mini_map_set(builtin_result_kinds, "path_is_directory", "boolean");
+$mini_map_set(builtin_result_kinds, "directory_list", "list");
+$mini_map_set(builtin_result_kinds, "directory_create", "void");
+$mini_map_set(builtin_result_kinds, "path_copy", "void");
+$mini_map_set(builtin_result_kinds, "path_remove", "void");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -1004,6 +1040,12 @@ $mini_map_set(builtin_import_names, "file_read_bytes", "");
 $mini_map_set(builtin_import_names, "file_write_bytes", "");
 $mini_map_set(builtin_import_names, "hash_sha256", "");
 $mini_map_set(builtin_import_names, "time_millis", "");
+$mini_map_set(builtin_import_names, "path_exists", "");
+$mini_map_set(builtin_import_names, "path_is_directory", "");
+$mini_map_set(builtin_import_names, "directory_list", "");
+$mini_map_set(builtin_import_names, "directory_create", "");
+$mini_map_set(builtin_import_names, "path_copy", "");
+$mini_map_set(builtin_import_names, "path_remove", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1043,6 +1085,12 @@ $mini_map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 $mini_map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
 $mini_map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
 $mini_map_set(builtin_helper_keys, "time_millis", "");
+$mini_map_set(builtin_helper_keys, "path_exists", "path_exists");
+$mini_map_set(builtin_helper_keys, "path_is_directory", "path_is_directory");
+$mini_map_set(builtin_helper_keys, "directory_list", "directory_list");
+$mini_map_set(builtin_helper_keys, "directory_create", "directory_create");
+$mini_map_set(builtin_helper_keys, "path_copy", "path_copy");
+$mini_map_set(builtin_helper_keys, "path_remove", "path_remove");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1148,12 +1196,30 @@ function helper_text(key) {
     if ((key === "hash_sha256")) {
         return hash_sha256_helper;
     }
+    if ((key === "path_exists")) {
+        return path_exists_helper;
+    }
+    if ((key === "path_is_directory")) {
+        return path_is_directory_helper;
+    }
+    if ((key === "directory_list")) {
+        return directory_list_helper;
+    }
+    if ((key === "directory_create")) {
+        return directory_create_helper;
+    }
+    if ((key === "path_copy")) {
+        return path_copy_helper;
+    }
+    if ((key === "path_remove")) {
+        return path_remove_helper;
+    }
     return "";
 }
 function builtin_emit(name, args) {
     let first = $mini_list_get(args, 0);
     let second = $mini_list_get(args, 1);
-    if (((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256"))) {
+    if (((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {

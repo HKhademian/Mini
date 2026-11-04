@@ -21,6 +21,12 @@ var text_from_bytes_helper = "function $mini_text_from_bytes(bytes) {\n    if (!
 var file_read_bytes_helper = "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n";
 var file_write_bytes_helper = "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n";
 var hash_sha256_helper = "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n";
+var path_exists_helper = "function $mini_path_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n";
+var path_is_directory_helper = "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n";
+var directory_list_helper = "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n";
+var directory_create_helper = "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n";
+var path_copy_helper = "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true });\n}\n";
+var path_remove_helper = "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n";
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
     var lines = text_split(source, "\n");
@@ -719,6 +725,8 @@ fn helper_blocks(helpers) {
     // Keep this order equal to T0's lexicographic helper sort.
     var order = list_new();
     list_set(order, list_length(order), "map_runtime");
+    list_set(order, list_length(order), "directory_create");
+    list_set(order, list_length(order), "directory_list");
     list_set(order, list_length(order), "directory_remove");
     list_set(order, list_length(order), "file_read_bytes");
     list_set(order, list_length(order), "file_remove");
@@ -734,6 +742,10 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "number_to_text");
     list_set(order, list_length(order), "process_run");
     list_set(order, list_length(order), "directory_temp");
+    list_set(order, list_length(order), "path_copy");
+    list_set(order, list_length(order), "path_exists");
+    list_set(order, list_length(order), "path_is_directory");
+    list_set(order, list_length(order), "path_remove");
     list_set(order, list_length(order), "text_find");
     list_set(order, list_length(order), "text_from_bytes");
     list_set(order, list_length(order), "text_get");
@@ -859,6 +871,12 @@ list_set(builtin_names_list, list_length(builtin_names_list), "file_read_bytes")
 list_set(builtin_names_list, list_length(builtin_names_list), "file_write_bytes");
 list_set(builtin_names_list, list_length(builtin_names_list), "hash_sha256");
 list_set(builtin_names_list, list_length(builtin_names_list), "time_millis");
+list_set(builtin_names_list, list_length(builtin_names_list), "path_exists");
+list_set(builtin_names_list, list_length(builtin_names_list), "path_is_directory");
+list_set(builtin_names_list, list_length(builtin_names_list), "directory_list");
+list_set(builtin_names_list, list_length(builtin_names_list), "directory_create");
+list_set(builtin_names_list, list_length(builtin_names_list), "path_copy");
+list_set(builtin_names_list, list_length(builtin_names_list), "path_remove");
 
 /// Builtin name membership set.
 var builtin_name_set = map_new();
@@ -900,6 +918,12 @@ map_set(builtin_name_set, "file_read_bytes", true);
 map_set(builtin_name_set, "file_write_bytes", true);
 map_set(builtin_name_set, "hash_sha256", true);
 map_set(builtin_name_set, "time_millis", true);
+map_set(builtin_name_set, "path_exists", true);
+map_set(builtin_name_set, "path_is_directory", true);
+map_set(builtin_name_set, "directory_list", true);
+map_set(builtin_name_set, "directory_create", true);
+map_set(builtin_name_set, "path_copy", true);
+map_set(builtin_name_set, "path_remove", true);
 
 /// Builtin parameter kinds keyed by name; comma-separated, empty for no parameters.
 var builtin_parameter_kinds = map_new();
@@ -941,6 +965,12 @@ map_set(builtin_parameter_kinds, "file_read_bytes", "text");
 map_set(builtin_parameter_kinds, "file_write_bytes", "text,list");
 map_set(builtin_parameter_kinds, "hash_sha256", "unknown");
 map_set(builtin_parameter_kinds, "time_millis", "");
+map_set(builtin_parameter_kinds, "path_exists", "text");
+map_set(builtin_parameter_kinds, "path_is_directory", "text");
+map_set(builtin_parameter_kinds, "directory_list", "text");
+map_set(builtin_parameter_kinds, "directory_create", "text");
+map_set(builtin_parameter_kinds, "path_copy", "text,text");
+map_set(builtin_parameter_kinds, "path_remove", "text");
 
 /// Builtin result kinds keyed by name.
 var builtin_result_kinds = map_new();
@@ -982,6 +1012,12 @@ map_set(builtin_result_kinds, "file_read_bytes", "list");
 map_set(builtin_result_kinds, "file_write_bytes", "void");
 map_set(builtin_result_kinds, "hash_sha256", "text");
 map_set(builtin_result_kinds, "time_millis", "number");
+map_set(builtin_result_kinds, "path_exists", "boolean");
+map_set(builtin_result_kinds, "path_is_directory", "boolean");
+map_set(builtin_result_kinds, "directory_list", "list");
+map_set(builtin_result_kinds, "directory_create", "void");
+map_set(builtin_result_kinds, "path_copy", "void");
+map_set(builtin_result_kinds, "path_remove", "void");
 
 /// Builtin Node import names keyed by name; comma-separated, empty for none.
 var builtin_import_names = map_new();
@@ -1023,6 +1059,12 @@ map_set(builtin_import_names, "file_read_bytes", "");
 map_set(builtin_import_names, "file_write_bytes", "");
 map_set(builtin_import_names, "hash_sha256", "");
 map_set(builtin_import_names, "time_millis", "");
+map_set(builtin_import_names, "path_exists", "");
+map_set(builtin_import_names, "path_is_directory", "");
+map_set(builtin_import_names, "directory_list", "");
+map_set(builtin_import_names, "directory_create", "");
+map_set(builtin_import_names, "path_copy", "");
+map_set(builtin_import_names, "path_remove", "");
 
 /// Builtin adapter keys keyed by name; empty for inline lowering.
 var builtin_helper_keys = map_new();
@@ -1064,6 +1106,12 @@ map_set(builtin_helper_keys, "file_read_bytes", "file_read_bytes");
 map_set(builtin_helper_keys, "file_write_bytes", "file_write_bytes");
 map_set(builtin_helper_keys, "hash_sha256", "hash_sha256");
 map_set(builtin_helper_keys, "time_millis", "");
+map_set(builtin_helper_keys, "path_exists", "path_exists");
+map_set(builtin_helper_keys, "path_is_directory", "path_is_directory");
+map_set(builtin_helper_keys, "directory_list", "directory_list");
+map_set(builtin_helper_keys, "directory_create", "directory_create");
+map_set(builtin_helper_keys, "path_copy", "path_copy");
+map_set(builtin_helper_keys, "path_remove", "path_remove");
 
 /// Return every builtin name once, in declaration order.
 fn builtin_names() {
@@ -1183,6 +1231,24 @@ fn helper_text(key) {
     if (key == "hash_sha256") {
         return hash_sha256_helper;
     }
+    if (key == "path_exists") {
+        return path_exists_helper;
+    }
+    if (key == "path_is_directory") {
+        return path_is_directory_helper;
+    }
+    if (key == "directory_list") {
+        return directory_list_helper;
+    }
+    if (key == "directory_create") {
+        return directory_create_helper;
+    }
+    if (key == "path_copy") {
+        return path_copy_helper;
+    }
+    if (key == "path_remove") {
+        return path_remove_helper;
+    }
     return "";
 }
 
@@ -1190,7 +1256,7 @@ fn helper_text(key) {
 fn builtin_emit(name, args) {
     var first = list_get(args, 0);
     var second = list_get(args, 1);
-    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256") {
+    if (name == "map_get" || name == "map_set" || name == "map_has" || name == "list_set" || name == "list_get" || name == "text_get" || name == "text_slice" || name == "text_find" || name == "text_split" || name == "map_copy" || name == "list_copy" || name == "list_to_text" || name == "number_to_text" || name == "json_to_text" || name == "process_run" || name == "directory_temp" || name == "file_remove" || name == "directory_remove" || name == "json_parse" || name == "text_to_bytes" || name == "text_from_bytes" || name == "file_read_bytes" || name == "file_write_bytes" || name == "hash_sha256" || name == "path_exists" || name == "path_is_directory" || name == "directory_list" || name == "directory_create" || name == "path_copy" || name == "path_remove") {
         return "$mini_" + name + "(" + list_to_text(args, ", ") + ")";
     }
     if (name == "process_exec_path") {

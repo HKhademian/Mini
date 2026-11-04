@@ -15,6 +15,13 @@ whole files as byte lists.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
 
+`path_exists(path)` and `path_is_directory(path)` report whether a path exists
+and names a directory. `directory_list(path)` returns sorted entry names, or an
+empty list when the path is missing or not a directory.
+`directory_create(path)` creates a directory and missing parents; an existing
+directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
+`path_remove(path)` removes a file or directory tree and ignores a missing path.
+
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
@@ -85,6 +92,13 @@ whole files as byte lists.
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
+
+`path_exists(path)` and `path_is_directory(path)` report whether a path exists
+and names a directory. `directory_list(path)` returns sorted entry names, or an
+empty list when the path is missing or not a directory.
+`directory_create(path)` creates a directory and missing parents; an existing
+directory is a no-op. `path_copy(from, to)` copies a file or directory tree.
+`path_remove(path)` removes a file or directory tree and ignores a missing path.
 
 `json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
