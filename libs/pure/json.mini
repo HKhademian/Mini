@@ -1,0 +1,387 @@
+include "../common/text.mini";
+include "../common/result.mini";
+include "../common/list.mini";
+include "../common/value.mini";
+
+/// Return whether a character is JSON whitespace.
+fn pure_json_space(character) {
+    return character == " " || character == "\t" || character == "\n" || character == "\r";
+}
+
+/// Skip JSON whitespace.
+fn pure_json_skip(state) {
+    while (map_get(state, "position") < text_length(map_get(state, "text"))
+        && pure_json_space(text_get(map_get(state, "text"), map_get(state, "position")))) {
+        map_set(state, "position", map_get(state, "position") + 1);
+    }
+    return 0;
+}
+
+/// Mark the parse as failed.
+fn pure_json_fail(state) {
+    map_set(state, "ok", false);
+    return 0;
+}
+
+/// Return the current character, or empty text at the end.
+fn pure_json_peek(state) {
+    var position = map_get(state, "position");
+    if (position >= text_length(map_get(state, "text"))) {
+        return "";
+    }
+    return text_get(map_get(state, "text"), position);
+}
+
+/// Consume one expected character.
+fn pure_json_take(state, expected) {
+    if (pure_json_peek(state) != expected) {
+        return pure_json_fail(state);
+    }
+    map_set(state, "position", map_get(state, "position") + 1);
+    return 0;
+}
+
+/// Return the numeric value of a hexadecimal digit.
+fn pure_json_hex_value(character) {
+    var digit = text_find("0123456789abcdef", character);
+    if (digit >= 0) {
+        return digit;
+    }
+    digit = text_find("0123456789ABCDEF", character);
+    return digit;
+}
+
+/// Parse four hexadecimal digits.
+fn pure_json_hex4(state) {
+    var value = 0;
+    var count = 0;
+    while (count < 4) {
+        var digit = pure_json_hex_value(pure_json_peek(state));
+        if (digit < 0) {
+            pure_json_fail(state);
+            return 0;
+        }
+        value = number_mul(value, 16) + digit;
+        map_set(state, "position", map_get(state, "position") + 1);
+        count = count + 1;
+    }
+    return value;
+}
+
+/// Parse one JSON string and return its decoded text.
+fn pure_json_string(state) {
+    pure_json_take(state, "\"");
+    var output = "";
+    while (map_get(state, "ok") && map_get(state, "position") < text_length(map_get(state, "text"))) {
+        var character = pure_json_peek(state);
+        if (character == "\"") {
+            map_set(state, "position", map_get(state, "position") + 1);
+            return output;
+        }
+        if (character == "\\") {
+            map_set(state, "position", map_get(state, "position") + 1);
+            var escaped = pure_json_peek(state);
+            map_set(state, "position", map_get(state, "position") + 1);
+            if (escaped == "\"") {
+                output = output + "\"";
+            } else {
+                if (escaped == "\\") {
+                    output = output + "\\";
+                } else {
+                    if (escaped == "/") {
+                        output = output + "/";
+                    } else {
+                        if (escaped == "b") {
+                            output = output + text_from_code(8);
+                        } else {
+                            if (escaped == "f") {
+                                output = output + text_from_code(12);
+                            } else {
+                                if (escaped == "n") {
+                                    output = output + "\n";
+                                } else {
+                                    if (escaped == "r") {
+                                        output = output + "\r";
+                                    } else {
+                                        if (escaped == "t") {
+                                            output = output + "\t";
+                                        } else {
+                                            if (escaped == "u") {
+                                                var code = pure_json_hex4(state);
+                                                if (code >= 55296 && code <= 56319 && pure_json_peek(state) == "\\"
+                                                    && text_get(map_get(state, "text"), map_get(state, "position") + 1) == "u") {
+                                                    map_set(state, "position", map_get(state, "position") + 2);
+                                                    var low = pure_json_hex4(state);
+                                                    if (low >= 56320 && low <= 57343) {
+                                                        code = 65536 + number_mul(code - 55296, 1024) + (low - 56320);
+                                                    } else {
+                                                        pure_json_fail(state);
+                                                    }
+                                                }
+                                                output = output + text_from_code(code);
+                                            } else {
+                                                pure_json_fail(state);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            output = output + character;
+            map_set(state, "position", map_get(state, "position") + 1);
+        }
+    }
+    pure_json_fail(state);
+    return "";
+}
+
+/// Parse one JSON number; integer literals are supported by the pure path.
+fn pure_json_number(state) {
+    var start = map_get(state, "position");
+    if (pure_json_peek(state) == "-") {
+        map_set(state, "position", map_get(state, "position") + 1);
+    }
+    if (text_find("0123456789", pure_json_peek(state)) < 0) {
+        pure_json_fail(state);
+        return 0;
+    }
+    while (text_find("0123456789", pure_json_peek(state)) >= 0) {
+        map_set(state, "position", map_get(state, "position") + 1);
+    }
+    if (pure_json_peek(state) == "." || pure_json_peek(state) == "e" || pure_json_peek(state) == "E") {
+        pure_json_fail(state);
+        return 0;
+    }
+    return number_from_text(text_slice(map_get(state, "text"), start, map_get(state, "position")));
+}
+
+/// Parse one JSON array.
+fn pure_json_array(state) {
+    pure_json_take(state, "[");
+    var result = list_new();
+    pure_json_skip(state);
+    if (pure_json_peek(state) == "]") {
+        map_set(state, "position", map_get(state, "position") + 1);
+        return result;
+    }
+    while (map_get(state, "ok")) {
+        var value = pure_json_value(state);
+        if (!map_get(state, "ok")) {
+            return result;
+        }
+        list_set(result, list_length(result), value);
+        pure_json_skip(state);
+        if (pure_json_peek(state) == "]") {
+            map_set(state, "position", map_get(state, "position") + 1);
+            return result;
+        }
+        pure_json_take(state, ",");
+        pure_json_skip(state);
+    }
+    return result;
+}
+
+/// Parse one JSON object.
+fn pure_json_object(state) {
+    pure_json_take(state, "{");
+    var result = map_new();
+    pure_json_skip(state);
+    if (pure_json_peek(state) == "}") {
+        map_set(state, "position", map_get(state, "position") + 1);
+        return result;
+    }
+    while (map_get(state, "ok")) {
+        pure_json_skip(state);
+        var key = pure_json_string(state);
+        pure_json_skip(state);
+        pure_json_take(state, ":");
+        pure_json_skip(state);
+        var value = pure_json_value(state);
+        if (!map_get(state, "ok")) {
+            return result;
+        }
+        map_set(result, key, value);
+        pure_json_skip(state);
+        if (pure_json_peek(state) == "}") {
+            map_set(state, "position", map_get(state, "position") + 1);
+            return result;
+        }
+        pure_json_take(state, ",");
+    }
+    return result;
+}
+
+/// Parse one JSON value.
+fn pure_json_value(state) {
+    pure_json_skip(state);
+    var character = pure_json_peek(state);
+    if (character == "\"") {
+        return pure_json_string(state);
+    }
+    if (character == "[") {
+        return pure_json_array(state);
+    }
+    if (character == "{") {
+        return pure_json_object(state);
+    }
+    if (character == "-" || text_find("0123456789", character) >= 0) {
+        return pure_json_number(state);
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "true")) {
+        map_set(state, "position", map_get(state, "position") + 4);
+        return true;
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "false")) {
+        map_set(state, "position", map_get(state, "position") + 5);
+        return false;
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "null")) {
+        map_set(state, "position", map_get(state, "position") + 4);
+        return 0;
+    }
+    pure_json_fail(state);
+    return 0;
+}
+
+/// Reference JSON parser.
+fn pure_json_parse(text) {
+    var state = map_new();
+    map_set(state, "text", text);
+    map_set(state, "position", 0);
+    map_set(state, "ok", true);
+    if (!value_is_text(text)) {
+        map_set(state, "ok", false);
+        return result_fail("invalid JSON");
+    }
+    var value = pure_json_value(state);
+    pure_json_skip(state);
+    if (map_get(state, "position") != text_length(text)) {
+        pure_json_fail(state);
+    }
+    if (!map_get(state, "ok")) {
+        return result_fail("invalid JSON");
+    }
+    return result_ok(value, "");
+}
+
+/// Escape one JSON string.
+fn pure_json_escape(text) {
+    var output = "\"";
+    var position = 0;
+    while (position < text_length(text)) {
+        var character = text_get(text, position);
+        if (character == "\"") {
+            output = output + "\\\"";
+        } else {
+            if (character == "\\") {
+                output = output + "\\\\";
+            } else {
+                if (text_code(character) == 8) {
+                    output = output + "\\b";
+                } else {
+                    if (text_code(character) == 12) {
+                        output = output + "\\f";
+                    } else {
+                        if (character == "\n") {
+                            output = output + "\\n";
+                        } else {
+                            if (character == "\r") {
+                                output = output + "\\r";
+                            } else {
+                                if (character == "\t") {
+                                    output = output + "\\t";
+                                } else {
+                                    if (text_code(character) < 32) {
+                                        var code = text_code(character);
+                                        var digits = "0123456789abcdef";
+                                        output = output + "\\u00" + text_get(digits, number_div(code, 16)) + text_get(digits, number_mod(code, 16));
+                                    } else {
+                                        output = output + character;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        position = position + 1;
+    }
+    return output + "\"";
+}
+
+/// Encode one JSON value into a state map.
+fn pure_json_encode(value, seen, state) {
+    if (value_is_text(value)) {
+        return pure_json_escape(value);
+    }
+    if (value_is_number(value)) {
+        if (number_to_text(value) == "") {
+            return "null";
+        }
+        return number_to_text(value);
+    }
+    if (value_is_boolean(value)) {
+        if (value) {
+            return "true";
+        }
+        return "false";
+    }
+    if (value_is_list(value) || value_is_map(value)) {
+        if (list_contains(seen, value)) {
+            map_set(state, "ok", false);
+            return "";
+        }
+        list_push_back(seen, value);
+        var output = "";
+        if (value_is_list(value)) {
+            output = "[";
+            var position = 0;
+            while (position < list_length(value)) {
+                if (position > 0) {
+                    output = output + ",";
+                }
+                output = output + pure_json_encode(list_get(value, position), seen, state);
+                if (!map_get(state, "ok")) {
+                    return "";
+                }
+                position = position + 1;
+            }
+            output = output + "]";
+        } else {
+            output = "{";
+            var keys = list_sorted(map_keys(value));
+            var index = 0;
+            while (index < list_length(keys)) {
+                if (index > 0) {
+                    output = output + ",";
+                }
+                var key = list_get(keys, index);
+                output = output + pure_json_escape(key) + ":" + pure_json_encode(map_get(value, key), seen, state);
+                if (!map_get(state, "ok")) {
+                    return "";
+                }
+                index = index + 1;
+            }
+            output = output + "}";
+        }
+        list_pop_back(seen);
+        return output;
+    }
+    return "null";
+}
+
+/// Reference JSON serializer.
+fn pure_json_to_text(value) {
+    var state = map_new();
+    map_set(state, "ok", true);
+    var output = pure_json_encode(value, list_new(), state);
+    if (!map_get(state, "ok")) {
+        return "";
+    }
+    return output;
+}

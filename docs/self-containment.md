@@ -146,7 +146,7 @@ Current reference coverage:
 | `text_slice`, `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
 | `list_copy` | Implemented in `libs/pure/list.mini` |
 | `map_copy` | Implemented in `libs/pure/map.mini` |
-| `json_parse`, `json_to_text` | Pending: parser/serializer implementation and escape/cycle policy |
+| `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |
 | `text_to_bytes`, `text_from_bytes` | Implemented in `libs/pure/bytes.mini` |
 | `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 

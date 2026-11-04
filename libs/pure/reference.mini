@@ -4,3 +4,4 @@ include "list.mini";
 include "map.mini";
 include "number.mini";
 include "bytes.mini";
+include "json.mini";

@@ -77,6 +77,9 @@ by zero return 0. Division truncates toward zero and remainder keeps the
 dividend's sign. `number_pow` accepts a non-negative integer exponent.
 `number_from_text` accepts an optional minus sign followed by decimal digits.
 These six have pure reference implementations selected by `--reference`.
+`json_parse` and `json_to_text` also have pure reference implementations in
+[libs/pure/json.mini](../libs/pure/json.mini); the pure parser currently accepts
+integer JSON numbers only.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
 are total library functions in [libs/common/number.mini](../libs/common/number.mini), not
