@@ -997,14 +997,25 @@ function main() {
     let args = process.argv.slice(2);
     let filter = "";
     let file = "";
+    let candidate = "";
     if (((args).length === 1)) {
         filter = $mini_list_get(args, 0);
     } else {
         if ((((args).length === 2) && ($mini_list_get(args, 0) === "--file"))) {
             file = $mini_list_get(args, 1);
         } else {
-            if (((args).length !== 0)) {
-                test_usage();
+            if ((((args).length >= 2) && ($mini_list_get(args, 0) === "--candidate"))) {
+                candidate = $mini_list_get(args, 1);
+                if (((args).length > 3)) {
+                    test_usage();
+                }
+                if (((args).length === 3)) {
+                    filter = $mini_list_get(args, 2);
+                }
+            } else {
+                if (((args).length !== 0)) {
+                    test_usage();
+                }
             }
         }
     }
@@ -1024,6 +1035,9 @@ function main() {
             process.exit(1);
         }
         fixtures = $mini_map_get(selected, "fixtures");
+    }
+    if ((candidate !== "")) {
+        process.exit(test_candidate(fixtures, root, candidate));
     }
     let failures = 0;
     let count = 0;
@@ -1061,6 +1075,51 @@ function main() {
     }
     if (((failures > 0) || ((pending > 0) && ((file !== "") || (count === 0))))) {
         process.exit(1);
+    }
+    return 0;
+}
+function test_candidate(fixtures, root, compiler) {
+    let passed = 0;
+    let failed = 0;
+    let pending = 0;
+    let tools = 0;
+    let fixture_index = 0;
+    while ((fixture_index < (fixtures).length)) {
+        let fixture = $mini_list_get(fixtures, fixture_index);
+        let definition = $mini_map_get(fixture, "definition");
+        let kind = $mini_map_get(definition, "kind");
+        if ((kind === "tool")) {
+            tools = (tools + 1);
+        } else {
+            if ($mini_map_has(definition, "pending")) {
+                pending = (pending + 1);
+            } else {
+                let scenarios = $mini_map_get(definition, "cases");
+                let scenario_index = 0;
+                while ((scenario_index < (scenarios).length)) {
+                    let scenario = $mini_list_get(scenarios, scenario_index);
+                    let result = case_verify_scenario(fixture, scenario, root, compiler);
+                    if ($mini_map_get(result, "ok")) {
+                        passed = (passed + 1);
+                    } else {
+                        failed = (failed + 1);
+                        writeSync(2, (((((("FAIL " + $mini_map_get(definition, "id")) + "/") + $mini_map_get(scenario, "name")) + ": ") + $mini_map_get(result, "message")) + "\n"));
+                    }
+                    scenario_index = (scenario_index + 1);
+                }
+            }
+        }
+        fixture_index = (fixture_index + 1);
+    }
+    writeSync(1, ((($mini_number_to_text(passed) + "/") + $mini_number_to_text((passed + failed))) + " Mini-source scenarios passed\n"));
+    if ((pending > 0)) {
+        writeSync(1, ($mini_number_to_text(pending) + " cases pending\n"));
+    }
+    if ((tools > 0)) {
+        writeSync(1, ($mini_number_to_text(tools) + " tool cases skipped; run mini test for those\n"));
+    }
+    if ((failed > 0)) {
+        return 1;
     }
     return 0;
 }
