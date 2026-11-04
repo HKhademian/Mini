@@ -1,6 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmodSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { chmodSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { compiler, releaseTag, root, run, versions, type Component } from './project.ts';
 
@@ -87,20 +86,11 @@ export async function main(executable: string): Promise<void> {
         assert(args[0] !== undefined, 'usage: mini-run SOURCE.mini [ARG]...');
         const source = resolve(args[0]);
         assert(source.endsWith('.mini'), 'Mini source must use .mini');
-        const directory = mkdtempSync(join(tmpdir(), 'mini-run-'));
-        const output = join(directory, 'program.ts');
-        writeFileSync(join(directory, 'package.json'), '{"type":"module"}\n');
-        try {
-          const { spawnSync } = await import('node:child_process');
-          const compiled = spawnSync(process.execPath, [join(root, compiler().entry), 'compile', source, output], { stdio: 'inherit' });
-          if (compiled.error) throw compiled.error;
-          if (compiled.status !== 0) { process.exitCode = compiled.status ?? 1; break; }
-          const executed = spawnSync(process.execPath, [output, ...args.slice(1)], { stdio: 'inherit' });
-          if (executed.error) throw executed.error;
-          process.exitCode = executed.status ?? 1;
-        } finally {
-          rmSync(directory, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
-        }
+        const { spawnSync } = await import('node:child_process');
+        const executed = spawnSync(process.execPath,
+          [join(root, 'tools/run.generated.ts'), join(root, compiler().entry), source, ...args.slice(1)], { stdio: 'inherit' });
+        if (executed.error) throw executed.error;
+        process.exitCode = executed.status ?? 1;
         break;
       }
       case 'compile': {

@@ -53,12 +53,12 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.3.0-v0.1.0-alpha.7
+mini-v0.3.0-v0.1.0-alpha.8
 lang-v0.3.0-v0.3.0-alpha.12
 compiler-v0.3.0-v0.3.0-alpha.14
 bootstrap-v0.3.0-v0.1.0-alpha.4
 builtins-v0.3.0-v0.3.0-alpha.11
-cli-v0.3.0-v0.1.0-alpha.6
+cli-v0.3.0-v0.1.0-alpha.7
 check-v0.3.0-v0.1.0-alpha.6
 format-v0.3.0-v0.1.0-alpha.3
 lsp-v0.3.0-v0.1.0-alpha.4

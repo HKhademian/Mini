@@ -17,7 +17,7 @@ todos:
     status: completed
   - id: phase-2-run
     content: "Phase 2 — Implement mini run as a Mini tool"
-    status: pending
+    status: completed
   - id: phase-2-filesystem-primitives
     content: "Phase 2 — Add file and directory primitives"
     status: pending

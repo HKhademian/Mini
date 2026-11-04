@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.8 / CLI 0.1.0-alpha.7: port `mini run` and `mini-run` to
+  `tools/run.mini`. The generated tool creates a temporary module directory,
+  compiles with the active compiler, runs Node with inherited standard streams,
+  forwards program arguments, and removes its files. Behavior is unchanged.
 - Language 0.3.0-alpha.12 / compiler 0.3.0-alpha.14 / builtins 0.3.0-alpha.11;
   bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `directory_temp()`,
   `file_remove(path)`, and `directory_remove(path)` for tool process setup and

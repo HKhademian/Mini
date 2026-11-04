@@ -26,6 +26,11 @@
         "compiler/src/40-builtins.mini"
       ],
       "generated": "tools/format.generated.ts"
+    },
+    {
+      "source": "tools/run.mini",
+      "parts": [],
+      "generated": "tools/run.generated.ts"
     }
   ]
 }
