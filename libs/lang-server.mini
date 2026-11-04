@@ -185,7 +185,7 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
 fn lsp_analyze(text, name) {
     var root = lsp_root();
     var compiler = project_compiler_entry(root);
-    var work = directory_temp();
+    var work = path_temp_directory();
     var input = path_join(work, "source.mini");
     var output = path_join(work, "program.ts");
     file_write(input, text);

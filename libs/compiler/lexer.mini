@@ -221,7 +221,7 @@ fn expand_includes(tokens, base, stack, seen) {
                 diagnostic_fail(token, "include cycle: " + path);
             }
             if (!map_has(seen, resolved)) {
-                if (!path_exists(resolved)) {
+                if (!path_is_exists(resolved)) {
                     diagnostic_fail(token, "cannot include " + path);
                 }
                 var raw = tokenize(file_read(resolved), path, false);

@@ -127,10 +127,10 @@ fn release_vscode(directory, output, tooling) {
     }
     var packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
     var bundler = path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
-    if (!path_exists(packager)) {
+    if (!path_is_exists(packager)) {
         release_fail("install VS Code development dependencies with npm ci in editors/vscode");
     }
-    if (!path_exists(bundler)) {
+    if (!path_is_exists(bundler)) {
         release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
     }
     var extension = path_join(directory, "editors/vscode");
@@ -147,7 +147,7 @@ fn release_vscode(directory, output, tooling) {
     directory_create(output);
     var file = "mini-" + map_get(current, "group") + "-v" + version + ".vsix";
     var destination = path_join(output, file);
-    if (path_exists(destination)) {
+    if (path_is_exists(destination)) {
         release_fail("VSIX output already exists");
     }
     var package_args = list_new();
@@ -226,7 +226,7 @@ fn release_prepare(directory, output, tag) {
     if (list_length(directory_list(output)) != 0) {
         release_fail("release output directory must be empty");
     }
-    var work = directory_temp();
+    var work = path_temp_directory();
     var source = path_join(work, "source");
     directory_create(source);
     var tracked = path_join(work, "source.tar");
@@ -274,7 +274,7 @@ fn release_prepare(directory, output, tag) {
     map_set(manifest, "node", release_node_version(directory));
     map_set(manifest, "bootstrap", bootstrap);
     map_set(manifest, "vsix", vsix);
-    if (path_exists(path_join(source, "RELEASE.json"))) {
+    if (path_is_exists(path_join(source, "RELEASE.json"))) {
         release_fail("RELEASE.json is reserved for packaged metadata");
     }
     var record = json_to_text(manifest) + "\n";

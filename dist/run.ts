@@ -47,7 +47,7 @@ function $mini_process_run(command, args, mode) {
     output.stderr = typeof result.stderr === "string" ? result.stderr : "";
     return output;
 }
-function $mini_directory_temp() {
+function $mini_path_temp_directory() {
     const fs = process.getBuiltinModule("node:fs");
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
@@ -59,7 +59,7 @@ function run_cleanup(directory) {
     return 0;
 }
 function run_program(compiler, source, forwarded) {
-    let directory = $mini_directory_temp();
+    let directory = $mini_path_temp_directory();
     if (((directory).length === 0)) {
         writeSync(2, "cannot create a temporary directory\n");
         process.exit(1);

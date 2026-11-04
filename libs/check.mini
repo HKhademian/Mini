@@ -143,7 +143,7 @@ fn check_document(path) {
                         target = text_slice(target, 0, hash);
                     }
                     if (text_length(target) > 0 && !check_is_url(target)
-                        && !path_exists(path_resolve(directory, target))) {
+                        && !path_is_exists(path_resolve(directory, target))) {
                         check_fail("broken local link in " + path + ": " + target);
                     }
                     cursor = check_find_from(line, "](", end);
@@ -272,7 +272,7 @@ fn check_sample_cases(root, fixtures) {
     while (position < list_length(directories)) {
         var name = list_get(directories, position);
         var directory = path_join(root, name);
-        if (path_exists(directory)) {
+        if (path_is_exists(directory)) {
             check_sample_walk(directory, name, covered);
         }
         position = position + 1;

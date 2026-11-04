@@ -1,1 +1,1 @@
-path_exists(1);
+path_is_exists(1);

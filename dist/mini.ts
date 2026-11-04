@@ -81,7 +81,7 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -419,7 +419,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
@@ -525,7 +525,7 @@ function mini_command(root, command, args) {
             return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
         }
         let path = $mini_list_get(args, 0);
-        if (((path !== "-") && (!$mini_path_exists(path)))) {
+        if (((path !== "-") && (!$mini_path_is_exists(path)))) {
             return mini_usage(("cannot read " + path));
         }
         return mini_spawn(root, "dist/check-source.ts", args);
@@ -540,7 +540,7 @@ function mini_command(root, command, args) {
             }
             position = (position + 1);
         }
-        if ((((format_path !== "") && (format_path !== "-")) && (!$mini_path_exists(format_path)))) {
+        if ((((format_path !== "") && (format_path !== "-")) && (!$mini_path_is_exists(format_path)))) {
             return mini_usage(("cannot read " + format_path));
         }
         return mini_spawn(root, "dist/format.ts", args);

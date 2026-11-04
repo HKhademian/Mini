@@ -31,7 +31,7 @@ fn build_compiler(root) {
 
 /// Compile one tool source and return its generated text.
 fn build_compile(root, compiler, source) {
-    var work = directory_temp();
+    var work = path_temp_directory();
     var output = path_join(work, "tool.generated.ts");
     var args = list_new();
     list_set(args, 0, compiler);
@@ -103,7 +103,7 @@ fn build_check(root) {
         var tool = list_get(tools, position);
         var target = path_join(root, map_get(tool, "generated"));
         var generated = build_compile(root, compiler, map_get(tool, "source"));
-        if (!path_exists(target) || file_read(target) != generated) {
+        if (!path_is_exists(target) || file_read(target) != generated) {
             build_fail(map_get(tool, "generated") + " is stale; run dist/build.ts");
         }
         position = position + 1;
@@ -113,7 +113,7 @@ fn build_check(root) {
     while (position < list_length(launchers)) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
-        if (!path_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher)) {
+        if (!path_is_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher)) {
             build_fail(name + " is stale; run dist/build.ts");
         }
         position = position + 1;

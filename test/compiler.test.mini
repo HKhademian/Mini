@@ -9,7 +9,7 @@ fn main() {
     var source = path_join(root, "tools/compiler.mini");
     var seed = path_join(root, "dist/compile.ts");
     var expected = hash_sha256(file_read_bytes(seed));
-    var work = directory_temp();
+    var work = path_temp_directory();
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var previous = seed;
     var stage = 0;

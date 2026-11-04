@@ -106,7 +106,7 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_directory_temp() {
+function $mini_path_temp_directory() {
     const fs = process.getBuiltinModule("node:fs");
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
@@ -114,7 +114,7 @@ function $mini_directory_temp() {
 function $mini_path_copy(from, to) {
     process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true });
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -548,7 +548,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
@@ -641,7 +641,7 @@ function case_stream_bytes(stream, directory) {
                 return result_fail("invalid stream");
             }
             let file = path_resolve(directory, $mini_map_get(stream, "file"));
-            if ((!$mini_path_exists(file))) {
+            if ((!$mini_path_is_exists(file))) {
                 return result_fail(("cannot read " + file));
             }
             bytes = $mini_file_read_bytes(file);
@@ -697,12 +697,12 @@ function case_load_case(path) {
     let directory = path_parent(path);
     if ((kind === "tool")) {
         let tool = $mini_map_get(spec, "tool");
-        if (((((!$mini_map_has(spec, "tool")) || (!value_is_text(tool))) || ($mini_text_find(tool, "/") >= 0)) || (!$mini_path_exists(path_join(path_join(project_root(), "bin"), tool))))) {
+        if (((((!$mini_map_has(spec, "tool")) || (!value_is_text(tool))) || ($mini_text_find(tool, "/") >= 0)) || (!$mini_path_is_exists(path_join(path_join(project_root(), "bin"), tool))))) {
             return result_fail(("unknown tool: " + id));
         }
     } else {
         let source = $mini_map_get(spec, "source");
-        if (((((!$mini_map_has(spec, "source")) || (!value_is_text(source))) || (!text_ends_with(source, ".mini"))) || (!$mini_path_exists(path_resolve(directory, source))))) {
+        if (((((!$mini_map_has(spec, "source")) || (!value_is_text(source))) || (!text_ends_with(source, ".mini"))) || (!$mini_path_is_exists(path_resolve(directory, source))))) {
             return result_fail(("case source missing: " + id));
         }
     }
@@ -946,7 +946,7 @@ function case_verify_scenario(fixture, scenario, project_root, compiler_override
     if (result_is_fail(input)) {
         return result_fail((prefix + $mini_map_get(input, "message")));
     }
-    let work = $mini_directory_temp();
+    let work = $mini_path_temp_directory();
     if (((work).length === 0)) {
         return result_fail((prefix + "cannot create a temporary directory"));
     }
@@ -995,7 +995,7 @@ function case_verify_in_work(fixture, scenario, project_root, compiler_override,
         $mini_list_set(compile_args, 2, source);
         $mini_list_set(compile_args, 3, output);
         result = process_capture(process.execPath, compile_args, project_root, []);
-        if ((($mini_map_get(result, "status") === 0) && $mini_path_exists(output))) {
+        if ((($mini_map_get(result, "status") === 0) && $mini_path_is_exists(output))) {
             artifact = $mini_hash_sha256($mini_file_read_bytes(output));
         }
         if (((kind === "compile") && $mini_map_has(scenario, "artifact"))) {
@@ -1003,11 +1003,11 @@ function case_verify_in_work(fixture, scenario, project_root, compiler_override,
             if (result_is_fail(expected)) {
                 return result_fail((prefix + $mini_map_get(expected, "message")));
             }
-            if (((!$mini_path_exists(output)) || (!case_bytes_equal($mini_file_read_bytes(output), $mini_map_get(expected, "bytes"))))) {
+            if (((!$mini_path_is_exists(output)) || (!case_bytes_equal($mini_file_read_bytes(output), $mini_map_get(expected, "bytes"))))) {
                 return result_fail((prefix + "generated artifact differs"));
             }
         }
-        if (((kind === "reject") && $mini_path_exists(output))) {
+        if (((kind === "reject") && $mini_path_is_exists(output))) {
             return result_fail((prefix + "rejection created an output artifact"));
         }
         if (((kind !== "reject") && (kind !== "compile"))) {
@@ -1054,7 +1054,7 @@ function case_verify_in_work(fixture, scenario, project_root, compiler_override,
         let files = $mini_map_get(scenario, "files");
         let position = 0;
         while ((position < (files).length)) {
-            if ((!$mini_path_exists(path_resolve(workspace, $mini_list_get(files, position))))) {
+            if ((!$mini_path_is_exists(path_resolve(workspace, $mini_list_get(files, position))))) {
                 return result_fail(("missing artifact: " + $mini_list_get(files, position)));
             }
             position = (position + 1);
@@ -1109,7 +1109,7 @@ function case_check_output_files(scenario, directory, files, prefix) {
             return result_fail((prefix + $mini_map_get(expected, "message")));
         }
         let target = path_join(files, name);
-        if (((!$mini_path_exists(target)) || (!case_bytes_equal($mini_file_read_bytes(target), $mini_map_get(expected, "bytes"))))) {
+        if (((!$mini_path_is_exists(target)) || (!case_bytes_equal($mini_file_read_bytes(target), $mini_map_get(expected, "bytes"))))) {
             return result_fail(((prefix + "file ") + name));
         }
         position = (position + 1);
@@ -1279,7 +1279,7 @@ function check_document(path) {
                     if ((hash >= 0)) {
                         target = $mini_text_slice(target, 0, hash);
                     }
-                    if (((((target).length > 0) && (!check_is_url(target))) && (!$mini_path_exists(path_resolve(directory, target))))) {
+                    if (((((target).length > 0) && (!check_is_url(target))) && (!$mini_path_is_exists(path_resolve(directory, target))))) {
                         check_fail(((("broken local link in " + path) + ": ") + target));
                     }
                     cursor = check_find_from(line, "](", end);
@@ -1397,7 +1397,7 @@ function check_sample_cases(root, fixtures) {
     while ((position < (directories).length)) {
         let name = $mini_list_get(directories, position);
         let directory = path_join(root, name);
-        if ($mini_path_exists(directory)) {
+        if ($mini_path_is_exists(directory)) {
             check_sample_walk(directory, name, covered);
         }
         position = (position + 1);

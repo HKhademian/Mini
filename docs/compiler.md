@@ -220,7 +220,7 @@ of `list_get`; it does not infer an element kind from preceding mutations.
   with captured or inherited standard streams and returns status, signal, and
   output text.
 
-- `0.3.0-alpha.12`: `process_exec_path()`, `directory_temp()`, `file_remove()`,
+- `0.3.0-alpha.12`: `process_exec_path()`, `path_temp_directory()`, `file_remove()`,
   and `directory_remove()` support tool process setup and cleanup.
 
 The compiler path is self-hosted. The generated `dist/compile.ts` is the

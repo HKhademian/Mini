@@ -85,7 +85,7 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -427,7 +427,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));

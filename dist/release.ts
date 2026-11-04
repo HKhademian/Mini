@@ -131,12 +131,12 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_directory_temp() {
+function $mini_path_temp_directory() {
     const fs = process.getBuiltinModule("node:fs");
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -562,7 +562,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
@@ -678,10 +678,10 @@ function release_vscode(directory, output, tooling) {
     }
     let packager = path_join(tooling, "editors/vscode/node_modules/@vscode/vsce/vsce");
     let bundler = path_join(tooling, "editors/vscode/node_modules/esbuild/bin/esbuild");
-    if ((!$mini_path_exists(packager))) {
+    if ((!$mini_path_is_exists(packager))) {
         release_fail("install VS Code development dependencies with npm ci in editors/vscode");
     }
-    if ((!$mini_path_exists(bundler))) {
+    if ((!$mini_path_is_exists(bundler))) {
         release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
     }
     let extension = path_join(directory, "editors/vscode");
@@ -698,7 +698,7 @@ function release_vscode(directory, output, tooling) {
     $mini_directory_create(output);
     let file = (((("mini-" + $mini_map_get(current, "group")) + "-v") + version) + ".vsix");
     let destination = path_join(output, file);
-    if ($mini_path_exists(destination)) {
+    if ($mini_path_is_exists(destination)) {
         release_fail("VSIX output already exists");
     }
     let package_args = [];
@@ -769,7 +769,7 @@ function release_prepare(directory, output, tag) {
     if ((($mini_directory_list(output)).length !== 0)) {
         release_fail("release output directory must be empty");
     }
-    let work = $mini_directory_temp();
+    let work = $mini_path_temp_directory();
     let source = path_join(work, "source");
     $mini_directory_create(source);
     let tracked = path_join(work, "source.tar");
@@ -817,7 +817,7 @@ function release_prepare(directory, output, tag) {
     $mini_map_set(manifest, "node", release_node_version(directory));
     $mini_map_set(manifest, "bootstrap", bootstrap);
     $mini_map_set(manifest, "vsix", vsix);
-    if ($mini_path_exists(path_join(source, "RELEASE.json"))) {
+    if ($mini_path_is_exists(path_join(source, "RELEASE.json"))) {
         release_fail("RELEASE.json is reserved for packaged metadata");
     }
     let record = ($mini_json_to_text(manifest) + "\n");

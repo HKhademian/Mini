@@ -28,7 +28,7 @@ fn verify_text(value, key) {
 /// Verify the promoted bootstrap and return its JSON identity record.
 fn verify_bootstrap(root) {
     var bootstrap_path = path_join(root, "config/bootstrap.json");
-    if (!path_exists(bootstrap_path)) {
+    if (!path_is_exists(bootstrap_path)) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.");
     }
     var parsed = json_parse(file_read(bootstrap_path));
@@ -55,7 +55,7 @@ fn verify_bootstrap(root) {
     var seed_path = path_join(root, compiler);
     var source_bytes = file_read_bytes(source_path);
     var seed_bytes = file_read_bytes(seed_path);
-    var work = directory_temp();
+    var work = path_temp_directory();
     if (text_length(work) == 0) {
         verify_fail("cannot create a temporary directory");
     }

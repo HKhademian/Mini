@@ -96,7 +96,7 @@ fn case_stream_bytes(stream, directory) {
                 return result_fail("invalid stream");
             }
             var file = path_resolve(directory, map_get(stream, "file"));
-            if (!path_exists(file)) {
+            if (!path_is_exists(file)) {
                 return result_fail("cannot read " + file);
             }
             bytes = file_read_bytes(file);
@@ -160,13 +160,13 @@ fn case_load_case(path) {
     if (kind == "tool") {
         var tool = map_get(spec, "tool");
         if (!map_has(spec, "tool") || !value_is_text(tool) || text_find(tool, "/") >= 0
-            || !path_exists(path_join(path_join(project_root(), "bin"), tool))) {
+            || !path_is_exists(path_join(path_join(project_root(), "bin"), tool))) {
             return result_fail("unknown tool: " + id);
         }
     } else {
         var source = map_get(spec, "source");
         if (!map_has(spec, "source") || !value_is_text(source) || !text_ends_with(source, ".mini")
-            || !path_exists(path_resolve(directory, source))) {
+            || !path_is_exists(path_resolve(directory, source))) {
             return result_fail("case source missing: " + id);
         }
     }
@@ -440,7 +440,7 @@ fn case_verify_scenario(fixture, scenario, project_root, compiler_override) {
     if (result_is_fail(input)) {
         return result_fail(prefix + map_get(input, "message"));
     }
-    var work = directory_temp();
+    var work = path_temp_directory();
     if (text_length(work) == 0) {
         return result_fail(prefix + "cannot create a temporary directory");
     }
@@ -491,7 +491,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         list_set(compile_args, 2, source);
         list_set(compile_args, 3, output);
         result = process_capture(process_exec_path(), compile_args, project_root, list_new());
-        if (map_get(result, "status") == 0 && path_exists(output)) {
+        if (map_get(result, "status") == 0 && path_is_exists(output)) {
             artifact = hash_sha256(file_read_bytes(output));
         }
         if (kind == "compile" && map_has(scenario, "artifact")) {
@@ -499,11 +499,11 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             if (result_is_fail(expected)) {
                 return result_fail(prefix + map_get(expected, "message"));
             }
-            if (!path_exists(output) || !case_bytes_equal(file_read_bytes(output), map_get(expected, "bytes"))) {
+            if (!path_is_exists(output) || !case_bytes_equal(file_read_bytes(output), map_get(expected, "bytes"))) {
                 return result_fail(prefix + "generated artifact differs");
             }
         }
-        if (kind == "reject" && path_exists(output)) {
+        if (kind == "reject" && path_is_exists(output)) {
             return result_fail(prefix + "rejection created an output artifact");
         }
         if (kind != "reject" && kind != "compile") {
@@ -550,7 +550,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         var files = map_get(scenario, "files");
         var position = 0;
         while (position < list_length(files)) {
-            if (!path_exists(path_resolve(workspace, list_get(files, position)))) {
+            if (!path_is_exists(path_resolve(workspace, list_get(files, position)))) {
                 return result_fail("missing artifact: " + list_get(files, position));
             }
             position = position + 1;
@@ -611,7 +611,7 @@ fn case_check_output_files(scenario, directory, files, prefix) {
             return result_fail(prefix + map_get(expected, "message"));
         }
         var target = path_join(files, name);
-        if (!path_exists(target) || !case_bytes_equal(file_read_bytes(target), map_get(expected, "bytes"))) {
+        if (!path_is_exists(target) || !case_bytes_equal(file_read_bytes(target), map_get(expected, "bytes"))) {
             return result_fail(prefix + "file " + name);
         }
         position = position + 1;

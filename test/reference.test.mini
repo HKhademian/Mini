@@ -4,7 +4,7 @@ include "../libs/cases.mini";
 
 /// Compile and run one source in host and reference modes, then compare results.
 fn reference_compare(root, name, source_text) {
-    var work = directory_temp();
+    var work = path_temp_directory();
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var source = path_join(work, name + ".mini");
     file_write(source, source_text);

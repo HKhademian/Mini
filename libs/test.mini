@@ -137,7 +137,7 @@ fn test_units(root, filter) {
         if (text_ends_with(name, ".test.mini") && (filter == "" || text_find(name, filter) >= 0)) {
             count = count + 1;
             var source = path_join(directory, name);
-            var work = directory_temp();
+            var work = path_temp_directory();
             var output = path_join(work, "test.generated.ts");
             var compile_args = list_new();
             list_set(compile_args, 0, compiler);

@@ -15,7 +15,7 @@ var raw = list_new();
 list_set(raw, 0, 0);
 list_set(raw, 1, 255);
 list_set(raw, 2, 10);
-var directory = directory_temp();
+var directory = path_temp_directory();
 var file = directory + "/raw.bin";
 file_write_bytes(file, raw);
 var read_back = file_read_bytes(file);

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.31 / language 0.3.0-alpha.31 / builtins 0.3.0-alpha.30 /
+  compiler 0.3.0-alpha.41 / bootstrap 0.1.0-alpha.28: normalize the path
+  namespace with `path_is_exists`, `path_is_file`, `path_is_directory`,
+  `path_temp_directory`, and `path_temp_file`.
 - Mini 0.1.0-alpha.30 / language 0.3.0-alpha.30 / builtins 0.3.0-alpha.29 /
   compiler 0.3.0-alpha.40 / bootstrap 0.1.0-alpha.27: add `text_code` and
   `text_from_code` representation primitives, with pure UTF-8 encoding and
@@ -112,7 +116,7 @@
   bootstrap 0.1.0-alpha.13: add `process_spawn(options)` with working directory,
   byte stdin, captured byte output, inherit mode, and timeout.
 - Language 0.3.0-alpha.18 / compiler 0.3.0-alpha.23 / builtins 0.3.0-alpha.17;
-  bootstrap 0.1.0-alpha.12: add `path_exists`, `path_is_directory`,
+  bootstrap 0.1.0-alpha.12: add `path_is_exists`, `path_is_directory`,
   `directory_list`, `directory_create`, `path_copy`, and `path_remove` for tool
   file-tree work.
 - Language 0.3.0-alpha.17 / compiler 0.3.0-alpha.22 / builtins 0.3.0-alpha.16;
@@ -151,7 +155,7 @@
   compiles with the active compiler, runs Node with inherited standard streams,
   forwards program arguments, and removes its files. Behavior is unchanged.
 - Language 0.3.0-alpha.12 / compiler 0.3.0-alpha.14 / builtins 0.3.0-alpha.11;
-  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `directory_temp()`,
+  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `path_temp_directory()`,
   `file_remove(path)`, and `directory_remove(path)` for tool process setup and
   cleanup. Regenerate the bootstrap and the generated tools.
 - Language 0.3.0-alpha.11 / compiler 0.3.0-alpha.13 / builtins 0.3.0-alpha.10;
@@ -376,7 +380,7 @@ generated bootstrap are not implemented yet.
   bootstrap 0.1.0-alpha.13: add `process_spawn(options)` with working directory,
   byte stdin, captured byte output, inherit mode, and timeout.
 - Language 0.3.0-alpha.18 / compiler 0.3.0-alpha.23 / builtins 0.3.0-alpha.17;
-  bootstrap 0.1.0-alpha.12: add `path_exists`, `path_is_directory`,
+  bootstrap 0.1.0-alpha.12: add `path_is_exists`, `path_is_directory`,
   `directory_list`, `directory_create`, `path_copy`, and `path_remove` for tool
   file-tree work.
 - Language 0.3.0-alpha.17 / compiler 0.3.0-alpha.22 / builtins 0.3.0-alpha.16;
@@ -415,7 +419,7 @@ generated bootstrap are not implemented yet.
   compiles with the active compiler, runs Node with inherited standard streams,
   forwards program arguments, and removes its files. Behavior is unchanged.
 - Language 0.3.0-alpha.12 / compiler 0.3.0-alpha.14 / builtins 0.3.0-alpha.11;
-  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `directory_temp()`,
+  bootstrap 0.1.0-alpha.4: add `process_exec_path()`, `path_temp_directory()`,
   `file_remove(path)`, and `directory_remove(path)` for tool process setup and
   cleanup. Regenerate the bootstrap and the generated tools.
 - Language 0.3.0-alpha.11 / compiler 0.3.0-alpha.13 / builtins 0.3.0-alpha.10;

@@ -58,7 +58,7 @@ fn bench_platform() {
 
 /// Return the repository commit, or empty text outside a checkout.
 fn bench_commit(root) {
-    if (!path_exists(path_join(root, ".git"))) {
+    if (!path_is_exists(path_join(root, ".git"))) {
         return "";
     }
     var args = list_new();
@@ -72,7 +72,7 @@ fn bench_commit(root) {
 
 /// Run benchmark cases and return the number of report rows written.
 fn bench_run(root, output, filter) {
-    if (path_exists(output)) {
+    if (path_is_exists(output)) {
         bench_fail("benchmark output already exists; choose a new report path");
     }
     var selected = case_load_cases(filter, root);

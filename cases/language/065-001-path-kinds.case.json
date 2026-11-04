@@ -1,0 +1,15 @@
+{
+  "id": "language.path-kinds",
+  "kind": "feature",
+  "source": "065-001-path-kinds.mini",
+  "features": ["path.exists", "path.file", "path.directory", "path.temp"],
+  "cases": [
+    {
+      "name": "kinds-and-temp",
+      "stdin": {"text": ""},
+      "stdout": {"text": "path ok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

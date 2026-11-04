@@ -591,13 +591,13 @@ var started = time_millis();
 ## Accepted operations: file tree
 
 ```text
-var directory = directory_temp();
+var directory = path_temp_directory();
 directory_create(directory + "/sub");
 var names = directory_list(directory);
 path_remove(directory);
 ```
 
-- `path_exists(path)` reports whether a file or directory exists.
+- `path_is_exists(path)` reports whether a file or directory exists.
 - `path_is_directory(path)` reports whether a path names a directory.
 - `directory_list(path)` returns sorted entry names; a missing path or non-directory
   returns an empty list.
@@ -708,7 +708,7 @@ Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```text
 var node = process_exec_path();
-var directory = directory_temp();
+var directory = path_temp_directory();
 file_write(directory + "/note.txt", "value\n");
 file_remove(directory + "/note.txt");
 directory_remove(directory);
@@ -716,7 +716,7 @@ directory_remove(directory);
 
 - `process_exec_path()` returns the absolute path of the running Node
   executable. It takes no arguments.
-- `directory_temp()` creates and returns a fresh empty directory under the host
+- `path_temp_directory()` creates and returns a fresh empty directory under the host
   temporary directory. It takes no arguments.
 - `file_remove(path)` removes a file when present and ignores a missing path.
   It produces no value.

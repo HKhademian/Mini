@@ -134,12 +134,12 @@ function $mini_read_line() {
     if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();
     return Buffer.from(bytes).toString("utf8");
 }
-function $mini_directory_temp() {
+function $mini_path_temp_directory() {
     const fs = process.getBuiltinModule("node:fs");
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -569,7 +569,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
@@ -743,7 +743,7 @@ function lsp_parse_diagnostic(stderr, text, name, tokens) {
 function lsp_analyze(text, name) {
     let root = lsp_root();
     let compiler = project_compiler_entry(root);
-    let work = $mini_directory_temp();
+    let work = $mini_path_temp_directory();
     let input = path_join(work, "source.mini");
     let output = path_join(work, "program.ts");
     writeFileSync(input, text, "utf8");

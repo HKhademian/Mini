@@ -14,7 +14,7 @@ fn run_cleanup(directory) {
 
 /// Compile the source and run the generated module with forwarded arguments.
 fn run_program(compiler, source, forwarded) {
-    var directory = directory_temp();
+    var directory = path_temp_directory();
     if (text_length(directory) == 0) {
         io_write_error("cannot create a temporary directory\n");
         process_exit(1);

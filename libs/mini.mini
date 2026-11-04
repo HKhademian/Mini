@@ -103,7 +103,7 @@ fn mini_command(root, command, args) {
             return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
         }
         var path = list_get(args, 0);
-        if (path != "-" && !path_exists(path)) {
+        if (path != "-" && !path_is_exists(path)) {
             return mini_usage("cannot read " + path);
         }
         return mini_spawn(root, "dist/check-source.ts", args);
@@ -118,7 +118,7 @@ fn mini_command(root, command, args) {
             }
             position = position + 1;
         }
-        if (format_path != "" && format_path != "-" && !path_exists(format_path)) {
+        if (format_path != "" && format_path != "-" && !path_is_exists(format_path)) {
             return mini_usage("cannot read " + format_path);
         }
         return mini_spawn(root, "dist/format.ts", args);

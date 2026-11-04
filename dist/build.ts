@@ -84,12 +84,12 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_directory_temp() {
+function $mini_path_temp_directory() {
     const fs = process.getBuiltinModule("node:fs");
     const os = process.getBuiltinModule("node:os");
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
-function $mini_path_exists(path) {
+function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
@@ -434,7 +434,7 @@ function result_set_value(result, value) {
     return result;
 }
 function json_parse_file(path) {
-    if ((!$mini_path_exists(path))) {
+    if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = $mini_json_parse(readFileSync(path, "utf8"));
@@ -479,7 +479,7 @@ function build_compiler(root) {
     return $mini_map_get($mini_map_get(parsed, "value"), "entry");
 }
 function build_compile(root, compiler, source) {
-    let work = $mini_directory_temp();
+    let work = $mini_path_temp_directory();
     let output = path_join(work, "tool.generated.ts");
     let args = [];
     $mini_list_set(args, 0, compiler);
@@ -541,7 +541,7 @@ function build_check(root) {
         let tool = $mini_list_get(tools, position);
         let target = path_join(root, $mini_map_get(tool, "generated"));
         let generated = build_compile(root, compiler, $mini_map_get(tool, "source"));
-        if (((!$mini_path_exists(target)) || (readFileSync(target, "utf8") !== generated))) {
+        if (((!$mini_path_is_exists(target)) || (readFileSync(target, "utf8") !== generated))) {
             build_fail(($mini_map_get(tool, "generated") + " is stale; run dist/build.ts"));
         }
         position = (position + 1);
@@ -551,7 +551,7 @@ function build_check(root) {
     while ((position < (launchers).length)) {
         let launcher = $mini_list_get(launchers, position);
         let name = ("bin/" + $mini_map_get(launcher, "name"));
-        if (((!$mini_path_exists(path_join(root, name))) || (readFileSync(path_join(root, name), "utf8") !== build_launcher(launcher)))) {
+        if (((!$mini_path_is_exists(path_join(root, name))) || (readFileSync(path_join(root, name), "utf8") !== build_launcher(launcher)))) {
             build_fail((name + " is stale; run dist/build.ts"));
         }
         position = (position + 1);

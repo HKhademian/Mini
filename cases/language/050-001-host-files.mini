@@ -7,7 +7,7 @@ if (map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) >
 } else {
     io_write("exec bad\n");
 }
-var directory = directory_temp();
+var directory = path_temp_directory();
 if (text_length(directory) > 0) {
     io_write("temp ok\n");
 } else {

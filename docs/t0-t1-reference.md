@@ -304,7 +304,7 @@ Count keys with `list_length(map_keys(items))`; no map size counter is maintaine
 - `process_run(text, list, text) -> map`: `$mini_process_run(arg0, arg1, arg2)`
   (adapter).
 - `process_exec_path() -> text`: `process.execPath`.
-- `directory_temp() -> text`: `$mini_directory_temp()` (adapter).
+- `path_temp_directory() -> text`: `$mini_path_temp_directory()` (adapter).
 - `file_remove(text) -> no result`: `$mini_file_remove(arg0)` (adapter).
 - `directory_remove(text) -> no result`: `$mini_directory_remove(arg0)` (adapter).
 
@@ -338,7 +338,7 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 10. `$mini_number_to_text`: render a safe integer as canonical decimal text.
 11. `$mini_process_run`: run one child process to completion and return status,
     signal, captured output, and a startup error in a fresh map.
-12. `$mini_directory_temp`: create a fresh empty directory under the host
+12. `$mini_path_temp_directory`: create a fresh empty directory under the host
     temporary directory and return its path.
 13. `$mini_text_find`: return the first substring position or -1.
 14. `$mini_text_get`: read an in-range character from text, otherwise empty text.
@@ -358,7 +358,7 @@ with Mini identifiers.
 The only generated module import is `node:fs`. The finite named imports, sorted
 when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
 and the adapter blocks in fixed ordered lists rather than add general sorting.
-`process_run`, `directory_temp`, `file_remove`, and `directory_remove` reach
+`process_run`, `path_temp_directory`, `file_remove`, and `directory_remove` reach
 `node:child_process`, `node:fs`, and `node:os` through `process.getBuiltinModule`,
 so the generated import list stays limited to `node:fs`.
 

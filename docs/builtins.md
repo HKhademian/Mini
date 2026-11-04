@@ -25,8 +25,8 @@ whole files as byte lists.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
 
-`path_exists(path)` and `path_is_directory(path)` report whether a path exists
-and names a directory. `directory_list(path)` returns sorted entry names, or an
+`path_is_exists(path)`, `path_is_file(path)`, and `path_is_directory(path)`
+report whether a path exists, names a regular file, or names a directory. `directory_list(path)` returns sorted entry names, or an
 empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
@@ -175,9 +175,10 @@ empty; `error` holds a startup failure message and is otherwise empty. Captured
 output is bounded by a fixed implementation buffer. Execution is one-shot; there
 is no streaming, stdin piping, environment override, or timeout.
 
-The accepted built-ins `process_exec_path()` and `directory_temp()` expose the
+The accepted built-ins `process_exec_path()` and `path_temp_directory()` expose the
 running Node executable path and create a fresh empty directory under the host
-temporary directory. `file_remove(path)` removes a file when present and ignores
+temporary directory. `path_temp_file()` creates a fresh temporary directory with
+one empty file and returns the file path. `file_remove(path)` removes a file when present and ignores
 a missing path. `directory_remove(path)` removes an empty directory when present
 and ignores a missing path; a non-empty directory remains a host error. These
 operations back tool process setup and cleanup.
