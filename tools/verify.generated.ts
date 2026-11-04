@@ -1114,8 +1114,6 @@ function main() {
         verify_fail("cannot create a temporary directory");
     }
     writeFileSync(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n", "utf8");
-    let input = case_path_join(work, "compiler.mini");
-    $mini_file_write_bytes(input, source_bytes);
     let previous = case_path_join(work, "compiler0.ts");
     $mini_file_write_bytes(previous, seed_bytes);
     let generations = [];
@@ -1125,7 +1123,7 @@ function main() {
         let compile_args = [];
         $mini_list_set(compile_args, 0, previous);
         $mini_list_set(compile_args, 1, "compile");
-        $mini_list_set(compile_args, 2, input);
+        $mini_list_set(compile_args, 2, source_path);
         $mini_list_set(compile_args, 3, next);
         let result = case_run(process.execPath, compile_args, work, []);
         if (($mini_map_get(result, "status") !== 0)) {

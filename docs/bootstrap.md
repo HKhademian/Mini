@@ -3,7 +3,7 @@
 The self-hosted bootstrap is the only compiler implementation and is selected by
 [config/compiler.json](../config/compiler.json).
 [config/bootstrap.json](../config/bootstrap.json) pins the generated
-`bootstrap/compiler.ts` to `compiler/compiler.mini`. The handwritten T0
+`bootstrap/compiler.ts` to `tools/compiler.mini`. The handwritten T0
 implementation was removed after promotion and fixed-point verification. Bare
 `./bin/mini verify` checks the fixed point.
 
@@ -13,7 +13,7 @@ the `mini` dispatcher and the verification/release harness. They are development
 utilities, not prerequisites for running the generated compiler on Node.
 
 M1 names the Mini compiler source in
-[compiler/compiler.mini](../compiler/compiler.mini); T1 names the generated TS
+[tools/compiler.mini](../tools/compiler.mini); T1 names the generated TS
 compiler produced from M1. The fixed point is `T1(M1) = T1`. T1 is promoted as
 `bootstrap/compiler.ts`; `config/bootstrap.json` records the source, compiler,
 and example identities. The [historical port reference](t0-t1-reference.md)
@@ -22,8 +22,8 @@ records the first port's continuity with the retired T0 design.
 Delivery uses compilation, not a runner:
 
 ```text
-mini compile compiler.mini
-node compiler.mini.ts compile compiler.mini
+mini compile tools/compiler.mini
+node compiler.mini.ts compile tools/compiler.mini
 ```
 
 Both write `compiler.mini.ts` by default. An optional final argument selects another
@@ -43,7 +43,7 @@ selected in `config/compiler.json`, and `config/bootstrap.json` records:
 ```json
 {
   "compiler": "bootstrap/compiler.ts",
-  "source": "compiler/compiler.mini",
+  "source": "tools/compiler.mini",
   "example": "cases/language/005-002-io-sample.case.json"
 }
 ```
@@ -53,7 +53,7 @@ uses the [case format](cases.md): source and input/output streams remain separat
 files.
 
 The verifier copies the shipped compiler and Mini source into an isolated
-directory, invokes `node PREVIOUS.ts compile compiler.mini NEXT.ts` three times,
+directory, invokes `node PREVIOUS.ts compile tools/compiler.mini NEXT.ts` three times,
 and requires each output file to equal the shipped compiler byte for byte.
 It uses the last generation to compile and run every example scenario,
 checking stdout, stderr, and exit status. Release metadata records source,

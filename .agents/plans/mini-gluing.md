@@ -1,23 +1,23 @@
 ---
 name: mini-gluing
-status: proposed
+status: completed
 created: 2026-11-04
 todos:
   - id: step-1-proposal
     content: "Step 1 — Select include syntax, resolution, and expansion semantics"
-    status: pending
+    status: completed
   - id: step-2-cases
     content: "Step 2 — Add accepted include cases before compiler support"
-    status: pending
+    status: completed
   - id: step-3-compiler
     content: "Step 3 — Implement include expansion and promote the bootstrap bridge"
-    status: pending
+    status: completed
   - id: step-4-tooling
     content: "Step 4 — Preserve include directives in formatter and analysis, then adopt in tools"
-    status: pending
+    status: completed
   - id: step-5-imports
     content: "Step 5 — Decide whether project dependencies need import later"
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []
@@ -28,66 +28,64 @@ plans:
 
 ## Question
 
-Each project needs a way to join more than one source file. Mini currently does
-this outside the language: ordered parts are concatenated by a build helper
-before compilation. Is that enough, or does Mini need a language-level
-`include` or `import` construct?
+Each project needs a way to join more than one source file. Mini originally did
+this outside the language: ordered parts were concatenated by build helpers
+before compilation. Does the language need `include` or `import`?
 
-## Current mechanisms
+## Adopted mechanism
 
-The compiler is authored as ordered parts and concatenated into
-`compiler/compiler.mini`:
+Mini now has a single-unit `include` directive:
 
 ```text
-compiler/m1.parts
-compiler/src/00-constants.mini
-compiler/src/10-text.mini
-compiler/src/20-lexer.mini
-compiler/src/30-parser.mini
-compiler/src/40-builtins.mini
-compiler/src/50-main.mini
+tools/compiler.mini
+include "00-constants.mini";
+include "10-text.mini";
+include "20-lexer.mini";
+include "30-parser.mini";
+include "40-builtins.mini";
+include "50-main.mini";
 ```
 
-`tools/build-m1.mini` reads that list and writes the canonical file. A tracked
-`tools/build-m1.generated.ts` runs it.
+Contract:
 
-Generated tools use `tools/mini-tools.json`. Each entry names a tool source, an
-ordered part list, and a generated TypeScript target. `tools/mini-tools.ts`
-concatenates parts plus source, hoists the tool shebang, and compiles the result
-with the active bootstrap.
+- `include "relative/path.mini";` is a top-level directive, recognized
+  contextually.
+- Paths resolve relative to the including file and are canonicalized.
+- Each canonical file is included at most once per compilation.
+- Cycles, missing files, included shebangs, and includes inside blocks are
+  compiler errors.
+- Included diagnostics use the written include path.
+- `tokens` keeps directives; `compile` expands them; formatting preserves
+  directives.
 
-Shared parts today:
+`tools/mini-tools.json` now maps each tool source to its generated target and
+declares `bin/` launchers. Tools declare their own dependencies:
 
-| Part | Tools that compose it |
-| --- | --- |
-| `compiler/src/10-text.mini` | 6 |
-| `tools/cases.mini` | 4 |
-| `compiler/src/00-constants.mini` | 2 (source check, format) |
-| `compiler/src/20-lexer.mini` | 2 |
-| `compiler/src/30-parser.mini` | 2 |
-| `compiler/src/40-builtins.mini` | 2 |
+```text
+tools/check.mini
+include "../compiler/src/10-text.mini";
+include "cases.mini";
+```
 
-Composed tools currently define 48-75 functions each. No duplicate function
-names exist today, but nothing in the language or manifest prevents them; the
-convention is manual prefixing.
+`tools/mini-tools.ts` compiles the source directly. The compiler's include
+expansion replaces the former `compiler/m1.parts`, `compiler/compiler.mini`, and
+`tools/build-m1.*` composition path. `bin/` launchers are generated from the
+manifest.
 
 ## Findings
 
-1. Composition already *is* the project's glue. It is deterministic, keeps one
-   generated unit, and preserves the bootstrap fixed point. It is not a compiler
-   feature, so the language itself cannot express a dependency between files.
-2. The manifest centralizes knowledge that belongs to each source. Adding a
-   shared dependency means editing a central list; reading a tool source does not
-   reveal its dependencies or their order.
-3. The glue is order-sensitive. Global table initialization in
-   `compiler/src/40-builtins.mini` depends on `compiler/src/00-constants.mini`
-   appearing first. A source file has no way to state that requirement.
-4. A single compilation unit is still valuable for Mini: generated code remains
-   self-contained, diagnostics use one token stream, and the bootstrap fixed
-   point is simple. Any glue should preserve that property if possible.
-5. A modern language that reaches self-hosting in one file still accumulates
-   shared libraries and multiple tools. At that stage, file-level glue becomes a
-   maintenance requirement rather than an optional convenience.
+1. The external manifest was a real glue mechanism, but it kept dependency order
+   outside the source and duplicated the source layout.
+2. Include solves that for one compilation unit without adding modules,
+   namespaces, or runtime boundaries. Generated output remains self-contained.
+3. `include` was sufficient for the compiler and every tool; no current consumer
+   needs separate compilation or a public/private boundary.
+4. Include-once and top-level placement prevented the main hazards: duplicate
+   definitions, cycle recursion, and block splitting.
+5. Tooling adopted the directive without expanding `tokens`; the formatter
+   preserves it.
+
+## Include versus import
 
 ## Include versus import
 

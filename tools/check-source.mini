@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+include "constants.mini";
+include "text.mini";
+include "lexer.mini";
+include "parser.mini";
+include "builtins.mini";
 /// Check one Mini source file or standard input.
 /// On success this writes nothing. A failure prints the compiler's first
 /// diagnostic and exits 1; invalid arguments and unreadable files are command

@@ -1420,13 +1420,6 @@ function main() {
     if (($mini_map_get(verified_tools, "status") !== 0)) {
         process.exit($mini_map_get(verified_tools, "status"));
     }
-    let build = [];
-    $mini_list_set(build, 0, case_path_join(root, "tools/build-m1.generated.ts"));
-    $mini_list_set(build, 1, "--check");
-    let composed = check_inherit(process.execPath, build, root);
-    if (($mini_map_get(composed, "status") !== 0)) {
-        process.exit($mini_map_get(composed, "status"));
-    }
     check_versions(root);
     check_node(root);
     let loaded = case_load_cases("", root);

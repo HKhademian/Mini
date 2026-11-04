@@ -31,7 +31,7 @@ compiler gains and the workloads that regress.
 
 M1 is the compiler source written in Mini; T1 is the generated TypeScript
 compiler produced from it. The source lives in
-[compiler/compiler.mini](compiler/compiler.mini); the promoted T1 is
+[tools/compiler.mini](tools/compiler.mini); the promoted T1 is
 [bootstrap/compiler.ts](bootstrap/compiler.ts), selected by
 [config/compiler.json](config/compiler.json). Keep M1 close to the verified
 first-port boundaries, control flow, calls, lookups, and data layout. Defer

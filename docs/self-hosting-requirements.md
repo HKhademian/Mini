@@ -7,7 +7,7 @@ Baseline: group 0.3.0, compiler 0.3.0-alpha.11, bootstrap 0.1.0-alpha.1.
 ## Verdict
 
 The current subset is sufficient for the Mini compiler. M1 is
-[compiler/compiler.mini](../compiler/compiler.mini), and the fixed-point check
+[tools/compiler.mini](../tools/compiler.mini), and the fixed-point check
 proves the promoted compiler reaches a byte-identical fixed point. Mini is self-hosted
 for the compiler path: `bootstrap/compiler.ts` is selected by
 `config/compiler.json` and pinned by `config/bootstrap.json`.
@@ -83,7 +83,7 @@ decisions; they must not remain in handwritten TypeScript helpers.
 
 ## Remaining deliverables
 
-1. **Mini compiler source (M1).** Implemented in `compiler/compiler.mini`: the
+1. **Mini compiler source (M1).** Implemented in `tools/compiler.mini`: the
    scanner/tokenizer, positioned diagnostics, recursive-descent parser, current
    checking, TS emitter, and `compile` / `tokens` interfaces. T1 is promoted and
    active; T0 has been removed.

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+include "text.mini";
+include "cases.mini";
 /// Run repository checks: strict TypeScript (unless --docs), generated tools,
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
 /// Usage: node tools/check.generated.ts [--docs]
@@ -430,13 +432,6 @@ fn main() {
     var verified_tools = check_inherit(process_exec_path(), tools, root);
     if (map_get(verified_tools, "status") != 0) {
         process_exit(map_get(verified_tools, "status"));
-    }
-    var build = list_new();
-    list_set(build, 0, case_path_join(root, "tools/build-m1.generated.ts"));
-    list_set(build, 1, "--check");
-    var composed = check_inherit(process_exec_path(), build, root);
-    if (map_get(composed, "status") != 0) {
-        process_exit(map_get(composed, "status"));
     }
     check_versions(root);
     check_node(root);

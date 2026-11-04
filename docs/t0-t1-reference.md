@@ -5,7 +5,7 @@ removed once the generated compiler became the only implementation. This page
 records the port mapping and is not a current interface.
 
 T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
-source written in Mini, implemented in [compiler/compiler.mini](../compiler/compiler.mini).
+source written in Mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
 T1 is its generated TypeScript compiler and is promoted as
 [bootstrap/compiler.ts](../bootstrap/compiler.ts). The inventory covers the five
 retired T0 files, not the CLI tools, tests, or release system.
@@ -60,7 +60,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
 - `compiler/t0.ts`: argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
 
-M1 can place these responsibilities in one `compiler/compiler.mini` file.
+M1 can place these responsibilities in `tools/compiler.mini`.
 Existing TypeScript imports/exports and file boundaries need no Mini equivalent.
 
 ## 2. Named constants and data shapes

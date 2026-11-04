@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.18 / compiler 0.3.0-alpha.30 / bootstrap 0.1.0-alpha.19 /
+  verify 0.1.0-alpha.4: adopt `include` for all authored sources. The compiler
+  entry is `tools/compiler.mini`; compiler sources and tools live together with
+  unnumbered names, and tools include their own dependencies. Remove
+  `compiler/compiler.mini`, `compiler/m1.parts`, and the `build-m1` tool.
+  The verifier compiles the source path directly so includes resolve.
 - Mini 0.1.0-alpha.16: generate every `bin/` launcher from the tool manifest.
   Launchers are executable files, verified by `mini check`, and are no longer
   handwritten symlinks.

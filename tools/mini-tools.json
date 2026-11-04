@@ -1,97 +1,76 @@
 {
   "tools": [
     {
-      "source": "tools/build-m1.mini",
-      "parts": [],
-      "generated": "tools/build-m1.generated.ts"
-    },
-    {
       "source": "tools/check-source.mini",
-      "parts": [
-        "compiler/src/00-constants.mini",
-        "compiler/src/10-text.mini",
-        "compiler/src/20-lexer.mini",
-        "compiler/src/30-parser.mini",
-        "compiler/src/40-builtins.mini"
-      ],
       "generated": "tools/check-source.generated.ts"
     },
     {
       "source": "tools/format.mini",
-      "parts": [
-        "compiler/src/00-constants.mini",
-        "compiler/src/10-text.mini",
-        "compiler/src/20-lexer.mini",
-        "compiler/src/30-parser.mini",
-        "compiler/src/40-builtins.mini"
-      ],
       "generated": "tools/format.generated.ts"
     },
     {
       "source": "tools/run.mini",
-      "parts": [],
       "generated": "tools/run.generated.ts"
     },
     {
       "source": "tools/test.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/test.generated.ts"
     },
     {
       "source": "tools/verify.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/verify.generated.ts"
     },
     {
       "source": "tools/check.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/check.generated.ts"
     },
     {
       "source": "tools/bench.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/bench.generated.ts"
     },
     {
       "source": "tools/release.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/release.generated.ts"
     },
     {
       "source": "tools/lang-server.mini",
-      "parts": [
-        "compiler/src/10-text.mini",
-        "tools/cases.mini"
-      ],
       "generated": "tools/lang-server.generated.ts"
     }
   ],
   "launchers": [
-    { "name": "mini" },
-    { "name": "mini-check" },
-    { "name": "mini-format" },
-    { "name": "mini-run" },
-    { "name": "mini-test" },
-    { "name": "mini-bench" },
-    { "name": "mini-verify" },
-    { "name": "mini-release" },
-    { "name": "mini-compile" },
-    { "name": "minic" },
-    { "name": "mini-lang-server", "tool": "tools/lang-server.generated.ts" }
+    {
+      "name": "mini"
+    },
+    {
+      "name": "mini-check"
+    },
+    {
+      "name": "mini-format"
+    },
+    {
+      "name": "mini-run"
+    },
+    {
+      "name": "mini-test"
+    },
+    {
+      "name": "mini-bench"
+    },
+    {
+      "name": "mini-verify"
+    },
+    {
+      "name": "mini-release"
+    },
+    {
+      "name": "mini-compile"
+    },
+    {
+      "name": "minic"
+    },
+    {
+      "name": "mini-lang-server",
+      "tool": "tools/lang-server.generated.ts"
+    }
   ]
 }

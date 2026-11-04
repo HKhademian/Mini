@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+include "text.mini";
+include "cases.mini";
 /// Package committed sources into a release directory.
 /// Usage: node tools/release.generated.ts OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.

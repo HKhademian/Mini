@@ -89,7 +89,7 @@ write("ok\n");
 A top-level directive splices another Mini source into the current compilation:
 
 ```text
-include "compiler/src/10-text.mini";
+include "tools/text.mini";
 ```
 
 - `include "relative/path.mini";` is recognized contextually at the top level.

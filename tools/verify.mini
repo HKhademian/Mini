@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+include "text.mini";
+include "cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
 /// Usage: node tools/verify.generated.ts [PROJECT_ROOT]
 /// Prints one compact JSON object with source, compiler, generation, example,
@@ -66,8 +68,6 @@ fn main() {
         verify_fail("cannot create a temporary directory");
     }
     file_write(case_path_join(work, "package.json"), "{\"type\":\"module\"}\n");
-    var input = case_path_join(work, "compiler.mini");
-    file_write_bytes(input, source_bytes);
     var previous = case_path_join(work, "compiler0.ts");
     file_write_bytes(previous, seed_bytes);
     var generations = list_new();
@@ -77,7 +77,7 @@ fn main() {
         var compile_args = list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, "compile");
-        list_set(compile_args, 2, input);
+        list_set(compile_args, 2, source_path);
         list_set(compile_args, 3, next);
         var result = case_run(process_exec_path(), compile_args, work, list_new());
         if (map_get(result, "status") != 0) {

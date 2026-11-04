@@ -22,7 +22,7 @@ Status: implemented with the check and cli streams. Repository checking remains
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
 forms. Source checking is a generated Mini tool
 ([tools/check-source.mini](../tools/check-source.mini)) composed with compiler
-parts `00`–`40`; `--docs` remains TypeScript.
+the compiler source through `include`; `--docs` remains TypeScript.
 
 On success, source checking prints nothing and exits 0. On a Mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic
@@ -41,8 +41,8 @@ behavior. Diagnostics, offsets, and ranges use the
 Status: implemented with the format and cli streams. The standalone command is
 `mini-format`; the dispatcher form is `mini fmt`. The command is a generated
 Mini tool ([tools/format.mini](../tools/format.mini)) composed with compiler
-parts `00`–`40`; the language server keeps its TypeScript token renderer until
-its own port.
+the compiler source through `include`; the language server runs as a generated
+Mini tool.
 
 Its job is consistent indentation, spacing, and line breaks for accepted Mini
 syntax. Preserve program meaning, literal values, evaluation order, and `//`
@@ -197,31 +197,25 @@ Tool source is Mini. Each tool has a tracked generated TypeScript file using the
 `*.generated.ts` suffix, produced from the active compiler and excluded from the
 strict TypeScript check.
 
-[tools/mini-tools.json](../tools/mini-tools.json) is the composition manifest:
+[tools/mini-tools.json](../tools/mini-tools.json) maps each Mini source to its
+generated TypeScript file and declares the `bin/` launchers:
 
 ```json
 {
   "tools": [
-    {
-      "source": "tools/check-source.mini",
-      "parts": [
-        "compiler/src/00-constants.mini",
-        "compiler/src/10-text.mini",
-        "compiler/src/20-lexer.mini",
-        "compiler/src/30-parser.mini",
-        "compiler/src/40-builtins.mini"
-      ],
-      "generated": "tools/check-source.generated.ts"
-    }
+    { "source": "tools/check-source.mini", "generated": "tools/check-source.generated.ts" }
+  ],
+  "launchers": [
+    { "name": "mini" },
+    { "name": "mini-lang-server", "tool": "tools/lang-server.generated.ts" }
   ]
 }
 ```
 
-The build helper concatenates `parts` in dependency order, then the tool source,
-keeping a tool shebang first, and compiles the result with the tracked bootstrap.
-Parts exclude `compiler/src/50-main.mini`, which contains `main();`; the tool
-supplies its own entry. This is build-time composition, not a Mini module or
-import mechanism.
+Each tool source declares its dependencies with Mini `include` directives, for
+example `include "text.mini";`. The build helper compiles the
+source directly with the tracked bootstrap; include expansion is part of the
+compiler.
 
 ```text
 node tools/mini-tools.ts           regenerate every generated tool

@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+include "constants.mini";
+include "text.mini";
+include "lexer.mini";
+include "parser.mini";
+include "builtins.mini";
 /// Format one Mini source file or standard input.
 /// The bundled lexer and parser validate the source first, then the
 /// comment-preserving token stream is rendered with the fixed style contract.

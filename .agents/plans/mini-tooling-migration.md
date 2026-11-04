@@ -66,11 +66,10 @@ remain the existing accepted contracts until a separate proposal changes them.
 
 ## Current baseline
 
-- Compiler source: `compiler/src/*.mini`, composed into `compiler/compiler.mini`.
+- Compiler source: `tools/compiler.mini` includes the adjacent compiler sources.
 - Active compiler: tracked `bootstrap/compiler.ts`, selected by
   `config/compiler.json`.
-- Compiler build tool: `tools/build-m1.mini` with tracked
-  `tools/build-m1.generated.ts`.
+- Source composition: Mini `include` directives; no build-time concatenation.
 - Tooling analysis: `tools/analysis.ts` invokes the active compiler's
   `tokens --comments` and `compile` commands; it no longer uses T0 behavior.
 - Builtin signatures: shared `compiler/builtin-metadata.ts`.
@@ -84,12 +83,16 @@ tooling metadata.
 ## Target architecture
 
 ```text
-compiler/src/*.mini          compiler source
-compiler/compiler.mini       generated canonical compiler source
+tools/compiler.mini          compiler entry (includes adjacent sources)
+tools/constants.mini         adapter text and shared constants
+tools/text.mini              text and path helpers
+tools/lexer.mini             lexer, diagnostics, include expansion
+tools/parser.mini            parser, checking, emission
+tools/builtins.mini          builtin metadata and lowering
 bootstrap/compiler.ts        tracked generated compiler
-tools/<tool>.mini            tool source
+tools/<tool>.mini            tool source (declares its own includes)
 tools/<tool>.generated.ts    tracked generated tool
-tools/mini-tools.json        composition manifest
+tools/mini-tools.json        tool and launcher manifest
 ```
 
 Generated tools use the `*.generated.ts` suffix, are excluded from the strict
@@ -108,13 +111,6 @@ A tool declares the compiler parts it needs in `tools/mini-tools.json`:
   "tools": [
     {
       "source": "tools/check-source.mini",
-      "parts": [
-        "compiler/src/00-constants.mini",
-        "compiler/src/10-text.mini",
-        "compiler/src/20-lexer.mini",
-        "compiler/src/30-parser.mini",
-        "compiler/src/40-builtins.mini"
-      ],
       "generated": "tools/check-source.generated.ts"
     }
   ]

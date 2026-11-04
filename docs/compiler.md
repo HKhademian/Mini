@@ -1,6 +1,6 @@
 # Compiler reference
 
-The compiler is self-hosted. [compiler/compiler.mini](../compiler/compiler.mini)
+The compiler is self-hosted. [tools/compiler.mini](../tools/compiler.mini)
 is the source and the generated
 [bootstrap/compiler.ts](../bootstrap/compiler.ts) is the active compiler,
 selected by [config/compiler.json](../config/compiler.json). The handwritten T0
@@ -87,7 +87,7 @@ implementation and its Mini replacements.
 Verify a candidate against every Mini-source case:
 
 ```text
-./bin/mini compile compiler/compiler.mini .cache/compiler.mini.ts
+./bin/mini compile tools/compiler.mini .cache/compiler.mini.ts
 node tools/candidate.ts .cache/compiler.mini.ts
 ```
 
@@ -223,15 +223,14 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 
 The compiler path is self-hosted. The generated `bootstrap/compiler.ts` is the
 only compiler implementation; `config/bootstrap.json` pins it to
-`compiler/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
+`tools/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
 bootstrap migration.
 
 ## M1 source layout
 
-M1 is authored as ordered parts under [compiler/src](../compiler/src/README.md)
-and concatenated by the Mini-source build tool `tools/build-m1.mini` into the
-canonical `compiler/compiler.mini`. Adapter text is source in
-`compiler/src/00-constants.mini`, shared by the generated compiler and generated
-tools. Its generated TypeScript is tracked as `tools/build-m1.generated.ts`;
-`mini check` rejects stale generated TypeScript or canonical composition. Concatenation is build tooling; Mini still
-has no module or import syntax.
+M1 is authored as ordered sources next to the tools; [tools/compiler.mini](../tools/compiler.mini) includes `constants.mini`, `text.mini`, `lexer.mini`, `parser.mini`, and `builtins.mini`.
+`tools/compiler.mini` includes them in dependency order. Adapter text is
+source in `tools/constants.mini`, shared by the generated compiler and
+generated tools. `mini check` verifies the generated bootstrap fixed point and
+stale generated tools. `include` is a Mini language feature; there is no module
+or import syntax.

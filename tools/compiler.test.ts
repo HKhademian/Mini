@@ -6,15 +6,8 @@ import { join } from 'node:path';
 import { test } from 'node:test';
 import { root } from '../tools/project.ts';
 
-test('canonical compiler source matches the ordered parts', () => {
-  const parts = readFileSync(join(root, 'compiler/m1.parts'), 'utf8')
-    .split('\n').filter(line => line.length > 0);
-  const composed = parts.map(part => readFileSync(join(root, part), 'utf8')).join('');
-  assert.equal(readFileSync(join(root, 'compiler/compiler.mini'), 'utf8'), composed);
-});
-
 test('generated compiler reaches a fixed point', () => {
-  const source = join(root, 'compiler/compiler.mini');
+  const source = join(root, 'tools/compiler.mini');
   const seed = join(root, 'bootstrap/compiler.ts');
   const work = mkdtempSync(join(tmpdir(), 'mini-m1-'));
   try {
