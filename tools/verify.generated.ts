@@ -89,6 +89,16 @@ function $mini_list_set(items, index, value) {
     if (index < 0) index = items.length + index;
     if (index >= 0) items[index] = value;
 }
+function $mini_list_to_text(items, separator) {
+    if (!Array.isArray(items) || typeof separator !== "string") return "";
+    let output = "";
+    for (let index = 0; index < items.length; index++) {
+        if (index > 0) output += separator;
+        const value = items[index];
+        if (typeof value === "string") output += value;
+    }
+    return output;
+}
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
@@ -296,11 +306,50 @@ function case_path_is_absolute(path) {
     }
     return ((((path).length > 2) && ($mini_text_get(path, 1) === ":")) && (($mini_text_get(path, 2) === "/") || ($mini_text_get(path, 2) === "\\")));
 }
+function case_path_normalize(path) {
+    let absolute = text_starts_with(path, "/");
+    let parts = $mini_text_split(path, "/");
+    let stack = [];
+    let position = 0;
+    while ((position < (parts).length)) {
+        let part = $mini_list_get(parts, position);
+        if (((part === "") || (part === "."))) {
+        } else {
+            if ((part === "..")) {
+                if ((((stack).length > 0) && ($mini_list_get(stack, ((stack).length - 1)) !== ".."))) {
+                    $mini_list_set(stack, ((stack).length - 1), "");
+                    $mini_list_set(stack, (stack).length, "");
+                    let kept = [];
+                    let index = 0;
+                    while ((index < (stack).length)) {
+                        if (($mini_list_get(stack, index) !== "")) {
+                            $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
+                        }
+                        index = (index + 1);
+                    }
+                    stack = kept;
+                } else {
+                    if ((!absolute)) {
+                        $mini_list_set(stack, (stack).length, part);
+                    }
+                }
+            } else {
+                $mini_list_set(stack, (stack).length, part);
+            }
+        }
+        position = (position + 1);
+    }
+    let output = $mini_list_to_text(stack, "/");
+    if (absolute) {
+        return ("/" + output);
+    }
+    return output;
+}
 function case_path_resolve(base, path) {
     if (case_path_is_absolute(path)) {
-        return path;
+        return case_path_normalize(path);
     }
-    return case_path_join(base, path);
+    return case_path_normalize(case_path_join(base, path));
 }
 function text_starts_with(source, prefix) {
     let size = (prefix).length;

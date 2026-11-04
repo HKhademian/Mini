@@ -74,12 +74,53 @@ fn case_path_is_absolute(path) {
         && (text_get(path, 2) == "/" || text_get(path, 2) == "\\");
 }
 
+/// Collapse dot segments in a slash-separated path.
+fn case_path_normalize(path) {
+    var absolute = text_starts_with(path, "/");
+    var parts = text_split(path, "/");
+    var stack = list_new();
+    var position = 0;
+    while (position < list_length(parts)) {
+        var part = list_get(parts, position);
+        if (part == "" || part == ".") {
+        } else {
+            if (part == "..") {
+                if (list_length(stack) > 0 && list_get(stack, list_length(stack) - 1) != "..") {
+                    list_set(stack, list_length(stack) - 1, "");
+                    list_set(stack, list_length(stack), "");
+                    var kept = list_new();
+                    var index = 0;
+                    while (index < list_length(stack)) {
+                        if (list_get(stack, index) != "") {
+                            list_set(kept, list_length(kept), list_get(stack, index));
+                        }
+                        index = index + 1;
+                    }
+                    stack = kept;
+                } else {
+                    if (!absolute) {
+                        list_set(stack, list_length(stack), part);
+                    }
+                }
+            } else {
+                list_set(stack, list_length(stack), part);
+            }
+        }
+        position = position + 1;
+    }
+    var output = list_to_text(stack, "/");
+    if (absolute) {
+        return "/" + output;
+    }
+    return output;
+}
+
 /// Resolve a path against a base directory.
 fn case_path_resolve(base, path) {
     if (case_path_is_absolute(path)) {
-        return path;
+        return case_path_normalize(path);
     }
-    return case_path_join(base, path);
+    return case_path_normalize(case_path_join(base, path));
 }
 
 /// Return whether text starts with prefix.
