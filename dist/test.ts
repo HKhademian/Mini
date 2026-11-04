@@ -277,6 +277,36 @@ function normalize_path(path) {
     }
     return output;
 }
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);

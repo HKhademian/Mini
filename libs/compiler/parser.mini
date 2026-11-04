@@ -454,6 +454,11 @@ fn helper_blocks(helpers) {
     list_set(order, list_length(order), "json_parse");
     list_set(order, list_length(order), "json_to_text");
     list_set(order, list_length(order), "list_copy");
+    list_set(order, list_length(order), "list_pop_back");
+    list_set(order, list_length(order), "list_pop_front");
+    list_set(order, list_length(order), "list_push_back");
+    list_set(order, list_length(order), "list_push_front");
+    list_set(order, list_length(order), "list_truncate");
     list_set(order, list_length(order), "list_get");
     list_set(order, list_length(order), "list_set");
     list_set(order, list_length(order), "list_to_text");

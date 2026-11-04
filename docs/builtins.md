@@ -99,6 +99,13 @@ identifiers cannot contain, to avoid collisions with Mini source names.
 
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
+`list_push_back(items, value)` and `list_push_front(items, value)` mutate a list
+and return no value. `list_pop_back(items)` and `list_pop_front(items)` remove and
+return one value, or numeric zero for an empty or non-list target.
+`list_truncate(items, length)` shrinks a list to an existing non-negative length;
+longer or invalid lengths are no-ops. These operations are performance builtins
+with pure reference implementations; `list_truncate` is a representation
+primitive used by the pure pop implementations.
 `list_to_text(items, separator)` joins text elements with a text separator.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.

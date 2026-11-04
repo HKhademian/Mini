@@ -277,6 +277,81 @@ function normalize_path(path) {
     }
     return output;
 }
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_join_from(items, start, separator) {
+    let parts = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return $mini_list_to_text(parts, separator);
+}
+function list_reverse(items) {
+    let result = [];
+    let position = ((items).length - 1);
+    while ((position >= 0)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position - 1);
+    }
+    return result;
+}
+function list_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
+}
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -1105,25 +1180,8 @@ function check_product_version(text) {
     }
     return check_digits($mini_list_get(pre, 1));
 }
-function check_sorted(items) {
-    let result = $mini_list_copy(items);
-    let position = 0;
-    while ((position < (result).length)) {
-        let cursor = (position + 1);
-        while ((cursor < (result).length)) {
-            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
-                let hold = $mini_list_get(result, position);
-                $mini_list_set(result, position, $mini_list_get(result, cursor));
-                $mini_list_set(result, cursor, hold);
-            }
-            cursor = (cursor + 1);
-        }
-        position = (position + 1);
-    }
-    return result;
-}
 function check_keys(value) {
-    return check_sorted(Object.keys(value));
+    return list_sorted(Object.keys(value));
 }
 function check_json(path) {
     let parsed = case_json_file(path);
@@ -1336,7 +1394,7 @@ function check_versions(root) {
         $mini_list_set(expected, position, $mini_list_get(names, position));
         position = (position + 1);
     }
-    if ((!check_same_list(check_keys(current), check_sorted(expected)))) {
+    if ((!check_same_list(check_keys(current), list_sorted(expected)))) {
         check_fail("invalid version registry keys");
     }
     let group = $mini_map_get(current, "group");

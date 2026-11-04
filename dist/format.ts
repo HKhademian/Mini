@@ -131,6 +131,11 @@ let process_spawn_helper = "function $mini_process_spawn(options) {\n    const o
 let value_kind_helper = "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n";
 let read_line_helper = "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n";
 let read_bytes_helper = "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n";
+let list_push_front_helper = "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n";
+let list_push_back_helper = "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n";
+let list_pop_front_helper = "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n";
+let list_pop_back_helper = "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n";
+let list_truncate_helper = "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n";
 function split_lines(source) {
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -242,6 +247,81 @@ function normalize_path(path) {
         return ("/" + output);
     }
     return output;
+}
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_join_from(items, start, separator) {
+    let parts = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return $mini_list_to_text(parts, separator);
+}
+function list_reverse(items) {
+    let result = [];
+    let position = ((items).length - 1);
+    while ((position >= 0)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position - 1);
+    }
+    return result;
+}
+function list_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
 }
 function token_new(kind, text, source, start, end, line, column, context) {
     let token = ({ __proto__: $mini_map_proto });
@@ -405,16 +485,6 @@ function resolve_include(base, path) {
         return normalize_path(path);
     }
     return normalize_path(((directory + "/") + path));
-}
-function list_has_text(items, value) {
-    let position = 0;
-    while ((position < (items).length)) {
-        if (($mini_list_get(items, position) === value)) {
-            return true;
-        }
-        position = (position + 1);
-    }
-    return false;
 }
 function expand_includes(tokens, base, stack, seen) {
     let output = [];
@@ -871,6 +941,11 @@ function helper_blocks(helpers) {
     $mini_list_set(order, (order).length, "json_parse");
     $mini_list_set(order, (order).length, "json_to_text");
     $mini_list_set(order, (order).length, "list_copy");
+    $mini_list_set(order, (order).length, "list_pop_back");
+    $mini_list_set(order, (order).length, "list_pop_front");
+    $mini_list_set(order, (order).length, "list_push_back");
+    $mini_list_set(order, (order).length, "list_push_front");
+    $mini_list_set(order, (order).length, "list_truncate");
     $mini_list_set(order, (order).length, "list_get");
     $mini_list_set(order, (order).length, "list_set");
     $mini_list_set(order, (order).length, "list_to_text");
@@ -1014,6 +1089,11 @@ $mini_list_set(builtin_names_list, (builtin_names_list).length, "process_env");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_line");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "io_read_bytes");
 $mini_list_set(builtin_names_list, (builtin_names_list).length, "value_kind");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_front");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_push_back");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_pop_front");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_pop_back");
+$mini_list_set(builtin_names_list, (builtin_names_list).length, "list_truncate");
 let builtin_name_set = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_name_set, "map_get", true);
 $mini_map_set(builtin_name_set, "map_keys", true);
@@ -1065,6 +1145,11 @@ $mini_map_set(builtin_name_set, "process_env", true);
 $mini_map_set(builtin_name_set, "io_read_line", true);
 $mini_map_set(builtin_name_set, "io_read_bytes", true);
 $mini_map_set(builtin_name_set, "value_kind", true);
+$mini_map_set(builtin_name_set, "list_push_front", true);
+$mini_map_set(builtin_name_set, "list_push_back", true);
+$mini_map_set(builtin_name_set, "list_pop_front", true);
+$mini_map_set(builtin_name_set, "list_pop_back", true);
+$mini_map_set(builtin_name_set, "list_truncate", true);
 let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_parameter_kinds, "map_get", "unknown,text");
 $mini_map_set(builtin_parameter_kinds, "map_keys", "map");
@@ -1116,6 +1201,11 @@ $mini_map_set(builtin_parameter_kinds, "process_env", "text");
 $mini_map_set(builtin_parameter_kinds, "io_read_line", "");
 $mini_map_set(builtin_parameter_kinds, "io_read_bytes", "number");
 $mini_map_set(builtin_parameter_kinds, "value_kind", "unknown");
+$mini_map_set(builtin_parameter_kinds, "list_push_front", "list,unknown");
+$mini_map_set(builtin_parameter_kinds, "list_push_back", "list,unknown");
+$mini_map_set(builtin_parameter_kinds, "list_pop_front", "list");
+$mini_map_set(builtin_parameter_kinds, "list_pop_back", "list");
+$mini_map_set(builtin_parameter_kinds, "list_truncate", "list,number");
 let builtin_result_kinds = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_result_kinds, "map_get", "unknown");
 $mini_map_set(builtin_result_kinds, "map_keys", "list");
@@ -1167,6 +1257,11 @@ $mini_map_set(builtin_result_kinds, "process_env", "text");
 $mini_map_set(builtin_result_kinds, "io_read_line", "text");
 $mini_map_set(builtin_result_kinds, "io_read_bytes", "list");
 $mini_map_set(builtin_result_kinds, "value_kind", "text");
+$mini_map_set(builtin_result_kinds, "list_push_front", "void");
+$mini_map_set(builtin_result_kinds, "list_push_back", "void");
+$mini_map_set(builtin_result_kinds, "list_pop_front", "unknown");
+$mini_map_set(builtin_result_kinds, "list_pop_back", "unknown");
+$mini_map_set(builtin_result_kinds, "list_truncate", "void");
 let builtin_import_names = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_import_names, "map_get", "");
 $mini_map_set(builtin_import_names, "map_keys", "");
@@ -1218,6 +1313,11 @@ $mini_map_set(builtin_import_names, "process_env", "");
 $mini_map_set(builtin_import_names, "io_read_line", "");
 $mini_map_set(builtin_import_names, "io_read_bytes", "");
 $mini_map_set(builtin_import_names, "value_kind", "");
+$mini_map_set(builtin_import_names, "list_push_front", "");
+$mini_map_set(builtin_import_names, "list_push_back", "");
+$mini_map_set(builtin_import_names, "list_pop_front", "");
+$mini_map_set(builtin_import_names, "list_pop_back", "");
+$mini_map_set(builtin_import_names, "list_truncate", "");
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 $mini_map_set(builtin_helper_keys, "map_get", "map_runtime");
 $mini_map_set(builtin_helper_keys, "map_keys", "");
@@ -1269,6 +1369,11 @@ $mini_map_set(builtin_helper_keys, "process_env", "");
 $mini_map_set(builtin_helper_keys, "io_read_line", "read_line");
 $mini_map_set(builtin_helper_keys, "io_read_bytes", "read_bytes");
 $mini_map_set(builtin_helper_keys, "value_kind", "value_kind");
+$mini_map_set(builtin_helper_keys, "list_push_front", "list_push_front");
+$mini_map_set(builtin_helper_keys, "list_push_back", "list_push_back");
+$mini_map_set(builtin_helper_keys, "list_pop_front", "list_pop_front");
+$mini_map_set(builtin_helper_keys, "list_pop_back", "list_pop_back");
+$mini_map_set(builtin_helper_keys, "list_truncate", "list_truncate");
 function builtin_names() {
     return $mini_list_copy(builtin_names_list);
 }
@@ -1306,10 +1411,10 @@ function builtin_class(name) {
     if (((((((text_starts_with(name, "io_") || text_starts_with(name, "file_")) || text_starts_with(name, "directory_")) || text_starts_with(name, "path_")) || text_starts_with(name, "process_")) || (name === "time_millis")) || (name === "value_kind"))) {
         return "essential";
     }
-    if ((((((((((((name === "text_length") || (name === "text_get")) || (name === "list_length")) || (name === "list_get")) || (name === "list_set")) || (name === "list_new")) || (name === "map_get")) || (name === "map_set")) || (name === "map_keys")) || (name === "map_has")) || (name === "map_new"))) {
+    if (((((((((((((name === "text_length") || (name === "text_get")) || (name === "list_length")) || (name === "list_get")) || (name === "list_set")) || (name === "list_new")) || (name === "list_truncate")) || (name === "map_get")) || (name === "map_set")) || (name === "map_keys")) || (name === "map_has")) || (name === "map_new"))) {
         return "representation";
     }
-    if (((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256"))) {
+    if (((((((((((((((((name === "text_slice") || (name === "text_find")) || (name === "text_split")) || (name === "list_copy")) || (name === "map_copy")) || (name === "json_parse")) || (name === "json_to_text")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "number_to_text")) || (name === "list_to_text")) || (name === "hash_sha256")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back"))) {
         return "performance";
     }
     return "library";
@@ -1320,6 +1425,10 @@ $mini_map_set(builtin_reference_targets, "text_find", "pure_text_find");
 $mini_map_set(builtin_reference_targets, "text_split", "pure_text_split");
 $mini_map_set(builtin_reference_targets, "list_copy", "pure_list_copy");
 $mini_map_set(builtin_reference_targets, "map_copy", "pure_map_copy");
+$mini_map_set(builtin_reference_targets, "list_push_front", "pure_list_push_front");
+$mini_map_set(builtin_reference_targets, "list_push_back", "pure_list_push_back");
+$mini_map_set(builtin_reference_targets, "list_pop_front", "pure_list_pop_front");
+$mini_map_set(builtin_reference_targets, "list_pop_back", "pure_list_pop_back");
 function builtin_reference_target(name) {
     if ($mini_map_has(builtin_reference_targets, name)) {
         return $mini_map_get(builtin_reference_targets, name);
@@ -1423,6 +1532,21 @@ function helper_text(key) {
     if ((key === "value_kind")) {
         return value_kind_helper;
     }
+    if ((key === "list_push_front")) {
+        return list_push_front_helper;
+    }
+    if ((key === "list_push_back")) {
+        return list_push_back_helper;
+    }
+    if ((key === "list_pop_front")) {
+        return list_pop_front_helper;
+    }
+    if ((key === "list_pop_back")) {
+        return list_pop_back_helper;
+    }
+    if ((key === "list_truncate")) {
+        return list_truncate_helper;
+    }
     if (((key === "read_line") || (key === "io_read_line"))) {
         return read_line_helper;
     }
@@ -1444,7 +1568,7 @@ function builtin_emit(name, args) {
     if ((name === "io_read_bytes")) {
         return (("$mini_read_bytes(" + first) + ")");
     }
-    if (((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind"))) {
+    if ((((((((((((((((((((((((((((((((((((((name === "map_get") || (name === "map_set")) || (name === "map_has")) || (name === "list_set")) || (name === "list_get")) || (name === "text_get")) || (name === "text_slice")) || (name === "text_find")) || (name === "text_split")) || (name === "map_copy")) || (name === "list_copy")) || (name === "list_to_text")) || (name === "number_to_text")) || (name === "json_to_text")) || (name === "process_run")) || (name === "directory_temp")) || (name === "file_remove")) || (name === "directory_remove")) || (name === "json_parse")) || (name === "text_to_bytes")) || (name === "text_from_bytes")) || (name === "file_read_bytes")) || (name === "file_write_bytes")) || (name === "hash_sha256")) || (name === "path_exists")) || (name === "path_is_directory")) || (name === "directory_list")) || (name === "directory_create")) || (name === "path_copy")) || (name === "path_remove")) || (name === "process_spawn")) || (name === "value_kind")) || (name === "list_push_front")) || (name === "list_push_back")) || (name === "list_pop_front")) || (name === "list_pop_back")) || (name === "list_truncate"))) {
         return (((("$mini_" + name) + "(") + $mini_list_to_text(args, ", ")) + ")");
     }
     if ((name === "process_exec_path")) {
@@ -1505,18 +1629,6 @@ function format_indentation(depth) {
         position = (position + 1);
     }
     return text;
-}
-function format_trim_end(text) {
-    let length = (text).length;
-    while ((length > 0)) {
-        let character = $mini_text_get(text, (length - 1));
-        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
-            length = (length - 1);
-        } else {
-            return $mini_text_slice(text, 0, length);
-        }
-    }
-    return "";
 }
 function format_body(lines) {
     if (((lines).length === 0)) {
@@ -1601,7 +1713,7 @@ function format_stash_comment(state, index) {
     return false;
 }
 function format_emit_comment(state, token) {
-    let text = format_trim_end($mini_map_get(token, "text"));
+    let text = text_trim_end($mini_map_get(token, "text"));
     if ((($mini_map_get(state, "has_previous") && ($mini_map_get(token, "line") === $mini_map_get($mini_map_get(state, "previous"), "line"))) && ($mini_map_get(state, "current") !== ""))) {
         $mini_map_set(state, "current", (($mini_map_get(state, "current") + " ") + text));
         format_newline(state);
@@ -1627,7 +1739,7 @@ function format_flush_stashed(state) {
     let index = 0;
     while ((index < (stashed).length)) {
         let comment = $mini_list_get(stashed, index);
-        let text = format_trim_end($mini_map_get(comment, "text"));
+        let text = text_trim_end($mini_map_get(comment, "text"));
         if ((index === 0)) {
             $mini_map_set(state, "current", (($mini_map_get(state, "current") + " ") + text));
         } else {

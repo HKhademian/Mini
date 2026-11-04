@@ -298,6 +298,36 @@ function normalize_path(path) {
     }
     return output;
 }
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -1063,17 +1093,6 @@ function release_fail(message) {
     process.exit(1);
     return 0;
 }
-function release_trim(text) {
-    let length = (text).length;
-    while ((length > 0)) {
-        let character = $mini_text_get(text, (length - 1));
-        if (((character !== "\n") && (character !== "\r"))) {
-            return $mini_text_slice(text, 0, length);
-        }
-        length = (length - 1);
-    }
-    return "";
-}
 function release_run(command, args, directory) {
     let result = case_run(command, args, directory, []);
     if (($mini_map_get(result, "status") !== 0)) {
@@ -1150,7 +1169,7 @@ function release_node_version(root) {
     let args = [];
     $mini_list_set(args, 0, "-v");
     let result = case_run(process.execPath, args, root, []);
-    return release_trim($mini_text_from_bytes($mini_map_get(result, "stdout")));
+    return text_chomp($mini_text_from_bytes($mini_map_get(result, "stdout")));
 }
 function release_vscode(directory, output, tooling) {
     let current = release_json(case_path_join(directory, "config/versions.json"));
@@ -1219,21 +1238,21 @@ function release_prepare(directory, output, tag) {
     }
     let released = 0;
     let status = release_run("git", case_text_list2("status", "--porcelain"), directory);
-    if ((release_trim($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {
+    if ((text_chomp($mini_text_from_bytes($mini_map_get(status, "stdout"))) !== "")) {
         release_fail("release needs a clean checkout");
     }
     let head = release_run("git", case_text_list2("rev-parse", "HEAD"), directory);
-    let commit = release_trim($mini_text_from_bytes($mini_map_get(head, "stdout")));
+    let commit = text_chomp($mini_text_from_bytes($mini_map_get(head, "stdout")));
     let current = release_json(case_path_join(directory, "config/versions.json"));
     let active = release_json(case_path_join(directory, "config/compiler.json"));
     if ((tag !== "")) {
         released = release_select(tag, current);
         let type = release_run("git", case_text_list3("cat-file", "-t", ("refs/tags/" + tag)), directory);
-        if ((release_trim($mini_text_from_bytes($mini_map_get(type, "stdout"))) !== "tag")) {
+        if ((text_chomp($mini_text_from_bytes($mini_map_get(type, "stdout"))) !== "tag")) {
             release_fail("release tag must be annotated");
         }
         let tagged = release_run("git", case_text_list2("rev-parse", (("refs/tags/" + tag) + "^{commit}")), directory);
-        if ((release_trim($mini_text_from_bytes($mini_map_get(tagged, "stdout"))) !== commit)) {
+        if ((text_chomp($mini_text_from_bytes($mini_map_get(tagged, "stdout"))) !== commit)) {
             release_fail("release tag must match the current commit");
         }
     }

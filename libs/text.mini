@@ -132,3 +132,39 @@ fn normalize_path(path) {
     }
     return output;
 }
+
+/// Remove trailing CR/LF characters.
+fn text_chomp(text) {
+    var length = text_length(text);
+    while (length > 0 && (text_get(text, length - 1) == "\n" || text_get(text, length - 1) == "\r")) {
+        length = length - 1;
+    }
+    return text_slice(text, 0, length);
+}
+
+/// Remove trailing spaces, tabs, and CR characters.
+fn text_trim_end(text) {
+    var length = text_length(text);
+    while (length > 0) {
+        var character = text_get(text, length - 1);
+        if (character == " " || character == "\t" || character == "\r") {
+            length = length - 1;
+        } else {
+            return text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+
+/// Remove leading and trailing spaces, tabs, CR, and LF characters.
+fn text_trim(text) {
+    var start = 0;
+    var end = text_length(text);
+    while (start < end && text_find(" \t\r\n", text_get(text, start)) >= 0) {
+        start = start + 1;
+    }
+    while (end > start && text_find(" \t\r\n", text_get(text, end - 1)) >= 0) {
+        end = end - 1;
+    }
+    return text_slice(text, start, end);
+}

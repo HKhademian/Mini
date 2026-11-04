@@ -1,3 +1,4 @@
+include "../list.mini";
 /// Return a token map with the fields used by T0.
 fn token_new(kind, text, source, start, end, line, column, context) {
     var token = map_new();
@@ -187,17 +188,6 @@ fn resolve_include(base, path) {
     return normalize_path(directory + "/" + path);
 }
 
-/// Return whether a text list contains a value.
-fn list_has_text(items, value) {
-    var position = 0;
-    while (position < list_length(items)) {
-        if (list_get(items, position) == value) {
-            return true;
-        }
-        position = position + 1;
-    }
-    return false;
-}
 
 /// Splice included files into a token stream. Includes are top-level,
 /// include-once, and rejected on cycles or missing files.

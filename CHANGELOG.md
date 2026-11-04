@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Mini 0.1.0-alpha.27 / language 0.3.0-alpha.27 / builtins 0.3.0-alpha.26 /
+  compiler 0.3.0-alpha.37 / bootstrap 0.1.0-alpha.24: add `list_push_front`,
+  `list_push_back`, `list_pop_front`, `list_pop_back`, and `list_truncate`, with
+  pure reference implementations for the push/pop operations. Centralize
+  `text_chomp`, `text_trim_end`, `text_trim`, and common list helpers.
 - Mini 0.1.0-alpha.26 / compiler 0.3.0-alpha.36 / bootstrap 0.1.0-alpha.23 /
   builtins 0.3.0-alpha.25: add builtin layer metadata, pure reference
   implementations for text_slice, text_find, text_split, list_copy, and

@@ -306,6 +306,81 @@ function normalize_path(path) {
     }
     return output;
 }
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_join_from(items, start, separator) {
+    let parts = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return $mini_list_to_text(parts, separator);
+}
+function list_reverse(items) {
+    let result = [];
+    let position = ((items).length - 1);
+    while ((position >= 0)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position - 1);
+    }
+    return result;
+}
+function list_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
+}
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -1080,23 +1155,6 @@ function bench_half(value) {
     }
     return half;
 }
-function bench_sorted(samples) {
-    let result = $mini_list_copy(samples);
-    let position = 0;
-    while ((position < (result).length)) {
-        let cursor = (position + 1);
-        while ((cursor < (result).length)) {
-            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
-                let hold = $mini_list_get(result, position);
-                $mini_list_set(result, position, $mini_list_get(result, cursor));
-                $mini_list_set(result, cursor, hold);
-            }
-            cursor = (cursor + 1);
-        }
-        position = (position + 1);
-    }
-    return result;
-}
 function bench_compiler_hash(root) {
     let parsed = $mini_json_parse(readFileSync(case_path_join(root, "config/compiler.json"), "utf8"));
     if ((!$mini_map_get(parsed, "ok"))) {
@@ -1132,14 +1190,7 @@ function bench_commit(root) {
     $mini_list_set(args, 0, "rev-parse");
     $mini_list_set(args, 1, "HEAD");
     let result = case_run("git", args, root, []);
-    return bench_trim($mini_text_from_bytes($mini_map_get(result, "stdout")));
-}
-function bench_trim(text) {
-    let length = (text).length;
-    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
-        length = (length - 1);
-    }
-    return $mini_text_slice(text, 0, length);
+    return text_chomp($mini_text_from_bytes($mini_map_get(result, "stdout")));
 }
 function bench_run(root, output, filter) {
     if ($mini_path_exists(output)) {
@@ -1183,7 +1234,7 @@ function bench_run(root, output, filter) {
                     $mini_list_set(samples, (samples).length, (Date.now() - started));
                     sample_index = (sample_index + 1);
                 }
-                let sorted = bench_sorted(samples);
+                let sorted = list_sorted(samples);
                 let row = ({ __proto__: $mini_map_proto });
                 $mini_map_set(row, "id", $mini_map_get(definition, "id"));
                 $mini_map_set(row, "scenario", $mini_map_get(scenario, "name"));

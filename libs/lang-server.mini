@@ -1,4 +1,5 @@
 include "text.mini";
+include "list.mini";
 include "cases.mini";
 /// Mini language server: LSP 3.17 over standard input and output.
 /// Usage: node dist/lang-server.ts [--version]
@@ -27,39 +28,10 @@ fn lsp_number(text) {
 }
 
 /// Trim spaces and line endings from both ends.
-fn lsp_trim(text) {
-    var start = 0;
-    var end = text_length(text);
-    while (start < end && text_find(" \t\r\n", text_get(text, start)) >= 0) {
-        start = start + 1;
-    }
-    while (end > start && text_find(" \t\r\n", text_get(text, end - 1)) >= 0) {
-        end = end - 1;
-    }
-    return text_slice(text, start, end);
-}
 
 /// Join list items from an index with a separator.
-fn lsp_join_from(items, start, separator) {
-    var parts = list_new();
-    var position = start;
-    while (position < list_length(items)) {
-        list_set(parts, list_length(parts), list_get(items, position));
-        position = position + 1;
-    }
-    return list_to_text(parts, separator);
-}
 
 /// Reverse a list.
-fn lsp_reverse(items) {
-    var result = list_new();
-    var position = list_length(items) - 1;
-    while (position >= 0) {
-        list_set(result, list_length(result), list_get(items, position));
-        position = position - 1;
-    }
-    return result;
-}
 
 /// Return whether a character is an identifier part.
 fn lsp_identifier_part(character) {
@@ -162,7 +134,7 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
     }
     var line = lsp_number(list_get(parts, 1));
     var column = lsp_number(list_get(parts, 2));
-    var message = lsp_trim(lsp_join_from(parts, 3, ":"));
+    var message = text_trim(list_join_from(parts, 3, ":"));
     var start = 0;
     var current = 1;
     var position = 0;
@@ -279,13 +251,13 @@ fn lsp_doc_above(tokens, index) {
         if (!lsp_is_comment(token) || !text_starts_with(map_get(token, "text"), "///") || map_get(token, "line") != line) {
             done = true;
         } else {
-            var comment = lsp_trim(text_slice(map_get(token, "text"), 3, text_length(map_get(token, "text"))));
+            var comment = text_trim(text_slice(map_get(token, "text"), 3, text_length(map_get(token, "text"))));
             list_set(lines, list_length(lines), comment);
             line = line - 1;
             cursor = cursor - 1;
         }
     }
-    return lsp_reverse(lines);
+    return list_reverse(lines);
 }
 
 /// Collect declarations with their documentation.
@@ -779,7 +751,7 @@ fn lsp_read_message() {
             done = true;
         } else {
             if (text_starts_with(line, "Content-Length:")) {
-                length = lsp_number(lsp_trim(text_slice(line, 15, text_length(line))));
+                length = lsp_number(text_trim(text_slice(line, 15, text_length(line))));
             }
         }
     }

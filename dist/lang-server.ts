@@ -78,6 +78,10 @@ function $mini_json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function $mini_list_copy(items) {
+    if (!Array.isArray(items)) return [];
+    return items.slice();
+}
 function $mini_list_get(items, index) {
     if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
@@ -321,6 +325,81 @@ function normalize_path(path) {
         return ("/" + output);
     }
     return output;
+}
+function text_chomp(text) {
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return $mini_text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return $mini_text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return $mini_text_slice(text, start, end);
+}
+function list_has_text(items, value) {
+    let position = 0;
+    while ((position < (items).length)) {
+        if (($mini_list_get(items, position) === value)) {
+            return true;
+        }
+        position = (position + 1);
+    }
+    return false;
+}
+function list_join_from(items, start, separator) {
+    let parts = [];
+    let position = start;
+    while ((position < (items).length)) {
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return $mini_list_to_text(parts, separator);
+}
+function list_reverse(items) {
+    let result = [];
+    let position = ((items).length - 1);
+    while ((position >= 0)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position - 1);
+    }
+    return result;
+}
+function list_sorted(items) {
+    let result = $mini_list_copy(items);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
+                let hold = $mini_list_get(result, position);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
 }
 function case_ok() {
     let result = ({ __proto__: $mini_map_proto });
@@ -1100,35 +1179,6 @@ function lsp_number(text) {
     }
     return value;
 }
-function lsp_trim(text) {
-    let start = 0;
-    let end = (text).length;
-    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
-        start = (start + 1);
-    }
-    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
-        end = (end - 1);
-    }
-    return $mini_text_slice(text, start, end);
-}
-function lsp_join_from(items, start, separator) {
-    let parts = [];
-    let position = start;
-    while ((position < (items).length)) {
-        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
-        position = (position + 1);
-    }
-    return $mini_list_to_text(parts, separator);
-}
-function lsp_reverse(items) {
-    let result = [];
-    let position = ((items).length - 1);
-    while ((position >= 0)) {
-        $mini_list_set(result, (result).length, $mini_list_get(items, position));
-        position = (position - 1);
-    }
-    return result;
-}
 function lsp_identifier_part(character) {
     return ($mini_text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_", character) >= 0);
 }
@@ -1215,7 +1265,7 @@ function lsp_parse_diagnostic(stderr, text, name, tokens) {
     }
     let line = lsp_number($mini_list_get(parts, 1));
     let column = lsp_number($mini_list_get(parts, 2));
-    let message = lsp_trim(lsp_join_from(parts, 3, ":"));
+    let message = text_trim(list_join_from(parts, 3, ":"));
     let start = 0;
     let current = 1;
     let position = 0;
@@ -1323,13 +1373,13 @@ function lsp_doc_above(tokens, index) {
         if ((((!lsp_is_comment(token)) || (!text_starts_with($mini_map_get(token, "text"), "///"))) || ($mini_map_get(token, "line") !== line))) {
             done = true;
         } else {
-            let comment = lsp_trim($mini_text_slice($mini_map_get(token, "text"), 3, ($mini_map_get(token, "text")).length));
+            let comment = text_trim($mini_text_slice($mini_map_get(token, "text"), 3, ($mini_map_get(token, "text")).length));
             $mini_list_set(lines, (lines).length, comment);
             line = (line - 1);
             cursor = (cursor - 1);
         }
     }
-    return lsp_reverse(lines);
+    return list_reverse(lines);
 }
 function lsp_declarations(tokens) {
     let result = [];
@@ -1775,7 +1825,7 @@ function lsp_read_message() {
             done = true;
         } else {
             if (text_starts_with(line, "Content-Length:")) {
-                length = lsp_number(lsp_trim($mini_text_slice(line, 15, (line).length)));
+                length = lsp_number(text_trim($mini_text_slice(line, 15, (line).length)));
             }
         }
     }

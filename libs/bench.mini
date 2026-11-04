@@ -1,4 +1,5 @@
 include "text.mini";
+include "list.mini";
 include "cases.mini";
 /// Run benchmark cases and write one JSON report.
 /// Usage: node dist/bench.ts OUTPUT [FILTER]
@@ -23,23 +24,6 @@ fn bench_half(value) {
 }
 
 /// Return a sorted copy of numeric samples.
-fn bench_sorted(samples) {
-    var result = list_copy(samples);
-    var position = 0;
-    while (position < list_length(result)) {
-        var cursor = position + 1;
-        while (cursor < list_length(result)) {
-            if (list_get(result, cursor) < list_get(result, position)) {
-                var hold = list_get(result, position);
-                list_set(result, position, list_get(result, cursor));
-                list_set(result, cursor, hold);
-            }
-            cursor = cursor + 1;
-        }
-        position = position + 1;
-    }
-    return result;
-}
 
 /// Return the compiler source hash from configuration.
 fn bench_compiler_hash(root) {
@@ -81,17 +65,10 @@ fn bench_commit(root) {
     list_set(args, 0, "rev-parse");
     list_set(args, 1, "HEAD");
     var result = case_run("git", args, root, list_new());
-    return bench_trim(text_from_bytes(map_get(result, "stdout")));
+    return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }
 
 /// Remove trailing line-ending characters.
-fn bench_trim(text) {
-    var length = text_length(text);
-    while (length > 0 && (text_get(text, length - 1) == "\n" || text_get(text, length - 1) == "\r")) {
-        length = length - 1;
-    }
-    return text_slice(text, 0, length);
-}
 
 /// Run benchmark cases and return the number of report rows written.
 fn bench_run(root, output, filter) {
@@ -136,7 +113,7 @@ fn bench_run(root, output, filter) {
                     list_set(samples, list_length(samples), time_millis() - started);
                     sample_index = sample_index + 1;
                 }
-                var sorted = bench_sorted(samples);
+                var sorted = list_sorted(samples);
                 var row = map_new();
                 map_set(row, "id", map_get(definition, "id"));
                 map_set(row, "scenario", map_get(scenario, "name"));

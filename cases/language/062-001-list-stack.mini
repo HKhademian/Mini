@@ -1,0 +1,11 @@
+/// Exercise list stack mutation.
+var items = list_new();
+list_push_back(items, "b");
+list_push_back(items, "c");
+list_push_front(items, "a");
+io_write(list_get(items, 0) + list_get(items, 1) + list_get(items, 2) + "\n");
+io_write(list_pop_back(items) + "\n");
+io_write(list_pop_front(items) + "\n");
+io_write(number_to_text(list_length(items)) + "\n");
+list_truncate(items, 0);
+io_write(number_to_text(list_length(items)) + "\n");

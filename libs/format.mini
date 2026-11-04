@@ -27,18 +27,6 @@ fn format_indentation(depth) {
 }
 
 /// Remove trailing spaces, tabs, and carriage returns from comment text.
-fn format_trim_end(text) {
-    var length = text_length(text);
-    while (length > 0) {
-        var character = text_get(text, length - 1);
-        if (character == " " || character == "\t" || character == "\r") {
-            length = length - 1;
-        } else {
-            return text_slice(text, 0, length);
-        }
-    }
-    return "";
-}
 
 /// Join completed output lines with LF and append one final newline.
 fn format_body(lines) {
@@ -153,7 +141,7 @@ fn format_stash_comment(state, index) {
 
 /// Emit one comment at the current position.
 fn format_emit_comment(state, token) {
-    var text = format_trim_end(map_get(token, "text"));
+    var text = text_trim_end(map_get(token, "text"));
     if (map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line")
         && map_get(state, "current") != "") {
         map_set(state, "current", map_get(state, "current") + " " + text);
@@ -182,7 +170,7 @@ fn format_flush_stashed(state) {
     var index = 0;
     while (index < list_length(stashed)) {
         var comment = list_get(stashed, index);
-        var text = format_trim_end(map_get(comment, "text"));
+        var text = text_trim_end(map_get(comment, "text"));
         if (index == 0) {
             map_set(state, "current", map_get(state, "current") + " " + text);
         } else {

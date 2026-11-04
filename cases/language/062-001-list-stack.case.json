@@ -1,0 +1,15 @@
+{
+  "id": "language.list-stack",
+  "kind": "feature",
+  "source": "062-001-list-stack.mini",
+  "features": ["list.push", "list.pop", "list.truncate"],
+  "cases": [
+    {
+      "name": "front-and-back",
+      "stdin": {"text": ""},
+      "stdout": {"text": "abc\nc\na\n1\n0\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
