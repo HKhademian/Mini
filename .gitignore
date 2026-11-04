@@ -1,6 +1,7 @@
 node_modules/
-/dist/*
-!/dist/*.ts
+/dist/
+/bin/*
+!/bin/bootstrap
 .cache/
 .DS_Store
 *.mini.ts

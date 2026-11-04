@@ -14,14 +14,24 @@ cases in direct Node TypeScript. The [language draft](docs/language.md) records
 the reviewed contract; cases verify compilation, generated output, execution,
 and diagnostics.
 
+From a clean checkout, build every generated artifact from the tracked
+`bin/bootstrap` seed:
+
+```text
+./bin/bootstrap
+./bin/mini check
+```
+
+`bin/bootstrap` is generated from [tools/bootstrap.mini](tools/bootstrap.mini)
+and embeds the compiler. It rebuilds the compiler, verifies the fixed point,
+then generates `dist/` and the other `bin/` commands. `dist/` and generated
+`bin/` entries are ignored by Git.
+
 ## Self-hosting
 
-Start with a minimal handwritten TypeScript compiler, emitting readable
-TypeScript run directly by Node. Port the compiler to Mini immediately.
-
-M1 is implemented and T1 is promoted as the active compiler. The handwritten T0
-implementation has been retired; further compiler work uses the self-hosted
-source and bootstrap regeneration. The baseline includes `//` line comments and
+The bootstrap compiler is the only seed. It is generated from Mini source and is
+tracked at `bin/bootstrap`; there is no handwritten compiler. Further compiler
+work uses the self-hosted source and bootstrap regeneration. The baseline includes `//` line comments and
 `///` documentation comments. Keep Mini source and functions documented using
 these forms.
 The [map runtime](docs/map-runtime.md) uses object storage and counts keys with

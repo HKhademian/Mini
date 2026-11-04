@@ -4,13 +4,26 @@ The self-hosted bootstrap is the only compiler implementation and is selected by
 [config/compiler.json](../config/compiler.json).
 [config/bootstrap.json](../config/bootstrap.json) pins the generated
 `dist/compile.ts` to `tools/compiler.mini`. The handwritten T0
-implementation was removed after promotion and fixed-point verification. Bare
-`./bin/mini verify` checks the fixed point.
+implementation was removed after promotion and fixed-point verification.
 
-The self-hosting requirement applies only to `mini-compile` / `minic` and the
-generated compiler. Other tools may remain TypeScript indefinitely, including
-the `mini` dispatcher and the verification/release harness. They are development
-utilities, not prerequisites for running the generated compiler on Node.
+`bin/bootstrap` is the tracked seed. It is generated from
+[tools/bootstrap.mini](../tools/bootstrap.mini), embeds the compiler and the
+bootstrap driver, and is the only tracked executable under `bin/`. Running it
+rebuilds `dist/compile.ts`, verifies the compiler fixed point, compiles
+`dist/build.ts`, and generates every other tool and launcher.
+
+```text
+./bin/bootstrap
+./bin/mini verify
+```
+
+`dist/` and generated `bin/` entries are ignored by Git. CI bootstraps before
+running checks and publishes built tools and release artifacts.
+
+All tool implementations are Mini. The dispatcher, verifier, release harness,
+formatter, language server, test runner, benchmark tool, and CI task runner are
+generated from `tools/*.mini`. Host TypeScript remains only for editor clients,
+performance measurement, and host-specific integration tests.
 
 M1 names the Mini compiler source in
 [tools/compiler.mini](../tools/compiler.mini); T1 names the generated TS

@@ -1,4 +1,0 @@
-#!/usr/bin/env node
-import { pathToFileURL } from 'node:url';
-import { join } from 'node:path';
-await import(pathToFileURL(join(import.meta.dirname, '..', 'dist/lang-server.ts')).href);

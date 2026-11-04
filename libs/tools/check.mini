@@ -407,6 +407,11 @@ fn check_repository(root, docs_only) {
     if (map_get(verified_tools, "status") != 0) {
         process_exit(map_get(verified_tools, "status"));
     }
+    var seed = path_join(root, "bin/bootstrap");
+    var generated_seed = path_join(root, "dist/bootstrap.ts");
+    if (!path_is_exists(seed) || !path_is_exists(generated_seed) || file_read(seed) != file_read(generated_seed)) {
+        check_fail("bin/bootstrap is stale; run ./bin/bootstrap or rebuild the seed");
+    }
     check_versions(root);
     check_node(root);
     var loaded = case_load_cases("", root);

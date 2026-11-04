@@ -187,6 +187,14 @@ fn release_checksums(output) {
     return 0;
 }
 
+/// Bootstrap generated tools in an extracted source tree.
+fn release_bootstrap(source) {
+    var args = list_new();
+    list_set(args, 0, path_join(source, "bin/bootstrap"));
+    release_run(process_exec_path(), args, source);
+    return 0;
+}
+
 /// Package committed sources and return success.
 fn release_prepare(directory, output, tag) {
     if (!path_is_absolute(output)) {
@@ -238,6 +246,7 @@ fn release_prepare(directory, output, tag) {
     list_set(extract_args, 2, "-C");
     list_set(extract_args, 3, source);
     release_run("tar", extract_args, work);
+    release_bootstrap(source);
     release_check(path_join(source, "bin/mini-check"), source);
     var bootstrap = 0;
     if (available) {

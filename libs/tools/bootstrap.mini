@@ -10,8 +10,15 @@ fn bootstrap_fail(message) {
     return 0;
 }
 
-/// Compile one source with the selected compiler.
-fn bootstrap_compile(root, compiler, source, output) {
+/// Compile one source in-process and return generated text.
+fn bootstrap_compile_text(source) {
+    var tokens = tokenize(file_read(source), basename(source), false);
+    var expanded = expand_includes(tokens, source, list_new(), map_new());
+    return compile(expanded);
+}
+
+/// Compile one source with a generated compiler.
+fn bootstrap_compile_with(root, compiler, source, output) {
     var args = list_new();
     list_set(args, 0, compiler);
     list_set(args, 1, source);
@@ -46,19 +53,20 @@ fn bootstrap_executable(root, path) {
 /// Rebuild the compiler, verify the fixed point, then rebuild every tool.
 fn bootstrap_all(root) {
     var work = path_temp_directory();
-    var seed = path_join(root, "dist/compile.ts");
-    var compiler_source = path_join(root, "tools/compiler.mini");
+    var source = path_join(root, "tools/compiler.mini");
     var first = path_join(work, "compiler1.ts");
     var second = path_join(work, "compiler2.ts");
-    bootstrap_compile(root, seed, compiler_source, first);
-    bootstrap_compile(root, first, compiler_source, second);
+    file_write(first, bootstrap_compile_text(source));
+    bootstrap_executable(root, first);
+    bootstrap_compile_with(root, first, source, second);
     if (hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second))) {
         bootstrap_fail("compiler fixed point mismatch");
     }
+    var seed = path_join(root, "dist/compile.ts");
     path_copy(first, seed);
     bootstrap_executable(root, seed);
     var build = path_join(root, "dist/build.ts");
-    bootstrap_compile(root, seed, path_join(root, "tools/build.mini"), build);
+    bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);
     path_remove(work);

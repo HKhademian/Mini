@@ -13,6 +13,35 @@ function $mini_map_has(items, key) {
 function $mini_map_set(items, key, value) {
     if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value;
 }
+function $mini_file_read_bytes(path) {
+    return Array.from(process.getBuiltinModule("node:fs").readFileSync(path));
+}
+function $mini_hash_sha256(value) {
+    const crypto = process.getBuiltinModule("node:crypto");
+    const bytes = Array.isArray(value)
+        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
+        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
+    return crypto.createHash("sha256").update(bytes).digest("hex");
+}
+function $mini_json_parse(text) {
+    const result = { __proto__: null, ok: false, value: 0 };
+    if (typeof text !== "string") return result;
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { return result; }
+    const clean = (item) => {
+        if (item === null) return 0;
+        if (Array.isArray(item)) return item.map(clean);
+        if (typeof item === "object") {
+            const out = { __proto__: null };
+            for (const key of Object.keys(item)) out[key] = clean(item[key]);
+            return out;
+        }
+        return item;
+    };
+    result.ok = true;
+    result.value = clean(parsed);
+    return result;
+}
 function $mini_json_to_text(value) {
     const seen = new Set();
     function encode(item) {
@@ -71,13 +100,56 @@ function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
+function $mini_process_spawn(options) {
+    const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
+    const child = process.getBuiltinModule("node:child_process");
+    const settings = options !== null && typeof options === "object" ? options : {};
+    const command = typeof settings.command === "string" ? settings.command : "";
+    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];
+    const mode = settings.mode === "inherit" ? "inherit" : "capture";
+    const directory = typeof settings.directory === "string" && settings.directory !== "" ? settings.directory : undefined;
+    const timeout = typeof settings.timeout === "number" && settings.timeout > 0 ? settings.timeout : undefined;
+    const input = Array.isArray(settings.input)
+        ? Buffer.from(settings.input.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0))
+        : undefined;
+    const result = child.spawnSync(command, args, {
+        cwd: directory,
+        stdio: mode === "inherit" ? "inherit" : "pipe",
+        input: mode === "inherit" ? undefined : input,
+        timeout,
+        maxBuffer: 64 * 1024 * 1024,
+    });
+    if (result.error) output.error = String(result.error.message);
+    if (result.status !== null) output.status = result.status;
+    if (typeof result.signal === "string") output.signal = result.signal;
+    if (mode !== "inherit") {
+        output.stdout = result.stdout ? Array.from(result.stdout) : [];
+        output.stderr = result.stderr ? Array.from(result.stderr) : [];
+    }
+    return output;
+}
+function $mini_path_temp_directory() {
+    const fs = process.getBuiltinModule("node:fs");
+    const os = process.getBuiltinModule("node:os");
+    return fs.mkdtempSync(os.tmpdir() + "/mini-");
+}
+function $mini_path_copy(from, to) {
+    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true });
+}
 function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
+function $mini_path_remove(path) {
+    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true });
+}
 function $mini_text_find(text, needle) {
     if (typeof text !== "string" || typeof needle !== "string") return -1;
     return text.indexOf(needle);
+}
+function $mini_text_from_bytes(bytes) {
+    if (!Array.isArray(bytes)) return "";
+    return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8");
 }
 function $mini_text_get(text, index) {
     if (typeof text === "string" && index >= 0 && index < text.length) return text[index];
@@ -1258,375 +1330,233 @@ function builtin_emit(name, args) {
     }
     return builtin_apply($mini_map_get(builtin_emit_forms, name), args);
 }
-function format_indentation(depth) {
-    let text = "";
+function path_join(left, right) {
+    if ((left === "")) {
+        return right;
+    }
+    if ((right === "")) {
+        return left;
+    }
+    if ((text_ends_with(left, "/") || text_ends_with(left, "\\"))) {
+        return (left + right);
+    }
+    return ((left + "/") + right);
+}
+function path_parent(path) {
+    let position = ((path).length - 1);
+    while ((position >= 0)) {
+        let character = $mini_text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return $mini_text_slice(path, 0, position);
+        }
+        position = (position - 1);
+    }
+    return "";
+}
+function path_basename(path) {
+    let position = ((path).length - 1);
+    while ((position >= 0)) {
+        let character = $mini_text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return $mini_text_slice(path, (position + 1), (path).length);
+        }
+        position = (position - 1);
+    }
+    return path;
+}
+function path_is_absolute(path) {
+    if (text_starts_with(path, "/")) {
+        return true;
+    }
+    return ((((path).length > 2) && ($mini_text_get(path, 1) === ":")) && (($mini_text_get(path, 2) === "/") || ($mini_text_get(path, 2) === "\\")));
+}
+function path_normalize(path) {
+    let absolute = text_starts_with(path, "/");
+    let parts = $mini_text_split(path, "/");
+    let stack = [];
     let position = 0;
-    while ((position < depth)) {
-        text = (text + "    ");
-        position = (position + 1);
-    }
-    return text;
-}
-function format_body(lines) {
-    if (((lines).length === 0)) {
-        return "";
-    }
-    return ($mini_list_to_text(lines, "\n") + "\n");
-}
-function format_is_word(token) {
-    let kind = $mini_map_get(token, "kind");
-    return ((((kind === "identifier") || (kind === "keyword")) || (kind === "number")) || (kind === "text"));
-}
-function format_is_binary(text) {
-    return (((((((((((text === "=") || (text === "+")) || (text === "-")) || (text === "==")) || (text === "!=")) || (text === "<")) || (text === "<=")) || (text === ">")) || (text === ">=")) || (text === "&&")) || (text === "||"));
-}
-function format_unary_minus_context(text) {
-    return (((((((((((((((((text === "(") || (text === ",")) || (text === "=")) || (text === "+")) || (text === "-")) || (text === "==")) || (text === "!=")) || (text === "<")) || (text === "<=")) || (text === ">")) || (text === ">=")) || (text === "&&")) || (text === "||")) || (text === "!")) || (text === "return")) || (text === "{")) || (text === ";"));
-}
-function format_unary_space_context(text) {
-    return ((((((((((((text === "return") || (text === ",")) || (text === "=")) || (text === "+")) || (text === "==")) || (text === "!=")) || (text === "<")) || (text === "<=")) || (text === ">")) || (text === ">=")) || (text === "&&")) || (text === "||"));
-}
-function format_paren_context(text) {
-    return ((((((((((((((text === "if") || (text === "while")) || (text === "return")) || (text === ",")) || (text === "=")) || (text === "+")) || (text === "==")) || (text === "!=")) || (text === "<")) || (text === "<=")) || (text === ">")) || (text === ">=")) || (text === "&&")) || (text === "||"));
-}
-function format_newline(state) {
-    if (($mini_map_get(state, "current") !== "")) {
-        let lines = $mini_map_get(state, "lines");
-        $mini_list_set(lines, (lines).length, $mini_map_get(state, "current"));
-        $mini_map_set(state, "current", "");
-    }
-    return 0;
-}
-function format_start_line(state) {
-    if (($mini_map_get(state, "current") === "")) {
-        $mini_map_set(state, "current", format_indentation($mini_map_get(state, "indentation")));
-    }
-    return 0;
-}
-function format_maybe_blank(state, token) {
-    if ((((!$mini_map_get(state, "has_previous")) || ($mini_map_get(state, "current") !== "")) || (!$mini_map_get(state, "statement_start")))) {
-        return 0;
-    }
-    let text = $mini_map_get(token, "text");
-    if (((text === "}") || (text === "else"))) {
-        return 0;
-    }
-    let previous = $mini_map_get(state, "previous");
-    if (($mini_map_get(token, "line") > ($mini_map_get(previous, "line") + 1))) {
-        let lines = $mini_map_get(state, "lines");
-        let length = (lines).length;
-        if (((length > 0) && ($mini_list_get(lines, (length - 1)) !== ""))) {
-            $mini_list_set(lines, length, "");
-        }
-    }
-    return 0;
-}
-function format_next_code(state, index) {
-    let tokens = $mini_map_get(state, "tokens");
-    let cursor = (index + 1);
-    while ((cursor < (tokens).length)) {
-        let token = $mini_list_get(tokens, cursor);
-        let kind = $mini_map_get(token, "kind");
-        if (((kind !== "comment") && (kind !== "eof"))) {
-            return token;
-        }
-        cursor = (cursor + 1);
-    }
-    return 0;
-}
-function format_stash_comment(state, index) {
-    let next = format_next_code(state, index);
-    if ((next === 0)) {
-        return false;
-    }
-    let next_text = $mini_map_get(next, "text");
-    if ((next_text === "else")) {
-        return ($mini_map_get($mini_map_get(state, "previous_code"), "text") === "}");
-    }
-    if ((next_text === "{")) {
-        let previous = $mini_map_get($mini_map_get(state, "previous_code"), "text");
-        return (((previous === "}") || (previous === ")")) || (previous === "else"));
-    }
-    return false;
-}
-function format_emit_comment(state, token) {
-    let text = text_trim_end($mini_map_get(token, "text"));
-    if ((($mini_map_get(state, "has_previous") && ($mini_map_get(token, "line") === $mini_map_get($mini_map_get(state, "previous"), "line"))) && ($mini_map_get(state, "current") !== ""))) {
-        $mini_map_set(state, "current", (($mini_map_get(state, "current") + " ") + text));
-        format_newline(state);
-        $mini_map_set(state, "pending_break", false);
-        $mini_map_set(state, "previous", token);
-        $mini_map_set(state, "has_previous", true);
-        return 0;
-    }
-    if ($mini_map_get(state, "pending_break")) {
-        format_newline(state);
-        $mini_map_set(state, "pending_break", false);
-    }
-    format_maybe_blank(state, token);
-    format_start_line(state);
-    $mini_map_set(state, "current", ($mini_map_get(state, "current") + text));
-    format_newline(state);
-    $mini_map_set(state, "previous", token);
-    $mini_map_set(state, "has_previous", true);
-    return 0;
-}
-function format_flush_stashed(state) {
-    let stashed = $mini_map_get(state, "stashed");
-    let index = 0;
-    while ((index < (stashed).length)) {
-        let comment = $mini_list_get(stashed, index);
-        let text = text_trim_end($mini_map_get(comment, "text"));
-        if ((index === 0)) {
-            $mini_map_set(state, "current", (($mini_map_get(state, "current") + " ") + text));
+    while ((position < (parts).length)) {
+        let part = $mini_list_get(parts, position);
+        if (((part === "") || (part === "."))) {
         } else {
-            format_start_line(state);
-            $mini_map_set(state, "current", ($mini_map_get(state, "current") + text));
-        }
-        format_newline(state);
-        $mini_map_set(state, "previous", comment);
-        $mini_map_set(state, "has_previous", true);
-        index = (index + 1);
-    }
-    $mini_map_set(state, "stashed", []);
-    $mini_map_set(state, "pending_break", false);
-    return 0;
-}
-function format_unary_minus(state) {
-    if ((!$mini_map_get(state, "has_previous_code"))) {
-        return true;
-    }
-    return format_unary_minus_context($mini_map_get($mini_map_get(state, "previous_code"), "text"));
-}
-function format_unary_space(state) {
-    if ((!$mini_map_get(state, "has_previous_code"))) {
-        return false;
-    }
-    let previous = $mini_map_get($mini_map_get(state, "previous_code"), "text");
-    if ((previous === "-")) {
-        return (!$mini_map_get(state, "previous_unary"));
-    }
-    return format_unary_space_context(previous);
-}
-function format_needs_space(state, token, unary) {
-    if ((($mini_map_get(state, "current") === "") || (!$mini_map_get(state, "has_previous_code")))) {
-        return false;
-    }
-    if ($mini_map_get(state, "previous_unary")) {
-        return false;
-    }
-    let text = $mini_map_get(token, "text");
-    if (((text === "!") || ((text === "-") && unary))) {
-        return format_unary_space(state);
-    }
-    let previous = $mini_map_get($mini_map_get(state, "previous_code"), "text");
-    if ((text === "(")) {
-        if ((previous === "-")) {
-            return (!$mini_map_get(state, "previous_unary"));
-        }
-        return format_paren_context(previous);
-    }
-    if (((text === "{") || (text === "else"))) {
-        return true;
-    }
-    if (((((text === ")") || (text === ",")) || (text === ";")) || (text === "}"))) {
-        return false;
-    }
-    if (format_is_word(token)) {
-        return ((format_is_word($mini_map_get(state, "previous_code")) || (previous === ",")) || format_is_binary(previous));
-    }
-    return format_is_binary(text);
-}
-function format_state(tokens) {
-    let state = ({ __proto__: $mini_map_proto });
-    $mini_map_set(state, "tokens", tokens);
-    $mini_map_set(state, "lines", []);
-    $mini_map_set(state, "stashed", []);
-    $mini_map_set(state, "current", "");
-    $mini_map_set(state, "indentation", 0);
-    $mini_map_set(state, "pending_break", false);
-    $mini_map_set(state, "statement_start", true);
-    $mini_map_set(state, "has_previous", false);
-    $mini_map_set(state, "has_previous_code", false);
-    $mini_map_set(state, "previous", 0);
-    $mini_map_set(state, "previous_code", 0);
-    $mini_map_set(state, "previous_unary", false);
-    $mini_map_set(state, "shebang", "");
-    let first = $mini_list_get(tokens, 0);
-    if (($mini_map_get(first, "kind") === "shebang")) {
-        $mini_map_set(state, "shebang", $mini_map_get(first, "text"));
-    }
-    return state;
-}
-function format_previous(state, token, is_code, unary) {
-    $mini_map_set(state, "previous", token);
-    $mini_map_set(state, "has_previous", true);
-    if (is_code) {
-        $mini_map_set(state, "previous_code", token);
-        $mini_map_set(state, "has_previous_code", true);
-    }
-    $mini_map_set(state, "previous_unary", unary);
-    return 0;
-}
-function format_token(state, token) {
-    if (($mini_map_get(state, "current") === "")) {
-        format_maybe_blank(state, token);
-        format_start_line(state);
-    }
-    let text = $mini_map_get(token, "text");
-    let unary = ((text === "!") || ((text === "-") && format_unary_minus(state)));
-    if (format_needs_space(state, token, unary)) {
-        $mini_map_set(state, "current", ($mini_map_get(state, "current") + " "));
-    }
-    $mini_map_set(state, "current", ($mini_map_get(state, "current") + text));
-    if ((text === "{")) {
-        $mini_map_set(state, "indentation", ($mini_map_get(state, "indentation") + 1));
-        if ((($mini_map_get(state, "stashed")).length > 0)) {
-            format_flush_stashed(state);
-        } else {
-            $mini_map_set(state, "pending_break", true);
-        }
-    } else {
-        if ((text === ";")) {
-            $mini_map_set(state, "pending_break", true);
-            $mini_map_set(state, "statement_start", true);
-        } else {
-            $mini_map_set(state, "pending_break", false);
-            $mini_map_set(state, "statement_start", false);
-        }
-    }
-    format_previous(state, token, true, unary);
-    return 0;
-}
-function format_tokens(tokens) {
-    let state = format_state(tokens);
-    let index = 0;
-    while ((index < (tokens).length)) {
-        let token = $mini_list_get(tokens, index);
-        let kind = $mini_map_get(token, "kind");
-        let text = $mini_map_get(token, "text");
-        if (((kind === "eof") || (kind === "shebang"))) {
-        } else {
-            if ((kind === "comment")) {
-                if (format_stash_comment(state, index)) {
-                    let stashed = $mini_map_get(state, "stashed");
-                    $mini_list_set(stashed, (stashed).length, token);
+            if ((part === "..")) {
+                if ((((stack).length > 0) && ($mini_list_get(stack, ((stack).length - 1)) !== ".."))) {
+                    $mini_list_set(stack, ((stack).length - 1), "");
+                    $mini_list_set(stack, (stack).length, "");
+                    let kept = [];
+                    let index = 0;
+                    while ((index < (stack).length)) {
+                        if (($mini_list_get(stack, index) !== "")) {
+                            $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
+                        }
+                        index = (index + 1);
+                    }
+                    stack = kept;
                 } else {
-                    format_emit_comment(state, token);
+                    if ((!absolute)) {
+                        $mini_list_set(stack, (stack).length, part);
+                    }
                 }
             } else {
-                if (((text === "else") && ($mini_map_get($mini_map_get(state, "previous_code"), "text") === "}"))) {
-                    $mini_map_set(state, "pending_break", false);
-                    $mini_map_set(state, "current", ($mini_map_get(state, "current") + " else"));
-                    format_previous(state, token, true, false);
-                    $mini_map_set(state, "statement_start", false);
-                } else {
-                    if ($mini_map_get(state, "pending_break")) {
-                        format_newline(state);
-                        $mini_map_set(state, "pending_break", false);
-                    }
-                    if ((text === "}")) {
-                        if (($mini_map_get(state, "current") !== "")) {
-                            format_newline(state);
-                        }
-                        $mini_map_set(state, "indentation", ($mini_map_get(state, "indentation") - 1));
-                        if (($mini_map_get(state, "indentation") < 0)) {
-                            $mini_map_set(state, "indentation", 0);
-                        }
-                        format_start_line(state);
-                        $mini_map_set(state, "current", ($mini_map_get(state, "current") + "}"));
-                        format_previous(state, token, true, false);
-                        $mini_map_set(state, "pending_break", true);
-                        $mini_map_set(state, "statement_start", true);
-                    } else {
-                        format_token(state, token);
-                    }
-                }
+                $mini_list_set(stack, (stack).length, part);
             }
         }
-        index = (index + 1);
+        position = (position + 1);
     }
-    if (($mini_map_get(state, "current") !== "")) {
-        format_newline(state);
+    let output = $mini_list_to_text(stack, "/");
+    if (absolute) {
+        return ("/" + output);
     }
-    let body = format_body($mini_map_get(state, "lines"));
-    let shebang = $mini_map_get(state, "shebang");
-    if ((shebang === "")) {
-        return body;
-    }
-    return ((shebang + "\n") + body);
+    return output;
 }
-function format_source(source, name, base) {
-    let tokens = tokenize(source, name, true);
-    compile(expand_includes(tokenize(source, name, false), base, [], ({ __proto__: $mini_map_proto })));
-    return format_tokens(tokens);
+function path_resolve(base, path) {
+    if (path_is_absolute(path)) {
+        return path_normalize(path);
+    }
+    return path_normalize(path_join(base, path));
 }
-function format_fail(message) {
+function process_capture(command, args, directory, input) {
+    let options = ({ __proto__: $mini_map_proto });
+    $mini_map_set(options, "command", command);
+    $mini_map_set(options, "arguments", args);
+    $mini_map_set(options, "directory", directory);
+    $mini_map_set(options, "input", input);
+    $mini_map_set(options, "timeout", 30000);
+    return $mini_process_spawn(options);
+}
+function result_ok(value, message) {
+    let result = ({ __proto__: $mini_map_proto });
+    $mini_map_set(result, "ok", true);
+    $mini_map_set(result, "value", value);
+    $mini_map_set(result, "message", message);
+    return result;
+}
+function result_fail(message) {
+    let result = ({ __proto__: $mini_map_proto });
+    $mini_map_set(result, "ok", false);
+    $mini_map_set(result, "value", 0);
+    $mini_map_set(result, "message", message);
+    return result;
+}
+function result_is_ok(result) {
+    if ((!value_is_map(result))) {
+        return false;
+    }
+    return ($mini_map_get(result, "ok") === true);
+}
+function result_is_fail(result) {
+    return (!result_is_ok(result));
+}
+function result_get_message(result) {
+    if ((!value_is_map(result))) {
+        return "";
+    }
+    return $mini_map_get(result, "message");
+}
+function result_set_message(result, message) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "message", message);
+    }
+    return result;
+}
+function result_get_value(result) {
+    if ((!value_is_map(result))) {
+        return 0;
+    }
+    return $mini_map_get(result, "value");
+}
+function result_set_value(result, value) {
+    if (value_is_map(result)) {
+        $mini_map_set(result, "value", value);
+    }
+    return result;
+}
+function json_parse_file(path) {
+    if ((!$mini_path_is_exists(path))) {
+        return result_fail(("cannot read " + path));
+    }
+    let parsed = $mini_json_parse(readFileSync(path, "utf8"));
+    if (result_is_fail(parsed)) {
+        return result_fail(("invalid JSON: " + path));
+    }
+    return result_ok($mini_map_get(parsed, "value"), "");
+}
+function project_root() {
+    let script = process.argv[1];
+    let base = path_parent(path_parent(script));
+    if ((path_basename(base) === "dist")) {
+        return path_parent(base);
+    }
+    return base;
+}
+function project_compiler_entry(root) {
+    let parsed = json_parse_file(path_join(root, "config/compiler.json"));
+    if (result_is_fail(parsed)) {
+        result_fail($mini_map_get(parsed, "message"));
+        return "";
+    }
+    return $mini_map_get($mini_map_get(parsed, "value"), "entry");
+}
+function bootstrap_fail(message) {
     writeSync(2, (message + "\n"));
     process.exit(1);
     return 0;
 }
-function main() {
-    let args = process.argv.slice(2);
-    let mode = "stdout";
-    let has_path = false;
-    let path = "";
-    let position = 0;
-    while ((position < (args).length)) {
-        let arg = $mini_list_get(args, position);
-        if (((arg === "--write") || (arg === "--check"))) {
-            if ((mode !== "stdout")) {
-                format_fail("usage: mini-format [--write | --check] SOURCE.mini");
-            }
-            if ((arg === "--write")) {
-                mode = "write";
-            } else {
-                mode = "check";
-            }
-        } else {
-            if (has_path) {
-                format_fail("usage: mini-format [--write | --check] SOURCE.mini");
-            }
-            has_path = true;
-            path = arg;
-        }
-        position = (position + 1);
+function bootstrap_compile_text(source) {
+    let tokens = tokenize(readFileSync(source, "utf8"), basename(source), false);
+    let expanded = expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
+    return compile(expanded);
+}
+function bootstrap_compile_with(root, compiler, source, output) {
+    let args = [];
+    $mini_list_set(args, 0, compiler);
+    $mini_list_set(args, 1, source);
+    $mini_list_set(args, 2, output);
+    let result = process_capture(process.execPath, args, root, []);
+    if (($mini_map_get(result, "status") !== 0)) {
+        bootstrap_fail(("compile failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
     }
-    if ((!has_path)) {
-        format_fail("usage: mini-format [--write | --check] SOURCE.mini");
-    }
-    if (((mode === "write") && (path === "-"))) {
-        format_fail("--write does not accept stdin");
-    }
-    if (((path !== "-") && (!text_ends_with(path, ".mini")))) {
-        format_fail("Mini source must use .mini");
-    }
-    let name = path;
-    let source = "";
-    if ((path === "-")) {
-        name = "<stdin>";
-        source = readFileSync(0, "utf8");
-    } else {
-        source = readFileSync(path, "utf8");
-    }
-    let base = "";
-    if ((path !== "-")) {
-        base = path;
-    }
-    let formatted = format_source(source, name, base);
-    if ((mode === "check")) {
-        if ((formatted !== source)) {
-            format_fail((name + ": not formatted"));
-        }
-        return 0;
-    }
-    if ((mode === "write")) {
-        if ((formatted !== source)) {
-            writeFileSync(path, formatted, "utf8");
-        }
-        return 0;
-    }
-    writeSync(1, formatted);
     return 0;
+}
+function bootstrap_run(root, path) {
+    let args = [];
+    $mini_list_set(args, 0, path);
+    let result = process_capture(process.execPath, args, root, []);
+    if (($mini_map_get(result, "status") !== 0)) {
+        bootstrap_fail(("run failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
+    }
+    return 0;
+}
+function bootstrap_executable(root, path) {
+    let args = [];
+    $mini_list_set(args, 0, "755");
+    $mini_list_set(args, 1, path);
+    process_capture("chmod", args, root, []);
+    return 0;
+}
+function bootstrap_all(root) {
+    let work = $mini_path_temp_directory();
+    let source = path_join(root, "tools/compiler.mini");
+    let first = path_join(work, "compiler1.ts");
+    let second = path_join(work, "compiler2.ts");
+    writeFileSync(first, bootstrap_compile_text(source), "utf8");
+    bootstrap_executable(root, first);
+    bootstrap_compile_with(root, first, source, second);
+    if (($mini_hash_sha256($mini_file_read_bytes(first)) !== $mini_hash_sha256($mini_file_read_bytes(second)))) {
+        bootstrap_fail("compiler fixed point mismatch");
+    }
+    let seed = path_join(root, "dist/compile.ts");
+    $mini_path_copy(first, seed);
+    bootstrap_executable(root, seed);
+    let build = path_join(root, "dist/build.ts");
+    bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
+    bootstrap_executable(root, build);
+    bootstrap_run(root, build);
+    $mini_path_remove(work);
+    writeSync(1, "bootstrap complete\n");
+    return 0;
+}
+function main() {
+    return bootstrap_all(project_root());
 }
 main();

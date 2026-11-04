@@ -1,7 +1,12 @@
 #!/usr/bin/env node
+/// Bootstrap seed: embeds the compiler and rebuilds the compiler and tools.
+include "../libs/common/text.mini";
+include "../libs/compiler/lexer.mini";
+include "../libs/compiler/parser.mini";
+include "../libs/compiler/builtins.mini";
 include "../libs/tools/bootstrap.mini";
 
-/// Rebuild the compiler and all generated tools from the checked-in bootstrap.
+/// Rebuild the compiler and every generated tool.
 fn main() {
     return bootstrap_all(project_root());
 }

@@ -29,6 +29,9 @@ jobs:
         with:
           node-version-file: .node-version
           cache: npm
+      - name: Bootstrap generated tools
+        shell: bash
+        run: ./bin/bootstrap
       - name: Install development dependencies
         run: install
       - name: Strict types, versions, docs, cases, and available bootstrap
