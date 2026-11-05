@@ -184,6 +184,11 @@ Result (2026-11-05): **implemented** at `dist/site/playground/`.
 - The page adds an editor, sample picker, Run/Reset, output, diagnostics,
   generated-JavaScript tab, and the explicit limits note. It shows the
   compiler and language versions it was built from.
+- The picker carries 50 entries in five groups (Basics, Text, Lists, Maps,
+  Programs), from one-line programs to a tokenizer and a bubble sort. `samples.ts`
+  holds inline showcase programs and tracked-sample references; the build
+  compiles and runs every entry and fails on a broken or silent sample. A batch
+  browser check compares all 50 against `./bin/mini run`.
 - The landing page links to it from the hero and the navigation, and every
   landing sample opens it at `?sample=ID` with that sample selected. The worker
   accepts fixed stdin and arguments per sample, shown above the controls, so the

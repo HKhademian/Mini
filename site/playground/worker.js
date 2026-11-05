@@ -2,6 +2,24 @@
 
 globalThis.__miniSink = () => {};
 
+/// Minimal UTF-8 Buffer for text_to_bytes and text_from_bytes.
+class MiniBuffer extends Uint8Array {
+  toString(encoding) {
+    const name = encoding === "utf8" || encoding === "utf-8" || encoding === undefined ? "utf-8" : encoding;
+    return new TextDecoder(name).decode(this);
+  }
+}
+
+globalThis.Buffer = {
+  from(value, encoding) {
+    if (typeof value === "string") return new MiniBuffer(new TextEncoder().encode(value));
+    return new MiniBuffer(Uint8Array.from(Array.isArray(value) ? value : []));
+  },
+  alloc(count) {
+    return new MiniBuffer(count);
+  },
+};
+
 /// Return the small process surface the generated compiler expects.
 function processStub() {
   return {

@@ -1,7 +1,9 @@
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { playgroundSamples } from "./playground/samples.ts";
 
 type Sample = {
     readonly id: string;
@@ -17,17 +19,11 @@ type RenderedSample = Sample & {
     readonly output: string;
 };
 
-type PlaygroundSource = {
-    readonly id: string;
-    readonly label: string;
-    readonly file: string;
-    readonly args: readonly string[];
-    readonly stdin: string;
-};
-
 type PlaygroundSample = {
     readonly id: string;
+    readonly group: string;
     readonly label: string;
+    readonly note: string;
     readonly source: string;
     readonly args: readonly string[];
     readonly stdin: string;
@@ -82,27 +78,6 @@ const samples: readonly Sample[] = [
         args: [],
         stdin: "alpha\tbeta\ngamma",
     },
-];
-
-const playgroundSources: readonly PlaygroundSource[] = [
-    { id: "json", label: "Maps and JSON", file: "samples/020-json-to-text.mini", args: [], stdin: "" },
-    { id: "lists", label: "Lists", file: "samples/018-list-to-text.mini", args: [], stdin: "" },
-    {
-        id: "arguments",
-        label: "Program arguments",
-        file: "samples/006-list.mini",
-        args: ["alpha", "beta", "gamma"],
-        stdin: "",
-    },
-    {
-        id: "text",
-        label: "Text and stdin",
-        file: "samples/004-text.mini",
-        args: [],
-        stdin: "alpha\tbeta\ngamma",
-    },
-    { id: "maps", label: "Map keys", file: "samples/010-map.mini", args: [], stdin: "" },
-    { id: "numbers", label: "Numbers", file: "samples/019-number-to-text.mini", args: [], stdin: "" },
 ];
 
 const whyCards: readonly (readonly [string, string])[] = [
@@ -378,14 +353,47 @@ function buildBrowserCompiler(): string {
 }
 
 /// Read the playground samples.
+/// Compile and run one playground entry, failing the build on a broken sample.
+function verifyPlaygroundSample(sample: PlaygroundSample): void {
+    const work = mkdtempSync(join(tmpdir(), "mini-playground-"));
+    const file = join(work, "sample.mini");
+    writeFileSync(file, sample.source + "\n");
+    const result = spawnSync(
+        process.execPath,
+        [join(root, "bin", "mini"), "run", file, ...sample.args],
+        { cwd: root, input: sample.stdin, encoding: "utf8", maxBuffer: 8 * 1024 * 1024 },
+    );
+    rmSync(work, { recursive: true, force: true });
+    if (result.error !== undefined) {
+        throw result.error;
+    }
+    if (result.status !== 0) {
+        throw new Error(`${sample.id} failed:\n${result.stderr.trim()}`);
+    }
+    if (result.stdout.trim() === "") {
+        throw new Error(`${sample.id} produced no output`);
+    }
+}
+
+/// Load and verify every playground entry.
 function loadPlaygroundSamples(): readonly PlaygroundSample[] {
-    return playgroundSources.map((sample) => ({
-        id: sample.id,
-        label: sample.label,
-        source: readFileSync(join(root, sample.file), "utf8").trimEnd(),
-        args: sample.args,
-        stdin: sample.stdin,
-    }));
+    return playgroundSamples.map((entry) => {
+        if ((entry.file === undefined) === (entry.source === undefined)) {
+            throw new Error(`${entry.id} needs exactly one of file or source`);
+        }
+        const source = (entry.source ?? readFileSync(join(root, entry.file ?? ""), "utf8")).trim();
+        const sample: PlaygroundSample = {
+            id: entry.id,
+            group: entry.group,
+            label: entry.label,
+            note: entry.note,
+            source,
+            args: entry.args,
+            stdin: entry.stdin,
+        };
+        verifyPlaygroundSample(sample);
+        return sample;
+    });
 }
 
 /// Read the declared compiler and language versions.
@@ -398,9 +406,21 @@ function readVersions(): { compiler: string; language: string } {
 
 /// Render the playground page.
 function renderPlayground(data: readonly PlaygroundSample[]): string {
-    const options = data
-        .map((sample, index) => `<option value="${index}">${escapeHtml(sample.label)}</option>`)
-        .join("");
+    let options = "";
+    let currentGroup = "";
+    data.forEach((sample, index) => {
+        if (sample.group !== currentGroup) {
+            if (currentGroup !== "") {
+                options += "</optgroup>";
+            }
+            currentGroup = sample.group;
+            options += `<optgroup label="${escapeHtml(currentGroup)}">`;
+        }
+        options += `<option value="${index}">${escapeHtml(sample.label)}</option>`;
+    });
+    if (currentGroup !== "") {
+        options += "</optgroup>";
+    }
     const serialized = JSON.stringify(data).replaceAll("<", "\\u003c");
     const versions = readVersions();
     return `<!doctype html>
@@ -432,7 +452,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
   <main id="main" class="playground">
     <h1>Playground</h1>
-    <p class="lede">Write Mini, press Run, and see the output. The compiler and the program run in your browser.</p>
+    <p class="lede">Write Mini, press Run, and see the output. ${data.length} samples, from bindings to a small tokenizer; the compiler and the program run in your browser.</p>
 
     <div class="workbench">
       <section class="pane" aria-label="Editor">
@@ -440,8 +460,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <select id="samples" aria-label="Sample">${options}</select>
           <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
         </div>
-        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Mini source"></textarea>
         <p class="sample-meta" id="sample-meta" hidden></p>
+        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Mini source"></textarea>
         <div class="controls">
           <button id="run" type="button">Run</button>
           <button id="reset" class="ghost" type="button">Reset</button>
@@ -507,11 +527,11 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     function describeSample(sample) {
-      const parts = [];
+      const parts = [sample.note];
       if (sample.args.length > 0) parts.push("args: " + sample.args.join(" "));
       if (sample.stdin !== "") parts.push("stdin: " + JSON.stringify(sample.stdin));
       meta.textContent = parts.join("  ·  ");
-      meta.hidden = parts.length === 0;
+      meta.hidden = false;
     }
 
     function clear() {
