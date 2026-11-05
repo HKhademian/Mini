@@ -104,11 +104,19 @@ main,
 .brand {
   display: inline-flex;
   align-items: center;
+  color: var(--text);
+}
+
+.brand .brand-m {
   color: var(--accent);
 }
 
 .brand:hover {
   text-decoration: none;
+  color: var(--accent-strong);
+}
+
+.brand:hover .brand-m {
   color: var(--accent-strong);
 }
 
@@ -120,6 +128,10 @@ main,
   display: block;
   height: 22px;
   width: auto;
+}
+
+.name-m {
+  color: var(--accent);
 }
 
 .site-header nav {

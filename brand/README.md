@@ -1,7 +1,10 @@
-# Mini brand assets
+# mini brand assets
 
-Canonical static marks for Mini. Use these files instead of copying geometry
+Canonical static marks for mini. Use these files instead of copying geometry
 from the site or the editor.
+
+See [the mini name](name.md) for the naming decision, the options considered,
+and how to switch treatments.
 
 | File | Use |
 | --- | --- |
