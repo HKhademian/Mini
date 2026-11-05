@@ -1,0 +1,22 @@
+{
+  "id": "showcase.hello",
+  "kind": "sample",
+  "source": "../../samples/showcase/hello.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "hello, mini\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

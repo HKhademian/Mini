@@ -1,0 +1,22 @@
+{
+  "id": "showcase.factorial",
+  "kind": "sample",
+  "source": "../../samples/showcase/factorial.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "720\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-parse",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-parse.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "Mini\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

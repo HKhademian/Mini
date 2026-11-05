@@ -1,0 +1,2 @@
+/// Write one line of text.
+io_write("hello, mini\n");

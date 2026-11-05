@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-keys",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-keys.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "3\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

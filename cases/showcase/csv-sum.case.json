@@ -1,0 +1,22 @@
+{
+  "id": "showcase.csv-sum",
+  "kind": "sample",
+  "source": "../../samples/showcase/csv-sum.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "108\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

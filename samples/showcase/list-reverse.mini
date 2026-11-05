@@ -1,0 +1,15 @@
+/// Walk a list backwards and join the items.
+var values = list_new();
+list_set(values, 0, "one");
+list_set(values, 1, "two");
+list_set(values, 2, "three");
+var output = "";
+var index = list_length(values) - 1;
+while (index >= 0) {
+    output = output + list_get(values, index);
+    if (index > 0) {
+        output = output + " ";
+    }
+    index = index - 1;
+}
+io_write(output + "\n");

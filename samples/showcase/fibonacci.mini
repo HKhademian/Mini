@@ -1,0 +1,19 @@
+/// An iterative sequence.
+fn fib(n) {
+    var a = 0;
+    var b = 1;
+    var i = 0;
+    while (i < n) {
+        var next = a + b;
+        a = b;
+        b = next;
+        i = i + 1;
+    }
+    return a;
+}
+var index = 0;
+while (index < 10) {
+    io_write(number_to_text(fib(index)) + " ");
+    index = index + 1;
+}
+io_write("\n");

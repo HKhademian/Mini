@@ -1,0 +1,5 @@
+/// Return a value from a named function.
+fn square(value) {
+    return number_mul(value, value);
+}
+io_write(number_to_text(square(9)) + "\n");

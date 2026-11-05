@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-has",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-has.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "present\nabsent\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

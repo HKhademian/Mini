@@ -1,0 +1,22 @@
+{
+  "id": "showcase.booleans",
+  "kind": "sample",
+  "source": "../../samples/showcase/booleans.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "ready\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

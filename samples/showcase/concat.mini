@@ -1,0 +1,4 @@
+/// Join text with +.
+var first = "self";
+var second = "-hosting";
+io_write(first + second + "\n");

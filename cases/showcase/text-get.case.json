@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-get",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-get.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "Mi\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-queue",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-queue.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "first second\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -34,3 +34,10 @@ node samples/009-list-mutation.mini.ts
 - [022-process-run.mini](022-process-run.mini): Run Node once, capture its output and status, and print them. [Cases](../cases/language/049-004-process-run-sample.case.json).
 - [023-host-files.mini](023-host-files.mini): Write a note in a fresh temporary directory, read it back, and clean up. [Cases](../cases/language/050-003-host-files-sample.case.json).
 - [024-json-read.mini](024-json-read.mini): Parse standard-input JSON and print its name field. [Cases](../cases/language/051-003-json-read-sample.case.json).
+
+## Showcase samples
+
+The curated online-playground samples live in [showcase/](showcase/). Each one
+has a matching case under [cases/showcase/](../cases/showcase/) and runs in
+`mini test`; the site catalog is generated from the same files, so a sample
+cannot drift from its verified output.

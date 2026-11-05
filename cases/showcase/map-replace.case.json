@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-replace",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-replace.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "new 1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

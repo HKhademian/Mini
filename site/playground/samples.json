@@ -1,0 +1,456 @@
+[
+  {
+    "id": "hello",
+    "group": "Basics",
+    "label": "Hello, Mini",
+    "note": "Write one line of text.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/hello.mini"
+  },
+  {
+    "id": "bindings",
+    "group": "Basics",
+    "label": "Bindings",
+    "note": "Bind text and number values.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/bindings.mini"
+  },
+  {
+    "id": "numbers",
+    "group": "Basics",
+    "label": "Arithmetic",
+    "note": "Multiply and subtract numbers.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/numbers.mini"
+  },
+  {
+    "id": "concat",
+    "group": "Basics",
+    "label": "Text concatenation",
+    "note": "Join text with +.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/concat.mini"
+  },
+  {
+    "id": "booleans",
+    "group": "Basics",
+    "label": "Booleans",
+    "note": "Combine comparisons with &&.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/booleans.mini"
+  },
+  {
+    "id": "if",
+    "group": "Basics",
+    "label": "If",
+    "note": "Run a block when a condition holds.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/if.mini"
+  },
+  {
+    "id": "if-else",
+    "group": "Basics",
+    "label": "If and else",
+    "note": "Choose one of two branches.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/if-else.mini"
+  },
+  {
+    "id": "while",
+    "group": "Basics",
+    "label": "While",
+    "note": "Repeat while a condition holds.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/while.mini"
+  },
+  {
+    "id": "function",
+    "group": "Basics",
+    "label": "Functions",
+    "note": "Return a value from a named function.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/function.mini"
+  },
+  {
+    "id": "arguments",
+    "group": "Basics",
+    "label": "Program arguments",
+    "note": "Join the command-line arguments with pipes.",
+    "args": [
+      "alpha",
+      "beta",
+      "gamma"
+    ],
+    "stdin": "",
+    "file": "samples/006-list.mini"
+  },
+  {
+    "id": "text-length",
+    "group": "Text",
+    "label": "Text length",
+    "note": "Count characters.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-length.mini"
+  },
+  {
+    "id": "text-get",
+    "group": "Text",
+    "label": "Characters",
+    "note": "Read the first and last character.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-get.mini"
+  },
+  {
+    "id": "text-slice",
+    "group": "Text",
+    "label": "Slices",
+    "note": "Slice with positive and negative bounds.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-slice.mini"
+  },
+  {
+    "id": "text-find",
+    "group": "Text",
+    "label": "Find",
+    "note": "Locate a word inside text.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-find.mini"
+  },
+  {
+    "id": "text-split",
+    "group": "Text",
+    "label": "Split",
+    "note": "Split text on a literal separator.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-split.mini"
+  },
+  {
+    "id": "text-reverse",
+    "group": "Text",
+    "label": "Reverse text",
+    "note": "Walk backwards and build a new string.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-reverse.mini"
+  },
+  {
+    "id": "text-vowels",
+    "group": "Text",
+    "label": "Count vowels",
+    "note": "Combine a loop with character comparisons.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-vowels.mini"
+  },
+  {
+    "id": "text-bytes",
+    "group": "Text",
+    "label": "UTF-8 bytes",
+    "note": "Turn text into its byte values.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-bytes.mini"
+  },
+  {
+    "id": "text-codes",
+    "group": "Text",
+    "label": "Character codes",
+    "note": "Convert between characters and code points.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/text-codes.mini"
+  },
+  {
+    "id": "text",
+    "group": "Text",
+    "label": "Text and stdin",
+    "note": "Normalize tabs and line endings from standard input.",
+    "args": [],
+    "stdin": "alpha\tbeta\ngamma",
+    "file": "samples/004-text.mini"
+  },
+  {
+    "id": "list-create",
+    "group": "Lists",
+    "label": "Create a list",
+    "note": "Set two items and read the length.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-create.mini"
+  },
+  {
+    "id": "list-get",
+    "group": "Lists",
+    "label": "Read items",
+    "note": "Use a negative index for the last item.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-get.mini"
+  },
+  {
+    "id": "lists",
+    "group": "Lists",
+    "label": "Join a list",
+    "note": "Join list items with a visible separator.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/018-list-to-text.mini"
+  },
+  {
+    "id": "list-sum",
+    "group": "Lists",
+    "label": "Sum a list",
+    "note": "Accumulate numbers in a loop.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-sum.mini"
+  },
+  {
+    "id": "list-max",
+    "group": "Lists",
+    "label": "Largest item",
+    "note": "Scan a list and keep the best value.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-max.mini"
+  },
+  {
+    "id": "list-reverse",
+    "group": "Lists",
+    "label": "Reverse a list",
+    "note": "Walk a list backwards and join the items.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-reverse.mini"
+  },
+  {
+    "id": "list-stack",
+    "group": "Lists",
+    "label": "Stack",
+    "note": "Push and pop from the back.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-stack.mini"
+  },
+  {
+    "id": "list-queue",
+    "group": "Lists",
+    "label": "Queue",
+    "note": "Push at the back and pop from the front.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-queue.mini"
+  },
+  {
+    "id": "list-copy",
+    "group": "Lists",
+    "label": "Copy a list",
+    "note": "Changing the copy leaves the original intact.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-copy.mini"
+  },
+  {
+    "id": "list-lines",
+    "group": "Lists",
+    "label": "Lines",
+    "note": "Split text into lines and join them again.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/list-lines.mini"
+  },
+  {
+    "id": "map-create",
+    "group": "Maps",
+    "label": "Create a map",
+    "note": "Set and read text-keyed values.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-create.mini"
+  },
+  {
+    "id": "map-has",
+    "group": "Maps",
+    "label": "Presence",
+    "note": "Test for a key before reading it.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-has.mini"
+  },
+  {
+    "id": "map-keys",
+    "group": "Maps",
+    "label": "Count keys",
+    "note": "Take a key snapshot and count it.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-keys.mini"
+  },
+  {
+    "id": "map-replace",
+    "group": "Maps",
+    "label": "Replace a value",
+    "note": "Setting an existing key keeps the key count.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-replace.mini"
+  },
+  {
+    "id": "map-copy",
+    "group": "Maps",
+    "label": "Copy a map",
+    "note": "Changing the copy leaves the original intact.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-copy.mini"
+  },
+  {
+    "id": "json",
+    "group": "Maps",
+    "label": "Maps and JSON",
+    "note": "Build a map and print compact JSON.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/020-json-to-text.mini"
+  },
+  {
+    "id": "map-parse",
+    "group": "Maps",
+    "label": "Parse JSON",
+    "note": "Parse an object and read a field.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-parse.mini"
+  },
+  {
+    "id": "map-array",
+    "group": "Maps",
+    "label": "JSON arrays",
+    "note": "Parse an array and read an item.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-array.mini"
+  },
+  {
+    "id": "map-nested",
+    "group": "Maps",
+    "label": "Nested maps",
+    "note": "Store a map inside another map.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-nested.mini"
+  },
+  {
+    "id": "map-word-count",
+    "group": "Maps",
+    "label": "Word counts",
+    "note": "Count repeated words with a map.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/map-word-count.mini"
+  },
+  {
+    "id": "fizzbuzz",
+    "group": "Programs",
+    "label": "FizzBuzz",
+    "note": "Classic division and branching.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/fizzbuzz.mini"
+  },
+  {
+    "id": "factorial",
+    "group": "Programs",
+    "label": "Factorial",
+    "note": "A recursive function.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/factorial.mini"
+  },
+  {
+    "id": "fibonacci",
+    "group": "Programs",
+    "label": "Fibonacci",
+    "note": "An iterative sequence.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/fibonacci.mini"
+  },
+  {
+    "id": "primes",
+    "group": "Programs",
+    "label": "Primes",
+    "note": "Trial division up to a limit.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/primes.mini"
+  },
+  {
+    "id": "palindrome",
+    "group": "Programs",
+    "label": "Palindrome",
+    "note": "Reverse text and compare.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/palindrome.mini"
+  },
+  {
+    "id": "caesar",
+    "group": "Programs",
+    "label": "Caesar shift",
+    "note": "Shift character codes by one.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/caesar.mini"
+  },
+  {
+    "id": "binary-search",
+    "group": "Programs",
+    "label": "Binary search",
+    "note": "Find a value in a sorted list.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/binary-search.mini"
+  },
+  {
+    "id": "bubble-sort",
+    "group": "Programs",
+    "label": "Bubble sort",
+    "note": "Sort a small list in place.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/bubble-sort.mini"
+  },
+  {
+    "id": "tokenizer",
+    "group": "Programs",
+    "label": "Tokenizer",
+    "note": "Split source text into words and symbols.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/tokenizer.mini"
+  },
+  {
+    "id": "csv-sum",
+    "group": "Programs",
+    "label": "CSV sum",
+    "note": "Parse numbers from CSV text and add them.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/csv-sum.mini"
+  }
+]

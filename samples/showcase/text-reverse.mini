@@ -1,0 +1,9 @@
+/// Walk backwards and build a new string.
+var source = "mini";
+var output = "";
+var index = text_length(source) - 1;
+while (index >= 0) {
+    output = output + text_get(source, index);
+    index = index - 1;
+}
+io_write(output + "\n");

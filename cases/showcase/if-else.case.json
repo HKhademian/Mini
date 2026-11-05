@@ -1,0 +1,22 @@
+{
+  "id": "showcase.if-else",
+  "kind": "sample",
+  "source": "../../samples/showcase/if-else.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "odd\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

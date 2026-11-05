@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-codes",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-codes.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "65\nM\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

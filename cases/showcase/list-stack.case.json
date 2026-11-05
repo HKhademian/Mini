@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-stack",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-stack.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "b 1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

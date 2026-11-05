@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-slice",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-slice.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "play\nound\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

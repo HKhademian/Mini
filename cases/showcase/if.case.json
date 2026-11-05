@@ -1,0 +1,22 @@
+{
+  "id": "showcase.if",
+  "kind": "sample",
+  "source": "../../samples/showcase/if.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "warm\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

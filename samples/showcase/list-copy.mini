@@ -1,0 +1,7 @@
+/// Changing the copy leaves the original intact.
+var original = list_new();
+list_set(original, 0, "one");
+list_set(original, 1, "two");
+var copy = list_copy(original);
+list_set(copy, 0, "changed");
+io_write(list_get(original, 0) + " " + list_get(copy, 0) + "\n");

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-bytes",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-bytes.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "77 105 110 105 \n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

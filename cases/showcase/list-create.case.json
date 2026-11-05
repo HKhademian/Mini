@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-create",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-create.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "2\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

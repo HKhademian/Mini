@@ -1,0 +1,5 @@
+/// Multiply and subtract numbers.
+var width = 6;
+var height = 7;
+io_write(number_to_text(number_mul(width, height)) + "\n");
+io_write(number_to_text(20 - 5) + "\n");

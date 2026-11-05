@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-nested",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-nested.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "Mini\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

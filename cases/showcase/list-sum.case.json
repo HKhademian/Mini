@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-sum",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-sum.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "27\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

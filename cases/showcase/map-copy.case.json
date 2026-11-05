@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-copy",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-copy.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "Mini Clone\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

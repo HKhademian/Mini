@@ -1,0 +1,22 @@
+{
+  "id": "showcase.map-word-count",
+  "kind": "sample",
+  "source": "../../samples/showcase/map-word-count.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "mini=2\nmakes=1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

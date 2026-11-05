@@ -1,0 +1,18 @@
+/// Classic division and branching.
+var n = 1;
+while (n <= 15) {
+    if (number_mod(n, 15) == 0) {
+        io_write("FizzBuzz\n");
+    } else {
+        if (number_mod(n, 3) == 0) {
+            io_write("Fizz\n");
+        } else {
+            if (number_mod(n, 5) == 0) {
+                io_write("Buzz\n");
+            } else {
+                io_write(number_to_text(n) + "\n");
+            }
+        }
+    }
+    n = n + 1;
+}

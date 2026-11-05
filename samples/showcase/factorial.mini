@@ -1,0 +1,8 @@
+/// A recursive function.
+fn factorial(n) {
+    if (n <= 1) {
+        return 1;
+    }
+    return number_mul(n, factorial(n - 1));
+}
+io_write(number_to_text(factorial(6)) + "\n");

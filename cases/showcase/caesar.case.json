@@ -1,0 +1,22 @@
+{
+  "id": "showcase.caesar",
+  "kind": "sample",
+  "source": "../../samples/showcase/caesar.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "NJOJ\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

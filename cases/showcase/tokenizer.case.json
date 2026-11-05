@@ -1,0 +1,22 @@
+{
+  "id": "showcase.tokenizer",
+  "kind": "sample",
+  "source": "../../samples/showcase/tokenizer.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "var\nx\n=\n1\n;\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

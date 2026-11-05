@@ -1,0 +1,3 @@
+/// Count characters.
+var text = "playground";
+io_write(number_to_text(text_length(text)) + "\n");

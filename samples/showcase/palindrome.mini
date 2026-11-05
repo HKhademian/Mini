@@ -1,0 +1,16 @@
+/// Reverse text and compare.
+fn reverse(text) {
+    var output = "";
+    var index = text_length(text) - 1;
+    while (index >= 0) {
+        output = output + text_get(text, index);
+        index = index - 1;
+    }
+    return output;
+}
+var word = "level";
+if (word == reverse(word)) {
+    io_write("palindrome\n");
+} else {
+    io_write("different\n");
+}

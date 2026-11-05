@@ -3,7 +3,17 @@ import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
-import { playgroundSamples } from "./playground/samples.ts";
+
+type PlaygroundEntry = {
+    readonly id: string;
+    readonly group: string;
+    readonly label: string;
+    readonly note: string;
+    readonly args: readonly string[];
+    readonly stdin: string;
+    readonly file?: string;
+    readonly source?: string;
+};
 
 type Sample = {
     readonly id: string;
@@ -43,6 +53,9 @@ function readRepositoryUrl(): string {
 const repo = readRepositoryUrl();
 const output = join(root, "dist", "site");
 const brandWordmark = readFileSync(join(root, "brand", "mini-wordmark.svg"), "utf8");
+const playgroundSamples = JSON.parse(
+    readFileSync(join(root, "site", "playground", "samples.json"), "utf8"),
+) as readonly PlaygroundEntry[];
 
 const heroSample: Sample = {
     id: "json",
@@ -83,7 +96,7 @@ const samples: readonly Sample[] = [
 const whyCards: readonly (readonly [string, string])[] = [
     [
         "Clone and grow",
-        "Mini is the starting point for your language, not the finished language. Start from the reviewed contract and add only what your target needs.",
+        "{{name}} is the starting point for your language, not the finished language. Start from the reviewed contract and add only what your target needs.",
     ],
     [
         "Self-hosting kept honest",
@@ -102,7 +115,7 @@ const docs: readonly (readonly [string, string, string])[] = [
         `${repo}/blob/main/docs/getting-started.md`,
     ],
     [
-        "Why Mini",
+        "Why {{name}}",
         "Purpose, audience, and why it is not the smallest self-hosted language.",
         `${repo}/blob/main/docs/why-mini.md`,
     ],
@@ -131,6 +144,11 @@ const docs: readonly (readonly [string, string, string])[] = [
 /// Escape text for HTML element content.
 function escapeHtml(text: string): string {
     return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+}
+
+/// Escape text and replace the project-name token with the two-tone name.
+function renderName(text: string): string {
+    return escapeHtml(text).replaceAll("{{name}}", '<span class="name"><span class="name-m">m</span>ini</span>');
 }
 
 /// Run one sample and return its standard output.
@@ -191,7 +209,7 @@ function renderHero(sample: RenderedSample): string {
         <div class="hero-copy">
           <p class="eyebrow">Alpha &middot; Node 22.18+ &middot; Apache-2.0</p>
           <h1>A tiny self-hosting foundation for building other languages.</h1>
-          <p class="lede">Clone Mini, grow your own language, and keep the compiler compiling itself after every change.</p>
+          <p class="lede">${renderName("Clone {{name}}, grow your own language, and keep the compiler compiling itself after every change.")}</p>
           <p class="actions">
             <a class="button" href="./playground/">Try the playground</a>
             <a class="button ghost" href="${repo}/blob/main/docs/getting-started.md">Get started</a>
@@ -217,21 +235,21 @@ function renderHero(sample: RenderedSample): string {
 /// Render one "why" card.
 function renderWhyCard(title: string, body: string): string {
     return `<article class="feature">
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(body)}</p>
+            <h3>${renderName(title)}</h3>
+            <p>${renderName(body)}</p>
           </article>`;
 }
 
-/// Render the Mini wordmark linked to one location.
+/// Render the mini wordmark linked to one location.
 function renderBrand(href: string): string {
-    return `<a class="brand" href="${href}" aria-label="Mini home"><span class="brand-logo" aria-hidden="true">${brandWordmark}</span></a>`;
+    return `<a class="brand" href="${href}" aria-label="mini home"><span class="brand-logo" aria-hidden="true">${brandWordmark}</span></a>`;
 }
 
 /// Render one documentation link card.
 function renderDocCard(title: string, body: string, href: string): string {
     return `<a class="doc" href="${href}">
-            <h3>${escapeHtml(title)}</h3>
-            <p>${escapeHtml(body)}</p>
+            <h3>${renderName(title)}</h3>
+            <p>${renderName(body)}</p>
           </a>`;
 }
 
@@ -242,8 +260,8 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mini &mdash; a self-hosting foundation for language projects</title>
-  <meta name="description" content="Mini is a tiny self-hosting foundation for building other languages. Clone it, grow your own language, and keep the compiler compiling itself.">
+  <title>mini &mdash; a self-hosting foundation for language projects</title>
+  <meta name="description" content="mini is a tiny self-hosting foundation for building other languages. Clone it, grow your own language, and keep the compiler compiling itself.">
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -270,12 +288,12 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
     <section class="section" id="why">
       <header class="section-head">
         <h2>Built to be changed</h2>
-        <p>Mini stays useful only while the compiler still compiles itself. The foundation is designed around that constraint.</p>
+        <p>${renderName("{{name}} stays useful only while the compiler still compiles itself. The foundation is designed around that constraint.")}</p>
       </header>
       <div class="features">
         ${whyCards.map((card) => renderWhyCard(card[0], card[1])).join("\n        ")}
       </div>
-      <p class="callout">If you want the smallest possible self-hosted demonstration, Mini is bigger than that. If you want a starting point that survives changes, that extra is what you are choosing.</p>
+      <p class="callout">${renderName("If you want the smallest possible self-hosted demonstration, {{name}} is bigger than that. If you want a starting point that survives changes, that extra is what you are choosing.")}</p>
     </section>
 
     <section class="section" id="install">
@@ -322,8 +340,8 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
   </main>
 
   <footer class="site-footer">
-    <p>Mini is alpha software. <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
-    <p>Samples compiled with Mini during the build.</p>
+    <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
+    <p>${renderName("Samples compiled with {{name}} during the build.")}</p>
   </footer>
 </body>
 </html>
@@ -428,8 +446,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mini playground</title>
-  <meta name="description" content="Write and run Mini in your browser.">
+  <title>mini playground</title>
+  <meta name="description" content="Write and run mini in your browser.">
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -452,7 +470,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
   <main id="main" class="playground">
     <h1>Playground</h1>
-    <p class="lede">Write Mini, press Run, and see the output. ${data.length} samples, from bindings to a small tokenizer; the compiler and the program run in your browser.</p>
+    <p class="lede">${renderName("Write {{name}}, press Run, and see the output.")} ${data.length} samples, from bindings to a small tokenizer; the compiler and the program run in your browser.</p>
 
     <div class="workbench">
       <section class="pane" aria-label="Editor">
@@ -461,7 +479,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
         </div>
         <p class="sample-meta" id="sample-meta" hidden></p>
-        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Mini source"></textarea>
+        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="mini source"></textarea>
         <div class="controls">
           <button id="run" type="button">Run</button>
           <button id="reset" class="ghost" type="button">Reset</button>
@@ -492,7 +510,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   </main>
 
   <footer class="site-footer">
-    <p>Mini is alpha software. <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
+    <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
     <p><a href="../#docs">Documentation</a></p>
   </footer>
 

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.concat",
+  "kind": "sample",
+  "source": "../../samples/showcase/concat.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "self-hosting\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

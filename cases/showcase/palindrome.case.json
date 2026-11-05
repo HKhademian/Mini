@@ -1,0 +1,22 @@
+{
+  "id": "showcase.palindrome",
+  "kind": "sample",
+  "source": "../../samples/showcase/palindrome.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "palindrome\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

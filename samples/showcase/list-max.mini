@@ -1,0 +1,15 @@
+/// Scan a list and keep the best value.
+var values = list_new();
+list_set(values, 0, 4);
+list_set(values, 1, 9);
+list_set(values, 2, 2);
+var best = list_get(values, 0);
+var index = 1;
+while (index < list_length(values)) {
+    var current = list_get(values, index);
+    if (current > best) {
+        best = current;
+    }
+    index = index + 1;
+}
+io_write(number_to_text(best) + "\n");

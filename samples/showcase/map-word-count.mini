@@ -1,0 +1,12 @@
+/// Count repeated words with a map.
+var words = text_split("mini makes mini tools", " ");
+var counts = map_new();
+var index = 0;
+while (index < list_length(words)) {
+    var word = list_get(words, index);
+    var count = map_get(counts, word);
+    map_set(counts, word, count + 1);
+    index = index + 1;
+}
+io_write("mini=" + number_to_text(map_get(counts, "mini")) + "\n");
+io_write("makes=" + number_to_text(map_get(counts, "makes")) + "\n");

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-reverse",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-reverse.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "three two one\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-split",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-split.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "one\ntwo\nthree\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

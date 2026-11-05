@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-get",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-get.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "first last\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

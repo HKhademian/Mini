@@ -1,0 +1,22 @@
+{
+  "id": "showcase.text-reverse",
+  "kind": "sample",
+  "source": "../../samples/showcase/text-reverse.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "inim\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

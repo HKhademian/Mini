@@ -1,0 +1,10 @@
+/// Parse numbers from CSV text and add them.
+var csv = "4,8,15,16,23,42";
+var fields = text_split(csv, ",");
+var total = 0;
+var index = 0;
+while (index < list_length(fields)) {
+    total = total + number_from_text(list_get(fields, index));
+    index = index + 1;
+}
+io_write(number_to_text(total) + "\n");

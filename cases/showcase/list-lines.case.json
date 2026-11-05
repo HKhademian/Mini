@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-lines",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-lines.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "red|green|blue\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

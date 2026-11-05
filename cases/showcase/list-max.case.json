@@ -1,0 +1,22 @@
+{
+  "id": "showcase.list-max",
+  "kind": "sample",
+  "source": "../../samples/showcase/list-max.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "9\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

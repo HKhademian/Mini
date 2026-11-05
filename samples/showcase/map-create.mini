@@ -1,0 +1,5 @@
+/// Set and read text-keyed values.
+var values = map_new();
+map_set(values, "name", "Mini");
+map_set(values, "count", 2);
+io_write(map_get(values, "name") + "\n");

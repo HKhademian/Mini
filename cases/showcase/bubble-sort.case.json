@@ -1,0 +1,22 @@
+{
+  "id": "showcase.bubble-sort",
+  "kind": "sample",
+  "source": "../../samples/showcase/bubble-sort.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "1 2 3 4 5 \n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

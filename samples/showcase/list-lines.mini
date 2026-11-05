@@ -1,0 +1,13 @@
+/// Split text into lines and join them again.
+var source = "red\ngreen\nblue";
+var lines = text_split(source, "\n");
+var output = "";
+var index = 0;
+while (index < list_length(lines)) {
+    if (index > 0) {
+        output = output + "|";
+    }
+    output = output + list_get(lines, index);
+    index = index + 1;
+}
+io_write(output + "\n");

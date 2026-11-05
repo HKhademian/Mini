@@ -1,0 +1,3 @@
+/// Read the first and last character.
+var text = "Mini";
+io_write(text_get(text, 0) + text_get(text, 3) + "\n");

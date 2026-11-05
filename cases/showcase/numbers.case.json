@@ -1,0 +1,22 @@
+{
+  "id": "showcase.numbers",
+  "kind": "sample",
+  "source": "../../samples/showcase/numbers.mini",
+  "features": [],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "42\n15\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
