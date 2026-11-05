@@ -8,7 +8,7 @@ todos:
     status: completed
   - id: phase-2-pages
     content: "Phase 2 — Deploy the site to GitHub Pages under the repository path"
-    status: pending
+    status: completed
   - id: phase-3-docs
     content: "Phase 3 — Decide and add the documentation surface"
     status: pending
