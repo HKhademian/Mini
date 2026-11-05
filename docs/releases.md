@@ -88,6 +88,14 @@ the locked VS Code packaging dependencies when the triggering tag is
 `vscode-v*`, builds the extension from the committed source archive, and adds the
 VSIX to the release assets.
 
+## Showcase
+
+The [Pages workflow](../.github/workflows/pages.yml) builds `site/` and deploys
+`dist/site/`. Enable Pages with **GitHub Actions** as the source before the first
+deployment. The workflow skips repository pushes while the repository is private
+and stays available through manual dispatch. See the [site notes](../site/README.md)
+for the local preview and publication steps.
+
 ## Product tags
 
 Product tags are independent:
