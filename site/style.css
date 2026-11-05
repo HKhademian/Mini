@@ -275,11 +275,6 @@ pre {
   max-width: 100%;
 }
 
-.step-code code {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
 .source {
   background: var(--panel);
   color: var(--text);
@@ -399,12 +394,16 @@ pre {
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
   counter-reset: step;
+}
+
+.step:last-child {
+  grid-column: 1 / -1;
 }
 
 .step {
@@ -487,8 +486,19 @@ pre {
 
 @media (max-width: 700px) {
   .source code,
-  .stdout code {
+  .stdout code,
+  .step-code code {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
   }
+}
+
+.step-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.step-note code {
+  color: var(--ok);
 }

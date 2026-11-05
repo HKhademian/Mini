@@ -273,6 +273,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
         <li>
           <h3>Run a sample</h3>
           ${codeBlock("./bin/mini run samples/018-list-to-text.mini", "step-code")}
+          <p class="step-note">prints <code>one | two | three</code></p>
         </li>
       </ol>
     </section>
