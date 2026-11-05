@@ -182,7 +182,7 @@ Result (2026-11-05): **implemented** at `dist/site/playground/`.
   five-second termination bound contain loops and crashes. Compiler diagnostics
   and runtime `io_write_error` output stay separate from program output.
 - The page adds an editor, sample picker, Run/Reset, output, diagnostics,
-  generated-JavaScript disclosure, and the explicit limits note. It shows the
+  generated-JavaScript tab, and the explicit limits note. It shows the
   compiler and language versions it was built from.
 - The landing page links to it from the hero and the navigation.
 

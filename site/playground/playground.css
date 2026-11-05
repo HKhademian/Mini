@@ -153,20 +153,48 @@ textarea {
   color: #fca5a5;
 }
 
-details {
-  border-top: 1px solid var(--line);
+.tabs {
+  display: flex;
+  gap: 4px;
 }
 
-summary {
-  padding: 9px 14px;
+.tabs button {
+  padding: 4px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
   color: var(--muted);
   font-family: var(--mono);
   font-size: 0.76rem;
   cursor: pointer;
 }
 
+.tabs button[aria-selected="true"] {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.tabs button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.tab-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
 #code {
-  max-height: 320px;
+  flex: 1;
+  min-height: 380px;
+  white-space: pre;
+  overflow-wrap: normal;
 }
 
 .limits {

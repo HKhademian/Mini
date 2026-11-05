@@ -423,14 +423,20 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       </section>
 
       <section class="pane" aria-label="Output">
-        <div class="pane-head"><span>Output</span></div>
-        <pre id="stdout">(no output)</pre>
-        <pre id="stderr" hidden></pre>
-        <pre id="diagnostic" hidden></pre>
-        <details id="code-details" hidden>
-          <summary>Generated JavaScript</summary>
+        <div class="pane-head">
+          <div class="tabs" role="tablist" aria-label="Output">
+            <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
+            <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
+          </div>
+        </div>
+        <div id="panel-output" class="tab-panel" role="tabpanel" aria-labelledby="tab-output">
+          <pre id="stdout">(no output)</pre>
+          <pre id="stderr" hidden></pre>
+          <pre id="diagnostic" hidden></pre>
+        </div>
+        <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
           <pre id="code"></pre>
-        </details>
+        </div>
       </section>
     </div>
 
@@ -453,8 +459,19 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const stdout = document.getElementById("stdout");
     const stderr = document.getElementById("stderr");
     const diagnostic = document.getElementById("diagnostic");
-    const details = document.getElementById("code-details");
+    const tabOutput = document.getElementById("tab-output");
+    const tabCode = document.getElementById("tab-code");
+    const panelOutput = document.getElementById("panel-output");
+    const panelCode = document.getElementById("panel-code");
     const code = document.getElementById("code");
+
+    function showTab(showCode) {
+      const active = showCode && !tabCode.disabled;
+      tabOutput.setAttribute("aria-selected", String(!active));
+      tabCode.setAttribute("aria-selected", String(active));
+      panelOutput.hidden = active;
+      panelCode.hidden = !active;
+    }
 
     function setStatus(text, kind) {
       status.textContent = text;
@@ -467,14 +484,16 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       stderr.hidden = true;
       diagnostic.textContent = "";
       diagnostic.hidden = true;
-      details.hidden = true;
       code.textContent = "";
+      tabCode.disabled = true;
+      showTab(false);
     }
 
     function fail(text) {
       diagnostic.textContent = text;
       diagnostic.hidden = false;
       setStatus("failed", "error");
+      showTab(false);
     }
 
     function run() {
@@ -502,7 +521,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         }
         if (data.code) {
           code.textContent = data.code;
-          details.hidden = false;
+          tabCode.disabled = false;
         }
         if (data.diagnostic) {
           fail(data.diagnostic);
@@ -529,6 +548,18 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     select.addEventListener("change", showSample);
     resetButton.addEventListener("click", showSample);
     runButton.addEventListener("click", run);
+    tabOutput.addEventListener("click", function () { showTab(false); });
+    tabCode.addEventListener("click", function () { showTab(true); });
+    function tabKey(event) {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      if (event.key === "ArrowRight" && tabCode.disabled) return;
+      const next = event.key === "ArrowRight";
+      showTab(next);
+      (next ? tabCode : tabOutput).focus();
+    }
+    tabOutput.addEventListener("keydown", tabKey);
+    tabCode.addEventListener("keydown", tabKey);
     source.addEventListener("keydown", function (event) {
       if (event.key === "Tab") {
         event.preventDefault();
