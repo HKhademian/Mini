@@ -17,7 +17,7 @@ todos:
     status: completed
   - id: phase-5-playground
     content: "Phase 5 — Ship the in-browser playground"
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []
@@ -173,40 +173,55 @@ produced by the repository, then adds the editor and worker boundary.
 
 ### Phase 5 — Playground
 
-If the spike succeeds, add the editor page: textarea or CodeMirror-free editor,
-Run/Reset, output pane, error pane, sample picker, and a worker isolation
-boundary. No file persistence, no sharing links, no server execution. State the
-limits on the page.
+Result (2026-11-05): **implemented** at `dist/site/playground/`.
 
-Register the `play`/`site` product only when it becomes a released command; the
-playground pins the compiler and language versions it was built from and shows
-them.
+- `site/build.ts` emits `playground/compiler.js` from `dist/compile.js`, failing
+  if the entry loses its `node:fs` import, `main();` tail, or the three exported
+  functions. No compiler change, no bundler.
+- `site/playground/worker.js` compiles and runs; a fresh worker per run and a
+  five-second termination bound contain loops and crashes. Compiler diagnostics
+  and runtime `io_write_error` output stay separate from program output.
+- The page adds an editor, sample picker, Run/Reset, output, diagnostics,
+  generated-JavaScript disclosure, and the explicit limits note. It shows the
+  compiler and language versions it was built from.
+- The landing page links to it from the hero and the navigation.
+
+**Verified** in headless Chrome through the real page:
+
+- the JSON sample prints `{"count":2,"name":"Mini"}` in 23 ms;
+- `var = ;` shows `playground.mini:1:5: expected binding name` with context and
+  caret;
+- `path_temp_directory()` fails with `host module node:fs is not available in
+  the playground`.
+
+The playground requires an HTTP origin because it uses a module worker; opening
+`dist/site/playground/` from `file://` does not run. The Pages workflow supplies
+that origin.
 
 ## Risks
 
-- **Markdown duplication** if Phase 3 renders docs. Mitigate by rendering from
-  `docs/*.md` at build time and failing on unsupported syntax.
+- **Markdown duplication** only matters if Phase 3 later switches to rendering;
+  the first launch links to GitHub.
 - **Browser incompatibility**: `Buffer`, `process.getBuiltinModule`, includes,
-  and file builtins are the likely blockers. Isolate them in shims and keep the
-  playground scope explicit.
-- **Supply chain**: a bundler or Markdown package added for the site becomes a
-  build dependency. Pin it in the root lockfile and keep it out of the shipped
-  distribution.
-- **Pages base path**: absolute URLs break under `/Mini/`. Use relative links and
-  test the deployed path, not only localhost.
-- **Scope creep**: the playground can absorb weeks. Phases 1–2 must ship first.
+  and file builtins remain unsupported and are reported explicitly.
+- **Supply chain**: no bundler or Markdown package was added; the build uses
+  only Node.
+- **Pages base path**: all site links and assets are relative; the playground
+  uses `./worker.js` and `../` paths so `/Mini/` works.
+- **Scope creep**: the playground stops at edit, run, and output. No sharing,
+  persistence, or server execution.
 - **Private repository**: Pages is only public once the repository is. Do not
   promise a URL before then.
 
-## Open decisions
+## Decisions
 
-1. Documentation rendering: option 1, 2, or 3 above.
-2. Whether `site/build.ts` stays a TypeScript build script or becomes a Mini tool.
-3. Playground entry: appended exports to the generated compiler or a new Mini
-   entry that exposes a compile function.
-4. Bundler: add `esbuild` as a root development dependency, or reuse the editor's
-   locked copy.
-5. Whether the playground ships in the first public release or after it.
+1. Documentation rendering: **option 1**, GitHub-rendered pages, linked from the
+   landing site.
+2. `site/build.ts` stays a TypeScript build script; it is not a shipped tool.
+3. Playground entry: **appended exports** to the generated compiler, with no
+   language or compiler change.
+4. Bundler: **none**; native ES modules, a shim, and a Blob import.
+5. The playground ships with the first public showcase release.
 
 ## References
 

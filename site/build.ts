@@ -1,6 +1,6 @@
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 type Sample = {
@@ -15,6 +15,18 @@ type Sample = {
 type RenderedSample = Sample & {
     readonly source: string;
     readonly output: string;
+};
+
+type PlaygroundSource = {
+    readonly id: string;
+    readonly label: string;
+    readonly file: string;
+};
+
+type PlaygroundSample = {
+    readonly id: string;
+    readonly label: string;
+    readonly source: string;
 };
 
 const root = dirname(import.meta.dirname);
@@ -65,6 +77,13 @@ const samples: readonly Sample[] = [
         args: [],
         stdin: "alpha\tbeta\ngamma",
     },
+];
+
+const playgroundSources: readonly PlaygroundSource[] = [
+    { id: "json", label: "Maps and JSON", file: "samples/020-json-to-text.mini" },
+    { id: "lists", label: "Lists", file: "samples/018-list-to-text.mini" },
+    { id: "maps", label: "Map keys", file: "samples/010-map.mini" },
+    { id: "numbers", label: "Numbers", file: "samples/019-number-to-text.mini" },
 ];
 
 const whyCards: readonly (readonly [string, string])[] = [
@@ -177,8 +196,8 @@ function renderHero(sample: RenderedSample): string {
           <h1>A tiny self-hosting foundation for building other languages.</h1>
           <p class="lede">Clone Mini, grow your own language, and keep the compiler compiling itself after every change.</p>
           <p class="actions">
-            <a class="button" href="${repo}/blob/main/docs/getting-started.md">Get started</a>
-            <a class="button ghost" href="${repo}/blob/main/docs/why-mini.md">Why Mini</a>
+            <a class="button" href="./playground/">Try the playground</a>
+            <a class="button ghost" href="${repo}/blob/main/docs/getting-started.md">Get started</a>
           </p>
         </div>
         <figure class="hero-code">
@@ -234,6 +253,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
       <span>mini</span>
     </a>
     <nav aria-label="Site">
+      <a href="./playground/">Playground</a>
       <a href="#install">Install</a>
       <a href="#why">Why</a>
       <a href="#samples">Samples</a>
@@ -262,15 +282,15 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
         <p>Node.js 22.18.0 or newer. The compiler installs no packages.</p>
       </header>
       <ol class="steps">
-        <li>
+        <li class="step">
           <h3>Get the source</h3>
-          ${codeBlock(`git clone ${repo}.git\ncd Mini`, "step-code")}
+          ${codeBlock(`git clone ${repo}\ncd Mini`, "step-code")}
         </li>
-        <li>
+        <li class="step">
           <h3>Build the generated tools</h3>
           ${codeBlock("./bin/bootstrap", "step-code")}
         </li>
-        <li>
+        <li class="step">
           <h3>Run a sample</h3>
           ${codeBlock("./bin/mini run samples/018-list-to-text.mini", "step-code")}
           <p class="step-note">prints <code>one | two | three</code></p>
@@ -301,8 +321,230 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 
   <footer class="site-footer">
     <p>Mini is alpha software. <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
-    <p>Generated with Mini, from this repository.</p>
+    <p>Samples compiled with Mini during the build.</p>
   </footer>
+</body>
+</html>
+`;
+}
+
+/// Return the generated compiler as a browser module.
+function buildBrowserCompiler(): string {
+    const path = join(root, "dist", "compile.js");
+    if (!existsSync(path)) {
+        throw new Error("dist/compile.js is missing; run ./bin/bootstrap first");
+    }
+    const source = readFileSync(path, "utf8");
+    const importLine = 'import { readFileSync, writeFileSync, writeSync } from "node:fs";';
+    if (!source.includes(importLine) || !/main\(\);\s*$/.test(source)) {
+        throw new Error("compiler entry shape changed; update the playground build");
+    }
+    for (const name of ["function tokenize(", "function expand_includes(", "function compile("]) {
+        if (!source.includes(name)) {
+            throw new Error(`compiler entry is missing ${name}; update the playground build`);
+        }
+    }
+    return source
+        .replace(/main\(\);\s*$/, "")
+        .replace(importLine, 'import { readFileSync, writeFileSync, writeSync } from "./shim.js";')
+        + "\nexport { tokenize, expand_includes, compile };\n";
+}
+
+/// Read the playground samples.
+function loadPlaygroundSamples(): readonly PlaygroundSample[] {
+    return playgroundSources.map((sample) => ({
+        id: sample.id,
+        label: sample.label,
+        source: readFileSync(join(root, sample.file), "utf8").trimEnd(),
+    }));
+}
+
+/// Read the declared compiler and language versions.
+function readVersions(): { compiler: string; language: string } {
+    const parsed = JSON.parse(readFileSync(join(root, "config", "versions.json"), "utf8")) as Record<string, unknown>;
+    const compiler = typeof parsed["compiler"] === "string" ? parsed["compiler"] : "unassigned";
+    const language = typeof parsed["language"] === "string" ? parsed["language"] : "unassigned";
+    return { compiler, language };
+}
+
+/// Render the playground page.
+function renderPlayground(data: readonly PlaygroundSample[]): string {
+    const options = data
+        .map((sample, index) => `<option value="${index}">${escapeHtml(sample.label)}</option>`)
+        .join("");
+    const serialized = JSON.stringify(data).replaceAll("<", "\\u003c");
+    const versions = readVersions();
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini playground</title>
+  <meta name="description" content="Write and run Mini in your browser.">
+  <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="./playground.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="brand" href="../" aria-label="Mini home">
+      <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path d="M2.5 13V3l5.5 7L13.5 3v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>mini</span>
+    </a>
+    <nav aria-label="Site">
+      <a href="../#install">Install</a>
+      <a href="../#why">Why</a>
+      <a href="../#samples">Samples</a>
+      <a href="../#docs">Docs</a>
+      <a href="${repo}">GitHub</a>
+    </nav>
+  </header>
+
+  <main id="main" class="playground">
+    <h1>Playground</h1>
+    <p class="lede">Write Mini, press Run, and see the output. The compiler and the program run in your browser.</p>
+
+    <div class="workbench">
+      <section class="pane" aria-label="Editor">
+        <div class="pane-head">
+          <select id="samples" aria-label="Sample">${options}</select>
+          <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
+        </div>
+        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Mini source"></textarea>
+        <div class="controls">
+          <button id="run" type="button">Run</button>
+          <button id="reset" class="ghost" type="button">Reset</button>
+          <span class="hint">Ctrl/&#8984; + Enter</span>
+        </div>
+      </section>
+
+      <section class="pane" aria-label="Output">
+        <div class="pane-head"><span>Output</span></div>
+        <pre id="stdout">(no output)</pre>
+        <pre id="stderr" hidden></pre>
+        <pre id="diagnostic" hidden></pre>
+        <details id="code-details" hidden>
+          <summary>Generated JavaScript</summary>
+          <pre id="code"></pre>
+        </details>
+      </section>
+    </div>
+
+    <p class="limits">Runs entirely in your browser. <code>include</code>, files, processes, and the network are unavailable.</p>
+    <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)}</p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Mini is alpha software. <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
+    <p><a href="../#docs">Documentation</a></p>
+  </footer>
+
+  <script type="module">
+    const samples = ${serialized};
+    const source = document.getElementById("source");
+    const select = document.getElementById("samples");
+    const runButton = document.getElementById("run");
+    const resetButton = document.getElementById("reset");
+    const status = document.getElementById("status");
+    const stdout = document.getElementById("stdout");
+    const stderr = document.getElementById("stderr");
+    const diagnostic = document.getElementById("diagnostic");
+    const details = document.getElementById("code-details");
+    const code = document.getElementById("code");
+
+    function setStatus(text, kind) {
+      status.textContent = text;
+      status.dataset.kind = kind || "";
+    }
+
+    function clear() {
+      stdout.textContent = "(no output)";
+      stderr.textContent = "";
+      stderr.hidden = true;
+      diagnostic.textContent = "";
+      diagnostic.hidden = true;
+      details.hidden = true;
+      code.textContent = "";
+    }
+
+    function fail(text) {
+      diagnostic.textContent = text;
+      diagnostic.hidden = false;
+      setStatus("failed", "error");
+    }
+
+    function run() {
+      clear();
+      setStatus("working…");
+      const started = performance.now();
+      const worker = new Worker("./worker.js", { type: "module" });
+      let done = false;
+      const timer = setTimeout(function () {
+        if (done) return;
+        done = true;
+        worker.terminate();
+        fail("The program did not finish within 5 seconds.");
+      }, 5000);
+      worker.onmessage = function (event) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        worker.terminate();
+        const data = event.data;
+        if (data.output) stdout.textContent = data.output;
+        if (data.stderr) {
+          stderr.textContent = data.stderr;
+          stderr.hidden = false;
+        }
+        if (data.code) {
+          code.textContent = data.code;
+          details.hidden = false;
+        }
+        if (data.diagnostic) {
+          fail(data.diagnostic);
+        } else {
+          setStatus("done in " + Math.round(performance.now() - started) + " ms", "ok");
+        }
+      };
+      worker.onerror = function () {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        worker.terminate();
+        fail("The playground worker failed to start.");
+      };
+      worker.postMessage({ source: source.value });
+    }
+
+    function showSample() {
+      source.value = samples[Number(select.value)].source;
+      clear();
+      setStatus("ready");
+    }
+
+    select.addEventListener("change", showSample);
+    resetButton.addEventListener("click", showSample);
+    runButton.addEventListener("click", run);
+    source.addEventListener("keydown", function (event) {
+      if (event.key === "Tab") {
+        event.preventDefault();
+        const start = source.selectionStart;
+        const end = source.selectionEnd;
+        source.setRangeText("    ", start, end, "end");
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+        event.preventDefault();
+        run();
+      }
+    });
+
+    source.value = samples[0].source;
+    run();
+  </script>
 </body>
 </html>
 `;
@@ -317,6 +559,13 @@ function main(): void {
     writeFileSync(join(output, "index.html"), renderPage(hero, cards));
     writeFileSync(join(output, "style.css"), readFileSync(join(root, "site", "style.css")));
     cpSync(join(root, "editors/vscode/icons/mini-light.svg"), join(output, "favicon.svg"));
+    const playground = join(output, "playground");
+    mkdirSync(playground, { recursive: true });
+    writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
+    writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
+    cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
+    cpSync(join(root, "site", "playground", "worker.js"), join(playground, "worker.js"));
+    cpSync(join(root, "site", "playground", "playground.css"), join(playground, "playground.css"));
     process.stdout.write(`wrote ${join(output, "index.html")}\n`);
 }
 
