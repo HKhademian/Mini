@@ -165,6 +165,8 @@ go-to-definition, and formatting through the standalone `mini-lang-server`.
 Install it locally from a VSIX and install the server from a source distribution
 or set `mini.serverPath`.
 
+The [brand assets](brand/README.md) hold the wordmark, monogram, and favicon.
+
 [Future tooling](docs/tooling.md) records `mini-document` / `mini doc` and
 `mini-help` / `mini help`. These commands are not available yet.
 

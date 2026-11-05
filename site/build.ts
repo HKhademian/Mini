@@ -46,6 +46,7 @@ function readRepositoryUrl(): string {
 }
 const repo = readRepositoryUrl();
 const output = join(root, "dist", "site");
+const brandWordmark = readFileSync(join(root, "brand", "mini-wordmark.svg"), "utf8");
 
 const heroSample: Sample = {
     id: "json",
@@ -246,6 +247,11 @@ function renderWhyCard(title: string, body: string): string {
           </article>`;
 }
 
+/// Render the Mini wordmark linked to one location.
+function renderBrand(href: string): string {
+    return `<a class="brand" href="${href}" aria-label="Mini home"><span class="brand-logo" aria-hidden="true">${brandWordmark}</span></a>`;
+}
+
 /// Render one documentation link card.
 function renderDocCard(title: string, body: string, href: string): string {
     return `<a class="doc" href="${href}">
@@ -272,10 +278,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="./" aria-label="Mini home">
-      <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path d="M2.5 13V3l5.5 7L13.5 3v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>mini</span>
-    </a>
+    ${renderBrand("./")}
     <nav aria-label="Site">
       <a href="./playground/">Playground</a>
       <a href="#install">Install</a>
@@ -417,10 +420,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header">
-    <a class="brand" href="../" aria-label="Mini home">
-      <svg viewBox="0 0 16 16" width="22" height="22" aria-hidden="true"><path d="M2.5 13V3l5.5 7L13.5 3v10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>mini</span>
-    </a>
+    ${renderBrand("../")}
     <nav aria-label="Site">
       <a href="../#install">Install</a>
       <a href="../#why">Why</a>
@@ -634,7 +634,7 @@ function main(): void {
     mkdirSync(output, { recursive: true });
     writeFileSync(join(output, "index.html"), renderPage(hero, cards));
     writeFileSync(join(output, "style.css"), readFileSync(join(root, "site", "style.css")));
-    cpSync(join(root, "editors/vscode/icons/mini-light.svg"), join(output, "favicon.svg"));
+    cpSync(join(root, "brand", "mini-favicon.svg"), join(output, "favicon.svg"));
     const playground = join(output, "playground");
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());

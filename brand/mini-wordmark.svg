@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 16" width="36" height="16" role="img" aria-label="mini">
+  <title>mini</title>
+  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.25 13V7.5a3 3 0 0 1 6 0V13M8.25 7.5a3 3 0 0 1 6 0V13"/>
+    <path d="M18.75 13V4.5"/>
+    <path d="M23.25 13V7.5a3 3 0 0 1 6 0V13"/>
+    <path d="M33.75 13V4.5"/>
+  </g>
+  <g fill="currentColor">
+    <circle cx="18.75" cy="1.9" r="1.05"/>
+    <circle cx="33.75" cy="1.9" r="1.05"/>
+  </g>
+</svg>

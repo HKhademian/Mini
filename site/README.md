@@ -18,7 +18,8 @@ Open <http://127.0.0.1:8080/> and <http://127.0.0.1:8080/playground/>. Use
 
 Output goes to `dist/site/`, which is ignored by Git. The build compiles and
 runs the samples, emits `playground/compiler.js` from `dist/compile.js`, and is
-deterministic. It writes nothing else.
+deterministic. It writes nothing else. The header wordmark and favicon come from
+[`brand/`](../brand/README.md).
 
 Opening `dist/site/index.html` from `file://` shows the landing page, but the
 playground needs an HTTP origin because it uses a module worker.

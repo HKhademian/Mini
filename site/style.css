@@ -104,20 +104,22 @@ main,
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  color: var(--accent);
 }
 
 .brand:hover {
   text-decoration: none;
-  color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.brand-logo {
+  display: flex;
 }
 
 .brand svg {
   display: block;
+  height: 22px;
+  width: auto;
 }
 
 .site-header nav {
