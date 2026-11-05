@@ -517,3 +517,18 @@ pre {
 .step-note code {
   color: var(--ok);
 }
+
+.sample-foot,
+.hero-open {
+  margin: 0;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 0.84rem;
+  text-align: right;
+}
+
+.sample-foot a,
+.hero-open a {
+  color: var(--accent);
+}

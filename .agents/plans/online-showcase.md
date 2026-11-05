@@ -184,7 +184,10 @@ Result (2026-11-05): **implemented** at `dist/site/playground/`.
 - The page adds an editor, sample picker, Run/Reset, output, diagnostics,
   generated-JavaScript tab, and the explicit limits note. It shows the
   compiler and language versions it was built from.
-- The landing page links to it from the hero and the navigation.
+- The landing page links to it from the hero and the navigation, and every
+  landing sample opens it at `?sample=ID` with that sample selected. The worker
+  accepts fixed stdin and arguments per sample, shown above the controls, so the
+  argument and text-input samples match the landing output.
 
 **Verified** in headless Chrome through the real page:
 

@@ -52,7 +52,7 @@ async function compileSource(source) {
 /// Replace Node-only imports with the playground runtime.
 function prepare(code) {
   const prelude = [
-    'const readFileSync = () => { throw new Error("file access is not available in the playground"); };',
+    'const readFileSync = (path) => { if (path === 0) return globalThis.__miniStdin ?? ""; throw new Error("file access is not available in the playground: " + path); };',
     'const writeFileSync = () => { throw new Error("file access is not available in the playground"); };',
     'const writeSync = (fd, text) => { if (fd === 2) globalThis.__miniRuntimeError += String(text); else globalThis.__miniOutput += String(text); };',
   ].join("\n");
@@ -62,9 +62,11 @@ function prepare(code) {
 }
 
 /// Execute one compiled program and return its streams or runtime error.
-async function runCode(code) {
+async function runCode(code, stdin, args) {
   globalThis.__miniOutput = "";
   globalThis.__miniRuntimeError = "";
+  globalThis.__miniStdin = typeof stdin === "string" ? stdin : "";
+  globalThis.process.argv = ["node", "mini"].concat(Array.isArray(args) ? args : []);
   const url = URL.createObjectURL(new Blob([prepare(code)], { type: "text/javascript" }));
   try {
     await import(url);
@@ -90,7 +92,7 @@ self.onmessage = async (event) => {
       self.postMessage({ ok: false, output: "", stderr: "", diagnostic: compiled.diagnostic, code: "" });
       return;
     }
-    const result = await runCode(compiled.code);
+    const result = await runCode(compiled.code, data.stdin, data.args);
     self.postMessage({
       ok: result.ok,
       output: result.output,

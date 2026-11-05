@@ -21,12 +21,16 @@ type PlaygroundSource = {
     readonly id: string;
     readonly label: string;
     readonly file: string;
+    readonly args: readonly string[];
+    readonly stdin: string;
 };
 
 type PlaygroundSample = {
     readonly id: string;
     readonly label: string;
     readonly source: string;
+    readonly args: readonly string[];
+    readonly stdin: string;
 };
 
 const root = dirname(import.meta.dirname);
@@ -80,10 +84,24 @@ const samples: readonly Sample[] = [
 ];
 
 const playgroundSources: readonly PlaygroundSource[] = [
-    { id: "json", label: "Maps and JSON", file: "samples/020-json-to-text.mini" },
-    { id: "lists", label: "Lists", file: "samples/018-list-to-text.mini" },
-    { id: "maps", label: "Map keys", file: "samples/010-map.mini" },
-    { id: "numbers", label: "Numbers", file: "samples/019-number-to-text.mini" },
+    { id: "json", label: "Maps and JSON", file: "samples/020-json-to-text.mini", args: [], stdin: "" },
+    { id: "lists", label: "Lists", file: "samples/018-list-to-text.mini", args: [], stdin: "" },
+    {
+        id: "arguments",
+        label: "Program arguments",
+        file: "samples/006-list.mini",
+        args: ["alpha", "beta", "gamma"],
+        stdin: "",
+    },
+    {
+        id: "text",
+        label: "Text and stdin",
+        file: "samples/004-text.mini",
+        args: [],
+        stdin: "alpha\tbeta\ngamma",
+    },
+    { id: "maps", label: "Map keys", file: "samples/010-map.mini", args: [], stdin: "" },
+    { id: "numbers", label: "Numbers", file: "samples/019-number-to-text.mini", args: [], stdin: "" },
 ];
 
 const whyCards: readonly (readonly [string, string])[] = [
@@ -185,6 +203,9 @@ function renderSampleCard(sample: RenderedSample): string {
             <span class="label">output</span>
             ${codeBlock(sample.output, "stdout")}
           </div>
+          <footer class="sample-foot">
+            <a href="./playground/?sample=${sample.id}">Open in playground &rarr;</a>
+          </footer>
         </article>`;
 }
 
@@ -210,6 +231,9 @@ function renderHero(sample: RenderedSample): string {
             <span class="label">output</span>
             ${codeBlock(sample.output, "stdout")}
           </div>
+          <figcaption class="hero-open">
+            <a href="./playground/?sample=${sample.id}">Open in playground &rarr;</a>
+          </figcaption>
         </figure>
       </section>`;
 }
@@ -356,6 +380,8 @@ function loadPlaygroundSamples(): readonly PlaygroundSample[] {
         id: sample.id,
         label: sample.label,
         source: readFileSync(join(root, sample.file), "utf8").trimEnd(),
+        args: sample.args,
+        stdin: sample.stdin,
     }));
 }
 
@@ -415,6 +441,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
         </div>
         <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Mini source"></textarea>
+        <p class="sample-meta" id="sample-meta" hidden></p>
         <div class="controls">
           <button id="run" type="button">Run</button>
           <button id="reset" class="ghost" type="button">Reset</button>
@@ -464,6 +491,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const panelOutput = document.getElementById("panel-output");
     const panelCode = document.getElementById("panel-code");
     const code = document.getElementById("code");
+    const meta = document.getElementById("sample-meta");
 
     function showTab(showCode) {
       const active = showCode && !tabCode.disabled;
@@ -476,6 +504,14 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     function setStatus(text, kind) {
       status.textContent = text;
       status.dataset.kind = kind || "";
+    }
+
+    function describeSample(sample) {
+      const parts = [];
+      if (sample.args.length > 0) parts.push("args: " + sample.args.join(" "));
+      if (sample.stdin !== "") parts.push("stdin: " + JSON.stringify(sample.stdin));
+      meta.textContent = parts.join("  ·  ");
+      meta.hidden = parts.length === 0;
     }
 
     function clear() {
@@ -497,6 +533,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     function run() {
+      const sample = samples[Number(select.value)];
       clear();
       setStatus("working…");
       const started = performance.now();
@@ -536,13 +573,15 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         worker.terminate();
         fail("The playground worker failed to start.");
       };
-      worker.postMessage({ source: source.value });
+      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args });
     }
 
     function showSample() {
-      source.value = samples[Number(select.value)].source;
-      clear();
-      setStatus("ready");
+      const sample = samples[Number(select.value)];
+      source.value = sample.source;
+      describeSample(sample);
+      history.replaceState(null, "", "?sample=" + encodeURIComponent(sample.id));
+      run();
     }
 
     select.addEventListener("change", showSample);
@@ -573,7 +612,13 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       }
     });
 
-    source.value = samples[0].source;
+    const requested = new URLSearchParams(location.search).get("sample");
+    const found = samples.findIndex(function (sample) { return sample.id === requested; });
+    const initial = found >= 0 ? found : 0;
+    select.value = String(initial);
+    source.value = samples[initial].source;
+    describeSample(samples[initial]);
+    history.replaceState(null, "", "?sample=" + encodeURIComponent(samples[initial].id));
     run();
   </script>
 </body>
