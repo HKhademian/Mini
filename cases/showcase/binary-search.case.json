@@ -2,7 +2,20 @@
   "id": "showcase.binary-search",
   "kind": "sample",
   "source": "../../samples/showcase/binary-search.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.get",
+    "list.length",
+    "number.to-text",
+    "number.div"
+  ],
   "cases": [
     {
       "name": "default",

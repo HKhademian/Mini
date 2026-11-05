@@ -2,7 +2,14 @@
   "id": "showcase.list-queue",
   "kind": "sample",
   "source": "../../samples/showcase/list-queue.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.new",
+    "list.get",
+    "list.push",
+    "list.pop"
+  ],
   "cases": [
     {
       "name": "default",

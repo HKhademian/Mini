@@ -2,7 +2,13 @@
   "id": "showcase.map-parse",
   "kind": "sample",
   "source": "../../samples/showcase/map-parse.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "text.output",
+    "map.get",
+    "json.parse"
+  ],
   "cases": [
     {
       "name": "default",

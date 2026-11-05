@@ -2,7 +2,12 @@
   "id": "showcase.text-length",
   "kind": "sample",
   "source": "../../samples/showcase/text-length.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "text.length",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

@@ -2,7 +2,14 @@
   "id": "showcase.list-create",
   "kind": "sample",
   "source": "../../samples/showcase/list-create.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.length",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

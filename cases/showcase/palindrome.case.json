@@ -2,7 +2,17 @@
   "id": "showcase.palindrome",
   "kind": "sample",
   "source": "../../samples/showcase/palindrome.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "functions",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "text.length",
+    "text.get"
+  ],
   "cases": [
     {
       "name": "default",

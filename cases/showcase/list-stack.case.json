@@ -2,7 +2,15 @@
   "id": "showcase.list-stack",
   "kind": "sample",
   "source": "../../samples/showcase/list-stack.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.new",
+    "list.length",
+    "list.push",
+    "list.pop",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

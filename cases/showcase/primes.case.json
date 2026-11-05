@@ -2,7 +2,17 @@
   "id": "showcase.primes",
   "kind": "sample",
   "source": "../../samples/showcase/primes.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "functions",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "number.to-text",
+    "number.mod"
+  ],
   "cases": [
     {
       "name": "default",

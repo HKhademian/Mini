@@ -2,7 +2,15 @@
   "id": "showcase.map-keys",
   "kind": "sample",
   "source": "../../samples/showcase/map-keys.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.length",
+    "map.new",
+    "map.set",
+    "map.keys",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

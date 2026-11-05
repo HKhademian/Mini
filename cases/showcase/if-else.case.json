@@ -2,7 +2,13 @@
   "id": "showcase.if-else",
   "kind": "sample",
   "source": "../../samples/showcase/if-else.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "expressions.equality",
+    "text.output",
+    "number.mod"
+  ],
   "cases": [
     {
       "name": "default",

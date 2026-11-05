@@ -2,7 +2,15 @@
   "id": "showcase.map-array",
   "kind": "sample",
   "source": "../../samples/showcase/map-array.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "text.output",
+    "list.get",
+    "map.get",
+    "json.parse",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

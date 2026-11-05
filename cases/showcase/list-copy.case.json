@@ -2,7 +2,14 @@
   "id": "showcase.list-copy",
   "kind": "sample",
   "source": "../../samples/showcase/list-copy.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.get",
+    "list.copy"
+  ],
   "cases": [
     {
       "name": "default",

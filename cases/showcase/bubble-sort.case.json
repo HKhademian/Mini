@@ -2,7 +2,18 @@
   "id": "showcase.bubble-sort",
   "kind": "sample",
   "source": "../../samples/showcase/bubble-sort.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.get",
+    "list.length",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

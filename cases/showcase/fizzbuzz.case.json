@@ -2,7 +2,16 @@
   "id": "showcase.fizzbuzz",
   "kind": "sample",
   "source": "../../samples/showcase/fizzbuzz.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "number.to-text",
+    "number.mod"
+  ],
   "cases": [
     {
       "name": "default",

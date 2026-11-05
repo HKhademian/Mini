@@ -2,7 +2,12 @@
   "id": "showcase.function",
   "kind": "sample",
   "source": "../../samples/showcase/function.mini",
-  "features": [],
+  "features": [
+    "functions",
+    "text.output",
+    "number.to-text",
+    "number.mul"
+  ],
   "cases": [
     {
       "name": "default",

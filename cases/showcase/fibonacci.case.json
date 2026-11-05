@@ -2,7 +2,14 @@
   "id": "showcase.fibonacci",
   "kind": "sample",
   "source": "../../samples/showcase/fibonacci.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "functions",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

@@ -2,7 +2,15 @@
   "id": "showcase.map-has",
   "kind": "sample",
   "source": "../../samples/showcase/map-has.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "expressions.boolean",
+    "text.output",
+    "map.new",
+    "map.set",
+    "map.has"
+  ],
   "cases": [
     {
       "name": "default",

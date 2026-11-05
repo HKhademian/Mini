@@ -2,7 +2,18 @@
   "id": "showcase.text-vowels",
   "kind": "sample",
   "source": "../../samples/showcase/text-vowels.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.boolean",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "text.length",
+    "text.get",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

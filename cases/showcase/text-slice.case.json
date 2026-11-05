@@ -2,7 +2,12 @@
   "id": "showcase.text-slice",
   "kind": "sample",
   "source": "../../samples/showcase/text-slice.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "text.length",
+    "text.slice"
+  ],
   "cases": [
     {
       "name": "default",

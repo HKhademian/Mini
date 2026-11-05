@@ -2,7 +2,16 @@
   "id": "showcase.map-replace",
   "kind": "sample",
   "source": "../../samples/showcase/map-replace.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.length",
+    "map.new",
+    "map.set",
+    "map.get",
+    "map.keys",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

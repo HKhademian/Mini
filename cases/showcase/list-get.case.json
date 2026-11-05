@@ -2,7 +2,13 @@
   "id": "showcase.list-get",
   "kind": "sample",
   "source": "../../samples/showcase/list-get.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.get"
+  ],
   "cases": [
     {
       "name": "default",

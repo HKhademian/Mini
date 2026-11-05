@@ -2,7 +2,16 @@
   "id": "showcase.list-lines",
   "kind": "sample",
   "source": "../../samples/showcase/list-lines.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "text.split",
+    "list.get",
+    "list.length"
+  ],
   "cases": [
     {
       "name": "default",

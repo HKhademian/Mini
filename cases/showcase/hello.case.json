@@ -2,7 +2,9 @@
   "id": "showcase.hello",
   "kind": "sample",
   "source": "../../samples/showcase/hello.mini",
-  "features": [],
+  "features": [
+    "text.output"
+  ],
   "cases": [
     {
       "name": "default",

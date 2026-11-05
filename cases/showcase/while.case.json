@@ -2,7 +2,13 @@
   "id": "showcase.while",
   "kind": "sample",
   "source": "../../samples/showcase/while.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

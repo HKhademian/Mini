@@ -2,7 +2,14 @@
   "id": "showcase.factorial",
   "kind": "sample",
   "source": "../../samples/showcase/factorial.mini",
-  "features": [],
+  "features": [
+    "functions",
+    "control.if",
+    "expressions.comparison",
+    "text.output",
+    "number.to-text",
+    "number.mul"
+  ],
   "cases": [
     {
       "name": "default",

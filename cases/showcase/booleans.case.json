@@ -2,7 +2,13 @@
   "id": "showcase.booleans",
   "kind": "sample",
   "source": "../../samples/showcase/booleans.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "expressions.boolean",
+    "expressions.comparison",
+    "text.output"
+  ],
   "cases": [
     {
       "name": "default",

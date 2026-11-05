@@ -2,7 +2,12 @@
   "id": "showcase.text-find",
   "kind": "sample",
   "source": "../../samples/showcase/text-find.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "text.find",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

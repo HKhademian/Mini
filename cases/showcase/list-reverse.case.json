@@ -2,7 +2,17 @@
   "id": "showcase.list-reverse",
   "kind": "sample",
   "source": "../../samples/showcase/list-reverse.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "list.new",
+    "list.set",
+    "list.get",
+    "list.length"
+  ],
   "cases": [
     {
       "name": "default",

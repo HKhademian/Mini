@@ -2,7 +2,15 @@
   "id": "showcase.text-codes",
   "kind": "sample",
   "source": "../../samples/showcase/text-codes.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "expressions.boolean",
+    "text.output",
+    "text.get",
+    "text.code",
+    "text.from-code",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

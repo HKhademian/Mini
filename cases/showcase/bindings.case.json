@@ -2,7 +2,11 @@
   "id": "showcase.bindings",
   "kind": "sample",
   "source": "../../samples/showcase/bindings.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",

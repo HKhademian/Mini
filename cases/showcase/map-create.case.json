@@ -2,7 +2,13 @@
   "id": "showcase.map-create",
   "kind": "sample",
   "source": "../../samples/showcase/map-create.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "map.new",
+    "map.set",
+    "map.get"
+  ],
   "cases": [
     {
       "name": "default",

@@ -2,7 +2,16 @@
   "id": "showcase.caesar",
   "kind": "sample",
   "source": "../../samples/showcase/caesar.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "text.length",
+    "text.get",
+    "text.code",
+    "text.from-code"
+  ],
   "cases": [
     {
       "name": "default",

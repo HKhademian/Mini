@@ -2,7 +2,17 @@
   "id": "showcase.tokenizer",
   "kind": "sample",
   "source": "../../samples/showcase/tokenizer.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "control.while",
+    "expressions.boolean",
+    "expressions.comparison",
+    "expressions.equality",
+    "text.output",
+    "text.length",
+    "text.get"
+  ],
   "cases": [
     {
       "name": "default",

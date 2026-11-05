@@ -2,7 +2,10 @@
   "id": "showcase.concat",
   "kind": "sample",
   "source": "../../samples/showcase/concat.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output"
+  ],
   "cases": [
     {
       "name": "default",

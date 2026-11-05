@@ -2,7 +2,11 @@
   "id": "showcase.text-get",
   "kind": "sample",
   "source": "../../samples/showcase/text-get.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "text.get"
+  ],
   "cases": [
     {
       "name": "default",

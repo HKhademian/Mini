@@ -2,7 +2,12 @@
   "id": "showcase.numbers",
   "kind": "sample",
   "source": "../../samples/showcase/numbers.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "text.output",
+    "number.to-text",
+    "number.mul"
+  ],
   "cases": [
     {
       "name": "default",

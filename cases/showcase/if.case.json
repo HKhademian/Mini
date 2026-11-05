@@ -2,7 +2,12 @@
   "id": "showcase.if",
   "kind": "sample",
   "source": "../../samples/showcase/if.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.if",
+    "expressions.comparison",
+    "text.output"
+  ],
   "cases": [
     {
       "name": "default",

@@ -2,7 +2,19 @@
   "id": "showcase.map-word-count",
   "kind": "sample",
   "source": "../../samples/showcase/map-word-count.mini",
-  "features": [],
+  "features": [
+    "bindings",
+    "control.while",
+    "expressions.comparison",
+    "text.output",
+    "text.split",
+    "list.get",
+    "list.length",
+    "map.new",
+    "map.set",
+    "map.get",
+    "number.to-text"
+  ],
   "cases": [
     {
       "name": "default",
