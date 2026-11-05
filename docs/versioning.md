@@ -14,7 +14,7 @@ vscode-v0.3.0-v0.3.3
 ```
 
 The shared group is `0.3.0`. Each product keeps its own version.
-The group identifies Mini's compatibility baseline, not a product counter.
+The group identifies mini's compatibility baseline, not a product counter.
 Change it when that baseline changes; changing groups does not reset products.
 A product-only fix advances only that product's version.
 
@@ -123,7 +123,7 @@ selection; shared programs preserve that selection.
 - Cases, samples, schemas, agent rules, and CI: source revision, not per-file
   release counters. Cases retain stable IDs and source/stream hashes.
 - Benchmarks: tested versions, case identities, runtime, and environment.
-- Node, editor, and protocol versions: dependencies, not Mini products.
+- Node, editor, and protocol versions: dependencies, not mini products.
 
 ## Assignment and release rules
 
@@ -138,7 +138,7 @@ Release manifests use schema version 2 and record `group`, product versions,
 and the released product's group/version. VSIX filenames include both numbers,
 for example `mini-0.3.0-v0.2.0.vsix`.
 
-Stable compiler, language, bootstrap, and Mini distribution releases require a
+Stable compiler, language, bootstrap, and mini distribution releases require a
 verified self-hosted bootstrap. Tools and implemented libraries need not be
 self-hosted.
 

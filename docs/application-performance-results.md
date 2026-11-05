@@ -52,7 +52,7 @@ compiler workload, a memory limit, or proof about larger/unusual programs.
 
 ## Largest inputs: matching handwritten TS
 
-Each entry lists generated Mini / handwritten TS. Time ranges span the two
+Each entry lists generated mini / handwritten TS. Time ranges span the two
 run medians, not individual-sample minima/maxima. CPU is warm application user
 plus system CPU. RSS is each run's maximum cold process high-water before output
 normalization; it includes Node, imports, input, and application memory.

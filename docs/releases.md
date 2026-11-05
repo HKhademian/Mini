@@ -124,7 +124,7 @@ builds; create a new milestone release instead.
 
 ## Bootstrap requirement
 
-Compiler, language, Mini, and bootstrap releases require a verified fixed point.
+Compiler, language, mini, and bootstrap releases require a verified fixed point.
 The workflow bootstraps before checks and again inside the extracted source
 archive. Tool-only releases use the same bootstrap but do not claim a new
 compiler identity.

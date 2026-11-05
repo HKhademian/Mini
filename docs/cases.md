@@ -1,7 +1,7 @@
 # Cases, samples, and benchmarks
 
 Each test definition is a `NAME.case.json` file under `cases/`.
-Mini source stays in separate `.mini` files. Tool cases name existing commands
+mini source stays in separate `.mini` files. Tool cases name existing commands
 under `bin/`; they do not have their own executable scripts.
 
 A manifest can hold several named scenarios for one source:
@@ -35,7 +35,7 @@ bytes. A mismatch fails verification. Update expectations deliberately after
 reviewing the contract. Streams are compared byte for byte.
 Git preserves stream bytes, including CRLF; do not normalize fixture newlines.
 
-Kinds: `tool` invokes the named command; `feature`, `sample`, and `example` compile Mini
+Kinds: `tool` invokes the named command; `feature`, `sample`, and `example` compile mini
 then run it; `compile` checks compiler stdout/stderr/status and a separate
 optional `artifact` descriptor; `reject` checks failed compilation with no output
 file. A compile case without `artifact` checks acceptance, streams, status, and
@@ -77,9 +77,9 @@ JSON case covers only standalone version/startup behavior; interactive protocol
 sessions use Node tests that spawn the real server. Do not add per-case
 executables or a general protocol scenario framework.
 
-## Mini unit tests
+## mini unit tests
 
-Standalone Mini tests use the `test/*.test.mini` suffix. Run them with
+Standalone mini tests use the `test/*.test.mini` suffix. Run them with
 `./bin/mini test --unit [FILTER]`. Each test receives the repository root as its
 first argument, runs with captured streams, and passes when it exits 0. Compile
 failures and nonzero exits are reported as failures. Tests may include `libs/`
@@ -104,7 +104,7 @@ Keep coverage representative: one case should check a distinct rule or
 interaction. Reuse scenarios and shared empty streams; avoid duplicate programs
 and exhaustive combinations that add no new behavior.
 
-Runnable Mini scenarios can stage files with `inputFiles` and compare generated
+Runnable mini scenarios can stage files with `inputFiles` and compare generated
 files with `outputFiles`. Each maps a relative program path to a stream descriptor:
 
 ```json

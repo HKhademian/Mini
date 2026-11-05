@@ -84,9 +84,9 @@ Compiler increments implemented one feature at a time with indexed cases and
 verified version tags. Accepted language cases are active; parameter-passing
 proposals remain pending and do not count as completed conformance coverage.
 The [historical port reference](t0-t1-reference.md) records the retired T0
-implementation and its Mini replacements.
+implementation and its mini replacements.
 
-Verify a candidate against every Mini-source case:
+Verify a candidate against every mini-source case:
 
 ```text
 ./bin/mini compile tools/compiler.mini .cache/compiler.mini.js
@@ -96,9 +96,9 @@ Verify a candidate against every Mini-source case:
 The candidate check skips tool cases, which continue to use the active CLI; run
 `mini test` for those. A filter argument narrows the case IDs.
 
-The generated compiler is plain JavaScript. Mini parameter typing is still open: parameters use an
+The generated compiler is plain JavaScript. mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
-unannotated parameters. This is not a full Mini typechecker. Functions are
+unannotated parameters. This is not a full mini typechecker. Functions are
 top-level, may call later definitions, and require a value return in this increment.
 
 Lists store runtime values. The compiler uses its internal `Unknown` kind for the result
@@ -234,5 +234,5 @@ M1 is authored as ordered sources next to the tools; [tools/compiler.mini](../to
 `tools/compiler.mini` includes them in dependency order. Adapter text is
 source in the namespace files under `libs/compiler/builtins/`, shared by the generated compiler and
 generated tools. `mini check` verifies the generated bootstrap fixed point and
-stale generated tools. `include` is a Mini language feature; there is no module
+stale generated tools. `include` is a mini language feature; there is no module
 or import syntax.

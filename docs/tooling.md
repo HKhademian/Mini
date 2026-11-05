@@ -17,14 +17,14 @@ pairing, and can connect to the standalone language server.
 ### mini check SOURCE.mini
 
 Status: implemented with the check and cli streams. Repository checking remains
-`mini check` and `mini check --docs` and is a generated Mini tool
+`mini check` and `mini check --docs` and is a generated mini tool
 ([tools/check.mini](../tools/check.mini)). Source checking uses `mini check
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
-forms. Source checking is a generated Mini tool
+forms. Source checking is a generated mini tool
 ([tools/check-source.mini](../tools/check-source.mini)) composed with compiler
 the compiler source through `include`; `--docs` skips strict TypeScript checking.
 
-On success, source checking prints nothing and exits 0. On a Mini source failure,
+On success, source checking prints nothing and exits 0. On a mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic
 is the compiler's first error and must agree with `mini compile`. A file argument
 uses the path as given; standard input uses the display name `<stdin>`. A missing
@@ -40,11 +40,11 @@ behavior. Diagnostics, offsets, and ranges use the
 
 Status: implemented with the format and cli streams. The standalone command is
 `mini-format`; the dispatcher form is `mini fmt`. The command is a generated
-Mini tool ([tools/format.mini](../tools/format.mini)) composed with compiler
+mini tool ([tools/format.mini](../tools/format.mini)) composed with compiler
 the compiler source through `include`; the language server runs as a generated
-Mini tool.
+mini tool.
 
-Its job is consistent indentation, spacing, and line breaks for accepted Mini
+Its job is consistent indentation, spacing, and line breaks for accepted mini
 syntax. Preserve program meaning, literal values, evaluation order, and `//`
 and `///` comment text. Reformatting already formatted source produces identical
 bytes.
@@ -121,7 +121,7 @@ command will be `mini-document`; the dispatcher form will be `mini doc`.
 
 Its role is generating reference material from the language's documented source
 conventions and declarations. Decide the first useful output format and source
-of descriptions before implementation. Mini selects `///` documentation comments;
+of descriptions before implementation. mini selects `///` documentation comments;
 read these from source or from the compiler's comment-including analysis tokens.
 The parser token stream remains comment-free.
 Documentation tags, declaration attachment/extraction rules, export visibility,
@@ -129,7 +129,7 @@ modules, and annotations remain undecided. This tool does not approve them
 implicitly or require richer comment syntax.
 
 Keep reference output deterministic and avoid inventing parameter or result
-types where Mini's type contract has not selected them. A website generator,
+types where mini's type contract has not selected them. A website generator,
 search service, or publishing system is unnecessary for the initial tool.
 
 ### mini-help / mini help
@@ -150,7 +150,7 @@ requirement for this helper.
 ### mini-lang-server
 
 Status: implemented with the lsp stream as a standalone command and a generated
-Mini tool ([tools/lang-server.mini](../tools/lang-server.mini)). The command is
+mini tool ([tools/lang-server.mini](../tools/lang-server.mini)). The command is
 `mini-lang-server`; no dispatcher spelling is planned for this milestone. It
 speaks LSP 3.17 over standard input and standard output.
 
@@ -193,13 +193,13 @@ the first compiler port.
 
 ## Generated tools
 
-Tool source is Mini. Entries live in `tools/`; reusable logic lives in `libs/`
+Tool source is mini. Entries live in `tools/`; reusable logic lives in `libs/`
 (`libs/common/text.mini`, `libs/tools/cases.mini`, and per-tool libraries such as
 `libs/tools/format.mini`); generated artifacts live in `dist/` named by command, for
 example `dist/format.js` and `dist/mini.js`, produced from the active compiler
 and excluded from the strict TypeScript check.
 
-[tools/mini-tools.json](../tools/mini-tools.json) maps each Mini source to its
+[tools/mini-tools.json](../tools/mini-tools.json) maps each mini source to its
 generated JavaScript file and declares the `bin/` launchers:
 
 ```json
@@ -214,7 +214,7 @@ generated JavaScript file and declares the `bin/` launchers:
 }
 ```
 
-Each tool source declares its dependencies with Mini `include` directives, for
+Each tool source declares its dependencies with mini `include` directives, for
 example `include "../libs/common/text.mini";`. The build helper compiles the
 source directly with the tracked bootstrap; include expansion is part of the
 compiler.
@@ -233,10 +233,10 @@ tool differs. A generated tool is self-contained and runs with Node alone.
 
 Self-hosting remains a requirement for the compiler path only. These tools may
 start and remain in direct Node TypeScript. A language server's protocol code,
-for example, need not be expressible in the first Mini subset.
+for example, need not be expressible in the first mini subset.
 
 After bootstrap replacement, authoritative parsing, checking, and emission
-behavior must live in Mini. Tool integration reuses that behavior through the
+behavior must live in mini. Tool integration reuses that behavior through the
 active compiler's `tokens --comments` and `compile` commands; the language server
 does not import the T0 compiler modules. Builtin signatures for hover/completion
 come from the active compiler's `metadata` command.
@@ -245,7 +245,7 @@ direct emitter does not expose. Review that interface when needed; do not build
 an AST or persistent compiler service solely for hypothetical tools.
 
 Follow the existing layout: extensionless Node commands in `bin/`, tool
-implementations in `tools/`, Mini library source in `std/` when introduced, and
+implementations in `tools/`, mini library source in `std/` when introduced, and
 verification sources/manifests/streams in `cases/`. Create files and directories
 when implementation begins, without empty placeholders.
 

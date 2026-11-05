@@ -43,7 +43,7 @@ the parameter-rebinding contract itself remains under review.
 
 ## Target-independent representation
 
-Choose behavior for Mini independently of the current JavaScript target. The
+Choose behavior for mini independently of the current JavaScript target. The
 same parameter rule should remain small to implement in other backends.
 Undeclared source types do not require every value to be a heap reference.
 
@@ -100,7 +100,7 @@ The earlier investigation compared two possible defaults:
   coerce between those kinds. No default can be selected by an undeclared
   parameter's intended kind without adding another rule.
 - `null` could represent absence consistently across omitted arguments, missing
-  map keys, and skipped list positions. Mini has not selected such a value yet.
+  map keys, and skipped list positions. mini has not selected such a value yet.
   Its literal, equality, storage, and use in operations would need a contract;
   ordinary operations must not inherit accidental host-specific coercions.
 

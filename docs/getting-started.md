@@ -1,6 +1,6 @@
 # Getting started
 
-Mini ships as a source distribution that runs on Node without installed
+mini ships as a source distribution that runs on Node without installed
 packages. You need Node.js 22.18.0 or newer (`node -v`); see
 [runtime requirements](runtime.md).
 
@@ -83,7 +83,7 @@ are ignored by Git.
 
 ## Next steps
 
-- Read [why Mini exists](why-mini.md) before choosing it as a foundation.
+- Read [why mini exists](why-mini.md) before choosing it as a foundation.
 - Browse [samples](../samples/README.md) and the [language draft](language.md).
 - To grow your own language, follow [language evolution](evolving-language.md).
 - For repository work, install the locked development dependencies and rebuild

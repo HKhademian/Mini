@@ -1,6 +1,6 @@
 # Built-ins and library functions
 
-Mini needs a small set of host operations for compiling files and writing tools.
+mini needs a small set of host operations for compiling files and writing tools.
 Whether an operation lowers inline or through an adapter is a target choice.
 The accepted operation contract is normative; adapter text, helper names, and
 representation are not.
@@ -121,8 +121,8 @@ targets, gaps, and out-of-range positions read as numeric zero. Negative indices
 count from the end, as for assignment. Explicit reserve remains under discussion;
 see the [language contract](language.md).
 
-, which Mini
-identifiers cannot contain, to avoid collisions with Mini source names.
+, which mini
+identifiers cannot contain, to avoid collisions with mini source names.
 
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
@@ -208,10 +208,10 @@ The generated compiler must still run with Node alone.
 
 Functions expressible using existing language features and primitives can live
 in a standard library instead of adding syntax or compiler special cases.
-Prefer Mini implementations where practical. No module/import syntax or
+Prefer mini implementations where practical. No module/import syntax or
 standard-library API is selected yet.
 
-Standard-library source belongs under `std/`, with Mini code in `.mini` files.
+Standard-library source belongs under `std/`, with mini code in `.mini` files.
 Keep library verification manifests and streams under `cases/`. Create `std/`
 when its first implementation is added; do not add empty scaffolding.
 

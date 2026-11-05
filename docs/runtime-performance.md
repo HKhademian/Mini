@@ -16,7 +16,7 @@ runs this audit against the candidate and records compiler and self-build costs.
 Inspecting `libs/compiler/parser.mini` and
 `libs/compiler/builtins.mini` shows direct TS output:
 
-- Mini functions become ordinary functions; calls pass ordinary JS arguments.
+- mini functions become ordinary functions; calls pass ordinary JS arguments.
 - Bindings, arithmetic, conditions, and loops become native TS statements.
 - Lists become arrays; maps become `Map` instances; text remains strings.
 - There is no interpreter, boxed-value hierarchy, reference-cell wrapper,
@@ -26,7 +26,7 @@ Inspecting `libs/compiler/parser.mini` and
   checks still have costs; direct emission is not a zero-overhead guarantee.
 - Each `map_keys` call allocates a fresh array, as required by its snapshot
   contract. Scope copying allocates another map and copies its entries.
-- A Mini text-copy/slice helper must access individual characters. T0 can use
+- A mini text-copy/slice helper must access individual characters. T0 can use
   native host slicing. Identical-looking compiler operations can therefore have
   different algorithms even when their primitive lowerings are small.
 
@@ -48,10 +48,10 @@ The optional compiler path selects a candidate implementing
 The audit is a developer script, not a required dependency of the generated
 compiler or a new published CLI command.
 
-The [Mini workloads](../cases/compiler/runtime-workloads.mini) exercise scalar
+The [mini workloads](../cases/compiler/runtime-workloads.mini) exercise scalar
 calls/loops, dense list construction/reads, parser-state mutation, eight-field
 token maps, character copying, 24-character slices, and 63-key scope copying.
-No new Mini constructs or primitives are involved.
+No new mini constructs or primitives are involved.
 
 The [harness](../test/performance/runtime-performance.ts) compiles those functions using
 the selected compiler. It appends exports to an isolated instrumented copy,
@@ -65,7 +65,7 @@ String flattening is consumed inside timing; explicit GC happens before each cal
 Separate complete-compiler probes compile and run programs with growing statement
 counts, long text literals, and long addition expressions. These use three fresh
 processes per measurement. Identical emitted bytes saved as `.mjs` isolate the
-Node loading-path cost from steady-state Mini operations. Temporary files have
+Node loading-path cost from steady-state mini operations. Temporary files have
 an explicit `type:module` package scope.
 
 The checked-in [raw baseline](runtime-performance-baseline.json) records two
@@ -77,7 +77,7 @@ verification allocations and must not be presented as compiler-only memory.
 
 These are synthetic workloads on one host. Sub-millisecond ratios, JIT behavior,
 fixed variant order, GC, and system noise limit precision. This does not measure
-a complete Mini lexer, parser, self-build, or recursive parser stack usage.
+a complete mini lexer, parser, self-build, or recursive parser stack usage.
 
 ## Findings relevant to the compiler port
 
@@ -93,11 +93,11 @@ eight-field tokens, generated code retained approximately 48.7 MB versus
 15.5 MB for handwritten object records, about 3.15 times as much. Creation took
 roughly 22 ms versus 1.3 ms in the initial recorded run. Handwritten TS constructing
 the same maps was close to generated code. Most of this difference comes from
-choosing maps as records, rather than from Mini's syntax or function calls.
+choosing maps as records, rather than from mini's syntax or function calls.
 
 For 1.6 million cursor increments, generated map access took 13–14 ms, direct
 unchecked map access 9–10 ms, and object fields 1.7–1.8 ms. Copying 160,000 text
-characters through 24-character Mini slices took 0.88–0.92 ms versus roughly
+characters through 24-character mini slices took 0.88–0.92 ms versus roughly
 0.08 ms for native slicing. The raw results separate guard overhead from these
 representation/library differences. Scope copying repeats work proportional
 to the number of visible bindings; repeated snapshots/copies need attention
@@ -109,7 +109,7 @@ its existing local counters, parser fields, token layout, lookup locations, and
 scope-copy behavior. These microbenchmarks do not justify caching parser fields,
 packing token data, or changing algorithms during that port. After parity and
 the fixed point, actual compiler profiling can justify separate optimizations
-using existing Mini. A reproduced blocker before then warrants the smallest
+using existing mini. A reproduced blocker before then warrants the smallest
 documented deviation that retains clear correspondence with T0.
 
 In the T0 baseline, the `.ts` loading path had a real cold-start cost on the selected Node version.

@@ -1,7 +1,7 @@
 # Builtins, purity, and self-containment
 
-Mini is self-hosted, but it is not self-contained. The compiler is written in
-Mini; it still runs on a host runtime and lowers a small set of builtins to host
+mini is self-hosted, but it is not self-contained. The compiler is written in
+mini; it still runs on a host runtime and lowers a small set of builtins to host
 code. This page separates the operations that must remain host code from the
 ones that are only fast paths, and records how a pure reference mode can prove
 that distinction.
@@ -9,7 +9,7 @@ that distinction.
 ## Builtins are host code
 
 A builtin is a name the compiler recognizes and replaces with generated
-JavaScript or an adapter helper. It is not written in Mini. The registry lives in
+JavaScript or an adapter helper. It is not written in mini. The registry lives in
 [libs/compiler/builtins.mini](../libs/compiler/builtins.mini); adapter text and
 lowering live next to each namespace under `libs/compiler/builtins/`.
 
@@ -17,13 +17,13 @@ Builtins fall into three practical layers:
 
 1. the irreducible host boundary;
 2. representation primitives and performance shortcuts;
-3. library functions that should be written in Mini.
+3. library functions that should be written in mini.
 
 The layer is a design decision, not a property of the name.
 
 ## Irreducible host boundary
 
-These operations cannot be expressed in Mini because they are the boundary to
+These operations cannot be expressed in mini because they are the boundary to
 the operating system or host runtime:
 
 | Operation | Why it is host-only |
@@ -38,7 +38,7 @@ the operating system or host runtime:
 | `value_kind` | Runtime representation introspection |
 
 Every pure or reference mode still needs these operations. Removing them would
-require a different runtime, not a different Mini program.
+require a different runtime, not a different mini program.
 
 `hash_sha256` is also host-only today, but for a different reason: see
 [Numeric core](#numeric-core-and-hash).
@@ -59,7 +59,7 @@ sense as `text_find`: a pure implementation cannot inspect native string or
 array storage without one of them.
 
 `list_length` is the clearest example. It lowers to `(items).length`, the
-JavaScript array's internal size. A Mini-side list with a stored `length` field
+JavaScript array's internal size. A mini-side list with a stored `length` field
 does not remove the primitive:
 
 ```mini
@@ -79,7 +79,7 @@ the language's native lists.
 
 ## Performance shortcuts
 
-These operations are expressible in Mini given the trusted core, but the host
+These operations are expressible in mini given the trusted core, but the host
 version avoids allocation, interpretation, or traversal:
 
 | Builtin | Pure alternative | Main cost of purity |
@@ -89,15 +89,15 @@ version avoids allocation, interpretation, or traversal:
 | `number_to_text`, `list_to_text` | Formatting/unboxing loops | Slower, subtle formatting rules |
 | `json_parse`, `json_to_text` | Recursive parser/serializer | Large implementation, slower |
 | `list_copy`, `map_copy` | Explicit traversal | Slower on large values |
-| `hash_sha256` | SHA-256 in Mini | Needs arithmetic and bitwise primitives |
+| `hash_sha256` | SHA-256 in mini | Needs arithmetic and bitwise primitives |
 
 The boundary between this layer and the trusted core is a choice. A smaller
-trusted core means more Mini code and slower execution. A larger core means
+trusted core means more mini code and slower execution. A larger core means
 fewer primitives to prove, but more host code in the trusted base.
 
 ## Library functions
 
-Anything above the representation layer should normally be a Mini library, not
+Anything above the representation layer should normally be a mini library, not
 a builtin:
 
 - `text_trim`, `text_join`, and other text conveniences;
@@ -111,7 +111,7 @@ The rule is:
 > that cannot be expressed efficiently from the trusted core. Otherwise put it
 > in `libs/`.
 
-A fast-path builtin should have a pure Mini counterpart and an equivalence test
+A fast-path builtin should have a pure mini counterpart and an equivalence test
 before it is considered stable.
 
 ## Reference implementations
@@ -178,7 +178,7 @@ links them.
 
 ### Numeric core and hash
 
-`hash_sha256` cannot be implemented in Mini today because Mini still has no
+`hash_sha256` cannot be implemented in mini today because mini still has no
 bitwise or shift operations, and its numeric width and overflow model is not
 settled. Multiplication, division, modulo, floor, and power now exist in the
 `number_*` namespace, each with a pure reference implementation. A pure SHA-256
@@ -217,13 +217,13 @@ with performance measurements, before becoming defaults.
 
 | Property | Meaning | Current state |
 | --- | --- | --- |
-| Self-hosted | The compiler source is Mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.js` |
+| Self-hosted | The compiler source is mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.js` |
 | Hosted | The compiler runs on a host runtime | Yes; generated JavaScript on Node |
 | Self-contained | No host beyond the language runtime | No |
-| Pure reference-capable | Performance builtins have Mini implementations selected by a mode | Not yet; proposed |
+| Pure reference-capable | Performance builtins have mini implementations selected by a mode | Not yet; proposed |
 
 Self-hosting is about the language in which the compiler is written.
-Self-containment is about the runtime surface the compiled program needs. Mini
+Self-containment is about the runtime surface the compiled program needs. mini
 achieves the first and should make the second explicit rather than claiming it
 is complete.
 
@@ -237,7 +237,7 @@ processes and environment
 clock
 ```
 
-Everything else should be a Mini library or a performance builtin with a pure
+Everything else should be a mini library or a performance builtin with a pure
 reference implementation.
 
 ## Next steps

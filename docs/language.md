@@ -1,4 +1,4 @@
-# Mini language draft
+# mini language draft
 
 Status: accepted syntax and built-in contracts are documented below.
 [Compiler increments](compiler.md) advance one
@@ -6,13 +6,13 @@ feature per atomic commit. Typing and other open rules remain undecided.
 
 Unspecified behavior is undecided. T0 and T1 are bootstrap implementations;
 their internal choices, including numeric normalization, JSON output, map
-representation, helper lowering, and performance, do not define Mini semantics
+representation, helper lowering, and performance, do not define mini semantics
 unless an accepted contract below states them. Do not treat a current T0/T1
 result as a promise for another target.
 
 After approval, implement and verify that feature in an atomic commit before
 presenting the next proposal. Approval does not decide its open questions.
-Create [cases](cases.md) with every proposal, including separate Mini sources,
+Create [cases](cases.md) with every proposal, including separate mini sources,
 expected streams, input variants, rejections, and interactions. Keep unsupported
 cases explicitly pending; refine provisional diagnostics with compiler support.
 
@@ -29,7 +29,7 @@ compiler code without adding disproportionate implementation or migration cost.
 
 ## Accepted form: line and documentation comments
 
-Mini supports line comments only:
+mini supports line comments only:
 
 ```text
 /// Return 1 for any supplied values a and b.
@@ -50,7 +50,7 @@ fn mine(a, b) {
   Source offsets, line/column positions, and diagnostic context remain accurate.
 - There are no block comments or comment-continuation escapes.
 
-Keep Mini source well documented. Use `///` for file purpose and immediately
+Keep mini source well documented. Use `///` for file purpose and immediately
 above functions to explain their responsibility, inputs, returned value, and
 shared-state changes where relevant. Use `//` for non-obvious implementation
 decisions. Prefer useful explanations to repeating the code. Documentation
@@ -61,7 +61,7 @@ The [comment sample](../samples/012-comments.mini) demonstrates both forms.
 
 ## Accepted form: shebang header
 
-A Mini source file may begin with a shebang line:
+A mini source file may begin with a shebang line:
 
 ```text
 #!/usr/bin/env -S mini run
@@ -78,15 +78,15 @@ io_write("ok\n");
   #!/usr/bin/env node
   "use strict";
   ```
-- The source shebang text is not copied into generated code because Mini and
+- The source shebang text is not copied into generated code because mini and
   JavaScript use different runners. Source without a shebang is unchanged.
 - The formatter and analysis mode preserve the shebang token. `mini run` compiles
-  and executes a Mini source directly, and `mini compile` makes shebang output
+  and executes a mini source directly, and `mini compile` makes shebang output
   executable where the platform supports it.
 
 ## Accepted form: include directive
 
-A top-level directive splices another Mini source into the current compilation:
+A top-level directive splices another mini source into the current compilation:
 
 ```text
 include "libs/common/text.mini";
@@ -127,7 +127,7 @@ position = position + 1;
 ```
 
 These statements can map directly to readable JavaScript declarations and
-assignments. Mini's typing, scope, and declaration-order rules remain open;
+assignments. mini's typing, scope, and declaration-order rules remain open;
 the handwritten TypeScript sources do not decide them.
 
 ## Accepted form: functions and calls
@@ -209,7 +209,7 @@ Parentheses override grouping. Assignment remains a statement.
 
 This covers cursor arithmetic, token comparisons, emission, and combined parser
 conditions. More arithmetic can wait for concrete compiler needs. Numeric limits,
-Mini's typing strategy, and host operation signatures remain open. Mini `==` /
+mini's typing strategy, and host operation signatures remain open. mini `==` /
 `!=` would emit JavaScript `===` / `!==`.
 
 ## Accepted operations: whole-input and text output
@@ -268,7 +268,7 @@ while (position < text_length(source)) {
   once, from left to right, even when the target is not text.
 - Start with ASCII text. Unicode indexing is outside the initial scope.
 
-These primitives let Mini scan source and accumulate tokens using existing
+These primitives let mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
 The [read-defaults sample](../samples/011-read-defaults.mini) shows ordinary empty
 text and numeric-zero fallbacks without an absence value.
@@ -313,9 +313,9 @@ file_write("output.txt", source);
   using UTF-8 without newline conversion. It produces no value.
 - Relative paths use the process working directory.
 - Start with readable regular files and writable destinations whose parent
-  directories exist. No Mini filesystem error model is introduced at this step.
+  directories exist. No mini filesystem error model is introduced at this step.
 
-These operations provide file access; parsing and emission stay in Mini
+These operations provide file access; parsing and emission stay in mini
 compiler code.
 
 ## Accepted operations: lists and process arguments
@@ -742,5 +742,5 @@ This primitive uses ordinary call syntax. Compiler code builds messages with
 existing text operations.
 
 Pending single-construct, rejection, and combination cases live under
-[cases/language](../cases/language/). Mini typing and general no-result function
+[cases/language](../cases/language/). mini typing and general no-result function
 rules remain open.

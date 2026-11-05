@@ -1,6 +1,6 @@
 # Runtime requirements
 
-Mini requires Node.js 22.18.0 or newer. Development and release builds pin
+mini requires Node.js 22.18.0 or newer. Development and release builds pin
 24.16.0 in [.node-version](../.node-version); CI runs the strict checks and case
 suites on that pin and on the 22.18.0 minimum.
 

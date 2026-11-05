@@ -1,23 +1,23 @@
-# Why Mini
+# Why mini
 
-Mini is a small self-hosting foundation for building other languages. It is not
+mini is a small self-hosting foundation for building other languages. It is not
 trying to be the smallest self-hosted language, and that difference is the point.
 
 ## What it is
 
-Mini is a language, a compiler written in that language, and the machinery that
+mini is a language, a compiler written in that language, and the machinery that
 keeps the compiler rebuilding itself. You clone the foundation and grow your own
-language from it; Mini is the starting point, not the destination.
+language from it; mini is the starting point, not the destination.
 
 The compiler source is [tools/compiler.mini](../tools/compiler.mini). It compiles
-Mini to readable JavaScript that runs on Node. The generated compiler is the only
+mini to readable JavaScript that runs on Node. The generated compiler is the only
 implementation and reproduces itself byte for byte.
 
 ## What it does
 
-- Compiles Mini to plain JavaScript (`mini compile`, `mini run`).
+- Compiles mini to plain JavaScript (`mini compile`, `mini run`).
 - Rebuilds its own compiler and verifies the fixed point (`mini verify`).
-- Checks, formats, runs, and tests Mini source (`mini check`, `mini fmt`,
+- Checks, formats, runs, and tests mini source (`mini check`, `mini fmt`,
   `mini test`).
 - Runs JSON case suites, benchmarks, releases, and a language server.
 - Runs from a source distribution on Node 22.18.0 or newer, without installed
@@ -30,13 +30,13 @@ foundation is useful when "the compiler still compiles itself" must remain true
 after every change, not only on the day of the first port.
 
 It is not aimed at people who want a general-purpose language to write
-applications in. Mini is small on purpose: no records, structs, classes, or
+applications in. mini is small on purpose: no records, structs, classes, or
 standard library yet.
 
 ## Why not the simplest self-hosted language?
 
 The simplest self-hosted language optimizes for closing the loop once: a compiler
-that compiles itself, demonstrated. Mini has to keep the loop closed while the
+that compiles itself, demonstrated. mini has to keep the loop closed while the
 language changes. That costs more, and the cost is deliberate.
 
 The extra machinery is visible in the repository:
@@ -58,7 +58,7 @@ changes stay readable.
 "Smallest" is a practical goal, not a mathematical claim. A tiny construct count
 is not useful if it makes the compiler unreadable or a migration unsafe.
 
-If you want the smallest possible self-hosted demonstration, Mini is bigger than
+If you want the smallest possible self-hosted demonstration, mini is bigger than
 that. If you want a starting point that survives changes, that extra is what you
 are choosing.
 
@@ -68,7 +68,7 @@ are choosing.
 - Not stable. Versions are alpha and contracts still move.
 - Not a package ecosystem or a standard library. `std` is unassigned.
 - Not a WebAssembly or native-code target. JavaScript on Node is the selected
-  bootstrap target; its representation does not define Mini's semantics.
+  bootstrap target; its representation does not define mini's semantics.
 - Not finished tooling. `mini doc`, `mini help`, and a playground are planned or
   undecided, not available.
 
@@ -89,6 +89,6 @@ language server.
 
 ## Status
 
-Mini is an alpha foundation, not a finished language. See
+mini is an alpha foundation, not a finished language. See
 [versioning](versioning.md) for the current inventory and
 [runtime requirements](runtime.md) for the supported Node range.

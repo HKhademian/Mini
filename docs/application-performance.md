@@ -1,6 +1,6 @@
 # Application performance before T1 replacement
 
-The [paired application samples](../cases/applications/README.md) compare Mini
+The [paired application samples](../cases/applications/README.md) compare mini
 generated TS with handwritten TS across ten document-processing applications.
 They supplement the earlier [primitive audit](runtime-performance.md) with
 complete operations and realistic structured input. No language/compiler change
@@ -21,7 +21,7 @@ node test/performance/application-performance.ts .cache/candidate-applications.j
 ```
 
 The `--check` form accepts the same optional candidate compiler path and runs
-scale-1 semantic verification without writing a report. Choose a fresh report path. Full runs retain the assembled Mini input and
+scale-1 semantic verification without writing a report. Choose a fresh report path. Full runs retain the assembled mini input and
 instrumented generated TS in `REPORT.json.assets/`; originals are identified by
 hash before appending the export used by the harness. Compilation happens once
 per application and its wall time is recorded separately from execution.

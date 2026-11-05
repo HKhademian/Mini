@@ -87,7 +87,7 @@ M1 was still absent when this suite was recorded; it cannot establish that T0 ca
 
 - Four runs × 69 variant/size groups × 10 measured calls: **2,760 verified timed
   calls**, plus 184 semantic fixture checks and 12 executions of emitted TS.
-- All runs used clean commit `7cba0bf` and identical harness, Mini/handwritten
+- All runs used clean commit `7cba0bf` and identical harness, mini/handwritten
   application, reference-module, input, and expected-output identities.
 - Before runs selected a frozen copy of the five compiler source files from
   `6839938`, with their relative paths preserved and an ESM package marker.

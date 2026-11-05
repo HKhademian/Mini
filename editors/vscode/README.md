@@ -21,7 +21,7 @@ there is no block-comment toggle. Built-in names use ordinary call highlighting.
 ## Language server
 
 The extension starts the standalone `mini-lang-server` and uses it for
-diagnostics and whole-document formatting. Install the server from a Mini source
+diagnostics and whole-document formatting. Install the server from a mini source
 distribution so `mini-lang-server` is on `PATH`, or set an explicit script path.
 
 Settings:

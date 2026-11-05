@@ -5,13 +5,13 @@ removed once the generated compiler became the only implementation. This page
 records the port mapping and is not a current interface.
 
 T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
-source written in Mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
+source written in mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
 T1 is its generated TypeScript compiler and is promoted as
 [dist/compile.js](../dist/compile.js). The inventory covers the five
 retired T0 files, not the CLI tools, tests, or release system.
 
 M1 must preserve the compiler's responsibilities, required behavior, and
-recognizable implementation structure using Mini functions, maps, lists, and
+recognizable implementation structure using mini functions, maps, lists, and
 text helpers.
 
 ## First M1 continuity
@@ -29,16 +29,16 @@ routine by routine while establishing behavior parity and the fixed point.
   binding/function tables, membership sets, and parser state. Keep T0's map/set
   lookups at corresponding locations. Avoid packed token rows or parallel arrays.
 - Preserve scope-copy boundaries and function-state transitions. Keep locals
-  local where Mini permits; introduce explicit shared state only where needed
+  local where mini permits; introduce explicit shared state only where needed
   to replace captured variables or `this`.
 - Adapt unsupported host forms directly: methods become top-level functions,
   object fields become named-key map access, arrays become lists, sets become
-  membership maps, and native helpers become small corresponding Mini helpers.
+  membership maps, and native helpers become small corresponding mini helpers.
 - Keep built-in signature metadata and lowering decisions recognizable. Replace
-  callback fields with named functions or a dispatcher because Mini has no
+  callback fields with named functions or a dispatcher because mini has no
   function values; retain the same built-in cases and output rules.
 - Document necessary deviations and their reasons in the relevant inventory
-  sections as M1 is implemented. Keep them limited to Mini's available forms
+  sections as M1 is implemented. Keep them limited to mini's available forms
   and reproduced blockers.
 
 Defer redesign, lookup caching, storage changes, and performance refactoring
@@ -61,7 +61,7 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
   token JSON output, generated-file writing, and error reporting.
 
 M1 can place these responsibilities in `tools/compiler.mini`.
-Existing TypeScript imports/exports and file boundaries need no Mini equivalent.
+Existing TypeScript imports/exports and file boundaries need no mini equivalent.
 
 ## 2. Named constants and data shapes
 
@@ -84,7 +84,7 @@ T0's object shapes become maps with these keys:
 M1 replaces the `emit` function-valued field with a named dispatcher or top-level
 lowering functions. It does not need first-class functions or object methods.
 
-`void` and `unknown` are compiler bookkeeping tags. They are not new Mini values.
+`void` and `unknown` are compiler bookkeeping tags. They are not new mini values.
 An unknown expected built-in parameter accepts any produced value; a known
 `void` expression is rejected. An unknown actual kind passes the current shallow
 kind checks rather than gaining a new runtime type.
@@ -187,14 +187,14 @@ expressions. These cycles require ordinary direct/mutual recursion.
 This is the existing partial kind checker. Keep its case-covered behavior during
 the port; broader scope/name/type rules remain open. The
 [scope-copy workload](../cases/compiler/port-foundation.mini) already implements
-the needed shallow map copy in Mini.
+the needed shallow map copy in mini.
 
 ## 6. TypeScript mechanisms and their M1 replacements
 
-- `const` / `let`: Mini `var`; retain intended constant use by convention.
+- `const` / `let`: mini `var`; retain intended constant use by convention.
 - Type aliases, type-only imports, annotations, generics, `readonly`,
   `as const`, optional fields, non-null assertions: implementation typing only.
-  Keep runtime tags/data; no matching Mini type syntax is required.
+  Keep runtime tags/data; no matching mini type syntax is required.
 - Class, constructor, methods, `this`, mutable fields: state maps and top-level
   functions with explicit state arguments.
 - Nested closures: top-level functions with explicit lexer state.
@@ -205,16 +205,16 @@ the needed shallow map copy in Mini.
 - Array/argument destructuring and rest binding: explicit indexed reads and counts.
 - `for` / `for...of` / `entries()` / `continue`: indexed `while` loops and braced
   conditions, keeping cursor advancement explicit.
-- `Map.get/set/has`: the existing Mini map operations.
+- `Map.get/set/has`: the existing mini map operations.
 - `new Map(existing)`: `map_copy`.
 - `Set.add/has/size`: map entries holding a membership flag.
 - Spread of sets into arrays: obtain keys, but choose an explicit output order.
 - Template literals and conditional expressions: text concatenation and `if`.
   Numeric line/column/arity interpolation uses `number_to_text`;
-  Mini does not implicitly concatenate text and numbers.
+  mini does not implicitly concatenate text and numbers.
 - Increment/decrement: ordinary addition/subtraction and assignment.
 - Compound text accumulation with `+=`: `output = output + text`.
-- Strict JS equality: Mini `==` / `!=` already lower to strict comparisons.
+- Strict JS equality: mini `==` / `!=` already lower to strict comparisons.
 - Optional chaining, nullish coalescing, `undefined`, object truthiness:
   explicit bounds, membership checks, and initialized boolean/state fields.
 - A default method parameter in `identifier`: pass the message explicitly at
@@ -224,7 +224,7 @@ the needed shallow map copy in Mini.
 
 T0 also uses ordinary function calls, returns, if/else, while, short-circuit
 booleans, comparisons, indexing, addition, subtraction, and mutable locals.
-Those are already available in Mini.
+Those are already available in mini.
 
 ## 7. Text, list, and serialization helpers used by T0
 
@@ -240,7 +240,7 @@ Those are already available in Mini.
   boundaries of concatenated operator spellings.
 - `map` / `filter`: loops; `join`: `list_to_text`.
 - `Object.values(TextEscape)`: a fixed list/map of accepted escape letters.
-- `String(Number(token.text))`: current numeric-literal normalization. Mini
+- `String(Number(token.text))`: current numeric-literal normalization. mini
   exposes `number_to_text` for canonical safe-integer decimal output; broader
   numeric limits remain open.
 - `JSON.stringify(character)`: `json_to_text` for compact quoted text.
@@ -312,8 +312,8 @@ Count keys with `list_length(map_keys(items))`; no map size counter is maintaine
 
 The shared map block is emitted once when map construction, lookup, membership,
 or mutation is used. It declares an empty prototype and three helpers: get,
-has, and set. All Mini map values are non-array objects; getters/setters reject
-the other Mini value kinds. Missing keys return zero while stored values retain
+has, and set. All mini map values are non-array objects; getters/setters reject
+the other mini value kinds. Missing keys return zero while stored values retain
 their identity. The prototype has no inherited string keys or `__proto__` setter.
 There is no brand, per-map counter, hidden field, or wrapper.
 
@@ -348,12 +348,12 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
 
 The emitted TS uses `Array.isArray`, `typeof`, property/index access, `in` for
 presence, ordinary early returns, object prototypes, and `Object.keys`.
-These mechanisms live in target adapter text. Mini does not need these source
+These mechanisms live in target adapter text. mini does not need these source
 constructs to emit that text.
 
 The adapter implementations in `compiler/builtins.ts` are the exact
 initial-port reference, including whitespace. Their `$` prefix cannot collide
-with Mini identifiers.
+with mini identifiers.
 
 The only generated module import is `node:fs`. The finite named imports, sorted
 when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
@@ -383,7 +383,7 @@ so the generated import list stays limited to `node:fs`.
 - All generated adapter definitions retain their source strings and trailing
   newlines exactly.
 
-The same Mini compiler source must produce identical TS under T0 and T1 for
+The same mini compiler source must produce identical TS under T0 and T1 for
 the first fixed point. Matching execution alone does not establish this.
 
 ## 11. Diagnostics and failure paths
@@ -418,7 +418,7 @@ Parser/checking messages:
 
 Use the existing rejection fixtures for exact locations/bytes. T0 catches its
 own Error/assertion objects and file-operation errors and prints their message.
-The initial Mini file-I/O contract covers successful regular-file operations;
+The initial mini file-I/O contract covers successful regular-file operations;
 a general exception system is not a prerequisite for that path.
 
 ## 12. Compiler command interface and host facilities
@@ -448,7 +448,7 @@ The current usage message is
 
 M1 can use `process_args`, the file primitives, `io_write`, `io_write_error`,
 `process_exit`, and text helpers. Its single-file program can run the command
-entry point last. It does not need Mini imports, export syntax, an assertion
+entry point last. It does not need mini imports, export syntax, an assertion
 library, or reflection over Error objects.
 T0 itself runs directly on Node. It does not use the TypeScript compiler API;
 the TypeScript development dependency checks project code outside this path.
@@ -459,7 +459,7 @@ T0's essential work is scanning, positioned diagnostics, function registration,
 recursive parsing, scope/kind bookkeeping, built-in selection, deterministic
 emission, and the compiler command interface.
 
-Keep all of that in Mini. The generated Node adapters provide primitives only.
+Keep all of that in mini. The generated Node adapters provide primitives only.
 Verification, packaging, the dispatcher, and tests may remain TypeScript. Tests
 that import T0 modules directly need adaptation when T0 is retired; that is
 tooling integration, not another language feature.

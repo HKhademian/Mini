@@ -23,7 +23,7 @@ change. Work with temporary copies so it stays paired with its original source.
 2. Compile it with C1 to produce C2. C2 is a temporary migration compiler. It
    accepts S2 but cannot compile its own S1 source yet.
 3. Rewrite that same compiler implementation in S2. Preserve its behavior;
-   also migrate any Mini library code it uses and its ordinary example.
+   also migrate any mini library code it uses and its ordinary example.
 4. Compile the S2 source with C2 to produce C3. Rebuild the unchanged S2 source
    with C3 and then C4, producing C4 and C5.
 

@@ -8,7 +8,7 @@ directly. Broad general-purpose features are outside this project's objective.
 
 The main workflow is to clone this foundation and
 [grow your own language while preserving self-hosting](docs/evolving-language.md).
-Read [why Mini exists](docs/why-mini.md) for its purpose, audience, and
+Read [why mini exists](docs/why-mini.md) for its purpose, audience, and
 deliberate tradeoffs. To install a release and run a first program, see
 [getting started](docs/getting-started.md).
 
@@ -32,17 +32,17 @@ then generates `dist/` and the other `bin/` commands. `dist/` and generated
 
 ## Self-hosting
 
-The bootstrap compiler is the only seed. It is generated from Mini source and is
+The bootstrap compiler is the only seed. It is generated from mini source and is
 tracked at `bin/bootstrap`; there is no handwritten compiler. Further compiler
 work uses the self-hosted source and bootstrap regeneration. The baseline includes `//` line comments and
-`///` documentation comments. Keep Mini source and functions documented using
+`///` documentation comments. Keep mini source and functions documented using
 these forms.
 The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
 `list_length(map_keys(items))`, keeping writes free of size bookkeeping.
 The [before/after measurements](docs/map-runtime-performance.md) record its
 compiler gains and the workloads that regress.
 
-M1 is the compiler source written in Mini; T1 is the generated JavaScript
+M1 is the compiler source written in mini; T1 is the generated JavaScript
 compiler produced from it. The source lives in
 [tools/compiler.mini](tools/compiler.mini); the promoted T1 is
 [dist/compile.js](dist/compile.js), selected by
@@ -54,12 +54,12 @@ The [progress page](docs/progress.md) turns the tag history into a readable
 timeline of groups, milestones, and current release identities.
 
 The [historical port reference](docs/t0-t1-reference.md) records how the retired
-T0 implementation mapped to Mini functions, maps, lists, and text helpers.
+T0 implementation mapped to mini functions, maps, lists, and text helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records
 measured costs and the actual-compiler comparison; the large-source compile gap
 remains a tracked follow-up.
 The [paired application benchmarks](docs/application-performance.md) compare ten
-Mini/handwritten-TS applications, including scanner/parser/emitter workloads.
+mini/handwritten-TS applications, including scanner/parser/emitter workloads.
 
 For unchanged compiler source `S`:
 
@@ -75,11 +75,11 @@ Compiler0 is handwritten; its own code need not match generated code.
 
 Self-hosting belongs to the compiler path only. The generated compiler runs
 directly on Node; the CLI, checker, verifier, tests, and release tools need not
-be written in Mini. They may remain TypeScript until Mini or a cloned language
+be written in mini. They may remain TypeScript until mini or a cloned language
 can replace them conveniently.
 
 The verified generated compiler is promoted to the distributed bootstrap. The
-generated compiler, matching Mini source, and rebuild instructions ship together.
+generated compiler, matching mini source, and rebuild instructions ship together.
 The generated compiler is the only compiler implementation.
 
 Every completed increment preserves self-hosting. A breaking change can use a
@@ -101,15 +101,15 @@ language should approach its target through small, self-hosted increments;
 
 Keep language semantics small to implement across targets. JavaScript/Node is
 the selected bootstrap target; its physical value representation does not define
-Mini's semantics.
+mini's semantics.
 
 ## Scope
 
-Records, structs, and classes are outside Mini's intended scope. Use simple
+Records, structs, and classes are outside mini's intended scope. Use simple
 collections for compiler data rather than adding dedicated structure syntax.
 
-Mini source uses `.mini`. Other executable project code uses TypeScript run
-directly by Node. Supporting tools may start in TypeScript and move to Mini
+mini source uses `.mini`. Other executable project code uses TypeScript run
+directly by Node. Supporting tools may start in TypeScript and move to mini
 incrementally. Compiler logic must not remain hidden in TypeScript helpers
 after bootstrap replacement.
 

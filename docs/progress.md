@@ -36,10 +36,10 @@ vscode    vscode-v0.3.0-v0.3.3
 
 ## Milestones
 
-- **Mini compiler self-hosted.** The compiler source is Mini and rebuilds itself
+- **mini compiler self-hosted.** The compiler source is mini and rebuilds itself
   through the bootstrap fixed point.
-- **Tooling generated from Mini.** Build, dispatcher, checks, formatter, language
-  server, tests, benchmarks, release, and CI tasks are Mini sources.
+- **Tooling generated from mini.** Build, dispatcher, checks, formatter, language
+  server, tests, benchmarks, release, and CI tasks are mini sources.
 - **`include` composition.** Source files declare their dependencies instead of
   being concatenated by a central parts list.
 - **Bootstrap-only distribution.** [bin/bootstrap](../bin/bootstrap) is the only

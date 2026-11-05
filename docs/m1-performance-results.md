@@ -30,7 +30,7 @@ lexer/parser helpers were replaced by host operations:
 ### Verification
 
 - `mini test`: 322/322 active scenarios passed; four proposals remain pending.
-- `./bin/mini test --candidate .cache/compiler.mini.js`: 259/259 Mini-source
+- `./bin/mini test --candidate .cache/compiler.mini.js`: 259/259 mini-source
   scenarios passed.
 - A local differential pass compiled all 222 `.mini` files under `cases/`,
   `samples/`, and `compiler/` with T0 and T1: all 222 compile results and all

@@ -25,7 +25,7 @@ is unavailable. Release output directories must be empty.
 Run compiler host-adapter tests with `node --test compiler/builtins.test.ts`.
 CI runs them alongside the editor and release checks.
 
-Executable project code uses direct Node TypeScript or Mini; no shell, Python,
+Executable project code uses direct Node TypeScript or mini; no shell, Python,
 or other scripting languages. Extensionless commands are Node shebang entries.
 Internal TypeScript imports retain `.ts` for direct Node execution.
 
