@@ -1,11 +1,11 @@
 ---
 name: online-showcase
-status: proposed
+status: active
 created: 2026-11-04
 todos:
   - id: phase-1-landing
     content: "Phase 1 — Build the static landing page with real sample output"
-    status: pending
+    status: completed
   - id: phase-2-pages
     content: "Phase 2 — Deploy the site to GitHub Pages under the repository path"
     status: pending

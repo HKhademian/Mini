@@ -12,6 +12,6 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["tools/**/*.ts", "test/**/*.ts", "cases/applications/**/*.ts"],
+  "include": ["tools/**/*.ts", "test/**/*.ts", "cases/applications/**/*.ts", "site/**/*.ts"],
   "exclude": ["dist/**"]
 }
