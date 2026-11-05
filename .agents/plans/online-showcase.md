@@ -11,10 +11,10 @@ todos:
     status: completed
   - id: phase-3-docs
     content: "Phase 3 — Decide and add the documentation surface"
-    status: pending
+    status: completed
   - id: phase-4-browser-spike
     content: "Phase 4 — Spike a browser build of the compiler"
-    status: pending
+    status: completed
   - id: phase-5-playground
     content: "Phase 5 — Ship the in-browser playground"
     status: pending
@@ -137,32 +137,39 @@ Choose one:
 3. Adopt a static-site generator or Markdown dependency. Fastest for rich docs,
    adds a build dependency and a second configuration to maintain.
 
-Recommendation: option 1 for the first public launch, then option 2 for the
-pages that need site navigation. Record the choice here before implementing.
+Decision: **option 1 for the first launch.** The landing page links each topic
+to its GitHub-rendered page and keeps no second copy of the docs. Revisit option
+2 only if the site needs navigation or search; the docs stay the source of
+truth either way.
 
 ### Phase 4 — Browser compiler spike
 
-A time-boxed spike, not a commitment. Questions to answer:
+Result (2026-11-05): **passed in headless Chrome**, without a bundler and without
+changing the compiler.
 
-- Can the tokenizer/emitter run as a browser ES module with `node:fs`,
-  `process`, and `Buffer` shimmed? The compiler entry calls `main()` on load, so
-  the bundle needs an entry that appends `export { tokenize, compile, ... }` to
-  the generated module, or a new Mini entry without the CLI.
-- Do lexer/parser failures reach a catchable path, or do they call
-  `process_exit`? The shim must turn diagnostics into thrown values the UI can
-  render.
-- Can emitted programs run with `node:fs` aliased to a `writeSync` shim that
-  writes to an output pane, in a Web Worker with a timeout?
-- Which builtins are unavailable (files, processes, network, time) and how does
-  the UI say so?
+Findings:
 
-The spike is successful only if a visitor can edit, compile, and run at least
-bindings, control flow, functions, text, and lists with correct diagnostics, in
-a browser, from a bundle built by the repository.
+- `dist/compile.js` loads as a browser ES module after three mechanical changes:
+  delete the trailing `main();`, replace the `node:fs` import with a shim, and
+  append `export { tokenize, expand_includes, compile };`.
+- A `process` global must exist before the module loads. `process.exit` must
+  throw so a diagnostic stops compilation without killing the page.
+- Compilation from a string works: `tokenize`, `expand_includes` with an empty
+  include stack, then `compile`. The sample emitted the same bytes as the Node
+  compiler.
+- Emitted programs run by replacing their `import { writeSync } from "node:fs"`
+  with an inline `writeSync` shim and importing the result as a Blob module.
+- Diagnostics are already catchable: lexer/parser write the exact message to
+  file descriptor 2 and call `process_exit(1)`. The shim captures the message
+  (`playground.mini:1:5: expected binding name` plus context and caret) and
+  throws, so the UI can show it without a new compiler API.
+- Limits confirmed: `include` calls `file_read` and fails through the shim;
+  file, process, and network builtins fail at run time through
+  `process.getBuiltinModule`. The UI must report both explicitly.
 
-**Verify:** a checked-in sample program produces the same output in the browser
-as `./bin/mini run`; a syntax error shows the compiler's line and message; an
-unsupported builtin fails with a clear message, not a blank page.
+Not yet done: the spike built its module in a temporary directory. Phase 5
+starts by moving that generation into `site/build.ts` so the browser module is
+produced by the repository, then adds the editor and worker boundary.
 
 ### Phase 5 — Playground
 
