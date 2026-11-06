@@ -367,7 +367,7 @@ function browserCompilerSource(): string {
     }
     const source = readFileSync(path, "utf8");
     const importLine = 'import { readFileSync, writeFileSync, writeSync } from "node:fs";';
-    if (!source.includes(importLine) || !/main\(\);\s*$/.test(source)) {
+    if (!source.includes(importLine) || !/main\(.*\);\s*$/.test(source)) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
     for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function parser_compile("]) {
@@ -376,7 +376,7 @@ function browserCompilerSource(): string {
         }
     }
     return source
-        .replace(/main\(\);\s*$/, "")
+        .replace(/main\(.*\);\s*$/, "")
         .replace(importLine, 'import { readFileSync, writeFileSync, writeSync } from "./shim.js";')
         + "\nexport { lex_tokenize, lex_expand_includes, parser_compile };\n";
 }
