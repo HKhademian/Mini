@@ -299,6 +299,63 @@ pre {
   background: var(--panel-2);
 }
 
+/* Mini token colors, matched to the language's real lexer kinds. */
+:root {
+  --tk-com: #8b9bb0;
+  --tk-kw: #ff9ecd;
+  --tk-fn: #86d9ff;
+  --tk-call: #c3b4ff;
+  --tk-str: #a5e6a0;
+  --tk-num: #ffcf8b;
+  --tk-op: #9fb0c4;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --tk-com: #6b7a8d;
+    --tk-kw: #b3005e;
+    --tk-fn: #005f9e;
+    --tk-call: #5a3fb8;
+    --tk-str: #1a7f37;
+    --tk-num: #a35200;
+    --tk-op: #5a6a7d;
+  }
+}
+
+.tk-com {
+  color: var(--tk-com);
+  font-style: italic;
+}
+
+.tk-kw {
+  color: var(--tk-kw);
+}
+
+.tk-fn {
+  color: var(--tk-fn);
+}
+
+.tk-call {
+  color: var(--tk-call);
+}
+
+.tk-str {
+  color: var(--tk-str);
+}
+
+.tk-num {
+  color: var(--tk-num);
+}
+
+.tk-op {
+  color: var(--tk-op);
+}
+
+.tk-id,
+.tk-she {
+  color: inherit;
+}
+
 .label {
   display: block;
   padding: 10px 18px 0;

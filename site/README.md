@@ -47,3 +47,12 @@ build setting. A custom domain can be added later in the same Pages settings.
 
 Before making the repository public, confirm the licence and that no secrets or
 private references remain in the tree or history.
+
+## Syntax highlighting
+
+Code blocks are highlighted through the compiler's own lexer, not a duplicate
+grammar. [`highlight.js`](highlight.js) maps lexer token kinds to CSS classes
+(`tk-kw`, `tk-fn`, `tk-call`, `tk-str`, `tk-num`, `tk-com`, `tk-op`) and is
+copied into `dist/site/` so the playground uses the same module as the build.
+Invalid source falls back to escaped plain text, so a page never renders a
+broken fragment. The build strips the compiler's CLI entry before loading it.

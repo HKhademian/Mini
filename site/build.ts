@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
+import { highlight, type Token } from "./highlight.js";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -52,6 +53,14 @@ function readRepositoryUrl(): string {
     return match === null ? "" : `https://github.com/${match[1]}`;
 }
 const repo = readRepositoryUrl();
+
+/// Load the generated compiler so pages highlight through the real lexer.
+/// The CLI entry is stripped first; importing it directly would run main().
+const compilerModule = await import(browserCompilerModule()) as {
+    readonly tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
+};
+
+const tokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.tokenize(source, name, comments);
 const output = join(root, "dist", "site");
 const brandWordmark = readFileSync(join(root, "brand", "mini-wordmark.svg"), "utf8");
 const playgroundSamples = JSON.parse(
@@ -178,9 +187,10 @@ function loadSample(sample: Sample): RenderedSample {
     };
 }
 
-/// Render a fenced code block.
+/// Render a fenced code block. Mini source is highlighted through the lexer.
 function codeBlock(text: string, className: string): string {
-    return `<pre class="${className}"><code>${escapeHtml(text)}</code></pre>`;
+    const body = className === "source" ? highlight(text, tokenize) : escapeHtml(text);
+    return `<pre class="${className}"><code>${body}</code></pre>`;
 }
 
 /// Render the sample card for one sample.
@@ -349,8 +359,8 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 `;
 }
 
-/// Return the generated compiler as a browser module.
-function buildBrowserCompiler(): string {
+/// Return the generated compiler with its CLI entry removed.
+function browserCompilerSource(): string {
     const path = join(root, "dist", "compile.js");
     if (!existsSync(path)) {
         throw new Error("dist/compile.js is missing; run ./bin/bootstrap first");
@@ -369,6 +379,18 @@ function buildBrowserCompiler(): string {
         .replace(/main\(\);\s*$/, "")
         .replace(importLine, 'import { readFileSync, writeFileSync, writeSync } from "./shim.js";')
         + "\nexport { tokenize, expand_includes, compile };\n";
+}
+
+/// Return the generated compiler as a browser module.
+function buildBrowserCompiler(): string {
+    return browserCompilerSource();
+}
+
+/// Write a temporary module that exports the tokenizer without a CLI entry.
+function browserCompilerModule(): string {
+    const path = join(tmpdir(), "mini-highlight-" + String(process.pid) + ".mjs");
+    writeFileSync(path, browserCompilerSource().replace('./shim.js', join(root, "dist", "site", "playground", "shim.js")));
+    return path;
 }
 
 /// Read the playground samples.
@@ -516,6 +538,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   </footer>
 
   <script type="module">
+    import { highlight } from "../highlight.js";
+    import { tokenize } from "../playground/compiler.js";
     const samples = ${serialized};
     const source = document.getElementById("source");
     const select = document.getElementById("samples");
@@ -596,7 +620,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           stderr.hidden = false;
         }
         if (data.code) {
-          code.textContent = data.code;
+          code.innerHTML = highlight(data.code, tokenize);
           tabCode.disabled = false;
         }
         if (data.diagnostic) {
@@ -673,6 +697,7 @@ function main(): void {
     mkdirSync(output, { recursive: true });
     writeFileSync(join(output, "index.html"), renderPage(hero, cards));
     writeFileSync(join(output, "style.css"), readFileSync(join(root, "site", "style.css")));
+    cpSync(join(root, "site", "highlight.js"), join(output, "highlight.js"));
     cpSync(join(root, "brand", "mini-favicon.svg"), join(output, "favicon.svg"));
     const playground = join(output, "playground");
     mkdirSync(playground, { recursive: true });
