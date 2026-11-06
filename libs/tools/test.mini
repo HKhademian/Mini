@@ -109,7 +109,7 @@ fn test_candidate(fixtures, root, compiler) {
         }
         fixture_index = fixture_index + 1;
     }
-    io_write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " Mini-source scenarios passed\n");
+    io_write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " mini-source scenarios passed\n");
     if pending > 0 {
         io_write(number_to_text(pending) + " cases pending\n");
     }

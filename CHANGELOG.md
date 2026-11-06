@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.4 / cli 0.1.0-alpha.17 / VS Code 0.3.6: write the name as
+  lowercase mini in the editor display name, language picker alias,
+  configuration title, grammar name, launch configuration, output channel, and
+  error message. The dispatcher and generated tools report
+  `mini source must use .mini`, `mini-source scenarios passed`, and
+  `mini-written compiler` in diagnostics. No language change.
+
 - mini 0.2.0-alpha.3 / compiler 0.4.0-alpha.3 / format 0.1.0-alpha.7 / lsp
   0.1.0-alpha.9 / bootstrap 0.2.0-alpha.3: use `io_write_line` for
   newline-terminated output, keep a space before unary `!` after `if` and

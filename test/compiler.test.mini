@@ -2,7 +2,7 @@
 include "../libs/common/text.mini";
 include "../libs/tools/cases.mini";
 
-/// Verify the generated compiler reproduces itself from its Mini source.
+/// Verify the generated compiler reproduces itself from its mini source.
 fn main() {
     args := process_args();
     root := list_get(args, 0);

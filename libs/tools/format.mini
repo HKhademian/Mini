@@ -3,7 +3,7 @@ include "../compiler/lexer.mini";
 include "../compiler/parser.mini";
 include "../compiler/builtins.mini";
 
-/// Format one Mini source file or standard input.
+/// Format one mini source file or standard input.
 /// The bundled lexer and parser validate the source first, then the
 /// comment-preserving token stream is rendered with the fixed style contract.
 /// `--write` replaces a file only after successful formatting; `--check`
@@ -300,7 +300,7 @@ fn format_token(state, token) {
     return 0;
 }
 
-/// Render a comment-preserving token list as canonical Mini source.
+/// Render a comment-preserving token list as canonical mini source.
 fn format_tokens(tokens) {
     state := format_state(tokens);
     index := 0;

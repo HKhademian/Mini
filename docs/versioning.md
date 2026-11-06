@@ -10,7 +10,7 @@ Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 compiler-v0.5.0-v0.4.0-alpha.3
 builtins-v0.5.0-v0.4.0-alpha.2
 bootstrap-v0.5.0-v0.2.0-alpha.3
-vscode-v0.5.0-v0.3.5
+vscode-v0.5.0-v0.3.6
 ```
 
 The shared group is `0.5.0`. Each product keeps its own version.
@@ -26,7 +26,7 @@ vscode-v0.3.0-v0.3.0  initial grouped label
 vscode-v0.3.0-v0.3.1  editor fix; same group
 vscode-v0.3.0-v0.3.2  hover and completion; same group
 vscode-v0.3.0-v0.3.3  go to definition; same group
-vscode-v0.5.0-v0.3.5  := grammar; new group
+vscode-v0.5.0-v0.3.6  := grammar; new group
 ```
 
 The editor keeps one counter while its group changes. Use one continuous
@@ -52,12 +52,12 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.5.0-v0.2.0-alpha.3
+mini-v0.5.0-v0.2.0-alpha.4
 lang-v0.5.0-v0.4.0-alpha.1
 compiler-v0.5.0-v0.4.0-alpha.3
 bootstrap-v0.5.0-v0.2.0-alpha.3
 builtins-v0.5.0-v0.4.0-alpha.2
-cli-v0.5.0-v0.1.0-alpha.16
+cli-v0.5.0-v0.1.0-alpha.17
 check-v0.5.0-v0.1.0-alpha.9
 format-v0.5.0-v0.1.0-alpha.7
 lsp-v0.5.0-v0.1.0-alpha.9
@@ -65,7 +65,7 @@ test-v0.5.0-v0.1.0-alpha.5
 verify-v0.5.0-v0.1.0-alpha.5
 bench-v0.5.0-v0.1.0-alpha.5
 release-v0.5.0-v0.1.0-alpha.5
-vscode-v0.5.0-v0.3.5
+vscode-v0.5.0-v0.3.6
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.

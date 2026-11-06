@@ -1,4 +1,4 @@
-/// Compile and run one Mini source in a temporary module.
+/// Compile and run one mini source in a temporary module.
 /// Usage: node dist/run.js COMPILER.js SOURCE.mini [ARG]...
 /// The compiler path is the active generated compiler; the remaining arguments
 /// reach the program through process_args(). Standard streams are inherited.

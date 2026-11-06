@@ -22,7 +22,7 @@ fn main() {
         source = io_read_all();
     } else {
         if !text_ends_with(path, ".mini") {
-            check_source_fail("Mini source must use .mini");
+            check_source_fail("mini source must use .mini");
         }
         source = file_read(path);
     }

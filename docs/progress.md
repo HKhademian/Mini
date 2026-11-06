@@ -10,12 +10,12 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.5.0-v0.2.0-alpha.3
+mini      mini-v0.5.0-v0.2.0-alpha.4
 lang      lang-v0.5.0-v0.4.0-alpha.1
 compiler  compiler-v0.5.0-v0.4.0-alpha.3
 bootstrap bootstrap-v0.5.0-v0.2.0-alpha.3
 builtins  builtins-v0.5.0-v0.4.0-alpha.2
-cli       cli-v0.5.0-v0.1.0-alpha.16
+cli       cli-v0.5.0-v0.1.0-alpha.17
 check     check-v0.5.0-v0.1.0-alpha.9
 format    format-v0.5.0-v0.1.0-alpha.7
 lsp       lsp-v0.5.0-v0.1.0-alpha.9
@@ -23,7 +23,7 @@ test      test-v0.5.0-v0.1.0-alpha.5
 verify    verify-v0.5.0-v0.1.0-alpha.5
 bench     bench-v0.5.0-v0.1.0-alpha.5
 release   release-v0.5.0-v0.1.0-alpha.5
-vscode    vscode-v0.5.0-v0.3.5
+vscode    vscode-v0.5.0-v0.3.6
 ```
 
 ## Groups
@@ -58,6 +58,9 @@ vscode    vscode-v0.5.0-v0.3.5
   samples in a worker and shows the generated JavaScript beside each result.
 - **Pure reference mode.** Text, list, map, JSON, number, and UTF-8 operations
   have pure implementations selected by `compiler --reference`.
+- **Lowercase name.** The name is written as mini in prose, commands, editor
+  UI, and diagnostics. The [wordmark and name decision](../brand/name.md) define
+  the display form and the two-tone `m`.
 
 ## Tags versus releases
 

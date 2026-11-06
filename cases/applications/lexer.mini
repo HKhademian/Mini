@@ -1,4 +1,4 @@
-/// Tokenize Mini source using named token maps and explicit lexer state, following T0's scanner.
+/// Tokenize mini source using named token maps and explicit lexer state, following T0's scanner.
 
 /// Return whether a single character is in choices; empty text is never a member.
 fn lex_contains(choices, character) {

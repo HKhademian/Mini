@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Mini verification case",
+  "title": "mini verification case",
   "type": "object",
   "required": ["id", "kind", "features", "cases"],
   "allOf": [

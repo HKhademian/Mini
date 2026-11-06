@@ -114,9 +114,12 @@ area, and social cards.
 
 ## Pending surfaces
 
-- The VS Code display name, UI strings, and CLI diagnostics still use `Mini`.
-  Moving them is a separate editor/CLI change and needs its own version bump.
+None. The VS Code display name, language alias, configuration title, grammar
+name, output channel, error message, and the generated tools' diagnostics use
+lowercase mini as of VS Code 0.3.6 and CLI 0.1.0-alpha.17.
+
 - `CHANGELOG.md` and the archived `.agents/plans/` keep their historical
   spelling.
 - Sample data strings such as `"Mini"` are values, not name references, and
   stay as written.
+- The `MiniClient` TypeScript class name is an identifier, not display text.

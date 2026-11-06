@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/// Compose the Mini compiler from its source files.
+/// Compose the mini compiler from its source files.
 include "../libs/common/text.mini";
 include "../libs/compiler/lexer.mini";
 include "../libs/compiler/parser.mini";
@@ -53,7 +53,7 @@ fn compiler_append_body(output, tokens) {
     return output;
 }
 
-/// Run the Mini compiler command interface.
+/// Run the mini compiler command interface.
 fn main() {
     args := process_args();
     reference_mode = false;

@@ -42,7 +42,7 @@ fn main() {
         format_fail("--write does not accept stdin");
     }
     if path != "-" && !text_ends_with(path, ".mini") {
-        format_fail("Mini source must use .mini");
+        format_fail("mini source must use .mini");
     }
     name := path;
     source := "";

@@ -76,7 +76,7 @@ fn perf_text(count, source) {
     return output;
 }
 
-/// Return the first count source characters through 24-character copies, exposing Mini slicing costs.
+/// Return the first count source characters through 24-character copies, exposing mini slicing costs.
 fn perf_slices(count, source) {
     output := "";
     start := 0;

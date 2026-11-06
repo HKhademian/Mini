@@ -129,7 +129,7 @@ fn mini_command(root, command, args) {
         }
         source := list_get(args, 0);
         if !text_ends_with(source, ".mini") {
-            return mini_usage("Mini source must use .mini");
+            return mini_usage("mini source must use .mini");
         }
         run_args := list_new();
         list_set(run_args, 0, mini_compiler(root));
@@ -182,7 +182,7 @@ fn mini_command(root, command, args) {
         }
         source := list_get(args, 0);
         if !text_ends_with(source, ".mini") {
-            return mini_usage("Mini source must use .mini");
+            return mini_usage("mini source must use .mini");
         }
         output := source + ".js";
         if list_length(args) > 1 {

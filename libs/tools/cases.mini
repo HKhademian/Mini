@@ -6,7 +6,7 @@ include "../common/json.mini";
 include "../common/result.mini";
 include "../common/project.mini";
 include "../common/list.mini";
-/// Shared case loading and scenario execution for Mini tools.
+/// Shared case loading and scenario execution for mini tools.
 /// Inputs are case manifests under cases/ with separate source and stream files.
 /// Results are maps with `ok` and a failure `message`; scenario mismatches never
 /// terminate the host process.
@@ -233,7 +233,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     runnable := kind == "feature" || kind == "sample" || kind == "example";
     if map_has(scenario, "inputFiles") || map_has(scenario, "outputFiles") {
         if !runnable {
-            return result_fail(prefix + "file fixtures need a runnable Mini case");
+            return result_fail(prefix + "file fixtures need a runnable mini case");
         }
         groups := list_new();
         list_set(groups, 0, "inputFiles");
