@@ -1,6 +1,6 @@
 include "../common/list.mini";
 include "../common/path.mini";
-/// Return a token map with the fields used by T0.
+/// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {
     token := map_new();
     map_set(token, "kind", kind);
@@ -150,7 +150,7 @@ fn lex_text(state, source, token) {
     return 0;
 }
 
-/// Scan text into a token list, matching T0 positions and diagnostics.
+/// Scan text into a token list with positioned diagnostics.
 fn lex_tokenize(source, source_name, include_comments) {
     state := map_new();
     map_set(state, "text", source);
