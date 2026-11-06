@@ -7,13 +7,13 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
-compiler-v0.4.0-v0.3.0-alpha.44
-builtins-v0.4.0-v0.3.0-alpha.31
-bootstrap-v0.4.0-v0.1.0-alpha.31
-vscode-v0.4.0-v0.3.4
+compiler-v0.5.0-v0.4.0-alpha.1
+builtins-v0.5.0-v0.4.0-alpha.1
+bootstrap-v0.5.0-v0.2.0-alpha.1
+vscode-v0.5.0-v0.3.5
 ```
 
-The shared group is `0.4.0`. Each product keeps its own version.
+The shared group is `0.5.0`. Each product keeps its own version.
 The group identifies mini's compatibility baseline, not a product counter.
 Change it when that baseline changes; changing groups does not reset products.
 A product-only fix advances only that product's version.
@@ -26,7 +26,7 @@ vscode-v0.3.0-v0.3.0  initial grouped label
 vscode-v0.3.0-v0.3.1  editor fix; same group
 vscode-v0.3.0-v0.3.2  hover and completion; same group
 vscode-v0.3.0-v0.3.3  go to definition; same group
-vscode-v0.4.0-v0.3.4  license metadata; new group
+vscode-v0.5.0-v0.3.5  := grammar; new group
 ```
 
 The editor keeps one counter while its group changes. Use one continuous
@@ -46,26 +46,26 @@ version does not make an alpha product stable.
 
 ## Current inventory
 
-Current group: `0.4.0`. These are assigned release identities, not claims of
+Current group: `0.5.0`. These are assigned release identities, not claims of
 publication. Bootstrap promotion is recorded separately in
 [config/bootstrap.json](../config/bootstrap.json). Check the registry for later
 increments:
 
 ```text
-mini-v0.4.0-v0.1.0-alpha.34
-lang-v0.4.0-vundefined
-compiler-v0.4.0-v0.3.0-alpha.44
-bootstrap-v0.4.0-v0.1.0-alpha.31
-builtins-v0.4.0-v0.3.0-alpha.31
-cli-v0.4.0-v0.1.0-alpha.16
-check-v0.4.0-v0.1.0-alpha.9
-format-v0.4.0-v0.1.0-alpha.5
-lsp-v0.4.0-v0.1.0-alpha.7
-test-v0.4.0-v0.1.0-alpha.5
-verify-v0.4.0-v0.1.0-alpha.5
-bench-v0.4.0-v0.1.0-alpha.5
-release-v0.4.0-v0.1.0-alpha.5
-vscode-v0.4.0-v0.3.4
+mini-v0.5.0-v0.2.0-alpha.1
+lang-v0.5.0-v0.4.0-alpha.1
+compiler-v0.5.0-v0.4.0-alpha.1
+bootstrap-v0.5.0-v0.2.0-alpha.1
+builtins-v0.5.0-v0.4.0-alpha.1
+cli-v0.5.0-v0.1.0-alpha.16
+check-v0.5.0-v0.1.0-alpha.9
+format-v0.5.0-v0.1.0-alpha.6
+lsp-v0.5.0-v0.1.0-alpha.8
+test-v0.5.0-v0.1.0-alpha.5
+verify-v0.5.0-v0.1.0-alpha.5
+bench-v0.5.0-v0.1.0-alpha.5
+release-v0.5.0-v0.1.0-alpha.5
+vscode-v0.5.0-v0.3.5
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
@@ -79,10 +79,10 @@ Std remains unassigned/unavailable. Future first-release examples under the
 current group, to use only after implementation and verification:
 
 ```text
-std-v0.4.0-v0.1.0-alpha.1
-document-v0.4.0-v0.1.0-alpha.1
-help-v0.4.0-v0.1.0-alpha.1
-play-v0.4.0-v0.1.0-alpha.1
+std-v0.5.0-v0.1.0-alpha.1
+document-v0.5.0-v0.1.0-alpha.1
+help-v0.5.0-v0.1.0-alpha.1
+play-v0.5.0-v0.1.0-alpha.1
 ```
 
 Only std is already registered as an unassigned stream. Register other

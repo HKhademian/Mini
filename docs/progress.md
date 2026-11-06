@@ -10,20 +10,20 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.4.0-v0.1.0-alpha.34
-lang      lang-v0.4.0-vundefined
-compiler  compiler-v0.4.0-v0.3.0-alpha.44
-bootstrap bootstrap-v0.4.0-v0.1.0-alpha.31
-builtins  builtins-v0.4.0-v0.3.0-alpha.31
-cli       cli-v0.4.0-v0.1.0-alpha.16
-check     check-v0.4.0-v0.1.0-alpha.9
-format    format-v0.4.0-v0.1.0-alpha.5
-lsp       lsp-v0.4.0-v0.1.0-alpha.7
-test      test-v0.4.0-v0.1.0-alpha.5
-verify    verify-v0.4.0-v0.1.0-alpha.5
-bench     bench-v0.4.0-v0.1.0-alpha.5
-release   release-v0.4.0-v0.1.0-alpha.5
-vscode    vscode-v0.4.0-v0.3.4
+mini      mini-v0.5.0-v0.2.0-alpha.1
+lang      lang-v0.5.0-v0.4.0-alpha.1
+compiler  compiler-v0.5.0-v0.4.0-alpha.1
+bootstrap bootstrap-v0.5.0-v0.2.0-alpha.1
+builtins  builtins-v0.5.0-v0.4.0-alpha.1
+cli       cli-v0.5.0-v0.1.0-alpha.16
+check     check-v0.5.0-v0.1.0-alpha.9
+format    format-v0.5.0-v0.1.0-alpha.6
+lsp       lsp-v0.5.0-v0.1.0-alpha.8
+test      test-v0.5.0-v0.1.0-alpha.5
+verify    verify-v0.5.0-v0.1.0-alpha.5
+bench     bench-v0.5.0-v0.1.0-alpha.5
+release   release-v0.5.0-v0.1.0-alpha.5
+vscode    vscode-v0.5.0-v0.3.5
 ```
 
 ## Groups
@@ -34,6 +34,7 @@ vscode    vscode-v0.4.0-v0.3.4
 | `0.2` | 2026-11-03 | Language expansion, editor and language server |
 | `0.3` | 2026-11-03 to 2026-11-04 | Self-hosting, include, generated tooling, bootstrap-only distribution |
 | `0.4` | 2026-11-04 to 2026-11-06 | JavaScript output, bootstrap-only seed, browser playground and showcase |
+| `0.5` | 2026-11-06 | `:=` declarations, zero-return calls, `io_write_line`, `else if` |
 
 ## Milestones
 
@@ -48,6 +49,8 @@ vscode    vscode-v0.4.0-v0.3.4
   tool.
 - **JavaScript output.** The compiler emits plain Node JavaScript. Generated
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
+- **Zero-value model.** `:=` declares bindings. Calls always produce a value;
+  no-result builtins and functions that fall through return 0.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;
   parentheses remain available for grouping. A block rejects duplicate `:=`
   declarations, and a parenthesized whole condition reports a warning.

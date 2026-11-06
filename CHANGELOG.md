@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.1 / language 0.4.0-alpha.1 / compiler 0.4.0-alpha.1 /
+  bootstrap 0.2.0-alpha.1 / builtins 0.4.0-alpha.1: open group 0.5.0. Declare
+  with `name := value;`; the `var` keyword is gone. Every call produces a
+  value: no-result builtins return 0, functions that fall through return 0, and
+  `io_write_line` writes text plus a newline. Add `else if` chains.
+- format 0.1.0-alpha.6 / lsp 0.1.0-alpha.8 / VS Code 0.3.5: format and
+  highlight `:=`, recognize declarations after the operator, and expose the
+  zero-result builtin metadata.
+
 - mini 0.1.0-alpha.34 / language 0.3.0-alpha.33 / compiler 0.3.0-alpha.44 /
   bootstrap 0.1.0-alpha.31: warn when parentheses enclose a whole `if` or
   `while` condition. Grouped subexpressions stay quiet, warnings do not change

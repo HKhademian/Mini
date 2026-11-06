@@ -22,7 +22,7 @@ commits; a release adds built artifacts, notes, and checksums.
 5. Create one annotated tag at that commit:
 
    ```text
-   git tag -a mini-v0.4.0-v0.1.0-alpha.34 -m "mini 0.4.0 alpha.34"
+   git tag -a mini-v0.5.0-v0.2.0-alpha.1 -m "mini 0.5.0 alpha.1"
    ```
 
    Tag names use `product-vGROUP-vPRODUCT`. The language product is `lang`, not
@@ -31,7 +31,7 @@ commits; a release adds built artifacts, notes, and checksums.
 
    ```text
    git push github main
-   git push github mini-v0.4.0-v0.1.0-alpha.34
+   git push github mini-v0.5.0-v0.2.0-alpha.1
    ```
 
 The tag push starts:
