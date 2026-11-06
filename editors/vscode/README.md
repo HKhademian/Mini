@@ -4,7 +4,8 @@
 brace, parenthesis, and double-quote pairing, live compiler diagnostics, hover
 with `///` documentation, completion, go-to-definition, and document formatting.
 The language picker shows **mini**. File icon themes can override the supplied
-language icons. The supplied icons use the canonical mini monogram.
+language icons. The build regenerates both supplied icons from the canonical
+mini monogram in `brand/mini-mark.svg`.
 
 Highlights `include`, `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,

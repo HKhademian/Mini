@@ -131,6 +131,8 @@ test('language contribution includes both icons and only packaged resource paths
     assert.equal(icon.match(/<path d="([^"]+)"/)?.[1], canonicalPath);
   }
   assert.equal(manifest.main, './dist/extension.cjs');
+  assert.equal(manifest.scripts.prebuild, 'node scripts/sync-icons.ts');
+  assert.equal(manifest.scripts['vscode:prepublish'], 'npm run build');
   assert.equal(manifest.dependencies, undefined);
   assert.deepEqual(manifest.activationEvents, ['onLanguage:mini']);
   assert.equal(manifest.contributes.configuration.properties['mini.serverPath'].default, '');
