@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.3 / compiler 0.4.0-alpha.3 / format 0.1.0-alpha.7 / lsp
+  0.1.0-alpha.9 / bootstrap 0.2.0-alpha.3: use `io_write_line` for
+  newline-terminated output, keep a space before unary `!` after `if` and
+  `while`, and report builtin results as `number`. No language change.
+
 - mini 0.2.0-alpha.2 / compiler 0.4.0-alpha.2 / builtins 0.4.0-alpha.2 /
   bootstrap 0.2.0-alpha.2: helper-backed builtins return 0 directly; simple host
   calls keep the `(op, 0)` expression. No language change.
