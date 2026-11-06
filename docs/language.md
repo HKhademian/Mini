@@ -147,7 +147,11 @@ output = join(output, token);
 - `fn` declares a named function at the top level.
 - Parentheses contain comma-separated parameters or call arguments.
 - A user call maps arguments to parameters in order.
-- A missing user argument is `0`; a supplied extra argument is discarded.
+- A missing user argument is `0`; extra arguments reach the function, where
+  declared parameters ignore them.
+- `fn_args()` returns the supplied arguments of the current function as a list,
+  including any beyond its declared parameters. It is an error outside a
+  function.
 - `return expression;` ends the call with that value.
 - Falling off the end of a function returns 0.
 - `{` and `}` delimit the body; no semicolon follows its closing brace.

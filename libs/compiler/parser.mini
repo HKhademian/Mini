@@ -192,6 +192,9 @@ fn parser_primary(parser) {
     if map_get(token, "text") == "true" || map_get(token, "text") == "false" {
         return parser_expression_new(map_get(token, "text"), "boolean");
     }
+    if map_get(token, "kind") == "identifier" && map_get(token, "text") == "fn_args" {
+        return parser_fn_args(parser, token);
+    }
     if map_get(token, "kind") == "identifier" && map_get(parser_token(parser), "text") == "(" {
         return parser_call(parser, token);
     }
@@ -200,6 +203,19 @@ fn parser_primary(parser) {
     }
     parser_fail(token, "expected expression");
     return parser_expression_new("", "unknown");
+}
+
+/// Return the current function's supplied arguments as a list.
+///
+/// Every supplied argument is included, including any beyond the declared
+/// parameters. Each generated function captures its own argument list.
+fn parser_fn_args(parser, token) {
+    if !map_get(parser, "in_function") {
+        parser_fail(token, "fn_args outside function");
+    }
+    parser_expect(parser, "(");
+    parser_expect(parser, ")");
+    return parser_expression_new("$mini_fn_args", "list");
 }
 
 /// Return argument code texts.
@@ -248,19 +264,12 @@ fn parser_call(parser, name) {
             parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
         }
     } else {
-        // User calls pad missing arguments with 0 and discard extras, so a
-        // wrong argument count is a runtime concern rather than a compile one.
+        // User calls pad missing arguments with 0. Extra arguments reach the
+        // callee, where declared parameters ignore them and fn_args() sees all.
         arity := map_get(map_get(functions, name_text), "arity");
         while list_length(args) < arity {
             list_set(args, list_length(args), parser_expression_new("0", "number"));
         }
-        padded := list_new();
-        position := 0;
-        while position < arity {
-            list_set(padded, list_length(padded), list_get(args, position));
-            position = position + 1;
-        }
-        args = padded;
     }
     if !is_builtin {
         return parser_expression_new(name_text + "(" + parser_argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
@@ -439,7 +448,10 @@ fn parser_function_declaration(parser) {
     body := parser_block(parser);
     map_set(parser, "variables", outer);
     map_set(parser, "in_function", false);
-    body = text_slice(body, 0, text_length(body) - 1) + "    return 0;\n}";
+    body = text_slice(body, 0, text_length(body) - 1)
+        + "    return 0;\n}";
+    capture := "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    body = "{\n" + capture + text_slice(body, 1, text_length(body));
     return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
 }
 

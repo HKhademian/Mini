@@ -40,6 +40,9 @@ node COMPILER compile SOURCE.mini OUTPUT.js
 node COMPILER metadata
 ```
 
+`fn_args()` is a language form rather than a host builtin, so it does not appear
+in `metadata`. Each generated function binds its own argument list.
+
 `metadata` emits one JSON object listing every builtin name, parameter kind, and
 result kind. Tooling hover, completion, and signature text read this command
 instead of a separate builtin table.

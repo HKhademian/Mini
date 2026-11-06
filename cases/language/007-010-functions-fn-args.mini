@@ -1,0 +1,9 @@
+fn count() {
+    return list_length(fn_args());
+}
+fn second(first, rest) {
+    return list_get(fn_args(), 1);
+}
+io_write_line(number_to_text(count()));
+io_write_line(number_to_text(count(1, 2, 3)));
+io_write_line("second=" + second("a", "b", "c"));

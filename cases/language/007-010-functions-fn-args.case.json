@@ -1,0 +1,24 @@
+{
+  "id": "language.functions-fn-args",
+  "kind": "feature",
+  "source": "007-010-functions-fn-args.mini",
+  "features": [
+    "functions.call",
+    "functions.args"
+  ],
+  "cases": [
+    {
+      "name": "all-supplied-arguments",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "0\n3\nsecond=b\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

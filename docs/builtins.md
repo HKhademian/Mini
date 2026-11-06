@@ -67,6 +67,10 @@ without a newline. EOF yields empty text. Neither operation converts newlines.
 `io_write` returns 0. `io_write_line(text)` writes text followed by one newline
 and returns 0. The compiler implements these operations.
 
+`fn_args()` is not a host builtin: the generated function captures its own
+argument list, so it needs no adapter and no import. It returns a list, empty
+when the function received nothing.
+
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
 empty text for other values.
 

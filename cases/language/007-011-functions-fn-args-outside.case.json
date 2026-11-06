@@ -1,0 +1,23 @@
+{
+  "id": "language.functions-fn-args-outside",
+  "kind": "reject",
+  "source": "007-011-functions-fn-args-outside.mini",
+  "features": [
+    "functions.args"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "007-011-functions-fn-args-outside.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

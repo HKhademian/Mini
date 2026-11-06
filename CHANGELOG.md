@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- compiler 0.4.0-alpha.4: add `fn_args()`, the list of arguments the current
+  function received. Extra arguments now reach the callee instead of being
+  discarded at the call site, so declared parameters ignore them and
+  `fn_args()` sees every supplied value.
+
 - compiler 0.4.0-alpha.4: a user call no longer reports an argument-count error.
   A missing argument is 0 and an extra argument is discarded, matching mini's
   no-absence-value rule. Builtin calls keep exact arity. The language contract
