@@ -95,3 +95,14 @@ fn list_of3(first, second, third) {
     list_set(result, 2, third);
     return result;
 }
+
+/// Return items after the first count entries.
+fn list_rest(items, count) {
+    result := list_new();
+    position := count;
+    while position < list_length(items) {
+        list_set(result, list_length(result), list_get(items, position));
+        position = position + 1;
+    }
+    return result;
+}

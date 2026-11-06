@@ -207,9 +207,10 @@ fn parser_primary(parser) {
 
 /// Return the supplied arguments of the current context as a list.
 ///
-/// Top level means the process, so the arguments follow the program path. Any
-/// other position means the enclosing call: every supplied argument is
-/// included, even beyond the declared parameters.
+/// Top level means the process. The invoked name and the node entry are
+/// munched there, so the result is the program arguments in every invocation
+/// shape. Any other position means the enclosing call: every supplied argument
+/// is included, even beyond the declared parameters.
 fn parser_fn_args(parser, token) {
     parser_expect(parser, "(");
     parser_expect(parser, ")");
