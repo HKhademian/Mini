@@ -419,6 +419,17 @@ function list_of3(first, second, third) {
     return result;
     return 0;
 }
+function list_rest(items, count) {
+
+    let result = [];
+    let position = count;
+    while ((position < (items).length)) {
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
+        position = (position + 1);
+    }
+    return result;
+    return 0;
+}
 function path_join(left, right) {
 
     if ((left === "")) {
