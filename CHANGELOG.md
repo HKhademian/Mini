@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- mini 0.1.0-alpha.33 / language 0.3.0-alpha.32 / compiler 0.3.0-alpha.43 /
+  bootstrap 0.1.0-alpha.30: accept unparenthesized `if` and `while` conditions.
+  Conditions end at the braced body; parentheses remain available for grouping,
+  so existing sources keep compiling. Reject a second `var` declaration in the
+  same block; nested blocks may shadow. Update the compiler, libraries, tools,
+  cases, samples, tests, and docs.
 - mini 0.1.0-alpha.32 / language 0.3.0-alpha.31 / builtins 0.3.0-alpha.31 /
   compiler 0.3.0-alpha.42 / bootstrap 0.1.0-alpha.29: open group 0.4.0. The
   compiler emits plain JavaScript and requires Node 22.18.0 or newer. The
