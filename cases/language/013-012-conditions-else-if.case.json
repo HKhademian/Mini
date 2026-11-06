@@ -1,0 +1,23 @@
+{
+  "id": "language.conditions-else-if",
+  "kind": "feature",
+  "source": "013-012-conditions-else-if.mini",
+  "features": [
+    "control.if"
+  ],
+  "cases": [
+    {
+      "name": "chain",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "-101\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

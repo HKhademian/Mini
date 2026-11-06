@@ -183,8 +183,8 @@ while position < limit {
 - `if` runs one branch according to its condition.
 - `while` checks its condition before every iteration, including the first.
 - No semicolon follows a closing block brace.
-- A chained decision uses another `if` inside the braced `else` body.
-  There is no separate `elseif` or unbraced `else if` form.
+- A chained decision may use `else if condition { ... }`. The final `else`
+  still takes a braced body; there is no unbraced `else` form.
 
 These forms cover parser decisions and scanner loops and map directly to
 JavaScript. The expression rules below define comparisons and boolean conditions.

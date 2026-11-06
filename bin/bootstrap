@@ -899,6 +899,9 @@ function parser_statement(parser) {
         let output = ((("if (" + $mini_map_get(if_condition, "code")) + ") ") + parser_block(parser));
         if (($mini_map_get(parser_token(parser), "text") === "else")) {
             parser_take(parser);
+            if (($mini_map_get(parser_token(parser), "text") === "if")) {
+                return ((output + " else ") + parser_statement(parser));
+            }
             output = ((output + " else ") + parser_block(parser));
         }
         return (output + "\n");
