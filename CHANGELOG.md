@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.1.0-alpha.34 / language 0.3.0-alpha.33 / compiler 0.3.0-alpha.44 /
+  bootstrap 0.1.0-alpha.31: warn when parentheses enclose a whole `if` or
+  `while` condition. Grouped subexpressions stay quiet, warnings do not change
+  the exit status or generated code, and formatting validates quietly.
 - mini 0.1.0-alpha.33 / language 0.3.0-alpha.32 / compiler 0.3.0-alpha.43 /
   bootstrap 0.1.0-alpha.30: accept unparenthesized `if` and `while` conditions.
   Conditions end at the braced body; parentheses remain available for grouping,

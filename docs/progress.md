@@ -10,10 +10,10 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.4.0-v0.1.0-alpha.33
-lang      lang-v0.4.0-v0.3.0-alpha.32
-compiler  compiler-v0.4.0-v0.3.0-alpha.43
-bootstrap bootstrap-v0.4.0-v0.1.0-alpha.30
+mini      mini-v0.4.0-v0.1.0-alpha.34
+lang      lang-v0.4.0-vundefined
+compiler  compiler-v0.4.0-v0.3.0-alpha.44
+bootstrap bootstrap-v0.4.0-v0.1.0-alpha.31
 builtins  builtins-v0.4.0-v0.3.0-alpha.31
 cli       cli-v0.4.0-v0.1.0-alpha.16
 check     check-v0.4.0-v0.1.0-alpha.9
@@ -50,7 +50,7 @@ vscode    vscode-v0.4.0-v0.3.4
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;
   parentheses remain available for grouping. A block rejects duplicate `var`
-  declarations.
+  declarations, and a parenthesized whole condition reports a warning.
 - **Browser playground.** The [showcase](../site/README.md) compiles tracked
   samples in a worker and shows the generated JavaScript beside each result.
 - **Pure reference mode.** Text, list, map, JSON, number, and UTF-8 operations
