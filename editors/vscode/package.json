@@ -2,7 +2,7 @@
   "name": "mini",
   "displayName": "Mini",
   "description": "Mini syntax highlighting, file icons, diagnostics, and formatting.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "publisher": "mini-local",
   "license": "Apache-2.0",
   "type": "module",

@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- mini 0.1.0-alpha.32 / language 0.3.0-alpha.31 / builtins 0.3.0-alpha.31 /
+  compiler 0.3.0-alpha.42 / bootstrap 0.1.0-alpha.29: open group 0.4.0. The
+  compiler emits plain JavaScript and requires Node 22.18.0 or newer. The
+  tracked distribution is the `bin/bootstrap` seed, which rebuilds the compiler
+  and every tool. Builtins gain pure `json_parse` / `json_to_text` references
+  and per-namespace descriptors; map runtime helpers are split per builtin; and
+  libraries move to `libs/common`, `libs/tools`, and `libs/pure`. The language
+  contract is unchanged. Add the browser playground, showcase site, brand
+  assets, and the Apache-2.0 license.
+- CLI 0.1.0-alpha.16 / check 0.1.0-alpha.9 / format 0.1.0-alpha.5 / LSP
+  0.1.0-alpha.7 / test, verify, bench, release 0.1.0-alpha.5 / VS Code 0.3.4:
+  generated tools run from `dist/*.js`, the Node gate accepts 22.18.0 or newer,
+  and the formatter tests are Mini unit tests. The VS Code package adopts the
+  Apache-2.0 license.
 - Mini 0.1.0-alpha.31 / language 0.3.0-alpha.31 / builtins 0.3.0-alpha.30 /
   compiler 0.3.0-alpha.41 / bootstrap 0.1.0-alpha.28: normalize the path
   namespace with `path_is_exists`, `path_is_file`, `path_is_directory`,
