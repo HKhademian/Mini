@@ -541,8 +541,9 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         </div>
         <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
           <div class="code-modes" role="group" aria-label="Generated JavaScript">
-            <button id="mode-host" type="button" data-mode="host" aria-pressed="true">Host builtins</button>
-            <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false">Portable</button>
+            <button id="mode-full" type="button" data-mode="full" aria-pressed="true">Runtime + program</button>
+            <button id="mode-program" type="button" data-mode="program" aria-pressed="false">Program only</button>
+            <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false" hidden>Portable</button>
           </div>
           <pre id="code"></pre>
         </div>
@@ -577,7 +578,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const code = document.getElementById("code");
     const meta = document.getElementById("sample-meta");
     const modeButtons = Array.prototype.slice.call(document.querySelectorAll(".code-modes button"));
-    let portable = false;
+    let mode = "full";
 
     function showTab(showCode) {
       const active = showCode && !tabCode.disabled;
@@ -619,15 +620,15 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     function setMode(next) {
-      portable = next;
+      mode = next;
       modeButtons.forEach(function (button) {
-        button.setAttribute("aria-pressed", String((button.dataset.mode === "portable") === portable));
+        button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
       });
       if (!tabCode.disabled) run();
     }
 
     modeButtons.forEach(function (button) {
-      button.addEventListener("click", function () { setMode(button.dataset.mode === "portable"); });
+      button.addEventListener("click", function () { setMode(button.dataset.mode); });
     });
 
     function run() {
@@ -655,7 +656,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           stderr.hidden = false;
         }
         if (data.code) {
-          code.innerHTML = highlight(data.code, lex_tokenize);
+          const shown = mode === "program" ? data.program : data.code;
+          code.innerHTML = highlight(shown, lex_tokenize);
           tabCode.disabled = false;
         }
         if (data.diagnostic) {
@@ -671,7 +673,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         worker.terminate();
         fail("The playground worker failed to start.");
       };
-      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: portable });
+      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: mode === "portable" });
     }
 
     function showSample() {

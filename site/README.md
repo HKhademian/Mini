@@ -59,8 +59,16 @@ broken fragment. The build strips the compiler's CLI entry before loading it.
 
 ## Generated-code modes
 
-The playground shows two JavaScript views, chosen by a switch in the output
-pane. **Host builtins** is the default and emits only the adapters the program
-uses. **Portable** appends `libs/pure/reference.mini`, so the program relies on
+The playground switches between two JavaScript views of the same program:
+
+- **Runtime + program** (default): the adapters the program uses, then the
+  program. This is what runs.
+- **Program only**: the program alone, for reading what mini source compiles to
+  without the runtime around it. It is not runnable on its own.
+
+Both come from a single worker run; the compiler emits the second variant
+through `parser_compile_program`. A third, **Portable**, view is present but
+hidden. It appends the whole `libs/pure/reference.mini` so a program depends on
 language semantics rather than host adapters. The build expands that reference
-once into `playground/reference.js`, so the browser performs no include reads.
+once into `playground/reference.js`, so the browser reads no include files.
+Keep it hidden until a host-independent runtime is a supported product.

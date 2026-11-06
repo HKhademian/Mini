@@ -49,7 +49,7 @@ function loadCompiler() {
 }
 
 /// Compile one source string and return its code or diagnostic text.
-/// Return the token list for one compile, optionally with the pure reference.
+/// Return the expanded program tokens, optionally with the pure reference.
 function buildTokens(lexTokenize, lexExpandIncludes, source, portable, referenceTokens) {
   const tokens = lexTokenize(source, "playground.mini", false);
   const expanded = lexExpandIncludes(tokens, "playground.mini", [], Object.create(null));
@@ -58,19 +58,20 @@ function buildTokens(lexTokenize, lexExpandIncludes, source, portable, reference
   return combined.concat([{ kind: "eof", text: "", source: "playground.mini", start: 0, end: 0, line: 1, column: 1, context: "" }]);
 }
 
+/// Compile one variant and return both the runnable and program-only code.
 async function compileSource(source, portable) {
-  const { lex_tokenize, lex_expand_includes, parser_compile } = await loadCompiler();
-  const { referenceTokens } = await import("./reference.js");
+  const { lex_tokenize, lex_expand_includes, parser_compile, parser_compile_program } = await loadCompiler();
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
   };
   try {
+    const referenceTokens = portable ? (await import("./reference.js")).referenceTokens : [];
     const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
-    return { code: parser_compile(prepared), diagnostic: "" };
+    return { code: parser_compile(prepared), program: parser_compile_program(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
-    return { code: "", diagnostic: diagnostic || message };
+    return { code: "", program: "", diagnostic: diagnostic || message };
   } finally {
     globalThis.__miniSink = () => {};
   }
@@ -116,7 +117,7 @@ self.onmessage = async (event) => {
     if (!data || typeof data.source !== "string") return;
     const compiled = await compileSource(data.source, data.portable === true);
     if (compiled.code === "") {
-      self.postMessage({ ok: false, output: "", stderr: "", diagnostic: compiled.diagnostic, code: "" });
+      self.postMessage({ ok: false, output: "", stderr: "", diagnostic: compiled.diagnostic, code: "", program: "" });
       return;
     }
     const result = await runCode(compiled.code, data.stdin, data.args);
@@ -126,6 +127,7 @@ self.onmessage = async (event) => {
       stderr: result.stderr,
       diagnostic: result.ok ? "" : result.error,
       code: compiled.code,
+      program: compiled.program,
     });
   } catch (error) {
     const detail = error && error.stack ? error.stack : String(error);
