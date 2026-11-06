@@ -30,7 +30,7 @@ jobs:
       - name: Bootstrap generated tools
         run: ./bin/bootstrap
       - name: Build the showcase
-        run: node site/build.ts
+        run: ./site/build.ts
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

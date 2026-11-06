@@ -1,7 +1,8 @@
+#!/usr/bin/env node
 /// Serve the built showcase for local checks.
 ///
 /// The playground uses a module worker, which browsers block on file:// URLs.
-/// Run this after `node site/build.ts` and open the printed address.
+/// Run this after `./site/build.ts` and open the printed address.
 import { createServer, type ServerResponse } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { extname, resolve, sep } from "node:path";
@@ -16,7 +17,7 @@ if (!Number.isInteger(port) || port <= 0 || port > 65535) {
 }
 
 if (!existsSync(root)) {
-    process.stderr.write("dist/site is missing; run node site/build.ts first\n");
+    process.stderr.write("dist/site is missing; run ./site/build.ts first\n");
     process.exit(1);
 }
 

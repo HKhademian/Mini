@@ -2,18 +2,22 @@
 
 Sources for the public landing page and playground.
 
+The build and serve scripts are handwritten TypeScript support code run directly
+by Node, not compiler output; the compiler's generated JavaScript goes to
+`dist/`.
+
 ## Local check
 
 Build with Node after the generated tools exist, then serve the result:
 
 ```text
 ./bin/bootstrap
-node site/build.ts
-node site/serve.ts
+./site/build.ts
+./site/serve.ts
 ```
 
 Open <http://127.0.0.1:8080/> and <http://127.0.0.1:8080/playground/>. Use
-`PORT=8090 node site/serve.ts` when 8080 is taken. The server reads only
+`PORT=8090 ./site/serve.ts` when 8080 is taken. The server reads only
 `dist/site/`, sets `no-store`, and has no other dependencies.
 
 Output goes to `dist/site/`, which is ignored by Git. The build compiles and

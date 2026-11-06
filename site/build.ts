@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
