@@ -1,17 +1,6 @@
 /// Process builtin descriptors.
 
 builtin_add(
-    "process_args",
-    "",
-    "list",
-    "essential",
-    "",
-    "",
-    "",
-    "",
-    "process.argv.slice(2)"
-);
-builtin_add(
     "process_env",
     "text",
     "text",

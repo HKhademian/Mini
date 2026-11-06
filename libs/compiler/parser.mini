@@ -205,16 +205,18 @@ fn parser_primary(parser) {
     return parser_expression_new("", "unknown");
 }
 
-/// Return the current function's supplied arguments as a list.
+/// Return the supplied arguments of the current context as a list.
 ///
-/// Every supplied argument is included, including any beyond the declared
-/// parameters. Each generated function captures its own argument list.
+/// Top level means the process, so the arguments follow the program path. Any
+/// other position means the enclosing call: every supplied argument is
+/// included, even beyond the declared parameters.
 fn parser_fn_args(parser, token) {
-    if !map_get(parser, "in_function") {
-        parser_fail(token, "fn_args outside function");
-    }
     parser_expect(parser, "(");
     parser_expect(parser, ")");
+    if !map_get(parser, "in_function") {
+        return parser_expression_new("process.argv.slice(2)", "list");
+    }
+    map_set(map_get(parser, "current"), "captures", true);
     return parser_expression_new("$mini_fn_args", "list");
 }
 
@@ -450,12 +452,15 @@ fn parser_function_declaration(parser) {
     map_set(parser, "in_function", false);
     body = text_slice(body, 0, text_length(body) - 1)
         + "    return 0;\n}";
-    capture := "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    capture := "";
+    if map_get(info, "captures") {
+        capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    }
     body = "{\n" + capture + text_slice(body, 1, text_length(body));
     return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
 }
 
-/// Return the fixed sorted import list used by T0's finite dependencies.
+/// Return the fixed sorted import list used by the generated program.
 fn parser_import_names(imports) {
     output := "";
     if map_has(imports, "readFileSync") {
@@ -537,6 +542,7 @@ fn parser_new(tokens) {
             info := map_new();
             map_set(info, "arity", arity);
             map_set(info, "result", "unknown");
+            map_set(info, "captures", false);
             map_set(map_get(parser, "functions"), map_get(list_get(tokens, index + 1), "text"), info);
         }
         index = index + 1;
