@@ -1,9 +1,9 @@
-# Mini for VS Code
+# mini for VS Code
 
 `.mini` file support: theme-aware syntax highlighting, light/dark file icons,
 brace, parenthesis, and double-quote pairing, live compiler diagnostics, hover
 with `///` documentation, completion, go-to-definition, and document formatting.
-The language picker shows **Mini**. File icon themes can override the supplied
+The language picker shows **mini**. File icon themes can override the supplied
 language icons.
 
 Highlights `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
@@ -60,12 +60,12 @@ npm ci
 npm run check
 npm run build
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.5.0-v0.3.5.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.5.0-v0.3.6.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.5.0-v0.3.5.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
-Mini**. Nothing is published to the Marketplace; `mini-local` is a local
+`mini-0.5.0-v0.3.6.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 
 To preview from source, open this directory as the VS Code workspace and press

@@ -1,8 +1,8 @@
 {
   "name": "mini",
-  "displayName": "Mini",
-  "description": "Mini syntax highlighting, file icons, diagnostics, and formatting.",
-  "version": "0.3.5",
+  "displayName": "mini",
+  "description": "mini syntax highlighting, file icons, diagnostics, and formatting.",
+  "version": "0.3.6",
   "publisher": "mini-local",
   "license": "Apache-2.0",
   "type": "module",
@@ -18,7 +18,7 @@
     "languages": [
       {
         "id": "mini",
-        "aliases": ["Mini", "mini"],
+        "aliases": ["mini"],
         "extensions": [".mini"],
         "configuration": "./language-configuration.json",
         "icon": {
@@ -35,7 +35,7 @@
       }
     ],
     "configuration": {
-      "title": "Mini",
+      "title": "mini",
       "properties": {
         "mini.serverPath": {
           "type": "string",

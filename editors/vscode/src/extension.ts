@@ -15,7 +15,7 @@ type CompletionItem = {
 type LspDiagnostic = { range: Range; severity?: number; source?: string; message: string };
 type Message = { jsonrpc: '2.0'; id?: number; method?: string; params?: unknown; result?: unknown; error?: { code: number; message: string } };
 
-/** Minimal LSP client for the standalone Mini language server. */
+/** Minimal LSP client for the standalone mini language server. */
 class MiniClient implements vscode.Disposable {
   private child: ChildProcessWithoutNullStreams | undefined;
   private buffer = Buffer.alloc(0);
@@ -23,7 +23,7 @@ class MiniClient implements vscode.Disposable {
   private pending = new Map<number, { resolve: (value: unknown) => void; reject: (error: Error) => void }>();
   private versions = new Map<string, number>();
   private diagnostics = vscode.languages.createDiagnosticCollection('mini');
-  private output = vscode.window.createOutputChannel('Mini Language Server');
+  private output = vscode.window.createOutputChannel('mini language server');
 
   async start(): Promise<void> {
     const config = vscode.workspace.getConfiguration('mini');
@@ -40,7 +40,7 @@ class MiniClient implements vscode.Disposable {
     });
     this.child.on('exit', code => {
       this.output.appendLine(`Server exited with code ${code ?? 'null'}.`);
-      for (const { reject } of this.pending.values()) reject(new Error('Mini language server exited.'));
+      for (const { reject } of this.pending.values()) reject(new Error('mini language server exited.'));
       this.pending.clear();
     });
     await this.request('initialize', {
@@ -220,7 +220,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     const hint = serverPath === ''
       ? 'Install mini-lang-server on PATH or set mini.serverPath to its script.'
       : `Check mini.serverPath (${serverPath}) and mini.nodePath.`;
-    const message = `Mini language server failed to start: ${error instanceof Error ? error.message : error}. ${hint}`;
+    const message = `mini language server failed to start: ${error instanceof Error ? error.message : error}. ${hint}`;
     void vscode.window.showErrorMessage(message, 'Open Settings').then(choice => {
       if (choice === 'Open Settings') void vscode.commands.executeCommand('workbench.action.openSettings', 'mini.serverPath');
     });

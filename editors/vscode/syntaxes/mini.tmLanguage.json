@@ -1,5 +1,5 @@
 {
-  "name": "Mini",
+  "name": "mini",
   "scopeName": "source.mini",
   "patterns": [
     { "name": "comment.line.documentation.mini", "match": "///.*$" },
