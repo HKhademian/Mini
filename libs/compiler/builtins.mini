@@ -7,6 +7,7 @@ builtin_import_names := map_new();
 builtin_helper_keys := map_new();
 builtin_classes := map_new();
 builtin_helpers := map_new();
+builtin_helper_order := list_new();
 builtin_reference_targets := map_new();
 builtin_emit_forms := map_new();
 
@@ -22,6 +23,9 @@ fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper,
     map_set(builtin_emit_forms, name, emit_form);
     if helper_key != "" {
         map_set(builtin_helpers, helper_key, helper);
+        if !list_contains(builtin_helper_order, helper_key) {
+            list_set(builtin_helper_order, list_length(builtin_helper_order), helper_key);
+        }
     }
     if reference != "" {
         map_set(builtin_reference_targets, name, reference);
@@ -112,6 +116,26 @@ fn builtin_helper_key(name) {
         return map_get(builtin_helper_keys, name);
     }
     return "";
+}
+
+/// Return the helper keys in registration order.
+fn builtin_helper_order_keys() {
+    return list_copy(builtin_helper_order);
+}
+
+/// Return the used helper blocks, ordered by registration.
+fn builtin_used_helper_blocks(helpers) {
+    order := builtin_helper_order;
+    output := "";
+    position := 0;
+    while position < list_length(order) {
+        key := list_get(order, position);
+        if map_has(helpers, key) {
+            output = output + builtin_helper_text(key);
+        }
+        position = position + 1;
+    }
+    return output;
 }
 
 /// Return the adapter text for a helper key.

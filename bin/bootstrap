@@ -1,19 +1,6 @@
 #!/usr/bin/env node
 "use strict";
 import { readFileSync, writeFileSync, writeSync } from "node:fs";
-const $mini_map_proto = { __proto__: null };
-function $mini_map_get(items, key) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
-    const value = items[key];
-    return value !== undefined || key in items ? value : 0;
-}
-function $mini_map_has(items, key) {
-    return key in items;
-}
-function $mini_map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value
-    return 0;
-}
 function $mini_file_read_bytes(path) {
     return Array.from(process.getBuiltinModule("node:fs").readFileSync(path));
 }
@@ -98,9 +85,39 @@ function $mini_map_copy(items) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
     return Object.assign(Object.create(null), items);
 }
+function $mini_map_get(items, key) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
+    const value = items[key];
+    return value !== undefined || key in items ? value : 0;
+}
+function $mini_map_has(items, key) {
+    return key in items;
+}
+const $mini_map_proto = { __proto__: null };
+function $mini_map_set(items, key, value) {
+    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value
+    return 0;
+}
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
+}
+function $mini_path_copy(from, to) {
+    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
+    return 0;
+}
+function $mini_path_is_exists(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    try { return fs.existsSync(path); } catch { return false; }
+}
+function $mini_path_remove(path) {
+    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true })
+    return 0;
+}
+function $mini_path_temp_directory() {
+    const fs = process.getBuiltinModule("node:fs");
+    const os = process.getBuiltinModule("node:os");
+    return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
 function $mini_process_spawn(options) {
     const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
@@ -129,23 +146,6 @@ function $mini_process_spawn(options) {
         output.stderr = result.stderr ? Array.from(result.stderr) : [];
     }
     return output;
-}
-function $mini_path_temp_directory() {
-    const fs = process.getBuiltinModule("node:fs");
-    const os = process.getBuiltinModule("node:os");
-    return fs.mkdtempSync(os.tmpdir() + "/mini-");
-}
-function $mini_path_copy(from, to) {
-    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
-    return 0;
-}
-function $mini_path_is_exists(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.existsSync(path); } catch { return false; }
-}
-function $mini_path_remove(path) {
-    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true })
-    return 0;
 }
 function $mini_text_find(text, needle) {
     if (typeof text !== "string" || typeof needle !== "string") return -1;
@@ -1157,67 +1157,7 @@ function parser_import_names(imports) {
     return 0;
 }
 function parser_helper_blocks(helpers) {
-    let order = [];
-    $mini_list_set(order, (order).length, "map_new");
-    $mini_list_set(order, (order).length, "map_get");
-    $mini_list_set(order, (order).length, "map_has");
-    $mini_list_set(order, (order).length, "map_set");
-    $mini_list_set(order, (order).length, "directory_create");
-    $mini_list_set(order, (order).length, "directory_list");
-    $mini_list_set(order, (order).length, "directory_remove");
-    $mini_list_set(order, (order).length, "file_read_bytes");
-    $mini_list_set(order, (order).length, "file_remove");
-    $mini_list_set(order, (order).length, "file_write_bytes");
-    $mini_list_set(order, (order).length, "hash_sha256");
-    $mini_list_set(order, (order).length, "json_parse");
-    $mini_list_set(order, (order).length, "json_to_text");
-    $mini_list_set(order, (order).length, "list_copy");
-    $mini_list_set(order, (order).length, "list_pop_back");
-    $mini_list_set(order, (order).length, "list_pop_front");
-    $mini_list_set(order, (order).length, "list_push_back");
-    $mini_list_set(order, (order).length, "list_push_front");
-    $mini_list_set(order, (order).length, "list_truncate");
-    $mini_list_set(order, (order).length, "list_get");
-    $mini_list_set(order, (order).length, "list_set");
-    $mini_list_set(order, (order).length, "list_to_text");
-    $mini_list_set(order, (order).length, "map_copy");
-    $mini_list_set(order, (order).length, "number_to_text");
-    $mini_list_set(order, (order).length, "number_mul");
-    $mini_list_set(order, (order).length, "number_div");
-    $mini_list_set(order, (order).length, "number_mod");
-    $mini_list_set(order, (order).length, "number_floor");
-    $mini_list_set(order, (order).length, "number_pow");
-    $mini_list_set(order, (order).length, "number_from_text");
-    $mini_list_set(order, (order).length, "process_run");
-    $mini_list_set(order, (order).length, "process_spawn");
-    $mini_list_set(order, (order).length, "read_bytes");
-    $mini_list_set(order, (order).length, "read_line");
-    $mini_list_set(order, (order).length, "path_temp_directory");
-    $mini_list_set(order, (order).length, "path_copy");
-    $mini_list_set(order, (order).length, "path_is_exists");
-    $mini_list_set(order, (order).length, "path_is_directory");
-    $mini_list_set(order, (order).length, "path_is_file");
-    $mini_list_set(order, (order).length, "path_temp_file");
-    $mini_list_set(order, (order).length, "path_remove");
-    $mini_list_set(order, (order).length, "text_find");
-    $mini_list_set(order, (order).length, "text_from_bytes");
-    $mini_list_set(order, (order).length, "text_code");
-    $mini_list_set(order, (order).length, "text_from_code");
-    $mini_list_set(order, (order).length, "text_get");
-    $mini_list_set(order, (order).length, "text_slice");
-    $mini_list_set(order, (order).length, "text_split");
-    $mini_list_set(order, (order).length, "text_to_bytes");
-    $mini_list_set(order, (order).length, "value_kind");
-    let output = "";
-    let position = 0;
-    while ((position < (order).length)) {
-        let key = $mini_list_get(order, position);
-        if ($mini_map_has(helpers, key)) {
-            output = (output + builtin_helper_text(key));
-        }
-        position = (position + 1);
-    }
-    return output;
+    return builtin_used_helper_blocks(helpers);
     return 0;
 }
 function parser_program(parser) {
@@ -1298,6 +1238,7 @@ let builtin_import_names = ({ __proto__: $mini_map_proto });
 let builtin_helper_keys = ({ __proto__: $mini_map_proto });
 let builtin_classes = ({ __proto__: $mini_map_proto });
 let builtin_helpers = ({ __proto__: $mini_map_proto });
+let builtin_helper_order = [];
 let builtin_reference_targets = ({ __proto__: $mini_map_proto });
 let builtin_emit_forms = ({ __proto__: $mini_map_proto });
 function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
@@ -1311,6 +1252,9 @@ function builtin_add(name, parameters, result, layer, import_name, helper_key, h
     $mini_map_set(builtin_emit_forms, name, emit_form);
     if ((helper_key !== "")) {
         $mini_map_set(builtin_helpers, helper_key, helper);
+        if ((!list_contains(builtin_helper_order, helper_key))) {
+            $mini_list_set(builtin_helper_order, (builtin_helper_order).length, helper_key);
+        }
     }
     if ((reference !== "")) {
         $mini_map_set(builtin_reference_targets, name, reference);
@@ -1441,6 +1385,24 @@ function builtin_helper_key(name) {
         return $mini_map_get(builtin_helper_keys, name);
     }
     return "";
+    return 0;
+}
+function builtin_helper_order_keys() {
+    return $mini_list_copy(builtin_helper_order);
+    return 0;
+}
+function builtin_used_helper_blocks(helpers) {
+    let order = builtin_helper_order;
+    let output = "";
+    let position = 0;
+    while ((position < (order).length)) {
+        let key = $mini_list_get(order, position);
+        if ($mini_map_has(helpers, key)) {
+            output = (output + builtin_helper_text(key));
+        }
+        position = (position + 1);
+    }
+    return output;
     return 0;
 }
 function builtin_helper_text(key) {

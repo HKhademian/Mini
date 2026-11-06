@@ -450,70 +450,9 @@ fn parser_import_names(imports) {
     return output;
 }
 
-/// Return helper blocks in T0's sorted order.
+/// Return the used helper blocks in registration order.
 fn parser_helper_blocks(helpers) {
-    // Keep this order equal to T0's lexicographic helper sort.
-    order := list_new();
-    list_set(order, list_length(order), "map_new");
-    list_set(order, list_length(order), "map_get");
-    list_set(order, list_length(order), "map_has");
-    list_set(order, list_length(order), "map_set");
-    list_set(order, list_length(order), "directory_create");
-    list_set(order, list_length(order), "directory_list");
-    list_set(order, list_length(order), "directory_remove");
-    list_set(order, list_length(order), "file_read_bytes");
-    list_set(order, list_length(order), "file_remove");
-    list_set(order, list_length(order), "file_write_bytes");
-    list_set(order, list_length(order), "hash_sha256");
-    list_set(order, list_length(order), "json_parse");
-    list_set(order, list_length(order), "json_to_text");
-    list_set(order, list_length(order), "list_copy");
-    list_set(order, list_length(order), "list_pop_back");
-    list_set(order, list_length(order), "list_pop_front");
-    list_set(order, list_length(order), "list_push_back");
-    list_set(order, list_length(order), "list_push_front");
-    list_set(order, list_length(order), "list_truncate");
-    list_set(order, list_length(order), "list_get");
-    list_set(order, list_length(order), "list_set");
-    list_set(order, list_length(order), "list_to_text");
-    list_set(order, list_length(order), "map_copy");
-    list_set(order, list_length(order), "number_to_text");
-    list_set(order, list_length(order), "number_mul");
-    list_set(order, list_length(order), "number_div");
-    list_set(order, list_length(order), "number_mod");
-    list_set(order, list_length(order), "number_floor");
-    list_set(order, list_length(order), "number_pow");
-    list_set(order, list_length(order), "number_from_text");
-    list_set(order, list_length(order), "process_run");
-    list_set(order, list_length(order), "process_spawn");
-    list_set(order, list_length(order), "read_bytes");
-    list_set(order, list_length(order), "read_line");
-    list_set(order, list_length(order), "path_temp_directory");
-    list_set(order, list_length(order), "path_copy");
-    list_set(order, list_length(order), "path_is_exists");
-    list_set(order, list_length(order), "path_is_directory");
-    list_set(order, list_length(order), "path_is_file");
-    list_set(order, list_length(order), "path_temp_file");
-    list_set(order, list_length(order), "path_remove");
-    list_set(order, list_length(order), "text_find");
-    list_set(order, list_length(order), "text_from_bytes");
-    list_set(order, list_length(order), "text_code");
-    list_set(order, list_length(order), "text_from_code");
-    list_set(order, list_length(order), "text_get");
-    list_set(order, list_length(order), "text_slice");
-    list_set(order, list_length(order), "text_split");
-    list_set(order, list_length(order), "text_to_bytes");
-    list_set(order, list_length(order), "value_kind");
-    output := "";
-    position := 0;
-    while position < list_length(order) {
-        key := list_get(order, position);
-        if map_has(helpers, key) {
-            output = output + builtin_helper_text(key);
-        }
-        position = position + 1;
-    }
-    return output;
+    return builtin_used_helper_blocks(helpers);
 }
 
 /// Parse the token list and return the complete TypeScript program.
