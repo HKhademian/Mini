@@ -1,0 +1,7 @@
+fn pick(value) {
+    if value == 1 {
+        return 5;
+    }
+}
+io_write_line(number_to_text(pick(1)));
+io_write_line(number_to_text(pick(2)));

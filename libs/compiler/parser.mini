@@ -305,7 +305,6 @@ fn parser_statement(parser) {
         return_value := parser_expression(parser);
         parser_expect(parser, ";");
         map_set(map_get(parser, "current"), "result", map_get(return_value, "kind"));
-        map_set(map_get(parser, "current"), "returned", true);
         return "return " + map_get(return_value, "code") + ";\n";
     }
     if map_get(parser_token(parser), "kind") == "identifier" && map_get(parser_peek(parser, 1), "text") == "(" {
@@ -426,9 +425,7 @@ fn parser_function_declaration(parser) {
     body := parser_block(parser);
     map_set(parser, "variables", outer);
     map_set(parser, "in_function", false);
-    if !map_get(info, "returned") {
-        parser_fail(name, "T0 functions require a value return");
-    }
+    body = text_slice(body, 0, text_length(body) - 1) + "    return 0;\n}";
     return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
 }
 
@@ -575,7 +572,6 @@ fn parser_new(tokens) {
             info := map_new();
             map_set(info, "arity", arity);
             map_set(info, "result", "unknown");
-            map_set(info, "returned", false);
             map_set(map_get(parser, "functions"), map_get(list_get(tokens, index + 1), "text"), info);
         }
         index = index + 1;

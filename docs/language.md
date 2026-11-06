@@ -148,12 +148,12 @@ output = join(output, token);
 - Parentheses contain comma-separated parameters or call arguments.
 - A call supplies one argument per parameter, in order.
 - `return expression;` ends the call with that value.
+- Falling off the end of a function returns 0.
 - `{` and `}` delimit the body; no semicolon follows its closing brace.
 
 This separates scanner, parser, and emitter operations without introducing
 objects or methods. The function and call forms map directly to JavaScript.
-Parameter and result typing, scope, declaration order, and functions without
-a returned value remain open.
+Parameter and result typing, scope, and declaration order remain open.
 
 The [parameter-passing proposal](parameter-passing.md) evaluates local parameter
 bindings with shared collections and investigates omitted arguments. Passing rules

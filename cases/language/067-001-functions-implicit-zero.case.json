@@ -1,0 +1,23 @@
+{
+  "id": "language.functions-implicit-zero",
+  "kind": "feature",
+  "source": "067-001-functions-implicit-zero.mini",
+  "features": [
+    "functions.return"
+  ],
+  "cases": [
+    {
+      "name": "falls-through-zero",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "5\n0\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

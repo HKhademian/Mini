@@ -100,7 +100,7 @@ The candidate check skips tool cases, which continue to use the active CLI; run
 The generated compiler is plain JavaScript. mini parameter typing is still open: parameters use an
 explicit internal `Unknown` kind, and generated functions currently use ordinary
 unannotated parameters. This is not a full mini typechecker. Functions are
-top-level, may call later definitions, and require a value return in this increment.
+top-level, may call later definitions, and fall off the end with value 0.
 
 Lists store runtime values. The compiler uses its internal `Unknown` kind for the result
 of `list_get`; it does not infer an element kind from preceding mutations.
