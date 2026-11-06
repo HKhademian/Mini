@@ -142,6 +142,13 @@ primitive used by the pure pop implementations.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.
 
+[libs/common/result.mini](../libs/common/result.mini) holds the result API.
+`result_ok(value, message)` and `result_fail(message)` build the map, which
+carries `ok`, `value`, and `message`. `result_is_ok` and `result_is_fail` test
+it. `result_get_message`, `result_get_value`, `result_set_message`, and
+`result_set_value` read and write fields without exposing the map shape, so
+callers include the library rather than indexing keys.
+
 `list_of(...)` and `map_of(...)` build collections from their arguments. They are
 library helpers under [libs/common](../libs/common), not builtins, so they need an
 include. `list_of` returns its arguments as a list. `map_of` reads alternating

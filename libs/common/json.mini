@@ -8,5 +8,5 @@ fn json_parse_file(path) {
     if result_is_fail(parsed) {
         return result_fail("invalid JSON: " + path);
     }
-    return result_ok(map_get(parsed, "value"), "");
+    return result_ok(result_get_value(parsed), "");
 }

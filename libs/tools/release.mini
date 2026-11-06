@@ -53,9 +53,9 @@ fn release_text_list1(value) {
 fn release_json(path) {
     parsed := json_parse_file(path);
     if result_is_fail(parsed) {
-        release_fail(map_get(parsed, "message"));
+        release_fail(result_get_message(parsed));
     }
-    return map_get(parsed, "value");
+    return result_get_value(parsed);
 }
 
 /// Return the tag component registry key, or empty text.
@@ -254,7 +254,7 @@ fn release_prepare(directory, output, tag) {
         verified := release_run(process_exec_path(), verify_args, source);
         parsed := json_parse(text_from_bytes(map_get(verified, "stdout")));
         if result_is_ok(parsed) {
-            bootstrap = map_get(parsed, "value");
+            bootstrap = result_get_value(parsed);
         }
     }
     label := "snapshot-" + text_slice(commit, 0, 12);

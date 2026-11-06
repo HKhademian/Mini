@@ -143,7 +143,7 @@ fn case_load_case(path) {
     if result_is_fail(parsed) {
         return parsed;
     }
-    spec := map_get(parsed, "value");
+    spec := result_get_value(parsed);
     id := map_get(spec, "id");
     if !map_has(spec, "id") || !value_is_text(id) || text_length(id) == 0 {
         return result_fail("case ID required: " + path);
@@ -226,7 +226,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
         }
         bytes := case_stream_bytes(map_get(scenario, key), directory);
         if result_is_fail(bytes) {
-            return result_fail(map_get(bytes, "message"));
+            return result_fail(result_get_message(bytes));
         }
         position = position + 1;
     }
@@ -438,7 +438,7 @@ fn case_verify_scenario(fixture, scenario, project_root, compiler_override) {
     prefix := id + "/" + name + ": ";
     input := case_stream_bytes(map_get(scenario, "stdin"), directory);
     if result_is_fail(input) {
-        return result_fail(prefix + map_get(input, "message"));
+        return result_fail(prefix + result_get_message(input));
     }
     work := path_temp_directory();
     if text_length(work) == 0 {
@@ -466,7 +466,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         if map_has(scenario, "workspace") {
             prepared := case_tool_workspace(project_root, scenario, work);
             if result_is_fail(prepared) {
-                return result_fail(prefix + map_get(prepared, "message"));
+                return result_fail(prefix + result_get_message(prepared));
             }
             workspace = map_get(prepared, "directory");
         }
@@ -496,7 +496,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         if kind == "compile" && map_has(scenario, "artifact") {
             expected := case_stream_bytes(map_get(scenario, "artifact"), directory);
             if result_is_fail(expected) {
-                return result_fail(prefix + map_get(expected, "message"));
+                return result_fail(prefix + result_get_message(expected));
             }
             if !path_is_exists(output) || !case_bytes_equal(file_read_bytes(output), map_get(expected, "bytes")) {
                 return result_fail(prefix + "generated artifact differs");
@@ -585,7 +585,7 @@ fn case_write_input_files(scenario, directory, files, prefix) {
         name := list_get(names, position);
         stream := case_stream_bytes(map_get(inputs, name), directory);
         if result_is_fail(stream) {
-            return result_fail(prefix + map_get(stream, "message"));
+            return result_fail(prefix + result_get_message(stream));
         }
         target := path_join(files, name);
         directory_create(path_parent(target));
@@ -607,7 +607,7 @@ fn case_check_output_files(scenario, directory, files, prefix) {
         name := list_get(names, position);
         expected := case_stream_bytes(map_get(outputs, name), directory);
         if result_is_fail(expected) {
-            return result_fail(prefix + map_get(expected, "message"));
+            return result_fail(prefix + result_get_message(expected));
         }
         target := path_join(files, name);
         if !path_is_exists(target) || !case_bytes_equal(file_read_bytes(target), map_get(expected, "bytes")) {

@@ -31,7 +31,7 @@ fn bench_compiler_hash(root) {
     if result_is_fail(parsed) {
         bench_fail("invalid config/compiler.json");
     }
-    sources := map_get(map_get(parsed, "value"), "sources");
+    sources := map_get(result_get_value(parsed), "sources");
     parts := list_new();
     position := 0;
     while position < list_length(sources) {
@@ -63,7 +63,7 @@ fn bench_run(root, output, filter) {
     }
     selected := case_load_cases(filter, root);
     if result_is_fail(selected) {
-        bench_fail(map_get(selected, "message"));
+        bench_fail(result_get_message(selected));
     }
     fixtures := map_get(selected, "fixtures");
     results := list_new();
@@ -84,7 +84,7 @@ fn bench_run(root, output, filter) {
                 while warmup_index < warmups {
                     warmed := case_verify_scenario(fixture, scenario, root, "");
                     if result_is_fail(warmed) {
-                        bench_fail(map_get(warmed, "message"));
+                        bench_fail(result_get_message(warmed));
                     }
                     warmup_index = warmup_index + 1;
                 }
@@ -94,7 +94,7 @@ fn bench_run(root, output, filter) {
                     started := time_millis();
                     measured := case_verify_scenario(fixture, scenario, root, "");
                     if result_is_fail(measured) {
-                        bench_fail(map_get(measured, "message"));
+                        bench_fail(result_get_message(measured));
                     }
                     list_set(samples, list_length(samples), time_millis() - started);
                     sample_index = sample_index + 1;
@@ -121,7 +121,7 @@ fn bench_run(root, output, filter) {
     report := map_new();
     map_set(report, "commit", bench_commit(root));
     if result_is_ok(versions_parsed) {
-        map_set(report, "versions", map_get(versions_parsed, "value"));
+        map_set(report, "versions", result_get_value(versions_parsed));
     }
     map_set(report, "compiler", bench_compiler_hash(root));
     map_set(report, "scope", "fresh-process wall time including startup, IO, verification, and compilation for program cases");

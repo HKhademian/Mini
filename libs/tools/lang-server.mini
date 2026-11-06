@@ -206,8 +206,8 @@ fn lsp_analyze(text, name) {
         return failed;
     }
     parsed := json_parse(text_from_bytes(map_get(tokenized, "stdout")));
-    if result_is_ok(parsed) && value_kind(map_get(parsed, "value")) == "list" {
-        tokens = map_get(parsed, "value");
+    if result_is_ok(parsed) && value_kind(result_get_value(parsed)) == "list" {
+        tokens = result_get_value(parsed);
     }
     compile_args := list_new();
     list_set(compile_args, 0, compiler);
@@ -320,7 +320,7 @@ fn lsp_builtins() {
     parsed := json_parse(text_from_bytes(map_get(result, "stdout")));
     cache := map_new();
     if result_is_ok(parsed) {
-        entries := map_get(map_get(parsed, "value"), "builtins");
+        entries := map_get(result_get_value(parsed), "builtins");
         position := 0;
         while position < list_length(entries) {
             entry := list_get(entries, position);
@@ -550,7 +550,7 @@ fn lsp_diagnose(documents, uri, text, version) {
         map_set(entry, "range", lsp_diagnostic_range(text, diagnostic));
         map_set(entry, "severity", 1);
         map_set(entry, "source", "mini");
-        map_set(entry, "message", map_get(diagnostic, "message"));
+        map_set(entry, "message", result_get_message(diagnostic));
         list_set(diagnostics, list_length(diagnostics), entry);
         position = position + 1;
     }
@@ -770,7 +770,7 @@ fn lsp_read_message() {
         lsp_log("invalid JSON message");
         return map_new();
     }
-    return map_get(parsed, "value");
+    return result_get_value(parsed);
 }
 
 /// Return the language-server version label.

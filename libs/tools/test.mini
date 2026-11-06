@@ -20,14 +20,14 @@ fn test_run(root, filter, file, candidate) {
     if file != "" {
         loaded := case_load_case(file);
         if result_is_fail(loaded) {
-            io_write_error(map_get(loaded, "message") + "\n");
+            io_write_error(result_get_message(loaded) + "\n");
             process_exit(1);
         }
         list_set(fixtures, 0, map_get(loaded, "fixture"));
     } else {
         selected := case_load_cases(filter, root);
         if result_is_fail(selected) {
-            io_write_error(map_get(selected, "message") + "\n");
+            io_write_error(result_get_message(selected) + "\n");
             process_exit(1);
         }
         fixtures = map_get(selected, "fixtures");
@@ -58,7 +58,7 @@ fn test_run(root, filter, file, candidate) {
                     io_write_line("PASS " + id + "/" + name);
                 } else {
                     failures = failures + 1;
-                    io_write_error("FAIL " + id + "/" + name + ": " + map_get(result, "message") + "\n");
+                    io_write_error("FAIL " + id + "/" + name + ": " + result_get_message(result) + "\n");
                 }
             }
             scenario_index = scenario_index + 1;
@@ -102,7 +102,7 @@ fn test_candidate(fixtures, root, compiler) {
                     } else {
                         failed = failed + 1;
                         io_write_error("FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
-                            + ": " + map_get(result, "message") + "\n");
+                            + ": " + result_get_message(result) + "\n");
                     }
                     scenario_index = scenario_index + 1;
                 }

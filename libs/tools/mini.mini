@@ -9,20 +9,20 @@ include "../common/project.mini";
 fn mini_compiler(root) {
     parsed := json_parse_file(path_join(root, "config/compiler.json"));
     if result_is_fail(parsed) {
-        io_write_error(map_get(parsed, "message") + "\n");
+        io_write_error(result_get_message(parsed) + "\n");
         process_exit(1);
     }
-    return map_get(map_get(parsed, "value"), "entry");
+    return map_get(result_get_value(parsed), "entry");
 }
 
 /// Return the version registry.
 fn mini_versions(root) {
     parsed := json_parse_file(path_join(root, "config/versions.json"));
     if result_is_fail(parsed) {
-        io_write_error(map_get(parsed, "message") + "\n");
+        io_write_error(result_get_message(parsed) + "\n");
         process_exit(1);
     }
-    return map_get(parsed, "value");
+    return result_get_value(parsed);
 }
 
 /// Return a release tag for a product key.

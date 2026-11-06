@@ -97,9 +97,9 @@ fn check_keys(value) {
 fn check_json(path) {
     parsed := json_parse_file(path);
     if result_is_fail(parsed) {
-        check_fail(map_get(parsed, "message"));
+        check_fail(result_get_message(parsed));
     }
-    return map_get(parsed, "value");
+    return result_get_value(parsed);
 }
 
 /// Compare two text lists element by element.
@@ -412,7 +412,7 @@ fn check_repository(root, docs_only) {
     check_node(root);
     loaded := case_load_cases("", root);
     if result_is_fail(loaded) {
-        check_fail(map_get(loaded, "message"));
+        check_fail(result_get_message(loaded));
     }
     check_sample_cases(root, map_get(loaded, "fixtures"));
     check_documents(root);

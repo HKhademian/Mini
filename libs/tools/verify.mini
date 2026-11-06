@@ -33,10 +33,10 @@ fn verify_bootstrap(root) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the mini-written compiler first.");
     }
     parsed := json_parse(file_read(bootstrap_path));
-    if result_is_fail(parsed) || value_kind(map_get(parsed, "value")) != "map" {
+    if result_is_fail(parsed) || value_kind(result_get_value(parsed)) != "map" {
         verify_fail("invalid config/bootstrap.json");
     }
-    config := map_get(parsed, "value");
+    config := result_get_value(parsed);
     compiler := verify_text(config, "compiler");
     source := verify_text(config, "source");
     example := verify_text(config, "example");
@@ -47,7 +47,7 @@ fn verify_bootstrap(root) {
     if result_is_fail(versions_parsed) {
         verify_fail("invalid config/versions.json");
     }
-    current := map_get(versions_parsed, "value");
+    current := result_get_value(versions_parsed);
     if verify_text(current, "language") == "" || verify_text(current, "compiler") == ""
         || verify_text(current, "bootstrap") == "" {
         verify_fail("assign the language, compiler, and bootstrap versions before verifying the bootstrap");
@@ -90,7 +90,7 @@ fn verify_bootstrap(root) {
     loaded := case_load_case(case_path);
     if result_is_fail(loaded) {
         path_remove(work);
-        verify_fail(map_get(loaded, "message"));
+        verify_fail(result_get_message(loaded));
     }
     fixture := map_get(loaded, "fixture");
     definition := map_get(fixture, "definition");
@@ -105,7 +105,7 @@ fn verify_bootstrap(root) {
         verified := case_verify_scenario(fixture, list_get(scenarios, position), root, previous);
         if result_is_fail(verified) {
             path_remove(work);
-            verify_fail(map_get(verified, "message"));
+            verify_fail(result_get_message(verified));
         }
         list_set(artifacts, list_length(artifacts), map_get(verified, "artifact"));
         position = position + 1;

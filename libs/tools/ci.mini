@@ -127,9 +127,9 @@ fn ci_publish(root) {
     directory := path_join(root, "dist/release");
     parsed := json_parse_file(path_join(directory, "manifest.json"));
     if result_is_fail(parsed) {
-        ci_fail(map_get(parsed, "message"));
+        ci_fail(result_get_message(parsed));
     }
-    manifest := map_get(parsed, "value");
+    manifest := result_get_value(parsed);
     if map_get(manifest, "tag") != tag {
         ci_fail("manifest tag does not match " + tag);
     }

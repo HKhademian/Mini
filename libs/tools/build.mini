@@ -16,18 +16,18 @@ fn build_fail(message) {
 fn build_manifest(root) {
     parsed := json_parse_file(path_join(root, "tools/mini-tools.json"));
     if result_is_fail(parsed) {
-        build_fail(map_get(parsed, "message"));
+        build_fail(result_get_message(parsed));
     }
-    return map_get(parsed, "value");
+    return result_get_value(parsed);
 }
 
 /// Return the active compiler entry.
 fn build_compiler(root) {
     parsed := json_parse_file(path_join(root, "config/compiler.json"));
     if result_is_fail(parsed) {
-        build_fail(map_get(parsed, "message"));
+        build_fail(result_get_message(parsed));
     }
-    return map_get(map_get(parsed, "value"), "entry");
+    return map_get(result_get_value(parsed), "entry");
 }
 
 /// Compile one tool source and return its generated text.

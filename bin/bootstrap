@@ -1658,7 +1658,7 @@ function json_parse_file(path) {
     if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
-    return result_ok($mini_map_get(parsed, "value"), "");
+    return result_ok(result_get_value(parsed), "");
     return 0;
 }
 function project_root() {
@@ -1675,10 +1675,9 @@ function project_compiler_entry(root) {
 
     let parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
-        result_fail($mini_map_get(parsed, "message"));
         return "";
     }
-    return $mini_map_get($mini_map_get(parsed, "value"), "entry");
+    return $mini_map_get(result_get_value(parsed), "entry");
     return 0;
 }
 function bootstrap_fail(message) {
