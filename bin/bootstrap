@@ -184,7 +184,6 @@ function $mini_value_kind(value) {
     return "other";
 }
 function split_lines(source) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let lines = $mini_text_split(source, "\n");
     let position = 0;
@@ -199,7 +198,6 @@ function split_lines(source) {
     return 0;
 }
 function indent_output(output) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let lines = split_lines(output);
     let result = "";
@@ -220,7 +218,6 @@ function indent_output(output) {
     return 0;
 }
 function text_ends_with(source, suffix) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let size = (suffix).length;
     let length = (source).length;
@@ -231,31 +228,26 @@ function text_ends_with(source, suffix) {
     return 0;
 }
 function is_letter(character) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
     return 0;
 }
 function is_digit(character) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_text_find("0123456789", character) >= 0);
     return 0;
 }
 function is_identifier_part(character) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return (is_letter(character) || is_digit(character));
     return 0;
 }
 function is_two_character_symbol(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
     return 0;
 }
 function text_starts_with(source, prefix) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let size = (prefix).length;
     if ((size > (source).length)) {
@@ -265,7 +257,6 @@ function text_starts_with(source, prefix) {
     return 0;
 }
 function text_chomp(text) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let length = (text).length;
     while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
@@ -275,7 +266,6 @@ function text_chomp(text) {
     return 0;
 }
 function text_trim_end(text) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let length = (text).length;
     while ((length > 0)) {
@@ -290,7 +280,6 @@ function text_trim_end(text) {
     return 0;
 }
 function text_trim(text) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let start = 0;
     let end = (text).length;
@@ -304,43 +293,36 @@ function text_trim(text) {
     return 0;
 }
 function value_is_text(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "text");
     return 0;
 }
 function value_is_number(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "number");
     return 0;
 }
 function value_is_boolean(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "boolean");
     return 0;
 }
 function value_is_list(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "list");
     return 0;
 }
 function value_is_map(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "map");
     return 0;
 }
 function value_is_other(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ($mini_value_kind(value) === "other");
     return 0;
 }
 function list_has_text(items, value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let position = 0;
     while ((position < (items).length)) {
@@ -353,7 +335,6 @@ function list_has_text(items, value) {
     return 0;
 }
 function list_join_from(items, start, separator) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let parts = [];
     let position = start;
@@ -365,7 +346,6 @@ function list_join_from(items, start, separator) {
     return 0;
 }
 function list_reverse(items) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = [];
     let position = ((items).length - 1);
@@ -377,7 +357,6 @@ function list_reverse(items) {
     return 0;
 }
 function list_sorted(items) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = $mini_list_copy(items);
     let position = 0;
@@ -397,7 +376,6 @@ function list_sorted(items) {
     return 0;
 }
 function list_contains(items, value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let position = 0;
     while ((position < (items).length)) {
@@ -410,7 +388,6 @@ function list_contains(items, value) {
     return 0;
 }
 function list_is_text(value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!value_is_list(value))) {
         return false;
@@ -426,7 +403,6 @@ function list_is_text(value) {
     return 0;
 }
 function list_of2(first, second) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = [];
     $mini_list_set(result, 0, first);
@@ -435,7 +411,6 @@ function list_of2(first, second) {
     return 0;
 }
 function list_of3(first, second, third) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = [];
     $mini_list_set(result, 0, first);
@@ -445,7 +420,6 @@ function list_of3(first, second, third) {
     return 0;
 }
 function path_join(left, right) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((left === "")) {
         return right;
@@ -460,7 +434,6 @@ function path_join(left, right) {
     return 0;
 }
 function path_parent(path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let position = ((path).length - 1);
     while ((position >= 0)) {
@@ -474,7 +447,6 @@ function path_parent(path) {
     return 0;
 }
 function path_basename(path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let position = ((path).length - 1);
     while ((position >= 0)) {
@@ -488,7 +460,6 @@ function path_basename(path) {
     return 0;
 }
 function path_is_absolute(path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (text_starts_with(path, "/")) {
         return true;
@@ -497,7 +468,6 @@ function path_is_absolute(path) {
     return 0;
 }
 function path_normalize(path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let absolute = text_starts_with(path, "/");
     let parts = $mini_text_split(path, "/");
@@ -539,7 +509,6 @@ function path_normalize(path) {
     return 0;
 }
 function path_resolve(base, path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (path_is_absolute(path)) {
         return path_normalize(path);
@@ -548,7 +517,6 @@ function path_resolve(base, path) {
     return 0;
 }
 function token_new(kind, text, source, start, end, line, column, context) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let token = ({ __proto__: $mini_map_proto });
     $mini_map_set(token, "kind", kind);
@@ -563,7 +531,6 @@ function token_new(kind, text, source, start, end, line, column, context) {
     return 0;
 }
 function lex_advance(state) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let source = $mini_map_get(state, "text");
     let position = $mini_map_get(state, "position");
@@ -579,7 +546,6 @@ function lex_advance(state) {
     return 0;
 }
 function lex_start(state) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let lines = $mini_map_get(state, "lines");
     let token = token_new("symbol", "", $mini_map_get(state, "source"), $mini_map_get(state, "position"), $mini_map_get(state, "position"), $mini_map_get(state, "line"), $mini_map_get(state, "column"), $mini_list_get(lines, ($mini_map_get(state, "line") - 1)));
@@ -587,7 +553,6 @@ function lex_start(state) {
     return 0;
 }
 function diagnostic_indent(token) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let context = $mini_map_get(token, "context");
     let column = $mini_map_get(token, "column");
@@ -605,13 +570,11 @@ function diagnostic_indent(token) {
     return 0;
 }
 function diagnostic_text(token, label) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text($mini_map_get(token, "column"))) + ": ") + label) + "\n") + $mini_map_get(token, "context")) + "\n") + diagnostic_indent(token)) + "^\n");
     return 0;
 }
 function diagnostic_fail(token, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     (writeSync(2, diagnostic_text(token, message)), 0);
     (process.exit(1), 0);
@@ -619,20 +582,17 @@ function diagnostic_fail(token, message) {
     return 0;
 }
 function diagnostic_warn(token, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     (writeSync(2, diagnostic_text(token, ("warning: " + message))), 0);
     return 0;
     return 0;
 }
 function lex_fail(token, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return diagnostic_fail(token, message);
     return 0;
 }
 function lex_comment(state, source, include_comments) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let comment_token = lex_start(state);
     while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
@@ -649,7 +609,6 @@ function lex_comment(state, source, include_comments) {
     return 0;
 }
 function lex_word(state, source, token) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     $mini_map_set(token, "kind", "identifier");
     while ((($mini_map_get(state, "position") < (source).length) && is_identifier_part($mini_text_get(source, $mini_map_get(state, "position"))))) {
@@ -663,7 +622,6 @@ function lex_word(state, source, token) {
     return 0;
 }
 function lex_digits(state, source, token) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     $mini_map_set(token, "kind", "number");
     while ((($mini_map_get(state, "position") < (source).length) && is_digit($mini_text_get(source, $mini_map_get(state, "position"))))) {
@@ -673,7 +631,6 @@ function lex_digits(state, source, token) {
     return 0;
 }
 function lex_text(state, source, token) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     $mini_map_set(token, "kind", "text");
     lex_advance(state);
@@ -699,7 +656,6 @@ function lex_text(state, source, token) {
     return 0;
 }
 function lex_tokenize(source, source_name, include_comments) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let state = ({ __proto__: $mini_map_proto });
     $mini_map_set(state, "text", source);
@@ -756,7 +712,6 @@ function lex_tokenize(source, source_name, include_comments) {
     return 0;
 }
 function lex_resolve_include(base, path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (text_starts_with(path, "/")) {
         return path_normalize(path);
@@ -769,7 +724,6 @@ function lex_resolve_include(base, path) {
     return 0;
 }
 function lex_expand_includes(tokens, base, stack, seen) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let output = [];
     let position = 0;
@@ -830,13 +784,11 @@ function lex_expand_includes(tokens, base, stack, seen) {
     return 0;
 }
 function parser_fail(token, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return diagnostic_fail(token, message);
     return 0;
 }
 function parser_expression_new(code, kind) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let expression = ({ __proto__: $mini_map_proto });
     $mini_map_set(expression, "code", code);
@@ -845,19 +797,16 @@ function parser_expression_new(code, kind) {
     return 0;
 }
 function parser_token(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_list_get($mini_map_get(parser, "tokens"), $mini_map_get(parser, "position"));
     return 0;
 }
 function parser_peek(parser, offset) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_list_get($mini_map_get(parser, "tokens"), ($mini_map_get(parser, "position") + offset));
     return 0;
 }
 function parser_take(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let token = parser_token(parser);
     $mini_map_set(parser, "position", ($mini_map_get(parser, "position") + 1));
@@ -865,7 +814,6 @@ function parser_take(parser) {
     return 0;
 }
 function parser_expect(parser, text) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (($mini_map_get(parser_token(parser), "text") !== text)) {
         parser_fail(parser_token(parser), ("expected " + text));
@@ -875,7 +823,6 @@ function parser_expect(parser, text) {
     return 0;
 }
 function parser_identifier(parser, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (($mini_map_get(parser_token(parser), "kind") !== "identifier")) {
         parser_fail(parser_token(parser), message);
@@ -884,7 +831,6 @@ function parser_identifier(parser, message) {
     return 0;
 }
 function parser_expression(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let left = parser_conjunction(parser);
     while (($mini_map_get(parser_token(parser), "text") === "||")) {
@@ -899,7 +845,6 @@ function parser_expression(parser) {
     return 0;
 }
 function parser_conjunction(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let left = parser_equality(parser);
     while (($mini_map_get(parser_token(parser), "text") === "&&")) {
@@ -914,7 +859,6 @@ function parser_conjunction(parser) {
     return 0;
 }
 function parser_equality(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let left = parser_comparison(parser);
     while ((($mini_map_get(parser_token(parser), "text") === "==") || ($mini_map_get(parser_token(parser), "text") === "!="))) {
@@ -935,7 +879,6 @@ function parser_equality(parser) {
     return 0;
 }
 function parser_comparison(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let left = parser_additive(parser);
     while ((((($mini_map_get(parser_token(parser), "text") === "<") || ($mini_map_get(parser_token(parser), "text") === "<=")) || ($mini_map_get(parser_token(parser), "text") === ">")) || ($mini_map_get(parser_token(parser), "text") === ">="))) {
@@ -950,13 +893,11 @@ function parser_comparison(parser) {
     return 0;
 }
 function parser_additive_kind(kind) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return (((kind === "number") || (kind === "text")) || (kind === "unknown"));
     return 0;
 }
 function parser_additive(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let left = parser_unary(parser);
     while ((($mini_map_get(parser_token(parser), "text") === "+") || ($mini_map_get(parser_token(parser), "text") === "-"))) {
@@ -983,7 +924,6 @@ function parser_additive(parser) {
     return 0;
 }
 function parser_unary(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((($mini_map_get(parser_token(parser), "text") === "-") || ($mini_map_get(parser_token(parser), "text") === "!"))) {
         let operator = parser_take(parser);
@@ -1001,7 +941,6 @@ function parser_unary(parser) {
     return 0;
 }
 function lex_normalize_number(text) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let position = 0;
     while (((position < (text).length) && ($mini_text_get(text, position) === "0"))) {
@@ -1014,7 +953,6 @@ function lex_normalize_number(text) {
     return 0;
 }
 function parser_primary(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let token = parser_take(parser);
     if (($mini_map_get(token, "text") === "(")) {
@@ -1045,18 +983,17 @@ function parser_primary(parser) {
     return 0;
 }
 function parser_fn_args(parser, token) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
-    if ((!$mini_map_get(parser, "in_function"))) {
-        parser_fail(token, "fn_args outside function");
-    }
     parser_expect(parser, "(");
     parser_expect(parser, ")");
+    if ((!$mini_map_get(parser, "in_function"))) {
+        return parser_expression_new("process.argv.slice(2)", "list");
+    }
+    $mini_map_set($mini_map_get(parser, "current"), "captures", true);
     return parser_expression_new("$mini_fn_args", "list");
     return 0;
 }
 function parser_argument_code_list(args) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let codes = [];
     let position = 0;
@@ -1068,13 +1005,11 @@ function parser_argument_code_list(args) {
     return 0;
 }
 function parser_argument_codes(args) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_list_to_text(parser_argument_code_list(args), ", ");
     return 0;
 }
 function parser_call(parser, name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let name_text = $mini_map_get(name, "text");
     let is_builtin = builtin_exists(name_text);
@@ -1135,7 +1070,6 @@ function parser_call(parser, name) {
     return 0;
 }
 function parser_statement(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (($mini_map_get(parser_token(parser), "text") === "while")) {
         parser_take(parser);
@@ -1197,7 +1131,6 @@ function parser_statement(parser) {
     return 0;
 }
 function parser_condition_parenthesized(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let tokens = $mini_map_get(parser, "tokens");
     let position = $mini_map_get(parser, "position");
@@ -1222,7 +1155,6 @@ function parser_condition_parenthesized(parser) {
     return 0;
 }
 function parser_condition(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let start = parser_token(parser);
     if (($mini_map_get(parser, "warn") && parser_condition_parenthesized(parser))) {
@@ -1236,7 +1168,6 @@ function parser_condition(parser) {
     return 0;
 }
 function parser_block(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     parser_expect(parser, "{");
     let outer = $mini_map_get(parser, "variables");
@@ -1260,7 +1191,6 @@ function parser_block(parser) {
     return 0;
 }
 function parser_function_declaration(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let token = parser_take(parser);
     if (($mini_map_get(parser, "depth") !== 0)) {
@@ -1291,13 +1221,15 @@ function parser_function_declaration(parser) {
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "in_function", false);
     body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
-    let capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    let capture = "";
+    if ($mini_map_get(info, "captures")) {
+        capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    }
     body = (("{\n" + capture) + $mini_text_slice(body, 1, (body).length));
     return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_to_text(parameters, ", ")) + ") ") + body) + "\n");
     return 0;
 }
 function parser_import_names(imports) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let output = "";
     if ($mini_map_has(imports, "readFileSync")) {
@@ -1319,13 +1251,11 @@ function parser_import_names(imports) {
     return 0;
 }
 function parser_helper_blocks(helpers) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return builtin_used_helper_blocks(helpers);
     return 0;
 }
 function parser_program(parser) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let shebang = "";
     if (($mini_map_get(parser_token(parser), "kind") === "shebang")) {
@@ -1345,7 +1275,6 @@ function parser_program(parser) {
     return 0;
 }
 function parser_new(tokens) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let parser = ({ __proto__: $mini_map_proto });
     $mini_map_set(parser, "tokens", tokens);
@@ -1381,6 +1310,7 @@ function parser_new(tokens) {
             let info = ({ __proto__: $mini_map_proto });
             $mini_map_set(info, "arity", arity);
             $mini_map_set(info, "result", "unknown");
+            $mini_map_set(info, "captures", false);
             $mini_map_set($mini_map_get(parser, "functions"), $mini_map_get($mini_list_get(tokens, (index + 1)), "text"), info);
         }
         index = (index + 1);
@@ -1389,13 +1319,11 @@ function parser_new(tokens) {
     return 0;
 }
 function parser_compile(tokens) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return parser_program(parser_new(tokens));
     return 0;
 }
 function parser_compile_quiet(tokens) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let parser = parser_new(tokens);
     $mini_map_set(parser, "warn", false);
@@ -1414,7 +1342,6 @@ let builtin_helper_order = [];
 let builtin_reference_targets = ({ __proto__: $mini_map_proto });
 let builtin_emit_forms = ({ __proto__: $mini_map_proto });
 function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     $mini_list_set(builtin_names_list, (builtin_names_list).length, name);
     $mini_map_set(builtin_name_set, name, true);
@@ -1484,7 +1411,6 @@ builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", 
 builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
 builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
 builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n", "", "$mini_path_temp_file()");
-builtin_add("process_args", "", "list", "essential", "", "", "", "", "process.argv.slice(2)");
 builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
 builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
 builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
@@ -1503,19 +1429,16 @@ builtin_add("text_to_bytes", "text", "list", "performance", "", "text_to_bytes",
 builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
 builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
 function builtin_names() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_list_copy(builtin_names_list);
     return 0;
 }
 function builtin_exists(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_map_has(builtin_name_set, name);
     return 0;
 }
 function builtin_parameters(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!$mini_map_has(builtin_parameter_kinds, name))) {
         return [];
@@ -1528,7 +1451,6 @@ function builtin_parameters(name) {
     return 0;
 }
 function builtin_result(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ($mini_map_has(builtin_result_kinds, name)) {
         return $mini_map_get(builtin_result_kinds, name);
@@ -1537,7 +1459,6 @@ function builtin_result(name) {
     return 0;
 }
 function builtin_imports(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!$mini_map_has(builtin_import_names, name))) {
         return [];
@@ -1551,7 +1472,6 @@ function builtin_imports(name) {
 }
 let reference_mode = false;
 function builtin_class(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ($mini_map_has(builtin_classes, name)) {
         return $mini_map_get(builtin_classes, name);
@@ -1560,7 +1480,6 @@ function builtin_class(name) {
     return 0;
 }
 function builtin_reference_target(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ($mini_map_has(builtin_reference_targets, name)) {
         return $mini_map_get(builtin_reference_targets, name);
@@ -1569,7 +1488,6 @@ function builtin_reference_target(name) {
     return 0;
 }
 function builtin_helper_key(name) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ($mini_map_has(builtin_helper_keys, name)) {
         return $mini_map_get(builtin_helper_keys, name);
@@ -1578,13 +1496,11 @@ function builtin_helper_key(name) {
     return 0;
 }
 function builtin_helper_order_keys() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_list_copy(builtin_helper_order);
     return 0;
 }
 function builtin_used_helper_blocks(helpers) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let order = builtin_helper_order;
     let output = "";
@@ -1600,7 +1516,6 @@ function builtin_used_helper_blocks(helpers) {
     return 0;
 }
 function builtin_helper_text(key) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ($mini_map_has(builtin_helpers, key)) {
         return $mini_map_get(builtin_helpers, key);
@@ -1609,7 +1524,6 @@ function builtin_helper_text(key) {
     return 0;
 }
 function builtin_replace(source, needle, replacement) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let output = "";
     let position = 0;
@@ -1626,7 +1540,6 @@ function builtin_replace(source, needle, replacement) {
     return 0;
 }
 function builtin_apply(form, args) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let output = form;
     let position = 0;
@@ -1638,7 +1551,6 @@ function builtin_apply(form, args) {
     return 0;
 }
 function builtin_emit(name, args) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let reference_target = builtin_reference_target(name);
     if ((reference_mode && (reference_target !== ""))) {
@@ -1651,7 +1563,6 @@ function builtin_emit(name, args) {
     return 0;
 }
 function process_capture(command, args, directory, input) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let options = ({ __proto__: $mini_map_proto });
     $mini_map_set(options, "command", command);
@@ -1663,7 +1574,6 @@ function process_capture(command, args, directory, input) {
     return 0;
 }
 function result_ok(value, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", true);
@@ -1673,7 +1583,6 @@ function result_ok(value, message) {
     return 0;
 }
 function result_fail(message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let result = ({ __proto__: $mini_map_proto });
     $mini_map_set(result, "ok", false);
@@ -1683,7 +1592,6 @@ function result_fail(message) {
     return 0;
 }
 function result_is_ok(result) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!value_is_map(result))) {
         return false;
@@ -1692,13 +1600,11 @@ function result_is_ok(result) {
     return 0;
 }
 function result_is_fail(result) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return (!result_is_ok(result));
     return 0;
 }
 function result_get_message(result) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!value_is_map(result))) {
         return "";
@@ -1707,7 +1613,6 @@ function result_get_message(result) {
     return 0;
 }
 function result_set_message(result, message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (value_is_map(result)) {
         $mini_map_set(result, "message", message);
@@ -1716,7 +1621,6 @@ function result_set_message(result, message) {
     return 0;
 }
 function result_get_value(result) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!value_is_map(result))) {
         return 0;
@@ -1725,7 +1629,6 @@ function result_get_value(result) {
     return 0;
 }
 function result_set_value(result, value) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if (value_is_map(result)) {
         $mini_map_set(result, "value", value);
@@ -1734,7 +1637,6 @@ function result_set_value(result, value) {
     return 0;
 }
 function json_parse_file(path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     if ((!$mini_path_is_exists(path))) {
         return result_fail(("cannot read " + path));
@@ -1747,7 +1649,6 @@ function json_parse_file(path) {
     return 0;
 }
 function project_root() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let script = process.argv[1];
     let base = path_parent(path_parent(script));
@@ -1758,7 +1659,6 @@ function project_root() {
     return 0;
 }
 function project_compiler_entry(root) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let parsed = json_parse_file(path_join(root, "config/compiler.json"));
     if (result_is_fail(parsed)) {
@@ -1769,7 +1669,6 @@ function project_compiler_entry(root) {
     return 0;
 }
 function bootstrap_fail(message) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     (writeSync(2, (message + "\n")), 0);
     (process.exit(1), 0);
@@ -1777,7 +1676,6 @@ function bootstrap_fail(message) {
     return 0;
 }
 function bootstrap_compile_text(source) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let tokens = lex_tokenize(readFileSync(source, "utf8"), path_basename(source), false);
     let expanded = lex_expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
@@ -1785,7 +1683,6 @@ function bootstrap_compile_text(source) {
     return 0;
 }
 function bootstrap_compile_with(root, compiler, source, output) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let args = [];
     $mini_list_set(args, 0, compiler);
@@ -1799,7 +1696,6 @@ function bootstrap_compile_with(root, compiler, source, output) {
     return 0;
 }
 function bootstrap_run(root, path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let args = [];
     $mini_list_set(args, 0, path);
@@ -1811,7 +1707,6 @@ function bootstrap_run(root, path) {
     return 0;
 }
 function bootstrap_executable(root, path) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let args = [];
     $mini_list_set(args, 0, "755");
@@ -1821,7 +1716,6 @@ function bootstrap_executable(root, path) {
     return 0;
 }
 function bootstrap_all(root) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let work = $mini_path_temp_directory();
     let source = path_join(root, "tools/compiler.mini");
@@ -1846,7 +1740,6 @@ function bootstrap_all(root) {
     return 0;
 }
 function main() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return bootstrap_all(project_root());
     return 0;
