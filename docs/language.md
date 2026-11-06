@@ -146,7 +146,8 @@ output = join(output, token);
 
 - `fn` declares a named function at the top level.
 - Parentheses contain comma-separated parameters or call arguments.
-- A call supplies one argument per parameter, in order.
+- A user call maps arguments to parameters in order.
+- A missing user argument is `0`; a supplied extra argument is discarded.
 - `return expression;` ends the call with that value.
 - Falling off the end of a function returns 0.
 - `{` and `}` delimit the body; no semicolon follows its closing brace.
@@ -155,9 +156,16 @@ This separates scanner, parser, and emitter operations without introducing
 objects or methods. The function and call forms map directly to JavaScript.
 Parameter and result typing, scope, and declaration order remain open.
 
+mini does not typecheck. It tracks the kind of literals and of expressions it can
+derive them for, so a few obviously wrong forms are rejected at compile time.
+Anything else, including a wrong argument count, is a runtime concern: mini has
+no absence value, so every value is a number, text, boolean, list, or map.
+
+Builtin calls keep exact arity because their parameters are part of the host
+contract.
+
 The [parameter-passing proposal](parameter-passing.md) evaluates local parameter
-bindings with shared collections and investigates omitted arguments. Passing rules
-remain under review, with pending cases; calls still require exact arity.
+bindings with shared collections and investigates omitted arguments.
 
 ## Accepted form: conditionals and loops
 

@@ -1,0 +1,4 @@
+fn join(left, right) {
+    return left + right;
+}
+io_write_line(number_to_text(list_length(join("a"))));

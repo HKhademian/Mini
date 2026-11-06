@@ -126,6 +126,12 @@ Avoid speculative features, advanced mathematics, Unicode requirements, rich
 diagnostics, extra safety systems, and unnecessary layers. Rebuild checks stay
 small too. “Smallest” is a practical goal, not a mathematical claim.
 
+Type checking is deliberately absent. mini resolves identifiers, tracks the kind
+of literals and derivable expressions, and reports a few obvious mistakes, but
+it is not a typed language. A wrong argument count is a runtime concern: a
+missing argument is 0 and an extra one is discarded. A strongly typed language
+is a downstream project built on this foundation, not a change to it.
+
 ## Development
 
 Use Node 22.18.0 or newer. Development and release builds pin 24.16.0 in

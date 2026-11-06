@@ -949,16 +949,27 @@ function parser_call(parser, name) {
         }
     }
     parser_expect(parser, ")");
-    let arity = $mini_map_get($mini_map_get(functions, name_text), "arity");
     if (is_builtin) {
-        arity = (builtin_parameters(name_text)).length;
-    }
-    if (((args).length !== arity)) {
-        let suffix = "s";
-        if ((arity === 1)) {
-            suffix = "";
+        let arity = (builtin_parameters(name_text)).length;
+        if (((args).length !== arity)) {
+            let suffix = "s";
+            if ((arity === 1)) {
+                suffix = "";
+            }
+            parser_fail(name, ((("expected " + $mini_number_to_text(arity)) + " argument") + suffix));
         }
-        parser_fail(name, ((("expected " + $mini_number_to_text(arity)) + " argument") + suffix));
+    } else {
+        let arity = $mini_map_get($mini_map_get(functions, name_text), "arity");
+        while (((args).length < arity)) {
+            $mini_list_set(args, (args).length, parser_expression_new("0", "number"));
+        }
+        let padded = [];
+        let position = 0;
+        while ((position < arity)) {
+            $mini_list_set(padded, (padded).length, $mini_list_get(args, position));
+            position = (position + 1);
+        }
+        args = padded;
     }
     if ((!is_builtin)) {
         return parser_expression_new((((name_text + "(") + parser_argument_codes(args)) + ")"), $mini_map_get($mini_map_get(functions, name_text), "result"));

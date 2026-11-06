@@ -1,0 +1,5 @@
+fn join(left, right) {
+    return left + right;
+}
+io_write_line(join("a", "b"));
+io_write_line(join("a", "b", "ignored"));

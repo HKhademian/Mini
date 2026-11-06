@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- compiler 0.4.0-alpha.4: a user call no longer reports an argument-count error.
+  A missing argument is 0 and an extra argument is discarded, matching mini's
+  no-absence-value rule. Builtin calls keep exact arity. The language contract
+  now states that mini does not typecheck.
+
 - mini 0.2.0-alpha.4 / cli 0.1.0-alpha.17 / VS Code 0.3.6: write the name as
   lowercase mini in the editor display name, language picker alias,
   configuration title, grammar name, launch configuration, output channel, and

@@ -1,0 +1,26 @@
+{
+  "id": "language.functions-missing-argument",
+  "kind": "compile",
+  "source": "007-009-functions-missing-argument.mini",
+  "features": [
+    "functions.call"
+  ],
+  "cases": [
+    {
+      "name": "padded-with-zero",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0,
+      "artifact": {
+        "file": "007-009-functions-missing-argument.expected.js"
+      }
+    }
+  ]
+}

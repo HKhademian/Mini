@@ -1,0 +1,23 @@
+{
+  "id": "language.functions-arguments-shape",
+  "kind": "feature",
+  "source": "007-008-functions-arguments-shape.mini",
+  "features": [
+    "functions.call"
+  ],
+  "cases": [
+    {
+      "name": "extra-argument-discarded",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "ab\nab\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

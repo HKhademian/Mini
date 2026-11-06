@@ -112,9 +112,9 @@ substituting zero or null. Arbitrary default expressions and declaration syntax
 are further features, not necessary for one universal default.
 
 Collection lookup now selects ordinary numeric zero as its fallback; null is not
-introduced. That does not make parameters optional. Retain exact arity for now;
-revisit trailing omission only when compiler code demonstrates a recurring default.
-The filling mechanism is small, but no omitted-argument behavior is accepted here.
+introduced. Trailing omission is now accepted: a missing user argument is `0`
+and an extra argument is discarded, so parameter count is not a compile error.
+See the [language contract](language.md) for the accepted rule.
 
 ## Review cases
 

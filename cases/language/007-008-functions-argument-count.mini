@@ -1,4 +1,0 @@
-fn join(left, right) {
-    return left + right;
-}
-output := join("mini");

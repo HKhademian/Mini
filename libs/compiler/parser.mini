@@ -237,16 +237,30 @@ fn parser_call(parser, name) {
         }
     }
     parser_expect(parser, ")");
-    arity := map_get(map_get(functions, name_text), "arity");
     if is_builtin {
-        arity = list_length(builtin_parameters(name_text));
-    }
-    if list_length(args) != arity {
-        suffix := "s";
-        if arity == 1 {
-            suffix = "";
+        // Builtin arity is part of the host contract, so it stays exact.
+        arity := list_length(builtin_parameters(name_text));
+        if list_length(args) != arity {
+            suffix := "s";
+            if arity == 1 {
+                suffix = "";
+            }
+            parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
         }
-        parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
+    } else {
+        // User calls pad missing arguments with 0 and discard extras, so a
+        // wrong argument count is a runtime concern rather than a compile one.
+        arity := map_get(map_get(functions, name_text), "arity");
+        while list_length(args) < arity {
+            list_set(args, list_length(args), parser_expression_new("0", "number"));
+        }
+        padded := list_new();
+        position := 0;
+        while position < arity {
+            list_set(padded, list_length(padded), list_get(args, position));
+            position = position + 1;
+        }
+        args = padded;
     }
     if !is_builtin {
         return parser_expression_new(name_text + "(" + parser_argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
