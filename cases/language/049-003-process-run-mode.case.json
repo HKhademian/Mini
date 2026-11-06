@@ -1,23 +1,17 @@
 {
-  "id": "language.process-run-mode",
-  "kind": "reject",
+  "id": "language.process-run-dynamic-mode",
+  "kind": "feature",
   "source": "049-003-process-run-mode.mini",
-  "features": [
-    "process.run"
-  ],
+  "features": ["process.run.library"],
   "cases": [
     {
-      "name": "number-mode",
+      "name": "dynamic-mode-value",
       "stdin": {
         "text": ""
       },
-      "stdout": {
-        "text": ""
-      },
-      "stderr": {
-        "file": "049-003-process-run-mode.stderr"
-      },
-      "exitCode": 1
+      "stdout": {"text": "dynamic mode\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

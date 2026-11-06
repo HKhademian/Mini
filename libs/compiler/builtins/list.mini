@@ -45,50 +45,6 @@ builtin_add(
     "[]"
 );
 builtin_add(
-    "list_pop_back",
-    "list",
-    "unknown",
-    "performance",
-    "",
-    "list_pop_back",
-    "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n",
-    "pure_list_pop_back",
-    "$mini_list_pop_back({0})"
-);
-builtin_add(
-    "list_pop_front",
-    "list",
-    "unknown",
-    "performance",
-    "",
-    "list_pop_front",
-    "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n",
-    "pure_list_pop_front",
-    "$mini_list_pop_front({0})"
-);
-builtin_add(
-    "list_push_back",
-    "list,unknown",
-    "number",
-    "performance",
-    "",
-    "list_push_back",
-    "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n",
-    "pure_list_push_back",
-    "$mini_list_push_back({0}, {1})"
-);
-builtin_add(
-    "list_push_front",
-    "list,unknown",
-    "number",
-    "performance",
-    "",
-    "list_push_front",
-    "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n",
-    "pure_list_push_front",
-    "$mini_list_push_front({0}, {1})"
-);
-builtin_add(
     "list_set",
     "unknown,number,unknown",
     "number",

@@ -32,8 +32,8 @@ the operating system or host runtime:
 | `file_read`, `file_write`, `file_read_bytes`, `file_write_bytes` | File contents |
 | `file_remove`, `path_temp_directory`, `directory_remove` | Filesystem mutation |
 | `directory_list`, `directory_create`, `path_is_exists`, `path_is_directory`, `path_copy`, `path_remove` | Filesystem queries and mutation |
-| `process_args`, `process_exit` | Process interface |
-| `process_spawn`, `process_run`, `process_exec_path`, `process_script_path`, `process_env` | Child processes and host environment |
+| `process_exit` | Process interface |
+| `process_spawn`, `process_exec_path`, `process_script_path`, `process_env` | Child processes and host environment |
 | `time_millis` | Host clock |
 | `value_kind` | Runtime representation introspection |
 
@@ -50,7 +50,7 @@ algorithm:
 
 ```text
 text_length, text_get
-list_length, list_get, list_set, list_new, list_copy
+list_length, list_get, list_set, list_new, list_copy, list_truncate
 map_get, map_set, map_keys, map_has, map_new, map_copy
 ```
 
@@ -101,6 +101,7 @@ Anything above the representation layer should normally be a mini library, not
 a builtin:
 
 - `text_trim`, `text_join`, and other text conveniences;
+- `process_run`, a text-stream wrapper over `process_spawn`;
 - path composition and normalization helpers;
 - case helpers and repository utilities;
 - application-level parsing and formatting.

@@ -1,3 +1,5 @@
+include "../../libs/common/list.mini";
+
 /// Push and pop from the back.
 stack := list_new();
 list_push_back(stack, "a");

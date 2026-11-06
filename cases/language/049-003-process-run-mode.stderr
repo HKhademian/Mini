@@ -1,3 +1,0 @@
-049-003-process-run-mode.mini:1:1: expected text argument
-process_run("node", list_new(), 1);
-^

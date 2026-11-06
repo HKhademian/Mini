@@ -1,3 +1,5 @@
+include "../../libs/common/list.mini";
+
 /// Push at the back and pop from the front.
 queue := list_new();
 list_push_back(queue, "first");

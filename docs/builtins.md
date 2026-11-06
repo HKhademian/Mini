@@ -41,12 +41,13 @@ text when the host does not provide one. Tools use it to locate repository files
 independently of the current directory.
 
 `process_spawn(options)` runs one child process from an options map. Keys are
-`command` (text), `arguments` (text list), `mode` (`capture` or `inherit`),
-`directory` (working directory; empty inherits the parent's), `input` (byte list
-for captured stdin), and `timeout` (milliseconds; zero waits indefinitely). The
-result map holds `status`, `signal`, `stdout`, `stderr`, and `error`. Captured
-streams are byte lists; inherited streams are connected to the parent and stay
-empty. `status` is 1 when the command cannot start or ends by a signal.
+`command` (text), `arguments` (text list), `mode` (`capture` or `inherit`; other
+mode values capture), `directory` (working directory; empty inherits the
+parent's), `input` (byte list for captured stdin), and `timeout` (milliseconds;
+zero waits indefinitely). The result map holds `status`, `signal`, `stdout`,
+`stderr`, and `error`. Captured streams are byte lists; inherited streams are
+connected to the parent and stay empty. `status` is 1 when the command cannot
+start or ends by a signal.
 
 `value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
 `other` for the runtime kind of a value.
@@ -114,9 +115,10 @@ The accepted built-ins `file_read(path)` and `file_write(path, text)` provide
 whole-file UTF-8 input and exact replacement output for the compiler's file interface.
 See [the draft](language.md) for the initial success contract.
 
-The accepted built-in `process_args()` returns a text list for the generated
-compiler's command interface. Shared built-ins `list_length(items)` and
-`list_get(items, index)` expose the elements.
+`fn_args()` returns the current function's supplied arguments; at program
+top-level it returns the command-line arguments, excluding Node and the script
+path. It is compiler-provided, not a host builtin. Shared built-ins
+`list_length(items)` and `list_get(items, index)` expose the elements.
 `list_new()` now creates a fresh empty list of length 0. The compiler supports its
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
@@ -126,18 +128,17 @@ targets, gaps, and out-of-range positions read as numeric zero. Negative indices
 count from the end, as for assignment. Explicit reserve remains under discussion;
 see the [language contract](language.md).
 
-, which mini
-identifiers cannot contain, to avoid collisions with mini source names.
+Generated helper names use the `$mini_` prefix, which mini identifiers cannot
+contain, to avoid collisions with mini source names.
 
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
-`list_push_back(items, value)` and `list_push_front(items, value)` mutate a list
-and return 0. `list_pop_back(items)` and `list_pop_front(items)` remove and
-return one value, or numeric zero for an empty or non-list target.
-`list_truncate(items, length)` shrinks a list to an existing non-negative length;
-longer or invalid lengths are no-ops. These operations are performance builtins
-with pure reference implementations; `list_truncate` is a representation
-primitive used by the pure pop implementations.
+`list_push_back`, `list_push_front`, `list_pop_back`, and `list_pop_front` are
+Mini helpers in [libs/common/list.mini](../libs/common/list.mini). They mutate a
+list and return 0 for pushes, or remove and return one value for pops. Empty or
+non-list pops return 0. `list_truncate(items, length)` is the representation
+primitive they use to shrink a list to an existing non-negative length; longer
+or invalid lengths are no-ops.
 `list_to_text(items, separator)` joins text elements with a text separator.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.
@@ -190,16 +191,12 @@ The accepted built-in `process_exit(status)` provides immediate termination with
 an integer status from 0 through 255, including from inside a function. Normal
 program completion gives status 0. This is a primitive host operation.
 
-The accepted built-in `process_run(command, args, mode)` runs one child process
-to completion and returns a map with `status`, `signal`, `stdout`, `stderr`, and
-`error`. `command` is text, `args` is a list whose elements convert to text, and
-the environment is inherited. `mode` is `capture` to collect UTF-8 stdout and
-stderr, or `inherit` to connect the child's standard streams to the parent, with
-empty captured fields. `status` is the exit status, or 1 when the command cannot
-start or ends by a signal. `signal` names a signalled process and is otherwise
-empty; `error` holds a startup failure message and is otherwise empty. Captured
-output is bounded by a fixed implementation buffer. Execution is one-shot; there
-is no streaming, stdin piping, environment override, or timeout.
+`process_run(command, args, mode)` is a helper in
+[libs/common/process-run.mini](../libs/common/process-run.mini). Include that
+library to run one child process through `process_spawn` and receive captured
+output as UTF-8 text. It provides the simple command/arguments/mode form; use
+`process_spawn(options)` when working-directory, byte-input, or timeout controls
+are needed.
 
 The accepted built-ins `process_exec_path()` and `path_temp_directory()` expose the
 running Node executable path and create a fresh empty directory under the host

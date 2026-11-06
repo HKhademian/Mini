@@ -81,6 +81,10 @@ function $mini_list_to_text(items, separator) {
     }
     return output;
 }
+function $mini_list_truncate(items, length) {
+    if (Array.isArray(items) && typeof length === "number" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length
+    return 0;
+}
 function $mini_map_copy(items) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
     return Object.assign(Object.create(null), items);
@@ -317,11 +321,6 @@ function value_is_map(value) {
     return ($mini_value_kind(value) === "map");
     return 0;
 }
-function value_is_other(value) {
-
-    return ($mini_value_kind(value) === "other");
-    return 0;
-}
 function list_has_text(items, value) {
 
     let position = 0;
@@ -400,6 +399,55 @@ function list_is_text(value) {
         position = (position + 1);
     }
     return true;
+    return 0;
+}
+function list_push_back(items, value) {
+
+    if (value_is_list(items)) {
+        $mini_list_set(items, (items).length, value);
+    }
+    return 0;
+    return 0;
+}
+function list_push_front(items, value) {
+
+    if ((!value_is_list(items))) {
+        return 0;
+    }
+    let position = (items).length;
+    while ((position > 0)) {
+        $mini_list_set(items, position, $mini_list_get(items, (position - 1)));
+        position = (position - 1);
+    }
+    $mini_list_set(items, 0, value);
+    return 0;
+    return 0;
+}
+function list_pop_back(items) {
+
+    if (((!value_is_list(items)) || ((items).length === 0))) {
+        return 0;
+    }
+    let length = (items).length;
+    let value = $mini_list_get(items, (length - 1));
+    $mini_list_truncate(items, (length - 1));
+    return value;
+    return 0;
+}
+function list_pop_front(items) {
+
+    if (((!value_is_list(items)) || ((items).length === 0))) {
+        return 0;
+    }
+    let length = (items).length;
+    let value = $mini_list_get(items, 0);
+    let position = 0;
+    while ((position < (length - 1))) {
+        $mini_list_set(items, position, $mini_list_get(items, (position + 1)));
+        position = (position + 1);
+    }
+    $mini_list_truncate(items, (length - 1));
+    return value;
     return 0;
 }
 function list_of() {
@@ -837,10 +885,6 @@ builtin_add("list_copy", "list", "list", "performance", "", "list_copy", "functi
 builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list_get", "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n", "", "$mini_list_get({0}, {1})");
 builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
 builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
-builtin_add("list_pop_back", "list", "unknown", "performance", "", "list_pop_back", "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n", "pure_list_pop_back", "$mini_list_pop_back({0})");
-builtin_add("list_pop_front", "list", "unknown", "performance", "", "list_pop_front", "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n", "pure_list_pop_front", "$mini_list_pop_front({0})");
-builtin_add("list_push_back", "list,unknown", "number", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n", "pure_list_push_back", "$mini_list_push_back({0}, {1})");
-builtin_add("list_push_front", "list,unknown", "number", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n", "pure_list_push_front", "$mini_list_push_front({0}, {1})");
 builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
 builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_to_text", "$mini_list_to_text({0}, {1})");
 builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
@@ -868,7 +912,6 @@ builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "fu
 builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
 builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
 builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
-builtin_add("process_run", "text,list,text", "map", "essential", "", "process_run", "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n", "", "$mini_process_run({0}, {1}, {2})");
 builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
 builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
 builtin_add("text_code", "text", "number", "representation", "", "text_code", "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", "", "$mini_text_code({0})");

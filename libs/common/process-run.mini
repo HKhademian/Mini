@@ -1,0 +1,17 @@
+/// Text-stream process helper built on the general process primitive.
+
+include "process.mini";
+include "text.mini";
+
+/// Run command with arguments and return a result map with text output streams.
+/// The child inherits the parent environment; mode selects capture or inherit.
+fn process_run(command, args, mode) {
+    options := map_new();
+    map_set(options, "command", command);
+    map_set(options, "arguments", args);
+    map_set(options, "mode", mode);
+    result := process_spawn(options);
+    map_set(result, "stdout", text_from_bytes(map_get(result, "stdout")));
+    map_set(result, "stderr", text_from_bytes(map_get(result, "stderr")));
+    return result;
+}

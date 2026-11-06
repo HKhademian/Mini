@@ -1,3 +1,5 @@
+include "../../libs/common/list.mini";
+
 /// Exercise list stack mutation.
 items := list_new();
 list_push_back(items, "b");

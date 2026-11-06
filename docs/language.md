@@ -150,8 +150,8 @@ output = join(output, token);
 - A missing user argument is `0`; extra arguments reach the function, where
   declared parameters ignore them.
 - `fn_args()` returns the supplied arguments of the current function as a list,
-  including any beyond its declared parameters. It is an error outside a
-  function.
+  including any beyond its declared parameters. At program top-level it returns
+  the command-line arguments.
 - `return expression;` ends the call with that value.
 - Falling off the end of a function returns 0.
 - `{` and `}` delimit the body; no semicolon follows its closing brace.
@@ -337,12 +337,12 @@ file_write("output.txt", source);
 These operations provide file access; parsing and emission stay in mini
 compiler code.
 
-## Accepted operations: lists and process arguments
+## Accepted operations: lists and program arguments
 
 Use shared list operations for a list returned by the host:
 
 ```text
-args := process_args();
+args := fn_args();
 position := 0;
 while position < list_length(args) {
     io_write(list_get(args, position));
@@ -350,8 +350,9 @@ while position < list_length(args) {
 }
 ```
 
-- `process_args()` returns a list initially containing text arguments, excluding Node and
-  the script path. It is a primitive built-in.
+- At program top-level, `fn_args()` returns a list initially containing text
+  arguments, excluding Node and the script path. Inside a function, it returns
+  that function's supplied arguments. It is compiler-provided, not a builtin.
 - `list_length(items)` returns the number of elements; an empty list has length 0.
 - `list_get(items, index)` returns one element, using a zero-based index.
   The caller supplies an integer index; negative indices count from the end.
@@ -366,7 +367,7 @@ Lists can be held in bindings and passed to functions. They can store numbers,
 booleans, text, lists, and maps using `list_set` below. Equality keeps its existing
 scalar contract. The list operations can serve future list-producing APIs too.
 
-For `node compiler.js compile source.mini result.js`, `process_args()` contains
+For `node compiler.js compile source.mini result.js`, top-level `fn_args()` contains
 three elements: `compile`, `source.mini`, and `result.js`, in that order.
 The compiler can combine list access with file I/O to implement its selected
 command interface.
@@ -697,22 +698,26 @@ value := map_get(parsed, "value");
 - It returns a map with `ok` and `value`; invalid JSON or non-text input returns
   `ok` false and `value` 0. Parsing adds no JSON value kind.
 
-## Accepted operation: process execution
+## Process execution helper
 
 Run one child process and inspect its result:
 
 ```text
+include "libs/common/process-run.mini";
 arguments := list_new();
 list_set(arguments, 0, "--version");
 result := process_run("node", arguments, "capture");
 io_write(map_get(result, "stdout"));
 ```
 
-- `process_run(command, args, mode)` runs one command to completion without a
-  shell. `command` is text and `args` is a list whose elements convert to text.
+- `process_run(command, args, mode)` is a Mini library helper over the
+  `process_spawn(options)` host operation. It runs one command to completion
+  without a shell. `command` is text and `args` is a list whose elements convert
+  to text.
 - The child inherits the parent environment. `mode` is `capture` to collect
   stdout and stderr as UTF-8 text, or `inherit` to connect the child's standard
-  streams to the parent's; inherited streams are not captured.
+  streams to the parent's; inherited streams are not captured. Any other mode
+  value uses capture.
 - The result is a map with `status`, `signal`, `stdout`, `stderr`, and `error`.
   `status` is the exit status, or 1 when the command cannot start or ends by a
   signal. `signal` names a signalled process; `error` describes a startup

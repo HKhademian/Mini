@@ -1,23 +1,19 @@
 {
-  "id": "language.process-run-args",
-  "kind": "reject",
+  "id": "language.process-run-extra-args",
+  "kind": "feature",
   "source": "049-002-process-run-args.mini",
   "features": [
-    "process.run"
+    "process.run.library"
   ],
   "cases": [
     {
-      "name": "text-args",
+      "name": "extra-argument-is-ignored",
       "stdin": {
         "text": ""
       },
-      "stdout": {
-        "text": ""
-      },
-      "stderr": {
-        "file": "049-002-process-run-args.stderr"
-      },
-      "exitCode": 1
+      "stdout": {"text": "extra ignored\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

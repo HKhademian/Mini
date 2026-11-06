@@ -1,4 +1,6 @@
 /// Run Node once, capture its output and status, and print them.
+include "../libs/common/process-run.mini";
+
 args := list_new();
 list_set(args, 0, "-e");
 list_set(args, 1, "process.stdout.write(\"sample\")");

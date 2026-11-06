@@ -4,7 +4,7 @@
   "source": "050-001-host-files.mini",
   "features": [
     "process.exec-path",
-    "process.run",
+    "process.run.library",
     "directory.temp",
     "file.remove",
     "directory.remove",

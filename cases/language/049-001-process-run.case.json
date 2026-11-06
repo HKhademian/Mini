@@ -3,7 +3,7 @@
   "kind": "feature",
   "source": "049-001-process-run.mini",
   "features": [
-    "process.run",
+    "process.run.library",
     "list.new",
     "list.set",
     "map.get",

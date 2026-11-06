@@ -1,3 +1,5 @@
+/// Common list algorithms built on representation primitives.
+
 include "value.mini";
 /// Return whether a list contains one text value.
 fn list_has_text(items, value) {
@@ -77,6 +79,55 @@ fn list_is_text(value) {
         position = position + 1;
     }
     return true;
+}
+
+/// Append one value to a list.
+fn list_push_back(items, value) {
+    if value_is_list(items) {
+        list_set(items, list_length(items), value);
+    }
+    return 0;
+}
+
+/// Insert one value at the start of a list.
+fn list_push_front(items, value) {
+    if !value_is_list(items) {
+        return 0;
+    }
+    position := list_length(items);
+    while position > 0 {
+        list_set(items, position, list_get(items, position - 1));
+        position = position - 1;
+    }
+    list_set(items, 0, value);
+    return 0;
+}
+
+/// Remove and return the final list value, or 0 when the list is empty.
+fn list_pop_back(items) {
+    if !value_is_list(items) || list_length(items) == 0 {
+        return 0;
+    }
+    length := list_length(items);
+    value := list_get(items, length - 1);
+    list_truncate(items, length - 1);
+    return value;
+}
+
+/// Remove and return the first list value, or 0 when the list is empty.
+fn list_pop_front(items) {
+    if !value_is_list(items) || list_length(items) == 0 {
+        return 0;
+    }
+    length := list_length(items);
+    value := list_get(items, 0);
+    position := 0;
+    while position < length - 1 {
+        list_set(items, position, list_get(items, position + 1));
+        position = position + 1;
+    }
+    list_truncate(items, length - 1);
+    return value;
 }
 
 /// Build a list from any number of supplied arguments.
