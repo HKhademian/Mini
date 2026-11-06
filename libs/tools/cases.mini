@@ -388,15 +388,15 @@ fn case_git(directory, args) {
 fn case_tool_workspace(project_root, scenario, work) {
     directory := path_join(work, "project");
     case_copy_tree(project_root, directory);
-    init := case_git(directory, list_of3("init", "-b", "main"));
+    init := case_git(directory, list_of("init", "-b", "main"));
     if map_get(init, "status") != 0 {
         return result_fail("git init failed: " + text_from_bytes(map_get(init, "stderr")));
     }
-    added := case_git(directory, list_of2("add", "."));
+    added := case_git(directory, list_of("add", "."));
     if map_get(added, "status") != 0 {
         return result_fail("git add failed: " + text_from_bytes(map_get(added, "stderr")));
     }
-    committed := case_git(directory, list_of3("commit", "-m", "case fixture"));
+    committed := case_git(directory, list_of("commit", "-m", "case fixture"));
     if map_get(committed, "status") != 0 {
         return result_fail("git commit failed: " + text_from_bytes(map_get(committed, "stderr")));
     }

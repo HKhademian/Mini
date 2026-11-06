@@ -79,21 +79,12 @@ fn list_is_text(value) {
     return true;
 }
 
-/// Build a two-element list.
-fn list_of2(first, second) {
-    result := list_new();
-    list_set(result, 0, first);
-    list_set(result, 1, second);
-    return result;
-}
-
-/// Build a three-element list.
-fn list_of3(first, second, third) {
-    result := list_new();
-    list_set(result, 0, first);
-    list_set(result, 1, second);
-    list_set(result, 2, third);
-    return result;
+/// Build a list from any number of supplied arguments.
+///
+/// fn_args() supplies every argument, so this reads like a list literal without
+/// adding syntax. No arguments yields an empty list.
+fn list_of() {
+    return fn_args();
 }
 
 /// Return items after the first count entries.

@@ -402,21 +402,10 @@ function list_is_text(value) {
     return true;
     return 0;
 }
-function list_of2(first, second) {
+function list_of() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
-    let result = [];
-    $mini_list_set(result, 0, first);
-    $mini_list_set(result, 1, second);
-    return result;
-    return 0;
-}
-function list_of3(first, second, third) {
-
-    let result = [];
-    $mini_list_set(result, 0, first);
-    $mini_list_set(result, 1, second);
-    $mini_list_set(result, 2, third);
-    return result;
+    return $mini_fn_args;
     return 0;
 }
 function list_rest(items, count) {

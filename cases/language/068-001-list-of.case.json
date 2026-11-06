@@ -1,0 +1,24 @@
+{
+  "id": "language.list-of",
+  "kind": "feature",
+  "source": "068-001-list-of.mini",
+  "features": [
+    "list.of",
+    "functions.args"
+  ],
+  "cases": [
+    {
+      "name": "sizes",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "3\n0\nx\n3\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

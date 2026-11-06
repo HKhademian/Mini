@@ -1,0 +1,9 @@
+include "../../libs/common/list.mini";
+/// Build lists of several sizes from supplied arguments.
+items := list_of(1, 2, 3);
+empty := list_of();
+single := list_of("x");
+io_write_line(number_to_text(list_length(items)));
+io_write_line(number_to_text(list_length(empty)));
+io_write_line(list_get(single, 0));
+io_write_line(number_to_text(list_get(items, 2)));
