@@ -265,7 +265,7 @@ fn pure_json_parse(text) {
     if !map_get(state, "ok") {
         return result_fail("invalid JSON");
     }
-    return result_ok(value, "");
+    return result_ok(value);
 }
 
 /// Escape one JSON string.

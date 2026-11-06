@@ -1,5 +1,8 @@
 include "value.mini";
 /// Return a successful result map.
+///
+/// The message is optional: no call site supplies one, so the default is empty
+/// text and a missing value is 0.
 fn result_ok(value, message) {
     result := map_new();
     map_set(result, "ok", true);
