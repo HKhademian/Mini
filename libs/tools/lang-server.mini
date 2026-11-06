@@ -1,6 +1,6 @@
 include "../common/value.mini";
-include "../common/text.mini";
 include "../common/list.mini";
+include "../common/text.mini";
 include "../common/path.mini";
 include "../common/process.mini";
 include "../common/project.mini";

@@ -1,4 +1,5 @@
 include "../common/text.mini";
+include "../common/list.mini";
 include "../common/path.mini";
 include "../common/process.mini";
 include "../common/json.mini";
@@ -64,13 +65,7 @@ fn mini_spawn(root, tool, args) {
 
 /// Return a list from a start index.
 fn mini_rest(items, start) {
-    result := list_new();
-    position := start;
-    while position < list_length(items) {
-        list_set(result, list_length(result), list_get(items, position));
-        position = position + 1;
-    }
-    return result;
+    return list_rest(items, start);
 }
 
 /// Fail with a command usage message.
