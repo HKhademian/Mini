@@ -58,6 +58,7 @@ const repo = readRepositoryUrl();
 /// The CLI entry is stripped first; importing it directly would run main().
 const compilerModule = await import(browserCompilerModule()) as {
     readonly lex_tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
+    readonly lex_expand_includes: (tokens: readonly Token[], base: string, stack: readonly string[], seen: object) => readonly Token[];
 };
 
 const lexTokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.lex_tokenize(source, name, comments);
@@ -377,19 +378,35 @@ function browserCompilerSource(): string {
     }
     return source
         .replace(/main\(.*\);\s*$/, "")
-        .replace(importLine, 'import { readFileSync, writeFileSync, writeSync } from "./shim.js";')
         + "\nexport { lex_tokenize, lex_expand_includes, parser_compile };\n";
 }
 
 /// Return the generated compiler as a browser module.
 function buildBrowserCompiler(): string {
-    return browserCompilerSource();
+    return browserCompilerSource()
+        .replace('from "node:fs"', 'from "./shim.js"');
 }
 
-/// Write a temporary module that exports the tokenizer without a CLI entry.
+/// Return the expanded pure reference source.
+///
+/// Compiling libs/pure/reference.mini expands its includes into the pure
+/// builtin implementations. The playground appends these tokens for its
+/// portable variant, so the browser needs no filesystem include access.
+function buildReferenceSource(): string {
+    const path = join(root, "libs", "pure", "reference.mini");
+    const tokens = compilerModule.lex_tokenize(readFileSync(path, "utf8"), path, false);
+    const expanded = compilerModule.lex_expand_includes(tokens, path, [], Object.create(null));
+    const body = expanded.filter((token) => token.kind !== "eof");
+    return JSON.stringify(body);
+}
+
+/// Write a temporary module that exports the compiler without a CLI entry.
+///
+/// The import keeps node:fs so the build can expand includes from the tree; the
+/// browser copy swaps in the shim separately.
 function browserCompilerModule(): string {
     const path = join(tmpdir(), "mini-highlight-" + String(process.pid) + ".mjs");
-    writeFileSync(path, browserCompilerSource().replace('./shim.js', join(root, "dist", "site", "playground", "shim.js")));
+    writeFileSync(path, browserCompilerSource());
     return path;
 }
 
@@ -523,6 +540,10 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <pre id="diagnostic" hidden></pre>
         </div>
         <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
+          <div class="code-modes" role="group" aria-label="Generated JavaScript">
+            <button id="mode-host" type="button" data-mode="host" aria-pressed="true">Host builtins</button>
+            <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false">Portable</button>
+          </div>
           <pre id="code"></pre>
         </div>
       </section>
@@ -555,6 +576,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const panelCode = document.getElementById("panel-code");
     const code = document.getElementById("code");
     const meta = document.getElementById("sample-meta");
+    const modeButtons = Array.prototype.slice.call(document.querySelectorAll(".code-modes button"));
+    let portable = false;
 
     function showTab(showCode) {
       const active = showCode && !tabCode.disabled;
@@ -594,6 +617,18 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       setStatus("failed", "error");
       showTab(false);
     }
+
+    function setMode(next) {
+      portable = next;
+      modeButtons.forEach(function (button) {
+        button.setAttribute("aria-pressed", String((button.dataset.mode === "portable") === portable));
+      });
+      if (!tabCode.disabled) run();
+    }
+
+    modeButtons.forEach(function (button) {
+      button.addEventListener("click", function () { setMode(button.dataset.mode === "portable"); });
+    });
 
     function run() {
       const sample = samples[Number(select.value)];
@@ -636,7 +671,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         worker.terminate();
         fail("The playground worker failed to start.");
       };
-      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args });
+      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: portable });
     }
 
     function showSample() {
@@ -702,6 +737,8 @@ function main(): void {
     const playground = join(output, "playground");
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
+    const referenceTokens = buildReferenceSource();
+    writeFileSync(join(playground, "reference.js"), `export const referenceTokens = ${referenceTokens.trim()};\n`);
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
     cpSync(join(root, "site", "playground", "worker.js"), join(playground, "worker.js"));

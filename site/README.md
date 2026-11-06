@@ -56,3 +56,11 @@ grammar. [`highlight.js`](highlight.js) maps lexer token kinds to CSS classes
 copied into `dist/site/` so the playground uses the same module as the build.
 Invalid source falls back to escaped plain text, so a page never renders a
 broken fragment. The build strips the compiler's CLI entry before loading it.
+
+## Generated-code modes
+
+The playground shows two JavaScript views, chosen by a switch in the output
+pane. **Host builtins** is the default and emits only the adapters the program
+uses. **Portable** appends `libs/pure/reference.mini`, so the program relies on
+language semantics rather than host adapters. The build expands that reference
+once into `playground/reference.js`, so the browser performs no include reads.

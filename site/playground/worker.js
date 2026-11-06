@@ -49,16 +49,25 @@ function loadCompiler() {
 }
 
 /// Compile one source string and return its code or diagnostic text.
-async function compileSource(source) {
+/// Return the token list for one compile, optionally with the pure reference.
+function buildTokens(lexTokenize, lexExpandIncludes, source, portable, referenceTokens) {
+  const tokens = lexTokenize(source, "playground.mini", false);
+  const expanded = lexExpandIncludes(tokens, "playground.mini", [], Object.create(null));
+  if (!portable) return expanded;
+  const combined = expanded.filter(token => token.kind !== "eof").concat(referenceTokens);
+  return combined.concat([{ kind: "eof", text: "", source: "playground.mini", start: 0, end: 0, line: 1, column: 1, context: "" }]);
+}
+
+async function compileSource(source, portable) {
   const { lex_tokenize, lex_expand_includes, parser_compile } = await loadCompiler();
+  const { referenceTokens } = await import("./reference.js");
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
   };
   try {
-    const tokens = lex_tokenize(source, "playground.mini", false);
-    const expanded = lex_expand_includes(tokens, "playground.mini", [], Object.create(null));
-    return { code: parser_compile(expanded), diagnostic: "" };
+    const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
+    return { code: parser_compile(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", diagnostic: diagnostic || message };
@@ -105,7 +114,7 @@ self.onmessage = async (event) => {
   try {
     const data = event.data;
     if (!data || typeof data.source !== "string") return;
-    const compiled = await compileSource(data.source);
+    const compiled = await compileSource(data.source, data.portable === true);
     if (compiled.code === "") {
       self.postMessage({ ok: false, output: "", stderr: "", diagnostic: compiled.diagnostic, code: "" });
       return;

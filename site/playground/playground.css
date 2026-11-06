@@ -234,3 +234,26 @@ textarea {
   font-size: 0.72rem;
   line-height: 1.5;
 }
+
+/* Generated-code mode switch: host adapters or portable reference. */
+.code-modes {
+  display: flex;
+  gap: 4px;
+  padding: 8px 12px 0;
+}
+
+.code-modes button {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.code-modes button[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
