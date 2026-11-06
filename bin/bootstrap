@@ -1514,7 +1514,11 @@ function parser_program(parser) {
     if (((Object.keys(imports)).length > 0)) {
         import_text = (("import { " + parser_import_names(imports)) + " } from \"node:fs\";\n");
     }
-    return ((((shebang + "\"use strict\";\n") + import_text) + parser_helper_blocks($mini_map_get(parser, "helpers"))) + output);
+    let helper_text = "";
+    if ($mini_map_get(parser, "emit_helpers")) {
+        helper_text = parser_helper_blocks($mini_map_get(parser, "helpers"));
+    }
+    return ((((shebang + "\"use strict\";\n") + import_text) + helper_text) + output);
     return 0;
 }
 function parser_new(tokens) {
@@ -1528,6 +1532,7 @@ function parser_new(tokens) {
     $mini_map_set(parser, "warn", true);
     $mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "emit_helpers", true);
     $mini_map_set(parser, "depth", 0);
     $mini_map_set(parser, "in_function", false);
     $mini_map_set(parser, "current", ({ __proto__: $mini_map_proto }));
@@ -1570,6 +1575,13 @@ function parser_compile_quiet(tokens) {
 
     let parser = parser_new(tokens);
     $mini_map_set(parser, "warn", false);
+    return parser_program(parser);
+    return 0;
+}
+function parser_compile_program(tokens) {
+
+    let parser = parser_new(tokens);
+    $mini_map_set(parser, "emit_helpers", false);
     return parser_program(parser);
     return 0;
 }

@@ -55,14 +55,19 @@ fn compiler_append_body(output, tokens) {
 
 /// Return the compiler command usage text.
 fn compiler_usage() {
-    return "usage: mini [--reference] SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n";
+    return "usage: mini [--reference | --program-only] SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n";
 }
 
 /// Run the mini compiler command interface.
 fn main(args) {
     reference_mode = false;
+    program_only := false;
     if list_length(args) > 0 && list_get(args, 0) == "--reference" {
         reference_mode = true;
+        args = compiler_tail(args);
+    }
+    if list_length(args) > 0 && list_get(args, 0) == "--program-only" {
+        program_only = true;
         args = compiler_tail(args);
     }
     command := list_get(args, 0);
@@ -130,6 +135,10 @@ fn main(args) {
         compiler_append_body(combined, pure_tokens);
         list_set(combined, list_length(combined), list_get(expanded, list_length(expanded) - 1));
         expanded = combined;
+    }
+    if program_only {
+        file_write(target, parser_compile_program(expanded));
+        return 0;
     }
     file_write(target, parser_compile(expanded));
     return 0;
