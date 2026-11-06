@@ -89,7 +89,8 @@ play-v0.5.0-v0.1.0-alpha.1
 
 Only std is already registered as an unassigned stream. Register other
 future streams with their first implementation. See [tooling](tooling.md) for
-scope and commands; playground delivery remains undecided.
+scope and commands. The browser playground is implemented in `site/`; its `play`
+product stream and version remain unassigned.
 
 ## Compatibility evidence
 

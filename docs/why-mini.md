@@ -69,8 +69,8 @@ are choosing.
 - Not a package ecosystem or a standard library. `std` is unassigned.
 - Not a WebAssembly or native-code target. JavaScript on Node is the selected
   bootstrap target; its representation does not define mini's semantics.
-- Not finished tooling. `mini doc`, `mini help`, and a playground are planned or
-  undecided, not available.
+- Not finished tooling. `mini doc` and `mini help` are planned. The browser
+  playground is available in the showcase.
 
 ## Growing a language from it
 
