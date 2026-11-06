@@ -56,6 +56,17 @@ builtin_add(
     "({ __proto__: $mini_map_proto })"
 );
 builtin_add(
+    "map_delete",
+    "unknown,text",
+    "number",
+    "representation",
+    "",
+    "map_delete",
+    "function $mini_map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) delete items[key];\n    return 0;\n}\n",
+    "",
+    "$mini_map_delete({0}, {1})"
+);
+builtin_add(
     "map_set",
     "unknown,text,unknown",
     "number",

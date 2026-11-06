@@ -1,0 +1,23 @@
+{
+  "id": "language.map-delete",
+  "kind": "feature",
+  "source": "070-001-map-delete.mini",
+  "features": [
+    "map.delete"
+  ],
+  "cases": [
+    {
+      "name": "removes-and-ignores",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "1\nremoved\n1\n2\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

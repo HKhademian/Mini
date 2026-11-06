@@ -1,0 +1,14 @@
+include "../../libs/common/map.mini";
+/// Delete map keys and observe removal through map_has and map_keys.
+items := map_of("a", 1, "b", 2);
+map_delete(items, "a");
+io_write_line(number_to_text(list_length(map_keys(items))));
+if map_has(items, "a") {
+    io_write_line("present");
+} else {
+    io_write_line("removed");
+}
+map_delete(items, "missing");
+io_write_line(number_to_text(list_length(map_keys(items))));
+map_delete(0, "x");
+io_write_line(number_to_text(map_get(items, "b")));
