@@ -1658,7 +1658,7 @@ function json_parse_file(path) {
     if (result_is_fail(parsed)) {
         return result_fail(("invalid JSON: " + path));
     }
-    return result_ok(result_get_value(parsed), "");
+    return result_ok(result_get_value(parsed), 0);
     return 0;
 }
 function project_root() {

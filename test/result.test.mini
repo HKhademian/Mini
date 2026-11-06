@@ -3,7 +3,7 @@ include "../libs/common/result.mini";
 
 /// Verify result predicates for success, failure, and non-maps.
 fn main() {
-    if !result_is_ok(result_ok(0)) || result_is_fail(result_ok(0)) {
+    if !result_is_ok(result_ok()) || result_is_fail(result_ok()) {
         io_write_error("success predicate failed\n");
         process_exit(1);
     }

@@ -26,7 +26,7 @@ fn release_run(command, args, directory) {
         release_fail(command + " " + list_to_text(args, " ") + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
     }
-    done := result_ok(0);
+    done := result_ok();
     map_set(done, "stdout", map_get(result, "stdout"));
     map_set(done, "stderr", map_get(result, "stderr"));
     return done;
