@@ -1,4 +1,4 @@
 /// Bind text and number values and write one line.
-var name = "Mini";
-var version = 1;
+name := "Mini";
+version := 1;
 io_write(name + " " + number_to_text(version) + "\n");

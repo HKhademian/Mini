@@ -42,7 +42,7 @@ test('draft preview uses ordinary theme scopes for declarations, calls and contr
     [0, 'join', 'entity.name.function.mini'],
     [0, 'left', 'variable.other.mini'],
     [1, 'return', 'keyword.control.mini'],
-    [4, 'var', 'storage.type.mini'],
+    [4, ':=', 'keyword.operator.mini'],
     [5, '0', 'constant.numeric.mini'],
     [6, 'while', 'keyword.control.mini'],
     [7, 'if', 'keyword.control.mini'],
@@ -52,7 +52,7 @@ test('draft preview uses ordinary theme scopes for declarations, calls and contr
 });
 
 test('strings shield keywords and calls, handle escaped quotes, and resume after closing', () => {
-  const source = String.raw`var text = "if join(1) \"while\""; join(text, "");`;
+  const source = String.raw`text := "if join(1) \"while\""; join(text, "");`;
   assert.ok(scopes(source, 'if').includes('string.quoted.double.mini'));
   assert.ok(!scopes(source, 'if').includes('keyword.control.mini'));
   assert.ok(scopes(source, 'join(1)').includes('string.quoted.double.mini'));
@@ -89,7 +89,7 @@ test('accepted text escapes differ from unsupported escapes', () => {
 
 test('line and documentation comments shield code and end at the next line', () => {
   const source = [
-    'var value = "// ///"; // fn ignored() { "',
+    'value := "// ///"; // fn ignored() { "',
     '/// Return the input; fn is documentation here.',
     'fn mine(value) { return value; } /// trailing documentation',
     String.raw`write("escaped \"//");`,

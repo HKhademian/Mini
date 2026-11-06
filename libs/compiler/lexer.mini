@@ -1,7 +1,7 @@
 include "../common/list.mini";
 /// Return a token map with the fields used by T0.
 fn token_new(kind, text, source, start, end, line, column, context) {
-    var token = map_new();
+    token := map_new();
     map_set(token, "kind", kind);
     map_set(token, "text", text);
     map_set(token, "source", source);
@@ -15,9 +15,9 @@ fn token_new(kind, text, source, start, end, line, column, context) {
 
 /// Advance lexer state and return the consumed character.
 fn lex_advance(state) {
-    var source = map_get(state, "text");
-    var position = map_get(state, "position");
-    var value = text_get(source, position);
+    source := map_get(state, "text");
+    position := map_get(state, "position");
+    value := text_get(source, position);
     map_set(state, "position", position + 1);
     if value == "\n" {
         map_set(state, "line", map_get(state, "line") + 1);
@@ -30,8 +30,8 @@ fn lex_advance(state) {
 
 /// Return a token at the current lexer position.
 fn lex_start(state) {
-    var lines = map_get(state, "lines");
-    var token = token_new("symbol", "", map_get(state, "source"), map_get(state, "position"),
+    lines := map_get(state, "lines");
+    token := token_new("symbol", "", map_get(state, "source"), map_get(state, "position"),
         map_get(state, "position"), map_get(state, "line"), map_get(state, "column"),
         list_get(lines, map_get(state, "line") - 1));
     return token;
@@ -39,10 +39,10 @@ fn lex_start(state) {
 
 /// Return the caret indent for a token's source column.
 fn diagnostic_indent(token) {
-    var context = map_get(token, "context");
-    var column = map_get(token, "column");
-    var indent = "";
-    var position = 0;
+    context := map_get(token, "context");
+    column := map_get(token, "column");
+    indent := "";
+    position := 0;
     while position < column - 1 && position < text_length(context) {
         if text_get(context, position) == "\t" {
             indent = indent + "\t";
@@ -81,7 +81,7 @@ fn lex_fail(token, message) {
 
 /// Scan text into a token list, matching T0 positions and diagnostics.
 fn tokenize(source, source_name, include_comments) {
-    var state = map_new();
+    state := map_new();
     map_set(state, "text", source);
     map_set(state, "source", source_name);
     map_set(state, "tokens", list_new());
@@ -90,7 +90,7 @@ fn tokenize(source, source_name, include_comments) {
     map_set(state, "line", 1);
     map_set(state, "column", 1);
     if text_length(source) >= 2 && text_get(source, 0) == "#" && text_get(source, 1) == "!" {
-        var shebang_token = lex_start(state);
+        shebang_token := lex_start(state);
         map_set(shebang_token, "kind", "shebang");
         while map_get(state, "position") < text_length(source)
             && text_get(source, map_get(state, "position")) != "\r"
@@ -99,16 +99,16 @@ fn tokenize(source, source_name, include_comments) {
         }
         map_set(shebang_token, "text", text_slice(source, map_get(shebang_token, "start"), map_get(state, "position")));
         map_set(shebang_token, "end", map_get(state, "position"));
-        var initial_tokens = map_get(state, "tokens");
+        initial_tokens := map_get(state, "tokens");
         list_set(initial_tokens, list_length(initial_tokens), shebang_token);
     }
     while map_get(state, "position") < text_length(source) {
-        var character = text_get(source, map_get(state, "position"));
+        character := text_get(source, map_get(state, "position"));
         if text_find(" \t\r\n", character) >= 0 {
             lex_advance(state);
         } else {
             if character == "/" && text_get(source, map_get(state, "position") + 1) == "/" {
-                var comment_token = lex_start(state);
+                comment_token := lex_start(state);
                 while map_get(state, "position") < text_length(source)
                     && text_get(source, map_get(state, "position")) != "\r"
                     && text_get(source, map_get(state, "position")) != "\n" {
@@ -118,19 +118,19 @@ fn tokenize(source, source_name, include_comments) {
                     map_set(comment_token, "kind", "comment");
                     map_set(comment_token, "text", text_slice(source, map_get(comment_token, "start"), map_get(state, "position")));
                     map_set(comment_token, "end", map_get(state, "position"));
-                    var comment_tokens = map_get(state, "tokens");
+                    comment_tokens := map_get(state, "tokens");
                     list_set(comment_tokens, list_length(comment_tokens), comment_token);
                 }
             } else {
-                var token = lex_start(state);
+                token := lex_start(state);
                 if is_letter(character) {
                     map_set(token, "kind", "identifier");
                     while map_get(state, "position") < text_length(source)
                         && is_identifier_part(text_get(source, map_get(state, "position"))) {
                         lex_advance(state);
                     }
-                    var spelling = text_slice(source, map_get(token, "start"), map_get(state, "position"));
-                    if spelling == "var" || spelling == "fn" || spelling == "return" || spelling == "if"
+                    spelling := text_slice(source, map_get(token, "start"), map_get(state, "position"));
+                    if spelling == "fn" || spelling == "return" || spelling == "if"
                         || spelling == "else" || spelling == "while" || spelling == "true" || spelling == "false" {
                         map_set(token, "kind", "keyword");
                     }
@@ -147,12 +147,12 @@ fn tokenize(source, source_name, include_comments) {
                             lex_advance(state);
                             while map_get(state, "position") < text_length(source)
                                 && text_get(source, map_get(state, "position")) != "\"" {
-                                var inner = text_get(source, map_get(state, "position"));
+                                inner := text_get(source, map_get(state, "position"));
                                 if inner == "\n" || inner == "\r" {
                                     lex_fail(token, "unterminated text");
                                 }
                                 if inner == "\\" {
-                                    var escape = lex_start(state);
+                                    escape := lex_start(state);
                                     lex_advance(state);
                                     if map_get(state, "position") == text_length(source)
                                         || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0 {
@@ -181,14 +181,14 @@ fn tokenize(source, source_name, include_comments) {
                 }
                 map_set(token, "text", text_slice(source, map_get(token, "start"), map_get(state, "position")));
                 map_set(token, "end", map_get(state, "position"));
-                var tokens = map_get(state, "tokens");
+                tokens := map_get(state, "tokens");
                 list_set(tokens, list_length(tokens), token);
             }
         }
     }
-    var end_token = lex_start(state);
+    end_token := lex_start(state);
     map_set(end_token, "kind", "eof");
-    var end_tokens = map_get(state, "tokens");
+    end_tokens := map_get(state, "tokens");
     list_set(end_tokens, list_length(end_tokens), end_token);
     return end_tokens;
 }
@@ -199,7 +199,7 @@ fn resolve_include(base, path) {
     if text_starts_with(path, "/") {
         return normalize_path(path);
     }
-    var directory = dirname(base);
+    directory := dirname(base);
     if directory == "" {
         return normalize_path(path);
     }
@@ -210,19 +210,19 @@ fn resolve_include(base, path) {
 /// Splice included files into a token stream. Includes are top-level,
 /// include-once, and rejected on cycles or missing files.
 fn expand_includes(tokens, base, stack, seen) {
-    var output = list_new();
-    var position = 0;
-    var depth = 0;
+    output := list_new();
+    position := 0;
+    depth := 0;
     while position < list_length(tokens) {
-        var token = list_get(tokens, position);
-        var text = map_get(token, "text");
+        token := list_get(tokens, position);
+        text := map_get(token, "text");
         if text == "{" {
             depth = depth + 1;
         }
         if text == "}" {
             depth = depth - 1;
         }
-        var is_include = text == "include" && position + 2 < list_length(tokens)
+        is_include := text == "include" && position + 2 < list_length(tokens)
             && map_get(list_get(tokens, position + 1), "kind") == "text"
             && map_get(list_get(tokens, position + 2), "text") == ";";
         if !is_include {
@@ -232,9 +232,9 @@ fn expand_includes(tokens, base, stack, seen) {
             if depth != 0 {
                 diagnostic_fail(token, "include must be top-level");
             }
-            var quoted = map_get(list_get(tokens, position + 1), "text");
-            var path = text_slice(quoted, 1, text_length(quoted) - 1);
-            var resolved = resolve_include(base, path);
+            quoted := map_get(list_get(tokens, position + 1), "text");
+            path := text_slice(quoted, 1, text_length(quoted) - 1);
+            resolved := resolve_include(base, path);
             if list_has_text(stack, resolved) {
                 diagnostic_fail(token, "include cycle: " + path);
             }
@@ -242,9 +242,9 @@ fn expand_includes(tokens, base, stack, seen) {
                 if !path_is_exists(resolved) {
                     diagnostic_fail(token, "cannot include " + path);
                 }
-                var raw = tokenize(file_read(resolved), path, false);
-                var included = list_new();
-                var raw_position = 0;
+                raw := tokenize(file_read(resolved), path, false);
+                included := list_new();
+                raw_position := 0;
                 while raw_position < list_length(raw) {
                     if map_get(list_get(raw, raw_position), "kind") != "eof" {
                         list_set(included, list_length(included), list_get(raw, raw_position));
@@ -255,10 +255,10 @@ fn expand_includes(tokens, base, stack, seen) {
                     diagnostic_fail(token, "included file must not have a shebang");
                 }
                 map_set(seen, resolved, true);
-                var nested_stack = list_copy(stack);
+                nested_stack := list_copy(stack);
                 list_set(nested_stack, list_length(nested_stack), resolved);
-                var expanded = expand_includes(included, resolved, nested_stack, seen);
-                var index = 0;
+                expanded := expand_includes(included, resolved, nested_stack, seen);
+                index := 0;
                 while index < list_length(expanded) {
                     list_set(output, list_length(output), list_get(expanded, index));
                     index = index + 1;

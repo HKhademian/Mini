@@ -1,2 +1,2 @@
-var text = "x";
-	var count = 12;
+text := "x";
+	count := 12;

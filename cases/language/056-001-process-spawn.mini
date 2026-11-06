@@ -1,19 +1,19 @@
 /// Run one child process with options for arguments, directory, input, and mode.
-var dir = path_temp_directory();
-var args = list_new();
+dir := path_temp_directory();
+args := list_new();
 list_set(args, 0, "-e");
 list_set(args, 1, "const fs = require('fs'); fs.writeFileSync('out.txt', 'x'); process.stdout.write(fs.readFileSync(0));");
-var input = list_new();
+input := list_new();
 list_set(input, 0, 0);
 list_set(input, 1, 255);
 list_set(input, 2, 10);
-var options = map_new();
+options := map_new();
 map_set(options, "command", process_exec_path());
 map_set(options, "arguments", args);
 map_set(options, "directory", dir);
 map_set(options, "input", input);
-var result = process_spawn(options);
-var out = map_get(result, "stdout");
+result := process_spawn(options);
+out := map_get(result, "stdout");
 if map_get(result, "status") == 0 && list_length(out) == 3 && list_get(out, 0) == 0 && list_get(out, 1) == 255
     && list_get(out, 2) == 10 && map_get(result, "error") == "" {
     io_write("capture ok\n");
@@ -25,22 +25,22 @@ if file_read(dir + "/out.txt") == "x" {
 } else {
     io_write("directory bad\n");
 }
-var inherited = map_new();
+inherited := map_new();
 map_set(inherited, "command", process_exec_path());
-var inherit_args = list_new();
+inherit_args := list_new();
 list_set(inherit_args, 0, "-e");
 list_set(inherit_args, 1, "process.stdout.write('inherited')");
 map_set(inherited, "arguments", inherit_args);
 map_set(inherited, "mode", "inherit");
-var shown = process_spawn(inherited);
+shown := process_spawn(inherited);
 if map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0 {
     io_write("inherit ok\n");
 } else {
     io_write("inherit bad\n");
 }
-var missing = map_new();
+missing := map_new();
 map_set(missing, "command", "mini-no-such-command");
-var failed = process_spawn(missing);
+failed := process_spawn(missing);
 if map_get(failed, "status") == 1 && text_length(map_get(failed, "error")) > 0 {
     io_write("failure ok\n");
 } else {

@@ -109,13 +109,13 @@ include "libs/common/text.mini";
 Use one declaration form:
 
 ```text
-var source = "";
-var position = 0;
-var token = "";
-var output = "";
+source := "";
+position := 0;
+token := "";
+output := "";
 ```
 
-- `var` introduces a mutable binding.
+- `:=` declares a mutable binding.
 - Every declaration has an initializer.
 - `=` assigns a replacement value to an existing binding.
 - `;` ends a declaration or assignment.
@@ -194,10 +194,10 @@ JavaScript. The expression rules below define comparisons and boolean conditions
 Start with decimal integer literals, double-quoted text, and `true` / `false`:
 
 ```text
-var next = position + 1;
-var remaining = limit - position;
-var ready = token != "" && position < limit;
-var output = "token: " + token + "\n";
+next := position + 1;
+remaining := limit - position;
+ready := token != "" && position < limit;
+output := "token: " + token + "\n";
 ```
 
 - Numeric `+` and `-`; unary `-` negates a number.
@@ -223,7 +223,7 @@ mini's typing strategy, and host operation signatures remain open. mini `==` /
 Use ordinary calls for two primitive operations:
 
 ```text
-var source = io_read_all();
+source := io_read_all();
 io_write(source);
 ```
 
@@ -248,8 +248,8 @@ the prefix adds no namespace syntax. `text_slice` provides the common slicing
 operation; a standard library may still add conveniences on top of it.
 
 ```text
-var source = io_read_all();
-var position = 0;
+source := io_read_all();
+position := 0;
 while position < text_length(source) {
     io_write(text_get(source, position));
     position = position + 1;
@@ -282,7 +282,7 @@ text and numeric-zero fallbacks without an absence value.
 ## Accepted operation: number text
 
 ```text
-var text = number_to_text(42);
+text := number_to_text(42);
 ```
 
 - `number_to_text(value)` returns canonical decimal text for a safe integer:
@@ -293,7 +293,7 @@ var text = number_to_text(42);
 ## Accepted operation: JSON text
 
 ```text
-var text = json_to_text(value);
+text := json_to_text(value);
 ```
 
 - `json_to_text(value)` returns compact JSON text without added whitespace.
@@ -310,7 +310,7 @@ The compiler needs to read source and write its generated script. Use two
 built-ins with ordinary call syntax:
 
 ```text
-var source = file_read("input.txt");
+source := file_read("input.txt");
 file_write("output.txt", source);
 ```
 
@@ -329,8 +329,8 @@ compiler code.
 Use shared list operations for a list returned by the host:
 
 ```text
-var args = process_args();
-var position = 0;
+args := process_args();
+position := 0;
 while position < list_length(args) {
     io_write(list_get(args, position));
     position = position + 1;
@@ -361,8 +361,8 @@ command interface.
 ## Accepted operation: empty-list construction
 
 ```text
-var items = list_new();
-var count = list_length(items);
+items := list_new();
+count := list_length(items);
 ```
 
 - `list_new()` returns a fresh empty list; its length is 0.
@@ -375,7 +375,7 @@ Explicit reserve remains under discussion. Unassigned positions read as zero.
 ## Accepted operation: list copying
 
 ```text
-var copy = list_copy(items);
+copy := list_copy(items);
 ```
 
 - `list_copy(items)` returns a fresh list with the same length and values.
@@ -386,7 +386,7 @@ var copy = list_copy(items);
 ## Accepted operation: list text joining
 
 ```text
-var text = list_to_text(items, ", ");
+text := list_to_text(items, ", ");
 ```
 
 - `list_to_text(items, separator)` joins text elements with a text separator.
@@ -397,7 +397,7 @@ var text = list_to_text(items, ", ");
 ## Accepted operation: list assignment
 
 ```text
-var items = list_new();
+items := list_new();
 list_set(items, 0, "first");
 list_set(items, -1, "replacement");
 ```
@@ -424,7 +424,7 @@ rebinding and the broader passing contract remain under review separately.
 ## Accepted operation: empty-map construction
 
 ```text
-var names = map_new();
+names := map_new();
 ```
 
 - `map_new()` returns a fresh empty map and takes no arguments.
@@ -441,7 +441,7 @@ Missing-key lookup returns numeric zero, without introducing null. There is no
 ## Accepted operation: map copying
 
 ```text
-var copy = map_copy(items);
+copy := map_copy(items);
 ```
 
 - `map_copy(items)` returns a fresh map with the same text keys and values.
@@ -452,8 +452,8 @@ var copy = map_copy(items);
 ## Accepted operation: map membership
 
 ```text
-var names = map_new();
-var present = map_has(names, "source");
+names := map_new();
+present := map_has(names, "source");
 ```
 
 - `map_has(items, key)` returns a boolean indicating whether the map contains
@@ -469,7 +469,7 @@ and present keys, including keys storing zero or false.
 ## Accepted operation: map assignment
 
 ```text
-var names = map_new();
+names := map_new();
 map_set(names, "source", "input.mini");
 map_set(names, "source", "replacement.mini");
 ```
@@ -490,10 +490,10 @@ inserted keys and stored values; a host-adapter test also checks stored referenc
 ## Accepted operation: map lookup
 
 ```text
-var names = map_new();
+names := map_new();
 map_set(names, "source", "input.mini");
-var source = map_get(names, "source");
-var missing = map_get(names, "missing");
+source := map_get(names, "source");
+missing := map_get(names, "missing");
 ```
 
 - `map_get(items, key)` returns the stored value, preserving its kind and any
@@ -511,9 +511,9 @@ or null-checking operation is added. Argument omission remains a separate decisi
 ## Counting map keys with existing operations
 
 ```text
-var names = map_new();
+names := map_new();
 map_set(names, "source", "input.mini");
-var count = list_length(map_keys(names));
+count := list_length(map_keys(names));
 ```
 
 - `list_length(map_keys(items))` counts the stored keys. An empty map gives 0.
@@ -528,9 +528,9 @@ counting primitive. The [map sample](../samples/010-map.mini) combines these ope
 ## Accepted operation: map keys
 
 ```text
-var names = map_new();
+names := map_new();
 map_set(names, "source", "input.mini");
-var keys = map_keys(names);
+keys := map_keys(names);
 ```
 
 - `map_keys(items)` returns a fresh list containing each stored text key once.
@@ -565,7 +565,7 @@ variable; a bulk `process_envs()` map remains a candidate until needed.
 ## Accepted operations: bytes
 
 ```text
-var bytes = text_to_bytes("Mini");
+bytes := text_to_bytes("Mini");
 io_write(text_from_bytes(bytes));
 ```
 
@@ -587,7 +587,7 @@ io_write(hash_sha256("abc"));
 ## Accepted operation: millisecond clock
 
 ```text
-var started = time_millis();
+started := time_millis();
 ```
 
 - `time_millis()` returns integer milliseconds since the epoch from the host
@@ -597,9 +597,9 @@ var started = time_millis();
 ## Accepted operations: file tree
 
 ```text
-var directory = path_temp_directory();
+directory := path_temp_directory();
 directory_create(directory + "/sub");
-var names = directory_list(directory);
+names := directory_list(directory);
 path_remove(directory);
 ```
 
@@ -616,7 +616,7 @@ and preserves file modes.
 ## Accepted operation: environment
 
 ```text
-var home = process_env("HOME");
+home := process_env("HOME");
 ```
 
 - `process_env(name)` returns the text value of an environment variable, or
@@ -626,7 +626,7 @@ var home = process_env("HOME");
 ## Accepted operation: script path
 
 ```text
-var script = process_script_path();
+script := process_script_path();
 ```
 
 - `process_script_path()` returns the path of the running script as supplied by
@@ -635,10 +635,10 @@ var script = process_script_path();
 ## Accepted operation: process options
 
 ```text
-var options = map_new();
+options := map_new();
 map_set(options, "command", "node");
 map_set(options, "arguments", list_new());
-var result = process_spawn(options);
+result := process_spawn(options);
 ```
 
 - `process_spawn(options)` runs one child process. `command` is text,
@@ -661,8 +661,8 @@ if value_kind(value) == "text" { ... }
 ## Accepted operations: streaming input
 
 ```text
-var line = io_read_line();
-var bytes = io_read_bytes(16);
+line := io_read_line();
+bytes := io_read_bytes(16);
 ```
 
 - `io_read_line()` reads standard input through LF and returns the UTF-8 text
@@ -674,8 +674,8 @@ var bytes = io_read_bytes(16);
 ## Accepted operation: JSON parsing
 
 ```text
-var parsed = json_parse("{\"name\":\"Mini\"}");
-var value = map_get(parsed, "value");
+parsed := json_parse("{\"name\":\"Mini\"}");
+value := map_get(parsed, "value");
 ```
 
 - `json_parse(text)` parses JSON into existing value kinds. Objects become maps,
@@ -689,9 +689,9 @@ var value = map_get(parsed, "value");
 Run one child process and inspect its result:
 
 ```text
-var arguments = list_new();
+arguments := list_new();
 list_set(arguments, 0, "--version");
-var result = process_run("node", arguments, "capture");
+result := process_run("node", arguments, "capture");
 io_write(map_get(result, "stdout"));
 ```
 
@@ -713,8 +713,8 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```text
-var node = process_exec_path();
-var directory = path_temp_directory();
+node := process_exec_path();
+directory := path_temp_directory();
 file_write(directory + "/note.txt", "value\n");
 file_remove(directory + "/note.txt");
 directory_remove(directory);

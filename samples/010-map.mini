@@ -1,5 +1,5 @@
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
-var names = map_new();
+names := map_new();
 if list_length(map_keys(names)) == 0 {
     io_write("empty\n");
 }
@@ -13,7 +13,7 @@ if list_length(map_keys(names)) == 1 {
 }
 io_write(map_get(names, "source"));
 io_write("\n");
-var keys = map_keys(names); // Snapshot the keys before adding another entry.
+keys := map_keys(names); // Snapshot the keys before adding another entry.
 io_write(list_get(keys, 0));
 io_write("\n");
 map_set(names, "verbose", false);

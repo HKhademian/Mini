@@ -1,4 +1,4 @@
 fn join(left, right) {
     return left + right;
 }
-var output = join(join("m", "i"), "ni");
+output := join(join("m", "i"), "ni");

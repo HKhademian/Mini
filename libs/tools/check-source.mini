@@ -5,7 +5,7 @@ include "../compiler/builtins.mini";
 
 /// Validate one Mini source text; diagnostics end the process on failure.
 fn check_source_text(source, name, base) {
-    var tokens = tokenize(source, name, false);
+    tokens := tokenize(source, name, false);
     compile(expand_includes(tokens, base, list_new(), map_new()));
     return 0;
 }

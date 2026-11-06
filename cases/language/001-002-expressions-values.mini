@@ -1,4 +1,4 @@
-var count = 12;
-var token = "mini";
-var ready = true;
-var done = false;
+count := 12;
+token := "mini";
+ready := true;
+done := false;

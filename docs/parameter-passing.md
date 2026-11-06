@@ -32,9 +32,9 @@ fn change(items) {
     return map_get(items, "name");
 }
 
-var original = map_new();
+original := map_new();
 map_set(original, "name", "old");
-var result = change(original);
+result := change(original);
 ```
 
 The original map's name becomes `"shared"`; `result` is `"local"`. Assigning

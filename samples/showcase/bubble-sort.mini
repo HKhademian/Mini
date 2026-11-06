@@ -1,16 +1,16 @@
 /// Sort a small list in place.
-var values = list_new();
+values := list_new();
 list_set(values, 0, 5);
 list_set(values, 1, 1);
 list_set(values, 2, 4);
 list_set(values, 3, 2);
 list_set(values, 4, 3);
-var outer = 0;
+outer := 0;
 while outer < list_length(values) {
-    var inner = 0;
+    inner := 0;
     while inner < list_length(values) - 1 {
         if list_get(values, inner) > list_get(values, inner + 1) {
-            var temp = list_get(values, inner);
+            temp := list_get(values, inner);
             list_set(values, inner, list_get(values, inner + 1));
             list_set(values, inner + 1, temp);
         }
@@ -18,7 +18,7 @@ while outer < list_length(values) {
     }
     outer = outer + 1;
 }
-var index = 0;
+index := 0;
 while index < list_length(values) {
     io_write(number_to_text(list_get(values, index)) + " ");
     index = index + 1;

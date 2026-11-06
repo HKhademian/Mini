@@ -1,7 +1,7 @@
 /// Exercise code-point access and construction.
-var accent = text_code("é");
+accent := text_code("é");
 io_write(number_to_text(accent) + "\n");
 io_write(text_from_code(accent) + "\n");
-var emoji = text_code("😀");
+emoji := text_code("😀");
 io_write(number_to_text(emoji) + "\n");
 io_write(text_from_code(emoji) + "\n");

@@ -1,5 +1,5 @@
 /// Combine arithmetic, comparisons, booleans, and text without implicit conversion.
-var position = 0;
-var limit = 3;
-var ready = position < limit && !(position == limit);
-var output = "token: " + ";" + "\n";
+position := 0;
+limit := 3;
+ready := position < limit && !(position == limit);
+output := "token: " + ";" + "\n";

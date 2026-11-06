@@ -1,5 +1,5 @@
 /// Test for a key before reading it.
-var values = map_new();
+values := map_new();
 map_set(values, "ready", true);
 if map_has(values, "ready") {
     io_write("present\n");

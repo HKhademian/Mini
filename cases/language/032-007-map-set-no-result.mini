@@ -1,1 +1,1 @@
-var result = map_set(map_new(), "name", 1);
+result := map_set(map_new(), "name", 1);

@@ -3,8 +3,8 @@ fn replace(left, right) {
     return right;
 }
 
-var original = 1;
-var result = replace(original, original);
+original := 1;
+result := replace(original, original);
 if original == 1 && result == 1 {
     io_write("independent");
 } else {

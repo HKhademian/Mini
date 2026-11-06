@@ -1,1 +1,1 @@
-var copied = map_copy(1);
+copied := map_copy(1);

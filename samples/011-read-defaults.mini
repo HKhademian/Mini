@@ -6,7 +6,7 @@ if text_get(0, 1) == "" && text_get("hello", 2000) == "" {
 if list_get(0, 2000) == 0 {
     io_write("unavailable list value: zero\n");
 }
-var items = list_new();
+items := list_new();
 list_set(items, 2, "last");
 if list_get(items, 0) == 0 {
     io_write("gap reads zero\n");

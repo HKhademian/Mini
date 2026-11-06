@@ -1,8 +1,8 @@
 /// Parse JSON objects, arrays, scalars, and invalid input.
-var object = json_parse("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
+object := json_parse("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
 if map_get(object, "ok") {
-    var value = map_get(object, "value");
-    var items = map_get(value, "items");
+    value := map_get(object, "value");
+    items := map_get(value, "items");
     if map_get(value, "name") == "Mini" && map_get(value, "count") == 2 && map_get(value, "missing") == 0
         && list_length(items) == 2 && list_get(items, 1) == true {
         io_write("object ok\n");
@@ -12,14 +12,14 @@ if map_get(object, "ok") {
 } else {
     io_write("object bad\n");
 }
-var list_value = json_parse("[1,\"two\",false,null]");
-var values = map_get(list_value, "value");
+list_value := json_parse("[1,\"two\",false,null]");
+values := map_get(list_value, "value");
 if map_get(list_value, "ok") && list_length(values) == 4 && list_get(values, 3) == 0 {
     io_write("list ok\n");
 } else {
     io_write("list bad\n");
 }
-var broken = json_parse("{bad");
+broken := json_parse("{bad");
 if !map_get(broken, "ok") {
     io_write("invalid ok\n");
 } else {

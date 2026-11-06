@@ -1,3 +1,3 @@
-012-002-ordering-text.mini:1:17: comparison needs numbers
-var value = "a" < "b";
-                ^
+012-002-ordering-text.mini:1:14: comparison needs numbers
+value := "a" < "b";
+             ^

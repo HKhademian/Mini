@@ -1,3 +1,3 @@
-<stdin>:1:13: expected expression
-var value = ;
-            ^
+<stdin>:1:10: expected expression
+value := ;
+         ^

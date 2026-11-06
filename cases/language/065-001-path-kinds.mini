@@ -1,12 +1,12 @@
 /// Exercise path kind and temporary path helpers.
-var directory = path_temp_directory();
-var file = directory + "/file.txt";
+directory := path_temp_directory();
+file := directory + "/file.txt";
 file_write(file, "x");
 if !path_is_exists(directory) || !path_is_directory(directory) || !path_is_file(file) {
     io_write("kind bad\n");
     process_exit(1);
 }
-var temporary = path_temp_file();
+temporary := path_temp_file();
 if !path_is_exists(temporary) || !path_is_file(temporary) {
     io_write("temp bad\n");
     process_exit(1);

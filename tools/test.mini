@@ -3,10 +3,10 @@ include "../libs/tools/test.mini";
 
 /// Parse arguments and run selected case scenarios.
 fn main() {
-    var args = process_args();
-    var filter = "";
-    var file = "";
-    var candidate = "";
+    args := process_args();
+    filter := "";
+    file := "";
+    candidate := "";
     if list_length(args) >= 1 && list_get(args, 0) == "--unit" {
         if list_length(args) > 2 {
             io_write_error("usage: mini-test [FILTER] | --unit [FILTER]\n");

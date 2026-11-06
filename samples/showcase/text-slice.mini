@@ -1,4 +1,4 @@
 /// Slice with positive and negative bounds.
-var text = "playground";
+text := "playground";
 io_write(text_slice(text, 0, 4) + "\n");
 io_write(text_slice(text, -4, text_length(text)) + "\n");

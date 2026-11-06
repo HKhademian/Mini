@@ -4,11 +4,11 @@ fn pure_byte_at(bytes, index) {
     if !value_is_list(bytes) || index < 0 || index >= list_length(bytes) {
         return 0;
     }
-    var value = list_get(bytes, index);
+    value := list_get(bytes, index);
     if !value_is_number(value) || number_floor(value) != value {
         return 0;
     }
-    var byte = number_mod(value, 256);
+    byte := number_mod(value, 256);
     if byte < 0 {
         byte = byte + 256;
     }
@@ -23,14 +23,14 @@ fn pure_byte_push(bytes, value) {
 
 /// Reference UTF-8 encoding.
 fn pure_text_to_bytes(text) {
-    var bytes = list_new();
+    bytes := list_new();
     if !value_is_text(text) {
         return bytes;
     }
-    var position = 0;
+    position := 0;
     while position < text_length(text) {
-        var code = text_code(text_slice(text, position, text_length(text)));
-        var width = 1;
+        code := text_code(text_slice(text, position, text_length(text)));
+        width := 1;
         if code < 0 {
             code = 65533;
         }
@@ -70,16 +70,16 @@ fn pure_text_from_bytes(bytes) {
     if !value_is_list(bytes) {
         return "";
     }
-    var output = "";
-    var position = 0;
+    output := "";
+    position := 0;
     while position < list_length(bytes) {
-        var first = pure_byte_at(bytes, position);
+        first := pure_byte_at(bytes, position);
         if first < 128 {
             output = output + text_from_code(first);
             position = position + 1;
         } else {
             if first >= 194 && first <= 223 && position + 1 < list_length(bytes) {
-                var second = pure_byte_at(bytes, position + 1);
+                second := pure_byte_at(bytes, position + 1);
                 if second >= 128 && second <= 191 {
                     output = output + text_from_code(number_mul(first - 192, 64) + (second - 128));
                     position = position + 2;
@@ -89,8 +89,8 @@ fn pure_text_from_bytes(bytes) {
                 }
             } else {
                 if first >= 224 && first <= 239 && position + 2 < list_length(bytes) {
-                    var second = pure_byte_at(bytes, position + 1);
-                    var third = pure_byte_at(bytes, position + 2);
+                    second := pure_byte_at(bytes, position + 1);
+                    third := pure_byte_at(bytes, position + 2);
                     if second >= 128 && second <= 191 && third >= 128 && third <= 191 {
                         output = output + text_from_code(number_mul(first - 224, 4096) + number_mul(second - 128, 64) + (third - 128));
                         position = position + 3;
@@ -100,9 +100,9 @@ fn pure_text_from_bytes(bytes) {
                     }
                 } else {
                     if first >= 240 && first <= 244 && position + 3 < list_length(bytes) {
-                        var second = pure_byte_at(bytes, position + 1);
-                        var third = pure_byte_at(bytes, position + 2);
-                        var fourth = pure_byte_at(bytes, position + 3);
+                        second := pure_byte_at(bytes, position + 1);
+                        third := pure_byte_at(bytes, position + 2);
+                        fourth := pure_byte_at(bytes, position + 3);
                         if second >= 128 && second <= 191 && third >= 128 && third <= 191
                             && fourth >= 128 && fourth <= 191 {
                             output = output + text_from_code(number_mul(first - 240, 262144) + number_mul(second - 128, 4096) + number_mul(third - 128, 64) + (fourth - 128));

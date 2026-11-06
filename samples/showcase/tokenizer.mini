@@ -1,9 +1,9 @@
 /// Split source text into words and symbols.
-var source = "var x=1;";
-var index = 0;
-var token = "";
+source := "x:=1;";
+index := 0;
+token := "";
 while index < text_length(source) {
-    var ch = text_get(source, index);
+    ch := text_get(source, index);
     if ch == " " || ch == "=" || ch == ";" {
         if token != "" {
             io_write(token + "\n");

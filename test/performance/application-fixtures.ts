@@ -36,10 +36,10 @@ function tokenFixture(groups: number): Fixture {
 
 /** Construct source and exact TS independently from a known statement model. */
 function compilerFixture(count: number): Fixture {
-  let input = '/// Sum independently declared bindings.\nvar total = 0;\n';
+  let input = '/// Sum independently declared bindings.\ntotal := 0;\n';
   let body = 'let total = 0;\n';
   for (let index = 0; index < count; index++) {
-    input += `var value_${index} = (10 + 3) - 1;\ntotal = total + value_${index};\n`;
+    input += `value_${index} := (10 + 3) - 1;\ntotal = total + value_${index};\n`;
     body += `let value_${index} = ((10 + 3) - 1);\ntotal = (total + value_${index});\n`;
   }
   input += `if (total == ${count * 12}) { write("ok\\n"); } else { write("bad\\n"); }\n`;
@@ -137,7 +137,7 @@ export function goldens(application: Application): Fixture[] {
     'expression-eval': { name: 'negation-and-parentheses', input: '-(2 + 3); 10 - (4 - 1);', expected: { count: 2, total: 2 } },
     'compiler-pipeline': compilerFixture(1),
     tokenize: tokenFixture(1),
-    'source-index': { name: 'exclude-comments-and-strings', input: 'var x = 1; // x\nwrite("x"); x = x + 1;', expected: { x: [4, 28, 32], write: [16] } },
+    'source-index': { name: 'exclude-comments-and-strings', input: 'x := 1; // x\nwrite("x"); x = x + 1;', expected: { x: [4, 28, 32], write: [16] } },
   };
   return [{ name: 'empty', input: '', expected: empty[application] }, specific[application]!];
 }

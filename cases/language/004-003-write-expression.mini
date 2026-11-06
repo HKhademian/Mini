@@ -1,2 +1,2 @@
-var output = "mi" + "ni";
+output := "mi" + "ni";
 io_write(output);

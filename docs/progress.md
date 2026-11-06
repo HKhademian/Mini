@@ -49,7 +49,7 @@ vscode    vscode-v0.4.0-v0.3.4
 - **JavaScript output.** The compiler emits plain Node JavaScript. Generated
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;
-  parentheses remain available for grouping. A block rejects duplicate `var`
+  parentheses remain available for grouping. A block rejects duplicate `:=`
   declarations, and a parenthesized whole condition reports a warning.
 - **Browser playground.** The [showcase](../site/README.md) compiles tracked
   samples in a worker and shows the generated JavaScript beside each result.

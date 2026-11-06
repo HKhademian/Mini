@@ -1,3 +1,3 @@
-003-004-expressions-mixed-plus.mini:1:26: + needs two numbers or two texts
-var token = "position: " + 1;
-                         ^
+003-004-expressions-mixed-plus.mini:1:23: + needs two numbers or two texts
+token := "position: " + 1;
+                      ^

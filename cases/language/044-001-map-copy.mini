@@ -1,6 +1,6 @@
-var original = map_new();
+original := map_new();
 map_set(original, "name", "original");
-var copy = map_copy(original);
+copy := map_copy(original);
 map_set(copy, "name", "copy");
 map_set(copy, "extra", "value");
 if map_get(original, "name") == "original" && map_get(copy, "name") == "copy" && map_get(original, "extra") == 0 && map_has(copy, "extra") {
@@ -8,10 +8,10 @@ if map_get(original, "name") == "original" && map_get(copy, "name") == "copy" &&
 } else {
     io_write("bad\n");
 }
-var nested = map_new();
+nested := map_new();
 map_set(nested, "value", "shared");
 map_set(original, "nested", nested);
-var nested_copy = map_copy(original);
+nested_copy := map_copy(original);
 map_set(map_get(nested_copy, "nested"), "value", "changed");
 if map_get(nested, "value") == "changed" {
     io_write("shared\n");

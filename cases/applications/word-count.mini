@@ -2,9 +2,9 @@
 
 /// Return a membership map for letters, digits, and underscore.
 fn word_letters() {
-    var letters = map_new();
-    var alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-    var index = 0;
+    letters := map_new();
+    alphabet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+    index := 0;
     while index < text_length(alphabet) {
         map_set(letters, text_get(alphabet, index), true);
         index = index + 1;
@@ -22,12 +22,12 @@ fn word_store(counts, word) {
 
 /// Return word frequencies from source; punctuation and whitespace separate words.
 fn app_run(source) {
-    var letters = word_letters();
-    var counts = map_new();
-    var word = "";
-    var index = 0;
+    letters := word_letters();
+    counts := map_new();
+    word := "";
+    index := 0;
     while index < text_length(source) {
-        var character = text_get(source, index);
+        character := text_get(source, index);
         if map_has(letters, character) {
             word = word + character;
         } else {

@@ -4,9 +4,9 @@ fn change(items) {
     return list_length(items);
 }
 
-var original = process_args();
-var alias = original;
-var result = change(original);
+original := process_args();
+alias := original;
+result := change(original);
 if result != 0 || list_length(original) != 1 {
     process_exit(1);
 }

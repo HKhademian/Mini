@@ -12,12 +12,12 @@ fn format_fail(name, message) {
 
 /// Format one temporary source and return stdout.
 fn format_source(root, work, name, source) {
-    var path = path_join(work, name);
+    path := path_join(work, name);
     file_write(path, source);
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, path_join(root, "bin/mini-format"));
     list_set(args, 1, path);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(name, text_from_bytes(map_get(result, "stderr")));
     }
@@ -34,24 +34,24 @@ fn format_expect(name, actual, expected) {
 
 /// Return a stable token signature for one source.
 fn format_signature(root, file) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, path_join(root, "dist/compile.js"));
     list_set(args, 1, "tokens");
     list_set(args, 2, "--comments");
     list_set(args, 3, file);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(file, text_from_bytes(map_get(result, "stderr")));
     }
-    var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
+    parsed := json_parse(text_from_bytes(map_get(result, "stdout")));
     if !map_get(parsed, "ok") {
         format_fail(file, "invalid token JSON");
     }
-    var tokens = map_get(parsed, "value");
-    var signature = "";
-    var position = 0;
+    tokens := map_get(parsed, "value");
+    signature := "";
+    position := 0;
     while position < list_length(tokens) {
-        var token = list_get(tokens, position);
+        token := list_get(tokens, position);
         signature = signature + map_get(token, "kind") + ":" + map_get(token, "text") + "\n";
         position = position + 1;
     }
@@ -60,11 +60,11 @@ fn format_signature(root, file) {
 
 /// Compile one source and return generated text.
 fn format_compiled(root, file, output) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, path_join(root, "dist/compile.js"));
     list_set(args, 1, file);
     list_set(args, 2, output);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(file, text_from_bytes(map_get(result, "stderr")));
     }
@@ -73,53 +73,53 @@ fn format_compiled(root, file, output) {
 
 /// Run the formatter checks.
 fn main() {
-    var args = process_args();
-    var root = list_get(args, 0);
-    var work = path_temp_directory();
-    var example = "var value=1;// keep\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\n";
-    var canonical = "var value = 1; // keep\nif (value == 1) {\n    io_write(\"ok\");\n} else {\n    io_write(\"no\");\n}\n";
+    args := process_args();
+    root := list_get(args, 0);
+    work := path_temp_directory();
+    example := "value:=1;// keep\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\n";
+    canonical := "value := 1; // keep\nif (value == 1) {\n    io_write(\"ok\");\n} else {\n    io_write(\"no\");\n}\n";
     format_expect("example", format_source(root, work, "example.mini", example), canonical);
     format_expect("idempotent", format_source(root, work, "idempotent.mini", canonical), canonical);
-    var shebang = "#!/usr/bin/env -S mini run\nvar value=1;\n";
-    var shebang_expected = "#!/usr/bin/env -S mini run\nvar value = 1;\n";
+    shebang := "#!/usr/bin/env -S mini run\nvalue:=1;\n";
+    shebang_expected := "#!/usr/bin/env -S mini run\nvalue := 1;\n";
     format_expect("shebang", format_source(root, work, "shebang.mini", shebang), shebang_expected);
     format_expect("empty", format_source(root, work, "empty.mini", ""), "");
     format_expect("whitespace", format_source(root, work, "space.mini", " \n\t\r\n"), "");
     format_expect("comments", format_source(root, work, "comments.mini", "/// only"), "/// only\n");
     format_expect("comment-lines", format_source(root, work, "comment-lines.mini", "// a\n\n// b\n"), "// a\n\n// b\n");
-    format_expect("crlf", format_source(root, work, "crlf.mini", "var value=1;// keep\r\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\r\n"), canonical);
-    format_expect("operators", format_source(root, work, "operators.mini", "var a=-1;var b=1+-2;var c=!true;var d=-(1+2);\n"),
-        "var a = -1;\nvar b = 1 + -2;\nvar c = !true;\nvar d = -(1 + 2);\n");
-    format_expect("parentheses", format_source(root, work, "paren.mini", "var value=(1+2)+3;\nif((value==6)&&(!false)){io_write(\"ok\");}\n"),
-        "var value = (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write(\"ok\");\n}\n");
+    format_expect("crlf", format_source(root, work, "crlf.mini", "value:=1;// keep\r\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\r\n"), canonical);
+    format_expect("operators", format_source(root, work, "operators.mini", "a:=-1;b:=1+-2;c:=!true;d:=-(1+2);\n"),
+        "a := -1;\nb := 1 + -2;\nc := !true;\nd := -(1 + 2);\n");
+    format_expect("parentheses", format_source(root, work, "paren.mini", "value:=(1+2)+3;\nif((value==6)&&(!false)){io_write(\"ok\");}\n"),
+        "value := (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write(\"ok\");\n}\n");
     format_expect("else-comment", format_source(root, work, "else.mini", "if (true) {\n} // why\nelse {\n}\n"), "if (true) {\n} else { // why\n}\n");
-    format_expect("trailing", format_source(root, work, "trailing.mini", "var value = 1;  // tail  \n"), "var value = 1; // tail\n");
-    format_expect("blank-lines", format_source(root, work, "blank.mini", "var a=1;\n\n\n\nvar b=2;\n"), "var a = 1;\n\nvar b = 2;\n");
-    var check_args = list_new();
+    format_expect("trailing", format_source(root, work, "trailing.mini", "value := 1;  // tail  \n"), "value := 1; // tail\n");
+    format_expect("blank-lines", format_source(root, work, "blank.mini", "a:=1;\n\n\n\nb:=2;\n"), "a := 1;\n\nb := 2;\n");
+    check_args := list_new();
     list_set(check_args, 0, "--check");
     list_set(check_args, 1, "cases/tooling/format-unformatted.mini");
-    var check = process_capture(path_join(root, "bin/mini-format"), check_args, root, list_new());
+    check := process_capture(path_join(root, "bin/mini-format"), check_args, root, list_new());
     if map_get(check, "status") != 1 || text_from_bytes(map_get(check, "stdout")) != ""
         || text_from_bytes(map_get(check, "stderr")) != "cases/tooling/format-unformatted.mini: not formatted\n" {
         format_fail("check", "unexpected --check result");
     }
-    var invalid_args = list_new();
+    invalid_args := list_new();
     list_set(invalid_args, 0, "cases/tooling/format-invalid.mini");
-    var invalid = process_capture(path_join(root, "bin/mini-format"), invalid_args, root, list_new());
+    invalid := process_capture(path_join(root, "bin/mini-format"), invalid_args, root, list_new());
     if map_get(invalid, "status") != 1
-        || text_from_bytes(map_get(invalid, "stderr")) != "cases/tooling/format-invalid.mini:1:13: expected expression\nvar value = ;\n            ^\n" {
+        || text_from_bytes(map_get(invalid, "stderr")) != "cases/tooling/format-invalid.mini:1:10: expected expression\nvalue := ;\n         ^\n" {
         format_fail("invalid", "unexpected diagnostic");
     }
-    var names = directory_list(path_join(root, "samples"));
-    var checked = 0;
-    var position = 0;
+    names := directory_list(path_join(root, "samples"));
+    checked := 0;
+    position := 0;
     while position < list_length(names) {
-        var name = list_get(names, position);
+        name := list_get(names, position);
         if text_ends_with(name, ".mini") {
-            var original = path_join(work, name);
-            var formatted = path_join(work, "formatted-" + name);
+            original := path_join(work, name);
+            formatted := path_join(work, "formatted-" + name);
             file_write(original, file_read(path_join(path_join(root, "samples"), name)));
-            var output = format_source(root, work, name, file_read(original));
+            output := format_source(root, work, name, file_read(original));
             file_write(formatted, output);
             if format_signature(root, formatted) != format_signature(root, original) {
                 format_fail(name, "tokens changed");

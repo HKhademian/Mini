@@ -2,5 +2,5 @@ fn visit() {
     io_write("visited");
     return true;
 }
-var enabled = io_read_all() == "yes";
-var value = enabled && visit();
+enabled := io_read_all() == "yes";
+value := enabled && visit();

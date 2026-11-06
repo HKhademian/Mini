@@ -1,17 +1,17 @@
-var expected = io_read_all();
-var items = map_new();
+expected := io_read_all();
+items := map_new();
 if list_length(map_keys(items)) != 0 {
     process_exit(1);
 }
 map_set(items, expected, 0);
 map_set(items, expected + "!", false);
 map_set(items, expected, 7);
-var keys = map_keys(items);
-var position = 0;
-var found_first = false;
-var found_second = false;
+keys := map_keys(items);
+position := 0;
+found_first := false;
+found_second := false;
 while position < list_length(keys) {
-    var key = list_get(keys, position);
+    key := list_get(keys, position);
     if !map_has(items, key) {
         process_exit(1);
     }

@@ -1,6 +1,6 @@
 /// Exercise path checks, directory listing, copying, and recursive removal.
-var root = path_temp_directory();
-var sub = root + "/sub";
+root := path_temp_directory();
+sub := root + "/sub";
 directory_create(sub);
 file_write(sub + "/b.txt", "b");
 file_write(sub + "/a.txt", "a");
@@ -9,7 +9,7 @@ if path_is_exists(root) && path_is_directory(root) && path_is_directory(sub) {
 } else {
     io_write("exists bad\n");
 }
-var names = directory_list(sub);
+names := directory_list(sub);
 if list_length(names) == 2 && list_get(names, 0) == "a.txt" && list_get(names, 1) == "b.txt" {
     io_write("list ok\n");
 } else {

@@ -1,10 +1,10 @@
-var parts = text_split("a,b,,c,", ",");
+parts := text_split("a,b,,c,", ",");
 if list_length(parts) == 5 && list_get(parts, 0) == "a" && list_get(parts, 1) == "b" && list_get(parts, 2) == "" && list_get(parts, 3) == "c" && list_get(parts, 4) == "" {
     io_write("ok\n");
 } else {
     io_write("bad\n");
 }
-var empty = text_split("abc", "");
+empty := text_split("abc", "");
 if list_length(empty) == 1 && list_get(empty, 0) == "abc" {
     io_write("ok\n");
 } else {

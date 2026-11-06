@@ -1,15 +1,15 @@
 fn copy(value) {
     return list_copy(value);
 }
-var empty = copy(12);
+empty := copy(12);
 if list_length(empty) == 0 {
     io_write("ok\n");
 } else {
     io_write("bad\n");
 }
-var sparse = list_new();
+sparse := list_new();
 list_set(sparse, 3, "last");
-var copied = list_copy(sparse);
+copied := list_copy(sparse);
 if list_length(copied) == 4 && list_get(copied, 0) == 0 && list_get(copied, 3) == "last" {
     io_write("ok\n");
 } else {

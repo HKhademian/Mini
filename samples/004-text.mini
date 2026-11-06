@@ -2,9 +2,9 @@
 
 /// Return normalized text without changing source; ordinary characters are retained.
 fn normalize(source) {
-    var output = "";
-    var position = 0;
-    var current = "";
+    output := "";
+    position := 0;
+    current := "";
     while position < text_length(source) {
         current = text_get(source, position);
         if current == "\t" || current == "\r" || current == "\n" {

@@ -1,1 +1,1 @@
-var copied = list_copy(1);
+copied := list_copy(1);

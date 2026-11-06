@@ -1,1 +1,1 @@
-var token = text_get("mini");
+token := text_get("mini");

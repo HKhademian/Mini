@@ -1,1 +1,1 @@
-var command = list_get(process_args());
+command := list_get(process_args());

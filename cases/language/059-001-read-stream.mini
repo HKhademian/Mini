@@ -1,5 +1,5 @@
 /// Read one line, a byte count, then the remaining line.
-var first = io_read_line();
-var three = io_read_bytes(3);
-var rest = io_read_line();
+first := io_read_line();
+three := io_read_bytes(3);
+rest := io_read_line();
 io_write(first + "|" + text_from_bytes(three) + "|" + rest + "\n");

@@ -3,14 +3,14 @@ include "../libs/tools/release.mini";
 
 /// Parse arguments and package a release.
 fn main() {
-    var args = process_args();
+    args := process_args();
     if list_length(args) < 1 || list_length(args) > 2 {
         io_write_error("usage: mini-release OUTPUT [TAG]\n");
         process_exit(1);
     }
-    var directory = project_root();
-    var output = path_normalize(list_get(args, 0));
-    var tag = "";
+    directory := project_root();
+    output := path_normalize(list_get(args, 0));
+    tag := "";
     if list_length(args) == 2 {
         tag = list_get(args, 1);
     }

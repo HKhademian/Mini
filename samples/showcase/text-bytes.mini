@@ -1,6 +1,6 @@
 /// Turn text into its byte values.
-var bytes = text_to_bytes("Mini");
-var index = 0;
+bytes := text_to_bytes("Mini");
+index := 0;
 while index < list_length(bytes) {
     io_write(number_to_text(list_get(bytes, index)) + " ");
     index = index + 1;

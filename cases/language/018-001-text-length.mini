@@ -1,4 +1,4 @@
-var source = io_read_all();
+source := io_read_all();
 if text_length(source) == 0 {
     io_write("empty");
 } else {

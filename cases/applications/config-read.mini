@@ -2,8 +2,8 @@
 
 /// Return a bounded character copy of source.
 fn config_slice(source, start, end) {
-    var output = "";
-    var position = start;
+    output := "";
+    position := start;
     while position < end {
         output = output + text_get(source, position);
         position = position + 1;
@@ -13,8 +13,8 @@ fn config_slice(source, start, end) {
 
 /// Return source without leading or trailing spaces, tabs, or carriage returns.
 fn config_trim(source) {
-    var start = 0;
-    var end = text_length(source);
+    start := 0;
+    end := text_length(source);
     while start < end && (text_get(source, start) == " " || text_get(source, start) == "\t" || text_get(source, start) == "\r") {
         start = start + 1;
     }
@@ -26,24 +26,24 @@ fn config_trim(source) {
 
 /// Return the final settings map, qualifying section keys with a dot.
 fn app_run(source) {
-    var settings = map_new();
-    var section = "";
-    var line = "";
-    var position = 0;
+    settings := map_new();
+    section := "";
+    line := "";
+    position := 0;
     while position <= text_length(source) {
-        var character = text_get(source, position);
+        character := text_get(source, position);
         if character == "\n" || character == "" {
             line = config_trim(line);
             if text_get(line, 0) == "[" && text_get(line, text_length(line) - 1) == "]" {
                 section = config_trim(config_slice(line, 1, text_length(line) - 1));
             } else {
                 if line != "" && text_get(line, 0) != "#" && text_get(line, 0) != ";" {
-                    var split = 0;
+                    split := 0;
                     while split < text_length(line) && text_get(line, split) != "=" {
                         split = split + 1;
                     }
                     if split < text_length(line) {
-                        var key = config_trim(config_slice(line, 0, split));
+                        key := config_trim(config_slice(line, 0, split));
                         if section != "" {
                             key = section + "." + key;
                         }

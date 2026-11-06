@@ -237,7 +237,7 @@ function is_identifier_part(character) {
     return (is_letter(character) || is_digit(character));
 }
 function is_two_character_symbol(value) {
-    return ((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||"));
+    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
 }
 function text_starts_with(source, prefix) {
     let size = (prefix).length;
@@ -525,7 +525,7 @@ function tokenize(source, source_name, include_comments) {
                         lex_advance(state);
                     }
                     let spelling = $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
-                    if (((((((((spelling === "var") || (spelling === "fn")) || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
+                    if ((((((((spelling === "fn") || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
                         $mini_map_set(token, "kind", "keyword");
                     }
                 } else {
@@ -925,38 +925,33 @@ function parser_statement(parser) {
         parser_expect(parser, ";");
         return ($mini_map_get(call_value, "code") + ";\n");
     }
-    if (($mini_map_get(parser_token(parser), "text") !== "var")) {
-        let assignment_name = parser_identifier(parser, "expected binding name");
-        let variables = $mini_map_get(parser, "variables");
-        if ((!$mini_map_has(variables, $mini_map_get(assignment_name, "text")))) {
-            parser_fail(assignment_name, ("unknown binding " + $mini_map_get(assignment_name, "text")));
+    let variables = $mini_map_get(parser, "variables");
+    let statement_name = parser_identifier(parser, "expected binding name");
+    if (($mini_map_get(parser_token(parser), "text") === ":=")) {
+        parser_take(parser);
+        if ($mini_map_has($mini_map_get(parser, "declared"), $mini_map_get(statement_name, "text"))) {
+            parser_fail(statement_name, ("duplicate binding " + $mini_map_get(statement_name, "text")));
         }
-        parser_expect(parser, "=");
-        let assignment_value = parser_expression(parser);
-        if (($mini_map_get(assignment_value, "kind") === "void")) {
-            parser_fail(assignment_name, "expected a value");
+        let declaration_value = parser_expression(parser);
+        if (($mini_map_get(declaration_value, "kind") === "void")) {
+            parser_fail(statement_name, "expected a value");
         }
         parser_expect(parser, ";");
-        $mini_map_set(variables, $mini_map_get(assignment_name, "text"), $mini_map_get(assignment_value, "kind"));
-        return ((($mini_map_get(assignment_name, "text") + " = ") + $mini_map_get(assignment_value, "code")) + ";\n");
+        $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(declaration_value, "kind"));
+        $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(statement_name, "text"), true);
+        return (((("let " + $mini_map_get(statement_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
     }
-    parser_expect(parser, "var");
-    let declaration_name = parser_identifier(parser, "expected binding name");
-    if ($mini_map_has($mini_map_get(parser, "declared"), $mini_map_get(declaration_name, "text"))) {
-        parser_fail(declaration_name, ("duplicate binding " + $mini_map_get(declaration_name, "text")));
+    if ((!$mini_map_has(variables, $mini_map_get(statement_name, "text")))) {
+        parser_fail(statement_name, ("unknown binding " + $mini_map_get(statement_name, "text")));
     }
-    if (($mini_map_get(parser_token(parser), "text") !== "=")) {
-        parser_fail(parser_token(parser), "expected initializer");
-    }
-    parser_take(parser);
-    let declaration_value = parser_expression(parser);
-    if (($mini_map_get(declaration_value, "kind") === "void")) {
-        parser_fail(declaration_name, "expected a value");
+    parser_expect(parser, "=");
+    let assignment_value = parser_expression(parser);
+    if (($mini_map_get(assignment_value, "kind") === "void")) {
+        parser_fail(statement_name, "expected a value");
     }
     parser_expect(parser, ";");
-    $mini_map_set($mini_map_get(parser, "variables"), $mini_map_get(declaration_name, "text"), $mini_map_get(declaration_value, "kind"));
-    $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(declaration_name, "text"), true);
-    return (((("let " + $mini_map_get(declaration_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
+    $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(assignment_value, "kind"));
+    return ((($mini_map_get(statement_name, "text") + " = ") + $mini_map_get(assignment_value, "code")) + ";\n");
 }
 function parser_condition_parenthesized(parser) {
     let tokens = $mini_map_get(parser, "tokens");

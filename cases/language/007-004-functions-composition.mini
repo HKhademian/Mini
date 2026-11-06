@@ -4,4 +4,4 @@ fn join(left, right) {
 fn twice(value) {
     return join(value, value);
 }
-var output = twice("mini");
+output := twice("mini");

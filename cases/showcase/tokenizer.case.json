@@ -21,7 +21,7 @@
       },
       "args": [],
       "stdout": {
-        "text": "var\nx\n=\n1\n;\n"
+        "text": "x:\n=\n1\n;\n"
       },
       "stderr": {
         "text": ""

@@ -1,5 +1,5 @@
 /// Read text and print slices that demonstrate bounds and negative indices.
-var source = io_read_all();
+source := io_read_all();
 io_write(text_slice(source, 0, 3) + "\n");
 io_write(text_slice(source, 1, 4) + "\n");
 io_write(text_slice(source, -2, -1) + "\n");

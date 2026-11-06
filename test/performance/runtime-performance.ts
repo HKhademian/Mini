@@ -36,11 +36,11 @@ function compilerProbes(selected: string, directory: string) {
     for (const count of name === 'statements' ? [1000, 4000, 16000]
       : name === 'long-text' ? [10000, 40000, 160000] : [100, 1000, 4000]) {
       const source = name === 'statements'
-        ? 'var value = 0;\n' + 'value = value + 1;\n'.repeat(count)
+        ? 'value := 0;\n' + 'value = value + 1;\n'.repeat(count)
           + `if (value != ${count}) { process_exit(1); }\nwrite("ok\\n");\n`
         : name === 'long-text'
-          ? `var value = "${'a'.repeat(count)}";\nif (text_length(value) != ${count}) { process_exit(1); }\nwrite("ok\\n");\n`
-          : 'var value = ' + Array<string>(count).fill('1').join(' + ')
+          ? `value := "${'a'.repeat(count)}";\nif (text_length(value) != ${count}) { process_exit(1); }\nwrite("ok\\n");\n`
+          : 'value := ' + Array<string>(count).fill('1').join(' + ')
             + `;\nif (value != ${count}) { process_exit(1); }\nwrite("ok\\n");\n`;
       const input = join(directory, 'compiler-probe.mini');
       const output = join(directory, 'compiler-probe.js');
@@ -201,7 +201,7 @@ async function worker(): Promise<void> {
   assert(fn);
   const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_';
   const source = name === 'scopes' ? alphabet : name === 'text' || name === 'slices'
-    ? 'alpha_012345 = beta_value;\n'.repeat(Math.ceil(count / 25)).slice(0, count) : 'var name = 1;';
+    ? 'alpha_012345 = beta_value;\n'.repeat(Math.ceil(count / 25)).slice(0, count) : 'name := 1;';
   assert(global.gc, 'run worker with --expose-gc');
   const execute = (): number => {
     global.gc!();

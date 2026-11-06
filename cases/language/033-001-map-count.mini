@@ -1,6 +1,6 @@
 /// Count key snapshots before/after replacement, including empty and method-like keys.
-var items = map_new();
-var key = io_read_all();
+items := map_new();
+key := io_read_all();
 if list_length(map_keys(items)) != 0 {
     process_exit(1);
 }
@@ -13,7 +13,7 @@ if list_length(map_keys(items)) != 1 {
     process_exit(1);
 }
 map_set(items, key + "!", "second");
-var count = list_length(map_keys(items));
+count := list_length(map_keys(items));
 if count != 2 || list_length(map_keys(items)) != count || list_length(map_keys(map_new())) != 0 {
     process_exit(1);
 }

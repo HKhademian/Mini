@@ -1,24 +1,24 @@
 /// Round-trip text and bytes through the byte primitives.
-var encoded = text_to_bytes("abc");
+encoded := text_to_bytes("abc");
 if list_length(encoded) == 3 && list_get(encoded, 0) == 97 && text_from_bytes(encoded) == "abc" {
     io_write("text ok\n");
 } else {
     io_write("text bad\n");
 }
-var multibyte = text_to_bytes("é");
+multibyte := text_to_bytes("é");
 if list_length(multibyte) == 2 && text_from_bytes(multibyte) == "é" {
     io_write("utf8 ok\n");
 } else {
     io_write("utf8 bad\n");
 }
-var raw = list_new();
+raw := list_new();
 list_set(raw, 0, 0);
 list_set(raw, 1, 255);
 list_set(raw, 2, 10);
-var directory = path_temp_directory();
-var file = directory + "/raw.bin";
+directory := path_temp_directory();
+file := directory + "/raw.bin";
 file_write_bytes(file, raw);
-var read_back = file_read_bytes(file);
+read_back := file_read_bytes(file);
 if list_length(read_back) == 3 && list_get(read_back, 0) == 0 && list_get(read_back, 1) == 255 && list_get(read_back, 2) == 10 {
     io_write("file ok\n");
 } else {

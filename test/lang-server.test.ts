@@ -104,7 +104,7 @@ test('publishes diagnostics for unsaved text and clears them after a fix', async
   await session(async client => {
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
-    client.send(open('file:///workspace/a.mini', 'var value = ;\n', 1));
+    client.send(open('file:///workspace/a.mini', 'value := ;\n', 1));
     const first = await client.next();
     assert.equal(first.method, 'textDocument/publishDiagnostics');
     assert.equal(first.params.uri, 'file:///workspace/a.mini');
@@ -114,7 +114,7 @@ test('publishes diagnostics for unsaved text and clears them after a fix', async
     assert.equal(first.params.diagnostics[0].source, 'mini');
     assert.equal(first.params.diagnostics[0].message, 'expected expression');
 
-    client.send(change('file:///workspace/a.mini', 'var value = 1;\n', 2));
+    client.send(change('file:///workspace/a.mini', 'value := 1;\n', 2));
     const second = await client.next();
     assert.equal(second.params.version, 2);
     assert.deepEqual(second.params.diagnostics, []);
@@ -126,18 +126,18 @@ test('formats only valid documents and returns one whole-document edit', async (
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
     const uri = 'file:///workspace/format.mini';
-    client.send(open(uri, 'var value=1;// keep\n', 1));
+    client.send(open(uri, 'value:=1;// keep\n', 1));
     await client.next();
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/formatting', params: { textDocument: { uri }, options: { tabSize: 2, insertSpaces: true } } });
     const formatted = await client.next();
-    assert.deepEqual(formatted.result, [{ range: { start: { line: 0, character: 0 }, end: { line: 1, character: 0 } }, newText: 'var value = 1; // keep\n' }]);
+    assert.deepEqual(formatted.result, [{ range: { start: { line: 0, character: 0 }, end: { line: 1, character: 0 } }, newText: 'value := 1; // keep\n' }]);
 
-    client.send(change(uri, 'var value = 1; // keep\n', 2));
+    client.send(change(uri, 'value := 1; // keep\n', 2));
     await client.next();
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/formatting', params: { textDocument: { uri } } });
     assert.deepEqual((await client.next()).result, null);
 
-    client.send(change(uri, 'var value = ;\n', 3));
+    client.send(change(uri, 'value := ;\n', 3));
     await client.next();
     client.send({ jsonrpc: '2.0', id: 4, method: 'textDocument/formatting', params: { textDocument: { uri } } });
     assert.deepEqual((await client.next()).result, null);
@@ -148,9 +148,9 @@ test('keeps documents isolated and clears diagnostics on close', async () => {
   await session(async client => {
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
-    client.send(open('file:///a.mini', 'var a = ;\n', 1));
+    client.send(open('file:///a.mini', 'a := ;\n', 1));
     assert.equal((await client.next()).params.diagnostics.length, 1);
-    client.send(open('file:///b.mini', 'var b = 1;\n', 1));
+    client.send(open('file:///b.mini', 'b := 1;\n', 1));
     assert.deepEqual((await client.next()).params.diagnostics, []);
     client.send({ jsonrpc: '2.0', method: 'textDocument/didClose', params: { textDocument: { uri: 'file:///a.mini' } } });
     const closed = await client.next();
@@ -166,7 +166,7 @@ test('handles split and coalesced frames', async () => {
     client.write(init.subarray(12));
     assert.equal((await client.next()).id, 1);
 
-    const a = client.frame(open('file:///a.mini', 'var a = 1;\n', 1));
+    const a = client.frame(open('file:///a.mini', 'a := 1;\n', 1));
     const b = client.frame({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
     client.write(Buffer.concat([a, b]));
     assert.deepEqual((await client.next()).params.diagnostics, []);
@@ -178,7 +178,7 @@ test('uses UTF-16 offsets for CRLF and astral text', async () => {
   await session(async client => {
     client.send({ jsonrpc: '2.0', id: 1, method: 'initialize', params: {} });
     await client.next();
-    const text = 'var text = "😀";\r\nvar value = ;\r\n';
+    const text = 'text := "😀";\r\nvalue := ;\r\n';
     client.send(open('file:///emoji.mini', text, 1));
     const published = await client.next();
     assert.deepEqual(published.params.diagnostics[0].range, { start: { line: 1, character: 12 }, end: { line: 1, character: 13 } });
@@ -215,8 +215,8 @@ const documented = [
   '}',
   '',
   '/// The answer.',
-  'var answer = 1;',
-  'var value = add(answer, 2);',
+  'answer := 1;',
+  'value := add(answer, 2);',
   '',
 ].join('\n');
 
@@ -248,7 +248,7 @@ test('hovers functions and variables with their documentation', async () => {
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(documented, 'answer', 1) } });
     const variable = await client.next();
-    assert.match(variable.result.contents.value, /```mini\nvar answer\n```/);
+    assert.match(variable.result.contents.value, /```mini\nanswer :=\n```/);
     assert.match(variable.result.contents.value, /The answer\./);
   });
 });
@@ -256,7 +256,7 @@ test('hovers functions and variables with their documentation', async () => {
 test('hovers builtins and returns null for unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///builtin.mini';
-    const text = 'io_write("ok");\nvar value = missing;\n';
+    const text = 'io_write("ok");\nvalue := missing;\n';
     await openDocument(client, uri, text);
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
@@ -326,7 +326,7 @@ test('jumps to function and variable declarations', async () => {
 test('returns no definition for builtins or unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///no-definition.mini';
-    const text = 'io_write("ok");\nvar value = missing;\n';
+    const text = 'io_write("ok");\nvalue := missing;\n';
     await openDocument(client, uri, text);
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });

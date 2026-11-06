@@ -1,1 +1,1 @@
-var same = map_new() == map_new();
+same := map_new() == map_new();

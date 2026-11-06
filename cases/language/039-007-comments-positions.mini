@@ -1,4 +1,4 @@
 // leading
-var value = 1; /// doc
+value := 1; /// doc
 	io_write("//"); // tail
 /// eof

@@ -1,5 +1,5 @@
-var position = 0;
-var output = "";
+position := 0;
+output := "";
 while position < 3 {
     if position == 1 {
         output = output + ";";

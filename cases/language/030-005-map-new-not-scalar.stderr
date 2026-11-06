@@ -1,3 +1,3 @@
-030-005-map-new-not-scalar.mini:1:22: equality needs matching scalar kinds
-var same = map_new() == map_new();
-                     ^
+030-005-map-new-not-scalar.mini:1:19: equality needs matching scalar kinds
+same := map_new() == map_new();
+                  ^

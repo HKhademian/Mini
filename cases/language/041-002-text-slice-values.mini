@@ -1,6 +1,6 @@
 fn slice(value) {
     return text_slice(value, 0, 2);
 }
-var items = list_new();
+items := list_new();
 list_set(items, 0, "nested");
 io_write(slice("xy") + "|" + slice(12) + "|" + slice(items) + "|" + slice("") + "\n");

@@ -1,4 +1,4 @@
-var args = process_args();
+args := process_args();
 if list_length(args) == 0 {
     io_write("none");
 } else {

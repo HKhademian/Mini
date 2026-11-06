@@ -3,7 +3,7 @@ if json_to_text("abc") == "\"abc\"" && json_to_text(42) == "42" && json_to_text(
 } else {
     io_write("bad\n");
 }
-var items = list_new();
+items := list_new();
 list_set(items, 0, 1);
 list_set(items, 1, "a");
 list_set(items, 2, true);
@@ -12,7 +12,7 @@ if json_to_text(items) == "[1,\"a\",true]" {
 } else {
     io_write("bad\n");
 }
-var values = map_new();
+values := map_new();
 map_set(values, "b", 2);
 map_set(values, "a", 1);
 if json_to_text(values) == "{\"a\":1,\"b\":2}" {

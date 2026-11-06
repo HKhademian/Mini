@@ -1,2 +1,2 @@
-var ready = !false && true || false;
-var grouped = !(true || false);
+ready := !false && true || false;
+grouped := !(true || false);

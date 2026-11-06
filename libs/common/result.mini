@@ -1,7 +1,7 @@
 include "value.mini";
 /// Return a successful result map.
 fn result_ok(value, message) {
-    var result = map_new();
+    result := map_new();
     map_set(result, "ok", true);
     map_set(result, "value", value);
     map_set(result, "message", message);
@@ -10,7 +10,7 @@ fn result_ok(value, message) {
 
 /// Return a failed result map.
 fn result_fail(message) {
-    var result = map_new();
+    result := map_new();
     map_set(result, "ok", false);
     map_set(result, "value", 0);
     map_set(result, "message", message);

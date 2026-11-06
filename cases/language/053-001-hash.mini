@@ -4,7 +4,7 @@ if hash_sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff
 } else {
     io_write("text bad\n");
 }
-var bytes = list_new();
+bytes := list_new();
 list_set(bytes, 0, 97);
 list_set(bytes, 1, 98);
 list_set(bytes, 2, 99);

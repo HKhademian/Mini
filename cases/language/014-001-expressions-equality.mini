@@ -5,7 +5,7 @@ fn mark(value) {
         return "F";
     }
 }
-var token = io_read_all();
+token := io_read_all();
 io_write(mark(token == "mini") + mark(token != "mini"));
 io_write(mark(token == "") + mark(token != ""));
 io_write(mark(true == !false) + mark(false != true));

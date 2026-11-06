@@ -6,11 +6,11 @@ include "../common/project.mini";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
-    var workspace = process_env("GITHUB_WORKSPACE");
+    workspace := process_env("GITHUB_WORKSPACE");
     if workspace != "" {
         return workspace;
     }
-    var pwd = process_env("PWD");
+    pwd := process_env("PWD");
     if pwd != "" {
         return pwd;
     }
@@ -19,15 +19,15 @@ fn ci_root() {
 
 /// Run a command, forward its streams, and stop on failure.
 fn ci_run(root, command, args, directory) {
-    var options = map_new();
+    options := map_new();
     map_set(options, "command", command);
     map_set(options, "arguments", args);
     map_set(options, "mode", "capture");
     map_set(options, "directory", directory);
     map_set(options, "timeout", 0);
-    var result = process_spawn(options);
-    var stdout = text_from_bytes(map_get(result, "stdout"));
-    var stderr = text_from_bytes(map_get(result, "stderr"));
+    result := process_spawn(options);
+    stdout := text_from_bytes(map_get(result, "stdout"));
+    stderr := text_from_bytes(map_get(result, "stderr"));
     if text_length(stdout) > 0 {
         io_write(stdout);
     }
@@ -42,14 +42,14 @@ fn ci_run(root, command, args, directory) {
 
 /// Build a one-argument list.
 fn ci_args1(a) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, a);
     return result;
 }
 
 /// Build a two-argument list.
 fn ci_args2(a, b) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, a);
     list_set(result, 1, b);
     return result;
@@ -57,7 +57,7 @@ fn ci_args2(a, b) {
 
 /// Build a three-argument list.
 fn ci_args3(a, b, c) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, a);
     list_set(result, 1, b);
     list_set(result, 2, c);
@@ -66,7 +66,7 @@ fn ci_args3(a, b, c) {
 
 /// Build a four-argument list.
 fn ci_args4(a, b, c, d) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, a);
     list_set(result, 1, b);
     list_set(result, 2, c);
@@ -101,11 +101,11 @@ fn ci_task_name(text) {
 
 /// Package committed sources, optionally for a tag.
 fn ci_package(root) {
-    var tag = "";
+    tag := "";
     if process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
         tag = process_env("GITHUB_REF_NAME");
     }
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, "release");
     list_set(args, 1, path_join(root, "dist/release"));
     if tag != "" {
@@ -119,25 +119,25 @@ fn ci_publish(root) {
     if process_env("GITHUB_EVENT_NAME") != "push" || process_env("GITHUB_REF_TYPE") != "tag" {
         ci_fail("publish requires a pushed tag");
     }
-    var tag = process_env("GITHUB_REF_NAME");
+    tag := process_env("GITHUB_REF_NAME");
     if tag == "" {
         ci_fail("publish requires GITHUB_REF_NAME");
     }
-    var directory = path_join(root, "dist/release");
-    var parsed = json_parse_file(path_join(directory, "manifest.json"));
+    directory := path_join(root, "dist/release");
+    parsed := json_parse_file(path_join(directory, "manifest.json"));
     if result_is_fail(parsed) {
         ci_fail(map_get(parsed, "message"));
     }
-    var manifest = map_get(parsed, "value");
+    manifest := map_get(parsed, "value");
     if map_get(manifest, "tag") != tag {
         ci_fail("manifest tag does not match " + tag);
     }
-    var files = directory_list(directory);
-    var args = list_new();
+    files := directory_list(directory);
+    args := list_new();
     list_set(args, 0, "release");
     list_set(args, 1, "create");
     list_set(args, 2, tag);
-    var position = 0;
+    position := 0;
     while position < list_length(files) {
         list_set(args, list_length(args), path_join(directory, list_get(files, position)));
         position = position + 1;
@@ -149,12 +149,12 @@ fn ci_publish(root) {
     list_set(args, list_length(args), map_get(manifest, "title"));
     list_set(args, list_length(args), "--notes-file");
     list_set(args, list_length(args), path_join(directory, "RELEASE-NOTES.md"));
-    var version = map_get(map_get(manifest, "releasedComponent"), "version");
+    version := map_get(map_get(manifest, "releasedComponent"), "version");
     if text_find(version, "-") >= 0 {
         list_set(args, list_length(args), "--prerelease");
     }
     ci_run(root, "gh", args, root);
-    var edit = list_new();
+    edit := list_new();
     list_set(edit, 0, "release");
     list_set(edit, 1, "edit");
     list_set(edit, 2, tag);

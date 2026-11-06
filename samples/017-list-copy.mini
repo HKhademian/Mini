@@ -1,7 +1,7 @@
 /// Copy a list and show that changing the copy leaves the original intact.
-var original = list_new();
+original := list_new();
 list_set(original, 0, "original");
-var copy = list_copy(original);
+copy := list_copy(original);
 list_set(copy, 0, "copy");
 io_write(list_get(original, 0) + "\n");
 io_write(list_get(copy, 0) + "\n");

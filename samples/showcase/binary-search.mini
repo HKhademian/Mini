@@ -1,18 +1,18 @@
 /// Find a value in a sorted list.
-var values = list_new();
+values := list_new();
 list_set(values, 0, 2);
 list_set(values, 1, 4);
 list_set(values, 2, 8);
 list_set(values, 3, 16);
 list_set(values, 4, 32);
 list_set(values, 5, 64);
-var target = 16;
-var low = 0;
-var high = list_length(values) - 1;
-var found = -1;
+target := 16;
+low := 0;
+high := list_length(values) - 1;
+found := -1;
 while low <= high {
-    var middle = number_div(low + high, 2);
-    var current = list_get(values, middle);
+    middle := number_div(low + high, 2);
+    current := list_get(values, middle);
     if current == target {
         found = middle;
         low = high + 1;

@@ -1,9 +1,9 @@
 /// Shift character codes by one.
-var source = "MINI";
-var output = "";
-var index = 0;
+source := "MINI";
+output := "";
+index := 0;
 while index < text_length(source) {
-    var code = text_code(text_get(source, index));
+    code := text_code(text_get(source, index));
     output = output + text_from_code(code + 1);
     index = index + 1;
 }

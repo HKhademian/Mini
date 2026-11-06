@@ -2,16 +2,16 @@
 
 /// Return ten times value using only addition; used by decimal formatting.
 fn times_ten(value) {
-    var twice = value + value;
-    var four = twice + twice;
-    var eight = four + four;
+    twice := value + value;
+    four := twice + twice;
+    eight := four + four;
     return eight + twice;
 }
 
 /// Return signed decimal text for an ordinary integer value using addition and subtraction.
 fn decimal(value) {
-    var remaining = value;
-    var sign = "";
+    remaining := value;
+    sign := "";
     if remaining < 0 {
         sign = "-";
         remaining = -remaining;
@@ -19,17 +19,17 @@ fn decimal(value) {
     if remaining == 0 {
         return "0";
     }
-    var powers = list_new();
-    var power = 1;
+    powers := list_new();
+    power := 1;
     while power <= remaining {
         list_set(powers, list_length(powers), power);
         power = times_ten(power);
     }
-    var output = sign;
-    var position = list_length(powers) - 1;
+    output := sign;
+    position := list_length(powers) - 1;
     while position >= 0 {
         power = list_get(powers, position);
-        var digit = 0;
+        digit := 0;
         while remaining >= power {
             remaining = remaining - power;
             digit = digit + 1;
@@ -42,8 +42,8 @@ fn decimal(value) {
 
 /// Return source characters from start through the exclusive limit; callers supply nonnegative bounds.
 fn slice(source, start, limit) {
-    var position = start;
-    var output = "";
+    position := start;
+    output := "";
     while position < limit && position < text_length(source) {
         output = output + text_get(source, position);
         position = position + 1;
@@ -53,7 +53,7 @@ fn slice(source, start, limit) {
 
 /// Return whether the single-character value occurs in choices.
 fn contains(choices, value) {
-    var position = 0;
+    position := 0;
     while position < text_length(choices) {
         if text_get(choices, position) == value {
             return true;
@@ -82,8 +82,8 @@ fn quote_char(character) {
 
 /// Return source as a double-quoted TS literal using the supported escapes.
 fn quoted(source) {
-    var output = "\"";
-    var position = 0;
+    output := "\"";
+    position := 0;
     while position < text_length(source) {
         output = output + quote_char(text_get(source, position));
         position = position + 1;
@@ -93,11 +93,11 @@ fn quoted(source) {
 
 /// Return a shallow copy of scope; replacing a binding in the result leaves scope unchanged.
 fn copy_scope(scope) {
-    var result = map_new();
-    var keys = map_keys(scope);
-    var position = 0;
+    result := map_new();
+    keys := map_keys(scope);
+    position := 0;
     while position < list_length(keys) {
-        var key = list_get(keys, position);
+        key := list_get(keys, position);
         map_set(result, key, map_get(scope, key));
         position = position + 1;
     }
@@ -122,26 +122,26 @@ fn odd(value) {
 
 /// Append depths in ascending order to state.visits and increment state.count; return zero.
 fn descend(state, depth) {
-    var saved = depth;
+    saved := depth;
     if depth > 0 {
         descend(state, depth - 1);
     }
-    var visits = map_get(state, "visits");
+    visits := map_get(state, "visits");
     list_set(visits, list_length(visits), saved);
     map_set(state, "count", map_get(state, "count") + 1);
     return 0;
 }
 
-var args = process_args();
+args := process_args();
 if list_length(args) != 1 {
     io_write_error("expected an output path\n");
     process_exit(1);
 }
-var state = map_new();
+state := map_new();
 map_set(state, "visits", list_new());
 map_set(state, "count", 0);
 descend(state, 3);
-var position = 0;
+position := 0;
 while position < 4 {
     if list_get(map_get(state, "visits"), position) != position {
         process_exit(1);
@@ -153,9 +153,9 @@ if map_get(state, "count") != 4 || !even(6) || !odd(5) {
 }
 io_write("recursion and state\n");
 
-var scope = map_new();
+scope := map_new();
 map_set(scope, "name", "text");
-var inner = copy_scope(scope);
+inner := copy_scope(scope);
 map_set(inner, "name", "number");
 map_set(inner, "local", "text");
 if map_get(scope, "name") != "text" || map_has(scope, "local") {
@@ -169,6 +169,6 @@ if slice("compiler.mini", 0, 8) != "compiler" || !contains("abc", "b") || contai
 }
 io_write("text helpers\n");
 
-var program = "\"use strict\";\nimport { writeSync } from \"node:fs\";\nwriteSync(1, " + quoted("port probe") + ");\n";
+program := "\"use strict\";\nimport { writeSync } from \"node:fs\";\nwriteSync(1, " + quoted("port probe") + ");\n";
 file_write(list_get(args, 0), program);
 io_write("emitted\n");

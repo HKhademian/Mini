@@ -2,8 +2,8 @@
 
 /// Return items separated by pipes; leave the list unchanged and return empty text for no items.
 fn join(items) {
-    var output = "";
-    var position = 0;
+    output := "";
+    position := 0;
     while position < list_length(items) {
         if position > 0 {
             output = output + "|";
@@ -13,5 +13,5 @@ fn join(items) {
     }
     return output;
 }
-var args = process_args();
+args := process_args();
 io_write(join(args));

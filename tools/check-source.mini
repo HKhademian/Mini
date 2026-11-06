@@ -10,13 +10,13 @@ fn check_source_fail(message) {
 
 /// Validate arguments and check the selected source.
 fn main() {
-    var args = process_args();
+    args := process_args();
     if list_length(args) != 1 {
         check_source_fail("usage: mini-check [--docs | SOURCE.mini | -]");
     }
-    var path = list_get(args, 0);
-    var name = path;
-    var source = "";
+    path := list_get(args, 0);
+    name := path;
+    source := "";
     if path == "-" {
         name = "<stdin>";
         source = io_read_all();
@@ -26,8 +26,8 @@ fn main() {
         }
         source = file_read(path);
     }
-    var tokens = tokenize(source, name, false);
-    var base = "";
+    tokens := tokenize(source, name, false);
+    base := "";
     if path != "-" {
         base = path;
     }

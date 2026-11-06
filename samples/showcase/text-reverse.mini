@@ -1,7 +1,7 @@
 /// Walk backwards and build a new string.
-var source = "mini";
-var output = "";
-var index = text_length(source) - 1;
+source := "mini";
+output := "";
+index := text_length(source) - 1;
 while index >= 0 {
     output = output + text_get(source, index);
     index = index - 1;

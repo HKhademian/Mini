@@ -1,5 +1,5 @@
 /// Classic division and branching.
-var n = 1;
+n := 1;
 while n <= 15 {
     if number_mod(n, 15) == 0 {
         io_write("FizzBuzz\n");

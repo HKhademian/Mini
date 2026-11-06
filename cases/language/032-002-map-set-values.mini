@@ -1,6 +1,6 @@
-var items = map_new();
-var fresh = map_new();
-var nested = list_new();
+items := map_new();
+fresh := map_new();
+nested := list_new();
 list_set(nested, 0, "nested");
 map_set(items, "value", 1);
 map_set(items, "value", "replacement");

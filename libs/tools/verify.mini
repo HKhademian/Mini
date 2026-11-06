@@ -18,7 +18,7 @@ fn verify_text(value, key) {
     if !map_has(value, key) {
         return "";
     }
-    var field = map_get(value, key);
+    field := map_get(value, key);
     if !value_is_text(field) {
         return "";
     }
@@ -27,56 +27,56 @@ fn verify_text(value, key) {
 
 /// Verify the promoted bootstrap and return its JSON identity record.
 fn verify_bootstrap(root) {
-    var bootstrap_path = path_join(root, "config/bootstrap.json");
+    bootstrap_path := path_join(root, "config/bootstrap.json");
     if !path_is_exists(bootstrap_path) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the Mini-written compiler first.");
     }
-    var parsed = json_parse(file_read(bootstrap_path));
+    parsed := json_parse(file_read(bootstrap_path));
     if result_is_fail(parsed) || value_kind(map_get(parsed, "value")) != "map" {
         verify_fail("invalid config/bootstrap.json");
     }
-    var config = map_get(parsed, "value");
-    var compiler = verify_text(config, "compiler");
-    var source = verify_text(config, "source");
-    var example = verify_text(config, "example");
+    config := map_get(parsed, "value");
+    compiler := verify_text(config, "compiler");
+    source := verify_text(config, "source");
+    example := verify_text(config, "example");
     if compiler == "" || source == "" || example == "" {
         verify_fail("bootstrap.json needs compiler, source, and example");
     }
-    var versions_parsed = json_parse(file_read(path_join(root, "config/versions.json")));
+    versions_parsed := json_parse(file_read(path_join(root, "config/versions.json")));
     if result_is_fail(versions_parsed) {
         verify_fail("invalid config/versions.json");
     }
-    var current = map_get(versions_parsed, "value");
+    current := map_get(versions_parsed, "value");
     if verify_text(current, "language") == "" || verify_text(current, "compiler") == ""
         || verify_text(current, "bootstrap") == "" {
         verify_fail("assign the language, compiler, and bootstrap versions before verifying the bootstrap");
     }
-    var source_path = path_join(root, source);
-    var seed_path = path_join(root, compiler);
-    var source_bytes = file_read_bytes(source_path);
-    var seed_bytes = file_read_bytes(seed_path);
-    var work = path_temp_directory();
+    source_path := path_join(root, source);
+    seed_path := path_join(root, compiler);
+    source_bytes := file_read_bytes(source_path);
+    seed_bytes := file_read_bytes(seed_path);
+    work := path_temp_directory();
     if text_length(work) == 0 {
         verify_fail("cannot create a temporary directory");
     }
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
-    var previous = path_join(work, "compiler0.js");
+    previous := path_join(work, "compiler0.js");
     file_write_bytes(previous, seed_bytes);
-    var generations = list_new();
-    var stage = 1;
+    generations := list_new();
+    stage := 1;
     while stage <= 3 {
-        var next = path_join(work, "compiler" + number_to_text(stage) + ".js");
-        var compile_args = list_new();
+        next := path_join(work, "compiler" + number_to_text(stage) + ".js");
+        compile_args := list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, "compile");
         list_set(compile_args, 2, source_path);
         list_set(compile_args, 3, next);
-        var result = process_capture(process_exec_path(), compile_args, work, list_new());
+        result := process_capture(process_exec_path(), compile_args, work, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);
             verify_fail("bootstrap generation " + number_to_text(stage) + " failed: " + text_from_bytes(map_get(result, "stderr")));
         }
-        var output = file_read_bytes(next);
+        output := file_read_bytes(next);
         if !case_bytes_equal(output, seed_bytes) {
             path_remove(work);
             verify_fail("bootstrap differs from generation " + number_to_text(stage)
@@ -86,23 +86,23 @@ fn verify_bootstrap(root) {
         previous = next;
         stage = stage + 1;
     }
-    var case_path = path_resolve(root, example);
-    var loaded = case_load_case(case_path);
+    case_path := path_resolve(root, example);
+    loaded := case_load_case(case_path);
     if result_is_fail(loaded) {
         path_remove(work);
         verify_fail(map_get(loaded, "message"));
     }
-    var fixture = map_get(loaded, "fixture");
-    var definition = map_get(fixture, "definition");
+    fixture := map_get(loaded, "fixture");
+    definition := map_get(fixture, "definition");
     if map_get(definition, "kind") != "example" {
         path_remove(work);
         verify_fail("bootstrap example must be an example case");
     }
-    var artifacts = list_new();
-    var scenarios = map_get(definition, "cases");
-    var position = 0;
+    artifacts := list_new();
+    scenarios := map_get(definition, "cases");
+    position := 0;
     while position < list_length(scenarios) {
-        var verified = case_verify_scenario(fixture, list_get(scenarios, position), root, previous);
+        verified := case_verify_scenario(fixture, list_get(scenarios, position), root, previous);
         if result_is_fail(verified) {
             path_remove(work);
             verify_fail(map_get(verified, "message"));
@@ -110,7 +110,7 @@ fn verify_bootstrap(root) {
         list_set(artifacts, list_length(artifacts), map_get(verified, "artifact"));
         position = position + 1;
     }
-    var record = map_new();
+    record := map_new();
     map_set(record, "source", hash_sha256(source_bytes));
     map_set(record, "compiler", hash_sha256(seed_bytes));
     map_set(record, "generations", generations);

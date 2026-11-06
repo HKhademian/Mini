@@ -1,7 +1,7 @@
-var items = map_new();
+items := map_new();
 map_set(items, "first", 0);
-var keys = map_keys(items);
-var other = map_keys(items);
+keys := map_keys(items);
+other := map_keys(items);
 list_set(keys, 0, "changed");
 if list_get(other, 0) != "first" || !map_has(items, "first") || map_has(items, "changed") {
     process_exit(1);

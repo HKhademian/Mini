@@ -14,8 +14,8 @@ fn bench_fail(message) {
 
 /// Return the integer half of a nonnegative count.
 fn bench_half(value) {
-    var remainder = value;
-    var half = 0;
+    remainder := value;
+    half := 0;
     while remainder >= 2 {
         remainder = remainder - 2;
         half = half + 1;
@@ -27,15 +27,15 @@ fn bench_half(value) {
 
 /// Return the compiler source hash from configuration.
 fn bench_compiler_hash(root) {
-    var parsed = json_parse(file_read(path_join(root, "config/compiler.json")));
+    parsed := json_parse(file_read(path_join(root, "config/compiler.json")));
     if result_is_fail(parsed) {
         bench_fail("invalid config/compiler.json");
     }
-    var sources = map_get(map_get(parsed, "value"), "sources");
-    var parts = list_new();
-    var position = 0;
+    sources := map_get(map_get(parsed, "value"), "sources");
+    parts := list_new();
+    position := 0;
     while position < list_length(sources) {
-        var path = list_get(sources, position);
+        path := list_get(sources, position);
         list_set(parts, list_length(parts), path + "\n" + file_read(path_join(root, path)));
         position = position + 1;
     }
@@ -47,10 +47,10 @@ fn bench_commit(root) {
     if !path_is_exists(path_join(root, ".git")) {
         return "";
     }
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, "rev-parse");
     list_set(args, 1, "HEAD");
-    var result = process_capture("git", args, root, list_new());
+    result := process_capture("git", args, root, list_new());
     return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }
 
@@ -61,46 +61,46 @@ fn bench_run(root, output, filter) {
     if path_is_exists(output) {
         bench_fail("benchmark output already exists; choose a new report path");
     }
-    var selected = case_load_cases(filter, root);
+    selected := case_load_cases(filter, root);
     if result_is_fail(selected) {
         bench_fail(map_get(selected, "message"));
     }
-    var fixtures = map_get(selected, "fixtures");
-    var results = list_new();
-    var fixture_index = 0;
+    fixtures := map_get(selected, "fixtures");
+    results := list_new();
+    fixture_index := 0;
     while fixture_index < list_length(fixtures) {
-        var fixture = list_get(fixtures, fixture_index);
-        var definition = map_get(fixture, "definition");
+        fixture := list_get(fixtures, fixture_index);
+        definition := map_get(fixture, "definition");
         if map_has(definition, "benchmark") {
-            var settings = map_get(definition, "benchmark");
-            var warmups = map_get(settings, "warmups");
-            var sample_count = map_get(settings, "samples");
-            var identity = case_case_identity(fixture, root);
-            var scenarios = map_get(definition, "cases");
-            var scenario_index = 0;
+            settings := map_get(definition, "benchmark");
+            warmups := map_get(settings, "warmups");
+            sample_count := map_get(settings, "samples");
+            identity := case_case_identity(fixture, root);
+            scenarios := map_get(definition, "cases");
+            scenario_index := 0;
             while scenario_index < list_length(scenarios) {
-                var scenario = list_get(scenarios, scenario_index);
-                var warmup_index = 0;
+                scenario := list_get(scenarios, scenario_index);
+                warmup_index := 0;
                 while warmup_index < warmups {
-                    var warmed = case_verify_scenario(fixture, scenario, root, "");
+                    warmed := case_verify_scenario(fixture, scenario, root, "");
                     if result_is_fail(warmed) {
                         bench_fail(map_get(warmed, "message"));
                     }
                     warmup_index = warmup_index + 1;
                 }
-                var samples = list_new();
-                var sample_index = 0;
+                samples := list_new();
+                sample_index := 0;
                 while sample_index < sample_count {
-                    var started = time_millis();
-                    var measured = case_verify_scenario(fixture, scenario, root, "");
+                    started := time_millis();
+                    measured := case_verify_scenario(fixture, scenario, root, "");
                     if result_is_fail(measured) {
                         bench_fail(map_get(measured, "message"));
                     }
                     list_set(samples, list_length(samples), time_millis() - started);
                     sample_index = sample_index + 1;
                 }
-                var sorted = list_sorted(samples);
-                var row = map_new();
+                sorted := list_sorted(samples);
+                row := map_new();
                 map_set(row, "id", map_get(definition, "id"));
                 map_set(row, "scenario", map_get(scenario, "name"));
                 map_set(row, "kind", map_get(definition, "kind"));
@@ -117,9 +117,8 @@ fn bench_run(root, output, filter) {
     if list_length(results) == 0 {
         bench_fail("no benchmark cases selected");
     }
-    var host = bench_platform();
-    var versions_parsed = json_parse(file_read(path_join(root, "config/versions.json")));
-    var report = map_new();
+    versions_parsed := json_parse(file_read(path_join(root, "config/versions.json")));
+    report := map_new();
     map_set(report, "commit", bench_commit(root));
     if result_is_ok(versions_parsed) {
         map_set(report, "versions", map_get(versions_parsed, "value"));

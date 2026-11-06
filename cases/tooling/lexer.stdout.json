@@ -1,110 +1,90 @@
 [
   {
-    "kind": "keyword",
-    "text": "var",
-    "source": "001-009-position-bindings.mini",
-    "start": 0,
-    "end": 3,
-    "line": 1,
-    "column": 1,
-    "context": "var text = \"x\";"
-  },
-  {
     "kind": "identifier",
     "text": "text",
     "source": "001-009-position-bindings.mini",
-    "start": 4,
-    "end": 8,
+    "start": 0,
+    "end": 4,
     "line": 1,
-    "column": 5,
-    "context": "var text = \"x\";"
+    "column": 1,
+    "context": "text := \"x\";"
   },
   {
     "kind": "symbol",
-    "text": "=",
+    "text": ":=",
     "source": "001-009-position-bindings.mini",
-    "start": 9,
-    "end": 10,
+    "start": 5,
+    "end": 7,
     "line": 1,
-    "column": 10,
-    "context": "var text = \"x\";"
+    "column": 6,
+    "context": "text := \"x\";"
   },
   {
     "kind": "text",
     "text": "\"x\"",
     "source": "001-009-position-bindings.mini",
-    "start": 11,
-    "end": 14,
+    "start": 8,
+    "end": 11,
     "line": 1,
-    "column": 12,
-    "context": "var text = \"x\";"
+    "column": 9,
+    "context": "text := \"x\";"
   },
   {
     "kind": "symbol",
     "text": ";",
     "source": "001-009-position-bindings.mini",
-    "start": 14,
-    "end": 15,
+    "start": 11,
+    "end": 12,
     "line": 1,
-    "column": 15,
-    "context": "var text = \"x\";"
-  },
-  {
-    "kind": "keyword",
-    "text": "var",
-    "source": "001-009-position-bindings.mini",
-    "start": 18,
-    "end": 21,
-    "line": 2,
-    "column": 2,
-    "context": "\tvar count = 12;"
+    "column": 12,
+    "context": "text := \"x\";"
   },
   {
     "kind": "identifier",
     "text": "count",
     "source": "001-009-position-bindings.mini",
-    "start": 22,
-    "end": 27,
+    "start": 15,
+    "end": 20,
     "line": 2,
-    "column": 6,
-    "context": "\tvar count = 12;"
+    "column": 2,
+    "context": "\tcount := 12;"
   },
   {
     "kind": "symbol",
-    "text": "=",
+    "text": ":=",
     "source": "001-009-position-bindings.mini",
-    "start": 28,
-    "end": 29,
+    "start": 21,
+    "end": 23,
     "line": 2,
-    "column": 12,
-    "context": "\tvar count = 12;"
+    "column": 8,
+    "context": "\tcount := 12;"
   },
   {
     "kind": "number",
     "text": "12",
     "source": "001-009-position-bindings.mini",
-    "start": 30,
-    "end": 32,
+    "start": 24,
+    "end": 26,
     "line": 2,
-    "column": 14,
-    "context": "\tvar count = 12;"
+    "column": 11,
+    "context": "\tcount := 12;"
   },
   {
     "kind": "symbol",
     "text": ";",
     "source": "001-009-position-bindings.mini",
-    "start": 32,
-    "end": 33,
+    "start": 26,
+    "end": 27,
     "line": 2,
-    "column": 16,
-    "context": "\tvar count = 12;"
+    "column": 13,
+    "context": "\tcount := 12;"
   },
   {
     "kind": "eof",
     "text": "",
     "source": "001-009-position-bindings.mini",
-    "start": 35,
-    "end": 35,
+    "start": 29,
+    "end": 29,
     "line": 3,
     "column": 1,
     "context": ""

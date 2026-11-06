@@ -1,7 +1,7 @@
-var inner = list_new();
-var untouched = list_new();
+inner := list_new();
+untouched := list_new();
 list_set(inner, 0, "nested");
-var items = list_new();
+items := list_new();
 list_set(items, 0, 7);
 list_set(items, 1, true);
 list_set(items, 2, inner);

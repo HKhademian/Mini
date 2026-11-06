@@ -1,7 +1,7 @@
 include "value.mini";
 /// Return whether a list contains one text value.
 fn list_has_text(items, value) {
-    var position = 0;
+    position := 0;
     while position < list_length(items) {
         if list_get(items, position) == value {
             return true;
@@ -13,8 +13,8 @@ fn list_has_text(items, value) {
 
 /// Join list items from an index with a separator.
 fn list_join_from(items, start, separator) {
-    var parts = list_new();
-    var position = start;
+    parts := list_new();
+    position := start;
     while position < list_length(items) {
         list_set(parts, list_length(parts), list_get(items, position));
         position = position + 1;
@@ -24,8 +24,8 @@ fn list_join_from(items, start, separator) {
 
 /// Reverse a list into a new list.
 fn list_reverse(items) {
-    var result = list_new();
-    var position = list_length(items) - 1;
+    result := list_new();
+    position := list_length(items) - 1;
     while position >= 0 {
         list_set(result, list_length(result), list_get(items, position));
         position = position - 1;
@@ -35,13 +35,13 @@ fn list_reverse(items) {
 
 /// Sort a list into a new list using pairwise comparison.
 fn list_sorted(items) {
-    var result = list_copy(items);
-    var position = 0;
+    result := list_copy(items);
+    position := 0;
     while position < list_length(result) {
-        var cursor = position + 1;
+        cursor := position + 1;
         while cursor < list_length(result) {
             if list_get(result, cursor) < list_get(result, position) {
-                var hold = list_get(result, position);
+                hold := list_get(result, position);
                 list_set(result, position, list_get(result, cursor));
                 list_set(result, cursor, hold);
             }
@@ -54,7 +54,7 @@ fn list_sorted(items) {
 
 /// Return whether a list contains a value by equality.
 fn list_contains(items, value) {
-    var position = 0;
+    position := 0;
     while position < list_length(items) {
         if list_get(items, position) == value {
             return true;
@@ -69,7 +69,7 @@ fn list_is_text(value) {
     if !value_is_list(value) {
         return false;
     }
-    var position = 0;
+    position := 0;
     while position < list_length(value) {
         if value_kind(list_get(value, position)) != "text" {
             return false;
@@ -81,7 +81,7 @@ fn list_is_text(value) {
 
 /// Build a two-element list.
 fn list_of2(first, second) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, first);
     list_set(result, 1, second);
     return result;
@@ -89,7 +89,7 @@ fn list_of2(first, second) {
 
 /// Build a three-element list.
 fn list_of3(first, second, third) {
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, first);
     list_set(result, 1, second);
     list_set(result, 2, third);

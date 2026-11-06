@@ -1,7 +1,7 @@
-var items = map_new();
-var nested = list_new();
+items := map_new();
+nested := list_new();
 list_set(nested, 0, "nested");
-var child = map_new();
+child := map_new();
 map_set(items, "zero", 0);
 map_set(items, "false", false);
 map_set(items, "empty", "");

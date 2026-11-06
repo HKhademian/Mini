@@ -1,14 +1,14 @@
 /// Builtin registry and lowering.
-var builtin_names_list = list_new();
-var builtin_name_set = map_new();
-var builtin_parameter_kinds = map_new();
-var builtin_result_kinds = map_new();
-var builtin_import_names = map_new();
-var builtin_helper_keys = map_new();
-var builtin_classes = map_new();
-var builtin_helpers = map_new();
-var builtin_reference_targets = map_new();
-var builtin_emit_forms = map_new();
+builtin_names_list := list_new();
+builtin_name_set := map_new();
+builtin_parameter_kinds := map_new();
+builtin_result_kinds := map_new();
+builtin_import_names := map_new();
+builtin_helper_keys := map_new();
+builtin_classes := map_new();
+builtin_helpers := map_new();
+builtin_reference_targets := map_new();
+builtin_emit_forms := map_new();
 
 /// Register one builtin descriptor.
 fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
@@ -60,7 +60,7 @@ fn builtin_parameters(name) {
     if !map_has(builtin_parameter_kinds, name) {
         return list_new();
     }
-    var kinds = map_get(builtin_parameter_kinds, name);
+    kinds := map_get(builtin_parameter_kinds, name);
     if kinds == "" {
         return list_new();
     }
@@ -80,7 +80,7 @@ fn builtin_imports(name) {
     if !map_has(builtin_import_names, name) {
         return list_new();
     }
-    var imports = map_get(builtin_import_names, name);
+    imports := map_get(builtin_import_names, name);
     if imports == "" {
         return list_new();
     }
@@ -88,7 +88,7 @@ fn builtin_imports(name) {
 }
 
 /// Reference mode lowers replaceable performance builtins to pure helpers.
-var reference_mode = false;
+reference_mode := false;
 
 /// Return the builtin layer.
 fn builtin_class(name) {
@@ -124,11 +124,11 @@ fn helper_text(key) {
 
 /// Replace every occurrence of a template token.
 fn builtin_replace(source, needle, replacement) {
-    var output = "";
-    var position = 0;
+    output := "";
+    position := 0;
     while position < text_length(source) {
-        var rest = text_slice(source, position, text_length(source));
-        var found = text_find(rest, needle);
+        rest := text_slice(source, position, text_length(source));
+        found := text_find(rest, needle);
         if found < 0 {
             return output + text_slice(source, position, text_length(source));
         }
@@ -140,8 +140,8 @@ fn builtin_replace(source, needle, replacement) {
 
 /// Substitute positional arguments into an emit template.
 fn builtin_apply(form, args) {
-    var output = form;
-    var position = 0;
+    output := form;
+    position := 0;
     while position < list_length(args) {
         output = builtin_replace(output, "{" + number_to_text(position) + "}", list_get(args, position));
         position = position + 1;
@@ -151,7 +151,7 @@ fn builtin_apply(form, args) {
 
 /// Return the lowered TypeScript call text for a builtin.
 fn builtin_emit(name, args) {
-    var reference_target = builtin_reference_target(name);
+    reference_target := builtin_reference_target(name);
     if reference_mode && reference_target != "" {
         return reference_target + "(" + list_to_text(args, ", ") + ")";
     }

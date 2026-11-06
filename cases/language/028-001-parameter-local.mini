@@ -3,8 +3,8 @@ fn replace(value) {
     return value;
 }
 
-var original = 1;
-var result = replace(original);
+original := 1;
+result := replace(original);
 if original == 1 && result == 9 && replace(1) == 9 && replace(original + 1) == 9 {
     io_write("local");
 } else {

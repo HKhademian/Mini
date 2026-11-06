@@ -1,5 +1,5 @@
 /// Repeat while a condition holds.
-var position = 1;
+position := 1;
 while position <= 5 {
     io_write(number_to_text(position) + " ");
     position = position + 1;

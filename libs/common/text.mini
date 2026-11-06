@@ -1,9 +1,9 @@
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
-    var lines = text_split(source, "\n");
-    var position = 0;
+    lines := text_split(source, "\n");
+    position := 0;
     while position < list_length(lines) - 1 {
-        var line = list_get(lines, position);
+        line := list_get(lines, position);
         if text_length(line) > 0 && text_get(line, text_length(line) - 1) == "\r" {
             list_set(lines, position, text_slice(line, 0, text_length(line) - 1));
         }
@@ -14,12 +14,12 @@ fn split_lines(source) {
 
 /// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
 fn indent_output(output) {
-    var lines = split_lines(output);
-    var result = "";
-    var first = true;
-    var position = 0;
+    lines := split_lines(output);
+    result := "";
+    first := true;
+    position := 0;
     while position < list_length(lines) {
-        var line = list_get(lines, position);
+        line := list_get(lines, position);
         if text_length(line) > 0 {
             if !first {
                 result = result + "\n";
@@ -34,7 +34,7 @@ fn indent_output(output) {
 
 /// Return the final path component.
 fn basename(path) {
-    var position = text_length(path) - 1;
+    position := text_length(path) - 1;
     while position >= 0 {
         if text_get(path, position) == "/" {
             return text_slice(path, position + 1, text_length(path));
@@ -46,8 +46,8 @@ fn basename(path) {
 
 /// Return whether text ends with suffix.
 fn text_ends_with(source, suffix) {
-    var size = text_length(suffix);
-    var length = text_length(source);
+    size := text_length(suffix);
+    length := text_length(source);
     if size > length {
         return false;
     }
@@ -71,13 +71,14 @@ fn is_identifier_part(character) {
 
 /// Return whether value is one of the accepted two-character symbols.
 fn is_two_character_symbol(value) {
-    return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||";
+    return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||"
+        || value == ":=";
 }
 
 
 /// Return whether text starts with prefix.
 fn text_starts_with(source, prefix) {
-    var size = text_length(prefix);
+    size := text_length(prefix);
     if size > text_length(source) {
         return false;
     }
@@ -86,9 +87,9 @@ fn text_starts_with(source, prefix) {
 
 /// Return the directory part of a path.
 fn dirname(path) {
-    var position = text_length(path) - 1;
+    position := text_length(path) - 1;
     while position >= 0 {
-        var character = text_get(path, position);
+        character := text_get(path, position);
         if character == "/" || character == "\\" {
             return text_slice(path, 0, position);
         }
@@ -99,17 +100,17 @@ fn dirname(path) {
 
 /// Return a path with redundant dot segments collapsed.
 fn normalize_path(path) {
-    var absolute = text_starts_with(path, "/");
-    var parts = text_split(path, "/");
-    var stack = list_new();
-    var position = 0;
+    absolute := text_starts_with(path, "/");
+    parts := text_split(path, "/");
+    stack := list_new();
+    position := 0;
     while position < list_length(parts) {
-        var part = list_get(parts, position);
+        part := list_get(parts, position);
         if part != "" && part != "." {
             if part == ".." {
                 if list_length(stack) > 0 && list_get(stack, list_length(stack) - 1) != ".." {
-                    var kept = list_new();
-                    var index = 0;
+                    kept := list_new();
+                    index := 0;
                     while index < list_length(stack) - 1 {
                         list_set(kept, list_length(kept), list_get(stack, index));
                         index = index + 1;
@@ -126,7 +127,7 @@ fn normalize_path(path) {
         }
         position = position + 1;
     }
-    var output = list_to_text(stack, "/");
+    output := list_to_text(stack, "/");
     if absolute {
         return "/" + output;
     }
@@ -135,7 +136,7 @@ fn normalize_path(path) {
 
 /// Remove trailing CR/LF characters.
 fn text_chomp(text) {
-    var length = text_length(text);
+    length := text_length(text);
     while length > 0 && (text_get(text, length - 1) == "\n" || text_get(text, length - 1) == "\r") {
         length = length - 1;
     }
@@ -144,9 +145,9 @@ fn text_chomp(text) {
 
 /// Remove trailing spaces, tabs, and CR characters.
 fn text_trim_end(text) {
-    var length = text_length(text);
+    length := text_length(text);
     while length > 0 {
-        var character = text_get(text, length - 1);
+        character := text_get(text, length - 1);
         if character == " " || character == "\t" || character == "\r" {
             length = length - 1;
         } else {
@@ -158,8 +159,8 @@ fn text_trim_end(text) {
 
 /// Remove leading and trailing spaces, tabs, CR, and LF characters.
 fn text_trim(text) {
-    var start = 0;
-    var end = text_length(text);
+    start := 0;
+    end := text_length(text);
     while start < end && text_find(" \t\r\n", text_get(text, start)) >= 0 {
         start = start + 1;
     }

@@ -1,5 +1,5 @@
-var source = io_read_all();
-var output = source;
+source := io_read_all();
+output := source;
 source = "";
 output = output + "!";
 io_write(output);

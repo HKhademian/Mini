@@ -2,11 +2,11 @@
 
 /// Return whitespace-delimited words, preserving their source order.
 fn graph_words(source) {
-    var words = list_new();
-    var word = "";
-    var position = 0;
+    words := list_new();
+    word := "";
+    position := 0;
     while position <= text_length(source) {
-        var character = text_get(source, position);
+        character := text_get(source, position);
         if character == " " || character == "\t" || character == "\r" || character == "\n" || character == "" {
             if word != "" {
                 list_set(words, list_length(words), word);
@@ -22,30 +22,30 @@ fn graph_words(source) {
 
 /// Return each node reachable from root in breadth-first order; cycles and duplicate edges are safe.
 fn app_run(source) {
-    var words = graph_words(source);
-    var edges = map_new();
-    var position = 0;
+    words := graph_words(source);
+    edges := map_new();
+    position := 0;
     while position + 1 < list_length(words) {
-        var from = list_get(words, position);
+        from := list_get(words, position);
         if !map_has(edges, from) {
             map_set(edges, from, list_new());
         }
-        var destinations = map_get(edges, from);
+        destinations := map_get(edges, from);
         list_set(destinations, list_length(destinations), list_get(words, position + 1));
         position = position + 2;
     }
-    var queue = list_new();
+    queue := list_new();
     list_set(queue, 0, "root");
-    var seen = map_new();
+    seen := map_new();
     map_set(seen, "root", true);
     position = 0;
     while position < list_length(queue) {
-        var node = list_get(queue, position);
+        node := list_get(queue, position);
         if map_has(edges, node) {
-            var destinations = map_get(edges, node);
-            var index = 0;
+            destinations := map_get(edges, node);
+            index := 0;
             while index < list_length(destinations) {
-                var next = list_get(destinations, index);
+                next := list_get(destinations, index);
                 if !map_has(seen, next) {
                     map_set(seen, next, true);
                     list_set(queue, list_length(queue), next);

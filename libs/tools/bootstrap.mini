@@ -12,18 +12,18 @@ fn bootstrap_fail(message) {
 
 /// Compile one source in-process and return generated text.
 fn bootstrap_compile_text(source) {
-    var tokens = tokenize(file_read(source), basename(source), false);
-    var expanded = expand_includes(tokens, source, list_new(), map_new());
+    tokens := tokenize(file_read(source), basename(source), false);
+    expanded := expand_includes(tokens, source, list_new(), map_new());
     return compile(expanded);
 }
 
 /// Compile one source with a generated compiler.
 fn bootstrap_compile_with(root, compiler, source, output) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, compiler);
     list_set(args, 1, source);
     list_set(args, 2, output);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
     }
@@ -32,9 +32,9 @@ fn bootstrap_compile_with(root, compiler, source, output) {
 
 /// Run one generated Node program.
 fn bootstrap_run(root, path) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, path);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         bootstrap_fail("run failed: " + text_from_bytes(map_get(result, "stderr")));
     }
@@ -43,7 +43,7 @@ fn bootstrap_run(root, path) {
 
 /// Make a generated file executable.
 fn bootstrap_executable(root, path) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, "755");
     list_set(args, 1, path);
     process_capture("chmod", args, root, list_new());
@@ -52,20 +52,20 @@ fn bootstrap_executable(root, path) {
 
 /// Rebuild the compiler, verify the fixed point, then rebuild every tool.
 fn bootstrap_all(root) {
-    var work = path_temp_directory();
-    var source = path_join(root, "tools/compiler.mini");
-    var first = path_join(work, "compiler1.js");
-    var second = path_join(work, "compiler2.js");
+    work := path_temp_directory();
+    source := path_join(root, "tools/compiler.mini");
+    first := path_join(work, "compiler1.js");
+    second := path_join(work, "compiler2.js");
     file_write(first, bootstrap_compile_text(source));
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
     if hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second)) {
         bootstrap_fail("compiler fixed point mismatch");
     }
-    var seed = path_join(root, "dist/compile.js");
+    seed := path_join(root, "dist/compile.js");
     path_copy(first, seed);
     bootstrap_executable(root, seed);
-    var build = path_join(root, "dist/build.js");
+    build := path_join(root, "dist/build.js");
     bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);

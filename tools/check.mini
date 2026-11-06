@@ -3,8 +3,8 @@ include "../libs/tools/check.mini";
 
 /// Parse arguments and run repository checks.
 fn main() {
-    var args = process_args();
-    var docs_only = false;
+    args := process_args();
+    docs_only := false;
     if list_length(args) == 1 && list_get(args, 0) == "--docs" {
         docs_only = true;
     } else {

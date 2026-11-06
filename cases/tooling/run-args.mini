@@ -1,2 +1,2 @@
-var args = process_args();
+args := process_args();
 io_write(list_to_text(args, "|") + "\n");

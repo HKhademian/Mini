@@ -1,5 +1,5 @@
 /// Setting an existing key keeps the key count.
-var values = map_new();
+values := map_new();
 map_set(values, "key", "old");
 map_set(values, "key", "new");
 io_write(map_get(values, "key") + " " + number_to_text(list_length(map_keys(values))) + "\n");

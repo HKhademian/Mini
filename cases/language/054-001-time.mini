@@ -1,11 +1,11 @@
 /// Read the millisecond clock without moving backwards.
-var first = time_millis();
+first := time_millis();
 if first > 0 {
     io_write("time ok\n");
 } else {
     io_write("time bad\n");
 }
-var second = time_millis();
+second := time_millis();
 if second >= first {
     io_write("order ok\n");
 } else {

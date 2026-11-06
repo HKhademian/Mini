@@ -1,1 +1,1 @@
-var args = process_args(0);
+args := process_args(0);

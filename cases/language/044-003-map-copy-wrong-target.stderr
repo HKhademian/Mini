@@ -1,3 +1,3 @@
-044-003-map-copy-wrong-target.mini:1:14: expected map argument
-var copied = map_copy(1);
-             ^
+044-003-map-copy-wrong-target.mini:1:11: expected map argument
+copied := map_copy(1);
+          ^

@@ -1,13 +1,13 @@
 /// Exercise the executable path, temporary directory, and removal primitives.
-var version_args = list_new();
+version_args := list_new();
 list_set(version_args, 0, "--version");
-var version = process_run(process_exec_path(), version_args, "capture");
+version := process_run(process_exec_path(), version_args, "capture");
 if map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) > 0 {
     io_write("exec ok\n");
 } else {
     io_write("exec bad\n");
 }
-var directory = path_temp_directory();
+directory := path_temp_directory();
 if text_length(directory) > 0 {
     io_write("temp ok\n");
 } else {

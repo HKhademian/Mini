@@ -1,7 +1,7 @@
 /// Copy a map and show that changing the copy leaves the original intact.
-var original = map_new();
+original := map_new();
 map_set(original, "name", "original");
-var copy = map_copy(original);
+copy := map_copy(original);
 map_set(copy, "name", "copy");
 io_write(map_get(original, "name") + "\n");
 io_write(map_get(copy, "name") + "\n");

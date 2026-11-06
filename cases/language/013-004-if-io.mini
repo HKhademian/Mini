@@ -1,4 +1,4 @@
-var token = io_read_all();
+token := io_read_all();
 if token == ";" {
     io_write("semicolon");
 } else {

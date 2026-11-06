@@ -1,2 +1,2 @@
-var value = 1 // This comment does not end the declaration.
+value := 1 // This comment does not end the declaration.
 io_write("unreachable");

@@ -37,7 +37,7 @@ include "../common/list.mini";
 
 /// Return the accepted case kinds.
 fn case_kinds() {
-    var kinds = list_new();
+    kinds := list_new();
     list_set(kinds, 0, "tool");
     list_set(kinds, 1, "feature");
     list_set(kinds, 2, "reject");
@@ -52,7 +52,7 @@ fn case_stream_valid(stream) {
     if !value_is_map(stream) {
         return false;
     }
-    var count = 0;
+    count := 0;
     if map_has(stream, "text") { count = count + 1; }
     if map_has(stream, "bytes") { count = count + 1; }
     if map_has(stream, "file") { count = count + 1; }
@@ -64,14 +64,14 @@ fn case_stream_bytes(stream, directory) {
     if !value_is_map(stream) {
         return result_fail("stream must be an object");
     }
-    var count = 0;
+    count := 0;
     if map_has(stream, "text") { count = count + 1; }
     if map_has(stream, "bytes") { count = count + 1; }
     if map_has(stream, "file") { count = count + 1; }
     if count != 1 {
         return result_fail("one stream representation required");
     }
-    var bytes = list_new();
+    bytes := list_new();
     if map_has(stream, "text") {
         if value_kind(map_get(stream, "text")) != "text" {
             return result_fail("stream text must be a string");
@@ -83,9 +83,9 @@ fn case_stream_bytes(stream, directory) {
             if !value_is_list(bytes) {
                 return result_fail("invalid stream bytes");
             }
-            var position = 0;
+            position := 0;
             while position < list_length(bytes) {
-                var value = list_get(bytes, position);
+                value := list_get(bytes, position);
                 if !value_is_number(value) || value < 0 || value > 255 {
                     return result_fail("invalid stream bytes");
                 }
@@ -95,7 +95,7 @@ fn case_stream_bytes(stream, directory) {
             if value_kind(map_get(stream, "file")) != "text" {
                 return result_fail("invalid stream");
             }
-            var file = path_resolve(directory, map_get(stream, "file"));
+            file := path_resolve(directory, map_get(stream, "file"));
             if !path_is_exists(file) {
                 return result_fail("cannot read " + file);
             }
@@ -103,12 +103,12 @@ fn case_stream_bytes(stream, directory) {
         }
     }
     if map_has(stream, "hash") {
-        var expected = map_get(stream, "hash");
+        expected := map_get(stream, "hash");
         if expected != "sha256:" + hash_sha256(bytes) {
             return result_fail("stream hash differs");
         }
     }
-    var result = result_ok(0, "");
+    result := result_ok(0, "");
     map_set(result, "bytes", bytes);
     return result;
 }
@@ -118,7 +118,7 @@ fn case_bytes_equal(left, right) {
     if list_length(left) != list_length(right) {
         return false;
     }
-    var position = 0;
+    position := 0;
     while position < list_length(left) {
         if list_get(left, position) != list_get(right, position) {
             return false;
@@ -130,7 +130,7 @@ fn case_bytes_equal(left, right) {
 
 /// Return the byte text for a stream, or empty text on failure.
 fn case_stream_text(stream, directory) {
-    var bytes = case_stream_bytes(stream, directory);
+    bytes := case_stream_bytes(stream, directory);
     if result_is_fail(bytes) {
         return "";
     }
@@ -139,16 +139,16 @@ fn case_stream_text(stream, directory) {
 
 /// Load and validate one case manifest.
 fn case_load_case(path) {
-    var parsed = json_parse_file(path);
+    parsed := json_parse_file(path);
     if result_is_fail(parsed) {
         return parsed;
     }
-    var spec = map_get(parsed, "value");
-    var id = map_get(spec, "id");
+    spec := map_get(parsed, "value");
+    id := map_get(spec, "id");
     if !map_has(spec, "id") || !value_is_text(id) || text_length(id) == 0 {
         return result_fail("case ID required: " + path);
     }
-    var kind = map_get(spec, "kind");
+    kind := map_get(spec, "kind");
     if !list_contains(case_kinds(), kind) {
         return result_fail("invalid case kind: " + id);
     }
@@ -156,15 +156,15 @@ fn case_load_case(path) {
         && (kind == "tool" || value_kind(map_get(spec, "pending")) != "text" || text_length(map_get(spec, "pending")) == 0) {
         return result_fail("pending needs a language case and reason");
     }
-    var directory = path_parent(path);
+    directory := path_parent(path);
     if kind == "tool" {
-        var tool = map_get(spec, "tool");
+        tool := map_get(spec, "tool");
         if !map_has(spec, "tool") || !value_is_text(tool) || text_find(tool, "/") >= 0
             || !path_is_exists(path_join(path_join(project_root(), "bin"), tool)) {
             return result_fail("unknown tool: " + id);
         }
     } else {
-        var source = map_get(spec, "source");
+        source := map_get(spec, "source");
         if !map_has(spec, "source") || !value_is_text(source) || !text_ends_with(source, ".mini")
             || !path_is_exists(path_resolve(directory, source)) {
             return result_fail("case source missing: " + id);
@@ -177,36 +177,36 @@ fn case_load_case(path) {
         || list_length(map_get(spec, "cases")) == 0 {
         return result_fail("case scenarios required: " + id);
     }
-    var scenarios = map_get(spec, "cases");
-    var names = map_new();
-    var position = 0;
+    scenarios := map_get(spec, "cases");
+    names := map_new();
+    position := 0;
     while position < list_length(scenarios) {
-        var scenario = list_get(scenarios, position);
-        var name = map_get(scenario, "name");
+        scenario := list_get(scenarios, position);
+        name := map_get(scenario, "name");
         if !value_is_map(scenario) || !map_has(scenario, "name") || !value_is_text(name)
             || text_length(name) == 0 || map_has(names, name) {
             return result_fail("scenario names must be unique: " + id);
         }
         map_set(names, name, true);
-        var check = case_validate_scenario(spec, kind, scenario, directory);
+        check := case_validate_scenario(spec, kind, scenario, directory);
         if result_is_fail(check) {
             return check;
         }
         position = position + 1;
     }
-    var fixture = map_new();
+    fixture := map_new();
     map_set(fixture, "path", path);
     map_set(fixture, "definition", spec);
-    var result = result_ok(0, "");
+    result := result_ok(0, "");
     map_set(result, "fixture", fixture);
     return result;
 }
 
 /// Return whether a scenario shape is valid.
 fn case_validate_scenario(spec, kind, scenario, directory) {
-    var id = map_get(spec, "id");
-    var name = map_get(scenario, "name");
-    var prefix = id + "/" + name + ": ";
+    id := map_get(spec, "id");
+    name := map_get(scenario, "name");
+    prefix := id + "/" + name + ": ";
     if !map_has(scenario, "exitCode") || value_kind(map_get(scenario, "exitCode")) != "number"
         || map_get(scenario, "exitCode") < 0 || map_get(scenario, "exitCode") > 255 {
         return result_fail(prefix + "invalid exit status");
@@ -214,42 +214,42 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     if map_has(scenario, "args") && !list_is_text(map_get(scenario, "args")) {
         return result_fail(prefix + "invalid arguments");
     }
-    var streams = list_new();
+    streams := list_new();
     list_set(streams, 0, "stdin");
     list_set(streams, 1, "stdout");
     list_set(streams, 2, "stderr");
-    var position = 0;
+    position := 0;
     while position < list_length(streams) {
-        var key = list_get(streams, position);
+        key := list_get(streams, position);
         if !map_has(scenario, key) {
             return result_fail("invalid stream");
         }
-        var bytes = case_stream_bytes(map_get(scenario, key), directory);
+        bytes := case_stream_bytes(map_get(scenario, key), directory);
         if result_is_fail(bytes) {
             return result_fail(map_get(bytes, "message"));
         }
         position = position + 1;
     }
-    var runnable = kind == "feature" || kind == "sample" || kind == "example";
+    runnable := kind == "feature" || kind == "sample" || kind == "example";
     if map_has(scenario, "inputFiles") || map_has(scenario, "outputFiles") {
         if !runnable {
             return result_fail(prefix + "file fixtures need a runnable Mini case");
         }
-        var groups = list_new();
+        groups := list_new();
         list_set(groups, 0, "inputFiles");
         list_set(groups, 1, "outputFiles");
         position = 0;
         while position < list_length(groups) {
-            var group_key = list_get(groups, position);
+            group_key := list_get(groups, position);
             if map_has(scenario, group_key) {
-                var files = map_get(scenario, group_key);
+                files := map_get(scenario, group_key);
                 if !value_is_map(files) {
                     return result_fail(prefix + "file fixtures must be an object");
                 }
-                var keys = map_keys(files);
-                var index = 0;
+                keys := map_keys(files);
+                index := 0;
                 while index < list_length(keys) {
-                    var file_name = list_get(keys, index);
+                    file_name := list_get(keys, index);
                     if text_length(file_name) == 0 || path_is_absolute(file_name)
                         || text_find(file_name, "..") >= 0 {
                         return result_fail("file fixture paths must stay inside the case workspace");
@@ -270,7 +270,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
         return result_fail(prefix + "invalid workspace");
     }
     if map_has(scenario, "tag") {
-        var tag = map_get(scenario, "tag");
+        tag := map_get(scenario, "tag");
         if !map_has(scenario, "workspace") || !value_is_map(tag) || !map_has(tag, "name")
             || value_kind(map_get(tag, "name")) != "text" || !map_has(tag, "annotated")
             || value_kind(map_get(tag, "annotated")) != "boolean" {
@@ -285,24 +285,24 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
 
 /// Collect case fixtures below a directory.
 fn case_collect(directory, filter, fixtures, ids) {
-    var entries = directory_list(directory);
-    var position = 0;
+    entries := directory_list(directory);
+    position := 0;
     while position < list_length(entries) {
-        var name = list_get(entries, position);
-        var path = path_join(directory, name);
+        name := list_get(entries, position);
+        path := path_join(directory, name);
         if path_is_directory(path) {
-            var nested = case_collect(path, filter, fixtures, ids);
+            nested := case_collect(path, filter, fixtures, ids);
             if result_is_fail(nested) {
                 return nested;
             }
         } else {
             if text_ends_with(name, ".case.json") {
-                var loaded = case_load_case(path);
+                loaded := case_load_case(path);
                 if result_is_fail(loaded) {
                     return loaded;
                 }
-                var fixture = map_get(loaded, "fixture");
-                var id = map_get(map_get(fixture, "definition"), "id");
+                fixture := map_get(loaded, "fixture");
+                id := map_get(map_get(fixture, "definition"), "id");
                 if map_has(ids, id) {
                     return result_fail("duplicate case IDs");
                 }
@@ -319,16 +319,16 @@ fn case_collect(directory, filter, fixtures, ids) {
 
 /// Load every case matching the filter.
 fn case_load_cases(filter, project_root) {
-    var fixtures = list_new();
-    var ids = map_new();
-    var collected = case_collect(path_join(project_root, "cases"), filter, fixtures, ids);
+    fixtures := list_new();
+    ids := map_new();
+    collected := case_collect(path_join(project_root, "cases"), filter, fixtures, ids);
     if result_is_fail(collected) {
         return collected;
     }
     if list_length(fixtures) == 0 {
         return result_fail("no cases match: " + filter);
     }
-    var result = result_ok(0, "");
+    result := result_ok(0, "");
     map_set(result, "fixtures", fixtures);
     return result;
 }
@@ -346,10 +346,10 @@ fn case_entry_excluded(name) {
 fn case_copy_tree(from, to) {
     if path_is_directory(from) {
         directory_create(to);
-        var entries = directory_list(from);
-        var position = 0;
+        entries := directory_list(from);
+        position := 0;
         while position < list_length(entries) {
-            var name = list_get(entries, position);
+            name := list_get(entries, position);
             if !case_entry_excluded(name) && !(name == "release" && path_basename(from) == "dist") {
                 case_copy_tree(path_join(from, name), path_join(to, name));
             }
@@ -363,7 +363,7 @@ fn case_copy_tree(from, to) {
 
 /// Run git with the fixture identity settings.
 fn case_git(directory, args) {
-    var git_args = list_new();
+    git_args := list_new();
     list_set(git_args, 0, "-c");
     list_set(git_args, 1, "user.name=Case fixture");
     list_set(git_args, 2, "-c");
@@ -376,7 +376,7 @@ fn case_git(directory, args) {
     list_set(git_args, 9, "maintenance.auto=false");
     list_set(git_args, 10, "-c");
     list_set(git_args, 11, "gc.auto=0");
-    var position = 0;
+    position := 0;
     while position < list_length(args) {
         list_set(git_args, list_length(git_args), list_get(args, position));
         position = position + 1;
@@ -386,23 +386,23 @@ fn case_git(directory, args) {
 
 /// Return the working directory for a tool scenario.
 fn case_tool_workspace(project_root, scenario, work) {
-    var directory = path_join(work, "project");
+    directory := path_join(work, "project");
     case_copy_tree(project_root, directory);
-    var init = case_git(directory, list_of3("init", "-b", "main"));
+    init := case_git(directory, list_of3("init", "-b", "main"));
     if map_get(init, "status") != 0 {
         return result_fail("git init failed: " + text_from_bytes(map_get(init, "stderr")));
     }
-    var added = case_git(directory, list_of2("add", "."));
+    added := case_git(directory, list_of2("add", "."));
     if map_get(added, "status") != 0 {
         return result_fail("git add failed: " + text_from_bytes(map_get(added, "stderr")));
     }
-    var committed = case_git(directory, list_of3("commit", "-m", "case fixture"));
+    committed := case_git(directory, list_of3("commit", "-m", "case fixture"));
     if map_get(committed, "status") != 0 {
         return result_fail("git commit failed: " + text_from_bytes(map_get(committed, "stderr")));
     }
     if map_has(scenario, "tag") {
-        var tag = map_get(scenario, "tag");
-        var tag_args = list_new();
+        tag := map_get(scenario, "tag");
+        tag_args := list_new();
         list_set(tag_args, 0, "tag");
         if map_get(tag, "annotated") {
             list_set(tag_args, 1, "-a");
@@ -412,7 +412,7 @@ fn case_tool_workspace(project_root, scenario, work) {
         } else {
             list_set(tag_args, 1, map_get(tag, "name"));
         }
-        var tagged = case_git(directory, tag_args);
+        tagged := case_git(directory, tag_args);
         if map_get(tagged, "status") != 0 {
             return result_fail("git tag failed: " + text_from_bytes(map_get(tagged, "stderr")));
         }
@@ -420,7 +420,7 @@ fn case_tool_workspace(project_root, scenario, work) {
     if map_get(scenario, "workspace") == "dirty" {
         file_write(path_join(directory, "uncommitted.txt"), "dirty\n");
     }
-    var result = result_ok(0, "");
+    result := result_ok(0, "");
     map_set(result, "directory", directory);
     return result;
 }
@@ -431,61 +431,61 @@ fn case_tool_workspace(project_root, scenario, work) {
 
 /// Verify one scenario and return a result map.
 fn case_verify_scenario(fixture, scenario, project_root, compiler_override) {
-    var definition = map_get(fixture, "definition");
-    var directory = path_parent(map_get(fixture, "path"));
-    var id = map_get(definition, "id");
-    var name = map_get(scenario, "name");
-    var prefix = id + "/" + name + ": ";
-    var input = case_stream_bytes(map_get(scenario, "stdin"), directory);
+    definition := map_get(fixture, "definition");
+    directory := path_parent(map_get(fixture, "path"));
+    id := map_get(definition, "id");
+    name := map_get(scenario, "name");
+    prefix := id + "/" + name + ": ";
+    input := case_stream_bytes(map_get(scenario, "stdin"), directory);
     if result_is_fail(input) {
         return result_fail(prefix + map_get(input, "message"));
     }
-    var work = path_temp_directory();
+    work := path_temp_directory();
     if text_length(work) == 0 {
         return result_fail(prefix + "cannot create a temporary directory");
     }
-    var result = case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix);
+    result := case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix);
     path_remove(work);
     return result;
 }
 
 /// Verify one scenario inside a temporary directory.
 fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix) {
-    var definition = map_get(fixture, "definition");
-    var kind = map_get(definition, "kind");
-    var directory = path_parent(map_get(fixture, "path"));
-    var input = case_stream_bytes(map_get(scenario, "stdin"), directory);
-    var args = list_new();
+    definition := map_get(fixture, "definition");
+    kind := map_get(definition, "kind");
+    directory := path_parent(map_get(fixture, "path"));
+    input := case_stream_bytes(map_get(scenario, "stdin"), directory);
+    args := list_new();
     if map_has(scenario, "args") {
         args = map_get(scenario, "args");
     }
-    var workspace = project_root;
-    var result = map_new();
-    var artifact = "";
+    workspace := project_root;
+    result := map_new();
+    artifact := "";
     if kind == "tool" {
         if map_has(scenario, "workspace") {
-            var prepared = case_tool_workspace(project_root, scenario, work);
+            prepared := case_tool_workspace(project_root, scenario, work);
             if result_is_fail(prepared) {
                 return result_fail(prefix + map_get(prepared, "message"));
             }
             workspace = map_get(prepared, "directory");
         }
-        var command_args = list_new();
+        command_args := list_new();
         list_set(command_args, 0, path_join(path_join(workspace, "bin"), map_get(definition, "tool")));
-        var position = 0;
+        position := 0;
         while position < list_length(args) {
             list_set(command_args, list_length(command_args), list_get(args, position));
             position = position + 1;
         }
         result = process_capture(process_exec_path(), command_args, workspace, map_get(input, "bytes"));
     } else {
-        var source = path_resolve(directory, map_get(definition, "source"));
-        var compiler = compiler_override;
+        source := path_resolve(directory, map_get(definition, "source"));
+        compiler := compiler_override;
         if compiler == "" {
             compiler = project_compiler_entry(project_root);
         }
-        var output = path_join(work, "program.mini.js");
-        var compile_args = list_new();
+        output := path_join(work, "program.mini.js");
+        compile_args := list_new();
         list_set(compile_args, 0, compiler);
         list_set(compile_args, 1, "compile");
         list_set(compile_args, 2, source);
@@ -495,7 +495,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             artifact = hash_sha256(file_read_bytes(output));
         }
         if kind == "compile" && map_has(scenario, "artifact") {
-            var expected = case_stream_bytes(map_get(scenario, "artifact"), directory);
+            expected := case_stream_bytes(map_get(scenario, "artifact"), directory);
             if result_is_fail(expected) {
                 return result_fail(prefix + map_get(expected, "message"));
             }
@@ -510,21 +510,21 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             if map_get(result, "status") != 0 {
                 return result_fail(prefix + text_from_bytes(map_get(result, "stderr")));
             }
-            var files = path_join(work, "files");
+            files := path_join(work, "files");
             directory_create(files);
-            var prepared_files = case_write_input_files(scenario, directory, files, prefix);
+            prepared_files := case_write_input_files(scenario, directory, files, prefix);
             if result_is_fail(prepared_files) {
                 return prepared_files;
             }
-            var run_args = list_new();
+            run_args := list_new();
             list_set(run_args, 0, output);
-            var position = 0;
+            position := 0;
             while position < list_length(args) {
                 list_set(run_args, list_length(run_args), list_get(args, position));
                 position = position + 1;
             }
             result = process_capture(process_exec_path(), run_args, files, map_get(input, "bytes"));
-            var checked_files = case_check_output_files(scenario, directory, files, prefix);
+            checked_files := case_check_output_files(scenario, directory, files, prefix);
             if result_is_fail(checked_files) {
                 return checked_files;
             }
@@ -533,11 +533,11 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
     if map_get(result, "status") != map_get(scenario, "exitCode") {
         return result_fail(prefix + "exit status" + case_diagnostic(result));
     }
-    var stdout = case_stream_bytes(map_get(scenario, "stdout"), directory);
+    stdout := case_stream_bytes(map_get(scenario, "stdout"), directory);
     if !case_bytes_equal(map_get(result, "stdout"), map_get(stdout, "bytes")) {
         return result_fail(prefix + "stdout");
     }
-    var stderr = case_stream_bytes(map_get(scenario, "stderr"), directory);
+    stderr := case_stream_bytes(map_get(scenario, "stderr"), directory);
     if !case_bytes_equal(map_get(result, "stderr"), map_get(stderr, "bytes")) {
         return result_fail(prefix + "stderr");
     }
@@ -547,8 +547,8 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         }
     }
     if map_has(scenario, "files") {
-        var files = map_get(scenario, "files");
-        var position = 0;
+        files := map_get(scenario, "files");
+        position := 0;
         while position < list_length(files) {
             if !path_is_exists(path_resolve(workspace, list_get(files, position))) {
                 return result_fail("missing artifact: " + list_get(files, position));
@@ -556,18 +556,18 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             position = position + 1;
         }
     }
-    var done = result_ok(0, "");
+    done := result_ok(0, "");
     map_set(done, "artifact", artifact);
     return done;
 }
 
 /// Return a diagnostic suffix for a failed run.
 fn case_diagnostic(result) {
-    var error = map_get(result, "error");
+    error := map_get(result, "error");
     if text_length(error) > 0 {
         return ": " + error;
     }
-    var stderr = text_from_bytes(map_get(result, "stderr"));
+    stderr := text_from_bytes(map_get(result, "stderr"));
     if text_length(stderr) > 0 {
         return ": " + stderr;
     }
@@ -579,16 +579,16 @@ fn case_write_input_files(scenario, directory, files, prefix) {
     if !map_has(scenario, "inputFiles") {
         return result_ok(0, "");
     }
-    var inputs = map_get(scenario, "inputFiles");
-    var names = map_keys(inputs);
-    var position = 0;
+    inputs := map_get(scenario, "inputFiles");
+    names := map_keys(inputs);
+    position := 0;
     while position < list_length(names) {
-        var name = list_get(names, position);
-        var stream = case_stream_bytes(map_get(inputs, name), directory);
+        name := list_get(names, position);
+        stream := case_stream_bytes(map_get(inputs, name), directory);
         if result_is_fail(stream) {
             return result_fail(prefix + map_get(stream, "message"));
         }
-        var target = path_join(files, name);
+        target := path_join(files, name);
         directory_create(path_parent(target));
         file_write_bytes(target, map_get(stream, "bytes"));
         position = position + 1;
@@ -601,16 +601,16 @@ fn case_check_output_files(scenario, directory, files, prefix) {
     if !map_has(scenario, "outputFiles") {
         return result_ok(0, "");
     }
-    var outputs = map_get(scenario, "outputFiles");
-    var names = map_keys(outputs);
-    var position = 0;
+    outputs := map_get(scenario, "outputFiles");
+    names := map_keys(outputs);
+    position := 0;
     while position < list_length(names) {
-        var name = list_get(names, position);
-        var expected = case_stream_bytes(map_get(outputs, name), directory);
+        name := list_get(names, position);
+        expected := case_stream_bytes(map_get(outputs, name), directory);
         if result_is_fail(expected) {
             return result_fail(prefix + map_get(expected, "message"));
         }
-        var target = path_join(files, name);
+        target := path_join(files, name);
         if !path_is_exists(target) || !case_bytes_equal(file_read_bytes(target), map_get(expected, "bytes")) {
             return result_fail(prefix + "file " + name);
         }
@@ -621,20 +621,20 @@ fn case_check_output_files(scenario, directory, files, prefix) {
 
 /// Return the identity hashes for a case fixture.
 fn case_case_identity(fixture, project_root) {
-    var definition = map_get(fixture, "definition");
-    var directory = path_parent(map_get(fixture, "path"));
-    var source = "";
+    definition := map_get(fixture, "definition");
+    directory := path_parent(map_get(fixture, "path"));
+    source := "";
     if map_get(definition, "kind") == "tool" {
         source = path_join(path_join(project_root, "bin"), map_get(definition, "tool"));
     } else {
         source = path_resolve(directory, map_get(definition, "source"));
     }
-    var streams = list_new();
-    var scenarios = map_get(definition, "cases");
-    var position = 0;
+    streams := list_new();
+    scenarios := map_get(definition, "cases");
+    position := 0;
     while position < list_length(scenarios) {
-        var scenario = list_get(scenarios, position);
-        var entry = map_new();
+        scenario := list_get(scenarios, position);
+        entry := map_new();
         map_set(entry, "name", map_get(scenario, "name"));
         map_set(entry, "stdin", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdin"), directory), "bytes")));
         map_set(entry, "stdout", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdout"), directory), "bytes")));
@@ -651,7 +651,7 @@ fn case_case_identity(fixture, project_root) {
         list_set(streams, list_length(streams), entry);
         position = position + 1;
     }
-    var identity = map_new();
+    identity := map_new();
     map_set(identity, "manifest", hash_sha256(file_read_bytes(map_get(fixture, "path"))));
     map_set(identity, "source", hash_sha256(file_read_bytes(source)));
     map_set(identity, "streams", streams);
@@ -660,11 +660,11 @@ fn case_case_identity(fixture, project_root) {
 
 /// Return hashes for a file fixture map.
 fn case_file_hashes(files, directory) {
-    var hashes = map_new();
-    var names = map_keys(files);
-    var position = 0;
+    hashes := map_new();
+    names := map_keys(files);
+    position := 0;
     while position < list_length(names) {
-        var name = list_get(names, position);
+        name := list_get(names, position);
         map_set(hashes, name, hash_sha256(map_get(case_stream_bytes(map_get(files, name), directory), "bytes")));
         position = position + 1;
     }

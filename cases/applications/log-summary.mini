@@ -18,14 +18,14 @@ fn log_row(fields, levels, routes, users) {
 
 /// Return level, route, and user frequencies; ignore incomplete rows and blank lines.
 fn app_run(source) {
-    var levels = map_new();
-    var routes = map_new();
-    var users = map_new();
-    var fields = list_new();
-    var word = "";
-    var index = 0;
+    levels := map_new();
+    routes := map_new();
+    users := map_new();
+    fields := list_new();
+    word := "";
+    index := 0;
     while index <= text_length(source) {
-        var character = text_get(source, index);
+        character := text_get(source, index);
         if character == " " || character == "\t" || character == "\r" || character == "\n" || character == "" {
             if word != "" {
                 list_set(fields, list_length(fields), word);
@@ -40,7 +40,7 @@ fn app_run(source) {
         }
         index = index + 1;
     }
-    var result = map_new();
+    result := map_new();
     map_set(result, "levels", levels);
     map_set(result, "routes", routes);
     map_set(result, "users", users);

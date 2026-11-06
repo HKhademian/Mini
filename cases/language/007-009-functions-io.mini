@@ -1,5 +1,5 @@
 fn join(left, right) {
     return left + right;
 }
-var source = io_read_all();
+source := io_read_all();
 io_write(join(join("[", source), "]"));

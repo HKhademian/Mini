@@ -1,1 +1,1 @@
-var output = "\"\\\n\r\t";
+output := "\"\\\n\r\t";

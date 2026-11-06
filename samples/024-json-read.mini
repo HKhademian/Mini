@@ -1,4 +1,4 @@
 /// Parse standard-input JSON and print its name field.
-var parsed = json_parse(io_read_all());
-var value = map_get(parsed, "value");
+parsed := json_parse(io_read_all());
+value := map_get(parsed, "value");
 io_write(map_get(value, "name") + "\n");

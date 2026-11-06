@@ -1,5 +1,5 @@
 /// Build a map and print compact deterministic JSON text.
-var values = map_new();
+values := map_new();
 map_set(values, "name", "Mini");
 map_set(values, "count", 2);
 io_write(json_to_text(values) + "\n");

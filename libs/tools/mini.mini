@@ -6,7 +6,7 @@ include "../common/project.mini";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {
-    var parsed = json_parse_file(path_join(root, "config/compiler.json"));
+    parsed := json_parse_file(path_join(root, "config/compiler.json"));
     if result_is_fail(parsed) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
@@ -16,7 +16,7 @@ fn mini_compiler(root) {
 
 /// Return the version registry.
 fn mini_versions(root) {
-    var parsed = json_parse_file(path_join(root, "config/versions.json"));
+    parsed := json_parse_file(path_join(root, "config/versions.json"));
     if result_is_fail(parsed) {
         io_write_error(map_get(parsed, "message") + "\n");
         process_exit(1);
@@ -26,7 +26,7 @@ fn mini_versions(root) {
 
 /// Return a release tag for a product key.
 fn mini_tag(root, component) {
-    var current = mini_versions(root);
+    current := mini_versions(root);
     return component + "-v" + map_get(current, "group") + "-v" + map_get(current, component);
 }
 
@@ -47,14 +47,14 @@ fn mini_component(command) {
 
 /// Run a generated tool with inherited standard streams.
 fn mini_spawn(root, tool, args) {
-    var command_args = list_new();
+    command_args := list_new();
     list_set(command_args, 0, path_join(root, tool));
-    var position = 0;
+    position := 0;
     while position < list_length(args) {
         list_set(command_args, list_length(command_args), list_get(args, position));
         position = position + 1;
     }
-    var options = map_new();
+    options := map_new();
     map_set(options, "command", process_exec_path());
     map_set(options, "arguments", command_args);
     map_set(options, "directory", root);
@@ -64,8 +64,8 @@ fn mini_spawn(root, tool, args) {
 
 /// Return a list from a start index.
 fn mini_rest(items, start) {
-    var result = list_new();
-    var position = start;
+    result := list_new();
+    position := start;
     while position < list_length(items) {
         list_set(result, list_length(result), list_get(items, position));
         position = position + 1;
@@ -102,17 +102,17 @@ fn mini_command(root, command, args) {
         if list_length(args) != 1 {
             return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
         }
-        var path = list_get(args, 0);
+        path := list_get(args, 0);
         if path != "-" && !path_is_exists(path) {
             return mini_usage("cannot read " + path);
         }
         return mini_spawn(root, "dist/check-source.js", args);
     }
     if command == "format" {
-        var format_path = "";
-        var position = 0;
+        format_path := "";
+        position := 0;
         while position < list_length(args) {
-            var arg = list_get(args, position);
+            arg := list_get(args, position);
             if arg != "--write" && arg != "--check" {
                 format_path = arg;
             }
@@ -127,14 +127,14 @@ fn mini_command(root, command, args) {
         if list_length(args) < 1 {
             return mini_usage("usage: mini-run SOURCE.mini [ARG]...");
         }
-        var source = list_get(args, 0);
+        source := list_get(args, 0);
         if !text_ends_with(source, ".mini") {
             return mini_usage("Mini source must use .mini");
         }
-        var run_args = list_new();
+        run_args := list_new();
         list_set(run_args, 0, mini_compiler(root));
         list_set(run_args, 1, source);
-        var position = 1;
+        position := 1;
         while position < list_length(args) {
             list_set(run_args, list_length(run_args), list_get(args, position));
             position = position + 1;
@@ -154,7 +154,7 @@ fn mini_command(root, command, args) {
         if list_length(args) == 0 {
             return mini_spawn(root, "dist/verify.js", list_new());
         }
-        var file_args = list_new();
+        file_args := list_new();
         list_set(file_args, 0, "--file");
         list_set(file_args, 1, list_get(args, 0));
         return mini_spawn(root, "dist/test.js", file_args);
@@ -163,16 +163,16 @@ fn mini_command(root, command, args) {
         if list_length(args) < 1 {
             return mini_usage("usage: mini-release OUTPUT [TAG]");
         }
-        var status = mini_spawn(root, "dist/release.js", args);
+        status := mini_spawn(root, "dist/release.js", args);
         if status == 0 {
             io_write("Release prepared.\n");
         }
         return status;
     }
     if command == "compile" {
-        var compiler = path_join(root, mini_compiler(root));
+        compiler := path_join(root, mini_compiler(root));
         if list_length(args) > 0 && list_get(args, 0) == "--tokens" {
-            var token_args = list_new();
+            token_args := list_new();
             list_set(token_args, 0, "tokens");
             list_set(token_args, 1, list_get(args, 1));
             return mini_spawn(root, mini_compiler(root), token_args);
@@ -180,20 +180,20 @@ fn mini_command(root, command, args) {
         if list_length(args) < 1 {
             return mini_usage("usage: mini-compile SOURCE.mini [OUTPUT.js]");
         }
-        var source = list_get(args, 0);
+        source := list_get(args, 0);
         if !text_ends_with(source, ".mini") {
             return mini_usage("Mini source must use .mini");
         }
-        var output = source + ".js";
+        output := source + ".js";
         if list_length(args) > 1 {
             output = list_get(args, 1);
         }
-        var compile_args = list_new();
+        compile_args := list_new();
         list_set(compile_args, 0, source);
         list_set(compile_args, 1, output);
-        var status = mini_spawn(root, mini_compiler(root), compile_args);
+        status := mini_spawn(root, mini_compiler(root), compile_args);
         if status == 0 && text_starts_with(file_read(source), "#!") {
-            var chmod_args = list_new();
+            chmod_args := list_new();
             list_set(chmod_args, 0, "755");
             list_set(chmod_args, 1, output);
             process_capture("chmod", chmod_args, root, list_new());
@@ -208,8 +208,8 @@ fn mini_run(executable, args, root) {
     if executable == "mini.js" || executable == "mini.generated.js" {
         executable = "mini";
     }
-    var command = executable;
-    var rest = args;
+    command := executable;
+    rest := args;
     if executable == "mini" {
         if list_length(args) == 0 || list_get(args, 0) == "--help" {
             return mini_help();
@@ -233,7 +233,7 @@ fn mini_run(executable, args, root) {
         command = "format";
     }
     if list_length(rest) == 1 && list_get(rest, 0) == "--version" {
-        var component = mini_component(command);
+        component := mini_component(command);
         if component != "" {
             io_write(mini_tag(root, component) + "\n");
             return 0;

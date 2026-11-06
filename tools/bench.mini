@@ -3,18 +3,18 @@ include "../libs/tools/bench.mini";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main() {
-    var args = process_args();
+    args := process_args();
     if list_length(args) < 1 || list_length(args) > 2 {
         io_write_error("usage: mini-bench OUTPUT [FILTER]\n");
         process_exit(1);
     }
-    var root = project_root();
-    var output = path_resolve("", list_get(args, 0));
-    var filter = "";
+    root := project_root();
+    output := path_resolve("", list_get(args, 0));
+    filter := "";
     if list_length(args) == 2 {
         filter = list_get(args, 1);
     }
-    var count = bench_run(root, output, filter);
+    count := bench_run(root, output, filter);
     io_write("Wrote " + number_to_text(count) + " benchmark results to " + output + "\n");
     return 0;
 }

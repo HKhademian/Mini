@@ -1,18 +1,18 @@
 include "../common/value.mini";
 /// Reference text_find: return the first code-unit index, or -1.
 fn pure_text_find_from(text, needle, start) {
-    var text_size = text_length(text);
-    var needle_size = text_length(needle);
+    text_size := text_length(text);
+    needle_size := text_length(needle);
     if needle_size == 0 {
         if start <= text_size {
             return start;
         }
         return -1;
     }
-    var position = start;
+    position := start;
     while position + needle_size <= text_size {
-        var offset = 0;
-        var matched = true;
+        offset := 0;
+        matched := true;
         while offset < needle_size {
             if text_get(text, position + offset) != text_get(needle, offset) {
                 matched = false;
@@ -42,7 +42,7 @@ fn pure_text_slice(source, start, end) {
     if !value_is_text(source) {
         return "";
     }
-    var size = text_length(source);
+    size := text_length(source);
     if start < 0 {
         start = size + start;
     }
@@ -64,8 +64,8 @@ fn pure_text_slice(source, start, end) {
     if end <= start {
         return "";
     }
-    var output = "";
-    var position = start;
+    output := "";
+    position := start;
     while position < end {
         output = output + text_get(source, position);
         position = position + 1;
@@ -79,13 +79,13 @@ fn pure_text_split(text, divider) {
         return list_new();
     }
     if divider == "" {
-        var whole = list_new();
+        whole := list_new();
         list_set(whole, 0, text);
         return whole;
     }
-    var result = list_new();
-    var start = 0;
-    var position = pure_text_find_from(text, divider, start);
+    result := list_new();
+    start := 0;
+    position := pure_text_find_from(text, divider, start);
     while position >= 0 {
         list_set(result, list_length(result), pure_text_slice(text, start, position));
         start = position + text_length(divider);

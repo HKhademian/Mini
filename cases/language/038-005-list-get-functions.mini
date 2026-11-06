@@ -1,6 +1,6 @@
 fn items() {
     io_write("l");
-    var result = list_new();
+    result := list_new();
     list_set(result, 0, "value");
     return result;
 }

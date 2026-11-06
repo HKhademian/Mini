@@ -1,4 +1,4 @@
 /// Copy input.txt to output.txt, then print the saved copy.
-var source = file_read("input.txt");
+source := file_read("input.txt");
 file_write("output.txt", source);
 io_write(file_read("output.txt"));

@@ -92,14 +92,14 @@ Style is fixed for this milestone:
 For example:
 
 ```text
-var value=1;// keep
+value := 1;// keep
 if(value==1){io_write("ok");}else{io_write("no");}
 ```
 
 becomes:
 
 ```text
-var value = 1; // keep
+value := 1; // keep
 if value == 1 {
     io_write("ok");
 } else {

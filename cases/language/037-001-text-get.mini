@@ -1,5 +1,5 @@
-var source = io_read_all();
-var index = 0;
+source := io_read_all();
+index := 0;
 if text_length(source) > 1 {
     index = 1;
 }

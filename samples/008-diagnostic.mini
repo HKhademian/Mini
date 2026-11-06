@@ -1,5 +1,5 @@
 /// Explain a missing argument on stderr and exit with status 2; otherwise print it.
-var args = process_args();
+args := process_args();
 if list_length(args) == 0 {
     io_write_error("expected an argument\n");
     process_exit(2);

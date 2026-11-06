@@ -2,7 +2,7 @@
 
 /// Return whether a single character is in choices; empty text is never a member.
 fn lex_contains(choices, character) {
-    var index = 0;
+    index := 0;
     while index < text_length(choices) {
         if text_get(choices, index) == character {
             return true;
@@ -14,8 +14,8 @@ fn lex_contains(choices, character) {
 
 /// Return characters in the half-open range, bounded by the source length.
 fn lex_slice(source, start, end) {
-    var output = "";
-    var position = start;
+    output := "";
+    position := start;
     while position < end && position < text_length(source) {
         output = output + text_get(source, position);
         position = position + 1;
@@ -25,11 +25,11 @@ fn lex_slice(source, start, end) {
 
 /// Return source-line contexts, removing CR before LF and retaining the final empty line.
 fn lex_lines(source) {
-    var lines = list_new();
-    var line = "";
-    var position = 0;
+    lines := list_new();
+    line := "";
+    position := 0;
     while position <= text_length(source) {
-        var character = text_get(source, position);
+        character := text_get(source, position);
         if character == "\n" || character == "" {
             if text_get(line, text_length(line) - 1) == "\r" && character == "\n" {
                 line = lex_slice(line, 0, text_length(line) - 1);
@@ -46,7 +46,7 @@ fn lex_lines(source) {
 
 /// Consume one character and update position, line, and column in state.
 fn lex_advance(state) {
-    var character = text_get(map_get(state, "source"), map_get(state, "position"));
+    character := text_get(map_get(state, "source"), map_get(state, "position"));
     map_set(state, "position", map_get(state, "position") + 1);
     if character == "\n" {
         map_set(state, "line", map_get(state, "line") + 1);
@@ -59,7 +59,7 @@ fn lex_advance(state) {
 
 /// Allocate a token with T0's eight named fields at the current source location.
 fn lex_start(state, lines) {
-    var token = map_new();
+    token := map_new();
     map_set(token, "kind", "symbol");
     map_set(token, "text", "");
     map_set(token, "source", "application.mini");
@@ -73,9 +73,9 @@ fn lex_start(state, lines) {
 
 /// Return positioned tokens plus EOF; valid ASCII input and supported escapes match T0.
 fn lex_tokenize(source) {
-    var tokens = list_new();
-    var lines = lex_lines(source);
-    var keywords = map_new();
+    tokens := list_new();
+    lines := lex_lines(source);
+    keywords := map_new();
     map_set(keywords, "var", true);
     map_set(keywords, "fn", true);
     map_set(keywords, "return", true);
@@ -84,14 +84,14 @@ fn lex_tokenize(source) {
     map_set(keywords, "while", true);
     map_set(keywords, "true", true);
     map_set(keywords, "false", true);
-    var state = map_new();
+    state := map_new();
     map_set(state, "source", source);
     map_set(state, "position", 0);
     map_set(state, "line", 1);
     map_set(state, "column", 1);
     while map_get(state, "position") < text_length(source) {
-        var character = text_get(source, map_get(state, "position"));
-        var skipped = false;
+        character := text_get(source, map_get(state, "position"));
+        skipped := false;
         if lex_contains(" \t\r\n", character) {
             lex_advance(state);
             skipped = true;
@@ -104,7 +104,7 @@ fn lex_tokenize(source) {
             }
         }
         if !skipped {
-            var token = lex_start(state, lines);
+            token := lex_start(state, lines);
             if lex_contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) {
                 map_set(token, "kind", "identifier");
                 while map_get(state, "position") < text_length(source) && lex_contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_0123456789", text_get(source, map_get(state, "position"))) {
@@ -124,7 +124,7 @@ fn lex_tokenize(source) {
                         map_set(token, "kind", "text");
                         lex_advance(state);
                         while map_get(state, "position") < text_length(source) && text_get(source, map_get(state, "position")) != "\"" {
-                            var current = text_get(source, map_get(state, "position"));
+                            current := text_get(source, map_get(state, "position"));
                             if current == "\n" || current == "\r" {
                                 process_exit(1);
                             }
@@ -141,7 +141,7 @@ fn lex_tokenize(source) {
                         }
                         lex_advance(state);
                     } else {
-                        var pair = lex_slice(source, map_get(state, "position"), map_get(state, "position") + 2);
+                        pair := lex_slice(source, map_get(state, "position"), map_get(state, "position") + 2);
                         if pair == "==" || pair == "!=" || pair == "<=" || pair == ">=" || pair == "&&" || pair == "||" {
                             lex_advance(state);
                             lex_advance(state);
@@ -159,7 +159,7 @@ fn lex_tokenize(source) {
             list_set(tokens, list_length(tokens), token);
         }
     }
-    var end = lex_start(state, lines);
+    end := lex_start(state, lines);
     map_set(end, "kind", "eof");
     list_set(tokens, list_length(tokens), end);
     return tokens;

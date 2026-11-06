@@ -13,7 +13,7 @@ fn build_fail(message) {
 
 /// Read the tool manifest and return it.
 fn build_manifest(root) {
-    var parsed = json_parse_file(path_join(root, "tools/mini-tools.json"));
+    parsed := json_parse_file(path_join(root, "tools/mini-tools.json"));
     if result_is_fail(parsed) {
         build_fail(map_get(parsed, "message"));
     }
@@ -22,7 +22,7 @@ fn build_manifest(root) {
 
 /// Return the active compiler entry.
 fn build_compiler(root) {
-    var parsed = json_parse_file(path_join(root, "config/compiler.json"));
+    parsed := json_parse_file(path_join(root, "config/compiler.json"));
     if result_is_fail(parsed) {
         build_fail(map_get(parsed, "message"));
     }
@@ -31,25 +31,25 @@ fn build_compiler(root) {
 
 /// Compile one tool source and return its generated text.
 fn build_compile(root, compiler, source) {
-    var work = path_temp_directory();
-    var output = path_join(work, "tool.generated.js");
-    var args = list_new();
+    work := path_temp_directory();
+    output := path_join(work, "tool.generated.js");
+    args := list_new();
     list_set(args, 0, compiler);
     list_set(args, 1, path_join(root, source));
     list_set(args, 2, output);
-    var result = process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         path_remove(work);
         build_fail(source + " failed:\n" + text_from_bytes(map_get(result, "stderr")));
     }
-    var generated = file_read(output);
+    generated := file_read(output);
     path_remove(work);
     return generated;
 }
 
 /// Make a file executable.
 fn build_executable(root, path) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, "755");
     list_set(args, 1, path_join(root, path));
     process_capture("chmod", args, root, list_new());
@@ -68,24 +68,24 @@ fn build_launcher(launcher) {
 
 /// Regenerate every generated tool and launcher.
 fn build_all(root) {
-    var manifest = build_manifest(root);
-    var compiler = build_compiler(root);
-    var tools = map_get(manifest, "tools");
-    var position = 0;
+    manifest := build_manifest(root);
+    compiler := build_compiler(root);
+    tools := map_get(manifest, "tools");
+    position := 0;
     while position < list_length(tools) {
-        var tool = list_get(tools, position);
-        var generated = build_compile(root, compiler, map_get(tool, "source"));
-        var target = path_join(root, map_get(tool, "generated"));
+        tool := list_get(tools, position);
+        generated := build_compile(root, compiler, map_get(tool, "source"));
+        target := path_join(root, map_get(tool, "generated"));
         directory_create(path_parent(target));
         file_write(target, generated);
         build_executable(root, map_get(tool, "generated"));
         position = position + 1;
     }
-    var launchers = map_get(manifest, "launchers");
+    launchers := map_get(manifest, "launchers");
     position = 0;
     while position < list_length(launchers) {
-        var launcher = list_get(launchers, position);
-        var name = "bin/" + map_get(launcher, "name");
+        launcher := list_get(launchers, position);
+        name := "bin/" + map_get(launcher, "name");
         file_write(path_join(root, name), build_launcher(launcher));
         build_executable(root, name);
         position = position + 1;
@@ -95,24 +95,24 @@ fn build_all(root) {
 
 /// Reject stale generated tools and launchers.
 fn build_check(root) {
-    var manifest = build_manifest(root);
-    var compiler = build_compiler(root);
-    var tools = map_get(manifest, "tools");
-    var position = 0;
+    manifest := build_manifest(root);
+    compiler := build_compiler(root);
+    tools := map_get(manifest, "tools");
+    position := 0;
     while position < list_length(tools) {
-        var tool = list_get(tools, position);
-        var target = path_join(root, map_get(tool, "generated"));
-        var generated = build_compile(root, compiler, map_get(tool, "source"));
+        tool := list_get(tools, position);
+        target := path_join(root, map_get(tool, "generated"));
+        generated := build_compile(root, compiler, map_get(tool, "source"));
         if !path_is_exists(target) || file_read(target) != generated {
             build_fail(map_get(tool, "generated") + " is stale; run dist/build.js");
         }
         position = position + 1;
     }
-    var launchers = map_get(manifest, "launchers");
+    launchers := map_get(manifest, "launchers");
     position = 0;
     while position < list_length(launchers) {
-        var launcher = list_get(launchers, position);
-        var name = "bin/" + map_get(launcher, "name");
+        launcher := list_get(launchers, position);
+        name := "bin/" + map_get(launcher, "name");
         if !path_is_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher) {
             build_fail(name + " is stale; run dist/build.js");
         }

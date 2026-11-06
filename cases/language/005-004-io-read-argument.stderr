@@ -1,3 +1,3 @@
-005-004-io-read-argument.mini:1:14: expected 0 arguments
-var source = io_read_all("mini");
-             ^
+005-004-io-read-argument.mini:1:11: expected 0 arguments
+source := io_read_all("mini");
+          ^

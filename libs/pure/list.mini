@@ -1,11 +1,11 @@
 include "../common/value.mini";
 /// Reference list_copy: shallow copy, or empty list for non-lists.
 fn pure_list_copy(items) {
-    var result = list_new();
+    result := list_new();
     if !value_is_list(items) {
         return result;
     }
-    var position = 0;
+    position := 0;
     while position < list_length(items) {
         list_set(result, list_length(result), list_get(items, position));
         position = position + 1;
@@ -26,7 +26,7 @@ fn pure_list_push_front(items, value) {
     if !value_is_list(items) {
         return 0;
     }
-    var position = list_length(items);
+    position := list_length(items);
     while position > 0 {
         list_set(items, position, list_get(items, position - 1));
         position = position - 1;
@@ -40,8 +40,8 @@ fn pure_list_pop_back(items) {
     if !value_is_list(items) || list_length(items) == 0 {
         return 0;
     }
-    var length = list_length(items);
-    var value = list_get(items, length - 1);
+    length := list_length(items);
+    value := list_get(items, length - 1);
     list_truncate(items, length - 1);
     return value;
 }
@@ -51,9 +51,9 @@ fn pure_list_pop_front(items) {
     if !value_is_list(items) || list_length(items) == 0 {
         return 0;
     }
-    var length = list_length(items);
-    var value = list_get(items, 0);
-    var position = 0;
+    length := list_length(items);
+    value := list_get(items, 0);
+    position := 0;
     while position < length - 1 {
         list_set(items, position, list_get(items, position + 1));
         position = position + 1;
@@ -67,13 +67,13 @@ fn pure_list_to_text(items, separator) {
     if !value_is_list(items) || !value_is_text(separator) {
         return "";
     }
-    var output = "";
-    var position = 0;
+    output := "";
+    position := 0;
     while position < list_length(items) {
         if position > 0 {
             output = output + separator;
         }
-        var item = list_get(items, position);
+        item := list_get(items, position);
         if value_is_text(item) {
             output = output + item;
         }

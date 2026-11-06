@@ -1,10 +1,10 @@
 /// Accumulate numbers in a loop.
-var values = list_new();
+values := list_new();
 list_set(values, 0, 4);
 list_set(values, 1, 8);
 list_set(values, 2, 15);
-var sum = 0;
-var index = 0;
+sum := 0;
+index := 0;
 while index < list_length(values) {
     sum = sum + list_get(values, index);
     index = index + 1;

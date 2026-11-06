@@ -1,6 +1,6 @@
 /// Parse an array and read an item.
-var parsed = json_parse("[10,20,30]");
+parsed := json_parse("[10,20,30]");
 if map_get(parsed, "ok") {
-    var values = map_get(parsed, "value");
+    values := map_get(parsed, "value");
     io_write(number_to_text(list_get(values, 1)) + "\n");
 }

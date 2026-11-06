@@ -10,13 +10,13 @@ fn format_fail(message) {
 
 /// Validate arguments, format the selected source, and apply the selected mode.
 fn main() {
-    var args = process_args();
-    var mode = "stdout";
-    var has_path = false;
-    var path = "";
-    var position = 0;
+    args := process_args();
+    mode := "stdout";
+    has_path := false;
+    path := "";
+    position := 0;
     while position < list_length(args) {
-        var arg = list_get(args, position);
+        arg := list_get(args, position);
         if arg == "--write" || arg == "--check" {
             if mode != "stdout" {
                 format_fail("usage: mini-format [--write | --check] SOURCE.mini");
@@ -44,19 +44,19 @@ fn main() {
     if path != "-" && !text_ends_with(path, ".mini") {
         format_fail("Mini source must use .mini");
     }
-    var name = path;
-    var source = "";
+    name := path;
+    source := "";
     if path == "-" {
         name = "<stdin>";
         source = io_read_all();
     } else {
         source = file_read(path);
     }
-    var base = "";
+    base := "";
     if path != "-" {
         base = path;
     }
-    var formatted = format_source(source, name, base);
+    formatted := format_source(source, name, base);
     if mode == "check" {
         if formatted != source {
             format_fail(name + ": not formatted");

@@ -5,6 +5,6 @@ fn mark(value) {
 fn join(left, right) {
     return left + right;
 }
-var token = io_read_all();
+token := io_read_all();
 io_write(join(mark(token + "L"), mark("R")));
 io_write(mark("A") + mark("B"));

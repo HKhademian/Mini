@@ -1,1 +1,1 @@
-var token = "position: " + 1;
+token := "position: " + 1;

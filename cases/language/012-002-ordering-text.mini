@@ -1,1 +1,1 @@
-var value = "a" < "b";
+value := "a" < "b";

@@ -2,15 +2,15 @@
 
 /// Return source with each {{key}} replaced from the header; unknown keys become <missing>.
 fn app_run(source) {
-    var values = map_new();
-    var position = 0;
-    var header = true;
+    values := map_new();
+    position := 0;
+    header := true;
     while header && position < text_length(source) {
-        var key = "";
-        var value = "";
-        var in_value = false;
+        key := "";
+        value := "";
+        in_value := false;
         while position < text_length(source) && text_get(source, position) != "\n" {
-            var character = text_get(source, position);
+            character := text_get(source, position);
             if character == "=" && !in_value {
                 in_value = true;
             } else {
@@ -31,11 +31,11 @@ fn app_run(source) {
             }
         }
     }
-    var output = "";
+    output := "";
     while position < text_length(source) {
         if text_get(source, position) == "{" && text_get(source, position + 1) == "{" {
             position = position + 2;
-            var key = "";
+            key := "";
             while position < text_length(source) && text_get(source, position) != "}" {
                 key = key + text_get(source, position);
                 position = position + 1;

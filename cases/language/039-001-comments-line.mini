@@ -1,5 +1,5 @@
 // Quotes, braces, and invented declarations here are not code: " fn hidden() {
-var output = "line"; // Ignore the rest of this line.
+output := "line"; // Ignore the rest of this line.
 output = output + // A comment can separate tokens across a line break.
     " comments\n";
 io_write(output);//No separating space is required.

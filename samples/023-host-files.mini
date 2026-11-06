@@ -1,7 +1,7 @@
 /// Write a note in a fresh temporary directory, read it back, and clean up.
-var directory = path_temp_directory();
+directory := path_temp_directory();
 file_write(directory + "/note.txt", "Mini\n");
-var saved = file_read(directory + "/note.txt");
+saved := file_read(directory + "/note.txt");
 file_remove(directory + "/note.txt");
 directory_remove(directory);
 io_write(saved);

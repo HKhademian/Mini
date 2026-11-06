@@ -1,4 +1,4 @@
-var items = list_new();
+items := list_new();
 list_set(items, 0, "first");
 list_set(items, 1, "last");
 if list_get(items, -1) != "last" || list_get(items, -2) != "first" || list_get(items, -3) != 0 {

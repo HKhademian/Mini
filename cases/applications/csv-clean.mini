@@ -10,13 +10,13 @@ fn csv_row(fields) {
 
 /// Parse commas, quoted fields, doubled quotes, CRLF, and a final row without newline.
 fn app_run(source) {
-    var output = "";
-    var fields = list_new();
-    var field = "";
-    var quoted = false;
-    var index = 0;
+    output := "";
+    fields := list_new();
+    field := "";
+    quoted := false;
+    index := 0;
     while index <= text_length(source) {
-        var character = text_get(source, index);
+        character := text_get(source, index);
         if character == "\"" {
             if quoted && text_get(source, index + 1) == "\"" {
                 field = field + "\"";

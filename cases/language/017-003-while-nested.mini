@@ -1,5 +1,5 @@
-var row = 0;
-var column = 0;
+row := 0;
+column := 0;
 while row < 2 {
     column = 0;
     while column < 3 {

@@ -16,14 +16,14 @@ fn lsp_log(message) {
 
 /// Return integer text or zero.
 fn lsp_number(text) {
-    var value = 0;
-    var position = 0;
+    value := 0;
+    position := 0;
     while position < text_length(text) {
-        var digit = text_find("0123456789", text_get(text, position));
+        digit := text_find("0123456789", text_get(text, position));
         if digit < 0 {
             return value;
         }
-        var scaled = value + value + value + value + value + value + value + value + value + value;
+        scaled := value + value + value + value + value + value + value + value + value + value;
         value = scaled + digit;
         position = position + 1;
     }
@@ -43,18 +43,18 @@ fn lsp_identifier_part(character) {
 
 /// Convert an LSP position to a UTF-16 offset.
 fn lsp_offset_at(text, position) {
-    var line = 0;
-    var offset = 0;
-    var target = map_get(position, "line");
+    line := 0;
+    offset := 0;
+    target := map_get(position, "line");
     while line < target {
-        var newline = text_find(text_slice(text, offset, text_length(text)), "\n");
+        newline := text_find(text_slice(text, offset, text_length(text)), "\n");
         if newline < 0 {
             return text_length(text);
         }
         offset = offset + newline + 1;
         line = line + 1;
     }
-    var character = offset + map_get(position, "character");
+    character := offset + map_get(position, "character");
     if character > text_length(text) {
         return text_length(text);
     }
@@ -63,9 +63,9 @@ fn lsp_offset_at(text, position) {
 
 /// Convert a UTF-16 offset to an LSP position.
 fn lsp_position_at(text, offset) {
-    var line = 0;
-    var start = 0;
-    var position = 0;
+    line := 0;
+    start := 0;
+    position := 0;
     while position < offset && position < text_length(text) {
         if text_get(text, position) == "\n" {
             line = line + 1;
@@ -73,7 +73,7 @@ fn lsp_position_at(text, offset) {
         }
         position = position + 1;
     }
-    var result = map_new();
+    result := map_new();
     map_set(result, "line", line);
     map_set(result, "character", offset - start);
     return result;
@@ -81,13 +81,13 @@ fn lsp_position_at(text, offset) {
 
 /// Return an LSP range for a token.
 fn lsp_range_of(token) {
-    var start = map_new();
+    start := map_new();
     map_set(start, "line", map_get(token, "line") - 1);
     map_set(start, "character", map_get(token, "column") - 1);
-    var finish = map_new();
+    finish := map_new();
     map_set(finish, "line", map_get(token, "line") - 1);
     map_set(finish, "character", map_get(token, "column") - 1 + text_length(map_get(token, "text")));
-    var range = map_new();
+    range := map_new();
     map_set(range, "start", start);
     map_set(range, "end", finish);
     return range;
@@ -95,15 +95,15 @@ fn lsp_range_of(token) {
 
 /// Return an LSP range for a diagnostic.
 fn lsp_diagnostic_range(text, diagnostic) {
-    var start = lsp_position_at(text, map_get(diagnostic, "start"));
-    var finish = lsp_position_at(text, map_get(diagnostic, "end"));
+    start := lsp_position_at(text, map_get(diagnostic, "start"));
+    finish := lsp_position_at(text, map_get(diagnostic, "end"));
     if map_get(diagnostic, "end") == map_get(diagnostic, "start") {
-        var same = map_new();
+        same := map_new();
         map_set(same, "line", map_get(start, "line"));
         map_set(same, "character", map_get(start, "character") + 1);
         finish = same;
     }
-    var range = map_new();
+    range := map_new();
     map_set(range, "start", start);
     map_set(range, "end", finish);
     return range;
@@ -121,26 +121,26 @@ fn lsp_run(command, args, directory, input) {
 
 /// Parse the compiler's first diagnostic line.
 fn lsp_parse_diagnostic(stderr, text, name, tokens) {
-    var newline = text_find(stderr, "\n");
-    var first = stderr;
+    newline := text_find(stderr, "\n");
+    first := stderr;
     if newline >= 0 {
         first = text_slice(stderr, 0, newline);
     }
-    var parts = text_split(first, ":");
+    parts := text_split(first, ":");
     if list_length(parts) < 4 {
-        var fallback = map_new();
+        fallback := map_new();
         map_set(fallback, "message", first);
         map_set(fallback, "source", name);
         map_set(fallback, "start", 0);
         map_set(fallback, "end", 0);
         return fallback;
     }
-    var line = lsp_number(list_get(parts, 1));
-    var column = lsp_number(list_get(parts, 2));
-    var message = text_trim(list_join_from(parts, 3, ":"));
-    var start = 0;
-    var current = 1;
-    var position = 0;
+    line := lsp_number(list_get(parts, 1));
+    column := lsp_number(list_get(parts, 2));
+    message := text_trim(list_join_from(parts, 3, ":"));
+    start := 0;
+    current := 1;
+    position := 0;
     while position < text_length(text) && current < line {
         if text_get(text, position) == "\n" {
             current = current + 1;
@@ -152,11 +152,11 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
     if start > text_length(text) {
         start = text_length(text);
     }
-    var end = start + 1;
+    end := start + 1;
     if end > text_length(text) {
         end = text_length(text);
     }
-    var index = 0;
+    index := 0;
     while index < list_length(tokens) {
         if map_get(list_get(tokens, index), "start") == start {
             end = map_get(list_get(tokens, index), "end");
@@ -172,7 +172,7 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
             end = text_length(text);
         }
     }
-    var diagnostic = map_new();
+    diagnostic := map_new();
     map_set(diagnostic, "message", message);
     map_set(diagnostic, "source", name);
     map_set(diagnostic, "start", start);
@@ -183,43 +183,43 @@ fn lsp_parse_diagnostic(stderr, text, name, tokens) {
 /// Analyze one document through the active compiler and return tokens and
 /// diagnostics. Exactly the first compiler error is reported.
 fn lsp_analyze(text, name) {
-    var root = lsp_root();
-    var compiler = project_compiler_entry(root);
-    var work = path_temp_directory();
-    var input = path_join(work, "source.mini");
-    var output = path_join(work, "program.js");
+    root := lsp_root();
+    compiler := project_compiler_entry(root);
+    work := path_temp_directory();
+    input := path_join(work, "source.mini");
+    output := path_join(work, "program.js");
     file_write(input, text);
-    var token_args = list_new();
+    token_args := list_new();
     list_set(token_args, 0, compiler);
     list_set(token_args, 1, "tokens");
     list_set(token_args, 2, "--comments");
     list_set(token_args, 3, input);
-    var tokenized = lsp_run(process_exec_path(), token_args, root, list_new());
-    var tokens = list_new();
-    var diagnostics = list_new();
+    tokenized := lsp_run(process_exec_path(), token_args, root, list_new());
+    tokens := list_new();
+    diagnostics := list_new();
     if map_get(tokenized, "status") != 0 {
         list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(tokenized, "stderr")), text, name, tokens));
         path_remove(work);
-        var failed = map_new();
+        failed := map_new();
         map_set(failed, "tokens", tokens);
         map_set(failed, "diagnostics", diagnostics);
         return failed;
     }
-    var parsed = json_parse(text_from_bytes(map_get(tokenized, "stdout")));
+    parsed := json_parse(text_from_bytes(map_get(tokenized, "stdout")));
     if result_is_ok(parsed) && value_kind(map_get(parsed, "value")) == "list" {
         tokens = map_get(parsed, "value");
     }
-    var compile_args = list_new();
+    compile_args := list_new();
     list_set(compile_args, 0, compiler);
     list_set(compile_args, 1, "compile");
     list_set(compile_args, 2, input);
     list_set(compile_args, 3, output);
-    var compiled = lsp_run(process_exec_path(), compile_args, root, list_new());
+    compiled := lsp_run(process_exec_path(), compile_args, root, list_new());
     if map_get(compiled, "status") != 0 {
         list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(compiled, "stderr")), text, name, tokens));
     }
     path_remove(work);
-    var result = map_new();
+    result := map_new();
     map_set(result, "tokens", tokens);
     map_set(result, "diagnostics", diagnostics);
     return result;
@@ -232,9 +232,9 @@ fn lsp_is_comment(token) {
 
 /// Return the token covering an offset.
 fn lsp_token_at(tokens, offset) {
-    var position = 0;
+    position := 0;
     while position < list_length(tokens) {
-        var token = list_get(tokens, position);
+        token := list_get(tokens, position);
         if map_get(token, "kind") != "eof" && map_get(token, "start") <= offset && offset < map_get(token, "end") {
             return token;
         }
@@ -245,16 +245,16 @@ fn lsp_token_at(tokens, offset) {
 
 /// Collect contiguous documentation comments above a token.
 fn lsp_doc_above(tokens, index) {
-    var lines = list_new();
-    var line = map_get(list_get(tokens, index), "line") - 1;
-    var cursor = index - 1;
-    var done = false;
+    lines := list_new();
+    line := map_get(list_get(tokens, index), "line") - 1;
+    cursor := index - 1;
+    done := false;
     while cursor >= 0 && !done {
-        var token = list_get(tokens, cursor);
+        token := list_get(tokens, cursor);
         if !lsp_is_comment(token) || !text_starts_with(map_get(token, "text"), "///") || map_get(token, "line") != line {
             done = true;
         } else {
-            var comment = text_trim(text_slice(map_get(token, "text"), 3, text_length(map_get(token, "text"))));
+            comment := text_trim(text_slice(map_get(token, "text"), 3, text_length(map_get(token, "text"))));
             list_set(lines, list_length(lines), comment);
             line = line - 1;
             cursor = cursor - 1;
@@ -265,36 +265,40 @@ fn lsp_doc_above(tokens, index) {
 
 /// Collect declarations with their documentation.
 fn lsp_declarations(tokens) {
-    var result = list_new();
-    var position = 0;
+    result := list_new();
+    position := 0;
     while position < list_length(tokens) {
-        var token = list_get(tokens, position);
-        var text = map_get(token, "text");
-        if map_get(token, "kind") == "keyword" && (text == "fn" || text == "var") {
-            var name = list_get(tokens, position + 1);
+        token := list_get(tokens, position);
+        text := map_get(token, "text");
+        if map_get(token, "kind") == "keyword" && text == "fn" {
+            name := list_get(tokens, position + 1);
             if map_get(name, "kind") == "identifier" {
-                var declaration = map_new();
+                declaration := map_new();
                 map_set(declaration, "name", map_get(name, "text"));
                 map_set(declaration, "token", name);
                 map_set(declaration, "doc", lsp_doc_above(tokens, position));
-                if text == "var" {
-                    map_set(declaration, "kind", "variable");
-                    map_set(declaration, "signature", "var " + map_get(name, "text"));
-                } else {
-                    var parameters = list_new();
-                    var cursor = position + 2;
-                    while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")" {
-                        if map_get(list_get(tokens, cursor), "kind") == "identifier" {
-                            list_set(parameters, list_length(parameters), map_get(list_get(tokens, cursor), "text"));
-                        }
-                        cursor = cursor + 1;
+                parameters := list_new();
+                cursor := position + 2;
+                while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")" {
+                    if map_get(list_get(tokens, cursor), "kind") == "identifier" {
+                        list_set(parameters, list_length(parameters), map_get(list_get(tokens, cursor), "text"));
                     }
-                    map_set(declaration, "kind", "function");
-                    map_set(declaration, "signature",
-                        "fn " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ")");
+                    cursor = cursor + 1;
                 }
+                map_set(declaration, "kind", "function");
+                map_set(declaration, "signature",
+                    "fn " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ")");
                 list_set(result, list_length(result), declaration);
             }
+        }
+        if map_get(token, "kind") == "identifier" && map_get(list_get(tokens, position + 1), "text") == ":=" {
+            declaration := map_new();
+            map_set(declaration, "name", text);
+            map_set(declaration, "token", token);
+            map_set(declaration, "doc", lsp_doc_above(tokens, position));
+            map_set(declaration, "kind", "variable");
+            map_set(declaration, "signature", text + " :=");
+            list_set(result, list_length(result), declaration);
         }
         position = position + 1;
     }
@@ -302,26 +306,26 @@ fn lsp_declarations(tokens) {
 }
 
 /// Cached builtin metadata map.
-var lsp_builtin_cache = 0;
+lsp_builtin_cache := 0;
 
 /// Load builtin metadata from the active compiler.
 fn lsp_builtins() {
     if value_is_map(lsp_builtin_cache) {
         return lsp_builtin_cache;
     }
-    var root = lsp_root();
-    var args = list_new();
+    root := lsp_root();
+    args := list_new();
     list_set(args, 0, project_compiler_entry(root));
     list_set(args, 1, "metadata");
-    var result = lsp_run(process_exec_path(), args, root, list_new());
-    var parsed = json_parse(text_from_bytes(map_get(result, "stdout")));
-    var cache = map_new();
+    result := lsp_run(process_exec_path(), args, root, list_new());
+    parsed := json_parse(text_from_bytes(map_get(result, "stdout")));
+    cache := map_new();
     if result_is_ok(parsed) {
-        var entries = map_get(map_get(parsed, "value"), "builtins");
-        var position = 0;
+        entries := map_get(map_get(parsed, "value"), "builtins");
+        position := 0;
         while position < list_length(entries) {
-            var entry = list_get(entries, position);
-            var info = map_new();
+            entry := list_get(entries, position);
+            info := map_new();
             map_set(info, "parameters", map_get(entry, "parameters"));
             map_set(info, "result", map_get(entry, "result"));
             map_set(cache, map_get(entry, "name"), info);
@@ -334,13 +338,13 @@ fn lsp_builtins() {
 
 /// Return a builtin signature.
 fn lsp_builtin_signature(name) {
-    var info = map_get(lsp_builtins(), name);
+    info := map_get(lsp_builtins(), name);
     return name + "(" + list_to_text(map_get(info, "parameters"), ", ") + ") -> " + map_get(info, "result");
 }
 
 /// Format markdown hover content.
 fn lsp_markdown(signature, doc) {
-    var code = "```mini\n" + signature + "\n```";
+    code := "```mini\n" + signature + "\n```";
     if list_length(doc) == 0 {
         return code;
     }
@@ -349,9 +353,9 @@ fn lsp_markdown(signature, doc) {
 
 /// Return the last declaration with a name.
 fn lsp_find_declaration(tokens, name) {
-    var found = 0;
-    var declarations = lsp_declarations(tokens);
-    var position = 0;
+    found := 0;
+    declarations := lsp_declarations(tokens);
+    position := 0;
     while position < list_length(declarations) {
         if map_get(list_get(declarations, position), "name") == name {
             found = list_get(declarations, position);
@@ -363,25 +367,25 @@ fn lsp_find_declaration(tokens, name) {
 
 /// Return hover content at an offset.
 fn lsp_hover(tokens, offset) {
-    var token = lsp_token_at(tokens, offset);
+    token := lsp_token_at(tokens, offset);
     if token == 0 || map_get(token, "kind") != "identifier" {
         return 0;
     }
-    var found = lsp_find_declaration(tokens, map_get(token, "text"));
+    found := lsp_find_declaration(tokens, map_get(token, "text"));
     if found != 0 {
-        var content = map_new();
+        content := map_new();
         map_set(content, "kind", "markdown");
         map_set(content, "value", lsp_markdown(map_get(found, "signature"), map_get(found, "doc")));
-        var hover = map_new();
+        hover := map_new();
         map_set(hover, "contents", content);
         map_set(hover, "range", lsp_range_of(token));
         return hover;
     }
     if map_has(lsp_builtins(), map_get(token, "text")) {
-        var builtin = map_new();
+        builtin := map_new();
         map_set(builtin, "kind", "markdown");
         map_set(builtin, "value", lsp_markdown(lsp_builtin_signature(map_get(token, "text")), list_new()));
-        var builtin_hover = map_new();
+        builtin_hover := map_new();
         map_set(builtin_hover, "contents", builtin);
         map_set(builtin_hover, "range", lsp_range_of(token));
         return builtin_hover;
@@ -391,7 +395,7 @@ fn lsp_hover(tokens, offset) {
 
 /// Return the declaration at an offset.
 fn lsp_definition(tokens, offset) {
-    var token = lsp_token_at(tokens, offset);
+    token := lsp_token_at(tokens, offset);
     if token == 0 || map_get(token, "kind") != "identifier" {
         return 0;
     }
@@ -400,25 +404,25 @@ fn lsp_definition(tokens, offset) {
 
 /// Return completion items for a document offset.
 fn lsp_completions(tokens, text, offset) {
-    var items = list_new();
-    var token = lsp_token_at(tokens, offset);
+    items := list_new();
+    token := lsp_token_at(tokens, offset);
     if token != 0 && (map_get(token, "kind") == "comment" || map_get(token, "kind") == "text") {
         return items;
     }
-    var start = offset;
+    start := offset;
     while start > 0 && lsp_identifier_part(text_get(text, start - 1)) {
         start = start - 1;
     }
-    var prefix = text_slice(text, start, offset);
-    var seen = map_new();
-    var declarations = lsp_declarations(tokens);
-    var position = 0;
+    prefix := text_slice(text, start, offset);
+    seen := map_new();
+    declarations := lsp_declarations(tokens);
+    position := 0;
     while position < list_length(declarations) {
-        var declaration = list_get(declarations, position);
-        var name = map_get(declaration, "name");
+        declaration := list_get(declarations, position);
+        name := map_get(declaration, "name");
         if !map_has(seen, name) && text_starts_with(name, prefix) {
             map_set(seen, name, true);
-            var item = map_new();
+            item := map_new();
             map_set(item, "label", name);
             if map_get(declaration, "kind") == "function" {
                 map_set(item, "kind", 3);
@@ -428,7 +432,7 @@ fn lsp_completions(tokens, text, offset) {
             map_set(item, "detail", map_get(declaration, "signature"));
             map_set(item, "insertText", name);
             if list_length(map_get(declaration, "doc")) > 0 {
-                var documentation = map_new();
+                documentation := map_new();
                 map_set(documentation, "kind", "markdown");
                 map_set(documentation, "value", list_to_text(map_get(declaration, "doc"), "\n"));
                 map_set(item, "documentation", documentation);
@@ -437,14 +441,14 @@ fn lsp_completions(tokens, text, offset) {
         }
         position = position + 1;
     }
-    var builtins = lsp_builtins();
-    var names = map_keys(builtins);
+    builtins := lsp_builtins();
+    names := map_keys(builtins);
     position = 0;
     while position < list_length(names) {
-        var builtin_name = list_get(names, position);
+        builtin_name := list_get(names, position);
         if !map_has(seen, builtin_name) && text_starts_with(builtin_name, prefix) {
             map_set(seen, builtin_name, true);
-            var builtin_item = map_new();
+            builtin_item := map_new();
             map_set(builtin_item, "label", builtin_name);
             map_set(builtin_item, "kind", 3);
             map_set(builtin_item, "detail", lsp_builtin_signature(builtin_name));
@@ -453,7 +457,7 @@ fn lsp_completions(tokens, text, offset) {
         }
         position = position + 1;
     }
-    var keywords = list_new();
+    keywords := list_new();
     list_set(keywords, 0, "var");
     list_set(keywords, 1, "fn");
     list_set(keywords, 2, "return");
@@ -464,10 +468,10 @@ fn lsp_completions(tokens, text, offset) {
     list_set(keywords, 7, "false");
     position = 0;
     while position < list_length(keywords) {
-        var keyword = list_get(keywords, position);
+        keyword := list_get(keywords, position);
         if !map_has(seen, keyword) && text_starts_with(keyword, prefix) {
             map_set(seen, keyword, true);
-            var keyword_item = map_new();
+            keyword_item := map_new();
             map_set(keyword_item, "label", keyword);
             map_set(keyword_item, "kind", 14);
             map_set(keyword_item, "insertText", keyword);
@@ -505,7 +509,7 @@ fn lsp_notify(method, params) {
 
 /// Publish diagnostics for a document.
 fn lsp_publish(uri, version, diagnostics) {
-    var params = map_new();
+    params := map_new();
     map_set(params, "uri", uri);
     if version >= 0 {
         map_set(params, "version", version);
@@ -517,11 +521,11 @@ fn lsp_publish(uri, version, diagnostics) {
 
 /// Return formatter output for valid text, or 0.
 fn lsp_format_text(text) {
-    var root = lsp_root();
-    var args = list_new();
+    root := lsp_root();
+    args := list_new();
     list_set(args, 0, path_join(root, "dist/format.js"));
     list_set(args, 1, "-");
-    var result = lsp_run(process_exec_path(), args, root, text_to_bytes(text));
+    result := lsp_run(process_exec_path(), args, root, text_to_bytes(text));
     if map_get(result, "status") == 0 {
         return text_from_bytes(map_get(result, "stdout"));
     }
@@ -530,20 +534,20 @@ fn lsp_format_text(text) {
 
 /// Replace or update one open document and publish diagnostics.
 fn lsp_diagnose(documents, uri, text, version) {
-    var document = map_get(documents, uri);
+    document := map_get(documents, uri);
     if !value_is_map(document) || map_get(document, "version") != version {
         return 0;
     }
-    var outcome = lsp_analyze(text, uri);
+    outcome := lsp_analyze(text, uri);
     if map_get(map_get(documents, uri), "version") != version {
         return 0;
     }
-    var diagnostics = list_new();
-    var source = map_get(outcome, "diagnostics");
-    var position = 0;
+    diagnostics := list_new();
+    source := map_get(outcome, "diagnostics");
+    position := 0;
     while position < list_length(source) {
-        var diagnostic = list_get(source, position);
-        var entry = map_new();
+        diagnostic := list_get(source, position);
+        entry := map_new();
         map_set(entry, "range", lsp_diagnostic_range(text, diagnostic));
         map_set(entry, "severity", 1);
         map_set(entry, "source", "mini");
@@ -557,48 +561,48 @@ fn lsp_diagnose(documents, uri, text, version) {
 
 /// Handle a document formatting request.
 fn lsp_formatting(documents, params) {
-    var uri = map_get(map_get(params, "textDocument"), "uri");
-    var document = map_get(documents, uri);
+    uri := map_get(map_get(params, "textDocument"), "uri");
+    document := map_get(documents, uri);
     if !value_is_map(document) {
         return "null";
     }
-    var text = map_get(document, "text");
-    var outcome = lsp_analyze(text, uri);
+    text := map_get(document, "text");
+    outcome := lsp_analyze(text, uri);
     if list_length(map_get(outcome, "diagnostics")) > 0 {
         return "null";
     }
-    var formatted = lsp_format_text(text);
+    formatted := lsp_format_text(text);
     if !value_is_text(formatted) || formatted == text {
         return "null";
     }
-    var range = map_new();
-    var start = map_new();
+    range := map_new();
+    start := map_new();
     map_set(start, "line", 0);
     map_set(start, "character", 0);
     map_set(range, "start", start);
     map_set(range, "end", lsp_position_at(text, text_length(text)));
-    var edit = map_new();
+    edit := map_new();
     map_set(edit, "range", range);
     map_set(edit, "newText", formatted);
-    var edits = list_new();
+    edits := list_new();
     list_set(edits, 0, edit);
     return json_to_text(edits);
 }
 
 /// Handle a hover request.
 fn lsp_hover_reply(documents, params) {
-    var text_document = map_get(params, "textDocument");
-    var position = map_get(params, "position");
+    text_document := map_get(params, "textDocument");
+    position := map_get(params, "position");
     if !value_is_map(text_document) || !value_is_map(position) {
         return "null";
     }
-    var document = map_get(documents, map_get(text_document, "uri"));
+    document := map_get(documents, map_get(text_document, "uri"));
     if !value_is_map(document) {
         return "null";
     }
-    var text = map_get(document, "text");
-    var outcome = lsp_analyze(text, map_get(text_document, "uri"));
-    var hover = lsp_hover(map_get(outcome, "tokens"), lsp_offset_at(text, position));
+    text := map_get(document, "text");
+    outcome := lsp_analyze(text, map_get(text_document, "uri"));
+    hover := lsp_hover(map_get(outcome, "tokens"), lsp_offset_at(text, position));
     if hover == 0 {
         return "null";
     }
@@ -607,18 +611,18 @@ fn lsp_hover_reply(documents, params) {
 
 /// Handle a completion request.
 fn lsp_completion_reply(documents, params) {
-    var text_document = map_get(params, "textDocument");
-    var position = map_get(params, "position");
+    text_document := map_get(params, "textDocument");
+    position := map_get(params, "position");
     if !value_is_map(text_document) || !value_is_map(position) {
         return "{\"isIncomplete\":false,\"items\":[]}";
     }
-    var document = map_get(documents, map_get(text_document, "uri"));
+    document := map_get(documents, map_get(text_document, "uri"));
     if !value_is_map(document) {
         return "{\"isIncomplete\":false,\"items\":[]}";
     }
-    var text = map_get(document, "text");
-    var outcome = lsp_analyze(text, map_get(text_document, "uri"));
-    var reply = map_new();
+    text := map_get(document, "text");
+    outcome := lsp_analyze(text, map_get(text_document, "uri"));
+    reply := map_new();
     map_set(reply, "isIncomplete", false);
     map_set(reply, "items", lsp_completions(map_get(outcome, "tokens"), text, lsp_offset_at(text, position)));
     return json_to_text(reply);
@@ -626,22 +630,22 @@ fn lsp_completion_reply(documents, params) {
 
 /// Handle a definition request.
 fn lsp_definition_reply(documents, params) {
-    var text_document = map_get(params, "textDocument");
-    var position = map_get(params, "position");
+    text_document := map_get(params, "textDocument");
+    position := map_get(params, "position");
     if !value_is_map(text_document) || !value_is_map(position) {
         return "null";
     }
-    var document = map_get(documents, map_get(text_document, "uri"));
+    document := map_get(documents, map_get(text_document, "uri"));
     if !value_is_map(document) {
         return "null";
     }
-    var text = map_get(document, "text");
-    var outcome = lsp_analyze(text, map_get(text_document, "uri"));
-    var declaration = lsp_definition(map_get(outcome, "tokens"), lsp_offset_at(text, position));
+    text := map_get(document, "text");
+    outcome := lsp_analyze(text, map_get(text_document, "uri"));
+    declaration := lsp_definition(map_get(outcome, "tokens"), lsp_offset_at(text, position));
     if declaration == 0 {
         return "null";
     }
-    var reply = map_new();
+    reply := map_new();
     map_set(reply, "uri", map_get(text_document, "uri"));
     map_set(reply, "range", lsp_range_of(map_get(declaration, "token")));
     return json_to_text(reply);
@@ -659,9 +663,9 @@ fn lsp_notification(documents, shutting_down, method, params) {
         process_exit(1);
     }
     if method == "textDocument/didOpen" {
-        var text_document = map_get(params, "textDocument");
-        var uri = map_get(text_document, "uri");
-        var document = map_new();
+        text_document := map_get(params, "textDocument");
+        uri := map_get(text_document, "uri");
+        document := map_new();
         map_set(document, "text", map_get(text_document, "text"));
         map_set(document, "version", map_get(text_document, "version"));
         map_set(documents, uri, document);
@@ -669,17 +673,17 @@ fn lsp_notification(documents, shutting_down, method, params) {
         return 0;
     }
     if method == "textDocument/didChange" {
-        var changed = map_get(params, "textDocument");
-        var uri = map_get(changed, "uri");
-        var document = map_get(documents, uri);
+        changed := map_get(params, "textDocument");
+        uri := map_get(changed, "uri");
+        document := map_get(documents, uri);
         if !value_is_map(document) {
             return 0;
         }
-        var changes = map_get(params, "contentChanges");
+        changes := map_get(params, "contentChanges");
         if list_length(changes) == 0 {
             return 0;
         }
-        var change = list_get(changes, list_length(changes) - 1);
+        change := list_get(changes, list_length(changes) - 1);
         map_set(document, "text", map_get(change, "text"));
         map_set(document, "version", map_get(changed, "version"));
         map_set(documents, uri, document);
@@ -687,7 +691,7 @@ fn lsp_notification(documents, shutting_down, method, params) {
         return 0;
     }
     if method == "textDocument/didClose" {
-        var closed = map_get(map_get(params, "textDocument"), "uri");
+        closed := map_get(map_get(params, "textDocument"), "uri");
         map_set(documents, closed, 0);
         lsp_publish(closed, -1, list_new());
         return 0;
@@ -702,19 +706,19 @@ fn lsp_request(documents, shutting_down, id, method, params) {
         return 0;
     }
     if method == "initialize" {
-        var capabilities = map_new();
+        capabilities := map_new();
         map_set(capabilities, "textDocumentSync", 1);
         map_set(capabilities, "documentFormattingProvider", true);
         map_set(capabilities, "hoverProvider", true);
-        var completion = map_new();
+        completion := map_new();
         map_set(completion, "resolveProvider", false);
         map_set(capabilities, "completionProvider", completion);
         map_set(capabilities, "definitionProvider", true);
-        var versions = map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
-        var server_info = map_new();
+        versions := map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
+        server_info := map_new();
         map_set(server_info, "name", "mini-lang-server");
         map_set(server_info, "version", "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp"));
-        var result = map_new();
+        result := map_new();
         map_set(result, "capabilities", capabilities);
         map_set(result, "serverInfo", server_info);
         lsp_reply(id, json_to_text(result));
@@ -746,10 +750,10 @@ fn lsp_request(documents, shutting_down, id, method, params) {
 
 /// Read one framed message; return 0 at end of input.
 fn lsp_read_message() {
-    var length = -1;
-    var done = false;
+    length := -1;
+    done := false;
     while !done {
-        var line = io_read_line();
+        line := io_read_line();
         if line == "" {
             done = true;
         } else {
@@ -761,8 +765,8 @@ fn lsp_read_message() {
     if length < 0 {
         return 0;
     }
-    var body = text_from_bytes(io_read_bytes(length));
-    var parsed = json_parse(body);
+    body := text_from_bytes(io_read_bytes(length));
+    parsed := json_parse(body);
     if result_is_fail(parsed) {
         lsp_log("invalid JSON message");
         return map_new();
@@ -772,25 +776,25 @@ fn lsp_read_message() {
 
 /// Return the language-server version label.
 fn lsp_version() {
-    var versions = map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
+    versions := map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
     return "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp");
 }
 
 /// Serve protocol messages until exit or end of input.
 fn lsp_serve() {
-    var documents = map_new();
-    var shutting_down = false;
-    var running = true;
+    documents := map_new();
+    shutting_down := false;
+    running := true;
     while running {
-        var message = lsp_read_message();
+        message := lsp_read_message();
         if message == 0 {
             running = false;
         } else {
             if map_has(message, "method") {
-                var method = map_get(message, "method");
-                var params = map_get(message, "params");
+                method := map_get(message, "method");
+                params := map_get(message, "params");
                 if map_has(message, "id") {
-                    var shutdown = lsp_request(documents, shutting_down, map_get(message, "id"), method, params);
+                    shutdown := lsp_request(documents, shutting_down, map_get(message, "id"), method, params);
                     if method == "shutdown" {
                         shutting_down = true;
                     }

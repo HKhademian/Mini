@@ -1,6 +1,6 @@
 /// Push at the back and pop from the front.
-var queue = list_new();
+queue := list_new();
 list_push_back(queue, "first");
 list_push_back(queue, "second");
-var head = list_pop_front(queue);
+head := list_pop_front(queue);
 io_write(head + " " + list_get(queue, 0) + "\n");

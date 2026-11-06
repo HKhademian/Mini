@@ -1,5 +1,5 @@
 /// Exercise list stack mutation.
-var items = list_new();
+items := list_new();
 list_push_back(items, "b");
 list_push_back(items, "c");
 list_push_front(items, "a");

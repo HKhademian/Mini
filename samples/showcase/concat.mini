@@ -1,4 +1,4 @@
 /// Join text with +.
-var first = "self";
-var second = "-hosting";
+first := "self";
+second := "-hosting";
 io_write(first + second + "\n");

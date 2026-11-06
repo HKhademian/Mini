@@ -1,5 +1,5 @@
-var items = map_new();
-var key = io_read_all();
+items := map_new();
+key := io_read_all();
 if map_get(items, key) != 0 || map_has(items, key) || list_length(map_keys(items)) != 0 {
     process_exit(1);
 }

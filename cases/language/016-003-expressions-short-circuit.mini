@@ -2,7 +2,7 @@ fn visit(value) {
     io_write(value);
     return true;
 }
-var token = io_read_all();
-var enabled = token == "yes";
-var left = enabled && visit("A");
-var right = enabled || visit("B");
+token := io_read_all();
+enabled := token == "yes";
+left := enabled && visit("A");
+right := enabled || visit("B");

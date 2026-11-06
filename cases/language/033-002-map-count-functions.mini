@@ -3,12 +3,12 @@
 /// Print a call marker and return a fresh one-key map.
 fn make_map() {
     io_write("m");
-    var items = map_new();
+    items := map_new();
     map_set(items, "first", 0);
     return items;
 }
-var count = list_length(map_keys(make_map()));
-var stored = list_new();
+count := list_length(map_keys(make_map()));
+stored := list_new();
 list_set(stored, 0, map_new());
 if count == 1 && list_length(map_keys(list_get(stored, 0))) == 0 {
     io_write(":one");

@@ -15,7 +15,7 @@ fn main() {
         io_write_error("non-map predicate failed\n");
         process_exit(1);
     }
-    var mutable = result_ok(1, "one");
+    mutable := result_ok(1, "one");
     result_set_value(mutable, 42);
     result_set_message(mutable, "answer");
     if result_get_value(mutable) != 42 || result_get_message(mutable) != "answer" {

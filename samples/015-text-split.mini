@@ -1,6 +1,6 @@
 /// Read comma-separated text and print each field on its own line.
-var parts = text_split(io_read_all(), ",");
-var position = 0;
+parts := text_split(io_read_all(), ",");
+position := 0;
 while position < list_length(parts) {
     io_write(list_get(parts, position) + "\n");
     position = position + 1;

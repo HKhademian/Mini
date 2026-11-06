@@ -6,7 +6,7 @@ with `///` documentation, completion, go-to-definition, and document formatting.
 The language picker shows **Mini**. File icon themes can override the supplied
 language icons.
 
-Highlights `var`, `fn`, `return`, `if`, `else`, `while`, function declarations
+Highlights `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
 assignment, and the arithmetic, comparison, and boolean operators in the draft.
 Strings shield their contents from other rules; backslash escapes receive a

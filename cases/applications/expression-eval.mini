@@ -2,14 +2,14 @@
 
 /// Return value times ten using the same arithmetic available to Mini.
 fn expr_ten(value) {
-    var twice = value + value;
-    var four = twice + twice;
+    twice := value + value;
+    four := twice + twice;
     return four + four + twice;
 }
 
 /// Return the decimal digit value of character, or -1 for a nondigit.
 fn expr_digit(character) {
-    var index = 0;
+    index := 0;
     while index < 10 {
         if text_get("0123456789", index) == character {
             return index;
@@ -21,9 +21,9 @@ fn expr_digit(character) {
 
 /// Skip ASCII whitespace by advancing state.position; return zero.
 fn expr_space(state) {
-    var source = map_get(state, "source");
-    var position = map_get(state, "position");
-    var character = text_get(source, position);
+    source := map_get(state, "source");
+    position := map_get(state, "position");
+    character := text_get(source, position);
     while character == " " || character == "\t" || character == "\r" || character == "\n" {
         position = position + 1;
         character = text_get(source, position);
@@ -35,14 +35,14 @@ fn expr_space(state) {
 /// Return a primary value and advance shared parser state; invalid input exits unsuccessfully.
 fn expr_primary(state) {
     expr_space(state);
-    var source = map_get(state, "source");
-    var character = text_get(source, map_get(state, "position"));
+    source := map_get(state, "source");
+    character := text_get(source, map_get(state, "position"));
     if character == "-" || character == "(" {
         map_set(state, "position", map_get(state, "position") + 1);
         if character == "-" {
             return -expr_primary(state);
         }
-        var value = expr_sum(state);
+        value := expr_sum(state);
         expr_space(state);
         if text_get(source, map_get(state, "position")) != ")" {
             process_exit(1);
@@ -50,9 +50,9 @@ fn expr_primary(state) {
         map_set(state, "position", map_get(state, "position") + 1);
         return value;
     }
-    var value = 0;
-    var digits = 0;
-    var digit = expr_digit(character);
+    value := 0;
+    digits := 0;
+    digit := expr_digit(character);
     while digit >= 0 {
         value = expr_ten(value) + digit;
         digits = digits + 1;
@@ -67,12 +67,12 @@ fn expr_primary(state) {
 
 /// Return a left-associative sum/subtraction expression, preserving recursive local values.
 fn expr_sum(state) {
-    var value = expr_primary(state);
+    value := expr_primary(state);
     expr_space(state);
-    var operator = text_get(map_get(state, "source"), map_get(state, "position"));
+    operator := text_get(map_get(state, "source"), map_get(state, "position"));
     while operator == "+" || operator == "-" {
         map_set(state, "position", map_get(state, "position") + 1);
-        var right = expr_primary(state);
+        right := expr_primary(state);
         if operator == "+" {
             value = value + right;
         } else {
@@ -86,11 +86,11 @@ fn expr_sum(state) {
 
 /// Return the number of evaluated expressions and their total, without changing source.
 fn app_run(source) {
-    var state = map_new();
+    state := map_new();
     map_set(state, "source", source);
     map_set(state, "position", 0);
-    var total = 0;
-    var count = 0;
+    total := 0;
+    count := 0;
     expr_space(state);
     while map_get(state, "position") < text_length(source) {
         total = total + expr_sum(state);
@@ -101,7 +101,7 @@ fn app_run(source) {
         count = count + 1;
         expr_space(state);
     }
-    var result = map_new();
+    result := map_new();
     map_set(result, "count", count);
     map_set(result, "total", total);
     return result;

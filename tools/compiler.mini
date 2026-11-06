@@ -7,13 +7,13 @@ include "../libs/compiler/builtins.mini";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {
-    var output = "[";
-    var position = 0;
+    output := "[";
+    position := 0;
     while position < list_length(tokens) {
         if position > 0 {
             output = output + ",";
         }
-        var token = list_get(tokens, position);
+        token := list_get(tokens, position);
         output = output + "\n  {";
         output = output + "\n    \"kind\": " + json_to_text(map_get(token, "kind")) + ",";
         output = output + "\n    \"text\": " + json_to_text(map_get(token, "text")) + ",";
@@ -34,8 +34,8 @@ fn token_json(tokens) {
 
 /// Return a list without its first item.
 fn compiler_tail(items) {
-    var result = list_new();
-    var position = 1;
+    result := list_new();
+    position := 1;
     while position < list_length(items) {
         list_set(result, list_length(result), list_get(items, position));
         position = position + 1;
@@ -45,7 +45,7 @@ fn compiler_tail(items) {
 
 /// Append tokens, dropping their end marker.
 fn compiler_append_body(output, tokens) {
-    var position = 0;
+    position := 0;
     while position < list_length(tokens) && map_get(list_get(tokens, position), "kind") != "eof" {
         list_set(output, list_length(output), list_get(tokens, position));
         position = position + 1;
@@ -55,26 +55,26 @@ fn compiler_append_body(output, tokens) {
 
 /// Run the Mini compiler command interface.
 fn main() {
-    var args = process_args();
+    args := process_args();
     reference_mode = false;
     if list_length(args) > 0 && list_get(args, 0) == "--reference" {
         reference_mode = true;
         args = compiler_tail(args);
     }
-    var command = list_get(args, 0);
-    var include_comments = false;
-    var offset = 0;
+    command := list_get(args, 0);
+    include_comments := false;
+    offset := 0;
     if command == "tokens" && list_get(args, 1) == "--comments" {
         include_comments = true;
         offset = 1;
     }
     if command == "metadata" && list_length(args) == 1 {
-        var entries = list_new();
-        var names = builtin_names();
-        var index = 0;
+        entries := list_new();
+        names := builtin_names();
+        index := 0;
         while index < list_length(names) {
-            var name = list_get(names, index);
-            var entry = map_new();
+            name := list_get(names, index);
+            entry := map_new();
             map_set(entry, "name", name);
             map_set(entry, "parameters", builtin_parameters(name));
             map_set(entry, "result", builtin_result(name));
@@ -83,24 +83,24 @@ fn main() {
             list_set(entries, list_length(entries), entry);
             index = index + 1;
         }
-        var metadata = map_new();
+        metadata := map_new();
         map_set(metadata, "builtins", entries);
         io_write(json_to_text(metadata) + "\n");
         return 0;
     }
     if command == "tokens" {
-        var count = list_length(args) - offset;
-        var token_source = list_get(args, 1 + offset);
+        count := list_length(args) - offset;
+        token_source := list_get(args, 1 + offset);
         if count < 2 || count > 3 || !text_ends_with(token_source, ".mini") {
             io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
-        var tokens = tokenize(file_read(token_source), basename(token_source), include_comments);
+        tokens := tokenize(file_read(token_source), basename(token_source), include_comments);
         io_write(token_json(tokens));
         return 0;
     }
-    var source = command;
-    var output = list_get(args, 1);
+    source := command;
+    output := list_get(args, 1);
     if command == "compile" {
         source = list_get(args, 1);
         output = list_get(args, 2);
@@ -118,17 +118,17 @@ fn main() {
         io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
-    var tokens = tokenize(file_read(source), basename(source), false);
-    var target = source + ".js";
+    tokens := tokenize(file_read(source), basename(source), false);
+    target := source + ".js";
     if output != 0 {
         target = output;
     }
-    var expanded = expand_includes(tokens, source, list_new(), map_new());
+    expanded := expand_includes(tokens, source, list_new(), map_new());
     if reference_mode {
-        var root = dirname(dirname(process_script_path()));
-        var pure_path = root + "/libs/pure/reference.mini";
-        var pure_tokens = expand_includes(tokenize(file_read(pure_path), "libs/pure/reference.mini", false), pure_path, list_new(), map_new());
-        var combined = list_new();
+        root := dirname(dirname(process_script_path()));
+        pure_path := root + "/libs/pure/reference.mini";
+        pure_tokens := expand_includes(tokenize(file_read(pure_path), "libs/pure/reference.mini", false), pure_path, list_new(), map_new());
+        combined := list_new();
         compiler_append_body(combined, expanded);
         compiler_append_body(combined, pure_tokens);
         list_set(combined, list_length(combined), list_get(expanded, list_length(expanded) - 1));

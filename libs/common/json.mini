@@ -4,7 +4,7 @@ fn json_parse_file(path) {
     if !path_is_exists(path) {
         return result_fail("cannot read " + path);
     }
-    var parsed = json_parse(file_read(path));
+    parsed := json_parse(file_read(path));
     if result_is_fail(parsed) {
         return result_fail("invalid JSON: " + path);
     }

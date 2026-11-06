@@ -15,7 +15,7 @@ fn check_fail(message) {
 
 /// Run a command with inherited standard streams.
 fn check_inherit(command, args, directory) {
-    var options = map_new();
+    options := map_new();
     map_set(options, "command", command);
     map_set(options, "arguments", args);
     map_set(options, "directory", directory);
@@ -25,7 +25,7 @@ fn check_inherit(command, args, directory) {
 
 /// Find needle at or after offset.
 fn check_find_from(text, needle, offset) {
-    var position = text_find(text_slice(text, offset, text_length(text)), needle);
+    position := text_find(text_slice(text, offset, text_length(text)), needle);
     if position < 0 {
         return -1;
     }
@@ -40,7 +40,7 @@ fn check_digits(text) {
     if text_length(text) > 1 && text_get(text, 0) == "0" {
         return false;
     }
-    var position = 0;
+    position := 0;
     while position < text_length(text) {
         if text_find("0123456789", text_get(text, position)) < 0 {
             return false;
@@ -52,11 +52,11 @@ fn check_digits(text) {
 
 /// Return whether a dotted numeric version has three parts.
 fn check_plain_version(text) {
-    var parts = text_split(text, ".");
+    parts := text_split(text, ".");
     if list_length(parts) != 3 {
         return false;
     }
-    var position = 0;
+    position := 0;
     while position < list_length(parts) {
         if !check_digits(list_get(parts, position)) {
             return false;
@@ -68,18 +68,18 @@ fn check_plain_version(text) {
 
 /// Return whether a product version is valid.
 fn check_product_version(text) {
-    var parts = text_split(text, "-");
+    parts := text_split(text, "-");
     if list_length(parts) == 1 {
         return check_plain_version(text);
     }
     if list_length(parts) != 2 || !check_plain_version(list_get(parts, 0)) {
         return false;
     }
-    var pre = text_split(list_get(parts, 1), ".");
+    pre := text_split(list_get(parts, 1), ".");
     if list_length(pre) != 2 {
         return false;
     }
-    var stage = list_get(pre, 0);
+    stage := list_get(pre, 0);
     if stage != "alpha" && stage != "beta" && stage != "rc" {
         return false;
     }
@@ -95,7 +95,7 @@ fn check_keys(value) {
 
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
-    var parsed = json_parse_file(path);
+    parsed := json_parse_file(path);
     if result_is_fail(parsed) {
         check_fail(map_get(parsed, "message"));
     }
@@ -107,7 +107,7 @@ fn check_same_list(left, right) {
     if list_length(left) != list_length(right) {
         return false;
     }
-    var position = 0;
+    position := 0;
     while position < list_length(left) {
         if list_get(left, position) != list_get(right, position) {
             return false;
@@ -119,26 +119,26 @@ fn check_same_list(left, right) {
 
 /// Count code fence markers and verify links in one document.
 fn check_document(path) {
-    var text = file_read(path);
-    var lines = split_lines(text);
-    var in_fence = false;
-    var directory = path_parent(path);
-    var position = 0;
+    text := file_read(path);
+    lines := split_lines(text);
+    in_fence := false;
+    directory := path_parent(path);
+    position := 0;
     while position < list_length(lines) {
-        var line = list_get(lines, position);
+        line := list_get(lines, position);
         if text_starts_with(line, "```") {
             in_fence = !in_fence;
         } else {
             if !in_fence {
-                var cursor = check_find_from(line, "](", 0);
+                cursor := check_find_from(line, "](", 0);
                 while cursor >= 0 {
-                    var start = cursor + 2;
-                    var end = check_find_from(line, ")", start);
+                    start := cursor + 2;
+                    end := check_find_from(line, ")", start);
                     if end < 0 {
                         end = text_length(line);
                     }
-                    var target = text_slice(line, start, end);
-                    var hash = text_find(target, "#");
+                    target := text_slice(line, start, end);
+                    hash := text_find(target, "#");
                     if hash >= 0 {
                         target = text_slice(target, 0, hash);
                     }
@@ -160,14 +160,14 @@ fn check_document(path) {
 
 /// Return whether a link target has a URL scheme.
 fn check_is_url(target) {
-    var colon = text_find(target, ":");
+    colon := text_find(target, ":");
     if colon <= 0 {
         return false;
     }
-    var prefix = text_slice(target, 0, colon);
-    var position = 0;
+    prefix := text_slice(target, 0, colon);
+    position := 0;
     while position < text_length(prefix) {
-        var character = text_get(prefix, position);
+        character := text_get(prefix, position);
         if text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0 {
             return false;
         }
@@ -178,11 +178,11 @@ fn check_is_url(target) {
 
 /// Walk documents below a directory.
 fn check_documents(directory) {
-    var entries = directory_list(directory);
-    var position = 0;
+    entries := directory_list(directory);
+    position := 0;
     while position < list_length(entries) {
-        var name = list_get(entries, position);
-        var path = path_join(directory, name);
+        name := list_get(entries, position);
+        path := path_join(directory, name);
         if case_entry_excluded(name) {
         } else {
             if path_is_directory(path) {
@@ -200,7 +200,7 @@ fn check_documents(directory) {
 
 /// Return whether a file name has a checked extension.
 fn check_portable_file(name) {
-    var suffixes = list_new();
+    suffixes := list_new();
     list_set(suffixes, 0, ".json");
     list_set(suffixes, 1, ".ts");
     list_set(suffixes, 2, ".md");
@@ -213,7 +213,7 @@ fn check_portable_file(name) {
     list_set(suffixes, 9, ".stdin");
     list_set(suffixes, 10, ".svg");
     list_set(suffixes, 11, ".js");
-    var position = 0;
+    position := 0;
     while position < list_length(suffixes) {
         if text_ends_with(name, list_get(suffixes, position)) {
             return true;
@@ -225,22 +225,22 @@ fn check_portable_file(name) {
 
 /// Reject committed absolute home paths.
 fn check_portable_paths(directory) {
-    var entries = directory_list(directory);
-    var position = 0;
+    entries := directory_list(directory);
+    position := 0;
     while position < list_length(entries) {
-        var name = list_get(entries, position);
-        var path = path_join(directory, name);
+        name := list_get(entries, position);
+        path := path_join(directory, name);
         if case_entry_excluded(name) {
         } else {
             if path_is_directory(path) {
                 check_portable_paths(path);
             } else {
                 if check_portable_file(name) {
-                    var text = file_read(path);
-                    var users = "/" + "Users" + "/";
-                    var homes = "/" + "home" + "/";
-                    var windows = "C:" + "\\" + "Users" + "\\";
-                    var home_variable = "$" + "HOME/";
+                    text := file_read(path);
+                    users := "/" + "Users" + "/";
+                    homes := "/" + "home" + "/";
+                    windows := "C:" + "\\" + "Users" + "\\";
+                    home_variable := "$" + "HOME/";
                     if text_find(text, users) >= 0 || text_find(text, homes) >= 0
                         || text_find(text, windows) >= 0 || text_find(text, home_variable) >= 0 {
                         check_fail("absolute home path in " + path);
@@ -255,24 +255,24 @@ fn check_portable_paths(directory) {
 
 /// Check every sample and example has a non-tool case source.
 fn check_sample_cases(root, fixtures) {
-    var covered = map_new();
-    var position = 0;
+    covered := map_new();
+    position := 0;
     while position < list_length(fixtures) {
-        var fixture = list_get(fixtures, position);
-        var definition = map_get(fixture, "definition");
+        fixture := list_get(fixtures, position);
+        definition := map_get(fixture, "definition");
         if map_get(definition, "kind") != "tool" {
-            var source = path_resolve(path_parent(map_get(fixture, "path")), map_get(definition, "source"));
+            source := path_resolve(path_parent(map_get(fixture, "path")), map_get(definition, "source"));
             map_set(covered, source, true);
         }
         position = position + 1;
     }
-    var directories = list_new();
+    directories := list_new();
     list_set(directories, 0, "samples");
     list_set(directories, 1, "examples");
     position = 0;
     while position < list_length(directories) {
-        var name = list_get(directories, position);
-        var directory = path_join(root, name);
+        name := list_get(directories, position);
+        directory := path_join(root, name);
         if path_is_exists(directory) {
             check_sample_walk(directory, name, covered);
         }
@@ -283,11 +283,11 @@ fn check_sample_cases(root, fixtures) {
 
 /// Walk one sample directory and require case coverage.
 fn check_sample_walk(directory, relative, covered) {
-    var entries = directory_list(directory);
-    var position = 0;
+    entries := directory_list(directory);
+    position := 0;
     while position < list_length(entries) {
-        var name = list_get(entries, position);
-        var path = path_join(directory, name);
+        name := list_get(entries, position);
+        path := path_join(directory, name);
         if path_is_directory(path) {
             check_sample_walk(path, relative + "/" + name, covered);
         } else {
@@ -302,9 +302,9 @@ fn check_sample_walk(directory, relative, covered) {
 
 /// Check the version registry and editor metadata.
 fn check_versions(root) {
-    var current = check_json(path_join(root, "config/versions.json"));
-    var expected = list_new();
-    var names = list_new();
+    current := check_json(path_join(root, "config/versions.json"));
+    expected := list_new();
+    names := list_new();
     list_set(names, 0, "group");
     list_set(names, 1, "mini");
     list_set(names, 2, "language");
@@ -321,7 +321,7 @@ fn check_versions(root) {
     list_set(names, 13, "builtins");
     list_set(names, 14, "format");
     list_set(names, 15, "lsp");
-    var position = 0;
+    position := 0;
     while position < list_length(names) {
         list_set(expected, position, list_get(names, position));
         position = position + 1;
@@ -329,14 +329,14 @@ fn check_versions(root) {
     if !check_same_list(check_keys(current), list_sorted(expected)) {
         check_fail("invalid version registry keys");
     }
-    var group = map_get(current, "group");
+    group := map_get(current, "group");
     if !value_is_text(group) || !check_plain_version(group) {
         check_fail("group requires MAJOR.MINOR.PATCH");
     }
     position = 0;
     while position < list_length(expected) {
-        var key = list_get(expected, position);
-        var version = map_get(current, key);
+        key := list_get(expected, position);
+        version := map_get(current, key);
         if key != "group" && !value_is_number(version) && !value_is_text(version) {
             check_fail("invalid version: " + key);
         }
@@ -345,10 +345,10 @@ fn check_versions(root) {
         }
         position = position + 1;
     }
-    var editor = check_json(path_join(root, "editors/vscode/package.json"));
-    var lock = check_json(path_join(root, "editors/vscode/package-lock.json"));
-    var editor_version = map_get(editor, "version");
-    var lock_package = map_get(map_get(lock, "packages"), "");
+    editor := check_json(path_join(root, "editors/vscode/package.json"));
+    lock := check_json(path_join(root, "editors/vscode/package-lock.json"));
+    editor_version := map_get(editor, "version");
+    lock_package := map_get(map_get(lock, "packages"), "");
     if editor_version != map_get(current, "vscode") {
         check_fail("VS Code version must match the registry");
     }
@@ -366,19 +366,19 @@ fn check_versions(root) {
 
 /// Check the Node runtime version.
 fn check_node(root) {
-    var args = list_new();
+    args := list_new();
     list_set(args, 0, "-v");
-    var result = process_capture(process_exec_path(), args, root, list_new());
-    var version = text_from_bytes(map_get(result, "stdout"));
+    result := process_capture(process_exec_path(), args, root, list_new());
+    version := text_from_bytes(map_get(result, "stdout"));
     if !text_starts_with(version, "v") {
         check_fail("use Node 22.18.0 or newer");
     }
-    var parts = text_split(text_slice(version, 1, text_length(version)), ".");
+    parts := text_split(text_slice(version, 1, text_length(version)), ".");
     if list_length(parts) < 2 {
         check_fail("use Node 22.18.0 or newer");
     }
-    var major = number_from_text(list_get(parts, 0));
-    var minor = number_from_text(list_get(parts, 1));
+    major := number_from_text(list_get(parts, 0));
+    minor := number_from_text(list_get(parts, 1));
     if major < 22 || (major == 22 && minor < 18) {
         check_fail("use Node 22.18.0 or newer");
     }
@@ -388,47 +388,47 @@ fn check_node(root) {
 /// Run repository checks and return success.
 fn check_repository(root, docs_only) {
     if !docs_only {
-        var tsc = list_new();
+        tsc := list_new();
         list_set(tsc, 0, path_join(root, "node_modules/typescript/bin/tsc"));
         list_set(tsc, 1, "--noEmit");
-        var typed = check_inherit(process_exec_path(), tsc, root);
+        typed := check_inherit(process_exec_path(), tsc, root);
         if map_get(typed, "status") != 0 {
             process_exit(map_get(typed, "status"));
         }
     }
-    var tools = list_new();
+    tools := list_new();
     list_set(tools, 0, path_join(root, "dist/build.js"));
     list_set(tools, 1, "--check");
-    var verified_tools = check_inherit(process_exec_path(), tools, root);
+    verified_tools := check_inherit(process_exec_path(), tools, root);
     if map_get(verified_tools, "status") != 0 {
         process_exit(map_get(verified_tools, "status"));
     }
-    var seed = path_join(root, "bin/bootstrap");
-    var generated_seed = path_join(root, "dist/bootstrap.js");
+    seed := path_join(root, "bin/bootstrap");
+    generated_seed := path_join(root, "dist/bootstrap.js");
     if !path_is_exists(seed) || !path_is_exists(generated_seed) || file_read(seed) != file_read(generated_seed) {
         check_fail("bin/bootstrap is stale; run ./bin/bootstrap or rebuild the seed");
     }
     check_versions(root);
     check_node(root);
-    var loaded = case_load_cases("", root);
+    loaded := case_load_cases("", root);
     if result_is_fail(loaded) {
         check_fail(map_get(loaded, "message"));
     }
     check_sample_cases(root, map_get(loaded, "fixtures"));
     check_documents(root);
     check_portable_paths(root);
-    var bootstrap = check_json(path_join(root, "config/bootstrap.json"));
+    bootstrap := check_json(path_join(root, "config/bootstrap.json"));
     if !value_is_map(bootstrap) {
         check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
-    var active = check_json(path_join(root, "config/compiler.json"));
+    active := check_json(path_join(root, "config/compiler.json"));
     if map_get(active, "entry") != map_get(bootstrap, "compiler") {
         check_fail("active compiler must be the generated bootstrap");
     }
-    var verify = list_new();
+    verify := list_new();
     list_set(verify, 0, path_join(root, "dist/verify.js"));
     list_set(verify, 1, root);
-    var verified = process_capture(process_exec_path(), verify, root, list_new());
+    verified := process_capture(process_exec_path(), verify, root, list_new());
     if map_get(verified, "status") != 0 {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));

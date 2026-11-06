@@ -1,6 +1,6 @@
 fn target() {
     io_write("m");
-    var items = map_new();
+    items := map_new();
     map_set(items, "value", 7);
     return items;
 }

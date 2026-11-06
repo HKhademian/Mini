@@ -25,7 +25,7 @@ fn pure_json_fail(state) {
 
 /// Return the current character, or empty text at the end.
 fn pure_json_peek(state) {
-    var position = map_get(state, "position");
+    position := map_get(state, "position");
     if position >= text_length(map_get(state, "text")) {
         return "";
     }
@@ -43,7 +43,7 @@ fn pure_json_take(state, expected) {
 
 /// Return the numeric value of a hexadecimal digit.
 fn pure_json_hex_value(character) {
-    var digit = text_find("0123456789abcdef", character);
+    digit := text_find("0123456789abcdef", character);
     if digit >= 0 {
         return digit;
     }
@@ -53,10 +53,10 @@ fn pure_json_hex_value(character) {
 
 /// Parse four hexadecimal digits.
 fn pure_json_hex4(state) {
-    var value = 0;
-    var count = 0;
+    value := 0;
+    count := 0;
     while count < 4 {
-        var digit = pure_json_hex_value(pure_json_peek(state));
+        digit := pure_json_hex_value(pure_json_peek(state));
         if digit < 0 {
             pure_json_fail(state);
             return 0;
@@ -71,16 +71,16 @@ fn pure_json_hex4(state) {
 /// Parse one JSON string and return its decoded text.
 fn pure_json_string(state) {
     pure_json_take(state, "\"");
-    var output = "";
+    output := "";
     while map_get(state, "ok") && map_get(state, "position") < text_length(map_get(state, "text")) {
-        var character = pure_json_peek(state);
+        character := pure_json_peek(state);
         if character == "\"" {
             map_set(state, "position", map_get(state, "position") + 1);
             return output;
         }
         if character == "\\" {
             map_set(state, "position", map_get(state, "position") + 1);
-            var escaped = pure_json_peek(state);
+            escaped := pure_json_peek(state);
             map_set(state, "position", map_get(state, "position") + 1);
             if escaped == "\"" {
                 output = output + "\"";
@@ -107,11 +107,11 @@ fn pure_json_string(state) {
                                             output = output + "\t";
                                         } else {
                                             if escaped == "u" {
-                                                var code = pure_json_hex4(state);
+                                                code := pure_json_hex4(state);
                                                 if code >= 55296 && code <= 56319 && pure_json_peek(state) == "\\"
                                                     && text_get(map_get(state, "text"), map_get(state, "position") + 1) == "u" {
                                                     map_set(state, "position", map_get(state, "position") + 2);
-                                                    var low = pure_json_hex4(state);
+                                                    low := pure_json_hex4(state);
                                                     if low >= 56320 && low <= 57343 {
                                                         code = 65536 + number_mul(code - 55296, 1024) + (low - 56320);
                                                     } else {
@@ -141,7 +141,7 @@ fn pure_json_string(state) {
 
 /// Parse one JSON number; integer literals are supported by the pure path.
 fn pure_json_number(state) {
-    var start = map_get(state, "position");
+    start := map_get(state, "position");
     if pure_json_peek(state) == "-" {
         map_set(state, "position", map_get(state, "position") + 1);
     }
@@ -162,14 +162,14 @@ fn pure_json_number(state) {
 /// Parse one JSON array.
 fn pure_json_array(state) {
     pure_json_take(state, "[");
-    var result = list_new();
+    result := list_new();
     pure_json_skip(state);
     if pure_json_peek(state) == "]" {
         map_set(state, "position", map_get(state, "position") + 1);
         return result;
     }
     while map_get(state, "ok") {
-        var value = pure_json_value(state);
+        value := pure_json_value(state);
         if !map_get(state, "ok") {
             return result;
         }
@@ -188,7 +188,7 @@ fn pure_json_array(state) {
 /// Parse one JSON object.
 fn pure_json_object(state) {
     pure_json_take(state, "{");
-    var result = map_new();
+    result := map_new();
     pure_json_skip(state);
     if pure_json_peek(state) == "}" {
         map_set(state, "position", map_get(state, "position") + 1);
@@ -196,11 +196,11 @@ fn pure_json_object(state) {
     }
     while map_get(state, "ok") {
         pure_json_skip(state);
-        var key = pure_json_string(state);
+        key := pure_json_string(state);
         pure_json_skip(state);
         pure_json_take(state, ":");
         pure_json_skip(state);
-        var value = pure_json_value(state);
+        value := pure_json_value(state);
         if !map_get(state, "ok") {
             return result;
         }
@@ -218,7 +218,7 @@ fn pure_json_object(state) {
 /// Parse one JSON value.
 fn pure_json_value(state) {
     pure_json_skip(state);
-    var character = pure_json_peek(state);
+    character := pure_json_peek(state);
     if character == "\"" {
         return pure_json_string(state);
     }
@@ -249,7 +249,7 @@ fn pure_json_value(state) {
 
 /// Reference JSON parser.
 fn pure_json_parse(text) {
-    var state = map_new();
+    state := map_new();
     map_set(state, "text", text);
     map_set(state, "position", 0);
     map_set(state, "ok", true);
@@ -257,7 +257,7 @@ fn pure_json_parse(text) {
         map_set(state, "ok", false);
         return result_fail("invalid JSON");
     }
-    var value = pure_json_value(state);
+    value := pure_json_value(state);
     pure_json_skip(state);
     if map_get(state, "position") != text_length(text) {
         pure_json_fail(state);
@@ -270,10 +270,10 @@ fn pure_json_parse(text) {
 
 /// Escape one JSON string.
 fn pure_json_escape(text) {
-    var output = "\"";
-    var position = 0;
+    output := "\"";
+    position := 0;
     while position < text_length(text) {
-        var character = text_get(text, position);
+        character := text_get(text, position);
         if character == "\"" {
             output = output + "\\\"";
         } else {
@@ -296,8 +296,8 @@ fn pure_json_escape(text) {
                                     output = output + "\\t";
                                 } else {
                                     if text_code(character) < 32 {
-                                        var code = text_code(character);
-                                        var digits = "0123456789abcdef";
+                                        code := text_code(character);
+                                        digits := "0123456789abcdef";
                                         output = output + "\\u00" + text_get(digits, number_div(code, 16)) + text_get(digits, number_mod(code, 16));
                                     } else {
                                         output = output + character;
@@ -337,10 +337,10 @@ fn pure_json_encode(value, seen, state) {
             return "";
         }
         list_push_back(seen, value);
-        var output = "";
+        output := "";
         if value_is_list(value) {
             output = "[";
-            var position = 0;
+            position := 0;
             while position < list_length(value) {
                 if position > 0 {
                     output = output + ",";
@@ -354,13 +354,13 @@ fn pure_json_encode(value, seen, state) {
             output = output + "]";
         } else {
             output = "{";
-            var keys = list_sorted(map_keys(value));
-            var index = 0;
+            keys := list_sorted(map_keys(value));
+            index := 0;
             while index < list_length(keys) {
                 if index > 0 {
                     output = output + ",";
                 }
-                var key = list_get(keys, index);
+                key := list_get(keys, index);
                 output = output + pure_json_escape(key) + ":" + pure_json_encode(map_get(value, key), seen, state);
                 if !map_get(state, "ok") {
                     return "";
@@ -377,9 +377,9 @@ fn pure_json_encode(value, seen, state) {
 
 /// Reference JSON serializer.
 fn pure_json_to_text(value) {
-    var state = map_new();
+    state := map_new();
     map_set(state, "ok", true);
-    var output = pure_json_encode(value, list_new(), state);
+    output := pure_json_encode(value, list_new(), state);
     if !map_get(state, "ok") {
         return "";
     }

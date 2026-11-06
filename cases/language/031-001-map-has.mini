@@ -1,7 +1,7 @@
-var items = map_new();
-var key = io_read_all();
-var first = map_has(items, key);
-var second = map_has(items, key);
+items := map_new();
+key := io_read_all();
+first := map_has(items, key);
+second := map_has(items, key);
 if !first && !second {
     io_write("absent");
 } else {
