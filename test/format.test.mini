@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 include "../libs/common/text.mini";
+include "../libs/common/list.mini";
 include "../libs/common/path.mini";
 include "../libs/common/process.mini";
 
@@ -14,9 +15,7 @@ fn format_fail(name, message) {
 fn format_source(root, work, name, source) {
     path := path_join(work, name);
     file_write(path, source);
-    args := list_new();
-    list_set(args, 0, path_join(root, "bin/mini-format"));
-    list_set(args, 1, path);
+    args := list_of(path_join(root, "bin/mini-format"), path);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(name, text_from_bytes(map_get(result, "stderr")));
@@ -34,11 +33,7 @@ fn format_expect(name, actual, expected) {
 
 /// Return a stable token signature for one source.
 fn format_signature(root, file) {
-    args := list_new();
-    list_set(args, 0, path_join(root, "dist/compile.js"));
-    list_set(args, 1, "tokens");
-    list_set(args, 2, "--comments");
-    list_set(args, 3, file);
+    args := list_of(path_join(root, "dist/compile.js"), "tokens", "--comments", file);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(file, text_from_bytes(map_get(result, "stderr")));
@@ -60,10 +55,7 @@ fn format_signature(root, file) {
 
 /// Compile one source and return generated text.
 fn format_compiled(root, file, output) {
-    args := list_new();
-    list_set(args, 0, path_join(root, "dist/compile.js"));
-    list_set(args, 1, file);
-    list_set(args, 2, output);
+    args := list_of(path_join(root, "dist/compile.js"), file, output);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(file, text_from_bytes(map_get(result, "stderr")));
@@ -94,9 +86,7 @@ fn main(args) {
     format_expect("else-comment", format_source(root, work, "else.mini", "if (true) {\n} // why\nelse {\n}\n"), "if (true) {\n} else { // why\n}\n");
     format_expect("trailing", format_source(root, work, "trailing.mini", "value := 1;  // tail  \n"), "value := 1; // tail\n");
     format_expect("blank-lines", format_source(root, work, "blank.mini", "a:=1;\n\n\n\nb:=2;\n"), "a := 1;\n\nb := 2;\n");
-    check_args := list_new();
-    list_set(check_args, 0, "--check");
-    list_set(check_args, 1, "cases/tooling/format-unformatted.mini");
+    check_args := list_of("--check", "cases/tooling/format-unformatted.mini");
     check := process_capture(path_join(root, "bin/mini-format"), check_args, root, list_new());
     if map_get(check, "status") != 1 || text_from_bytes(map_get(check, "stdout")) != ""
         || text_from_bytes(map_get(check, "stderr")) != "cases/tooling/format-unformatted.mini: not formatted\n" {

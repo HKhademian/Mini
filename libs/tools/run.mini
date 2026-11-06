@@ -25,10 +25,7 @@ fn run_program(compiler, source, forwarded) {
     }
     output := directory + "/program.js";
     file_write(directory + "/package.json", "{\"type\":\"module\"}\n");
-    compile_args := list_new();
-    list_set(compile_args, 0, compiler);
-    list_set(compile_args, 1, source);
-    list_set(compile_args, 2, output);
+    compile_args := list_of(compiler, source, output);
     compiled := process_run(process_exec_path(), compile_args, "inherit");
     if map_get(compiled, "status") != 0 {
         run_cleanup(directory);

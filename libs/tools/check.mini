@@ -200,19 +200,7 @@ fn check_documents(directory) {
 
 /// Return whether a file name has a checked extension.
 fn check_portable_file(name) {
-    suffixes := list_new();
-    list_set(suffixes, 0, ".json");
-    list_set(suffixes, 1, ".ts");
-    list_set(suffixes, 2, ".md");
-    list_set(suffixes, 3, ".mdc");
-    list_set(suffixes, 4, ".mini");
-    list_set(suffixes, 5, ".yml");
-    list_set(suffixes, 6, ".yaml");
-    list_set(suffixes, 7, ".stdout");
-    list_set(suffixes, 8, ".stderr");
-    list_set(suffixes, 9, ".stdin");
-    list_set(suffixes, 10, ".svg");
-    list_set(suffixes, 11, ".js");
+    suffixes := list_of(".json", ".ts", ".md", ".mdc", ".mini", ".yml", ".yaml", ".stdout", ".stderr", ".stdin", ".svg", ".js");
     position := 0;
     while position < list_length(suffixes) {
         if text_ends_with(name, list_get(suffixes, position)) {
@@ -266,9 +254,7 @@ fn check_sample_cases(root, fixtures) {
         }
         position = position + 1;
     }
-    directories := list_new();
-    list_set(directories, 0, "samples");
-    list_set(directories, 1, "examples");
+    directories := list_of("samples", "examples");
     position = 0;
     while position < list_length(directories) {
         name := list_get(directories, position);
@@ -304,23 +290,7 @@ fn check_sample_walk(directory, relative, covered) {
 fn check_versions(root) {
     current := check_json(path_join(root, "config/versions.json"));
     expected := list_new();
-    names := list_new();
-    list_set(names, 0, "group");
-    list_set(names, 1, "mini");
-    list_set(names, 2, "language");
-    list_set(names, 3, "compiler");
-    list_set(names, 4, "bootstrap");
-    list_set(names, 5, "std");
-    list_set(names, 6, "check");
-    list_set(names, 7, "verify");
-    list_set(names, 8, "release");
-    list_set(names, 9, "test");
-    list_set(names, 10, "bench");
-    list_set(names, 11, "cli");
-    list_set(names, 12, "vscode");
-    list_set(names, 13, "builtins");
-    list_set(names, 14, "format");
-    list_set(names, 15, "lsp");
+    names := list_of("group", "mini", "language", "compiler", "bootstrap", "std", "check", "verify", "release", "test", "bench", "cli", "vscode", "builtins", "format", "lsp");
     position := 0;
     while position < list_length(names) {
         list_set(expected, position, list_get(names, position));
@@ -388,17 +358,13 @@ fn check_node(root) {
 /// Run repository checks and return success.
 fn check_repository(root, docs_only) {
     if !docs_only {
-        tsc := list_new();
-        list_set(tsc, 0, path_join(root, "node_modules/typescript/bin/tsc"));
-        list_set(tsc, 1, "--noEmit");
+        tsc := list_of(path_join(root, "node_modules/typescript/bin/tsc"), "--noEmit");
         typed := check_inherit(process_exec_path(), tsc, root);
         if map_get(typed, "status") != 0 {
             process_exit(map_get(typed, "status"));
         }
     }
-    tools := list_new();
-    list_set(tools, 0, path_join(root, "dist/build.js"));
-    list_set(tools, 1, "--check");
+    tools := list_of(path_join(root, "dist/build.js"), "--check");
     verified_tools := check_inherit(process_exec_path(), tools, root);
     if map_get(verified_tools, "status") != 0 {
         process_exit(map_get(verified_tools, "status"));
@@ -425,9 +391,7 @@ fn check_repository(root, docs_only) {
     if map_get(active, "entry") != map_get(bootstrap, "compiler") {
         check_fail("active compiler must be the generated bootstrap");
     }
-    verify := list_new();
-    list_set(verify, 0, path_join(root, "dist/verify.js"));
-    list_set(verify, 1, root);
+    verify := list_of(path_join(root, "dist/verify.js"), root);
     verified := process_capture(process_exec_path(), verify, root, list_new());
     if map_get(verified, "status") != 0 {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));

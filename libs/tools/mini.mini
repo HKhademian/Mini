@@ -126,9 +126,7 @@ fn mini_command(root, command, args) {
         if !text_ends_with(source, ".mini") {
             return mini_usage("mini source must use .mini");
         }
-        run_args := list_new();
-        list_set(run_args, 0, mini_compiler(root));
-        list_set(run_args, 1, source);
+        run_args := list_of(mini_compiler(root), source);
         position := 1;
         while position < list_length(args) {
             list_set(run_args, list_length(run_args), list_get(args, position));
@@ -149,9 +147,7 @@ fn mini_command(root, command, args) {
         if list_length(args) == 0 {
             return mini_spawn(root, "dist/verify.js", list_new());
         }
-        file_args := list_new();
-        list_set(file_args, 0, "--file");
-        list_set(file_args, 1, list_get(args, 0));
+        file_args := list_of("--file", list_get(args, 0));
         return mini_spawn(root, "dist/test.js", file_args);
     }
     if command == "release" {
@@ -167,9 +163,7 @@ fn mini_command(root, command, args) {
     if command == "compile" {
         compiler := path_join(root, mini_compiler(root));
         if list_length(args) > 0 && list_get(args, 0) == "--tokens" {
-            token_args := list_new();
-            list_set(token_args, 0, "tokens");
-            list_set(token_args, 1, list_get(args, 1));
+            token_args := list_of("tokens", list_get(args, 1));
             return mini_spawn(root, mini_compiler(root), token_args);
         }
         if list_length(args) < 1 {
@@ -183,14 +177,10 @@ fn mini_command(root, command, args) {
         if list_length(args) > 1 {
             output = list_get(args, 1);
         }
-        compile_args := list_new();
-        list_set(compile_args, 0, source);
-        list_set(compile_args, 1, output);
+        compile_args := list_of(source, output);
         status := mini_spawn(root, mini_compiler(root), compile_args);
         if status == 0 && text_starts_with(file_read(source), "#!") {
-            chmod_args := list_new();
-            list_set(chmod_args, 0, "755");
-            list_set(chmod_args, 1, output);
+            chmod_args := list_of("755", output);
             process_capture("chmod", chmod_args, root, list_new());
         }
         return status;

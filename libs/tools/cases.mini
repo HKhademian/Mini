@@ -37,13 +37,7 @@ include "../common/project.mini";
 
 /// Return the accepted case kinds.
 fn case_kinds() {
-    kinds := list_new();
-    list_set(kinds, 0, "tool");
-    list_set(kinds, 1, "feature");
-    list_set(kinds, 2, "reject");
-    list_set(kinds, 3, "compile");
-    list_set(kinds, 4, "sample");
-    list_set(kinds, 5, "example");
+    kinds := list_of("tool", "feature", "reject", "compile", "sample", "example");
     return kinds;
 }
 
@@ -108,7 +102,7 @@ fn case_stream_bytes(stream, directory) {
             return result_fail("stream hash differs");
         }
     }
-    result := result_ok(0, "");
+    result := result_ok(0);
     map_set(result, "bytes", bytes);
     return result;
 }
@@ -197,7 +191,7 @@ fn case_load_case(path) {
     fixture := map_new();
     map_set(fixture, "path", path);
     map_set(fixture, "definition", spec);
-    result := result_ok(0, "");
+    result := result_ok(0);
     map_set(result, "fixture", fixture);
     return result;
 }
@@ -214,10 +208,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     if map_has(scenario, "args") && !list_is_text(map_get(scenario, "args")) {
         return result_fail(prefix + "invalid arguments");
     }
-    streams := list_new();
-    list_set(streams, 0, "stdin");
-    list_set(streams, 1, "stdout");
-    list_set(streams, 2, "stderr");
+    streams := list_of("stdin", "stdout", "stderr");
     position := 0;
     while position < list_length(streams) {
         key := list_get(streams, position);
@@ -235,9 +226,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
         if !runnable {
             return result_fail(prefix + "file fixtures need a runnable mini case");
         }
-        groups := list_new();
-        list_set(groups, 0, "inputFiles");
-        list_set(groups, 1, "outputFiles");
+        groups := list_of("inputFiles", "outputFiles");
         position = 0;
         while position < list_length(groups) {
             group_key := list_get(groups, position);
@@ -280,7 +269,7 @@ fn case_validate_scenario(spec, kind, scenario, directory) {
     if map_has(scenario, "files") && !list_is_text(map_get(scenario, "files")) {
         return result_fail(prefix + "invalid artifact paths");
     }
-    return result_ok(0, "");
+    return result_ok(0);
 }
 
 /// Collect case fixtures below a directory.
@@ -314,7 +303,7 @@ fn case_collect(directory, filter, fixtures, ids) {
         }
         position = position + 1;
     }
-    return result_ok(0, "");
+    return result_ok(0);
 }
 
 /// Load every case matching the filter.
@@ -328,7 +317,7 @@ fn case_load_cases(filter, project_root) {
     if list_length(fixtures) == 0 {
         return result_fail("no cases match: " + filter);
     }
-    result := result_ok(0, "");
+    result := result_ok(0);
     map_set(result, "fixtures", fixtures);
     return result;
 }
@@ -363,19 +352,7 @@ fn case_copy_tree(from, to) {
 
 /// Run git with the fixture identity settings.
 fn case_git(directory, args) {
-    git_args := list_new();
-    list_set(git_args, 0, "-c");
-    list_set(git_args, 1, "user.name=Case fixture");
-    list_set(git_args, 2, "-c");
-    list_set(git_args, 3, "user.email=fixture@example.invalid");
-    list_set(git_args, 4, "-c");
-    list_set(git_args, 5, "commit.gpgSign=false");
-    list_set(git_args, 6, "-c");
-    list_set(git_args, 7, "tag.gpgSign=false");
-    list_set(git_args, 8, "-c");
-    list_set(git_args, 9, "maintenance.auto=false");
-    list_set(git_args, 10, "-c");
-    list_set(git_args, 11, "gc.auto=0");
+    git_args := list_of("-c", "user.name=Case fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgSign=false", "-c", "tag.gpgSign=false", "-c", "maintenance.auto=false", "-c", "gc.auto=0");
     position := 0;
     while position < list_length(args) {
         list_set(git_args, list_length(git_args), list_get(args, position));
@@ -420,7 +397,7 @@ fn case_tool_workspace(project_root, scenario, work) {
     if map_get(scenario, "workspace") == "dirty" {
         file_write(path_join(directory, "uncommitted.txt"), "dirty\n");
     }
-    result := result_ok(0, "");
+    result := result_ok(0);
     map_set(result, "directory", directory);
     return result;
 }
@@ -485,10 +462,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             compiler = project_compiler_entry(project_root);
         }
         output := path_join(work, "program.mini.js");
-        compile_args := list_new();
-        list_set(compile_args, 0, compiler);
-        list_set(compile_args, 1, source);
-        list_set(compile_args, 2, output);
+        compile_args := list_of(compiler, source, output);
         result = process_capture(process_exec_path(), compile_args, project_root, list_new());
         if map_get(result, "status") == 0 && path_is_exists(output) {
             artifact = hash_sha256(file_read_bytes(output));
@@ -555,7 +529,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             position = position + 1;
         }
     }
-    done := result_ok(0, "");
+    done := result_ok(0);
     map_set(done, "artifact", artifact);
     return done;
 }
@@ -576,7 +550,7 @@ fn case_diagnostic(result) {
 /// Write runnable input files and return a result map.
 fn case_write_input_files(scenario, directory, files, prefix) {
     if !map_has(scenario, "inputFiles") {
-        return result_ok(0, "");
+        return result_ok(0);
     }
     inputs := map_get(scenario, "inputFiles");
     names := map_keys(inputs);
@@ -592,13 +566,13 @@ fn case_write_input_files(scenario, directory, files, prefix) {
         file_write_bytes(target, map_get(stream, "bytes"));
         position = position + 1;
     }
-    return result_ok(0, "");
+    return result_ok(0);
 }
 
 /// Compare runnable output files and return a result map.
 fn case_check_output_files(scenario, directory, files, prefix) {
     if !map_has(scenario, "outputFiles") {
-        return result_ok(0, "");
+        return result_ok(0);
     }
     outputs := map_get(scenario, "outputFiles");
     names := map_keys(outputs);
@@ -615,7 +589,7 @@ fn case_check_output_files(scenario, directory, files, prefix) {
         }
         position = position + 1;
     }
-    return result_ok(0, "");
+    return result_ok(0);
 }
 
 /// Return the identity hashes for a case fixture.

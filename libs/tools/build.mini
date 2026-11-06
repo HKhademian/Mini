@@ -34,10 +34,7 @@ fn build_compiler(root) {
 fn build_compile(root, compiler, source) {
     work := path_temp_directory();
     output := path_join(work, "tool.generated.js");
-    args := list_new();
-    list_set(args, 0, compiler);
-    list_set(args, 1, path_join(root, source));
-    list_set(args, 2, output);
+    args := list_of(compiler, path_join(root, source), output);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         path_remove(work);
@@ -50,9 +47,7 @@ fn build_compile(root, compiler, source) {
 
 /// Make a file executable.
 fn build_executable(root, path) {
-    args := list_new();
-    list_set(args, 0, "755");
-    list_set(args, 1, path_join(root, path));
+    args := list_of("755", path_join(root, path));
     process_capture("chmod", args, root, list_new());
     return 0;
 }

@@ -1696,10 +1696,7 @@ function bootstrap_compile_text(source) {
 }
 function bootstrap_compile_with(root, compiler, source, output) {
 
-    let args = [];
-    $mini_list_set(args, 0, compiler);
-    $mini_list_set(args, 1, source);
-    $mini_list_set(args, 2, output);
+    let args = list_of(compiler, source, output);
     let result = process_capture(process.execPath, args, root, []);
     if (($mini_map_get(result, "status") !== 0)) {
         bootstrap_fail(("compile failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
@@ -1720,9 +1717,7 @@ function bootstrap_run(root, path) {
 }
 function bootstrap_executable(root, path) {
 
-    let args = [];
-    $mini_list_set(args, 0, "755");
-    $mini_list_set(args, 1, path);
+    let args = list_of("755", path);
     process_capture("chmod", args, root, []);
     return 0;
     return 0;

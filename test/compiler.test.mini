@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 include "../libs/common/text.mini";
+include "../libs/common/list.mini";
 include "../libs/tools/cases.mini";
 
 /// Verify the generated compiler reproduces itself from its mini source.
@@ -14,10 +15,7 @@ fn main(args) {
     stage := 0;
     while stage < 3 {
         output := path_join(work, "compiler" + number_to_text(stage) + ".js");
-        compile_args := list_new();
-        list_set(compile_args, 0, previous);
-        list_set(compile_args, 1, source);
-        list_set(compile_args, 2, output);
+        compile_args := list_of(previous, source, output);
         result := process_capture(process_exec_path(), compile_args, root, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);

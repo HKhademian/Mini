@@ -22,10 +22,7 @@ fn bootstrap_compile_text(source) {
 
 /// Compile one source with a generated compiler.
 fn bootstrap_compile_with(root, compiler, source, output) {
-    args := list_new();
-    list_set(args, 0, compiler);
-    list_set(args, 1, source);
-    list_set(args, 2, output);
+    args := list_of(compiler, source, output);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
@@ -46,9 +43,7 @@ fn bootstrap_run(root, path) {
 
 /// Make a generated file executable.
 fn bootstrap_executable(root, path) {
-    args := list_new();
-    list_set(args, 0, "755");
-    list_set(args, 1, path);
+    args := list_of("755", path);
     process_capture("chmod", args, root, list_new());
     return 0;
 }

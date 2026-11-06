@@ -47,9 +47,7 @@ fn bench_commit(root) {
     if !path_is_exists(path_join(root, ".git")) {
         return "";
     }
-    args := list_new();
-    list_set(args, 0, "rev-parse");
-    list_set(args, 1, "HEAD");
+    args := list_of("rev-parse", "HEAD");
     result := process_capture("git", args, root, list_new());
     return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }

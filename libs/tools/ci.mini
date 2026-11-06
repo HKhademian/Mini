@@ -50,28 +50,19 @@ fn ci_args1(a) {
 
 /// Build a two-argument list.
 fn ci_args2(a, b) {
-    result := list_new();
-    list_set(result, 0, a);
-    list_set(result, 1, b);
+    result := list_of(a, b);
     return result;
 }
 
 /// Build a three-argument list.
 fn ci_args3(a, b, c) {
-    result := list_new();
-    list_set(result, 0, a);
-    list_set(result, 1, b);
-    list_set(result, 2, c);
+    result := list_of(a, b, c);
     return result;
 }
 
 /// Build a four-argument list.
 fn ci_args4(a, b, c, d) {
-    result := list_new();
-    list_set(result, 0, a);
-    list_set(result, 1, b);
-    list_set(result, 2, c);
-    list_set(result, 3, d);
+    result := list_of(a, b, c, d);
     return result;
 }
 
@@ -106,9 +97,7 @@ fn ci_package(root) {
     if process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
         tag = process_env("GITHUB_REF_NAME");
     }
-    args := list_new();
-    list_set(args, 0, "release");
-    list_set(args, 1, path_join(root, "dist/release"));
+    args := list_of("release", path_join(root, "dist/release"));
     if tag != "" {
         list_set(args, 2, tag);
     }
@@ -134,10 +123,7 @@ fn ci_publish(root) {
         ci_fail("manifest tag does not match " + tag);
     }
     files := directory_list(directory);
-    args := list_new();
-    list_set(args, 0, "release");
-    list_set(args, 1, "create");
-    list_set(args, 2, tag);
+    args := list_of("release", "create", tag);
     position := 0;
     while position < list_length(files) {
         list_set(args, list_length(args), path_join(directory, list_get(files, position)));
@@ -155,12 +141,7 @@ fn ci_publish(root) {
         list_set(args, list_length(args), "--prerelease");
     }
     ci_run(root, "gh", args, root);
-    edit := list_new();
-    list_set(edit, 0, "release");
-    list_set(edit, 1, "edit");
-    list_set(edit, 2, tag);
-    list_set(edit, 3, "--draft=false");
-    list_set(edit, 4, "--latest=false");
+    edit := list_of("release", "edit", tag, "--draft=false", "--latest=false");
     return ci_run(root, "gh", edit, root);
 }
 

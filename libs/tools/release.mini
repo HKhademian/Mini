@@ -26,7 +26,7 @@ fn release_run(command, args, directory) {
         release_fail(command + " " + list_to_text(args, " ") + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
     }
-    done := result_ok(0, "");
+    done := result_ok(0);
     map_set(done, "stdout", map_get(result, "stdout"));
     map_set(done, "stderr", map_get(result, "stderr"));
     return done;
@@ -135,14 +135,7 @@ fn release_vscode(directory, output, tooling) {
     }
     extension := path_join(directory, "editors/vscode");
     directory_create(path_join(extension, "dist"));
-    bundle_args := list_new();
-    list_set(bundle_args, 0, bundler);
-    list_set(bundle_args, 1, path_join(extension, "src/extension.ts"));
-    list_set(bundle_args, 2, "--bundle");
-    list_set(bundle_args, 3, "--platform=node");
-    list_set(bundle_args, 4, "--format=cjs");
-    list_set(bundle_args, 5, "--external:vscode");
-    list_set(bundle_args, 6, "--outfile=" + path_join(extension, "dist/extension.cjs"));
+    bundle_args := list_of(bundler, path_join(extension, "src/extension.ts"), "--bundle", "--platform=node", "--format=cjs", "--external:vscode", "--outfile=" + path_join(extension, "dist/extension.cjs"));
     release_run(process_exec_path(), bundle_args, extension);
     directory_create(output);
     file := "mini-" + map_get(current, "group") + "-v" + version + ".vsix";
@@ -150,14 +143,7 @@ fn release_vscode(directory, output, tooling) {
     if path_is_exists(destination) {
         release_fail("VSIX output already exists");
     }
-    package_args := list_new();
-    list_set(package_args, 0, packager);
-    list_set(package_args, 1, "package");
-    list_set(package_args, 2, "--no-dependencies");
-    list_set(package_args, 3, "--allow-missing-repository");
-    list_set(package_args, 4, "--skip-license");
-    list_set(package_args, 5, "--out");
-    list_set(package_args, 6, destination);
+    package_args := list_of(packager, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", destination);
     release_run(process_exec_path(), package_args, extension);
     asset := map_new();
     map_set(asset, "file", file);
@@ -240,11 +226,7 @@ fn release_prepare(directory, output, tag) {
     tracked := path_join(work, "source.tar");
     archive_result := release_run("git", list_of("archive", "--format=tar", commit), directory);
     file_write_bytes(tracked, map_get(archive_result, "stdout"));
-    extract_args := list_new();
-    list_set(extract_args, 0, "-xf");
-    list_set(extract_args, 1, tracked);
-    list_set(extract_args, 2, "-C");
-    list_set(extract_args, 3, source);
+    extract_args := list_of("-xf", tracked, "-C", source);
     release_run("tar", extract_args, work);
     release_bootstrap(source);
     release_check(path_join(source, "bin/mini-check"), source);
@@ -289,20 +271,11 @@ fn release_prepare(directory, output, tag) {
     record := json_to_text(manifest) + "\n";
     file_write(path_join(source, "RELEASE.json"), record);
     archive := "minilang-" + label + ".tar.gz";
-    pack_args := list_new();
-    list_set(pack_args, 0, "-czf");
-    list_set(pack_args, 1, path_join(output, archive));
-    list_set(pack_args, 2, "-C");
-    list_set(pack_args, 3, source);
-    list_set(pack_args, 4, ".");
+    pack_args := list_of("-czf", path_join(output, archive), "-C", source, ".");
     release_run("tar", pack_args, work);
     extracted := path_join(work, "extracted");
     directory_create(extracted);
-    unpack_args := list_new();
-    list_set(unpack_args, 0, "-xf");
-    list_set(unpack_args, 1, path_join(output, archive));
-    list_set(unpack_args, 2, "-C");
-    list_set(unpack_args, 3, extracted);
+    unpack_args := list_of("-xf", path_join(output, archive), "-C", extracted);
     release_run("tar", unpack_args, work);
     release_check(path_join(extracted, "bin/mini-check"), extracted);
     file_write(path_join(output, "manifest.json"), record);

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 include "../libs/common/text.mini";
+include "../libs/common/list.mini";
 include "../libs/tools/cases.mini";
 
 /// Compile and run one source in host and reference modes, then compare results.
@@ -11,21 +12,14 @@ fn reference_compare(root, name, source_text) {
     compiler := path_join(root, "dist/compile.js");
     host := path_join(work, name + "-host.js");
     pure := path_join(work, name + "-pure.js");
-    host_args := list_new();
-    list_set(host_args, 0, compiler);
-    list_set(host_args, 1, source);
-    list_set(host_args, 2, host);
+    host_args := list_of(compiler, source, host);
     host_compile := process_capture(process_exec_path(), host_args, root, list_new());
     if map_get(host_compile, "status") != 0 {
         path_remove(work);
         io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
         process_exit(1);
     }
-    pure_args := list_new();
-    list_set(pure_args, 0, compiler);
-    list_set(pure_args, 1, "--reference");
-    list_set(pure_args, 2, source);
-    list_set(pure_args, 3, pure);
+    pure_args := list_of(compiler, "--reference", source, pure);
     pure_compile := process_capture(process_exec_path(), pure_args, root, list_new());
     if map_get(pure_compile, "status") != 0 {
         path_remove(work);
