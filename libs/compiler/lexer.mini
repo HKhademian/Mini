@@ -79,6 +79,76 @@ fn lex_fail(token, message) {
     return diagnostic_fail(token, message);
 }
 
+/// Consume one `//` comment, recording it only when comments are requested.
+fn lex_comment(state, source, include_comments) {
+    comment_token := lex_start(state);
+    while map_get(state, "position") < text_length(source)
+        && text_get(source, map_get(state, "position")) != "\r"
+        && text_get(source, map_get(state, "position")) != "\n" {
+        lex_advance(state);
+    }
+    if include_comments {
+        map_set(comment_token, "kind", "comment");
+        map_set(comment_token, "text", text_slice(source, map_get(comment_token, "start"), map_get(state, "position")));
+        map_set(comment_token, "end", map_get(state, "position"));
+        comment_tokens := map_get(state, "tokens");
+        list_set(comment_tokens, list_length(comment_tokens), comment_token);
+    }
+    return 0;
+}
+
+/// Consume one identifier or keyword spelling into token.
+fn lex_word(state, source, token) {
+    map_set(token, "kind", "identifier");
+    while map_get(state, "position") < text_length(source)
+        && is_identifier_part(text_get(source, map_get(state, "position"))) {
+        lex_advance(state);
+    }
+    spelling := text_slice(source, map_get(token, "start"), map_get(state, "position"));
+    if spelling == "fn" || spelling == "return" || spelling == "if"
+        || spelling == "else" || spelling == "while" || spelling == "true" || spelling == "false" {
+        map_set(token, "kind", "keyword");
+    }
+    return 0;
+}
+
+/// Consume one decimal digit run into token.
+fn lex_digits(state, source, token) {
+    map_set(token, "kind", "number");
+    while map_get(state, "position") < text_length(source)
+        && is_digit(text_get(source, map_get(state, "position"))) {
+        lex_advance(state);
+    }
+    return 0;
+}
+
+/// Consume one quoted text literal, rejecting newlines and unknown escapes.
+fn lex_text(state, source, token) {
+    map_set(token, "kind", "text");
+    lex_advance(state);
+    while map_get(state, "position") < text_length(source)
+        && text_get(source, map_get(state, "position")) != "\"" {
+        inner := text_get(source, map_get(state, "position"));
+        if inner == "\n" || inner == "\r" {
+            lex_fail(token, "unterminated text");
+        }
+        if inner == "\\" {
+            escape := lex_start(state);
+            lex_advance(state);
+            if map_get(state, "position") == text_length(source)
+                || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0 {
+                lex_fail(escape, "unknown text escape");
+            }
+        }
+        lex_advance(state);
+    }
+    if map_get(state, "position") == text_length(source) {
+        lex_fail(token, "unterminated text");
+    }
+    lex_advance(state);
+    return 0;
+}
+
 /// Scan text into a token list, matching T0 positions and diagnostics.
 fn tokenize(source, source_name, include_comments) {
     state := map_new();
@@ -106,84 +176,28 @@ fn tokenize(source, source_name, include_comments) {
         character := text_get(source, map_get(state, "position"));
         if text_find(" \t\r\n", character) >= 0 {
             lex_advance(state);
+        } else if character == "/" && text_get(source, map_get(state, "position") + 1) == "/" {
+            lex_comment(state, source, include_comments);
         } else {
-            if character == "/" && text_get(source, map_get(state, "position") + 1) == "/" {
-                comment_token := lex_start(state);
-                while map_get(state, "position") < text_length(source)
-                    && text_get(source, map_get(state, "position")) != "\r"
-                    && text_get(source, map_get(state, "position")) != "\n" {
-                    lex_advance(state);
-                }
-                if include_comments {
-                    map_set(comment_token, "kind", "comment");
-                    map_set(comment_token, "text", text_slice(source, map_get(comment_token, "start"), map_get(state, "position")));
-                    map_set(comment_token, "end", map_get(state, "position"));
-                    comment_tokens := map_get(state, "tokens");
-                    list_set(comment_tokens, list_length(comment_tokens), comment_token);
-                }
+            token := lex_start(state);
+            if is_letter(character) {
+                lex_word(state, source, token);
+            } else if is_digit(character) {
+                lex_digits(state, source, token);
+            } else if character == "\"" {
+                lex_text(state, source, token);
+            } else if is_two_character_symbol(text_slice(source, map_get(state, "position"), map_get(state, "position") + 2)) {
+                lex_advance(state);
+                lex_advance(state);
+            } else if text_find("=+-!<>(),;{}", character) >= 0 {
+                lex_advance(state);
             } else {
-                token := lex_start(state);
-                if is_letter(character) {
-                    map_set(token, "kind", "identifier");
-                    while map_get(state, "position") < text_length(source)
-                        && is_identifier_part(text_get(source, map_get(state, "position"))) {
-                        lex_advance(state);
-                    }
-                    spelling := text_slice(source, map_get(token, "start"), map_get(state, "position"));
-                    if spelling == "fn" || spelling == "return" || spelling == "if"
-                        || spelling == "else" || spelling == "while" || spelling == "true" || spelling == "false" {
-                        map_set(token, "kind", "keyword");
-                    }
-                } else {
-                    if is_digit(character) {
-                        map_set(token, "kind", "number");
-                        while map_get(state, "position") < text_length(source)
-                            && is_digit(text_get(source, map_get(state, "position"))) {
-                            lex_advance(state);
-                        }
-                    } else {
-                        if character == "\"" {
-                            map_set(token, "kind", "text");
-                            lex_advance(state);
-                            while map_get(state, "position") < text_length(source)
-                                && text_get(source, map_get(state, "position")) != "\"" {
-                                inner := text_get(source, map_get(state, "position"));
-                                if inner == "\n" || inner == "\r" {
-                                    lex_fail(token, "unterminated text");
-                                }
-                                if inner == "\\" {
-                                    escape := lex_start(state);
-                                    lex_advance(state);
-                                    if map_get(state, "position") == text_length(source)
-                                        || text_find("\"\\nrt", text_get(source, map_get(state, "position"))) < 0 {
-                                        lex_fail(escape, "unknown text escape");
-                                    }
-                                }
-                                lex_advance(state);
-                            }
-                            if map_get(state, "position") == text_length(source) {
-                                lex_fail(token, "unterminated text");
-                            }
-                            lex_advance(state);
-                        } else {
-                            if is_two_character_symbol(text_slice(source, map_get(state, "position"), map_get(state, "position") + 2)) {
-                                lex_advance(state);
-                                lex_advance(state);
-                            } else {
-                                if text_find("=+-!<>(),;{}", character) >= 0 {
-                                    lex_advance(state);
-                                } else {
-                                    lex_fail(token, "unexpected character " + json_to_text(character));
-                                }
-                            }
-                        }
-                    }
-                }
-                map_set(token, "text", text_slice(source, map_get(token, "start"), map_get(state, "position")));
-                map_set(token, "end", map_get(state, "position"));
-                tokens := map_get(state, "tokens");
-                list_set(tokens, list_length(tokens), token);
+                lex_fail(token, "unexpected character " + json_to_text(character));
             }
+            map_set(token, "text", text_slice(source, map_get(token, "start"), map_get(state, "position")));
+            map_set(token, "end", map_get(state, "position"));
+            tokens := map_get(state, "tokens");
+            list_set(tokens, list_length(tokens), token);
         }
     }
     end_token := lex_start(state);

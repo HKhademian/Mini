@@ -520,6 +520,65 @@ function lex_fail(token, message) {
     return diagnostic_fail(token, message);
     return 0;
 }
+function lex_comment(state, source, include_comments) {
+    let comment_token = lex_start(state);
+    while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
+        lex_advance(state);
+    }
+    if (include_comments) {
+        $mini_map_set(comment_token, "kind", "comment");
+        $mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
+        $mini_map_set(comment_token, "end", $mini_map_get(state, "position"));
+        let comment_tokens = $mini_map_get(state, "tokens");
+        $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
+    }
+    return 0;
+    return 0;
+}
+function lex_word(state, source, token) {
+    $mini_map_set(token, "kind", "identifier");
+    while ((($mini_map_get(state, "position") < (source).length) && is_identifier_part($mini_text_get(source, $mini_map_get(state, "position"))))) {
+        lex_advance(state);
+    }
+    let spelling = $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
+    if ((((((((spelling === "fn") || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
+        $mini_map_set(token, "kind", "keyword");
+    }
+    return 0;
+    return 0;
+}
+function lex_digits(state, source, token) {
+    $mini_map_set(token, "kind", "number");
+    while ((($mini_map_get(state, "position") < (source).length) && is_digit($mini_text_get(source, $mini_map_get(state, "position"))))) {
+        lex_advance(state);
+    }
+    return 0;
+    return 0;
+}
+function lex_text(state, source, token) {
+    $mini_map_set(token, "kind", "text");
+    lex_advance(state);
+    while ((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\""))) {
+        let inner = $mini_text_get(source, $mini_map_get(state, "position"));
+        if (((inner === "\n") || (inner === "\r"))) {
+            lex_fail(token, "unterminated text");
+        }
+        if ((inner === "\\")) {
+            let escape = lex_start(state);
+            lex_advance(state);
+            if ((($mini_map_get(state, "position") === (source).length) || ($mini_text_find("\"\\nrt", $mini_text_get(source, $mini_map_get(state, "position"))) < 0))) {
+                lex_fail(escape, "unknown text escape");
+            }
+        }
+        lex_advance(state);
+    }
+    if (($mini_map_get(state, "position") === (source).length)) {
+        lex_fail(token, "unterminated text");
+    }
+    lex_advance(state);
+    return 0;
+    return 0;
+}
 function tokenize(source, source_name, include_comments) {
     let state = ({ __proto__: $mini_map_proto });
     $mini_map_set(state, "text", source);
@@ -544,77 +603,28 @@ function tokenize(source, source_name, include_comments) {
         let character = $mini_text_get(source, $mini_map_get(state, "position"));
         if (($mini_text_find(" \t\r\n", character) >= 0)) {
             lex_advance(state);
+        } else if (((character === "/") && ($mini_text_get(source, ($mini_map_get(state, "position") + 1)) === "/"))) {
+            lex_comment(state, source, include_comments);
         } else {
-            if (((character === "/") && ($mini_text_get(source, ($mini_map_get(state, "position") + 1)) === "/"))) {
-                let comment_token = lex_start(state);
-                while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
-                    lex_advance(state);
-                }
-                if (include_comments) {
-                    $mini_map_set(comment_token, "kind", "comment");
-                    $mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
-                    $mini_map_set(comment_token, "end", $mini_map_get(state, "position"));
-                    let comment_tokens = $mini_map_get(state, "tokens");
-                    $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
-                }
+            let token = lex_start(state);
+            if (is_letter(character)) {
+                lex_word(state, source, token);
+            } else if (is_digit(character)) {
+                lex_digits(state, source, token);
+            } else if ((character === "\"")) {
+                lex_text(state, source, token);
+            } else if (is_two_character_symbol($mini_text_slice(source, $mini_map_get(state, "position"), ($mini_map_get(state, "position") + 2)))) {
+                lex_advance(state);
+                lex_advance(state);
+            } else if (($mini_text_find("=+-!<>(),;{}", character) >= 0)) {
+                lex_advance(state);
             } else {
-                let token = lex_start(state);
-                if (is_letter(character)) {
-                    $mini_map_set(token, "kind", "identifier");
-                    while ((($mini_map_get(state, "position") < (source).length) && is_identifier_part($mini_text_get(source, $mini_map_get(state, "position"))))) {
-                        lex_advance(state);
-                    }
-                    let spelling = $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
-                    if ((((((((spelling === "fn") || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
-                        $mini_map_set(token, "kind", "keyword");
-                    }
-                } else {
-                    if (is_digit(character)) {
-                        $mini_map_set(token, "kind", "number");
-                        while ((($mini_map_get(state, "position") < (source).length) && is_digit($mini_text_get(source, $mini_map_get(state, "position"))))) {
-                            lex_advance(state);
-                        }
-                    } else {
-                        if ((character === "\"")) {
-                            $mini_map_set(token, "kind", "text");
-                            lex_advance(state);
-                            while ((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\""))) {
-                                let inner = $mini_text_get(source, $mini_map_get(state, "position"));
-                                if (((inner === "\n") || (inner === "\r"))) {
-                                    lex_fail(token, "unterminated text");
-                                }
-                                if ((inner === "\\")) {
-                                    let escape = lex_start(state);
-                                    lex_advance(state);
-                                    if ((($mini_map_get(state, "position") === (source).length) || ($mini_text_find("\"\\nrt", $mini_text_get(source, $mini_map_get(state, "position"))) < 0))) {
-                                        lex_fail(escape, "unknown text escape");
-                                    }
-                                }
-                                lex_advance(state);
-                            }
-                            if (($mini_map_get(state, "position") === (source).length)) {
-                                lex_fail(token, "unterminated text");
-                            }
-                            lex_advance(state);
-                        } else {
-                            if (is_two_character_symbol($mini_text_slice(source, $mini_map_get(state, "position"), ($mini_map_get(state, "position") + 2)))) {
-                                lex_advance(state);
-                                lex_advance(state);
-                            } else {
-                                if (($mini_text_find("=+-!<>(),;{}", character) >= 0)) {
-                                    lex_advance(state);
-                                } else {
-                                    lex_fail(token, ("unexpected character " + $mini_json_to_text(character)));
-                                }
-                            }
-                        }
-                    }
-                }
-                $mini_map_set(token, "text", $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position")));
-                $mini_map_set(token, "end", $mini_map_get(state, "position"));
-                let tokens = $mini_map_get(state, "tokens");
-                $mini_list_set(tokens, (tokens).length, token);
+                lex_fail(token, ("unexpected character " + $mini_json_to_text(character)));
             }
+            $mini_map_set(token, "text", $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position")));
+            $mini_map_set(token, "end", $mini_map_get(state, "position"));
+            let tokens = $mini_map_get(state, "tokens");
+            $mini_list_set(tokens, (tokens).length, token);
         }
     }
     let end_token = lex_start(state);
