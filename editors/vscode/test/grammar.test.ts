@@ -119,11 +119,16 @@ test('language contribution includes both icons and only packaged resource paths
   assert.deepEqual(language.aliases, ['mini']);
   assert.deepEqual(language.extensions, ['.mini']);
   assert.equal(manifest.contributes.grammars[0].scopeName, 'source.mini');
+  const canonicalMark = readFileSync(new URL('../../brand/mini-mark.svg', root), 'utf8');
+  const canonicalPath = canonicalMark.match(/<path d="([^"]+)"/)?.[1];
+  assert.ok(canonicalPath);
   for (const path of [language.configuration, manifest.contributes.grammars[0].path]) {
     JSON.parse(readFileSync(new URL(path, root), 'utf8'));
   }
   for (const path of Object.values(language.icon) as string[]) {
-    assert.match(readFileSync(new URL(path, root), 'utf8'), /<svg[^>]+viewBox="0 0 16 16"/);
+    const icon = readFileSync(new URL(path, root), 'utf8');
+    assert.match(icon, /<svg[^>]+viewBox="0 0 16 16"/);
+    assert.equal(icon.match(/<path d="([^"]+)"/)?.[1], canonicalPath);
   }
   assert.equal(manifest.main, './dist/extension.cjs');
   assert.equal(manifest.dependencies, undefined);

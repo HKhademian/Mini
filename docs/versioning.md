@@ -28,6 +28,7 @@ vscode-v0.3.0-v0.3.2  hover and completion; same group
 vscode-v0.3.0-v0.3.3  go to definition; same group
 vscode-v0.5.0-v0.3.6  := grammar; new group
 vscode-v0.5.0-v0.3.7  include syntax; same group
+vscode-v0.5.0-v0.3.8  canonical file icon; same group
 ```
 
 The editor keeps one counter while its group changes. Use one continuous
@@ -66,7 +67,7 @@ test-v0.5.0-v0.1.0-alpha.5
 verify-v0.5.0-v0.1.0-alpha.5
 bench-v0.5.0-v0.1.0-alpha.5
 release-v0.5.0-v0.1.0-alpha.5
-vscode-v0.5.0-v0.3.7
+vscode-v0.5.0-v0.3.8
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.

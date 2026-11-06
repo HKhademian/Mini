@@ -11,7 +11,7 @@
   "test": "0.1.0-alpha.5",
   "bench": "0.1.0-alpha.5",
   "cli": "0.1.0-alpha.17",
-  "vscode": "0.3.7",
+  "vscode": "0.3.8",
   "builtins": "0.4.0-alpha.2",
   "format": "0.1.0-alpha.7",
   "lsp": "0.1.0-alpha.10"
