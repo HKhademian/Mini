@@ -12,9 +12,9 @@ fn bootstrap_fail(message) {
 
 /// Compile one source in-process and return generated text.
 fn bootstrap_compile_text(source) {
-    tokens := tokenize(file_read(source), basename(source), false);
-    expanded := expand_includes(tokens, source, list_new(), map_new());
-    return compile(expanded);
+    tokens := lex_tokenize(file_read(source), path_basename(source), false);
+    expanded := lex_expand_includes(tokens, source, list_new(), map_new());
+    return parser_compile(expanded);
 }
 
 /// Compile one source with a generated compiler.

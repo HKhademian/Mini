@@ -362,7 +362,7 @@ fn format_tokens(tokens) {
 
 /// Format one source text; return the canonical text.
 fn format_source(source, name, base) {
-    tokens := tokenize(source, name, true);
-    compile_quiet(expand_includes(tokenize(source, name, false), base, list_new(), map_new()));
+    tokens := lex_tokenize(source, name, true);
+    parser_compile_quiet(lex_expand_includes(lex_tokenize(source, name, false), base, list_new(), map_new()));
     return format_tokens(tokens);
 }

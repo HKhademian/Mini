@@ -115,7 +115,7 @@ fn builtin_helper_key(name) {
 }
 
 /// Return the adapter text for a helper key.
-fn helper_text(key) {
+fn builtin_helper_text(key) {
     if map_has(builtin_helpers, key) {
         return map_get(builtin_helpers, key);
     }

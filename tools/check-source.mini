@@ -26,12 +26,12 @@ fn main() {
         }
         source = file_read(path);
     }
-    tokens := tokenize(source, name, false);
+    tokens := lex_tokenize(source, name, false);
     base := "";
     if path != "-" {
         base = path;
     }
-    compile(expand_includes(tokens, base, list_new(), map_new()));
+    parser_compile(lex_expand_includes(tokens, base, list_new(), map_new()));
     return 0;
 }
 

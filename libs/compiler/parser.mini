@@ -4,7 +4,7 @@ fn parser_fail(token, message) {
 }
 
 /// Return an expression map with emitted code and kind.
-fn expression_new(code, kind) {
+fn parser_expression_new(code, kind) {
     expression := map_new();
     map_set(expression, "code", code);
     map_set(expression, "kind", kind);
@@ -55,7 +55,7 @@ fn parser_expression(parser) {
             || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "|| needs booleans");
         }
-        left = expression_new("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean");
+        left = parser_expression_new("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean");
     }
     return left;
 }
@@ -70,7 +70,7 @@ fn parser_conjunction(parser) {
             || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "&& needs booleans");
         }
-        left = expression_new("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean");
+        left = parser_expression_new("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean");
     }
     return left;
 }
@@ -92,7 +92,7 @@ fn parser_equality(parser) {
         if map_get(operator, "text") == "!=" {
             symbol = "!==";
         }
-        left = expression_new("(" + map_get(left, "code") + " " + symbol + " " + map_get(right, "code") + ")", "boolean");
+        left = parser_expression_new("(" + map_get(left, "code") + " " + symbol + " " + map_get(right, "code") + ")", "boolean");
     }
     return left;
 }
@@ -108,13 +108,13 @@ fn parser_comparison(parser) {
             || (map_get(right, "kind") != "number" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "comparison needs numbers");
         }
-        left = expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean");
+        left = parser_expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean");
     }
     return left;
 }
 
 /// Return whether kind can participate in addition.
-fn additive_kind(kind) {
+fn parser_additive_kind(kind) {
     return kind == "number" || kind == "text" || kind == "unknown";
 }
 
@@ -132,7 +132,7 @@ fn parser_additive(parser) {
                 parser_fail(operator, "- needs two numbers");
             }
         } else {
-            if !additive_kind(left_kind) || !additive_kind(right_kind)
+            if !parser_additive_kind(left_kind) || !parser_additive_kind(right_kind)
                 || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
                 parser_fail(operator, "+ needs two numbers or two texts");
             }
@@ -141,7 +141,7 @@ fn parser_additive(parser) {
         if left_kind == "unknown" {
             result_kind = right_kind;
         }
-        left = expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", result_kind);
+        left = parser_expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", result_kind);
     }
     return left;
 }
@@ -158,13 +158,13 @@ fn parser_unary(parser) {
         if map_get(value, "kind") != kind && map_get(value, "kind") != "unknown" {
             parser_fail(operator, map_get(operator, "text") + " needs a " + kind);
         }
-        return expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind);
+        return parser_expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind);
     }
     return parser_primary(parser);
 }
 
 /// Return normalized decimal text for a digit-only literal.
-fn normalize_number(text) {
+fn lex_normalize_number(text) {
     position := 0;
     while position < text_length(text) && text_get(text, position) == "0" {
         position = position + 1;
@@ -184,26 +184,26 @@ fn parser_primary(parser) {
         return value;
     }
     if map_get(token, "kind") == "number" {
-        return expression_new(normalize_number(map_get(token, "text")), "number");
+        return parser_expression_new(lex_normalize_number(map_get(token, "text")), "number");
     }
     if map_get(token, "kind") == "text" {
-        return expression_new(map_get(token, "text"), "text");
+        return parser_expression_new(map_get(token, "text"), "text");
     }
     if map_get(token, "text") == "true" || map_get(token, "text") == "false" {
-        return expression_new(map_get(token, "text"), "boolean");
+        return parser_expression_new(map_get(token, "text"), "boolean");
     }
     if map_get(token, "kind") == "identifier" && map_get(parser_token(parser), "text") == "(" {
         return parser_call(parser, token);
     }
     if map_get(token, "kind") == "identifier" && map_has(map_get(parser, "variables"), map_get(token, "text")) {
-        return expression_new(map_get(token, "text"), map_get(map_get(parser, "variables"), map_get(token, "text")));
+        return parser_expression_new(map_get(token, "text"), map_get(map_get(parser, "variables"), map_get(token, "text")));
     }
     parser_fail(token, "expected expression");
-    return expression_new("", "unknown");
+    return parser_expression_new("", "unknown");
 }
 
 /// Return argument code texts.
-fn argument_code_list(args) {
+fn parser_argument_code_list(args) {
     codes := list_new();
     position := 0;
     while position < list_length(args) {
@@ -214,8 +214,8 @@ fn argument_code_list(args) {
 }
 
 /// Return argument code text joined by comma-space.
-fn argument_codes(args) {
-    return list_to_text(argument_code_list(args), ", ");
+fn parser_argument_codes(args) {
+    return list_to_text(parser_argument_code_list(args), ", ");
 }
 
 /// Parse a call and apply builtin metadata or a user signature.
@@ -249,7 +249,7 @@ fn parser_call(parser, name) {
         parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
     }
     if !is_builtin {
-        return expression_new(name_text + "(" + argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
+        return parser_expression_new(name_text + "(" + parser_argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
     }
     parameters := builtin_parameters(name_text);
     position := 0;
@@ -271,7 +271,7 @@ fn parser_call(parser, name) {
     if helper != "" {
         map_set(map_get(parser, "helpers"), helper, true);
     }
-    return expression_new(builtin_emit(name_text, argument_code_list(args)), builtin_result(name_text));
+    return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), builtin_result(name_text));
 }
 
 /// Parse a statement and return emitted TypeScript.
@@ -430,7 +430,7 @@ fn parser_function_declaration(parser) {
 }
 
 /// Return the fixed sorted import list used by T0's finite dependencies.
-fn import_names(imports) {
+fn parser_import_names(imports) {
     output := "";
     if map_has(imports, "readFileSync") {
         output = output + "readFileSync";
@@ -451,7 +451,7 @@ fn import_names(imports) {
 }
 
 /// Return helper blocks in T0's sorted order.
-fn helper_blocks(helpers) {
+fn parser_helper_blocks(helpers) {
     // Keep this order equal to T0's lexicographic helper sort.
     order := list_new();
     list_set(order, list_length(order), "map_new");
@@ -509,7 +509,7 @@ fn helper_blocks(helpers) {
     while position < list_length(order) {
         key := list_get(order, position);
         if map_has(helpers, key) {
-            output = output + helper_text(key);
+            output = output + builtin_helper_text(key);
         }
         position = position + 1;
     }
@@ -530,9 +530,9 @@ fn parser_program(parser) {
     imports := map_get(parser, "imports");
     import_text := "";
     if list_length(map_keys(imports)) > 0 {
-        import_text = "import { " + import_names(imports) + " } from \"node:fs\";\n";
+        import_text = "import { " + parser_import_names(imports) + " } from \"node:fs\";\n";
     }
-    return shebang + "\"use strict\";\n" + import_text + helper_blocks(map_get(parser, "helpers")) + output;
+    return shebang + "\"use strict\";\n" + import_text + parser_helper_blocks(map_get(parser, "helpers")) + output;
 }
 
 /// Return a parser state with pre-registered top-level function signatures.
@@ -580,12 +580,12 @@ fn parser_new(tokens) {
 }
 
 /// Compile a token list into JavaScript text.
-fn compile(tokens) {
+fn parser_compile(tokens) {
     return parser_program(parser_new(tokens));
 }
 
 /// Compile a token list without condition warnings.
-fn compile_quiet(tokens) {
+fn parser_compile_quiet(tokens) {
     parser := parser_new(tokens);
     map_set(parser, "warn", false);
     return parser_program(parser);

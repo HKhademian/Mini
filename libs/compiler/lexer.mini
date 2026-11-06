@@ -1,4 +1,5 @@
 include "../common/list.mini";
+include "../common/path.mini";
 /// Return a token map with the fields used by T0.
 fn token_new(kind, text, source, start, end, line, column, context) {
     token := map_new();
@@ -150,7 +151,7 @@ fn lex_text(state, source, token) {
 }
 
 /// Scan text into a token list, matching T0 positions and diagnostics.
-fn tokenize(source, source_name, include_comments) {
+fn lex_tokenize(source, source_name, include_comments) {
     state := map_new();
     map_set(state, "text", source);
     map_set(state, "source", source_name);
@@ -209,21 +210,21 @@ fn tokenize(source, source_name, include_comments) {
 
 
 /// Resolve an include path against the including file.
-fn resolve_include(base, path) {
+fn lex_resolve_include(base, path) {
     if text_starts_with(path, "/") {
-        return normalize_path(path);
+        return path_normalize(path);
     }
-    directory := dirname(base);
+    directory := path_parent(base);
     if directory == "" {
-        return normalize_path(path);
+        return path_normalize(path);
     }
-    return normalize_path(directory + "/" + path);
+    return path_normalize(directory + "/" + path);
 }
 
 
 /// Splice included files into a token stream. Includes are top-level,
 /// include-once, and rejected on cycles or missing files.
-fn expand_includes(tokens, base, stack, seen) {
+fn lex_expand_includes(tokens, base, stack, seen) {
     output := list_new();
     position := 0;
     depth := 0;
@@ -248,7 +249,7 @@ fn expand_includes(tokens, base, stack, seen) {
             }
             quoted := map_get(list_get(tokens, position + 1), "text");
             path := text_slice(quoted, 1, text_length(quoted) - 1);
-            resolved := resolve_include(base, path);
+            resolved := lex_resolve_include(base, path);
             if list_has_text(stack, resolved) {
                 diagnostic_fail(token, "include cycle: " + path);
             }
@@ -256,7 +257,7 @@ fn expand_includes(tokens, base, stack, seen) {
                 if !path_is_exists(resolved) {
                     diagnostic_fail(token, "cannot include " + path);
                 }
-                raw := tokenize(file_read(resolved), path, false);
+                raw := lex_tokenize(file_read(resolved), path, false);
                 included := list_new();
                 raw_position := 0;
                 while raw_position < list_length(raw) {
@@ -271,7 +272,7 @@ fn expand_includes(tokens, base, stack, seen) {
                 map_set(seen, resolved, true);
                 nested_stack := list_copy(stack);
                 list_set(nested_stack, list_length(nested_stack), resolved);
-                expanded := expand_includes(included, resolved, nested_stack, seen);
+                expanded := lex_expand_includes(included, resolved, nested_stack, seen);
                 index := 0;
                 while index < list_length(expanded) {
                     list_set(output, list_length(output), list_get(expanded, index));

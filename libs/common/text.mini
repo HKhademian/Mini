@@ -32,17 +32,6 @@ fn indent_output(output) {
     return result;
 }
 
-/// Return the final path component.
-fn basename(path) {
-    position := text_length(path) - 1;
-    while position >= 0 {
-        if text_get(path, position) == "/" {
-            return text_slice(path, position + 1, text_length(path));
-        }
-        position = position - 1;
-    }
-    return path;
-}
 
 /// Return whether text ends with suffix.
 fn text_ends_with(source, suffix) {
@@ -85,54 +74,7 @@ fn text_starts_with(source, prefix) {
     return text_slice(source, 0, size) == prefix;
 }
 
-/// Return the directory part of a path.
-fn dirname(path) {
-    position := text_length(path) - 1;
-    while position >= 0 {
-        character := text_get(path, position);
-        if character == "/" || character == "\\" {
-            return text_slice(path, 0, position);
-        }
-        position = position - 1;
-    }
-    return "";
-}
 
-/// Return a path with redundant dot segments collapsed.
-fn normalize_path(path) {
-    absolute := text_starts_with(path, "/");
-    parts := text_split(path, "/");
-    stack := list_new();
-    position := 0;
-    while position < list_length(parts) {
-        part := list_get(parts, position);
-        if part != "" && part != "." {
-            if part == ".." {
-                if list_length(stack) > 0 && list_get(stack, list_length(stack) - 1) != ".." {
-                    kept := list_new();
-                    index := 0;
-                    while index < list_length(stack) - 1 {
-                        list_set(kept, list_length(kept), list_get(stack, index));
-                        index = index + 1;
-                    }
-                    stack = kept;
-                } else {
-                    if !absolute {
-                        list_set(stack, list_length(stack), "..");
-                    }
-                }
-            } else {
-                list_set(stack, list_length(stack), part);
-            }
-        }
-        position = position + 1;
-    }
-    output := list_to_text(stack, "/");
-    if absolute {
-        return "/" + output;
-    }
-    return output;
-}
 
 /// Remove trailing CR/LF characters.
 fn text_chomp(text) {

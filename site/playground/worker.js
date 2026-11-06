@@ -50,15 +50,15 @@ function loadCompiler() {
 
 /// Compile one source string and return its code or diagnostic text.
 async function compileSource(source) {
-  const { tokenize, expand_includes, compile } = await loadCompiler();
+  const { lex_tokenize, lex_expand_includes, parser_compile } = await loadCompiler();
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
   };
   try {
-    const tokens = tokenize(source, "playground.mini", false);
-    const expanded = expand_includes(tokens, "playground.mini", [], Object.create(null));
-    return { code: compile(expanded), diagnostic: "" };
+    const tokens = lex_tokenize(source, "playground.mini", false);
+    const expanded = lex_expand_includes(tokens, "playground.mini", [], Object.create(null));
+    return { code: parser_compile(expanded), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", diagnostic: diagnostic || message };

@@ -95,7 +95,7 @@ fn main() {
             io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
             process_exit(1);
         }
-        tokens := tokenize(file_read(token_source), basename(token_source), include_comments);
+        tokens := lex_tokenize(file_read(token_source), path_basename(token_source), include_comments);
         io_write(token_json(tokens));
         return 0;
     }
@@ -118,23 +118,23 @@ fn main() {
         io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
         process_exit(1);
     }
-    tokens := tokenize(file_read(source), basename(source), false);
+    tokens := lex_tokenize(file_read(source), path_basename(source), false);
     target := source + ".js";
     if output != 0 {
         target = output;
     }
-    expanded := expand_includes(tokens, source, list_new(), map_new());
+    expanded := lex_expand_includes(tokens, source, list_new(), map_new());
     if reference_mode {
-        root := dirname(dirname(process_script_path()));
+        root := path_parent(path_parent(process_script_path()));
         pure_path := root + "/libs/pure/reference.mini";
-        pure_tokens := expand_includes(tokenize(file_read(pure_path), "libs/pure/reference.mini", false), pure_path, list_new(), map_new());
+        pure_tokens := lex_expand_includes(lex_tokenize(file_read(pure_path), "libs/pure/reference.mini", false), pure_path, list_new(), map_new());
         combined := list_new();
         compiler_append_body(combined, expanded);
         compiler_append_body(combined, pure_tokens);
         list_set(combined, list_length(combined), list_get(expanded, list_length(expanded) - 1));
         expanded = combined;
     }
-    file_write(target, compile(expanded));
+    file_write(target, parser_compile(expanded));
     return 0;
 }
 

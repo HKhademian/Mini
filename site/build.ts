@@ -57,10 +57,10 @@ const repo = readRepositoryUrl();
 /// Load the generated compiler so pages highlight through the real lexer.
 /// The CLI entry is stripped first; importing it directly would run main().
 const compilerModule = await import(browserCompilerModule()) as {
-    readonly tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
+    readonly lex_tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
 };
 
-const tokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.tokenize(source, name, comments);
+const lexTokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.lex_tokenize(source, name, comments);
 const output = join(root, "dist", "site");
 const brandWordmark = readFileSync(join(root, "brand", "mini-wordmark.svg"), "utf8");
 const playgroundSamples = JSON.parse(
@@ -189,7 +189,7 @@ function loadSample(sample: Sample): RenderedSample {
 
 /// Render a fenced code block. Mini source is highlighted through the lexer.
 function codeBlock(text: string, className: string): string {
-    const body = className === "source" ? highlight(text, tokenize) : escapeHtml(text);
+    const body = className === "source" ? highlight(text, lexTokenize) : escapeHtml(text);
     return `<pre class="${className}"><code>${body}</code></pre>`;
 }
 
@@ -370,7 +370,7 @@ function browserCompilerSource(): string {
     if (!source.includes(importLine) || !/main\(\);\s*$/.test(source)) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
-    for (const name of ["function tokenize(", "function expand_includes(", "function compile("]) {
+    for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function parser_compile("]) {
         if (!source.includes(name)) {
             throw new Error(`compiler entry is missing ${name}; update the playground build`);
         }
@@ -378,7 +378,7 @@ function browserCompilerSource(): string {
     return source
         .replace(/main\(\);\s*$/, "")
         .replace(importLine, 'import { readFileSync, writeFileSync, writeSync } from "./shim.js";')
-        + "\nexport { tokenize, expand_includes, compile };\n";
+        + "\nexport { lex_tokenize, lex_expand_includes, parser_compile };\n";
 }
 
 /// Return the generated compiler as a browser module.
@@ -539,7 +539,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
   <script type="module">
     import { highlight } from "../highlight.js";
-    import { tokenize } from "../playground/compiler.js";
+    import { lex_tokenize } from "../playground/compiler.js";
     const samples = ${serialized};
     const source = document.getElementById("source");
     const select = document.getElementById("samples");
@@ -620,7 +620,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           stderr.hidden = false;
         }
         if (data.code) {
-          code.innerHTML = highlight(data.code, tokenize);
+          code.innerHTML = highlight(data.code, lex_tokenize);
           tabCode.disabled = false;
         }
         if (data.diagnostic) {
