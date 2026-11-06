@@ -2,8 +2,7 @@
 include "../libs/tools/build.mini";
 
 /// Parse arguments and build or check generated artifacts.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) > 1 || (list_length(args) == 1 && list_get(args, 0) != "--check") {
         io_write_error("usage: dist/build.js [--check]\n");
         process_exit(1);
@@ -13,4 +12,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

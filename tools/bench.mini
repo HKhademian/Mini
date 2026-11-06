@@ -2,8 +2,7 @@
 include "../libs/tools/bench.mini";
 
 /// Parse arguments, run benchmarks, and report the output path.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) < 1 || list_length(args) > 2 {
         io_write_error("usage: mini-bench OUTPUT [FILTER]\n");
         process_exit(1);
@@ -19,4 +18,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

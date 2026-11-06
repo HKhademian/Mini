@@ -68,9 +68,8 @@ fn verify_bootstrap(root) {
         next := path_join(work, "compiler" + number_to_text(stage) + ".js");
         compile_args := list_new();
         list_set(compile_args, 0, previous);
-        list_set(compile_args, 1, "compile");
-        list_set(compile_args, 2, source_path);
-        list_set(compile_args, 3, next);
+        list_set(compile_args, 1, source_path);
+        list_set(compile_args, 2, next);
         result := process_capture(process_exec_path(), compile_args, work, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);

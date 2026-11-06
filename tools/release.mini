@@ -2,8 +2,7 @@
 include "../libs/tools/release.mini";
 
 /// Parse arguments and package a release.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) < 1 || list_length(args) > 2 {
         io_write_error("usage: mini-release OUTPUT [TAG]\n");
         process_exit(1);
@@ -18,4 +17,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

@@ -2,8 +2,7 @@
 include "../libs/tools/test.mini";
 
 /// Parse arguments and run selected case scenarios.
-fn main() {
-    args := process_args();
+fn main(args) {
     filter := "";
     file := "";
     candidate := "";
@@ -45,4 +44,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

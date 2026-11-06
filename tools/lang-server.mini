@@ -2,8 +2,7 @@
 include "../libs/tools/lang-server.mini";
 
 /// Parse arguments and serve the language protocol.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) == 1 && list_get(args, 0) == "--version" {
         io_write_line(lsp_version());
         return 0;
@@ -16,4 +15,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

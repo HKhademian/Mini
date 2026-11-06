@@ -122,7 +122,6 @@ fn test_candidate(fixtures, root, compiler) {
     return 0;
 }
 
-main();
 /// Compile and run every matching test/*.test.mini program.
 fn test_units(root, filter) {
     compiler := project_compiler_entry(root);

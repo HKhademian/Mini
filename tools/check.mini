@@ -2,8 +2,7 @@
 include "../libs/tools/check.mini";
 
 /// Parse arguments and run repository checks.
-fn main() {
-    args := process_args();
+fn main(args) {
     docs_only := false;
     if list_length(args) == 1 && list_get(args, 0) == "--docs" {
         docs_only = true;
@@ -17,4 +16,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

@@ -53,9 +53,13 @@ fn compiler_append_body(output, tokens) {
     return output;
 }
 
+/// Return the compiler command usage text.
+fn compiler_usage() {
+    return "usage: mini [--reference] SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n";
+}
+
 /// Run the mini compiler command interface.
-fn main() {
-    args := process_args();
+fn main(args) {
     reference_mode = false;
     if list_length(args) > 0 && list_get(args, 0) == "--reference" {
         reference_mode = true;
@@ -92,30 +96,23 @@ fn main() {
         count := list_length(args) - offset;
         token_source := list_get(args, 1 + offset);
         if count < 2 || count > 3 || !text_ends_with(token_source, ".mini") {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
+            io_write_error(compiler_usage());
             process_exit(1);
         }
         tokens := lex_tokenize(file_read(token_source), path_basename(token_source), include_comments);
         io_write(token_json(tokens));
         return 0;
     }
+    // The dispatcher owns the `compile` command word, so this entry takes one
+    // source and an optional output only.
     source := command;
     output := list_get(args, 1);
-    if command == "compile" {
-        source = list_get(args, 1);
-        output = list_get(args, 2);
-        if list_length(args) > 3 {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
-            process_exit(1);
-        }
-    } else {
-        if list_length(args) > 2 {
-            io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
-            process_exit(1);
-        }
+    if list_length(args) > 2 {
+        io_write_error(compiler_usage());
+        process_exit(1);
     }
     if source == 0 || !text_ends_with(source, ".mini") {
-        io_write_error("usage: mini [--reference] SOURCE.mini [OUTPUT.js] | compile SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n");
+        io_write_error(compiler_usage());
         process_exit(1);
     }
     tokens := lex_tokenize(file_read(source), path_basename(source), false);
@@ -138,4 +135,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

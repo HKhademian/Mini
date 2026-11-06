@@ -9,8 +9,7 @@ fn format_fail(message) {
 }
 
 /// Validate arguments, format the selected source, and apply the selected mode.
-fn main() {
-    args := process_args();
+fn main(args) {
     mode := "stdout";
     has_path := false;
     path := "";
@@ -73,4 +72,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

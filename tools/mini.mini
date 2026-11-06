@@ -2,11 +2,11 @@
 include "../libs/tools/mini.mini";
 
 /// Dispatch the invoked command.
-fn main() {
+fn main(args) {
     script := process_script_path();
     executable := path_basename(script);
-    process_exit(mini_run(executable, process_args(), project_root()));
+    process_exit(mini_run(executable, args, project_root()));
     return 0;
 }
 
-main();
+main(fn_args());

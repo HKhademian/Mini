@@ -2,8 +2,7 @@
 include "../libs/tools/verify.mini";
 
 /// Parse arguments and print the bootstrap identity record.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) > 1 {
         io_write_error("usage: mini-verify\n");
         process_exit(1);
@@ -16,4 +15,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

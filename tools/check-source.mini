@@ -9,8 +9,7 @@ fn check_source_fail(message) {
 }
 
 /// Validate arguments and check the selected source.
-fn main() {
-    args := process_args();
+fn main(args) {
     if list_length(args) != 1 {
         check_source_fail("usage: mini-check [--docs | SOURCE.mini | -]");
     }
@@ -35,4 +34,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

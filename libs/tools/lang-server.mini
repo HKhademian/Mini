@@ -211,9 +211,8 @@ fn lsp_analyze(text, name) {
     }
     compile_args := list_new();
     list_set(compile_args, 0, compiler);
-    list_set(compile_args, 1, "compile");
-    list_set(compile_args, 2, input);
-    list_set(compile_args, 3, output);
+    list_set(compile_args, 1, input);
+    list_set(compile_args, 2, output);
     compiled := lsp_run(process_exec_path(), compile_args, root, list_new());
     if map_get(compiled, "status") != 0 {
         list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(compiled, "stderr")), text, name, tokens));

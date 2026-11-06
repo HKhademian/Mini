@@ -487,9 +487,8 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         output := path_join(work, "program.mini.js");
         compile_args := list_new();
         list_set(compile_args, 0, compiler);
-        list_set(compile_args, 1, "compile");
-        list_set(compile_args, 2, source);
-        list_set(compile_args, 3, output);
+        list_set(compile_args, 1, source);
+        list_set(compile_args, 2, output);
         result = process_capture(process_exec_path(), compile_args, project_root, list_new());
         if map_get(result, "status") == 0 && path_is_exists(output) {
             artifact = hash_sha256(file_read_bytes(output));
