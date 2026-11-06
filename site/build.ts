@@ -220,7 +220,7 @@ function renderHero(sample: RenderedSample): string {
     return `<section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Alpha &middot; Node 22.18+ &middot; Apache-2.0</p>
-          <h1>A tiny self-hosting foundation for building other languages.</h1>
+          <h1>Self-hosting foundation for building your own language.</h1>
           <p class="lede">${renderName("Clone {{name}}, grow your own language, and keep the compiler compiling itself after every change.")}</p>
           <p class="actions">
             <a class="button" href="./playground/">Try the playground</a>
@@ -272,8 +272,8 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mini &mdash; a self-hosting foundation for language projects</title>
-  <meta name="description" content="mini is a tiny self-hosting foundation for building other languages. Clone it, grow your own language, and keep the compiler compiling itself.">
+  <title>mini &mdash; self-hosting foundation for building your own language</title>
+  <meta name="description" content="mini is a self-hosting foundation for building your own language. Clone it, grow your own language, and keep the compiler compiling itself.">
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">

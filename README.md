@@ -1,6 +1,6 @@
 # mini
 
-A tiny self-hosting foundation for building other languages.
+Self-hosting foundation for building your own language.
 
 Keep syntax and implementation small, readable, and easy to change. Include
 enough expressiveness to develop, maintain, and extend the self-hosted compiler
