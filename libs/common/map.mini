@@ -3,14 +3,20 @@ include "list.mini";
 
 /// Build a map from alternating key and value arguments.
 ///
-/// A repeated key takes the last supplied value, matching map_set. A trailing
-/// key without a value is ignored, so an odd argument count still yields a map.
+/// A repeated key takes the last supplied value, matching map_set. A key
+/// without a value takes 0, so the entry still exists and map_of("k") equals
+/// map_of("k", 0).
 fn map_of() {
     entries := fn_args();
     result := map_new();
     position := 0;
-    while position + 1 < list_length(entries) {
-        map_set(result, list_get(entries, position), list_get(entries, position + 1));
+    while position < list_length(entries) {
+        key := list_get(entries, position);
+        value := 0;
+        if position + 1 < list_length(entries) {
+            value = list_get(entries, position + 1);
+        }
+        map_set(result, key, value);
         position = position + 2;
     }
     return result;

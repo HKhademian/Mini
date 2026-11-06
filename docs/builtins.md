@@ -145,8 +145,8 @@ returns empty text.
 `list_of(...)` and `map_of(...)` build collections from their arguments. They are
 library helpers under [libs/common](../libs/common), not builtins, so they need an
 include. `list_of` returns its arguments as a list. `map_of` reads alternating
-keys and values; a repeated key takes the last value and a trailing key without
-a value is ignored.
+keys and values; a repeated key takes the last value, and a key without a value
+takes 0, so `map_of("k")` equals `map_of("k", 0)`.
 
 `map_new()` creates a fresh empty map with no arguments. The compiler uses ordinary objects
 with a shared empty prototype; maps can be stored in lists and passed through
@@ -161,6 +161,11 @@ missing-key value.
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared
 lists and maps. The compiler emits the setter adapter once when used.
+
+`map_delete(items, key)` removes a key and returns 0. A non-map target or an
+absent key is a no-op, so removal is observed through `map_has` and the key
+count rather than a returned value. mini has no null, so deletion is the only
+way to make a key present again as absent.
 
 `map_get(items, key)` returns the stored value, or numeric zero for a missing
 key or non-map target, without inserting anything. Stored zero, false, and empty

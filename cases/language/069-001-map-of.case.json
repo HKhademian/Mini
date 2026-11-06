@@ -8,12 +8,12 @@
   ],
   "cases": [
     {
-      "name": "pairs-repeats-and-odd",
+      "name": "pairs-repeats-and-bare-key",
       "stdin": {
         "file": "empty.stdin"
       },
       "stdout": {
-        "text": "2\n2\n2\n1\n0\n"
+        "text": "2\n2\n2\n1\nbare equals explicit\n0\n"
       },
       "stderr": {
         "file": "empty.stderr"
