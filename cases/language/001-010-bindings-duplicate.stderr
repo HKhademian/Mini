@@ -1,0 +1,3 @@
+001-010-bindings-duplicate.mini:2:5: duplicate binding value
+var value = 2;
+    ^

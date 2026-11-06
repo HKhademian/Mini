@@ -1,0 +1,23 @@
+{
+  "id": "language.bindings-duplicate",
+  "kind": "reject",
+  "source": "001-010-bindings-duplicate.mini",
+  "features": [
+    "bindings"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "file": "empty.stdout"
+      },
+      "stderr": {
+        "file": "001-010-bindings-duplicate.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

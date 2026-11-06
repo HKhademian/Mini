@@ -119,6 +119,8 @@ var output = "";
 - Every declaration has an initializer.
 - `=` assigns a replacement value to an existing binding.
 - `;` ends a declaration or assignment.
+- A block rejects a second declaration of a name it already declared. A nested
+  block may declare its own binding with the same name.
 
 For example, advancing the source cursor:
 

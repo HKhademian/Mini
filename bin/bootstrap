@@ -932,6 +932,9 @@ function parser_statement(parser) {
     }
     parser_expect(parser, "var");
     let declaration_name = parser_identifier(parser, "expected binding name");
+    if ($mini_map_has($mini_map_get(parser, "declared"), $mini_map_get(declaration_name, "text"))) {
+        parser_fail(declaration_name, ("duplicate binding " + $mini_map_get(declaration_name, "text")));
+    }
     if (($mini_map_get(parser_token(parser), "text") !== "=")) {
         parser_fail(parser_token(parser), "expected initializer");
     }
@@ -942,6 +945,7 @@ function parser_statement(parser) {
     }
     parser_expect(parser, ";");
     $mini_map_set($mini_map_get(parser, "variables"), $mini_map_get(declaration_name, "text"), $mini_map_get(declaration_value, "kind"));
+    $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(declaration_name, "text"), true);
     return (((("let " + $mini_map_get(declaration_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
 }
 function parser_condition(parser) {
@@ -955,7 +959,9 @@ function parser_condition(parser) {
 function parser_block(parser) {
     parser_expect(parser, "{");
     let outer = $mini_map_get(parser, "variables");
+    let outer_declared = $mini_map_get(parser, "declared");
     $mini_map_set(parser, "variables", $mini_map_copy(outer));
+    $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") + 1));
     let output = "";
     while ((($mini_map_get(parser_token(parser), "text") !== "}") && ($mini_map_get(parser_token(parser), "kind") !== "eof"))) {
@@ -964,6 +970,7 @@ function parser_block(parser) {
     parser_expect(parser, "}");
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") - 1));
     $mini_map_set(parser, "variables", outer);
+    $mini_map_set(parser, "declared", outer_declared);
     let indented = indent_output(output);
     if ((indented === "")) {
         return "{\n}";
@@ -1109,6 +1116,7 @@ function parser_new(tokens) {
     $mini_map_set(parser, "position", 0);
     $mini_map_set(parser, "variables", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "functions", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "depth", 0);
