@@ -11,7 +11,8 @@ function $mini_map_has(items, key) {
     return key in items;
 }
 function $mini_map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value;
+    if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value
+    return 0;
 }
 function $mini_file_read_bytes(path) {
     return Array.from(process.getBuiltinModule("node:fs").readFileSync(path));
@@ -78,9 +79,10 @@ function $mini_list_get(items, index) {
     return 0;
 }
 function $mini_list_set(items, index, value) {
-    if (!Array.isArray(items)) return;
+    if (!Array.isArray(items)) return 0;
     if (index < 0) index = items.length + index;
-    if (index >= 0) items[index] = value;
+    if (index >= 0) items[index] = value
+    return 0;
 }
 function $mini_list_to_text(items, separator) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";
@@ -134,14 +136,16 @@ function $mini_path_temp_directory() {
     return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
 function $mini_path_copy(from, to) {
-    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true });
+    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
+    return 0;
 }
 function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
 }
 function $mini_path_remove(path) {
-    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true });
+    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true })
+    return 0;
 }
 function $mini_text_find(text, needle) {
     if (typeof text !== "string" || typeof needle !== "string") return -1;
@@ -185,7 +189,7 @@ function split_lines(source) {
     while ((position < ((lines).length - 1))) {
         let line = $mini_list_get(lines, position);
         if ((((line).length > 0) && ($mini_text_get(line, ((line).length - 1)) === "\r"))) {
-            ($mini_list_set(lines, position, $mini_text_slice(line, 0, ((line).length - 1))), 0);
+            $mini_list_set(lines, position, $mini_text_slice(line, 0, ((line).length - 1)));
         }
         position = (position + 1);
     }
@@ -280,17 +284,17 @@ function normalize_path(path) {
                     let kept = [];
                     let index = 0;
                     while ((index < ((stack).length - 1))) {
-                        ($mini_list_set(kept, (kept).length, $mini_list_get(stack, index)), 0);
+                        $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
                         index = (index + 1);
                     }
                     stack = kept;
                 } else {
                     if ((!absolute)) {
-                        ($mini_list_set(stack, (stack).length, ".."), 0);
+                        $mini_list_set(stack, (stack).length, "..");
                     }
                 }
             } else {
-                ($mini_list_set(stack, (stack).length, part), 0);
+                $mini_list_set(stack, (stack).length, part);
             }
         }
         position = (position + 1);
@@ -374,7 +378,7 @@ function list_join_from(items, start, separator) {
     let parts = [];
     let position = start;
     while ((position < (items).length)) {
-        ($mini_list_set(parts, (parts).length, $mini_list_get(items, position)), 0);
+        $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
         position = (position + 1);
     }
     return $mini_list_to_text(parts, separator);
@@ -384,7 +388,7 @@ function list_reverse(items) {
     let result = [];
     let position = ((items).length - 1);
     while ((position >= 0)) {
-        ($mini_list_set(result, (result).length, $mini_list_get(items, position)), 0);
+        $mini_list_set(result, (result).length, $mini_list_get(items, position));
         position = (position - 1);
     }
     return result;
@@ -398,8 +402,8 @@ function list_sorted(items) {
         while ((cursor < (result).length)) {
             if (($mini_list_get(result, cursor) < $mini_list_get(result, position))) {
                 let hold = $mini_list_get(result, position);
-                ($mini_list_set(result, position, $mini_list_get(result, cursor)), 0);
-                ($mini_list_set(result, cursor, hold), 0);
+                $mini_list_set(result, position, $mini_list_get(result, cursor));
+                $mini_list_set(result, cursor, hold);
             }
             cursor = (cursor + 1);
         }
@@ -435,29 +439,29 @@ function list_is_text(value) {
 }
 function list_of2(first, second) {
     let result = [];
-    ($mini_list_set(result, 0, first), 0);
-    ($mini_list_set(result, 1, second), 0);
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
     return result;
     return 0;
 }
 function list_of3(first, second, third) {
     let result = [];
-    ($mini_list_set(result, 0, first), 0);
-    ($mini_list_set(result, 1, second), 0);
-    ($mini_list_set(result, 2, third), 0);
+    $mini_list_set(result, 0, first);
+    $mini_list_set(result, 1, second);
+    $mini_list_set(result, 2, third);
     return result;
     return 0;
 }
 function token_new(kind, text, source, start, end, line, column, context) {
     let token = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(token, "kind", kind), 0);
-    ($mini_map_set(token, "text", text), 0);
-    ($mini_map_set(token, "source", source), 0);
-    ($mini_map_set(token, "start", start), 0);
-    ($mini_map_set(token, "end", end), 0);
-    ($mini_map_set(token, "line", line), 0);
-    ($mini_map_set(token, "column", column), 0);
-    ($mini_map_set(token, "context", context), 0);
+    $mini_map_set(token, "kind", kind);
+    $mini_map_set(token, "text", text);
+    $mini_map_set(token, "source", source);
+    $mini_map_set(token, "start", start);
+    $mini_map_set(token, "end", end);
+    $mini_map_set(token, "line", line);
+    $mini_map_set(token, "column", column);
+    $mini_map_set(token, "context", context);
     return token;
     return 0;
 }
@@ -465,12 +469,12 @@ function lex_advance(state) {
     let source = $mini_map_get(state, "text");
     let position = $mini_map_get(state, "position");
     let value = $mini_text_get(source, position);
-    ($mini_map_set(state, "position", (position + 1)), 0);
+    $mini_map_set(state, "position", (position + 1));
     if ((value === "\n")) {
-        ($mini_map_set(state, "line", ($mini_map_get(state, "line") + 1)), 0);
-        ($mini_map_set(state, "column", 1), 0);
+        $mini_map_set(state, "line", ($mini_map_get(state, "line") + 1));
+        $mini_map_set(state, "column", 1);
     } else {
-        ($mini_map_set(state, "column", ($mini_map_get(state, "column") + 1)), 0);
+        $mini_map_set(state, "column", ($mini_map_get(state, "column") + 1));
     }
     return value;
     return 0;
@@ -518,23 +522,23 @@ function lex_fail(token, message) {
 }
 function tokenize(source, source_name, include_comments) {
     let state = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(state, "text", source), 0);
-    ($mini_map_set(state, "source", source_name), 0);
-    ($mini_map_set(state, "tokens", []), 0);
-    ($mini_map_set(state, "lines", split_lines(source)), 0);
-    ($mini_map_set(state, "position", 0), 0);
-    ($mini_map_set(state, "line", 1), 0);
-    ($mini_map_set(state, "column", 1), 0);
+    $mini_map_set(state, "text", source);
+    $mini_map_set(state, "source", source_name);
+    $mini_map_set(state, "tokens", []);
+    $mini_map_set(state, "lines", split_lines(source));
+    $mini_map_set(state, "position", 0);
+    $mini_map_set(state, "line", 1);
+    $mini_map_set(state, "column", 1);
     if (((((source).length >= 2) && ($mini_text_get(source, 0) === "#")) && ($mini_text_get(source, 1) === "!"))) {
         let shebang_token = lex_start(state);
-        ($mini_map_set(shebang_token, "kind", "shebang"), 0);
+        $mini_map_set(shebang_token, "kind", "shebang");
         while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
             lex_advance(state);
         }
-        ($mini_map_set(shebang_token, "text", $mini_text_slice(source, $mini_map_get(shebang_token, "start"), $mini_map_get(state, "position"))), 0);
-        ($mini_map_set(shebang_token, "end", $mini_map_get(state, "position")), 0);
+        $mini_map_set(shebang_token, "text", $mini_text_slice(source, $mini_map_get(shebang_token, "start"), $mini_map_get(state, "position")));
+        $mini_map_set(shebang_token, "end", $mini_map_get(state, "position"));
         let initial_tokens = $mini_map_get(state, "tokens");
-        ($mini_list_set(initial_tokens, (initial_tokens).length, shebang_token), 0);
+        $mini_list_set(initial_tokens, (initial_tokens).length, shebang_token);
     }
     while (($mini_map_get(state, "position") < (source).length)) {
         let character = $mini_text_get(source, $mini_map_get(state, "position"));
@@ -547,32 +551,32 @@ function tokenize(source, source_name, include_comments) {
                     lex_advance(state);
                 }
                 if (include_comments) {
-                    ($mini_map_set(comment_token, "kind", "comment"), 0);
-                    ($mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position"))), 0);
-                    ($mini_map_set(comment_token, "end", $mini_map_get(state, "position")), 0);
+                    $mini_map_set(comment_token, "kind", "comment");
+                    $mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
+                    $mini_map_set(comment_token, "end", $mini_map_get(state, "position"));
                     let comment_tokens = $mini_map_get(state, "tokens");
-                    ($mini_list_set(comment_tokens, (comment_tokens).length, comment_token), 0);
+                    $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
                 }
             } else {
                 let token = lex_start(state);
                 if (is_letter(character)) {
-                    ($mini_map_set(token, "kind", "identifier"), 0);
+                    $mini_map_set(token, "kind", "identifier");
                     while ((($mini_map_get(state, "position") < (source).length) && is_identifier_part($mini_text_get(source, $mini_map_get(state, "position"))))) {
                         lex_advance(state);
                     }
                     let spelling = $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
                     if ((((((((spelling === "fn") || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
-                        ($mini_map_set(token, "kind", "keyword"), 0);
+                        $mini_map_set(token, "kind", "keyword");
                     }
                 } else {
                     if (is_digit(character)) {
-                        ($mini_map_set(token, "kind", "number"), 0);
+                        $mini_map_set(token, "kind", "number");
                         while ((($mini_map_get(state, "position") < (source).length) && is_digit($mini_text_get(source, $mini_map_get(state, "position"))))) {
                             lex_advance(state);
                         }
                     } else {
                         if ((character === "\"")) {
-                            ($mini_map_set(token, "kind", "text"), 0);
+                            $mini_map_set(token, "kind", "text");
                             lex_advance(state);
                             while ((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\""))) {
                                 let inner = $mini_text_get(source, $mini_map_get(state, "position"));
@@ -606,17 +610,17 @@ function tokenize(source, source_name, include_comments) {
                         }
                     }
                 }
-                ($mini_map_set(token, "text", $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"))), 0);
-                ($mini_map_set(token, "end", $mini_map_get(state, "position")), 0);
+                $mini_map_set(token, "text", $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position")));
+                $mini_map_set(token, "end", $mini_map_get(state, "position"));
                 let tokens = $mini_map_get(state, "tokens");
-                ($mini_list_set(tokens, (tokens).length, token), 0);
+                $mini_list_set(tokens, (tokens).length, token);
             }
         }
     }
     let end_token = lex_start(state);
-    ($mini_map_set(end_token, "kind", "eof"), 0);
+    $mini_map_set(end_token, "kind", "eof");
     let end_tokens = $mini_map_get(state, "tokens");
-    ($mini_list_set(end_tokens, (end_tokens).length, end_token), 0);
+    $mini_list_set(end_tokens, (end_tokens).length, end_token);
     return end_tokens;
     return 0;
 }
@@ -646,7 +650,7 @@ function expand_includes(tokens, base, stack, seen) {
         }
         let is_include = ((((text === "include") && ((position + 2) < (tokens).length)) && ($mini_map_get($mini_list_get(tokens, (position + 1)), "kind") === "text")) && ($mini_map_get($mini_list_get(tokens, (position + 2)), "text") === ";"));
         if ((!is_include)) {
-            ($mini_list_set(output, (output).length, token), 0);
+            $mini_list_set(output, (output).length, token);
             position = (position + 1);
         } else {
             if ((depth !== 0)) {
@@ -667,20 +671,20 @@ function expand_includes(tokens, base, stack, seen) {
                 let raw_position = 0;
                 while ((raw_position < (raw).length)) {
                     if (($mini_map_get($mini_list_get(raw, raw_position), "kind") !== "eof")) {
-                        ($mini_list_set(included, (included).length, $mini_list_get(raw, raw_position)), 0);
+                        $mini_list_set(included, (included).length, $mini_list_get(raw, raw_position));
                     }
                     raw_position = (raw_position + 1);
                 }
                 if ((((included).length > 0) && ($mini_map_get($mini_list_get(included, 0), "kind") === "shebang"))) {
                     diagnostic_fail(token, "included file must not have a shebang");
                 }
-                ($mini_map_set(seen, resolved, true), 0);
+                $mini_map_set(seen, resolved, true);
                 let nested_stack = $mini_list_copy(stack);
-                ($mini_list_set(nested_stack, (nested_stack).length, resolved), 0);
+                $mini_list_set(nested_stack, (nested_stack).length, resolved);
                 let expanded = expand_includes(included, resolved, nested_stack, seen);
                 let index = 0;
                 while ((index < (expanded).length)) {
-                    ($mini_list_set(output, (output).length, $mini_list_get(expanded, index)), 0);
+                    $mini_list_set(output, (output).length, $mini_list_get(expanded, index));
                     index = (index + 1);
                 }
             }
@@ -696,8 +700,8 @@ function parser_fail(token, message) {
 }
 function expression_new(code, kind) {
     let expression = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(expression, "code", code), 0);
-    ($mini_map_set(expression, "kind", kind), 0);
+    $mini_map_set(expression, "code", code);
+    $mini_map_set(expression, "kind", kind);
     return expression;
     return 0;
 }
@@ -711,7 +715,7 @@ function parser_peek(parser, offset) {
 }
 function parser_take(parser) {
     let token = parser_token(parser);
-    ($mini_map_set(parser, "position", ($mini_map_get(parser, "position") + 1)), 0);
+    $mini_map_set(parser, "position", ($mini_map_get(parser, "position") + 1));
     return token;
     return 0;
 }
@@ -874,7 +878,7 @@ function argument_code_list(args) {
     let codes = [];
     let position = 0;
     while ((position < (args).length)) {
-        ($mini_list_set(codes, (codes).length, $mini_map_get($mini_list_get(args, position), "code")), 0);
+        $mini_list_set(codes, (codes).length, $mini_map_get($mini_list_get(args, position), "code"));
         position = (position + 1);
     }
     return codes;
@@ -895,10 +899,10 @@ function parser_call(parser, name) {
     parser_expect(parser, "(");
     let args = [];
     if (($mini_map_get(parser_token(parser), "text") !== ")")) {
-        ($mini_list_set(args, (args).length, parser_expression(parser)), 0);
+        $mini_list_set(args, (args).length, parser_expression(parser));
         while (($mini_map_get(parser_token(parser), "text") === ",")) {
             parser_take(parser);
-            ($mini_list_set(args, (args).length, parser_expression(parser)), 0);
+            $mini_list_set(args, (args).length, parser_expression(parser));
         }
     }
     parser_expect(parser, ")");
@@ -929,12 +933,12 @@ function parser_call(parser, name) {
     let imports = builtin_imports(name_text);
     position = 0;
     while ((position < (imports).length)) {
-        ($mini_map_set($mini_map_get(parser, "imports"), $mini_list_get(imports, position), true), 0);
+        $mini_map_set($mini_map_get(parser, "imports"), $mini_list_get(imports, position), true);
         position = (position + 1);
     }
     let helper = builtin_helper_key(name_text);
     if ((helper !== "")) {
-        ($mini_map_set($mini_map_get(parser, "helpers"), helper, true), 0);
+        $mini_map_set($mini_map_get(parser, "helpers"), helper, true);
     }
     return expression_new(builtin_emit(name_text, argument_code_list(args)), builtin_result(name_text));
     return 0;
@@ -968,7 +972,7 @@ function parser_statement(parser) {
         }
         let return_value = parser_expression(parser);
         parser_expect(parser, ";");
-        ($mini_map_set($mini_map_get(parser, "current"), "result", $mini_map_get(return_value, "kind")), 0);
+        $mini_map_set($mini_map_get(parser, "current"), "result", $mini_map_get(return_value, "kind"));
         return (("return " + $mini_map_get(return_value, "code")) + ";\n");
     }
     if ((($mini_map_get(parser_token(parser), "kind") === "identifier") && ($mini_map_get(parser_peek(parser, 1), "text") === "("))) {
@@ -985,8 +989,8 @@ function parser_statement(parser) {
         }
         let declaration_value = parser_expression(parser);
         parser_expect(parser, ";");
-        ($mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(declaration_value, "kind")), 0);
-        ($mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(statement_name, "text"), true), 0);
+        $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(declaration_value, "kind"));
+        $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(statement_name, "text"), true);
         return (((("let " + $mini_map_get(statement_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
     }
     if ((!$mini_map_has(variables, $mini_map_get(statement_name, "text")))) {
@@ -995,7 +999,7 @@ function parser_statement(parser) {
     parser_expect(parser, "=");
     let assignment_value = parser_expression(parser);
     parser_expect(parser, ";");
-    ($mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(assignment_value, "kind")), 0);
+    $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(assignment_value, "kind"));
     return ((($mini_map_get(statement_name, "text") + " = ") + $mini_map_get(assignment_value, "code")) + ";\n");
     return 0;
 }
@@ -1038,17 +1042,17 @@ function parser_block(parser) {
     parser_expect(parser, "{");
     let outer = $mini_map_get(parser, "variables");
     let outer_declared = $mini_map_get(parser, "declared");
-    ($mini_map_set(parser, "variables", $mini_map_copy(outer)), 0);
-    ($mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") + 1)), 0);
+    $mini_map_set(parser, "variables", $mini_map_copy(outer));
+    $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") + 1));
     let output = "";
     while ((($mini_map_get(parser_token(parser), "text") !== "}") && ($mini_map_get(parser_token(parser), "kind") !== "eof"))) {
         output = (output + parser_statement(parser));
     }
     parser_expect(parser, "}");
-    ($mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") - 1)), 0);
-    ($mini_map_set(parser, "variables", outer), 0);
-    ($mini_map_set(parser, "declared", outer_declared), 0);
+    $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") - 1));
+    $mini_map_set(parser, "variables", outer);
+    $mini_map_set(parser, "declared", outer_declared);
     let indented = indent_output(output);
     if ((indented === "")) {
         return "{\n}";
@@ -1065,26 +1069,26 @@ function parser_function_declaration(parser) {
     parser_expect(parser, "(");
     let parameters = [];
     if (($mini_map_get(parser_token(parser), "text") !== ")")) {
-        ($mini_list_set(parameters, (parameters).length, $mini_map_get(parser_identifier(parser, "expected parameter name"), "text")), 0);
+        $mini_list_set(parameters, (parameters).length, $mini_map_get(parser_identifier(parser, "expected parameter name"), "text"));
         while (($mini_map_get(parser_token(parser), "text") === ",")) {
             parser_take(parser);
-            ($mini_list_set(parameters, (parameters).length, $mini_map_get(parser_identifier(parser, "expected parameter name"), "text")), 0);
+            $mini_list_set(parameters, (parameters).length, $mini_map_get(parser_identifier(parser, "expected parameter name"), "text"));
         }
     }
     parser_expect(parser, ")");
     let info = $mini_map_get($mini_map_get(parser, "functions"), $mini_map_get(name, "text"));
-    ($mini_map_set(parser, "current", info), 0);
-    ($mini_map_set(parser, "in_function", true), 0);
+    $mini_map_set(parser, "current", info);
+    $mini_map_set(parser, "in_function", true);
     let outer = $mini_map_get(parser, "variables");
-    ($mini_map_set(parser, "variables", $mini_map_copy(outer)), 0);
+    $mini_map_set(parser, "variables", $mini_map_copy(outer));
     let position = 0;
     while ((position < (parameters).length)) {
-        ($mini_map_set($mini_map_get(parser, "variables"), $mini_list_get(parameters, position), "unknown"), 0);
+        $mini_map_set($mini_map_get(parser, "variables"), $mini_list_get(parameters, position), "unknown");
         position = (position + 1);
     }
     let body = parser_block(parser);
-    ($mini_map_set(parser, "variables", outer), 0);
-    ($mini_map_set(parser, "in_function", false), 0);
+    $mini_map_set(parser, "variables", outer);
+    $mini_map_set(parser, "in_function", false);
     body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
     return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_to_text(parameters, ", ")) + ") ") + body) + "\n");
     return 0;
@@ -1111,56 +1115,56 @@ function import_names(imports) {
 }
 function helper_blocks(helpers) {
     let order = [];
-    ($mini_list_set(order, (order).length, "map_new"), 0);
-    ($mini_list_set(order, (order).length, "map_get"), 0);
-    ($mini_list_set(order, (order).length, "map_has"), 0);
-    ($mini_list_set(order, (order).length, "map_set"), 0);
-    ($mini_list_set(order, (order).length, "directory_create"), 0);
-    ($mini_list_set(order, (order).length, "directory_list"), 0);
-    ($mini_list_set(order, (order).length, "directory_remove"), 0);
-    ($mini_list_set(order, (order).length, "file_read_bytes"), 0);
-    ($mini_list_set(order, (order).length, "file_remove"), 0);
-    ($mini_list_set(order, (order).length, "file_write_bytes"), 0);
-    ($mini_list_set(order, (order).length, "hash_sha256"), 0);
-    ($mini_list_set(order, (order).length, "json_parse"), 0);
-    ($mini_list_set(order, (order).length, "json_to_text"), 0);
-    ($mini_list_set(order, (order).length, "list_copy"), 0);
-    ($mini_list_set(order, (order).length, "list_pop_back"), 0);
-    ($mini_list_set(order, (order).length, "list_pop_front"), 0);
-    ($mini_list_set(order, (order).length, "list_push_back"), 0);
-    ($mini_list_set(order, (order).length, "list_push_front"), 0);
-    ($mini_list_set(order, (order).length, "list_truncate"), 0);
-    ($mini_list_set(order, (order).length, "list_get"), 0);
-    ($mini_list_set(order, (order).length, "list_set"), 0);
-    ($mini_list_set(order, (order).length, "list_to_text"), 0);
-    ($mini_list_set(order, (order).length, "map_copy"), 0);
-    ($mini_list_set(order, (order).length, "number_to_text"), 0);
-    ($mini_list_set(order, (order).length, "number_mul"), 0);
-    ($mini_list_set(order, (order).length, "number_div"), 0);
-    ($mini_list_set(order, (order).length, "number_mod"), 0);
-    ($mini_list_set(order, (order).length, "number_floor"), 0);
-    ($mini_list_set(order, (order).length, "number_pow"), 0);
-    ($mini_list_set(order, (order).length, "number_from_text"), 0);
-    ($mini_list_set(order, (order).length, "process_run"), 0);
-    ($mini_list_set(order, (order).length, "process_spawn"), 0);
-    ($mini_list_set(order, (order).length, "read_bytes"), 0);
-    ($mini_list_set(order, (order).length, "read_line"), 0);
-    ($mini_list_set(order, (order).length, "path_temp_directory"), 0);
-    ($mini_list_set(order, (order).length, "path_copy"), 0);
-    ($mini_list_set(order, (order).length, "path_is_exists"), 0);
-    ($mini_list_set(order, (order).length, "path_is_directory"), 0);
-    ($mini_list_set(order, (order).length, "path_is_file"), 0);
-    ($mini_list_set(order, (order).length, "path_temp_file"), 0);
-    ($mini_list_set(order, (order).length, "path_remove"), 0);
-    ($mini_list_set(order, (order).length, "text_find"), 0);
-    ($mini_list_set(order, (order).length, "text_from_bytes"), 0);
-    ($mini_list_set(order, (order).length, "text_code"), 0);
-    ($mini_list_set(order, (order).length, "text_from_code"), 0);
-    ($mini_list_set(order, (order).length, "text_get"), 0);
-    ($mini_list_set(order, (order).length, "text_slice"), 0);
-    ($mini_list_set(order, (order).length, "text_split"), 0);
-    ($mini_list_set(order, (order).length, "text_to_bytes"), 0);
-    ($mini_list_set(order, (order).length, "value_kind"), 0);
+    $mini_list_set(order, (order).length, "map_new");
+    $mini_list_set(order, (order).length, "map_get");
+    $mini_list_set(order, (order).length, "map_has");
+    $mini_list_set(order, (order).length, "map_set");
+    $mini_list_set(order, (order).length, "directory_create");
+    $mini_list_set(order, (order).length, "directory_list");
+    $mini_list_set(order, (order).length, "directory_remove");
+    $mini_list_set(order, (order).length, "file_read_bytes");
+    $mini_list_set(order, (order).length, "file_remove");
+    $mini_list_set(order, (order).length, "file_write_bytes");
+    $mini_list_set(order, (order).length, "hash_sha256");
+    $mini_list_set(order, (order).length, "json_parse");
+    $mini_list_set(order, (order).length, "json_to_text");
+    $mini_list_set(order, (order).length, "list_copy");
+    $mini_list_set(order, (order).length, "list_pop_back");
+    $mini_list_set(order, (order).length, "list_pop_front");
+    $mini_list_set(order, (order).length, "list_push_back");
+    $mini_list_set(order, (order).length, "list_push_front");
+    $mini_list_set(order, (order).length, "list_truncate");
+    $mini_list_set(order, (order).length, "list_get");
+    $mini_list_set(order, (order).length, "list_set");
+    $mini_list_set(order, (order).length, "list_to_text");
+    $mini_list_set(order, (order).length, "map_copy");
+    $mini_list_set(order, (order).length, "number_to_text");
+    $mini_list_set(order, (order).length, "number_mul");
+    $mini_list_set(order, (order).length, "number_div");
+    $mini_list_set(order, (order).length, "number_mod");
+    $mini_list_set(order, (order).length, "number_floor");
+    $mini_list_set(order, (order).length, "number_pow");
+    $mini_list_set(order, (order).length, "number_from_text");
+    $mini_list_set(order, (order).length, "process_run");
+    $mini_list_set(order, (order).length, "process_spawn");
+    $mini_list_set(order, (order).length, "read_bytes");
+    $mini_list_set(order, (order).length, "read_line");
+    $mini_list_set(order, (order).length, "path_temp_directory");
+    $mini_list_set(order, (order).length, "path_copy");
+    $mini_list_set(order, (order).length, "path_is_exists");
+    $mini_list_set(order, (order).length, "path_is_directory");
+    $mini_list_set(order, (order).length, "path_is_file");
+    $mini_list_set(order, (order).length, "path_temp_file");
+    $mini_list_set(order, (order).length, "path_remove");
+    $mini_list_set(order, (order).length, "text_find");
+    $mini_list_set(order, (order).length, "text_from_bytes");
+    $mini_list_set(order, (order).length, "text_code");
+    $mini_list_set(order, (order).length, "text_from_code");
+    $mini_list_set(order, (order).length, "text_get");
+    $mini_list_set(order, (order).length, "text_slice");
+    $mini_list_set(order, (order).length, "text_split");
+    $mini_list_set(order, (order).length, "text_to_bytes");
+    $mini_list_set(order, (order).length, "value_kind");
     let output = "";
     let position = 0;
     while ((position < (order).length)) {
@@ -1193,17 +1197,17 @@ function parser_program(parser) {
 }
 function parser_new(tokens) {
     let parser = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(parser, "tokens", tokens), 0);
-    ($mini_map_set(parser, "position", 0), 0);
-    ($mini_map_set(parser, "variables", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "functions", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "warn", true), 0);
-    ($mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto })), 0);
-    ($mini_map_set(parser, "depth", 0), 0);
-    ($mini_map_set(parser, "in_function", false), 0);
-    ($mini_map_set(parser, "current", ({ __proto__: $mini_map_proto })), 0);
+    $mini_map_set(parser, "tokens", tokens);
+    $mini_map_set(parser, "position", 0);
+    $mini_map_set(parser, "variables", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "functions", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "warn", true);
+    $mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "depth", 0);
+    $mini_map_set(parser, "in_function", false);
+    $mini_map_set(parser, "current", ({ __proto__: $mini_map_proto }));
     let depth = 0;
     let index = 0;
     while ((index < (tokens).length)) {
@@ -1224,9 +1228,9 @@ function parser_new(tokens) {
                 cursor = (cursor + 1);
             }
             let info = ({ __proto__: $mini_map_proto });
-            ($mini_map_set(info, "arity", arity), 0);
-            ($mini_map_set(info, "result", "unknown"), 0);
-            ($mini_map_set($mini_map_get(parser, "functions"), $mini_map_get($mini_list_get(tokens, (index + 1)), "text"), info), 0);
+            $mini_map_set(info, "arity", arity);
+            $mini_map_set(info, "result", "unknown");
+            $mini_map_set($mini_map_get(parser, "functions"), $mini_map_get($mini_list_get(tokens, (index + 1)), "text"), info);
         }
         index = (index + 1);
     }
@@ -1239,7 +1243,7 @@ function compile(tokens) {
 }
 function compile_quiet(tokens) {
     let parser = parser_new(tokens);
-    ($mini_map_set(parser, "warn", false), 0);
+    $mini_map_set(parser, "warn", false);
     return parser_program(parser);
     return 0;
 }
@@ -1254,31 +1258,31 @@ let builtin_helpers = ({ __proto__: $mini_map_proto });
 let builtin_reference_targets = ({ __proto__: $mini_map_proto });
 let builtin_emit_forms = ({ __proto__: $mini_map_proto });
 function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
-    ($mini_list_set(builtin_names_list, (builtin_names_list).length, name), 0);
-    ($mini_map_set(builtin_name_set, name, true), 0);
-    ($mini_map_set(builtin_parameter_kinds, name, parameters), 0);
-    ($mini_map_set(builtin_result_kinds, name, result), 0);
-    ($mini_map_set(builtin_import_names, name, import_name), 0);
-    ($mini_map_set(builtin_helper_keys, name, helper_key), 0);
-    ($mini_map_set(builtin_classes, name, layer), 0);
-    ($mini_map_set(builtin_emit_forms, name, emit_form), 0);
+    $mini_list_set(builtin_names_list, (builtin_names_list).length, name);
+    $mini_map_set(builtin_name_set, name, true);
+    $mini_map_set(builtin_parameter_kinds, name, parameters);
+    $mini_map_set(builtin_result_kinds, name, result);
+    $mini_map_set(builtin_import_names, name, import_name);
+    $mini_map_set(builtin_helper_keys, name, helper_key);
+    $mini_map_set(builtin_classes, name, layer);
+    $mini_map_set(builtin_emit_forms, name, emit_form);
     if ((helper_key !== "")) {
-        ($mini_map_set(builtin_helpers, helper_key, helper), 0);
+        $mini_map_set(builtin_helpers, helper_key, helper);
     }
     if ((reference !== "")) {
-        ($mini_map_set(builtin_reference_targets, name, reference), 0);
+        $mini_map_set(builtin_reference_targets, name, reference);
     }
     return 0;
     return 0;
 }
-builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n", "", "($mini_directory_create({0}), 0)");
+builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
 builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
-builtin_add("directory_remove", "text", "number", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n", "", "($mini_directory_remove({0}), 0)");
+builtin_add("directory_remove", "text", "number", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path)\n    return 0;\n}\n", "", "$mini_directory_remove({0})");
 builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
 builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
-builtin_add("file_remove", "text", "number", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true });\n}\n", "", "($mini_file_remove({0}), 0)");
+builtin_add("file_remove", "text", "number", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true })\n    return 0;\n}\n", "", "$mini_file_remove({0})");
 builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
-builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));\n}\n", "", "($mini_file_write_bytes({0}, {1}), 0)");
+builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
 builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
 builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
 builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
@@ -1294,17 +1298,17 @@ builtin_add("list_length", "list", "number", "representation", "", "", "", "", "
 builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
 builtin_add("list_pop_back", "list", "unknown", "performance", "", "list_pop_back", "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n", "pure_list_pop_back", "$mini_list_pop_back({0})");
 builtin_add("list_pop_front", "list", "unknown", "performance", "", "list_pop_front", "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n", "pure_list_pop_front", "$mini_list_pop_front({0})");
-builtin_add("list_push_back", "list,unknown", "number", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n", "pure_list_push_back", "($mini_list_push_back({0}, {1}), 0)");
-builtin_add("list_push_front", "list,unknown", "number", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n", "pure_list_push_front", "($mini_list_push_front({0}, {1}), 0)");
-builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n", "", "($mini_list_set({0}, {1}, {2}), 0)");
+builtin_add("list_push_back", "list,unknown", "number", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n", "pure_list_push_back", "$mini_list_push_back({0}, {1})");
+builtin_add("list_push_front", "list,unknown", "number", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n", "pure_list_push_front", "$mini_list_push_front({0}, {1})");
+builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
 builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_to_text", "$mini_list_to_text({0}, {1})");
-builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n", "", "($mini_list_truncate({0}, {1}), 0)");
+builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
 builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
 builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
 builtin_add("map_has", "map,text", "boolean", "representation", "", "map_has", "function $mini_map_has(items, key) {\n    return key in items;\n}\n", "", "$mini_map_has({0}, {1})");
 builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "Object.keys({0})");
 builtin_add("map_new", "", "map", "representation", "", "map_new", "const $mini_map_proto = { __proto__: null };\n", "", "({ __proto__: $mini_map_proto })");
-builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n", "", "($mini_map_set({0}, {1}, {2}), 0)");
+builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n", "", "$mini_map_set({0}, {1}, {2})");
 builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
 builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
 builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
@@ -1312,11 +1316,11 @@ builtin_add("number_mod", "number,number", "number", "performance", "", "number_
 builtin_add("number_mul", "number,number", "number", "performance", "", "number_mul", "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", "pure_number_mul", "$mini_number_mul({0}, {1})");
 builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
 builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "pure_number_to_text", "$mini_number_to_text({0})");
-builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n", "", "($mini_path_copy({0}, {1}), 0)");
+builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
 builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
 builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
 builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n", "", "$mini_path_is_file({0})");
-builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n", "", "($mini_path_remove({0}), 0)");
+builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
 builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
 builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n", "", "$mini_path_temp_file()");
 builtin_add("process_args", "", "list", "essential", "", "", "", "", "process.argv.slice(2)");
@@ -1494,24 +1498,24 @@ function path_normalize(path) {
         } else {
             if ((part === "..")) {
                 if ((((stack).length > 0) && ($mini_list_get(stack, ((stack).length - 1)) !== ".."))) {
-                    ($mini_list_set(stack, ((stack).length - 1), ""), 0);
-                    ($mini_list_set(stack, (stack).length, ""), 0);
+                    $mini_list_set(stack, ((stack).length - 1), "");
+                    $mini_list_set(stack, (stack).length, "");
                     let kept = [];
                     let index = 0;
                     while ((index < (stack).length)) {
                         if (($mini_list_get(stack, index) !== "")) {
-                            ($mini_list_set(kept, (kept).length, $mini_list_get(stack, index)), 0);
+                            $mini_list_set(kept, (kept).length, $mini_list_get(stack, index));
                         }
                         index = (index + 1);
                     }
                     stack = kept;
                 } else {
                     if ((!absolute)) {
-                        ($mini_list_set(stack, (stack).length, part), 0);
+                        $mini_list_set(stack, (stack).length, part);
                     }
                 }
             } else {
-                ($mini_list_set(stack, (stack).length, part), 0);
+                $mini_list_set(stack, (stack).length, part);
             }
         }
         position = (position + 1);
@@ -1532,27 +1536,27 @@ function path_resolve(base, path) {
 }
 function process_capture(command, args, directory, input) {
     let options = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(options, "command", command), 0);
-    ($mini_map_set(options, "arguments", args), 0);
-    ($mini_map_set(options, "directory", directory), 0);
-    ($mini_map_set(options, "input", input), 0);
-    ($mini_map_set(options, "timeout", 30000), 0);
+    $mini_map_set(options, "command", command);
+    $mini_map_set(options, "arguments", args);
+    $mini_map_set(options, "directory", directory);
+    $mini_map_set(options, "input", input);
+    $mini_map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
     return 0;
 }
 function result_ok(value, message) {
     let result = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(result, "ok", true), 0);
-    ($mini_map_set(result, "value", value), 0);
-    ($mini_map_set(result, "message", message), 0);
+    $mini_map_set(result, "ok", true);
+    $mini_map_set(result, "value", value);
+    $mini_map_set(result, "message", message);
     return result;
     return 0;
 }
 function result_fail(message) {
     let result = ({ __proto__: $mini_map_proto });
-    ($mini_map_set(result, "ok", false), 0);
-    ($mini_map_set(result, "value", 0), 0);
-    ($mini_map_set(result, "message", message), 0);
+    $mini_map_set(result, "ok", false);
+    $mini_map_set(result, "value", 0);
+    $mini_map_set(result, "message", message);
     return result;
     return 0;
 }
@@ -1576,7 +1580,7 @@ function result_get_message(result) {
 }
 function result_set_message(result, message) {
     if (value_is_map(result)) {
-        ($mini_map_set(result, "message", message), 0);
+        $mini_map_set(result, "message", message);
     }
     return result;
     return 0;
@@ -1590,7 +1594,7 @@ function result_get_value(result) {
 }
 function result_set_value(result, value) {
     if (value_is_map(result)) {
-        ($mini_map_set(result, "value", value), 0);
+        $mini_map_set(result, "value", value);
     }
     return result;
     return 0;
@@ -1638,9 +1642,9 @@ function bootstrap_compile_text(source) {
 }
 function bootstrap_compile_with(root, compiler, source, output) {
     let args = [];
-    ($mini_list_set(args, 0, compiler), 0);
-    ($mini_list_set(args, 1, source), 0);
-    ($mini_list_set(args, 2, output), 0);
+    $mini_list_set(args, 0, compiler);
+    $mini_list_set(args, 1, source);
+    $mini_list_set(args, 2, output);
     let result = process_capture(process.execPath, args, root, []);
     if (($mini_map_get(result, "status") !== 0)) {
         bootstrap_fail(("compile failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
@@ -1650,7 +1654,7 @@ function bootstrap_compile_with(root, compiler, source, output) {
 }
 function bootstrap_run(root, path) {
     let args = [];
-    ($mini_list_set(args, 0, path), 0);
+    $mini_list_set(args, 0, path);
     let result = process_capture(process.execPath, args, root, []);
     if (($mini_map_get(result, "status") !== 0)) {
         bootstrap_fail(("run failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
@@ -1660,8 +1664,8 @@ function bootstrap_run(root, path) {
 }
 function bootstrap_executable(root, path) {
     let args = [];
-    ($mini_list_set(args, 0, "755"), 0);
-    ($mini_list_set(args, 1, path), 0);
+    $mini_list_set(args, 0, "755");
+    $mini_list_set(args, 1, path);
     process_capture("chmod", args, root, []);
     return 0;
     return 0;
@@ -1678,13 +1682,13 @@ function bootstrap_all(root) {
         bootstrap_fail("compiler fixed point mismatch");
     }
     let seed = path_join(root, "dist/compile.js");
-    ($mini_path_copy(first, seed), 0);
+    $mini_path_copy(first, seed);
     bootstrap_executable(root, seed);
     let build = path_join(root, "dist/build.js");
     bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);
-    ($mini_path_remove(work), 0);
+    $mini_path_remove(work);
     (writeSync(1, "bootstrap complete\n"), 0);
     return 0;
     return 0;

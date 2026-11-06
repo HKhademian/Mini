@@ -7,9 +7,9 @@ builtin_add(
     "essential",
     "",
     "path_copy",
-    "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n",
+    "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n",
     "",
-    "($mini_path_copy({0}, {1}), 0)"
+    "$mini_path_copy({0}, {1})"
 );
 builtin_add(
     "path_is_directory",
@@ -51,9 +51,9 @@ builtin_add(
     "essential",
     "",
     "path_remove",
-    "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n",
+    "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n",
     "",
-    "($mini_path_remove({0}), 0)"
+    "$mini_path_remove({0})"
 );
 builtin_add(
     "path_temp_directory",

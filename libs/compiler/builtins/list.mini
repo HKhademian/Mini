@@ -73,9 +73,9 @@ builtin_add(
     "performance",
     "",
     "list_push_back",
-    "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n",
+    "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n",
     "pure_list_push_back",
-    "($mini_list_push_back({0}, {1}), 0)"
+    "$mini_list_push_back({0}, {1})"
 );
 builtin_add(
     "list_push_front",
@@ -84,9 +84,9 @@ builtin_add(
     "performance",
     "",
     "list_push_front",
-    "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n",
+    "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n",
     "pure_list_push_front",
-    "($mini_list_push_front({0}, {1}), 0)"
+    "$mini_list_push_front({0}, {1})"
 );
 builtin_add(
     "list_set",
@@ -95,9 +95,9 @@ builtin_add(
     "representation",
     "",
     "list_set",
-    "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n",
+    "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n",
     "",
-    "($mini_list_set({0}, {1}, {2}), 0)"
+    "$mini_list_set({0}, {1}, {2})"
 );
 builtin_add(
     "list_to_text",
@@ -117,7 +117,7 @@ builtin_add(
     "representation",
     "",
     "list_truncate",
-    "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n",
+    "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n",
     "",
-    "($mini_list_truncate({0}, {1}), 0)"
+    "$mini_list_truncate({0}, {1})"
 );

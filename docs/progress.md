@@ -10,11 +10,11 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.5.0-v0.2.0-alpha.1
+mini      mini-v0.5.0-v0.2.0-alpha.2
 lang      lang-v0.5.0-v0.4.0-alpha.1
-compiler  compiler-v0.5.0-v0.4.0-alpha.1
-bootstrap bootstrap-v0.5.0-v0.2.0-alpha.1
-builtins  builtins-v0.5.0-v0.4.0-alpha.1
+compiler  compiler-v0.5.0-v0.4.0-alpha.2
+bootstrap bootstrap-v0.5.0-v0.2.0-alpha.2
+builtins  builtins-v0.5.0-v0.4.0-alpha.2
 cli       cli-v0.5.0-v0.1.0-alpha.16
 check     check-v0.5.0-v0.1.0-alpha.9
 format    format-v0.5.0-v0.1.0-alpha.6

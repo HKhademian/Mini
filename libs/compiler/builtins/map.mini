@@ -62,7 +62,7 @@ builtin_add(
     "representation",
     "",
     "map_set",
-    "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n",
+    "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n",
     "",
-    "($mini_map_set({0}, {1}, {2}), 0)"
+    "$mini_map_set({0}, {1}, {2})"
 );

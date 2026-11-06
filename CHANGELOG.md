@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.2 / compiler 0.4.0-alpha.2 / builtins 0.4.0-alpha.2 /
+  bootstrap 0.2.0-alpha.2: helper-backed builtins return 0 directly; simple host
+  calls keep the `(op, 0)` expression. No language change.
+
 - mini 0.2.0-alpha.1 / language 0.4.0-alpha.1 / compiler 0.4.0-alpha.1 /
   bootstrap 0.2.0-alpha.1 / builtins 0.4.0-alpha.1: open group 0.5.0. Declare
   with `name := value;`; the `var` keyword is gone. Every call produces a
