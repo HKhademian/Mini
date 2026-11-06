@@ -6,7 +6,7 @@ with `///` documentation, completion, go-to-definition, and document formatting.
 The language picker shows **mini**. File icon themes can override the supplied
 language icons.
 
-Highlights `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
+Highlights `include`, `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
 assignment, and the arithmetic, comparison, and boolean operators in the draft.
 Strings shield their contents from other rules; backslash escapes receive a
@@ -60,11 +60,11 @@ npm ci
 npm run check
 npm run build
 node --test test/grammar.test.ts
-node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.5.0-v0.3.6.vsix
+node node_modules/@vscode/vsce/vsce package --no-dependencies --allow-missing-repository --skip-license --out mini-0.5.0-v0.3.7.vsix
 ```
 
 In VS Code, open Extensions, choose **… → Install from VSIX…**, and select
-`mini-0.5.0-v0.3.6.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
+`mini-0.5.0-v0.3.7.vsix`. Open a `.mini` file. If needed, select **Change Language Mode →
 mini**. Nothing is published to the Marketplace; `mini-local` is a local
 publisher identifier.
 

@@ -4,6 +4,7 @@
   "patterns": [
     { "name": "comment.line.documentation.mini", "match": "///.*$" },
     { "name": "comment.line.double-slash.mini", "match": "//.*$" },
+    { "name": "keyword.control.import.mini", "match": "\\binclude\\b" },
     {
       "name": "string.quoted.double.mini",
       "begin": "\"",

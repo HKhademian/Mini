@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { test } from 'node:test';
 import { join } from 'node:path';
@@ -92,6 +93,8 @@ test('initializes, shuts down, and exits cleanly', async () => {
     assert.equal(initialized.result.capabilities.completionProvider.resolveProvider, false);
     assert.equal(initialized.result.capabilities.definitionProvider, true);
     assert.equal(initialized.result.serverInfo.name, 'mini-lang-server');
+    const versions = JSON.parse(readFileSync(join(root, 'config/versions.json'), 'utf8'));
+    assert.equal(initialized.result.serverInfo.version, `lsp-v${versions.group}-v${versions.lsp}`);
     client.send({ jsonrpc: '2.0', method: 'initialized', params: {} });
     client.send({ jsonrpc: '2.0', id: 2, method: 'shutdown' });
     assert.deepEqual((await client.next()).result, null);
@@ -109,7 +112,7 @@ test('publishes diagnostics for unsaved text and clears them after a fix', async
     assert.equal(first.method, 'textDocument/publishDiagnostics');
     assert.equal(first.params.uri, 'file:///workspace/a.mini');
     assert.equal(first.params.version, 1);
-    assert.deepEqual(first.params.diagnostics[0].range, { start: { line: 0, character: 12 }, end: { line: 0, character: 13 } });
+    assert.deepEqual(first.params.diagnostics[0].range, { start: { line: 0, character: 9 }, end: { line: 0, character: 10 } });
     assert.equal(first.params.diagnostics[0].severity, 1);
     assert.equal(first.params.diagnostics[0].source, 'mini');
     assert.equal(first.params.diagnostics[0].message, 'expected expression');
@@ -181,7 +184,7 @@ test('uses UTF-16 offsets for CRLF and astral text', async () => {
     const text = 'text := "😀";\r\nvalue := ;\r\n';
     client.send(open('file:///emoji.mini', text, 1));
     const published = await client.next();
-    assert.deepEqual(published.params.diagnostics[0].range, { start: { line: 1, character: 12 }, end: { line: 1, character: 13 } });
+    assert.deepEqual(published.params.diagnostics[0].range, { start: { line: 1, character: 9 }, end: { line: 1, character: 10 } });
   });
 });
 
@@ -244,7 +247,7 @@ test('hovers functions and variables with their documentation', async () => {
     const fn = await client.next();
     assert.match(fn.result.contents.value, /```mini\nfn add\(a, b\)\n```/);
     assert.match(fn.result.contents.value, /Adds two numbers\./);
-    assert.deepEqual(fn.result.range, { start: { line: 7, character: 12 }, end: { line: 7, character: 15 } });
+    assert.deepEqual(fn.result.range, { start: { line: 7, character: 9 }, end: { line: 7, character: 12 } });
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(documented, 'answer', 1) } });
     const variable = await client.next();
@@ -285,7 +288,8 @@ test('completes declarations, builtins, and keywords by prefix', async () => {
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 9, character: 0 } } });
     const all = await client.next();
     const labels = all.result.items.map((item: { label: string }) => item.label);
-    for (const label of ['add', 'answer', 'io_write', 'var', 'fn', 'while']) assert.ok(labels.includes(label), label);
+    for (const label of ['add', 'answer', 'io_write', 'include', 'fn', 'while']) assert.ok(labels.includes(label), label);
+    assert.ok(!labels.includes('var'));
     const add = all.result.items.find((item: { label: string }) => item.label === 'add');
     assert.equal(add.detail, 'fn add(a, b)');
     assert.match(add.documentation.value, /Adds two numbers\./);
@@ -318,7 +322,7 @@ test('jumps to function and variable declarations', async () => {
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/definition', params: { textDocument: { uri }, position: positionOf(documented, 'answer', 2) } });
     assert.deepEqual((await client.next()).result, {
-      uri, range: { start: { line: 6, character: 4 }, end: { line: 6, character: 10 } },
+      uri, range: { start: { line: 6, character: 0 }, end: { line: 6, character: 6 } },
     });
   });
 });

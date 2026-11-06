@@ -71,6 +71,9 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
   for (const value of ['true', 'false']) {
     assert.ok(scopes(value, value).includes('constant.language.mini'));
   }
+  assert.ok(scopes('include "library.mini";', 'include').includes('keyword.control.import.mini'));
+  assert.deepEqual(scopes('include_value := 1;', 'include_value'), ['source.mini', 'variable.other.mini']);
+  assert.deepEqual(scopes('var := 1;', 'var'), ['source.mini', 'variable.other.mini']);
   for (const name of [
     'readAll', 'write', 'write_error', 'text_length', 'text_get',
     'file_read', 'file_write', 'process_args', 'list_new', 'list_set', 'list_length', 'list_get',
@@ -112,6 +115,8 @@ test('line and documentation comments shield code and end at the next line', () 
 test('language contribution includes both icons and only packaged resource paths', () => {
   const manifest = JSON.parse(readFileSync(new URL('package.json', root), 'utf8'));
   const language = manifest.contributes.languages[0];
+  assert.equal(manifest.displayName, 'mini');
+  assert.deepEqual(language.aliases, ['mini']);
   assert.deepEqual(language.extensions, ['.mini']);
   assert.equal(manifest.contributes.grammars[0].scopeName, 'source.mini');
   for (const path of [language.configuration, manifest.contributes.grammars[0].path]) {

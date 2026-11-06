@@ -27,6 +27,7 @@ vscode-v0.3.0-v0.3.1  editor fix; same group
 vscode-v0.3.0-v0.3.2  hover and completion; same group
 vscode-v0.3.0-v0.3.3  go to definition; same group
 vscode-v0.5.0-v0.3.6  := grammar; new group
+vscode-v0.5.0-v0.3.7  include syntax; same group
 ```
 
 The editor keeps one counter while its group changes. Use one continuous
@@ -60,12 +61,12 @@ builtins-v0.5.0-v0.4.0-alpha.2
 cli-v0.5.0-v0.1.0-alpha.17
 check-v0.5.0-v0.1.0-alpha.9
 format-v0.5.0-v0.1.0-alpha.7
-lsp-v0.5.0-v0.1.0-alpha.9
+lsp-v0.5.0-v0.1.0-alpha.10
 test-v0.5.0-v0.1.0-alpha.5
 verify-v0.5.0-v0.1.0-alpha.5
 bench-v0.5.0-v0.1.0-alpha.5
 release-v0.5.0-v0.1.0-alpha.5
-vscode-v0.5.0-v0.3.6
+vscode-v0.5.0-v0.3.7
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.

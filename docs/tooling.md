@@ -163,7 +163,8 @@ protocol error; unknown notifications are ignored.
 
 Hover on a function or variable shows its declaration and the contiguous `///`
 documentation lines immediately above it. Hover on a builtin shows its signature.
-Completion offers document functions and variables, builtins, and keywords,
+Completion offers document functions and variables, builtins, and the current
+keywords (`include`, `fn`, `return`, `if`, `else`, `while`, `true`, `false`),
 filtered by the identifier prefix at the cursor. Completion is suppressed inside
 comments and text literals. Go-to-definition returns the declaration of a
 document function or variable; builtins have no source location and return no
