@@ -1,5 +1,5 @@
 /// Run a block when a condition holds.
 temperature := 21;
 if temperature > 18 {
-    io_write("warm\n");
+    io_write_line("warm");
 }

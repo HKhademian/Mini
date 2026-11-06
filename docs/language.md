@@ -231,12 +231,13 @@ io_write(source);
   At EOF it returns empty text.
 - `io_write(text)` writes text to standard output exactly, with no added newline.
   It returns 0; use it as a call statement ending in `;`.
+- `io_write_line(text)` writes text followed by one newline. It returns 0.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 
 These operations let small programs expose their behavior without adding
 syntax. File I/O, arguments, diagnostics, and process termination follow in
 later small reviews; this pair alone is not the compiler's file interface.
-`readLine`, `readNumber`, and `writeLine` remain candidates. Add
+`readLine`, `readNumber`, and other stream helpers remain candidates. Add
 them only when concrete compiler or tool code needs them.
 
 ## Accepted operations: text access

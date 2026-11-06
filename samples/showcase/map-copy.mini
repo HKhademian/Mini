@@ -3,4 +3,4 @@ original := map_new();
 map_set(original, "name", "Mini");
 copy := map_copy(original);
 map_set(copy, "name", "Clone");
-io_write(map_get(original, "name") + " " + map_get(copy, "name") + "\n");
+io_write_line(map_get(original, "name") + " " + map_get(copy, "name"));

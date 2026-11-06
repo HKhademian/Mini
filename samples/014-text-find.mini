@@ -1,12 +1,12 @@
 /// Read text and report whether it contains the two sample words.
 source := io_read_all();
 if text_find(source, "Mini") >= 0 {
-    io_write("has Mini\n");
+    io_write_line("has Mini");
 } else {
-    io_write("no Mini\n");
+    io_write_line("no Mini");
 }
 if text_find(source, "Lang") >= 0 {
-    io_write("has Lang\n");
+    io_write_line("has Lang");
 } else {
-    io_write("no Lang\n");
+    io_write_line("no Lang");
 }

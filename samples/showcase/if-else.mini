@@ -1,7 +1,7 @@
 /// Choose one of two branches.
 value := 7;
 if number_mod(value, 2) == 0 {
-    io_write("even\n");
+    io_write_line("even");
 } else {
-    io_write("odd\n");
+    io_write_line("odd");
 }

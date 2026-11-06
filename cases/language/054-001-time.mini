@@ -1,13 +1,13 @@
 /// Read the millisecond clock without moving backwards.
 first := time_millis();
 if first > 0 {
-    io_write("time ok\n");
+    io_write_line("time ok");
 } else {
-    io_write("time bad\n");
+    io_write_line("time bad");
 }
 second := time_millis();
 if second >= first {
-    io_write("order ok\n");
+    io_write_line("order ok");
 } else {
-    io_write("order bad\n");
+    io_write_line("order bad");
 }

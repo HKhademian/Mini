@@ -1,15 +1,15 @@
 /// Round-trip text and bytes through the byte primitives.
 encoded := text_to_bytes("abc");
 if list_length(encoded) == 3 && list_get(encoded, 0) == 97 && text_from_bytes(encoded) == "abc" {
-    io_write("text ok\n");
+    io_write_line("text ok");
 } else {
-    io_write("text bad\n");
+    io_write_line("text bad");
 }
 multibyte := text_to_bytes("é");
 if list_length(multibyte) == 2 && text_from_bytes(multibyte) == "é" {
-    io_write("utf8 ok\n");
+    io_write_line("utf8 ok");
 } else {
-    io_write("utf8 bad\n");
+    io_write_line("utf8 bad");
 }
 raw := list_new();
 list_set(raw, 0, 0);
@@ -20,9 +20,9 @@ file := directory + "/raw.bin";
 file_write_bytes(file, raw);
 read_back := file_read_bytes(file);
 if list_length(read_back) == 3 && list_get(read_back, 0) == 0 && list_get(read_back, 1) == 255 && list_get(read_back, 2) == 10 {
-    io_write("file ok\n");
+    io_write_line("file ok");
 } else {
-    io_write("file bad\n");
+    io_write_line("file bad");
 }
 file_remove(file);
 directory_remove(directory);

@@ -1,5 +1,5 @@
 /// Multiply and subtract numbers.
 width := 6;
 height := 7;
-io_write(number_to_text(number_mul(width, height)) + "\n");
-io_write(number_to_text(20 - 5) + "\n");
+io_write_line(number_to_text(number_mul(width, height)));
+io_write_line(number_to_text(20 - 5));

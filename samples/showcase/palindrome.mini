@@ -10,7 +10,7 @@ fn reverse(text) {
 }
 word := "level";
 if word == reverse(word) {
-    io_write("palindrome\n");
+    io_write_line("palindrome");
 } else {
-    io_write("different\n");
+    io_write_line("different");
 }

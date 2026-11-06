@@ -3,4 +3,4 @@ args := list_new();
 list_set(args, 0, "-e");
 list_set(args, 1, "process.stdout.write(\"sample\")");
 result := process_run("node", args, "capture");
-io_write(map_get(result, "stdout") + " " + number_to_text(map_get(result, "status")) + "\n");
+io_write_line(map_get(result, "stdout") + " " + number_to_text(map_get(result, "status")));

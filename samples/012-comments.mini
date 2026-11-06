@@ -7,5 +7,5 @@ fn mine(a, b) {
 }
 
 if mine(4, 5) == 1 {
-    io_write("documented function\n"); /// Documentation can also follow code.
+    io_write_line("documented function"); /// Documentation can also follow code.
 }

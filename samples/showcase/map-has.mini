@@ -2,8 +2,8 @@
 values := map_new();
 map_set(values, "ready", true);
 if map_has(values, "ready") {
-    io_write("present\n");
+    io_write_line("present");
 }
 if !map_has(values, "missing") {
-    io_write("absent\n");
+    io_write_line("absent");
 }

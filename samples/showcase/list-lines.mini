@@ -10,4 +10,4 @@ while index < list_length(lines) {
     output = output + list_get(lines, index);
     index = index + 1;
 }
-io_write(output + "\n");
+io_write_line(output);

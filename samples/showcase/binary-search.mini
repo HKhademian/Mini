@@ -24,4 +24,4 @@ while low <= high {
         }
     }
 }
-io_write(number_to_text(found) + "\n");
+io_write_line(number_to_text(found));

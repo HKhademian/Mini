@@ -9,4 +9,4 @@ while index < text_length(text) {
     }
     index = index + 1;
 }
-io_write(number_to_text(count) + "\n");
+io_write_line(number_to_text(count));

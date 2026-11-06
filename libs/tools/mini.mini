@@ -235,7 +235,7 @@ fn mini_run(executable, args, root) {
     if list_length(rest) == 1 && list_get(rest, 0) == "--version" {
         component := mini_component(command);
         if component != "" {
-            io_write(mini_tag(root, component) + "\n");
+            io_write_line(mini_tag(root, component));
             return 0;
         }
     }

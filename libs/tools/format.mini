@@ -51,7 +51,8 @@ fn format_unary_minus_context(text) {
 
 /// Return whether a unary operator needs a leading space.
 fn format_unary_space_context(text) {
-    return text == "return" || text == "," || text == "=" || text == ":=" || text == "+"
+    return text == "if" || text == "while" || text == "return" || text == "," || text == "="
+        || text == ":=" || text == "+"
         || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
         || text == "&&" || text == "||";
 }

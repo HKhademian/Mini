@@ -1,2 +1,2 @@
 #!/usr/bin/env -S mini run
-io_write("ok\n");
+io_write_line("ok");

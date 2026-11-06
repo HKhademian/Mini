@@ -19,4 +19,4 @@ while value <= 30 {
     }
     value = value + 1;
 }
-io_write("\n");
+io_write_line("");

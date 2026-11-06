@@ -2,15 +2,15 @@
 n := 1;
 while n <= 15 {
     if number_mod(n, 15) == 0 {
-        io_write("FizzBuzz\n");
+        io_write_line("FizzBuzz");
     } else {
         if number_mod(n, 3) == 0 {
-            io_write("Fizz\n");
+            io_write_line("Fizz");
         } else {
             if number_mod(n, 5) == 0 {
-                io_write("Buzz\n");
+                io_write_line("Buzz");
             } else {
-                io_write(number_to_text(n) + "\n");
+                io_write_line(number_to_text(n));
             }
         }
     }

@@ -433,6 +433,6 @@ fn check_repository(root, docs_only) {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));
     }
-    io_write("Repository checks and bootstrap fixed point passed.\n");
+    io_write_line("Repository checks and bootstrap fixed point passed.");
     return 0;
 }

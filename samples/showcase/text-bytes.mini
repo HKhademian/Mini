@@ -5,4 +5,4 @@ while index < list_length(bytes) {
     io_write(number_to_text(list_get(bytes, index)) + " ");
     index = index + 1;
 }
-io_write("\n");
+io_write_line("");

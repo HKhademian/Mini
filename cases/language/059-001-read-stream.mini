@@ -2,4 +2,4 @@
 first := io_read_line();
 three := io_read_bytes(3);
 rest := io_read_line();
-io_write(first + "|" + text_from_bytes(three) + "|" + rest + "\n");
+io_write_line(first + "|" + text_from_bytes(three) + "|" + rest);

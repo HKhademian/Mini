@@ -2,7 +2,7 @@
 count := 3;
 ready := count > 0 && count < 10;
 if ready {
-    io_write("ready\n");
+    io_write_line("ready");
 } else {
-    io_write("waiting\n");
+    io_write_line("waiting");
 }

@@ -1,2 +1,2 @@
 /// Write one line of text.
-io_write("hello, mini\n");
+io_write_line("hello, mini");

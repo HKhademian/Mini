@@ -1,3 +1,3 @@
 /// Locate a word inside text.
 haystack := "a small compiler";
-io_write(number_to_text(text_find(haystack, "compiler")) + "\n");
+io_write_line(number_to_text(text_find(haystack, "compiler")));

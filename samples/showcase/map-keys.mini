@@ -3,4 +3,4 @@ values := map_new();
 map_set(values, "a", 1);
 map_set(values, "b", 2);
 map_set(values, "c", 3);
-io_write(number_to_text(list_length(map_keys(values))) + "\n");
+io_write_line(number_to_text(list_length(map_keys(values))));

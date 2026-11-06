@@ -1689,7 +1689,7 @@ function bootstrap_all(root) {
     bootstrap_executable(root, build);
     bootstrap_run(root, build);
     $mini_path_remove(work);
-    (writeSync(1, "bootstrap complete\n"), 0);
+    (writeSync(1, "bootstrap complete" + "\n"), 0);
     return 0;
     return 0;
 }

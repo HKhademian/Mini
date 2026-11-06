@@ -6,4 +6,4 @@ while index >= 0 {
     output = output + text_get(source, index);
     index = index - 1;
 }
-io_write(output + "\n");
+io_write_line(output);

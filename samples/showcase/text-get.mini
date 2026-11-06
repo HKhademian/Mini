@@ -1,3 +1,3 @@
 /// Read the first and last character.
 text := "Mini";
-io_write(text_get(text, 0) + text_get(text, 3) + "\n");
+io_write_line(text_get(text, 0) + text_get(text, 3));

@@ -6,11 +6,11 @@ while index < text_length(source) {
     ch := text_get(source, index);
     if ch == " " || ch == "=" || ch == ";" {
         if token != "" {
-            io_write(token + "\n");
+            io_write_line(token);
             token = "";
         }
         if ch != " " {
-            io_write(ch + "\n");
+            io_write_line(ch);
         }
     } else {
         token = token + ch;
@@ -18,5 +18,5 @@ while index < text_length(source) {
     index = index + 1;
 }
 if token != "" {
-    io_write(token + "\n");
+    io_write_line(token);
 }

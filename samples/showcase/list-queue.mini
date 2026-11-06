@@ -3,4 +3,4 @@ queue := list_new();
 list_push_back(queue, "first");
 list_push_back(queue, "second");
 head := list_pop_front(queue);
-io_write(head + " " + list_get(queue, 0) + "\n");
+io_write_line(head + " " + list_get(queue, 0));

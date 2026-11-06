@@ -4,4 +4,4 @@ list_set(original, 0, "one");
 list_set(original, 1, "two");
 copy := list_copy(original);
 list_set(copy, 0, "changed");
-io_write(list_get(original, 0) + " " + list_get(copy, 0) + "\n");
+io_write_line(list_get(original, 0) + " " + list_get(copy, 0));

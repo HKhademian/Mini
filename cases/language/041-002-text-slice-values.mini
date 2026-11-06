@@ -3,4 +3,4 @@ fn slice(value) {
 }
 items := list_new();
 list_set(items, 0, "nested");
-io_write(slice("xy") + "|" + slice(12) + "|" + slice(items) + "|" + slice("") + "\n");
+io_write_line(slice("xy") + "|" + slice(12) + "|" + slice(items) + "|" + slice(""));

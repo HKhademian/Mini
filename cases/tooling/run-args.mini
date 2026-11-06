@@ -1,2 +1,2 @@
 args := process_args();
-io_write(list_to_text(args, "|") + "\n");
+io_write_line(list_to_text(args, "|"));

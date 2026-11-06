@@ -5,4 +5,4 @@ fn factorial(n) {
     }
     return number_mul(n, factorial(n - 1));
 }
-io_write(number_to_text(factorial(6)) + "\n");
+io_write_line(number_to_text(factorial(6)));

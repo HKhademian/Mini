@@ -54,4 +54,4 @@ map_set(state, "items", items);
 if map_has(receiver(state), key(state)) || map_get(state, "calls") != "rk" {
     process_exit(1);
 }
-io_write("text keys and order\n");
+io_write_line("text keys and order");

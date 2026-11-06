@@ -1,4 +1,4 @@
 /// Join text with +.
 first := "self";
 second := "-hosting";
-io_write(first + second + "\n");
+io_write_line(first + second);

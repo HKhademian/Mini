@@ -3,19 +3,19 @@ directory := path_temp_directory();
 file := directory + "/file.txt";
 file_write(file, "x");
 if !path_is_exists(directory) || !path_is_directory(directory) || !path_is_file(file) {
-    io_write("kind bad\n");
+    io_write_line("kind bad");
     process_exit(1);
 }
 temporary := path_temp_file();
 if !path_is_exists(temporary) || !path_is_file(temporary) {
-    io_write("temp bad\n");
+    io_write_line("temp bad");
     process_exit(1);
 }
 path_remove(temporary);
 path_remove(file);
 path_remove(directory);
 if path_is_exists(file) || path_is_exists(directory) {
-    io_write("remove bad\n");
+    io_write_line("remove bad");
     process_exit(1);
 }
-io_write("path ok\n");
+io_write_line("path ok");

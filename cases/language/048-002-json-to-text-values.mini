@@ -4,14 +4,14 @@ outer := map_new();
 map_set(outer, "nested", inner);
 map_set(outer, "text", "value");
 if json_to_text(outer) == "{\"nested\":{\"z\":[]},\"text\":\"value\"}" {
-    io_write("ok\n");
+    io_write_line("ok");
 } else {
-    io_write("bad\n");
+    io_write_line("bad");
 }
 sparse := list_new();
 list_set(sparse, 2, "last");
 if json_to_text(sparse) == "[null,null,\"last\"]" {
-    io_write("ok\n");
+    io_write_line("ok");
 } else {
-    io_write("bad\n");
+    io_write_line("bad");
 }

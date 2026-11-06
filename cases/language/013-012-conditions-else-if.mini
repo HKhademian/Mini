@@ -7,4 +7,4 @@ fn classify(value) {
         return 1;
     }
 }
-io_write(number_to_text(classify(-2)) + number_to_text(classify(0)) + number_to_text(classify(5)) + "\n");
+io_write_line(number_to_text(classify(-2)) + number_to_text(classify(0)) + number_to_text(classify(5)));

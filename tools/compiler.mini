@@ -85,7 +85,7 @@ fn main() {
         }
         metadata := map_new();
         map_set(metadata, "builtins", entries);
-        io_write(json_to_text(metadata) + "\n");
+        io_write_line(json_to_text(metadata));
         return 0;
     }
     if command == "tokens" {

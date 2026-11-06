@@ -16,4 +16,4 @@ while index < 10 {
     io_write(number_to_text(fib(index)) + " ");
     index = index + 1;
 }
-io_write("\n");
+io_write_line("");

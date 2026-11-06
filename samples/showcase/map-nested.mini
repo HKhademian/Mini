@@ -3,4 +3,4 @@ outer := map_new();
 inner := map_new();
 map_set(inner, "name", "Mini");
 map_set(outer, "language", inner);
-io_write(map_get(map_get(outer, "language"), "name") + "\n");
+io_write_line(map_get(map_get(outer, "language"), "name"));

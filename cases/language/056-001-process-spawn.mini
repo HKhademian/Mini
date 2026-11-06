@@ -16,14 +16,14 @@ result := process_spawn(options);
 out := map_get(result, "stdout");
 if map_get(result, "status") == 0 && list_length(out) == 3 && list_get(out, 0) == 0 && list_get(out, 1) == 255
     && list_get(out, 2) == 10 && map_get(result, "error") == "" {
-    io_write("capture ok\n");
+    io_write_line("capture ok");
 } else {
-    io_write("capture bad\n");
+    io_write_line("capture bad");
 }
 if file_read(dir + "/out.txt") == "x" {
-    io_write("directory ok\n");
+    io_write_line("directory ok");
 } else {
-    io_write("directory bad\n");
+    io_write_line("directory bad");
 }
 inherited := map_new();
 map_set(inherited, "command", process_exec_path());
@@ -34,16 +34,16 @@ map_set(inherited, "arguments", inherit_args);
 map_set(inherited, "mode", "inherit");
 shown := process_spawn(inherited);
 if map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0 {
-    io_write("inherit ok\n");
+    io_write_line("inherit ok");
 } else {
-    io_write("inherit bad\n");
+    io_write_line("inherit bad");
 }
 missing := map_new();
 map_set(missing, "command", "mini-no-such-command");
 failed := process_spawn(missing);
 if map_get(failed, "status") == 1 && text_length(map_get(failed, "error")) > 0 {
-    io_write("failure ok\n");
+    io_write_line("failure ok");
 } else {
-    io_write("failure bad\n");
+    io_write_line("failure bad");
 }
 path_remove(dir);

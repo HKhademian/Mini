@@ -7,4 +7,4 @@ while index < text_length(source) {
     output = output + text_from_code(code + 1);
     index = index + 1;
 }
-io_write(output + "\n");
+io_write_line(output);

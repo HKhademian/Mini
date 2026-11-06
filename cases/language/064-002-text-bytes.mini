@@ -9,5 +9,5 @@ while position < list_length(bytes) {
     output = output + number_to_text(list_get(bytes, position));
     position = position + 1;
 }
-io_write(output + "\n");
-io_write(text_from_bytes(bytes) + "\n");
+io_write_line(output);
+io_write_line(text_from_bytes(bytes));

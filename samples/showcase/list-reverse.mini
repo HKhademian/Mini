@@ -12,4 +12,4 @@ while index >= 0 {
     }
     index = index - 1;
 }
-io_write(output + "\n");
+io_write_line(output);

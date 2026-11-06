@@ -2,4 +2,4 @@
 fn square(value) {
     return number_mul(value, value);
 }
-io_write(number_to_text(square(9)) + "\n");
+io_write_line(number_to_text(square(9)));

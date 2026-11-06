@@ -1,4 +1,4 @@
 /// Parse standard-input JSON and print its name field.
 parsed := json_parse(io_read_all());
 value := map_get(parsed, "value");
-io_write(map_get(value, "name") + "\n");
+io_write_line(map_get(value, "name"));

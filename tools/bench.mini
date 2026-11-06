@@ -15,7 +15,7 @@ fn main() {
         filter = list_get(args, 1);
     }
     count := bench_run(root, output, filter);
-    io_write("Wrote " + number_to_text(count) + " benchmark results to " + output + "\n");
+    io_write_line("Wrote " + number_to_text(count) + " benchmark results to " + output);
     return 0;
 }
 

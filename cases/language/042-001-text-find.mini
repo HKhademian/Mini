@@ -4,7 +4,7 @@ second := text_find(source, "beta");
 missing := text_find(source, "missing");
 empty := text_find(source, "");
 if first == 0 && second == 6 && missing == -1 && empty == 0 && text_find("abc", "bc") == 1 && text_find("abc", "abcd") == -1 {
-    io_write("ok\n");
+    io_write_line("ok");
 } else {
-    io_write("bad\n");
+    io_write_line("bad");
 }

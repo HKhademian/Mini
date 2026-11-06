@@ -70,6 +70,6 @@ fn bootstrap_all(root) {
     bootstrap_executable(root, build);
     bootstrap_run(root, build);
     path_remove(work);
-    io_write("bootstrap complete\n");
+    io_write_line("bootstrap complete");
     return 0;
 }

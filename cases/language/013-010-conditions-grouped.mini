@@ -1,5 +1,5 @@
 left := true;
 right := false;
 if (left || right) && !right {
-    io_write("grouped\n");
+    io_write_line("grouped");
 }

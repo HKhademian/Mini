@@ -1,4 +1,4 @@
 io_write("");
 io_write("mi");
 io_write("ni");
-io_write("\n");
+io_write_line("");

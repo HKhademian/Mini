@@ -3,4 +3,4 @@ stack := list_new();
 list_push_back(stack, "a");
 list_push_back(stack, "b");
 top := list_pop_back(stack);
-io_write(top + " " + number_to_text(list_length(stack)) + "\n");
+io_write_line(top + " " + number_to_text(list_length(stack)));

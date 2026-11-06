@@ -2,6 +2,6 @@
 parts := text_split(io_read_all(), ",");
 position := 0;
 while position < list_length(parts) {
-    io_write(list_get(parts, position) + "\n");
+    io_write_line(list_get(parts, position));
     position = position + 1;
 }

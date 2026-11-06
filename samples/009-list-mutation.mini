@@ -4,12 +4,12 @@ list_set(items, 0, "first");
 list_set(items, 1, "second");
 list_set(items, -1, "last"); // Replace the last existing item.
 list_set(items, -3, "ignored"); // Still before the start after normalization: no change.
-io_write(list_get(items, 0) + "|" + list_get(items, 1) + "\n");
+io_write_line(list_get(items, 0) + "|" + list_get(items, 1));
 
 list_set(items, 2, 7);
 list_set(items, 3, true);
 if list_length(items) == 4 && list_get(items, 2) == 7 && list_get(items, 3) {
-    io_write("mixed values\n");
+    io_write_line("mixed values");
 }
 
 // The outer list retains the nested list reference rather than copying its contents.
@@ -17,4 +17,4 @@ nested := list_new();
 list_set(nested, 0, "nested");
 list_set(items, 4, nested);
 io_write(list_get(list_get(items, 4), 0));
-io_write("\n");
+io_write_line("");

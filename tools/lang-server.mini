@@ -5,7 +5,7 @@ include "../libs/tools/lang-server.mini";
 fn main() {
     args := process_args();
     if list_length(args) == 1 && list_get(args, 0) == "--version" {
-        io_write(lsp_version() + "\n");
+        io_write_line(lsp_version());
         return 0;
     }
     if list_length(args) != 0 {
