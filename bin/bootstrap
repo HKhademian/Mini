@@ -794,6 +794,238 @@ function lex_expand_includes(tokens, base, stack, seen) {
     return output;
     return 0;
 }
+let builtin_names_list = [];
+let builtin_name_set = ({ __proto__: $mini_map_proto });
+let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
+let builtin_result_kinds = ({ __proto__: $mini_map_proto });
+let builtin_import_names = ({ __proto__: $mini_map_proto });
+let builtin_helper_keys = ({ __proto__: $mini_map_proto });
+let builtin_classes = ({ __proto__: $mini_map_proto });
+let builtin_helpers = ({ __proto__: $mini_map_proto });
+let builtin_helper_order = [];
+let builtin_reference_targets = ({ __proto__: $mini_map_proto });
+let builtin_emit_forms = ({ __proto__: $mini_map_proto });
+function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
+
+    $mini_list_set(builtin_names_list, (builtin_names_list).length, name);
+    $mini_map_set(builtin_name_set, name, true);
+    $mini_map_set(builtin_parameter_kinds, name, parameters);
+    $mini_map_set(builtin_result_kinds, name, result);
+    $mini_map_set(builtin_import_names, name, import_name);
+    $mini_map_set(builtin_helper_keys, name, helper_key);
+    $mini_map_set(builtin_classes, name, layer);
+    $mini_map_set(builtin_emit_forms, name, emit_form);
+    if ((helper_key !== "")) {
+        $mini_map_set(builtin_helpers, helper_key, helper);
+        if ((!list_contains(builtin_helper_order, helper_key))) {
+            $mini_list_set(builtin_helper_order, (builtin_helper_order).length, helper_key);
+        }
+    }
+    if ((reference !== "")) {
+        $mini_map_set(builtin_reference_targets, name, reference);
+    }
+    return 0;
+    return 0;
+}
+builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
+builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
+builtin_add("directory_remove", "text", "number", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path)\n    return 0;\n}\n", "", "$mini_directory_remove({0})");
+builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
+builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
+builtin_add("file_remove", "text", "number", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true })\n    return 0;\n}\n", "", "$mini_file_remove({0})");
+builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
+builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
+builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
+builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
+builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
+builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
+builtin_add("io_write", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(1, {0}), 0)");
+builtin_add("io_write_line", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(1, {0} + \"\\n\"), 0)");
+builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
+builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "pure_json_parse", "$mini_json_parse({0})");
+builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "pure_json_to_text", "$mini_json_to_text({0})");
+builtin_add("list_copy", "list", "list", "performance", "", "list_copy", "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n", "pure_list_copy", "$mini_list_copy({0})");
+builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list_get", "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n", "", "$mini_list_get({0}, {1})");
+builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
+builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
+builtin_add("list_pop_back", "list", "unknown", "performance", "", "list_pop_back", "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n", "pure_list_pop_back", "$mini_list_pop_back({0})");
+builtin_add("list_pop_front", "list", "unknown", "performance", "", "list_pop_front", "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n", "pure_list_pop_front", "$mini_list_pop_front({0})");
+builtin_add("list_push_back", "list,unknown", "number", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n", "pure_list_push_back", "$mini_list_push_back({0}, {1})");
+builtin_add("list_push_front", "list,unknown", "number", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n", "pure_list_push_front", "$mini_list_push_front({0}, {1})");
+builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
+builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_to_text", "$mini_list_to_text({0}, {1})");
+builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
+builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
+builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
+builtin_add("map_has", "map,text", "boolean", "representation", "", "map_has", "function $mini_map_has(items, key) {\n    return key in items;\n}\n", "", "$mini_map_has({0}, {1})");
+builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "Object.keys({0})");
+builtin_add("map_new", "", "map", "representation", "", "map_new", "const $mini_map_proto = { __proto__: null };\n", "", "({ __proto__: $mini_map_proto })");
+builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n", "", "$mini_map_set({0}, {1}, {2})");
+builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
+builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
+builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
+builtin_add("number_mod", "number,number", "number", "performance", "", "number_mod", "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", "pure_number_mod", "$mini_number_mod({0}, {1})");
+builtin_add("number_mul", "number,number", "number", "performance", "", "number_mul", "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", "pure_number_mul", "$mini_number_mul({0}, {1})");
+builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
+builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "pure_number_to_text", "$mini_number_to_text({0})");
+builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
+builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
+builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
+builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n", "", "$mini_path_is_file({0})");
+builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
+builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
+builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n", "", "$mini_path_temp_file()");
+builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
+builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
+builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
+builtin_add("process_run", "text,list,text", "map", "essential", "", "process_run", "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n", "", "$mini_process_run({0}, {1}, {2})");
+builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
+builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
+builtin_add("text_code", "text", "number", "representation", "", "text_code", "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", "", "$mini_text_code({0})");
+builtin_add("text_find", "text,text", "number", "performance", "", "text_find", "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n", "pure_text_find", "$mini_text_find({0}, {1})");
+builtin_add("text_from_bytes", "list", "text", "performance", "", "text_from_bytes", "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n", "pure_text_from_bytes", "$mini_text_from_bytes({0})");
+builtin_add("text_from_code", "number", "text", "representation", "", "text_from_code", "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n", "", "$mini_text_from_code({0})");
+builtin_add("text_get", "unknown,number", "text", "representation", "", "text_get", "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n", "", "$mini_text_get({0}, {1})");
+builtin_add("text_length", "text", "number", "representation", "", "", "", "", "({0}).length");
+builtin_add("text_slice", "text,number,number", "text", "performance", "", "text_slice", "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", "pure_text_slice", "$mini_text_slice({0}, {1}, {2})");
+builtin_add("text_split", "text,text", "list", "performance", "", "text_split", "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n", "pure_text_split", "$mini_text_split({0}, {1})");
+builtin_add("text_to_bytes", "text", "list", "performance", "", "text_to_bytes", "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n", "pure_text_to_bytes", "$mini_text_to_bytes({0})");
+builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
+builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
+function builtin_names() {
+
+    return $mini_list_copy(builtin_names_list);
+    return 0;
+}
+function builtin_exists(name) {
+
+    return $mini_map_has(builtin_name_set, name);
+    return 0;
+}
+function builtin_parameters(name) {
+
+    if ((!$mini_map_has(builtin_parameter_kinds, name))) {
+        return [];
+    }
+    let kinds = $mini_map_get(builtin_parameter_kinds, name);
+    if ((kinds === "")) {
+        return [];
+    }
+    return $mini_text_split(kinds, ",");
+    return 0;
+}
+function builtin_result(name) {
+
+    if ($mini_map_has(builtin_result_kinds, name)) {
+        return $mini_map_get(builtin_result_kinds, name);
+    }
+    return "unknown";
+    return 0;
+}
+function builtin_imports(name) {
+
+    if ((!$mini_map_has(builtin_import_names, name))) {
+        return [];
+    }
+    let imports = $mini_map_get(builtin_import_names, name);
+    if ((imports === "")) {
+        return [];
+    }
+    return $mini_text_split(imports, ",");
+    return 0;
+}
+let reference_mode = false;
+function builtin_class(name) {
+
+    if ($mini_map_has(builtin_classes, name)) {
+        return $mini_map_get(builtin_classes, name);
+    }
+    return "library";
+    return 0;
+}
+function builtin_reference_target(name) {
+
+    if ($mini_map_has(builtin_reference_targets, name)) {
+        return $mini_map_get(builtin_reference_targets, name);
+    }
+    return "";
+    return 0;
+}
+function builtin_helper_key(name) {
+
+    if ($mini_map_has(builtin_helper_keys, name)) {
+        return $mini_map_get(builtin_helper_keys, name);
+    }
+    return "";
+    return 0;
+}
+function builtin_helper_order_keys() {
+
+    return $mini_list_copy(builtin_helper_order);
+    return 0;
+}
+function builtin_used_helper_blocks(helpers) {
+
+    let order = builtin_helper_order;
+    let output = "";
+    let position = 0;
+    while ((position < (order).length)) {
+        let key = $mini_list_get(order, position);
+        if ($mini_map_has(helpers, key)) {
+            output = (output + builtin_helper_text(key));
+        }
+        position = (position + 1);
+    }
+    return output;
+    return 0;
+}
+function builtin_helper_text(key) {
+
+    if ($mini_map_has(builtin_helpers, key)) {
+        return $mini_map_get(builtin_helpers, key);
+    }
+    return "";
+    return 0;
+}
+function builtin_replace(source, needle, replacement) {
+
+    let output = "";
+    let position = 0;
+    while ((position < (source).length)) {
+        let rest = $mini_text_slice(source, position, (source).length);
+        let found = $mini_text_find(rest, needle);
+        if ((found < 0)) {
+            return (output + $mini_text_slice(source, position, (source).length));
+        }
+        output = ((output + $mini_text_slice(source, position, (position + found))) + replacement);
+        position = ((position + found) + (needle).length);
+    }
+    return output;
+    return 0;
+}
+function builtin_apply(form, args) {
+
+    let output = form;
+    let position = 0;
+    while ((position < (args).length)) {
+        output = builtin_replace(output, (("{" + $mini_number_to_text(position)) + "}"), $mini_list_get(args, position));
+        position = (position + 1);
+    }
+    return output;
+    return 0;
+}
+function builtin_emit(name, args) {
+
+    let reference_target = builtin_reference_target(name);
+    if ((reference_mode && (reference_target !== ""))) {
+        return (((reference_target + "(") + $mini_list_to_text(args, ", ")) + ")");
+    }
+    if ((!$mini_map_has(builtin_emit_forms, name))) {
+        return "";
+    }
+    return builtin_apply($mini_map_get(builtin_emit_forms, name), args);
+    return 0;
+}
 function parser_fail(token, message) {
 
     return diagnostic_fail(token, message);
@@ -1339,238 +1571,6 @@ function parser_compile_quiet(tokens) {
     let parser = parser_new(tokens);
     $mini_map_set(parser, "warn", false);
     return parser_program(parser);
-    return 0;
-}
-let builtin_names_list = [];
-let builtin_name_set = ({ __proto__: $mini_map_proto });
-let builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
-let builtin_result_kinds = ({ __proto__: $mini_map_proto });
-let builtin_import_names = ({ __proto__: $mini_map_proto });
-let builtin_helper_keys = ({ __proto__: $mini_map_proto });
-let builtin_classes = ({ __proto__: $mini_map_proto });
-let builtin_helpers = ({ __proto__: $mini_map_proto });
-let builtin_helper_order = [];
-let builtin_reference_targets = ({ __proto__: $mini_map_proto });
-let builtin_emit_forms = ({ __proto__: $mini_map_proto });
-function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
-
-    $mini_list_set(builtin_names_list, (builtin_names_list).length, name);
-    $mini_map_set(builtin_name_set, name, true);
-    $mini_map_set(builtin_parameter_kinds, name, parameters);
-    $mini_map_set(builtin_result_kinds, name, result);
-    $mini_map_set(builtin_import_names, name, import_name);
-    $mini_map_set(builtin_helper_keys, name, helper_key);
-    $mini_map_set(builtin_classes, name, layer);
-    $mini_map_set(builtin_emit_forms, name, emit_form);
-    if ((helper_key !== "")) {
-        $mini_map_set(builtin_helpers, helper_key, helper);
-        if ((!list_contains(builtin_helper_order, helper_key))) {
-            $mini_list_set(builtin_helper_order, (builtin_helper_order).length, helper_key);
-        }
-    }
-    if ((reference !== "")) {
-        $mini_map_set(builtin_reference_targets, name, reference);
-    }
-    return 0;
-    return 0;
-}
-builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
-builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
-builtin_add("directory_remove", "text", "number", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path)\n    return 0;\n}\n", "", "$mini_directory_remove({0})");
-builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
-builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
-builtin_add("file_remove", "text", "number", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true })\n    return 0;\n}\n", "", "$mini_file_remove({0})");
-builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
-builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
-builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
-builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
-builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
-builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
-builtin_add("io_write", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(1, {0}), 0)");
-builtin_add("io_write_line", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(1, {0} + \"\\n\"), 0)");
-builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
-builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "pure_json_parse", "$mini_json_parse({0})");
-builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "pure_json_to_text", "$mini_json_to_text({0})");
-builtin_add("list_copy", "list", "list", "performance", "", "list_copy", "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n", "pure_list_copy", "$mini_list_copy({0})");
-builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list_get", "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n", "", "$mini_list_get({0}, {1})");
-builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
-builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
-builtin_add("list_pop_back", "list", "unknown", "performance", "", "list_pop_back", "function $mini_list_pop_back(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.pop();\n}\n", "pure_list_pop_back", "$mini_list_pop_back({0})");
-builtin_add("list_pop_front", "list", "unknown", "performance", "", "list_pop_front", "function $mini_list_pop_front(items) {\n    if (!Array.isArray(items) || items.length === 0) return 0;\n    return items.shift();\n}\n", "pure_list_pop_front", "$mini_list_pop_front({0})");
-builtin_add("list_push_back", "list,unknown", "number", "performance", "", "list_push_back", "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value)\n    return 0;\n}\n", "pure_list_push_back", "$mini_list_push_back({0}, {1})");
-builtin_add("list_push_front", "list,unknown", "number", "performance", "", "list_push_front", "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value)\n    return 0;\n}\n", "pure_list_push_front", "$mini_list_push_front({0}, {1})");
-builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
-builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_to_text", "$mini_list_to_text({0}, {1})");
-builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
-builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
-builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
-builtin_add("map_has", "map,text", "boolean", "representation", "", "map_has", "function $mini_map_has(items, key) {\n    return key in items;\n}\n", "", "$mini_map_has({0}, {1})");
-builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "Object.keys({0})");
-builtin_add("map_new", "", "map", "representation", "", "map_new", "const $mini_map_proto = { __proto__: null };\n", "", "({ __proto__: $mini_map_proto })");
-builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n", "", "$mini_map_set({0}, {1}, {2})");
-builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
-builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
-builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
-builtin_add("number_mod", "number,number", "number", "performance", "", "number_mod", "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", "pure_number_mod", "$mini_number_mod({0}, {1})");
-builtin_add("number_mul", "number,number", "number", "performance", "", "number_mul", "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", "pure_number_mul", "$mini_number_mul({0}, {1})");
-builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
-builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "pure_number_to_text", "$mini_number_to_text({0})");
-builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
-builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
-builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
-builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n", "", "$mini_path_is_file({0})");
-builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
-builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
-builtin_add("path_temp_file", "", "text", "essential", "", "path_temp_file", "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n", "", "$mini_path_temp_file()");
-builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
-builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
-builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
-builtin_add("process_run", "text,list,text", "map", "essential", "", "process_run", "function $mini_process_run(command, args, mode) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: \"\", stderr: \"\", error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const result = child.spawnSync(command, Array.isArray(args) ? args.map(String) : [], {\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        encoding: \"utf8\",\n        maxBuffer: 32 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    output.stdout = typeof result.stdout === \"string\" ? result.stdout : \"\";\n    output.stderr = typeof result.stderr === \"string\" ? result.stderr : \"\";\n    return output;\n}\n", "", "$mini_process_run({0}, {1}, {2})");
-builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
-builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
-builtin_add("text_code", "text", "number", "representation", "", "text_code", "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", "", "$mini_text_code({0})");
-builtin_add("text_find", "text,text", "number", "performance", "", "text_find", "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n", "pure_text_find", "$mini_text_find({0}, {1})");
-builtin_add("text_from_bytes", "list", "text", "performance", "", "text_from_bytes", "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n", "pure_text_from_bytes", "$mini_text_from_bytes({0})");
-builtin_add("text_from_code", "number", "text", "representation", "", "text_from_code", "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n", "", "$mini_text_from_code({0})");
-builtin_add("text_get", "unknown,number", "text", "representation", "", "text_get", "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n", "", "$mini_text_get({0}, {1})");
-builtin_add("text_length", "text", "number", "representation", "", "", "", "", "({0}).length");
-builtin_add("text_slice", "text,number,number", "text", "performance", "", "text_slice", "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", "pure_text_slice", "$mini_text_slice({0}, {1}, {2})");
-builtin_add("text_split", "text,text", "list", "performance", "", "text_split", "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n", "pure_text_split", "$mini_text_split({0}, {1})");
-builtin_add("text_to_bytes", "text", "list", "performance", "", "text_to_bytes", "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n", "pure_text_to_bytes", "$mini_text_to_bytes({0})");
-builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
-builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
-function builtin_names() {
-
-    return $mini_list_copy(builtin_names_list);
-    return 0;
-}
-function builtin_exists(name) {
-
-    return $mini_map_has(builtin_name_set, name);
-    return 0;
-}
-function builtin_parameters(name) {
-
-    if ((!$mini_map_has(builtin_parameter_kinds, name))) {
-        return [];
-    }
-    let kinds = $mini_map_get(builtin_parameter_kinds, name);
-    if ((kinds === "")) {
-        return [];
-    }
-    return $mini_text_split(kinds, ",");
-    return 0;
-}
-function builtin_result(name) {
-
-    if ($mini_map_has(builtin_result_kinds, name)) {
-        return $mini_map_get(builtin_result_kinds, name);
-    }
-    return "unknown";
-    return 0;
-}
-function builtin_imports(name) {
-
-    if ((!$mini_map_has(builtin_import_names, name))) {
-        return [];
-    }
-    let imports = $mini_map_get(builtin_import_names, name);
-    if ((imports === "")) {
-        return [];
-    }
-    return $mini_text_split(imports, ",");
-    return 0;
-}
-let reference_mode = false;
-function builtin_class(name) {
-
-    if ($mini_map_has(builtin_classes, name)) {
-        return $mini_map_get(builtin_classes, name);
-    }
-    return "library";
-    return 0;
-}
-function builtin_reference_target(name) {
-
-    if ($mini_map_has(builtin_reference_targets, name)) {
-        return $mini_map_get(builtin_reference_targets, name);
-    }
-    return "";
-    return 0;
-}
-function builtin_helper_key(name) {
-
-    if ($mini_map_has(builtin_helper_keys, name)) {
-        return $mini_map_get(builtin_helper_keys, name);
-    }
-    return "";
-    return 0;
-}
-function builtin_helper_order_keys() {
-
-    return $mini_list_copy(builtin_helper_order);
-    return 0;
-}
-function builtin_used_helper_blocks(helpers) {
-
-    let order = builtin_helper_order;
-    let output = "";
-    let position = 0;
-    while ((position < (order).length)) {
-        let key = $mini_list_get(order, position);
-        if ($mini_map_has(helpers, key)) {
-            output = (output + builtin_helper_text(key));
-        }
-        position = (position + 1);
-    }
-    return output;
-    return 0;
-}
-function builtin_helper_text(key) {
-
-    if ($mini_map_has(builtin_helpers, key)) {
-        return $mini_map_get(builtin_helpers, key);
-    }
-    return "";
-    return 0;
-}
-function builtin_replace(source, needle, replacement) {
-
-    let output = "";
-    let position = 0;
-    while ((position < (source).length)) {
-        let rest = $mini_text_slice(source, position, (source).length);
-        let found = $mini_text_find(rest, needle);
-        if ((found < 0)) {
-            return (output + $mini_text_slice(source, position, (source).length));
-        }
-        output = ((output + $mini_text_slice(source, position, (position + found))) + replacement);
-        position = ((position + found) + (needle).length);
-    }
-    return output;
-    return 0;
-}
-function builtin_apply(form, args) {
-
-    let output = form;
-    let position = 0;
-    while ((position < (args).length)) {
-        output = builtin_replace(output, (("{" + $mini_number_to_text(position)) + "}"), $mini_list_get(args, position));
-        position = (position + 1);
-    }
-    return output;
-    return 0;
-}
-function builtin_emit(name, args) {
-
-    let reference_target = builtin_reference_target(name);
-    if ((reference_mode && (reference_target !== ""))) {
-        return (((reference_target + "(") + $mini_list_to_text(args, ", ")) + ")");
-    }
-    if ((!$mini_map_has(builtin_emit_forms, name))) {
-        return "";
-    }
-    return builtin_apply($mini_map_get(builtin_emit_forms, name), args);
     return 0;
 }
 function process_capture(command, args, directory, input) {
