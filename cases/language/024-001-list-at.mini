@@ -1,4 +1,4 @@
-args := process_args();
+args := fn_args();
 io_write(list_get(args, 0));
 io_write(":");
 io_write(list_get(args, list_length(args) - 1));

@@ -1,1 +1,1 @@
-args := process_args();
+args := fn_args();

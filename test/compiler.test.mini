@@ -3,8 +3,7 @@ include "../libs/common/text.mini";
 include "../libs/tools/cases.mini";
 
 /// Verify the generated compiler reproduces itself from its mini source.
-fn main() {
-    args := process_args();
+fn main(args) {
     root := list_get(args, 0);
     source := path_join(root, "tools/compiler.mini");
     seed := path_join(root, "dist/compile.js");
@@ -39,4 +38,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

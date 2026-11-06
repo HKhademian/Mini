@@ -13,5 +13,5 @@ fn join(items) {
     }
     return output;
 }
-args := process_args();
+args := fn_args();
 io_write(join(args));

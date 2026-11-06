@@ -9,6 +9,6 @@ fn describe(items) {
     return "nonempty";
 }
 
-io_write(describe(process_args()));
+io_write(describe(fn_args()));
 io_write(":");
 io_write(describe(make_list()));

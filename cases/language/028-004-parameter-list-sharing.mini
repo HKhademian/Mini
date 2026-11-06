@@ -4,7 +4,7 @@ fn change(items) {
     return list_length(items);
 }
 
-original := process_args();
+original := fn_args();
 alias := original;
 result := change(original);
 if result != 0 || list_length(original) != 1 {

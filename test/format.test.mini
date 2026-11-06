@@ -72,8 +72,7 @@ fn format_compiled(root, file, output) {
 }
 
 /// Run the formatter checks.
-fn main() {
-    args := process_args();
+fn main(args) {
     root := list_get(args, 0);
     work := path_temp_directory();
     example := "value:=1;// keep\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\n";
@@ -142,4 +141,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());

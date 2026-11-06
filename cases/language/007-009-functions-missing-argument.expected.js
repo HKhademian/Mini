@@ -5,7 +5,6 @@ function $mini_number_to_text(value) {
     return String(value);
 }
 function join(left, right) {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return (left + right);
     return 0;

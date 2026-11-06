@@ -1,1 +1,1 @@
-count := list_length(process_args(), 0);
+count := list_length(fn_args(), 0);

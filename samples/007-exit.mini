@@ -7,4 +7,4 @@ fn first(items) {
     }
     return list_get(items, 0);
 }
-io_write(first(process_args()));
+io_write(first(fn_args()));

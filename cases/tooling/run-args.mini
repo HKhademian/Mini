@@ -1,2 +1,2 @@
-args := process_args();
+args := fn_args();
 io_write_line(list_to_text(args, "|"));

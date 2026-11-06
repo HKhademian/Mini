@@ -1,3 +1,0 @@
-007-011-functions-fn-args-outside.mini:1:42: fn_args outside function
-io_write_line(number_to_text(list_length(fn_args())));
-                                         ^

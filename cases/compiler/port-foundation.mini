@@ -132,7 +132,7 @@ fn descend(state, depth) {
     return 0;
 }
 
-args := process_args();
+args := fn_args();
 if list_length(args) != 1 {
     io_write_error("expected an output path\n");
     process_exit(1);

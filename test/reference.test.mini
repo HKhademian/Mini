@@ -50,8 +50,7 @@ fn reference_compare(root, name, source_text) {
 }
 
 /// Run the reference equivalence programs.
-fn main() {
-    args := process_args();
+fn main(args) {
     root := list_get(args, 0);
     reference_compare(root, "text", "io_write(text_slice(\"abcdef\", 1, 4) + \"\\n\");\nio_write(number_to_text(text_find(\"abcabc\", \"bc\")) + \"\\n\");\nparts := text_split(\"a,b,c\", \",\");\nio_write(number_to_text(list_length(parts)) + \"\\n\");\n");
     reference_compare(root, "copy", "items := list_new();\nlist_set(items, 0, \"a\");\nlist_set(items, 1, \"b\");\ncopy := list_copy(items);\nlist_set(copy, 0, \"changed\");\nio_write(list_get(items, 0) + list_get(copy, 0) + \"\\n\");\nsource := map_new();\nmap_set(source, \"a\", 1);\ntarget := map_copy(source);\nmap_set(target, \"b\", 2);\nio_write(number_to_text(list_length(map_keys(target))) + \"\\n\");\n");
@@ -64,4 +63,4 @@ fn main() {
     return 0;
 }
 
-main();
+main(fn_args());
