@@ -1,0 +1,11 @@
+include "../../libs/common/map.mini";
+/// Build maps from alternating key and value arguments.
+pairs := map_of("hi", 2, "test", 3);
+repeated := map_of("k", 1, "k", 2);
+odd := map_of("a", 1, "b");
+empty := map_of();
+io_write_line(number_to_text(list_length(map_keys(pairs))));
+io_write_line(number_to_text(map_get(pairs, "hi")));
+io_write_line(number_to_text(map_get(repeated, "k")));
+io_write_line(number_to_text(list_length(map_keys(odd))));
+io_write_line(number_to_text(list_length(map_keys(empty))));

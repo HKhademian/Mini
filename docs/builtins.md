@@ -142,6 +142,12 @@ primitive used by the pure pop implementations.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.
 
+`list_of(...)` and `map_of(...)` build collections from their arguments. They are
+library helpers under [libs/common](../libs/common), not builtins, so they need an
+include. `list_of` returns its arguments as a list. `map_of` reads alternating
+keys and values; a repeated key takes the last value and a trailing key without
+a value is ignored.
+
 `map_new()` creates a fresh empty map with no arguments. The compiler uses ordinary objects
 with a shared empty prototype; maps can be stored in lists and passed through
 functions. There is no per-map metadata or wrapper. The prototype prevents
