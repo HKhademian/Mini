@@ -175,8 +175,10 @@ while position < limit {
 }
 ```
 
-- A condition is an expression that ends at the following braced body. There are
-  no required condition parentheses; use parentheses only for grouping.
+- A condition is an expression that ends at the following braced body.
+  Condition parentheses are not required.
+- A parenthesized whole condition still compiles but reports a warning. Use
+  parentheses only to group part of a condition.
 - Bodies always use braces.
 - `if` runs one branch according to its condition.
 - `while` checks its condition before every iteration, including the first.

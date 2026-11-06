@@ -1,3 +1,3 @@
-013-006-if-missing-braces.mini:2:20: expected {
-if (position == 0) position = 1;
-                   ^
+013-006-if-missing-braces.mini:2:18: expected {
+if position == 0 position = 1;
+                 ^

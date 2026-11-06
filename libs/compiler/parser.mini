@@ -354,9 +354,36 @@ fn parser_statement(parser) {
     return "let " + map_get(declaration_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
 }
 
+/// Return whether parentheses enclose the complete following condition.
+fn parser_condition_parenthesized(parser) {
+    var tokens = map_get(parser, "tokens");
+    var position = map_get(parser, "position");
+    if map_get(list_get(tokens, position), "text") != "(" {
+        return false;
+    }
+    var depth = 0;
+    while position < list_length(tokens) {
+        var text = map_get(list_get(tokens, position), "text");
+        if text == "(" {
+            depth = depth + 1;
+        }
+        if text == ")" {
+            depth = depth - 1;
+            if depth == 0 {
+                return map_get(list_get(tokens, position + 1), "text") == "{";
+            }
+        }
+        position = position + 1;
+    }
+    return false;
+}
+
 /// Parse a boolean condition ending at the following block.
 fn parser_condition(parser) {
     var start = parser_token(parser);
+    if map_get(parser, "warn") && parser_condition_parenthesized(parser) {
+        diagnostic_warn(start, "unnecessary condition parentheses");
+    }
     var condition = parser_expression(parser);
     if map_get(condition, "kind") != "boolean" && map_get(condition, "kind") != "unknown" {
         parser_fail(start, "condition must be boolean");
@@ -537,6 +564,7 @@ fn parser_new(tokens) {
     map_set(parser, "variables", map_new());
     map_set(parser, "functions", map_new());
     map_set(parser, "declared", map_new());
+    map_set(parser, "warn", true);
     map_set(parser, "imports", map_new());
     map_set(parser, "helpers", map_new());
     map_set(parser, "depth", 0);
@@ -573,8 +601,15 @@ fn parser_new(tokens) {
     return parser;
 }
 
-/// Compile a token list into TypeScript text.
+/// Compile a token list into JavaScript text.
 fn compile(tokens) {
     return parser_program(parser_new(tokens));
+}
+
+/// Compile a token list without condition warnings.
+fn compile_quiet(tokens) {
+    var parser = parser_new(tokens);
+    map_set(parser, "warn", false);
+    return parser_program(parser);
 }
 

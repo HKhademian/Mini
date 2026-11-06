@@ -12,7 +12,7 @@ workflow below describes how to use that foundation once available.
 ## Change syntax without keeping both forms
 
 Suppose S1 uses `if cond then code endif` and your target S2 uses
-`if (cond) { code }`. These forms illustrate a migration, not selected grammar.
+`if cond { code }`. These forms illustrate a migration, not selected grammar.
 
 Keep C1, the verified S1 compiler, as the active bootstrap while preparing the
 change. Work with temporary copies so it stays paired with its original source.

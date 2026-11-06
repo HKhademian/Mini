@@ -362,6 +362,6 @@ fn format_tokens(tokens) {
 /// Format one source text; return the canonical text.
 fn format_source(source, name, base) {
     var tokens = tokenize(source, name, true);
-    compile(expand_includes(tokenize(source, name, false), base, list_new(), map_new()));
+    compile_quiet(expand_includes(tokenize(source, name, false), base, list_new(), map_new()));
     return format_tokens(tokens);
 }

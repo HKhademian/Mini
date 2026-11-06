@@ -450,7 +450,7 @@ function lex_start(state) {
     let token = token_new("symbol", "", $mini_map_get(state, "source"), $mini_map_get(state, "position"), $mini_map_get(state, "position"), $mini_map_get(state, "line"), $mini_map_get(state, "column"), $mini_list_get(lines, ($mini_map_get(state, "line") - 1)));
     return token;
 }
-function diagnostic_fail(token, message) {
+function diagnostic_indent(token) {
     let context = $mini_map_get(token, "context");
     let column = $mini_map_get(token, "column");
     let indent = "";
@@ -463,8 +463,18 @@ function diagnostic_fail(token, message) {
         }
         position = (position + 1);
     }
-    writeSync(2, ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text(column)) + ": ") + message) + "\n") + context) + "\n") + indent) + "^\n"));
+    return indent;
+}
+function diagnostic_text(token, label) {
+    return ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text($mini_map_get(token, "column"))) + ": ") + label) + "\n") + $mini_map_get(token, "context")) + "\n") + diagnostic_indent(token)) + "^\n");
+}
+function diagnostic_fail(token, message) {
+    writeSync(2, diagnostic_text(token, message));
     process.exit(1);
+    return 0;
+}
+function diagnostic_warn(token, message) {
+    writeSync(2, diagnostic_text(token, ("warning: " + message)));
     return 0;
 }
 function lex_fail(token, message) {
@@ -948,8 +958,33 @@ function parser_statement(parser) {
     $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(declaration_name, "text"), true);
     return (((("let " + $mini_map_get(declaration_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
 }
+function parser_condition_parenthesized(parser) {
+    let tokens = $mini_map_get(parser, "tokens");
+    let position = $mini_map_get(parser, "position");
+    if (($mini_map_get($mini_list_get(tokens, position), "text") !== "(")) {
+        return false;
+    }
+    let depth = 0;
+    while ((position < (tokens).length)) {
+        let text = $mini_map_get($mini_list_get(tokens, position), "text");
+        if ((text === "(")) {
+            depth = (depth + 1);
+        }
+        if ((text === ")")) {
+            depth = (depth - 1);
+            if ((depth === 0)) {
+                return ($mini_map_get($mini_list_get(tokens, (position + 1)), "text") === "{");
+            }
+        }
+        position = (position + 1);
+    }
+    return false;
+}
 function parser_condition(parser) {
     let start = parser_token(parser);
+    if (($mini_map_get(parser, "warn") && parser_condition_parenthesized(parser))) {
+        diagnostic_warn(start, "unnecessary condition parentheses");
+    }
     let condition = parser_expression(parser);
     if ((($mini_map_get(condition, "kind") !== "boolean") && ($mini_map_get(condition, "kind") !== "unknown"))) {
         parser_fail(start, "condition must be boolean");
@@ -1117,6 +1152,7 @@ function parser_new(tokens) {
     $mini_map_set(parser, "variables", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "functions", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
+    $mini_map_set(parser, "warn", true);
     $mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "depth", 0);
@@ -1153,6 +1189,11 @@ function parser_new(tokens) {
 }
 function compile(tokens) {
     return parser_program(parser_new(tokens));
+}
+function compile_quiet(tokens) {
+    let parser = parser_new(tokens);
+    $mini_map_set(parser, "warn", false);
+    return parser_program(parser);
 }
 let builtin_names_list = [];
 let builtin_name_set = ({ __proto__: $mini_map_proto });

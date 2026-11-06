@@ -46,8 +46,9 @@ instead of a separate builtin table.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format
-below. the language server runs both commands and returns `{tokens,
-diagnostics}` through the active compiler.
+below. A successful compile may also report warnings on standard error; warnings
+do not change the exit status or generated code. the language server runs both
+commands and returns `{tokens, diagnostics}` through the active compiler.
 
 The token list uses the existing shape: `kind`, `text`, `source`, `start`, `end`,
 `line`, `column`, and `context`. It is in source order and includes comment
