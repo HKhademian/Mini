@@ -230,7 +230,7 @@ io_write(source);
 - `io_read_all()` consumes remaining standard input through EOF and returns text.
   At EOF it returns empty text.
 - `io_write(text)` writes text to standard output exactly, with no added newline.
-  It produces no value; use it as a call statement ending in `;`.
+  It returns 0; use it as a call statement ending in `;`.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 
 These operations let small programs expose their behavior without adding
@@ -316,7 +316,7 @@ file_write("output.txt", source);
 
 - `file_read(path)` reads a whole file as UTF-8 text; an empty file returns `""`.
 - `file_write(path, text)` creates or replaces a file with exactly that text,
-  using UTF-8 without newline conversion. It produces no value.
+  using UTF-8 without newline conversion. It returns 0.
 - Relative paths use the process working directory.
 - Start with readable regular files and writable destinations whose parent
   directories exist. No mini filesystem error model is introduced at this step.
@@ -402,7 +402,7 @@ list_set(items, 0, "first");
 list_set(items, -1, "replacement");
 ```
 
-- `list_set(items, index, value)` assigns a value and produces no result.
+- `list_set(items, index, value)` assigns a value and returns 0.
 - If `items` is not a list, the operation does nothing, without an error or
   conversion. All three arguments still evaluate once, from left to right.
 - The caller supplies an integer index. For a negative index, add the current
@@ -482,7 +482,7 @@ map_set(names, "source", "replacement.mini");
   `"__proto__"` are ordinary keys, not properties or methods.
 - Values retain their kind: numbers, booleans, text, lists, and maps are stored
   directly. Stored collections are shared, without implicit cloning.
-- The operation requires all three arguments and produces no result.
+- The operation requires all three arguments and returns 0.
 
 The compiler emits one small map-setter adapter when used. Membership and lookup observe
 inserted keys and stored values; a host-adapter test also checks stored references.
@@ -556,7 +556,7 @@ process_exit(1);
 - `process_exit(status)` immediately terminates the whole program with that
   status, including when called inside a function. Later statements do not run.
 - The caller supplies an integer status from 0 through 255. Zero means success;
-  a nonzero status means failure. The operation produces no value.
+  a nonzero status means failure. The operation returns 0.
 - Reaching the end of the program normally gives status 0.
 
 Use `process_*` names for host process operations. `process_env(name)` reads one
@@ -725,9 +725,9 @@ directory_remove(directory);
 - `path_temp_directory()` creates and returns a fresh empty directory under the host
   temporary directory. It takes no arguments.
 - `file_remove(path)` removes a file when present and ignores a missing path.
-  It produces no value.
+  It returns 0.
 - `directory_remove(path)` removes an empty directory when present and ignores a
-  missing path. It produces no value; removing a non-empty directory is a host
+  missing path. It returns 0; removing a non-empty directory is a host
   error.
 
 ## Accepted operation: diagnostic output
@@ -740,7 +740,7 @@ process_exit(1);
 ```
 
 - `io_write_error(text)` writes UTF-8 text to standard error, exactly as supplied.
-- It adds no newline and produces no value. Empty text writes nothing.
+- It adds no newline and returns 0. Empty text writes nothing.
 - The write completes before the call returns, preserving the diagnostic when
   followed by `process_exit`.
 

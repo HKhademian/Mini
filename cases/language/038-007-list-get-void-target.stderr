@@ -1,3 +1,0 @@
-038-007-list-get-void-target.mini:1:1: expected value argument
-list_get(io_write(""), 0);
-^

@@ -3,13 +3,13 @@
 builtin_add(
     "directory_create",
     "text",
-    "void",
+    "number",
     "essential",
     "",
     "directory_create",
     "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true });\n}\n",
     "",
-    "$mini_directory_create({0})"
+    "($mini_directory_create({0}), 0)"
 );
 builtin_add(
     "directory_list",
@@ -25,11 +25,11 @@ builtin_add(
 builtin_add(
     "directory_remove",
     "text",
-    "void",
+    "number",
     "essential",
     "",
     "directory_remove",
     "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path);\n}\n",
     "",
-    "$mini_directory_remove({0})"
+    "($mini_directory_remove({0}), 0)"
 );

@@ -1,3 +1,0 @@
-037-005-text-get-void-target.mini:1:1: expected value argument
-text_get(io_write(""), 1);
-^

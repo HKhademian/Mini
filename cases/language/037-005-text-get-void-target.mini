@@ -1,1 +1,0 @@
-text_get(io_write(""), 1);

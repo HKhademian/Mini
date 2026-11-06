@@ -58,11 +58,11 @@ builtin_add(
 builtin_add(
     "map_set",
     "unknown,text,unknown",
-    "void",
+    "number",
     "representation",
     "",
     "map_set",
     "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value;\n}\n",
     "",
-    "$mini_map_set({0}, {1}, {2})"
+    "($mini_map_set({0}, {1}, {2}), 0)"
 );

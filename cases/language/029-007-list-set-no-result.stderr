@@ -1,3 +1,0 @@
-029-007-list-set-no-result.mini:1:1: expected a value
-result := list_set(list_new(), 0, "value");
-^

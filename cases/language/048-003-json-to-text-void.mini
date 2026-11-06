@@ -1,1 +1,0 @@
-io_write(json_to_text(list_set(list_new(), 0, "value")));

@@ -37,22 +37,33 @@ builtin_add(
 builtin_add(
     "io_write",
     "text",
-    "void",
+    "number",
     "essential",
     "writeSync",
     "",
     "",
     "",
-    "writeSync(1, {0})"
+    "(writeSync(1, {0}), 0)"
+);
+builtin_add(
+    "io_write_line",
+    "text",
+    "number",
+    "essential",
+    "writeSync",
+    "",
+    "",
+    "",
+    "(writeSync(1, {0} + \"\\n\"), 0)"
 );
 builtin_add(
     "io_write_error",
     "text",
-    "void",
+    "number",
     "essential",
     "writeSync",
     "",
     "",
     "",
-    "writeSync(2, {0})"
+    "(writeSync(2, {0}), 0)"
 );

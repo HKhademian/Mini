@@ -83,8 +83,7 @@ fn parser_equality(parser) {
         right := parser_comparison(parser);
         left_kind := map_get(left, "kind");
         right_kind := map_get(right, "kind");
-        if left_kind == "void" || right_kind == "void"
-            || left_kind == "list" || right_kind == "list"
+        if left_kind == "list" || right_kind == "list"
             || left_kind == "map" || right_kind == "map"
             || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
             parser_fail(operator, "equality needs matching scalar kinds");
@@ -257,14 +256,8 @@ fn parser_call(parser, name) {
     while position < list_length(parameters) {
         kind := list_get(parameters, position);
         actual := map_get(list_get(args, position), "kind");
-        if kind == "unknown" {
-            if actual == "void" {
-                parser_fail(name, "expected value argument");
-            }
-        } else {
-            if actual != "unknown" && actual != kind {
-                parser_fail(name, "expected " + kind + " argument");
-            }
+        if kind != "unknown" && actual != "unknown" && actual != kind {
+            parser_fail(name, "expected " + kind + " argument");
         }
         position = position + 1;
     }
@@ -310,9 +303,6 @@ fn parser_statement(parser) {
             parser_fail(return_token, "return outside function");
         }
         return_value := parser_expression(parser);
-        if map_get(return_value, "kind") == "void" {
-            parser_fail(return_token, "expected a value");
-        }
         parser_expect(parser, ";");
         map_set(map_get(parser, "current"), "result", map_get(return_value, "kind"));
         map_set(map_get(parser, "current"), "returned", true);
@@ -331,9 +321,6 @@ fn parser_statement(parser) {
             parser_fail(statement_name, "duplicate binding " + map_get(statement_name, "text"));
         }
         declaration_value := parser_expression(parser);
-        if map_get(declaration_value, "kind") == "void" {
-            parser_fail(statement_name, "expected a value");
-        }
         parser_expect(parser, ";");
         map_set(variables, map_get(statement_name, "text"), map_get(declaration_value, "kind"));
         map_set(map_get(parser, "declared"), map_get(statement_name, "text"), true);
@@ -344,9 +331,6 @@ fn parser_statement(parser) {
     }
     parser_expect(parser, "=");
     assignment_value := parser_expression(parser);
-    if map_get(assignment_value, "kind") == "void" {
-        parser_fail(statement_name, "expected a value");
-    }
     parser_expect(parser, ";");
     map_set(variables, map_get(statement_name, "text"), map_get(assignment_value, "kind"));
     return map_get(statement_name, "text") + " = " + map_get(assignment_value, "code") + ";\n";

@@ -1,3 +1,0 @@
-032-007-map-set-no-result.mini:1:1: expected a value
-result := map_set(map_new(), "name", 1);
-^

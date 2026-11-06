@@ -64,7 +64,8 @@ true on success, and false with `value` 0 for invalid JSON or non-text input.
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`io_write` produces no value. The compiler implements these operations.
+`io_write` returns 0. `io_write_line(text)` writes text followed by one newline
+and returns 0. The compiler implements these operations.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
 empty text for other values.
@@ -127,7 +128,7 @@ identifiers cannot contain, to avoid collisions with mini source names.
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
 `list_push_back(items, value)` and `list_push_front(items, value)` mutate a list
-and return no value. `list_pop_back(items)` and `list_pop_front(items)` remove and
+and return 0. `list_pop_back(items)` and `list_pop_front(items)` remove and
 return one value, or numeric zero for an empty or non-list target.
 `list_truncate(items, length)` shrinks a list to an existing non-negative length;
 longer or invalid lengths are no-ops. These operations are performance builtins
@@ -189,7 +190,7 @@ operations back tool process setup and cleanup.
 unnecessary until a concrete caller needs it.
 
 The compiler implements `io_write_error(text)`: exact UTF-8 output to stderr, without
-an added newline or result value. It completes before returning so a following
+an added newline and returns 0. It completes before returning so a following
 `process_exit` preserves the diagnostic. This requires primitive host access.
 
 Other candidates, added only when concrete compiler or tool code needs them:

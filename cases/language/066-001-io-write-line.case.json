@@ -1,0 +1,23 @@
+{
+  "id": "language.io-write-line",
+  "kind": "feature",
+  "source": "066-001-io-write-line.mini",
+  "features": [
+    "text.write"
+  ],
+  "cases": [
+    {
+      "name": "returns-zero",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "first\n0\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

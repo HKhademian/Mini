@@ -69,35 +69,35 @@ builtin_add(
 builtin_add(
     "list_push_back",
     "list,unknown",
-    "void",
+    "number",
     "performance",
     "",
     "list_push_back",
     "function $mini_list_push_back(items, value) {\n    if (Array.isArray(items)) items.push(value);\n}\n",
     "pure_list_push_back",
-    "$mini_list_push_back({0}, {1})"
+    "($mini_list_push_back({0}, {1}), 0)"
 );
 builtin_add(
     "list_push_front",
     "list,unknown",
-    "void",
+    "number",
     "performance",
     "",
     "list_push_front",
     "function $mini_list_push_front(items, value) {\n    if (Array.isArray(items)) items.unshift(value);\n}\n",
     "pure_list_push_front",
-    "$mini_list_push_front({0}, {1})"
+    "($mini_list_push_front({0}, {1}), 0)"
 );
 builtin_add(
     "list_set",
     "unknown,number,unknown",
-    "void",
+    "number",
     "representation",
     "",
     "list_set",
     "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n}\n",
     "",
-    "$mini_list_set({0}, {1}, {2})"
+    "($mini_list_set({0}, {1}, {2}), 0)"
 );
 builtin_add(
     "list_to_text",
@@ -113,11 +113,11 @@ builtin_add(
 builtin_add(
     "list_truncate",
     "list,number",
-    "void",
+    "number",
     "representation",
     "",
     "list_truncate",
     "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n}\n",
     "",
-    "$mini_list_truncate({0}, {1})"
+    "($mini_list_truncate({0}, {1}), 0)"
 );

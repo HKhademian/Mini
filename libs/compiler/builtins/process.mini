@@ -36,13 +36,13 @@ builtin_add(
 builtin_add(
     "process_exit",
     "number",
-    "void",
+    "number",
     "essential",
     "",
     "",
     "",
     "",
-    "process.exit({0})"
+    "(process.exit({0}), 0)"
 );
 builtin_add(
     "process_run",

@@ -3,13 +3,13 @@
 builtin_add(
     "path_copy",
     "text,text",
-    "void",
+    "number",
     "essential",
     "",
     "path_copy",
     "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true });\n}\n",
     "",
-    "$mini_path_copy({0}, {1})"
+    "($mini_path_copy({0}, {1}), 0)"
 );
 builtin_add(
     "path_is_directory",
@@ -47,13 +47,13 @@ builtin_add(
 builtin_add(
     "path_remove",
     "text",
-    "void",
+    "number",
     "essential",
     "",
     "path_remove",
     "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true });\n}\n",
     "",
-    "$mini_path_remove({0})"
+    "($mini_path_remove({0}), 0)"
 );
 builtin_add(
     "path_temp_directory",
