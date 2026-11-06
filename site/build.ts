@@ -371,14 +371,14 @@ function browserCompilerSource(): string {
     if (!source.includes(importLine) || !/main\(.*\);\s*$/.test(source)) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
-    for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function parser_compile("]) {
+    for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function parser_compile(", "function parser_compile_program("]) {
         if (!source.includes(name)) {
             throw new Error(`compiler entry is missing ${name}; update the playground build`);
         }
     }
     return source
         .replace(/main\(.*\);\s*$/, "")
-        + "\nexport { lex_tokenize, lex_expand_includes, parser_compile };\n";
+        + "\nexport { lex_tokenize, lex_expand_includes, parser_compile, parser_compile_program };\n";
 }
 
 /// Return the generated compiler as a browser module.
