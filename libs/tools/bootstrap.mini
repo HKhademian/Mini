@@ -24,7 +24,7 @@ fn bootstrap_compile_with(root, compiler, source, output) {
     list_set(args, 1, source);
     list_set(args, 2, output);
     var result = process_capture(process_exec_path(), args, root, list_new());
-    if (map_get(result, "status") != 0) {
+    if map_get(result, "status") != 0 {
         bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
     }
     return 0;
@@ -35,7 +35,7 @@ fn bootstrap_run(root, path) {
     var args = list_new();
     list_set(args, 0, path);
     var result = process_capture(process_exec_path(), args, root, list_new());
-    if (map_get(result, "status") != 0) {
+    if map_get(result, "status") != 0 {
         bootstrap_fail("run failed: " + text_from_bytes(map_get(result, "stderr")));
     }
     return 0;
@@ -59,7 +59,7 @@ fn bootstrap_all(root) {
     file_write(first, bootstrap_compile_text(source));
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
-    if (hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second))) {
+    if hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second)) {
         bootstrap_fail("compiler fixed point mismatch");
     }
     var seed = path_join(root, "dist/compile.js");

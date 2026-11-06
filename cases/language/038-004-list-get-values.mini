@@ -7,12 +7,12 @@ list_set(items, 1, false);
 list_set(items, 2, "");
 list_set(items, 3, nested);
 list_set(items, 4, child);
-if (list_get(items, 0) != 0 || list_get(items, 1) != false || list_get(items, 2) != "") {
+if list_get(items, 0) != 0 || list_get(items, 1) != false || list_get(items, 2) != "" {
     process_exit(1);
 }
 list_set(list_get(items, 3), 0, "shared");
 map_set(list_get(items, 4), "flag", true);
-if (list_get(nested, 0) != "shared" || map_get(child, "flag") != true) {
+if list_get(nested, 0) != "shared" || map_get(child, "flag") != true {
     process_exit(1);
 }
 io_write("values");

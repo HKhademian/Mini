@@ -1,5 +1,5 @@
 var token = io_read_all();
-if (token == ";") {
+if token == ";" {
     io_write("semicolon");
 } else {
     io_write("other");

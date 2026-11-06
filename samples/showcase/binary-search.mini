@@ -10,14 +10,14 @@ var target = 16;
 var low = 0;
 var high = list_length(values) - 1;
 var found = -1;
-while (low <= high) {
+while low <= high {
     var middle = number_div(low + high, 2);
     var current = list_get(values, middle);
-    if (current == target) {
+    if current == target {
         found = middle;
         low = high + 1;
     } else {
-        if (current < target) {
+        if current < target {
             low = middle + 1;
         } else {
             high = middle - 1;

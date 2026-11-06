@@ -15,19 +15,19 @@ fn main() {
     var has_path = false;
     var path = "";
     var position = 0;
-    while (position < list_length(args)) {
+    while position < list_length(args) {
         var arg = list_get(args, position);
-        if (arg == "--write" || arg == "--check") {
-            if (mode != "stdout") {
+        if arg == "--write" || arg == "--check" {
+            if mode != "stdout" {
                 format_fail("usage: mini-format [--write | --check] SOURCE.mini");
             }
-            if (arg == "--write") {
+            if arg == "--write" {
                 mode = "write";
             } else {
                 mode = "check";
             }
         } else {
-            if (has_path) {
+            if has_path {
                 format_fail("usage: mini-format [--write | --check] SOURCE.mini");
             }
             has_path = true;
@@ -35,36 +35,36 @@ fn main() {
         }
         position = position + 1;
     }
-    if (!has_path) {
+    if !has_path {
         format_fail("usage: mini-format [--write | --check] SOURCE.mini");
     }
-    if (mode == "write" && path == "-") {
+    if mode == "write" && path == "-" {
         format_fail("--write does not accept stdin");
     }
-    if (path != "-" && !text_ends_with(path, ".mini")) {
+    if path != "-" && !text_ends_with(path, ".mini") {
         format_fail("Mini source must use .mini");
     }
     var name = path;
     var source = "";
-    if (path == "-") {
+    if path == "-" {
         name = "<stdin>";
         source = io_read_all();
     } else {
         source = file_read(path);
     }
     var base = "";
-    if (path != "-") {
+    if path != "-" {
         base = path;
     }
     var formatted = format_source(source, name, base);
-    if (mode == "check") {
-        if (formatted != source) {
+    if mode == "check" {
+        if formatted != source {
             format_fail(name + ": not formatted");
         }
         return 0;
     }
-    if (mode == "write") {
-        if (formatted != source) {
+    if mode == "write" {
+        if formatted != source {
             file_write(path, formatted);
         }
         return 0;

@@ -1,6 +1,6 @@
 var source = io_read_all();
 var index = 0;
-if (text_length(source) > 1) {
+if text_length(source) > 1 {
     index = 1;
 }
 io_write(text_get(source, index));

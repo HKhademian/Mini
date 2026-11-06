@@ -16,7 +16,7 @@ fn reference_compare(root, name, source_text) {
     list_set(host_args, 1, source);
     list_set(host_args, 2, host);
     var host_compile = process_capture(process_exec_path(), host_args, root, list_new());
-    if (map_get(host_compile, "status") != 0) {
+    if map_get(host_compile, "status") != 0 {
         path_remove(work);
         io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
         process_exit(1);
@@ -27,7 +27,7 @@ fn reference_compare(root, name, source_text) {
     list_set(pure_args, 2, source);
     list_set(pure_args, 3, pure);
     var pure_compile = process_capture(process_exec_path(), pure_args, root, list_new());
-    if (map_get(pure_compile, "status") != 0) {
+    if map_get(pure_compile, "status") != 0 {
         path_remove(work);
         io_write_error(name + " reference compile failed: " + text_from_bytes(map_get(pure_compile, "stderr")));
         process_exit(1);
@@ -38,9 +38,9 @@ fn reference_compare(root, name, source_text) {
     var pure_run_args = list_new();
     list_set(pure_run_args, 0, pure);
     var pure_run = process_capture(process_exec_path(), pure_run_args, work, list_new());
-    if (map_get(host_run, "status") != map_get(pure_run, "status")
+    if map_get(host_run, "status") != map_get(pure_run, "status")
         || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(pure_run, "stdout"))
-        || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr"))) {
+        || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr")) {
         path_remove(work);
         io_write_error(name + " differs between host and reference modes\n");
         process_exit(1);

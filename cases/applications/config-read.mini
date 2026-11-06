@@ -4,7 +4,7 @@
 fn config_slice(source, start, end) {
     var output = "";
     var position = start;
-    while (position < end) {
+    while position < end {
         output = output + text_get(source, position);
         position = position + 1;
     }
@@ -15,10 +15,10 @@ fn config_slice(source, start, end) {
 fn config_trim(source) {
     var start = 0;
     var end = text_length(source);
-    while (start < end && (text_get(source, start) == " " || text_get(source, start) == "\t" || text_get(source, start) == "\r")) {
+    while start < end && (text_get(source, start) == " " || text_get(source, start) == "\t" || text_get(source, start) == "\r") {
         start = start + 1;
     }
-    while (end > start && (text_get(source, end - 1) == " " || text_get(source, end - 1) == "\t" || text_get(source, end - 1) == "\r")) {
+    while end > start && (text_get(source, end - 1) == " " || text_get(source, end - 1) == "\t" || text_get(source, end - 1) == "\r") {
         end = end - 1;
     }
     return config_slice(source, start, end);
@@ -30,21 +30,21 @@ fn app_run(source) {
     var section = "";
     var line = "";
     var position = 0;
-    while (position <= text_length(source)) {
+    while position <= text_length(source) {
         var character = text_get(source, position);
-        if (character == "\n" || character == "") {
+        if character == "\n" || character == "" {
             line = config_trim(line);
-            if (text_get(line, 0) == "[" && text_get(line, text_length(line) - 1) == "]") {
+            if text_get(line, 0) == "[" && text_get(line, text_length(line) - 1) == "]" {
                 section = config_trim(config_slice(line, 1, text_length(line) - 1));
             } else {
-                if (line != "" && text_get(line, 0) != "#" && text_get(line, 0) != ";") {
+                if line != "" && text_get(line, 0) != "#" && text_get(line, 0) != ";" {
                     var split = 0;
-                    while (split < text_length(line) && text_get(line, split) != "=") {
+                    while split < text_length(line) && text_get(line, split) != "=" {
                         split = split + 1;
                     }
-                    if (split < text_length(line)) {
+                    if split < text_length(line) {
                         var key = config_trim(config_slice(line, 0, split));
-                        if (section != "") {
+                        if section != "" {
                             key = section + "." + key;
                         }
                         map_set(settings, key, config_trim(config_slice(line, split + 1, text_length(line))));

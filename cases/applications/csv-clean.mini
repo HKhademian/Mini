@@ -2,7 +2,7 @@
 
 /// Return a selected row as text; headers and other rows contribute empty text.
 fn csv_row(fields) {
-    if (list_length(fields) == 3 && list_get(fields, 2) == "yes") {
+    if list_length(fields) == 3 && list_get(fields, 2) == "yes" {
         return list_get(fields, 0) + "\t" + list_get(fields, 1) + "\n";
     }
     return "";
@@ -15,25 +15,25 @@ fn app_run(source) {
     var field = "";
     var quoted = false;
     var index = 0;
-    while (index <= text_length(source)) {
+    while index <= text_length(source) {
         var character = text_get(source, index);
-        if (character == "\"") {
-            if (quoted && text_get(source, index + 1) == "\"") {
+        if character == "\"" {
+            if quoted && text_get(source, index + 1) == "\"" {
                 field = field + "\"";
                 index = index + 1;
             } else {
                 quoted = !quoted;
             }
         } else {
-            if (!quoted && (character == "," || character == "\n" || character == "")) {
+            if !quoted && (character == "," || character == "\n" || character == "") {
                 list_set(fields, list_length(fields), field);
                 field = "";
-                if (character != ",") {
+                if character != "," {
                     output = output + csv_row(fields);
                     fields = list_new();
                 }
             } else {
-                if (quoted || character != "\r") {
+                if quoted || character != "\r" {
                     field = field + character;
                 }
             }

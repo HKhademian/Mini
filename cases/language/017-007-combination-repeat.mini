@@ -1,8 +1,8 @@
 fn repeat(token, count) {
     var output = "";
     var position = 0;
-    while (position < count) {
-        if (token == ";" && position == 1) {
+    while position < count {
+        if token == ";" && position == 1 {
             output = output + "\n";
         } else {
             output = output + token;
@@ -13,10 +13,10 @@ fn repeat(token, count) {
 }
 var token = io_read_all();
 var count = 3;
-if (token == "zero") {
+if token == "zero" {
     count = 0;
 } else {
-    if (token == "one") {
+    if token == "one" {
         count = 1;
     }
 }

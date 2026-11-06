@@ -1,6 +1,6 @@
 /// Parse an object and read a field.
 var parsed = json_parse("{\"name\":\"Mini\",\"count\":2}");
-if (map_get(parsed, "ok")) {
+if map_get(parsed, "ok") {
     var value = map_get(parsed, "value");
     io_write(map_get(value, "name") + "\n");
 }

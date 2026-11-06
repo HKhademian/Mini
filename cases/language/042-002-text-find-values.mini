@@ -1,7 +1,7 @@
 fn find(value, needle) {
     return text_find(value, needle);
 }
-if (find("abcdef", "cd") == 2 && find("abcdef", "") == 0 && find(12, "x") == -1 && find("abc", 12) == -1) {
+if find("abcdef", "cd") == 2 && find("abcdef", "") == 0 && find(12, "x") == -1 && find("abc", 12) == -1 {
     io_write("ok\n");
 } else {
     io_write("bad\n");

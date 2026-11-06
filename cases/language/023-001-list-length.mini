@@ -1,8 +1,8 @@
 var args = process_args();
-if (list_length(args) == 0) {
+if list_length(args) == 0 {
     io_write("none");
 } else {
-    if (list_length(args) == 2) {
+    if list_length(args) == 2 {
         io_write("pair");
     } else {
         io_write("other");

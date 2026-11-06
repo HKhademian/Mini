@@ -1,11 +1,11 @@
 include "result.mini";
 /// Read and parse a JSON file into a result map.
 fn json_parse_file(path) {
-    if (!path_is_exists(path)) {
+    if !path_is_exists(path) {
         return result_fail("cannot read " + path);
     }
     var parsed = json_parse(file_read(path));
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         return result_fail("invalid JSON: " + path);
     }
     return result_ok(map_get(parsed, "value"), "");

@@ -8,7 +8,7 @@ io_write(list_get(items, 0) + "|" + list_get(items, 1) + "\n");
 
 list_set(items, 2, 7);
 list_set(items, 3, true);
-if (list_length(items) == 4 && list_get(items, 2) == 7 && list_get(items, 3)) {
+if list_length(items) == 4 && list_get(items, 2) == 7 && list_get(items, 3) {
     io_write("mixed values\n");
 }
 

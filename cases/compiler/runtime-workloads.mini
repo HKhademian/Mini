@@ -9,7 +9,7 @@ fn perf_step(value) {
 fn perf_scalar(count, source) {
     var index = 0;
     var result = 0;
-    while (index < count) {
+    while index < count {
         result = perf_step(result);
         index = index + 1;
     }
@@ -20,13 +20,13 @@ fn perf_scalar(count, source) {
 fn perf_list(count, source) {
     var items = list_new();
     var index = 0;
-    while (index < count) {
+    while index < count {
         list_set(items, index, index);
         index = index + 1;
     }
     var result = 0;
     index = 0;
-    while (index < count) {
+    while index < count {
         result = result + list_get(items, index);
         index = index + 1;
     }
@@ -38,7 +38,7 @@ fn perf_state(count, source) {
     var state = map_new();
     map_set(state, "position", 0);
     var index = 0;
-    while (index < count) {
+    while index < count {
         map_set(state, "position", map_get(state, "position") + 1);
         index = index + 1;
     }
@@ -49,7 +49,7 @@ fn perf_state(count, source) {
 fn perf_tokens(count, source) {
     var items = list_new();
     var index = 0;
-    while (index < count) {
+    while index < count {
         var token = map_new();
         map_set(token, "kind", "identifier");
         map_set(token, "text", "name");
@@ -69,7 +69,7 @@ fn perf_tokens(count, source) {
 fn perf_text(count, source) {
     var output = "";
     var index = 0;
-    while (index < count) {
+    while index < count {
         output = output + text_get(source, index);
         index = index + 1;
     }
@@ -80,10 +80,10 @@ fn perf_text(count, source) {
 fn perf_slices(count, source) {
     var output = "";
     var start = 0;
-    while (start < count) {
+    while start < count {
         var part = "";
         var index = start;
-        while (index < start + 24 && index < count) {
+        while index < start + 24 && index < count {
             part = part + text_get(source, index);
             index = index + 1;
         }
@@ -97,17 +97,17 @@ fn perf_slices(count, source) {
 fn perf_scopes(count, source) {
     var scope = map_new();
     var index = 0;
-    while (index < text_length(source)) {
+    while index < text_length(source) {
         map_set(scope, text_get(source, index), index);
         index = index + 1;
     }
     var result = 0;
     index = 0;
-    while (index < count) {
+    while index < count {
         var inner = map_new();
         var keys = map_keys(scope);
         var key_index = 0;
-        while (key_index < list_length(keys)) {
+        while key_index < list_length(keys) {
             var key = list_get(keys, key_index);
             map_set(inner, key, map_get(scope, key));
             key_index = key_index + 1;

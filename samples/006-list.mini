@@ -4,8 +4,8 @@
 fn join(items) {
     var output = "";
     var position = 0;
-    while (position < list_length(items)) {
-        if (position > 0) {
+    while position < list_length(items) {
+        if position > 0 {
             output = output + "|";
         }
         output = output + list_get(items, position);

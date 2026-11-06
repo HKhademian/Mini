@@ -4,25 +4,25 @@ var sub = root + "/sub";
 directory_create(sub);
 file_write(sub + "/b.txt", "b");
 file_write(sub + "/a.txt", "a");
-if (path_is_exists(root) && path_is_directory(root) && path_is_directory(sub)) {
+if path_is_exists(root) && path_is_directory(root) && path_is_directory(sub) {
     io_write("exists ok\n");
 } else {
     io_write("exists bad\n");
 }
 var names = directory_list(sub);
-if (list_length(names) == 2 && list_get(names, 0) == "a.txt" && list_get(names, 1) == "b.txt") {
+if list_length(names) == 2 && list_get(names, 0) == "a.txt" && list_get(names, 1) == "b.txt" {
     io_write("list ok\n");
 } else {
     io_write("list bad\n");
 }
 path_copy(sub, root + "/copy");
-if (path_is_exists(root + "/copy/a.txt") && file_read(root + "/copy/a.txt") == "a") {
+if path_is_exists(root + "/copy/a.txt") && file_read(root + "/copy/a.txt") == "a" {
     io_write("copy ok\n");
 } else {
     io_write("copy bad\n");
 }
 path_remove(root);
-if (!path_is_exists(root)) {
+if !path_is_exists(root) {
     io_write("remove ok\n");
 } else {
     io_write("remove bad\n");

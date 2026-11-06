@@ -5,9 +5,9 @@ fn normalize(source) {
     var output = "";
     var position = 0;
     var current = "";
-    while (position < text_length(source)) {
+    while position < text_length(source) {
         current = text_get(source, position);
-        if (current == "\t" || current == "\r" || current == "\n") {
+        if current == "\t" || current == "\r" || current == "\n" {
             output = output + " ";
         } else {
             output = output + current;

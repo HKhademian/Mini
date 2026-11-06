@@ -6,7 +6,7 @@ include "result.mini";
 fn project_root() {
     var script = process_script_path();
     var base = path_parent(path_parent(script));
-    if (path_basename(base) == "dist") {
+    if path_basename(base) == "dist" {
         return path_parent(base);
     }
     return base;
@@ -15,7 +15,7 @@ fn project_root() {
 /// Return the active compiler entry from configuration.
 fn project_compiler_entry(root) {
     var parsed = json_parse_file(path_join(root, "config/compiler.json"));
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         result_fail(map_get(parsed, "message"));
         return "";
     }

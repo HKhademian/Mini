@@ -1,6 +1,6 @@
 var token = ";";
 var output = "";
-if (token == ";") {
+if token == ";" {
     output = token;
 } else {
     output = " ";

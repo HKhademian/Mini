@@ -1,14 +1,14 @@
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
 var names = map_new();
-if (list_length(map_keys(names)) == 0) {
+if list_length(map_keys(names)) == 0 {
     io_write("empty\n");
 }
 map_set(names, "source", "input.mini");
-if (map_has(names, "source")) {
+if map_has(names, "source") {
     io_write("source present\n");
 }
 map_set(names, "source", "replacement.mini");
-if (list_length(map_keys(names)) == 1) {
+if list_length(map_keys(names)) == 1 {
     io_write("replacement keeps one key\n");
 }
 io_write(map_get(names, "source"));
@@ -17,12 +17,12 @@ var keys = map_keys(names); // Snapshot the keys before adding another entry.
 io_write(list_get(keys, 0));
 io_write("\n");
 map_set(names, "verbose", false);
-if (list_length(map_keys(names)) == 2) {
+if list_length(map_keys(names)) == 2 {
     io_write("two keys\n");
 }
-if (list_length(keys) == 1) {
+if list_length(keys) == 1 {
     io_write("key list is a snapshot\n");
 }
-if (map_get(names, "missing") == 0 && !map_has(names, "missing")) {
+if map_get(names, "missing") == 0 && !map_has(names, "missing") {
     io_write("missing key reads zero\n");
 }

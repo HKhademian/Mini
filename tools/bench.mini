@@ -4,14 +4,14 @@ include "../libs/tools/bench.mini";
 /// Parse arguments, run benchmarks, and report the output path.
 fn main() {
     var args = process_args();
-    if (list_length(args) < 1 || list_length(args) > 2) {
+    if list_length(args) < 1 || list_length(args) > 2 {
         io_write_error("usage: mini-bench OUTPUT [FILTER]\n");
         process_exit(1);
     }
     var root = project_root();
     var output = path_resolve("", list_get(args, 0));
     var filter = "";
-    if (list_length(args) == 2) {
+    if list_length(args) == 2 {
         filter = list_get(args, 1);
     }
     var count = bench_run(root, output, filter);

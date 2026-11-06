@@ -1,7 +1,7 @@
 /// Split text on a literal separator.
 var fields = text_split("one,two,three", ",");
 var index = 0;
-while (index < list_length(fields)) {
+while index < list_length(fields) {
     io_write(list_get(fields, index) + "\n");
     index = index + 1;
 }

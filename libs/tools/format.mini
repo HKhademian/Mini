@@ -13,7 +13,7 @@ include "../compiler/builtins.mini";
 fn format_indentation(depth) {
     var text = "";
     var position = 0;
-    while (position < depth) {
+    while position < depth {
         text = text + "    ";
         position = position + 1;
     }
@@ -24,7 +24,7 @@ fn format_indentation(depth) {
 
 /// Join completed output lines with LF and append one final newline.
 fn format_body(lines) {
-    if (list_length(lines) == 0) {
+    if list_length(lines) == 0 {
         return "";
     }
     return list_to_text(lines, "\n") + "\n";
@@ -65,7 +65,7 @@ fn format_paren_context(text) {
 
 /// Append the current line to the completed lines and clear it.
 fn format_newline(state) {
-    if (map_get(state, "current") != "") {
+    if map_get(state, "current") != "" {
         var lines = map_get(state, "lines");
         list_set(lines, list_length(lines), map_get(state, "current"));
         map_set(state, "current", "");
@@ -75,7 +75,7 @@ fn format_newline(state) {
 
 /// Start a line with the current indentation when it is empty.
 fn format_start_line(state) {
-    if (map_get(state, "current") == "") {
+    if map_get(state, "current") == "" {
         map_set(state, "current", format_indentation(map_get(state, "indentation")));
     }
     return 0;
@@ -83,18 +83,18 @@ fn format_start_line(state) {
 
 /// Preserve at most one blank line before a construct.
 fn format_maybe_blank(state, token) {
-    if (!map_get(state, "has_previous") || map_get(state, "current") != "" || !map_get(state, "statement_start")) {
+    if !map_get(state, "has_previous") || map_get(state, "current") != "" || !map_get(state, "statement_start") {
         return 0;
     }
     var text = map_get(token, "text");
-    if (text == "}" || text == "else") {
+    if text == "}" || text == "else" {
         return 0;
     }
     var previous = map_get(state, "previous");
-    if (map_get(token, "line") > map_get(previous, "line") + 1) {
+    if map_get(token, "line") > map_get(previous, "line") + 1 {
         var lines = map_get(state, "lines");
         var length = list_length(lines);
-        if (length > 0 && list_get(lines, length - 1) != "") {
+        if length > 0 && list_get(lines, length - 1) != "" {
             list_set(lines, length, "");
         }
     }
@@ -105,10 +105,10 @@ fn format_maybe_blank(state, token) {
 fn format_next_code(state, index) {
     var tokens = map_get(state, "tokens");
     var cursor = index + 1;
-    while (cursor < list_length(tokens)) {
+    while cursor < list_length(tokens) {
         var token = list_get(tokens, cursor);
         var kind = map_get(token, "kind");
-        if (kind != "comment" && kind != "eof") {
+        if kind != "comment" && kind != "eof" {
             return token;
         }
         cursor = cursor + 1;
@@ -119,14 +119,14 @@ fn format_next_code(state, index) {
 /// Return whether a comment belongs after an opening brace.
 fn format_stash_comment(state, index) {
     var next = format_next_code(state, index);
-    if (next == 0) {
+    if next == 0 {
         return false;
     }
     var next_text = map_get(next, "text");
-    if (next_text == "else") {
+    if next_text == "else" {
         return map_get(map_get(state, "previous_code"), "text") == "}";
     }
-    if (next_text == "{") {
+    if next_text == "{" {
         var previous = map_get(map_get(state, "previous_code"), "text");
         return previous == "}" || previous == ")" || previous == "else";
     }
@@ -136,8 +136,8 @@ fn format_stash_comment(state, index) {
 /// Emit one comment at the current position.
 fn format_emit_comment(state, token) {
     var text = text_trim_end(map_get(token, "text"));
-    if (map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line")
-        && map_get(state, "current") != "") {
+    if map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line")
+        && map_get(state, "current") != "" {
         map_set(state, "current", map_get(state, "current") + " " + text);
         format_newline(state);
         map_set(state, "pending_break", false);
@@ -145,7 +145,7 @@ fn format_emit_comment(state, token) {
         map_set(state, "has_previous", true);
         return 0;
     }
-    if (map_get(state, "pending_break")) {
+    if map_get(state, "pending_break") {
         format_newline(state);
         map_set(state, "pending_break", false);
     }
@@ -162,10 +162,10 @@ fn format_emit_comment(state, token) {
 fn format_flush_stashed(state) {
     var stashed = map_get(state, "stashed");
     var index = 0;
-    while (index < list_length(stashed)) {
+    while index < list_length(stashed) {
         var comment = list_get(stashed, index);
         var text = text_trim_end(map_get(comment, "text"));
-        if (index == 0) {
+        if index == 0 {
             map_set(state, "current", map_get(state, "current") + " " + text);
         } else {
             format_start_line(state);
@@ -183,7 +183,7 @@ fn format_flush_stashed(state) {
 
 /// Return whether a unary minus starts an expression.
 fn format_unary_minus(state) {
-    if (!map_get(state, "has_previous_code")) {
+    if !map_get(state, "has_previous_code") {
         return true;
     }
     return format_unary_minus_context(map_get(map_get(state, "previous_code"), "text"));
@@ -191,11 +191,11 @@ fn format_unary_minus(state) {
 
 /// Return whether a unary operator needs a leading space.
 fn format_unary_space(state) {
-    if (!map_get(state, "has_previous_code")) {
+    if !map_get(state, "has_previous_code") {
         return false;
     }
     var previous = map_get(map_get(state, "previous_code"), "text");
-    if (previous == "-") {
+    if previous == "-" {
         return !map_get(state, "previous_unary");
     }
     return format_unary_space_context(previous);
@@ -203,30 +203,30 @@ fn format_unary_space(state) {
 
 /// Return whether a space is required before token.
 fn format_needs_space(state, token, unary) {
-    if (map_get(state, "current") == "" || !map_get(state, "has_previous_code")) {
+    if map_get(state, "current") == "" || !map_get(state, "has_previous_code") {
         return false;
     }
-    if (map_get(state, "previous_unary")) {
+    if map_get(state, "previous_unary") {
         return false;
     }
     var text = map_get(token, "text");
-    if (text == "!" || (text == "-" && unary)) {
+    if text == "!" || (text == "-" && unary) {
         return format_unary_space(state);
     }
     var previous = map_get(map_get(state, "previous_code"), "text");
-    if (text == "(") {
-        if (previous == "-") {
+    if text == "(" {
+        if previous == "-" {
             return !map_get(state, "previous_unary");
         }
         return format_paren_context(previous);
     }
-    if (text == "{" || text == "else") {
+    if text == "{" || text == "else" {
         return true;
     }
-    if (text == ")" || text == "," || text == ";" || text == "}") {
+    if text == ")" || text == "," || text == ";" || text == "}" {
         return false;
     }
-    if (format_is_word(token)) {
+    if format_is_word(token) {
         return format_is_word(map_get(state, "previous_code")) || previous == "," || format_is_binary(previous);
     }
     return format_is_binary(text);
@@ -249,7 +249,7 @@ fn format_state(tokens) {
     map_set(state, "previous_unary", false);
     map_set(state, "shebang", "");
     var first = list_get(tokens, 0);
-    if (map_get(first, "kind") == "shebang") {
+    if map_get(first, "kind") == "shebang" {
         map_set(state, "shebang", map_get(first, "text"));
     }
     return state;
@@ -259,7 +259,7 @@ fn format_state(tokens) {
 fn format_previous(state, token, is_code, unary) {
     map_set(state, "previous", token);
     map_set(state, "has_previous", true);
-    if (is_code) {
+    if is_code {
         map_set(state, "previous_code", token);
         map_set(state, "has_previous_code", true);
     }
@@ -269,25 +269,25 @@ fn format_previous(state, token, is_code, unary) {
 
 /// Emit one regular token.
 fn format_token(state, token) {
-    if (map_get(state, "current") == "") {
+    if map_get(state, "current") == "" {
         format_maybe_blank(state, token);
         format_start_line(state);
     }
     var text = map_get(token, "text");
     var unary = text == "!" || (text == "-" && format_unary_minus(state));
-    if (format_needs_space(state, token, unary)) {
+    if format_needs_space(state, token, unary) {
         map_set(state, "current", map_get(state, "current") + " ");
     }
     map_set(state, "current", map_get(state, "current") + text);
-    if (text == "{") {
+    if text == "{" {
         map_set(state, "indentation", map_get(state, "indentation") + 1);
-        if (list_length(map_get(state, "stashed")) > 0) {
+        if list_length(map_get(state, "stashed")) > 0 {
             format_flush_stashed(state);
         } else {
             map_set(state, "pending_break", true);
         }
     } else {
-        if (text == ";") {
+        if text == ";" {
             map_set(state, "pending_break", true);
             map_set(state, "statement_start", true);
         } else {
@@ -303,36 +303,36 @@ fn format_token(state, token) {
 fn format_tokens(tokens) {
     var state = format_state(tokens);
     var index = 0;
-    while (index < list_length(tokens)) {
+    while index < list_length(tokens) {
         var token = list_get(tokens, index);
         var kind = map_get(token, "kind");
         var text = map_get(token, "text");
-        if (kind == "eof" || kind == "shebang") {
+        if kind == "eof" || kind == "shebang" {
         } else {
-            if (kind == "comment") {
-                if (format_stash_comment(state, index)) {
+            if kind == "comment" {
+                if format_stash_comment(state, index) {
                     var stashed = map_get(state, "stashed");
                     list_set(stashed, list_length(stashed), token);
                 } else {
                     format_emit_comment(state, token);
                 }
             } else {
-                if (text == "else" && map_get(map_get(state, "previous_code"), "text") == "}") {
+                if text == "else" && map_get(map_get(state, "previous_code"), "text") == "}" {
                     map_set(state, "pending_break", false);
                     map_set(state, "current", map_get(state, "current") + " else");
                     format_previous(state, token, true, false);
                     map_set(state, "statement_start", false);
                 } else {
-                    if (map_get(state, "pending_break")) {
+                    if map_get(state, "pending_break") {
                         format_newline(state);
                         map_set(state, "pending_break", false);
                     }
-                    if (text == "}") {
-                        if (map_get(state, "current") != "") {
+                    if text == "}" {
+                        if map_get(state, "current") != "" {
                             format_newline(state);
                         }
                         map_set(state, "indentation", map_get(state, "indentation") - 1);
-                        if (map_get(state, "indentation") < 0) {
+                        if map_get(state, "indentation") < 0 {
                             map_set(state, "indentation", 0);
                         }
                         format_start_line(state);
@@ -348,12 +348,12 @@ fn format_tokens(tokens) {
         }
         index = index + 1;
     }
-    if (map_get(state, "current") != "") {
+    if map_get(state, "current") != "" {
         format_newline(state);
     }
     var body = format_body(map_get(state, "lines"));
     var shebang = map_get(state, "shebang");
-    if (shebang == "") {
+    if shebang == "" {
         return body;
     }
     return shebang + "\n" + body;

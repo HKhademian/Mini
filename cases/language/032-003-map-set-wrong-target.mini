@@ -17,7 +17,7 @@ list_set(items, 0, "original");
 map_set(items, "name", 2);
 map_set(false, "name", list_new());
 map_set(1, "name", map_new());
-if (list_length(items) != 1 || list_get(items, 0) != "original") {
+if list_length(items) != 1 || list_get(items, 0) != "original" {
     process_exit(1);
 }
 io_write(":ok");

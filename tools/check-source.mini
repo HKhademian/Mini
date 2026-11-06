@@ -11,24 +11,24 @@ fn check_source_fail(message) {
 /// Validate arguments and check the selected source.
 fn main() {
     var args = process_args();
-    if (list_length(args) != 1) {
+    if list_length(args) != 1 {
         check_source_fail("usage: mini-check [--docs | SOURCE.mini | -]");
     }
     var path = list_get(args, 0);
     var name = path;
     var source = "";
-    if (path == "-") {
+    if path == "-" {
         name = "<stdin>";
         source = io_read_all();
     } else {
-        if (!text_ends_with(path, ".mini")) {
+        if !text_ends_with(path, ".mini") {
             check_source_fail("Mini source must use .mini");
         }
         source = file_read(path);
     }
     var tokens = tokenize(source, name, false);
     var base = "";
-    if (path != "-") {
+    if path != "-" {
         base = path;
     }
     compile(expand_includes(tokens, base, list_new(), map_new()));

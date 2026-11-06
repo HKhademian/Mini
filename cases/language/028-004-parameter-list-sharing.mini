@@ -7,7 +7,7 @@ fn change(items) {
 var original = process_args();
 var alias = original;
 var result = change(original);
-if (result != 0 || list_length(original) != 1) {
+if result != 0 || list_length(original) != 1 {
     process_exit(1);
 }
 io_write(list_get(original, 0));

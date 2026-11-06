@@ -10,15 +10,15 @@ map_set(items, "text", "old");
 map_set(items, "text", "replacement");
 map_set(items, "list", nested);
 map_set(items, "map", child);
-if (map_get(items, "zero") != 0 || map_get(items, "false") != false || map_get(items, "empty") != "") {
+if map_get(items, "zero") != 0 || map_get(items, "false") != false || map_get(items, "empty") != "" {
     process_exit(1);
 }
-if (map_get(items, "number") != 7) {
+if map_get(items, "number") != 7 {
     process_exit(1);
 }
 list_set(map_get(items, "list"), 0, "shared");
 map_set(map_get(items, "map"), "flag", true);
-if (list_get(nested, 0) != "shared" || map_get(child, "flag") != true) {
+if list_get(nested, 0) != "shared" || map_get(child, "flag") != true {
     process_exit(1);
 }
 io_write(map_get(items, "text"));

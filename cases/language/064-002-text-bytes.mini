@@ -2,8 +2,8 @@
 var bytes = text_to_bytes("Aé😀");
 var output = "";
 var position = 0;
-while (position < list_length(bytes)) {
-    if (position > 0) {
+while position < list_length(bytes) {
+    if position > 0 {
         output = output + ",";
     }
     output = output + number_to_text(list_get(bytes, position));

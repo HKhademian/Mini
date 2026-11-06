@@ -20,10 +20,10 @@ fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper,
     map_set(builtin_helper_keys, name, helper_key);
     map_set(builtin_classes, name, layer);
     map_set(builtin_emit_forms, name, emit_form);
-    if (helper_key != "") {
+    if helper_key != "" {
         map_set(builtin_helpers, helper_key, helper);
     }
-    if (reference != "") {
+    if reference != "" {
         map_set(builtin_reference_targets, name, reference);
     }
     return 0;
@@ -57,11 +57,11 @@ fn builtin_exists(name) {
 
 /// Return parameter kinds for a builtin.
 fn builtin_parameters(name) {
-    if (!map_has(builtin_parameter_kinds, name)) {
+    if !map_has(builtin_parameter_kinds, name) {
         return list_new();
     }
     var kinds = map_get(builtin_parameter_kinds, name);
-    if (kinds == "") {
+    if kinds == "" {
         return list_new();
     }
     return text_split(kinds, ",");
@@ -69,7 +69,7 @@ fn builtin_parameters(name) {
 
 /// Return the result kind for a builtin.
 fn builtin_result(name) {
-    if (map_has(builtin_result_kinds, name)) {
+    if map_has(builtin_result_kinds, name) {
         return map_get(builtin_result_kinds, name);
     }
     return "unknown";
@@ -77,11 +77,11 @@ fn builtin_result(name) {
 
 /// Return host imports for a builtin.
 fn builtin_imports(name) {
-    if (!map_has(builtin_import_names, name)) {
+    if !map_has(builtin_import_names, name) {
         return list_new();
     }
     var imports = map_get(builtin_import_names, name);
-    if (imports == "") {
+    if imports == "" {
         return list_new();
     }
     return text_split(imports, ",");
@@ -92,7 +92,7 @@ var reference_mode = false;
 
 /// Return the builtin layer.
 fn builtin_class(name) {
-    if (map_has(builtin_classes, name)) {
+    if map_has(builtin_classes, name) {
         return map_get(builtin_classes, name);
     }
     return "library";
@@ -100,7 +100,7 @@ fn builtin_class(name) {
 
 /// Return the pure target for a builtin, or empty text.
 fn builtin_reference_target(name) {
-    if (map_has(builtin_reference_targets, name)) {
+    if map_has(builtin_reference_targets, name) {
         return map_get(builtin_reference_targets, name);
     }
     return "";
@@ -108,7 +108,7 @@ fn builtin_reference_target(name) {
 
 /// Return the builtin adapter key, or empty text.
 fn builtin_helper_key(name) {
-    if (map_has(builtin_helper_keys, name)) {
+    if map_has(builtin_helper_keys, name) {
         return map_get(builtin_helper_keys, name);
     }
     return "";
@@ -116,7 +116,7 @@ fn builtin_helper_key(name) {
 
 /// Return the adapter text for a helper key.
 fn helper_text(key) {
-    if (map_has(builtin_helpers, key)) {
+    if map_has(builtin_helpers, key) {
         return map_get(builtin_helpers, key);
     }
     return "";
@@ -126,10 +126,10 @@ fn helper_text(key) {
 fn builtin_replace(source, needle, replacement) {
     var output = "";
     var position = 0;
-    while (position < text_length(source)) {
+    while position < text_length(source) {
         var rest = text_slice(source, position, text_length(source));
         var found = text_find(rest, needle);
-        if (found < 0) {
+        if found < 0 {
             return output + text_slice(source, position, text_length(source));
         }
         output = output + text_slice(source, position, position + found) + replacement;
@@ -142,7 +142,7 @@ fn builtin_replace(source, needle, replacement) {
 fn builtin_apply(form, args) {
     var output = form;
     var position = 0;
-    while (position < list_length(args)) {
+    while position < list_length(args) {
         output = builtin_replace(output, "{" + number_to_text(position) + "}", list_get(args, position));
         position = position + 1;
     }
@@ -152,10 +152,10 @@ fn builtin_apply(form, args) {
 /// Return the lowered TypeScript call text for a builtin.
 fn builtin_emit(name, args) {
     var reference_target = builtin_reference_target(name);
-    if (reference_mode && reference_target != "") {
+    if reference_mode && reference_target != "" {
         return reference_target + "(" + list_to_text(args, ", ") + ")";
     }
-    if (!map_has(builtin_emit_forms, name)) {
+    if !map_has(builtin_emit_forms, name) {
         return "";
     }
     return builtin_apply(map_get(builtin_emit_forms, name), args);

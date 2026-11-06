@@ -4,11 +4,11 @@ include "../libs/tools/lang-server.mini";
 /// Parse arguments and serve the language protocol.
 fn main() {
     var args = process_args();
-    if (list_length(args) == 1 && list_get(args, 0) == "--version") {
+    if list_length(args) == 1 && list_get(args, 0) == "--version" {
         io_write(lsp_version() + "\n");
         return 0;
     }
-    if (list_length(args) != 0) {
+    if list_length(args) != 0 {
         lsp_log("usage: mini-lang-server [--version]");
         process_exit(1);
     }

@@ -19,7 +19,7 @@ fn result_fail(message) {
 
 /// Return whether a value is a successful result map.
 fn result_is_ok(result) {
-    if (!value_is_map(result)) {
+    if !value_is_map(result) {
         return false;
     }
     return map_get(result, "ok") == true;
@@ -32,7 +32,7 @@ fn result_is_fail(result) {
 
 /// Return a result message, or empty text for non-results.
 fn result_get_message(result) {
-    if (!value_is_map(result)) {
+    if !value_is_map(result) {
         return "";
     }
     return map_get(result, "message");
@@ -40,7 +40,7 @@ fn result_get_message(result) {
 
 /// Set a result message and return the result.
 fn result_set_message(result, message) {
-    if (value_is_map(result)) {
+    if value_is_map(result) {
         map_set(result, "message", message);
     }
     return result;
@@ -48,7 +48,7 @@ fn result_set_message(result, message) {
 
 /// Return a result value, or numeric zero for non-results.
 fn result_get_value(result) {
-    if (!value_is_map(result)) {
+    if !value_is_map(result) {
         return 0;
     }
     return map_get(result, "value");
@@ -56,7 +56,7 @@ fn result_get_value(result) {
 
 /// Set a result value and return the result.
 fn result_set_value(result, value) {
-    if (value_is_map(result)) {
+    if value_is_map(result) {
         map_set(result, "value", value);
     }
     return result;

@@ -3,26 +3,26 @@ include "../libs/common/result.mini";
 
 /// Verify result predicates for success, failure, and non-maps.
 fn main() {
-    if (!result_is_ok(result_ok(0, "")) || result_is_fail(result_ok(0, ""))) {
+    if !result_is_ok(result_ok(0, "")) || result_is_fail(result_ok(0, "")) {
         io_write_error("success predicate failed\n");
         process_exit(1);
     }
-    if (!result_is_fail(result_fail("x")) || result_is_ok(result_fail("x"))) {
+    if !result_is_fail(result_fail("x")) || result_is_ok(result_fail("x")) {
         io_write_error("failure predicate failed\n");
         process_exit(1);
     }
-    if (result_is_ok(0) || !result_is_fail(0)) {
+    if result_is_ok(0) || !result_is_fail(0) {
         io_write_error("non-map predicate failed\n");
         process_exit(1);
     }
     var mutable = result_ok(1, "one");
     result_set_value(mutable, 42);
     result_set_message(mutable, "answer");
-    if (result_get_value(mutable) != 42 || result_get_message(mutable) != "answer") {
+    if result_get_value(mutable) != 42 || result_get_message(mutable) != "answer" {
         io_write_error("result accessors failed\n");
         process_exit(1);
     }
-    if (result_get_value(0) != 0 || result_get_message(0) != "") {
+    if result_get_value(0) != 0 || result_get_message(0) != "" {
         io_write_error("result accessors accepted non-maps\n");
         process_exit(1);
     }

@@ -2,7 +2,7 @@
 var words = text_split("mini makes mini tools", " ");
 var counts = map_new();
 var index = 0;
-while (index < list_length(words)) {
+while index < list_length(words) {
     var word = list_get(words, index);
     var count = map_get(counts, word);
     map_set(counts, word, count + 1);

@@ -1,8 +1,8 @@
-if (list_get(0, 2000) != 0 || list_get("hello", 0) != 0 || list_get(false, 0) != 0 || list_get(map_new(), 0) != 0) {
+if list_get(0, 2000) != 0 || list_get("hello", 0) != 0 || list_get(false, 0) != 0 || list_get(map_new(), 0) != 0 {
     process_exit(1);
 }
 var items = list_new();
-if (list_get(items, 0) != 0 || list_get(items, -1) != 0 || list_get(items, 2000) != 0) {
+if list_get(items, 0) != 0 || list_get(items, -1) != 0 || list_get(items, 2000) != 0 {
     process_exit(1);
 }
 io_write("zero");

@@ -1,11 +1,11 @@
 /// Read text and report whether it contains the two sample words.
 var source = io_read_all();
-if (text_find(source, "Mini") >= 0) {
+if text_find(source, "Mini") >= 0 {
     io_write("has Mini\n");
 } else {
     io_write("no Mini\n");
 }
-if (text_find(source, "Lang") >= 0) {
+if text_find(source, "Lang") >= 0 {
     io_write("has Lang\n");
 } else {
     io_write("no Lang\n");

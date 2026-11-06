@@ -2,9 +2,9 @@
 var text = "self hosting";
 var index = 0;
 var count = 0;
-while (index < text_length(text)) {
+while index < text_length(text) {
     var ch = text_get(text, index);
-    if (ch == "a" || ch == "e" || ch == "i" || ch == "o" || ch == "u") {
+    if ch == "a" || ch == "e" || ch == "i" || ch == "o" || ch == "u" {
         count = count + 1;
     }
     index = index + 1;

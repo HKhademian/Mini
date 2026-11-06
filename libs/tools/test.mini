@@ -16,44 +16,44 @@ fn test_usage() {
 /// Run selected fixtures and return the process status.
 fn test_run(root, filter, file, candidate) {
     var fixtures = list_new();
-    if (file != "") {
+    if file != "" {
         var loaded = case_load_case(file);
-        if (result_is_fail(loaded)) {
+        if result_is_fail(loaded) {
             io_write_error(map_get(loaded, "message") + "\n");
             process_exit(1);
         }
         list_set(fixtures, 0, map_get(loaded, "fixture"));
     } else {
         var selected = case_load_cases(filter, root);
-        if (result_is_fail(selected)) {
+        if result_is_fail(selected) {
             io_write_error(map_get(selected, "message") + "\n");
             process_exit(1);
         }
         fixtures = map_get(selected, "fixtures");
     }
-    if (candidate != "") {
+    if candidate != "" {
         return test_candidate(fixtures, root, candidate);
     }
     var failures = 0;
     var count = 0;
     var pending = 0;
     var fixture_index = 0;
-    while (fixture_index < list_length(fixtures)) {
+    while fixture_index < list_length(fixtures) {
         var fixture = list_get(fixtures, fixture_index);
         var definition = map_get(fixture, "definition");
         var scenarios = map_get(definition, "cases");
         var scenario_index = 0;
-        while (scenario_index < list_length(scenarios)) {
+        while scenario_index < list_length(scenarios) {
             var scenario = list_get(scenarios, scenario_index);
             var id = map_get(definition, "id");
             var name = map_get(scenario, "name");
-            if (map_has(definition, "pending")) {
+            if map_has(definition, "pending") {
                 pending = pending + 1;
                 io_write("PENDING " + id + "/" + name + ": " + map_get(definition, "pending") + "\n");
             } else {
                 count = count + 1;
                 var result = case_verify_scenario(fixture, scenario, root, "");
-                if (result_is_ok(result)) {
+                if result_is_ok(result) {
                     io_write("PASS " + id + "/" + name + "\n");
                 } else {
                     failures = failures + 1;
@@ -65,10 +65,10 @@ fn test_run(root, filter, file, candidate) {
         fixture_index = fixture_index + 1;
     }
     io_write(number_to_text(count - failures) + "/" + number_to_text(count) + " scenarios passed\n");
-    if (pending > 0) {
+    if pending > 0 {
         io_write(number_to_text(pending) + " scenarios pending\n");
     }
-    if (failures > 0 || (pending > 0 && (file != "" || count == 0))) {
+    if failures > 0 || (pending > 0 && (file != "" || count == 0)) {
         return 1;
     }
     return 0;
@@ -81,22 +81,22 @@ fn test_candidate(fixtures, root, compiler) {
     var pending = 0;
     var tools = 0;
     var fixture_index = 0;
-    while (fixture_index < list_length(fixtures)) {
+    while fixture_index < list_length(fixtures) {
         var fixture = list_get(fixtures, fixture_index);
         var definition = map_get(fixture, "definition");
         var kind = map_get(definition, "kind");
-        if (kind == "tool") {
+        if kind == "tool" {
             tools = tools + 1;
         } else {
-            if (map_has(definition, "pending")) {
+            if map_has(definition, "pending") {
                 pending = pending + 1;
             } else {
                 var scenarios = map_get(definition, "cases");
                 var scenario_index = 0;
-                while (scenario_index < list_length(scenarios)) {
+                while scenario_index < list_length(scenarios) {
                     var scenario = list_get(scenarios, scenario_index);
                     var result = case_verify_scenario(fixture, scenario, root, compiler);
-                    if (result_is_ok(result)) {
+                    if result_is_ok(result) {
                         passed = passed + 1;
                     } else {
                         failed = failed + 1;
@@ -110,13 +110,13 @@ fn test_candidate(fixtures, root, compiler) {
         fixture_index = fixture_index + 1;
     }
     io_write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " Mini-source scenarios passed\n");
-    if (pending > 0) {
+    if pending > 0 {
         io_write(number_to_text(pending) + " cases pending\n");
     }
-    if (tools > 0) {
+    if tools > 0 {
         io_write(number_to_text(tools) + " tool cases skipped; run mini test for those\n");
     }
-    if (failed > 0) {
+    if failed > 0 {
         return 1;
     }
     return 0;
@@ -132,9 +132,9 @@ fn test_units(root, filter) {
     var failed = 0;
     var count = 0;
     var position = 0;
-    while (position < list_length(entries)) {
+    while position < list_length(entries) {
         var name = list_get(entries, position);
-        if (text_ends_with(name, ".test.mini") && (filter == "" || text_find(name, filter) >= 0)) {
+        if text_ends_with(name, ".test.mini") && (filter == "" || text_find(name, filter) >= 0) {
             count = count + 1;
             var source = path_join(directory, name);
             var work = path_temp_directory();
@@ -144,7 +144,7 @@ fn test_units(root, filter) {
             list_set(compile_args, 1, source);
             list_set(compile_args, 2, output);
             var compiled = process_capture(process_exec_path(), compile_args, root, list_new());
-            if (map_get(compiled, "status") != 0) {
+            if map_get(compiled, "status") != 0 {
                 failed = failed + 1;
                 io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(compiled, "stderr")));
             } else {
@@ -152,7 +152,7 @@ fn test_units(root, filter) {
                 list_set(run_args, 0, output);
                 list_set(run_args, 1, root);
                 var result = process_capture(process_exec_path(), run_args, root, list_new());
-                if (map_get(result, "status") != 0) {
+                if map_get(result, "status") != 0 {
                     failed = failed + 1;
                     io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));
                 } else {
@@ -165,7 +165,7 @@ fn test_units(root, filter) {
         position = position + 1;
     }
     io_write(number_to_text(passed) + "/" + number_to_text(count) + " unit tests passed\n");
-    if (failed > 0 || count == 0) {
+    if failed > 0 || count == 0 {
         return 1;
     }
     return 0;

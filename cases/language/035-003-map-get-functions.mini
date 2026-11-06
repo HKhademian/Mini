@@ -8,11 +8,11 @@ fn key() {
     io_write("k");
     return "value";
 }
-if (map_get(target(), key()) != 7) {
+if map_get(target(), key()) != 7 {
     process_exit(1);
 }
 io_write(":");
-if (map_get(0, key()) != 0) {
+if map_get(0, key()) != 0 {
     process_exit(1);
 }
 io_write(":ok");

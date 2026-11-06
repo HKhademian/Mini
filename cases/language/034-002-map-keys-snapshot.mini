@@ -3,11 +3,11 @@ map_set(items, "first", 0);
 var keys = map_keys(items);
 var other = map_keys(items);
 list_set(keys, 0, "changed");
-if (list_get(other, 0) != "first" || !map_has(items, "first") || map_has(items, "changed")) {
+if list_get(other, 0) != "first" || !map_has(items, "first") || map_has(items, "changed") {
     process_exit(1);
 }
 map_set(items, "second", true);
-if (list_length(keys) != 1 || list_length(other) != 1 || list_length(map_keys(items)) != 2) {
+if list_length(keys) != 1 || list_length(other) != 1 || list_length(map_keys(items)) != 2 {
     process_exit(1);
 }
 io_write("independent");

@@ -3,8 +3,8 @@ var args = list_new();
 list_set(args, 0, "-e");
 list_set(args, 1, "process.stdout.write(\"out\"); process.stderr.write(\"err\"); process.exit(3)");
 var result = process_run("node", args, "capture");
-if (map_get(result, "status") == 3 && map_get(result, "stdout") == "out" && map_get(result, "stderr") == "err"
-    && map_get(result, "signal") == "" && map_get(result, "error") == "") {
+if map_get(result, "status") == 3 && map_get(result, "stdout") == "out" && map_get(result, "stderr") == "err"
+    && map_get(result, "signal") == "" && map_get(result, "error") == "" {
     io_write("capture ok\n");
 } else {
     io_write("capture bad\n");
@@ -14,14 +14,14 @@ var inherited = list_new();
 list_set(inherited, 0, "-e");
 list_set(inherited, 1, "process.stdout.write(\"inherited\" + String.fromCharCode(10))");
 var shown = process_run("node", inherited, "inherit");
-if (map_get(shown, "status") == 0 && map_get(shown, "stdout") == "" && map_get(shown, "stderr") == "") {
+if map_get(shown, "status") == 0 && map_get(shown, "stdout") == "" && map_get(shown, "stderr") == "" {
     io_write("inherit ok\n");
 } else {
     io_write("inherit bad\n");
 }
 
 var missing = process_run("mini-no-such-command", list_new(), "capture");
-if (map_get(missing, "status") == 1 && map_get(missing, "stdout") == "" && text_length(map_get(missing, "error")) > 0) {
+if map_get(missing, "status") == 1 && map_get(missing, "stdout") == "" && text_length(map_get(missing, "error")) > 0 {
     io_write("failure ok\n");
 } else {
     io_write("failure bad\n");
@@ -31,7 +31,7 @@ var env_args = list_new();
 list_set(env_args, 0, "-e");
 list_set(env_args, 1, "process.stdout.write(process.env.PATH ? \"env\" : \"missing\")");
 var inherited_env = process_run("node", env_args, "capture");
-if (map_get(inherited_env, "stdout") == "env") {
+if map_get(inherited_env, "stdout") == "env" {
     io_write("env ok\n");
 } else {
     io_write("env bad\n");

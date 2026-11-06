@@ -5,16 +5,16 @@ fn app_run(source) {
     var values = map_new();
     var position = 0;
     var header = true;
-    while (header && position < text_length(source)) {
+    while header && position < text_length(source) {
         var key = "";
         var value = "";
         var in_value = false;
-        while (position < text_length(source) && text_get(source, position) != "\n") {
+        while position < text_length(source) && text_get(source, position) != "\n" {
             var character = text_get(source, position);
-            if (character == "=" && !in_value) {
+            if character == "=" && !in_value {
                 in_value = true;
             } else {
-                if (in_value) {
+                if in_value {
                     value = value + character;
                 } else {
                     key = key + character;
@@ -23,24 +23,24 @@ fn app_run(source) {
             position = position + 1;
         }
         position = position + 1;
-        if (key == "" && !in_value) {
+        if key == "" && !in_value {
             header = false;
         } else {
-            if (in_value) {
+            if in_value {
                 map_set(values, key, value);
             }
         }
     }
     var output = "";
-    while (position < text_length(source)) {
-        if (text_get(source, position) == "{" && text_get(source, position + 1) == "{") {
+    while position < text_length(source) {
+        if text_get(source, position) == "{" && text_get(source, position + 1) == "{" {
             position = position + 2;
             var key = "";
-            while (position < text_length(source) && text_get(source, position) != "}") {
+            while position < text_length(source) && text_get(source, position) != "}" {
                 key = key + text_get(source, position);
                 position = position + 1;
             }
-            if (map_has(values, key)) {
+            if map_has(values, key) {
                 output = output + map_get(values, key);
             } else {
                 output = output + "<missing>";

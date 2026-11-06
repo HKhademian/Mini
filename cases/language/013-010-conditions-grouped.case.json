@@ -1,0 +1,23 @@
+{
+  "id": "language.conditions-grouped",
+  "kind": "feature",
+  "source": "013-010-conditions-grouped.mini",
+  "features": [
+    "control.if"
+  ],
+  "cases": [
+    {
+      "name": "grouped",
+      "stdin": {
+        "file": "empty.stdin"
+      },
+      "stdout": {
+        "text": "grouped\n"
+      },
+      "stderr": {
+        "file": "empty.stderr"
+      },
+      "exitCode": 0
+    }
+  ]
+}

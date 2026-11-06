@@ -7,11 +7,11 @@ include "../common/project.mini";
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
     var workspace = process_env("GITHUB_WORKSPACE");
-    if (workspace != "") {
+    if workspace != "" {
         return workspace;
     }
     var pwd = process_env("PWD");
-    if (pwd != "") {
+    if pwd != "" {
         return pwd;
     }
     return project_root();
@@ -28,13 +28,13 @@ fn ci_run(root, command, args, directory) {
     var result = process_spawn(options);
     var stdout = text_from_bytes(map_get(result, "stdout"));
     var stderr = text_from_bytes(map_get(result, "stderr"));
-    if (text_length(stdout) > 0) {
+    if text_length(stdout) > 0 {
         io_write(stdout);
     }
-    if (text_length(stderr) > 0) {
+    if text_length(stderr) > 0 {
         io_write_error(stderr);
     }
-    if (map_get(result, "status") != 0) {
+    if map_get(result, "status") != 0 {
         process_exit(map_get(result, "status"));
     }
     return 0;
@@ -93,7 +93,7 @@ fn ci_fail(message) {
 
 /// Strip one trailing newline from a task name.
 fn ci_task_name(text) {
-    if (text_ends_with(text, "\n")) {
+    if text_ends_with(text, "\n") {
         return text_slice(text, 0, text_length(text) - 1);
     }
     return text;
@@ -102,13 +102,13 @@ fn ci_task_name(text) {
 /// Package committed sources, optionally for a tag.
 fn ci_package(root) {
     var tag = "";
-    if (process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag") {
+    if process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
         tag = process_env("GITHUB_REF_NAME");
     }
     var args = list_new();
     list_set(args, 0, "release");
     list_set(args, 1, path_join(root, "dist/release"));
-    if (tag != "") {
+    if tag != "" {
         list_set(args, 2, tag);
     }
     return ci_mini(root, args);
@@ -116,20 +116,20 @@ fn ci_package(root) {
 
 /// Publish the prepared draft release with gh.
 fn ci_publish(root) {
-    if (process_env("GITHUB_EVENT_NAME") != "push" || process_env("GITHUB_REF_TYPE") != "tag") {
+    if process_env("GITHUB_EVENT_NAME") != "push" || process_env("GITHUB_REF_TYPE") != "tag" {
         ci_fail("publish requires a pushed tag");
     }
     var tag = process_env("GITHUB_REF_NAME");
-    if (tag == "") {
+    if tag == "" {
         ci_fail("publish requires GITHUB_REF_NAME");
     }
     var directory = path_join(root, "dist/release");
     var parsed = json_parse_file(path_join(directory, "manifest.json"));
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         ci_fail(map_get(parsed, "message"));
     }
     var manifest = map_get(parsed, "value");
-    if (map_get(manifest, "tag") != tag) {
+    if map_get(manifest, "tag") != tag {
         ci_fail("manifest tag does not match " + tag);
     }
     var files = directory_list(directory);
@@ -138,7 +138,7 @@ fn ci_publish(root) {
     list_set(args, 1, "create");
     list_set(args, 2, tag);
     var position = 0;
-    while (position < list_length(files)) {
+    while position < list_length(files) {
         list_set(args, list_length(args), path_join(directory, list_get(files, position)));
         position = position + 1;
     }
@@ -150,7 +150,7 @@ fn ci_publish(root) {
     list_set(args, list_length(args), "--notes-file");
     list_set(args, list_length(args), path_join(directory, "RELEASE-NOTES.md"));
     var version = map_get(map_get(manifest, "releasedComponent"), "version");
-    if (text_find(version, "-") >= 0) {
+    if text_find(version, "-") >= 0 {
         list_set(args, list_length(args), "--prerelease");
     }
     ci_run(root, "gh", args, root);
@@ -165,14 +165,14 @@ fn ci_publish(root) {
 
 /// Run one named CI task.
 fn ci_task(root, task) {
-    if (task == "install") {
+    if task == "install" {
         ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
         return ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), path_join(root, "editors/vscode"));
     }
-    if (task == "check") {
+    if task == "check" {
         return ci_mini(root, ci_args1("check"));
     }
-    if (task == "test") {
+    if task == "test" {
         ci_mini(root, ci_args1("test"));
         ci_mini(root, ci_args2("test", "--unit"));
         ci_node(root, ci_args2("--test", "test/lang-server.test.ts"), root);
@@ -181,14 +181,14 @@ fn ci_task(root, task) {
         ci_node(root, ci_args2("--test", "test/release.test.ts"), root);
         return ci_node(root, ci_args2("test/performance/application-performance.ts", "--check"), root);
     }
-    if (task == "bench") {
+    if task == "bench" {
         ci_mini(root, ci_args3("bench", ".cache/bench-ci.json", "tooling.check"));
         return ci_mini(root, ci_args3("bench", ".cache/bench-compiler-ci.json", "compiler.bindings-emission"));
     }
-    if (task == "package") {
+    if task == "package" {
         return ci_package(root);
     }
-    if (task == "publish") {
+    if task == "publish" {
         return ci_publish(root);
     }
     return ci_fail("unknown CI task: " + task);

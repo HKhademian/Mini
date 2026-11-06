@@ -13,20 +13,20 @@ fn main() {
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     var previous = seed;
     var stage = 0;
-    while (stage < 3) {
+    while stage < 3 {
         var output = path_join(work, "compiler" + number_to_text(stage) + ".js");
         var compile_args = list_new();
         list_set(compile_args, 0, previous);
         list_set(compile_args, 1, source);
         list_set(compile_args, 2, output);
         var result = process_capture(process_exec_path(), compile_args, root, list_new());
-        if (map_get(result, "status") != 0) {
+        if map_get(result, "status") != 0 {
             path_remove(work);
             io_write_error("compiler stage " + number_to_text(stage) + " failed: "
                 + text_from_bytes(map_get(result, "stderr")));
             process_exit(1);
         }
-        if (hash_sha256(file_read_bytes(output)) != expected) {
+        if hash_sha256(file_read_bytes(output)) != expected {
             path_remove(work);
             io_write_error("compiler stage " + number_to_text(stage) + " differs from the promoted bootstrap\n");
             process_exit(1);

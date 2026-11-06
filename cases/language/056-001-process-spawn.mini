@@ -14,13 +14,13 @@ map_set(options, "directory", dir);
 map_set(options, "input", input);
 var result = process_spawn(options);
 var out = map_get(result, "stdout");
-if (map_get(result, "status") == 0 && list_length(out) == 3 && list_get(out, 0) == 0 && list_get(out, 1) == 255
-    && list_get(out, 2) == 10 && map_get(result, "error") == "") {
+if map_get(result, "status") == 0 && list_length(out) == 3 && list_get(out, 0) == 0 && list_get(out, 1) == 255
+    && list_get(out, 2) == 10 && map_get(result, "error") == "" {
     io_write("capture ok\n");
 } else {
     io_write("capture bad\n");
 }
-if (file_read(dir + "/out.txt") == "x") {
+if file_read(dir + "/out.txt") == "x" {
     io_write("directory ok\n");
 } else {
     io_write("directory bad\n");
@@ -33,7 +33,7 @@ list_set(inherit_args, 1, "process.stdout.write('inherited')");
 map_set(inherited, "arguments", inherit_args);
 map_set(inherited, "mode", "inherit");
 var shown = process_spawn(inherited);
-if (map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0) {
+if map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0 {
     io_write("inherit ok\n");
 } else {
     io_write("inherit bad\n");
@@ -41,7 +41,7 @@ if (map_get(shown, "status") == 0 && list_length(map_get(shown, "stdout")) == 0)
 var missing = map_new();
 map_set(missing, "command", "mini-no-such-command");
 var failed = process_spawn(missing);
-if (map_get(failed, "status") == 1 && text_length(map_get(failed, "error")) > 0) {
+if map_get(failed, "status") == 1 && text_length(map_get(failed, "error")) > 0 {
     io_write("failure ok\n");
 } else {
     io_write("failure bad\n");

@@ -1,7 +1,7 @@
 /// Combine comparisons with &&.
 var count = 3;
 var ready = count > 0 && count < 10;
-if (ready) {
+if ready {
     io_write("ready\n");
 } else {
     io_write("waiting\n");

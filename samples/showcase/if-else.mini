@@ -1,6 +1,6 @@
 /// Choose one of two branches.
 var value = 7;
-if (number_mod(value, 2) == 0) {
+if number_mod(value, 2) == 0 {
     io_write("even\n");
 } else {
     io_write("odd\n");

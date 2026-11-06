@@ -4,26 +4,26 @@ include "../common/value.mini";
 
 /// Reference numeric multiply by repeated addition.
 fn pure_number_mul(a, b) {
-    if (!value_is_number(a) || !value_is_number(b)) {
+    if !value_is_number(a) || !value_is_number(b) {
         return 0;
     }
     var left = a;
     var right = b;
     var negative = false;
-    if (left < 0) {
+    if left < 0 {
         left = 0 - left;
         negative = !negative;
     }
-    if (right < 0) {
+    if right < 0 {
         right = 0 - right;
         negative = !negative;
     }
     var result = 0;
-    while (right > 0) {
+    while right > 0 {
         result = result + left;
         right = right - 1;
     }
-    if (negative) {
+    if negative {
         return 0 - result;
     }
     return result;
@@ -31,26 +31,26 @@ fn pure_number_mul(a, b) {
 
 /// Reference numeric division truncated toward zero.
 fn pure_number_div(a, b) {
-    if (!value_is_number(a) || !value_is_number(b) || b == 0) {
+    if !value_is_number(a) || !value_is_number(b) || b == 0 {
         return 0;
     }
     var left = a;
     var right = b;
     var negative = false;
-    if (left < 0) {
+    if left < 0 {
         left = 0 - left;
         negative = !negative;
     }
-    if (right < 0) {
+    if right < 0 {
         right = 0 - right;
         negative = !negative;
     }
     var result = 0;
-    while (left >= right) {
+    while left >= right {
         left = left - right;
         result = result + 1;
     }
-    if (negative) {
+    if negative {
         return 0 - result;
     }
     return result;
@@ -58,21 +58,21 @@ fn pure_number_div(a, b) {
 
 /// Reference numeric remainder with the dividend's sign.
 fn pure_number_mod(a, b) {
-    if (!value_is_number(a) || !value_is_number(b) || b == 0) {
+    if !value_is_number(a) || !value_is_number(b) || b == 0 {
         return 0;
     }
     var left = a;
     var right = b;
-    if (left < 0) {
+    if left < 0 {
         left = 0 - left;
     }
-    if (right < 0) {
+    if right < 0 {
         right = 0 - right;
     }
-    while (left >= right) {
+    while left >= right {
         left = left - right;
     }
-    if (a < 0) {
+    if a < 0 {
         return 0 - left;
     }
     return left;
@@ -80,18 +80,18 @@ fn pure_number_mod(a, b) {
 
 /// Reference numeric floor.
 fn pure_number_floor(a) {
-    if (!value_is_number(a)) {
+    if !value_is_number(a) {
         return 0;
     }
     var value = a;
     var whole = 0;
-    if (value >= 0) {
-        while (value >= 1) {
+    if value >= 0 {
+        while value >= 1 {
             value = value - 1;
             whole = whole + 1;
         }
     } else {
-        while (value < 0) {
+        while value < 0 {
             value = value + 1;
             whole = whole - 1;
         }
@@ -101,12 +101,12 @@ fn pure_number_floor(a) {
 
 /// Reference numeric power for non-negative integer exponents.
 fn pure_number_pow(a, b) {
-    if (!value_is_number(a) || !value_is_number(b) || b < 0 || pure_number_floor(b) != b) {
+    if !value_is_number(a) || !value_is_number(b) || b < 0 || pure_number_floor(b) != b {
         return 0;
     }
     var result = 1;
     var exponent = b;
-    while (exponent > 0) {
+    while exponent > 0 {
         result = pure_number_mul(result, a);
         exponent = exponent - 1;
     }
@@ -119,32 +119,32 @@ fn pure_number_pow(a, b) {
 
 /// Reference decimal integer parsing for safe integers.
 fn pure_number_from_text(text) {
-    if (!value_is_text(text) || text_length(text) == 0) {
+    if !value_is_text(text) || text_length(text) == 0 {
         return 0;
     }
     var start = 0;
     var negative = false;
-    if (text_get(text, 0) == "-") {
+    if text_get(text, 0) == "-" {
         negative = true;
         start = 1;
     }
-    if (start >= text_length(text)) {
+    if start >= text_length(text) {
         return 0;
     }
     var result = 0;
     var position = start;
-    while (position < text_length(text)) {
+    while position < text_length(text) {
         var digit = text_find("0123456789", text_get(text, position));
-        if (digit < 0) {
+        if digit < 0 {
             return 0;
         }
         result = result + pure_number_mul(result, 9) + digit;
-        if (result > 9007199254740991) {
+        if result > 9007199254740991 {
             return 0;
         }
         position = position + 1;
     }
-    if (negative) {
+    if negative {
         return 0 - result;
     }
     return result;
@@ -152,40 +152,40 @@ fn pure_number_from_text(text) {
 
 /// Reference canonical decimal formatting for safe integers.
 fn pure_number_to_text(value) {
-    if (!value_is_number(value)) {
+    if !value_is_number(value) {
         return "";
     }
-    if (value > 9007199254740991 || value < -9007199254740991) {
+    if value > 9007199254740991 || value < -9007199254740991 {
         return "";
     }
-    if (value == 0) {
+    if value == 0 {
         return "0";
     }
     var negative = value < 0;
-    if (negative) {
+    if negative {
         value = 0 - value;
     }
     var powers = list_new();
     list_set(powers, 0, 1);
     var next = 10;
-    while (next <= value) {
+    while next <= value {
         list_set(powers, list_length(powers), next);
         next = pure_number_mul(next, 10);
     }
     var digits = "0123456789";
     var output = "";
     var position = list_length(powers) - 1;
-    while (position >= 0) {
+    while position >= 0 {
         var power = list_get(powers, position);
         var digit = 0;
-        while (digit < 9 && value >= pure_number_mul(power, digit + 1)) {
+        while digit < 9 && value >= pure_number_mul(power, digit + 1) {
             digit = digit + 1;
         }
         output = output + text_get(digits, digit);
         value = value - pure_number_mul(power, digit);
         position = position - 1;
     }
-    if (negative) {
+    if negative {
         return "-" + output;
     }
     return output;

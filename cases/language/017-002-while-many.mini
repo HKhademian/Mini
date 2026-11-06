@@ -1,4 +1,4 @@
 var position = 0;
-while (position < 3) {
+while position < 3 {
     position = position + 1;
 }

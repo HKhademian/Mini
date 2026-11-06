@@ -4,13 +4,13 @@ include "../libs/tools/run.mini";
 /// Parse internal arguments and run the selected program.
 fn main() {
     var args = process_args();
-    if (list_length(args) < 2) {
+    if list_length(args) < 2 {
         io_write_error("usage: mini-run SOURCE.mini [ARG]...\n");
         process_exit(1);
     }
     var forwarded = list_new();
     var position = 2;
-    while (position < list_length(args)) {
+    while position < list_length(args) {
         list_set(forwarded, list_length(forwarded), list_get(args, position));
         position = position + 1;
     }

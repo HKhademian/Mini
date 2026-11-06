@@ -2,7 +2,7 @@ var items = list_new();
 list_set(items, 0, "a");
 list_set(items, 1, "b");
 list_set(items, 2, "c");
-if (list_to_text(items, ",") == "a,b,c") {
+if list_to_text(items, ",") == "a,b,c" {
     io_write("ok\n");
 } else {
     io_write("bad\n");
@@ -11,7 +11,7 @@ var mixed = list_new();
 list_set(mixed, 0, "a");
 list_set(mixed, 1, 1);
 list_set(mixed, 2, "c");
-if (list_to_text(mixed, "-") == "a--c") {
+if list_to_text(mixed, "-") == "a--c" {
     io_write("ok\n");
 } else {
     io_write("bad\n");
@@ -20,7 +20,7 @@ fn join(value, separator) {
     return list_to_text(value, separator);
 }
 var empty = list_new();
-if (list_to_text(empty, ",") == "" && list_to_text(items, "") == "abc" && join(12, ",") == "" && join(items, 12) == "") {
+if list_to_text(empty, ",") == "" && list_to_text(items, "") == "abc" && join(12, ",") == "" && join(items, 12) == "" {
     io_write("ok\n");
 } else {
     io_write("bad\n");

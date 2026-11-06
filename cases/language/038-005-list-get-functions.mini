@@ -10,7 +10,7 @@ fn index() {
 }
 io_write(list_get(items(), index()));
 io_write(":");
-if (list_get(0, index()) != 0) {
+if list_get(0, index()) != 0 {
     process_exit(1);
 }
 io_write(":ok");

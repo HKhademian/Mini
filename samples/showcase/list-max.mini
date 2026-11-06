@@ -5,9 +5,9 @@ list_set(values, 1, 9);
 list_set(values, 2, 2);
 var best = list_get(values, 0);
 var index = 1;
-while (index < list_length(values)) {
+while index < list_length(values) {
     var current = list_get(values, index);
-    if (current > best) {
+    if current > best {
         best = current;
     }
     index = index + 1;

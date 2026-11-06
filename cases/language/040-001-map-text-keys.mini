@@ -13,7 +13,7 @@ fn key(state) {
 }
 
 var items = map_new();
-if (map_has(items, "constructor") || map_has(items, "__proto__") || map_get(items, "toString") != 0) {
+if map_has(items, "constructor") || map_has(items, "__proto__") || map_get(items, "toString") != 0 {
     process_exit(1);
 }
 var keys = list_new();
@@ -27,13 +27,13 @@ list_set(keys, 6, "01");
 list_set(keys, 7, "size");
 list_set(keys, 8, "length");
 var index = 0;
-while (index < list_length(keys)) {
+while index < list_length(keys) {
     map_set(items, list_get(keys, index), index);
     index = index + 1;
 }
 index = 0;
-while (index < list_length(keys)) {
-    if (!map_has(items, list_get(keys, index)) || map_get(items, list_get(keys, index)) != index) {
+while index < list_length(keys) {
+    if !map_has(items, list_get(keys, index)) || map_get(items, list_get(keys, index)) != index {
         process_exit(1);
     }
     index = index + 1;
@@ -41,17 +41,17 @@ while (index < list_length(keys)) {
 var snapshot = map_keys(items);
 map_set(items, "__proto__", false);
 map_set(items, "extra", map_new());
-if (map_get(items, "__proto__") != false || list_length(snapshot) != 9 || list_length(map_keys(items)) != 10) {
+if map_get(items, "__proto__") != false || list_length(snapshot) != 9 || list_length(map_keys(items)) != 10 {
     process_exit(1);
 }
 list_set(snapshot, 0, "unrelated");
-if (map_has(items, "unrelated") || map_has(map_new(), "extra")) {
+if map_has(items, "unrelated") || map_has(map_new(), "extra") {
     process_exit(1);
 }
 var state = map_new();
 map_set(state, "calls", "");
 map_set(state, "items", items);
-if (map_has(receiver(state), key(state)) || map_get(state, "calls") != "rk") {
+if map_has(receiver(state), key(state)) || map_get(state, "calls") != "rk" {
     process_exit(1);
 }
 io_write("text keys and order\n");

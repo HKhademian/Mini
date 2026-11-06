@@ -162,18 +162,20 @@ remain under review, with pending cases; calls still require exact arity.
 Use `if` with an optional `else`, and `while` for repetition:
 
 ```text
-if (token == ";") {
+if token == ";" {
     output = output + token;
 } else {
     output = output + " ";
 }
 
-while (position < limit) {
+while position < limit {
     position = position + 1;
 }
 ```
 
-- Conditions use parentheses; bodies always use braces.
+- A condition is an expression that ends at the following braced body. There are
+  no required condition parentheses; use parentheses only for grouping.
+- Bodies always use braces.
 - `if` runs one branch according to its condition.
 - `while` checks its condition before every iteration, including the first.
 - No semicolon follows a closing block brace.
@@ -244,7 +246,7 @@ operation; a standard library may still add conveniences on top of it.
 ```text
 var source = io_read_all();
 var position = 0;
-while (position < text_length(source)) {
+while position < text_length(source) {
     io_write(text_get(source, position));
     position = position + 1;
 }
@@ -325,7 +327,7 @@ Use shared list operations for a list returned by the host:
 ```text
 var args = process_args();
 var position = 0;
-while (position < list_length(args)) {
+while position < list_length(args) {
     io_write(list_get(args, position));
     position = position + 1;
 }
@@ -646,7 +648,7 @@ var result = process_spawn(options);
 ## Accepted operation: value kind
 
 ```text
-if (value_kind(value) == "text") { ... }
+if value_kind(value) == "text" { ... }
 ```
 
 - `value_kind(value)` returns one of `text`, `number`, `boolean`, `list`, `map`,

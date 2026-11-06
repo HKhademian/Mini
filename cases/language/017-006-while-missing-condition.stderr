@@ -1,3 +1,3 @@
-017-006-while-missing-condition.mini:1:8: expected expression
-while () {
-       ^
+017-006-while-missing-condition.mini:1:7: expected expression
+while {
+      ^

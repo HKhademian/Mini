@@ -1,6 +1,6 @@
 /// A recursive function.
 fn factorial(n) {
-    if (n <= 1) {
+    if n <= 1 {
         return 1;
     }
     return number_mul(n, factorial(n - 1));

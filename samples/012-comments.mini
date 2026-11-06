@@ -6,6 +6,6 @@ fn mine(a, b) {
     return 1;
 }
 
-if (mine(4, 5) == 1) {
+if mine(4, 5) == 1 {
     io_write("documented function\n"); /// Documentation can also follow code.
 }

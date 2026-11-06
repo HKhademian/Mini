@@ -5,11 +5,11 @@ fn app_run(source) {
     var tokens = lex_tokenize(source);
     var symbols = map_new();
     var position = 0;
-    while (position < list_length(tokens)) {
+    while position < list_length(tokens) {
         var token = list_get(tokens, position);
-        if (map_get(token, "kind") == "identifier") {
+        if map_get(token, "kind") == "identifier" {
             var name = map_get(token, "text");
-            if (!map_has(symbols, name)) {
+            if !map_has(symbols, name) {
                 map_set(symbols, name, list_new());
             }
             var occurrences = map_get(symbols, name);

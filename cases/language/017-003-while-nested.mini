@@ -1,8 +1,8 @@
 var row = 0;
 var column = 0;
-while (row < 2) {
+while row < 2 {
     column = 0;
-    while (column < 3) {
+    while column < 3 {
         column = column + 1;
     }
     row = row + 1;

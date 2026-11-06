@@ -8,7 +8,7 @@ fn store(value) {
 }
 var items = store(make_map());
 list_set(list_get(items, 0), 5, "ignored");
-if (list_length(items) != 1) {
+if list_length(items) != 1 {
     process_exit(1);
 }
 io_write("stored");

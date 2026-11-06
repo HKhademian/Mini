@@ -26,7 +26,7 @@ fn check_inherit(command, args, directory) {
 /// Find needle at or after offset.
 fn check_find_from(text, needle, offset) {
     var position = text_find(text_slice(text, offset, text_length(text)), needle);
-    if (position < 0) {
+    if position < 0 {
         return -1;
     }
     return offset + position;
@@ -34,15 +34,15 @@ fn check_find_from(text, needle, offset) {
 
 /// Return whether text is decimal digits without a leading zero unless zero.
 fn check_digits(text) {
-    if (text_length(text) == 0) {
+    if text_length(text) == 0 {
         return false;
     }
-    if (text_length(text) > 1 && text_get(text, 0) == "0") {
+    if text_length(text) > 1 && text_get(text, 0) == "0" {
         return false;
     }
     var position = 0;
-    while (position < text_length(text)) {
-        if (text_find("0123456789", text_get(text, position)) < 0) {
+    while position < text_length(text) {
+        if text_find("0123456789", text_get(text, position)) < 0 {
             return false;
         }
         position = position + 1;
@@ -53,12 +53,12 @@ fn check_digits(text) {
 /// Return whether a dotted numeric version has three parts.
 fn check_plain_version(text) {
     var parts = text_split(text, ".");
-    if (list_length(parts) != 3) {
+    if list_length(parts) != 3 {
         return false;
     }
     var position = 0;
-    while (position < list_length(parts)) {
-        if (!check_digits(list_get(parts, position))) {
+    while position < list_length(parts) {
+        if !check_digits(list_get(parts, position)) {
             return false;
         }
         position = position + 1;
@@ -69,18 +69,18 @@ fn check_plain_version(text) {
 /// Return whether a product version is valid.
 fn check_product_version(text) {
     var parts = text_split(text, "-");
-    if (list_length(parts) == 1) {
+    if list_length(parts) == 1 {
         return check_plain_version(text);
     }
-    if (list_length(parts) != 2 || !check_plain_version(list_get(parts, 0))) {
+    if list_length(parts) != 2 || !check_plain_version(list_get(parts, 0)) {
         return false;
     }
     var pre = text_split(list_get(parts, 1), ".");
-    if (list_length(pre) != 2) {
+    if list_length(pre) != 2 {
         return false;
     }
     var stage = list_get(pre, 0);
-    if (stage != "alpha" && stage != "beta" && stage != "rc") {
+    if stage != "alpha" && stage != "beta" && stage != "rc" {
         return false;
     }
     return check_digits(list_get(pre, 1));
@@ -96,7 +96,7 @@ fn check_keys(value) {
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
     var parsed = json_parse_file(path);
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         check_fail(map_get(parsed, "message"));
     }
     return map_get(parsed, "value");
@@ -104,12 +104,12 @@ fn check_json(path) {
 
 /// Compare two text lists element by element.
 fn check_same_list(left, right) {
-    if (list_length(left) != list_length(right)) {
+    if list_length(left) != list_length(right) {
         return false;
     }
     var position = 0;
-    while (position < list_length(left)) {
-        if (list_get(left, position) != list_get(right, position)) {
+    while position < list_length(left) {
+        if list_get(left, position) != list_get(right, position) {
             return false;
         }
         position = position + 1;
@@ -124,26 +124,26 @@ fn check_document(path) {
     var in_fence = false;
     var directory = path_parent(path);
     var position = 0;
-    while (position < list_length(lines)) {
+    while position < list_length(lines) {
         var line = list_get(lines, position);
-        if (text_starts_with(line, "```")) {
+        if text_starts_with(line, "```") {
             in_fence = !in_fence;
         } else {
-            if (!in_fence) {
+            if !in_fence {
                 var cursor = check_find_from(line, "](", 0);
-                while (cursor >= 0) {
+                while cursor >= 0 {
                     var start = cursor + 2;
                     var end = check_find_from(line, ")", start);
-                    if (end < 0) {
+                    if end < 0 {
                         end = text_length(line);
                     }
                     var target = text_slice(line, start, end);
                     var hash = text_find(target, "#");
-                    if (hash >= 0) {
+                    if hash >= 0 {
                         target = text_slice(target, 0, hash);
                     }
-                    if (text_length(target) > 0 && !check_is_url(target)
-                        && !path_is_exists(path_resolve(directory, target))) {
+                    if text_length(target) > 0 && !check_is_url(target)
+                        && !path_is_exists(path_resolve(directory, target)) {
                         check_fail("broken local link in " + path + ": " + target);
                     }
                     cursor = check_find_from(line, "](", end);
@@ -152,7 +152,7 @@ fn check_document(path) {
         }
         position = position + 1;
     }
-    if (in_fence) {
+    if in_fence {
         check_fail("unbalanced code fence: " + path);
     }
     return 0;
@@ -161,14 +161,14 @@ fn check_document(path) {
 /// Return whether a link target has a URL scheme.
 fn check_is_url(target) {
     var colon = text_find(target, ":");
-    if (colon <= 0) {
+    if colon <= 0 {
         return false;
     }
     var prefix = text_slice(target, 0, colon);
     var position = 0;
-    while (position < text_length(prefix)) {
+    while position < text_length(prefix) {
         var character = text_get(prefix, position);
-        if (text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0) {
+        if text_find("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", character) < 0 {
             return false;
         }
         position = position + 1;
@@ -180,15 +180,15 @@ fn check_is_url(target) {
 fn check_documents(directory) {
     var entries = directory_list(directory);
     var position = 0;
-    while (position < list_length(entries)) {
+    while position < list_length(entries) {
         var name = list_get(entries, position);
         var path = path_join(directory, name);
-        if (case_entry_excluded(name)) {
+        if case_entry_excluded(name) {
         } else {
-            if (path_is_directory(path)) {
+            if path_is_directory(path) {
                 check_documents(path);
             } else {
-                if (text_ends_with(name, ".md") || text_ends_with(name, ".mdc")) {
+                if text_ends_with(name, ".md") || text_ends_with(name, ".mdc") {
                     check_document(path);
                 }
             }
@@ -214,8 +214,8 @@ fn check_portable_file(name) {
     list_set(suffixes, 10, ".svg");
     list_set(suffixes, 11, ".js");
     var position = 0;
-    while (position < list_length(suffixes)) {
-        if (text_ends_with(name, list_get(suffixes, position))) {
+    while position < list_length(suffixes) {
+        if text_ends_with(name, list_get(suffixes, position)) {
             return true;
         }
         position = position + 1;
@@ -227,22 +227,22 @@ fn check_portable_file(name) {
 fn check_portable_paths(directory) {
     var entries = directory_list(directory);
     var position = 0;
-    while (position < list_length(entries)) {
+    while position < list_length(entries) {
         var name = list_get(entries, position);
         var path = path_join(directory, name);
-        if (case_entry_excluded(name)) {
+        if case_entry_excluded(name) {
         } else {
-            if (path_is_directory(path)) {
+            if path_is_directory(path) {
                 check_portable_paths(path);
             } else {
-                if (check_portable_file(name)) {
+                if check_portable_file(name) {
                     var text = file_read(path);
                     var users = "/" + "Users" + "/";
                     var homes = "/" + "home" + "/";
                     var windows = "C:" + "\\" + "Users" + "\\";
                     var home_variable = "$" + "HOME/";
-                    if (text_find(text, users) >= 0 || text_find(text, homes) >= 0
-                        || text_find(text, windows) >= 0 || text_find(text, home_variable) >= 0) {
+                    if text_find(text, users) >= 0 || text_find(text, homes) >= 0
+                        || text_find(text, windows) >= 0 || text_find(text, home_variable) >= 0 {
                         check_fail("absolute home path in " + path);
                     }
                 }
@@ -257,10 +257,10 @@ fn check_portable_paths(directory) {
 fn check_sample_cases(root, fixtures) {
     var covered = map_new();
     var position = 0;
-    while (position < list_length(fixtures)) {
+    while position < list_length(fixtures) {
         var fixture = list_get(fixtures, position);
         var definition = map_get(fixture, "definition");
-        if (map_get(definition, "kind") != "tool") {
+        if map_get(definition, "kind") != "tool" {
             var source = path_resolve(path_parent(map_get(fixture, "path")), map_get(definition, "source"));
             map_set(covered, source, true);
         }
@@ -270,10 +270,10 @@ fn check_sample_cases(root, fixtures) {
     list_set(directories, 0, "samples");
     list_set(directories, 1, "examples");
     position = 0;
-    while (position < list_length(directories)) {
+    while position < list_length(directories) {
         var name = list_get(directories, position);
         var directory = path_join(root, name);
-        if (path_is_exists(directory)) {
+        if path_is_exists(directory) {
             check_sample_walk(directory, name, covered);
         }
         position = position + 1;
@@ -285,13 +285,13 @@ fn check_sample_cases(root, fixtures) {
 fn check_sample_walk(directory, relative, covered) {
     var entries = directory_list(directory);
     var position = 0;
-    while (position < list_length(entries)) {
+    while position < list_length(entries) {
         var name = list_get(entries, position);
         var path = path_join(directory, name);
-        if (path_is_directory(path)) {
+        if path_is_directory(path) {
             check_sample_walk(path, relative + "/" + name, covered);
         } else {
-            if (text_ends_with(name, ".mini") && !map_has(covered, path)) {
+            if text_ends_with(name, ".mini") && !map_has(covered, path) {
                 check_fail("missing case: " + relative + "/" + name);
             }
         }
@@ -322,25 +322,25 @@ fn check_versions(root) {
     list_set(names, 14, "format");
     list_set(names, 15, "lsp");
     var position = 0;
-    while (position < list_length(names)) {
+    while position < list_length(names) {
         list_set(expected, position, list_get(names, position));
         position = position + 1;
     }
-    if (!check_same_list(check_keys(current), list_sorted(expected))) {
+    if !check_same_list(check_keys(current), list_sorted(expected)) {
         check_fail("invalid version registry keys");
     }
     var group = map_get(current, "group");
-    if (!value_is_text(group) || !check_plain_version(group)) {
+    if !value_is_text(group) || !check_plain_version(group) {
         check_fail("group requires MAJOR.MINOR.PATCH");
     }
     position = 0;
-    while (position < list_length(expected)) {
+    while position < list_length(expected) {
         var key = list_get(expected, position);
         var version = map_get(current, key);
-        if (key != "group" && !value_is_number(version) && !value_is_text(version)) {
+        if key != "group" && !value_is_number(version) && !value_is_text(version) {
             check_fail("invalid version: " + key);
         }
-        if (value_is_text(version) && !check_product_version(version)) {
+        if value_is_text(version) && !check_product_version(version) {
             check_fail("invalid version: " + version);
         }
         position = position + 1;
@@ -349,16 +349,16 @@ fn check_versions(root) {
     var lock = check_json(path_join(root, "editors/vscode/package-lock.json"));
     var editor_version = map_get(editor, "version");
     var lock_package = map_get(map_get(lock, "packages"), "");
-    if (editor_version != map_get(current, "vscode")) {
+    if editor_version != map_get(current, "vscode") {
         check_fail("VS Code version must match the registry");
     }
-    if (text_find(editor_version, "-") >= 0) {
+    if text_find(editor_version, "-") >= 0 {
         check_fail("VS Code versions require plain MAJOR.MINOR.PATCH");
     }
-    if (map_get(lock, "version") != editor_version) {
+    if map_get(lock, "version") != editor_version {
         check_fail("VS Code lockfile version differs");
     }
-    if (map_get(lock_package, "version") != editor_version) {
+    if map_get(lock_package, "version") != editor_version {
         check_fail("VS Code lockfile package version differs");
     }
     return 0;
@@ -370,16 +370,16 @@ fn check_node(root) {
     list_set(args, 0, "-v");
     var result = process_capture(process_exec_path(), args, root, list_new());
     var version = text_from_bytes(map_get(result, "stdout"));
-    if (!text_starts_with(version, "v")) {
+    if !text_starts_with(version, "v") {
         check_fail("use Node 22.18.0 or newer");
     }
     var parts = text_split(text_slice(version, 1, text_length(version)), ".");
-    if (list_length(parts) < 2) {
+    if list_length(parts) < 2 {
         check_fail("use Node 22.18.0 or newer");
     }
     var major = number_from_text(list_get(parts, 0));
     var minor = number_from_text(list_get(parts, 1));
-    if (major < 22 || (major == 22 && minor < 18)) {
+    if major < 22 || (major == 22 && minor < 18) {
         check_fail("use Node 22.18.0 or newer");
     }
     return 0;
@@ -387,12 +387,12 @@ fn check_node(root) {
 
 /// Run repository checks and return success.
 fn check_repository(root, docs_only) {
-    if (!docs_only) {
+    if !docs_only {
         var tsc = list_new();
         list_set(tsc, 0, path_join(root, "node_modules/typescript/bin/tsc"));
         list_set(tsc, 1, "--noEmit");
         var typed = check_inherit(process_exec_path(), tsc, root);
-        if (map_get(typed, "status") != 0) {
+        if map_get(typed, "status") != 0 {
             process_exit(map_get(typed, "status"));
         }
     }
@@ -400,36 +400,36 @@ fn check_repository(root, docs_only) {
     list_set(tools, 0, path_join(root, "dist/build.js"));
     list_set(tools, 1, "--check");
     var verified_tools = check_inherit(process_exec_path(), tools, root);
-    if (map_get(verified_tools, "status") != 0) {
+    if map_get(verified_tools, "status") != 0 {
         process_exit(map_get(verified_tools, "status"));
     }
     var seed = path_join(root, "bin/bootstrap");
     var generated_seed = path_join(root, "dist/bootstrap.js");
-    if (!path_is_exists(seed) || !path_is_exists(generated_seed) || file_read(seed) != file_read(generated_seed)) {
+    if !path_is_exists(seed) || !path_is_exists(generated_seed) || file_read(seed) != file_read(generated_seed) {
         check_fail("bin/bootstrap is stale; run ./bin/bootstrap or rebuild the seed");
     }
     check_versions(root);
     check_node(root);
     var loaded = case_load_cases("", root);
-    if (result_is_fail(loaded)) {
+    if result_is_fail(loaded) {
         check_fail(map_get(loaded, "message"));
     }
     check_sample_cases(root, map_get(loaded, "fixtures"));
     check_documents(root);
     check_portable_paths(root);
     var bootstrap = check_json(path_join(root, "config/bootstrap.json"));
-    if (!value_is_map(bootstrap)) {
+    if !value_is_map(bootstrap) {
         check_fail("self-hosted bootstrap unavailable; promote a generated compiler");
     }
     var active = check_json(path_join(root, "config/compiler.json"));
-    if (map_get(active, "entry") != map_get(bootstrap, "compiler")) {
+    if map_get(active, "entry") != map_get(bootstrap, "compiler") {
         check_fail("active compiler must be the generated bootstrap");
     }
     var verify = list_new();
     list_set(verify, 0, path_join(root, "dist/verify.js"));
     list_set(verify, 1, root);
     var verified = process_capture(process_exec_path(), verify, root, list_new());
-    if (map_get(verified, "status") != 0) {
+    if map_get(verified, "status") != 0 {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));
     }

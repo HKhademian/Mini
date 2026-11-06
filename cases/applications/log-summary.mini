@@ -8,7 +8,7 @@ fn log_increment(counts, key) {
 
 /// Store a complete three-field row in the three frequency maps; return zero.
 fn log_row(fields, levels, routes, users) {
-    if (list_length(fields) == 3) {
+    if list_length(fields) == 3 {
         log_increment(levels, list_get(fields, 0));
         log_increment(routes, list_get(fields, 1));
         log_increment(users, list_get(fields, 2));
@@ -24,14 +24,14 @@ fn app_run(source) {
     var fields = list_new();
     var word = "";
     var index = 0;
-    while (index <= text_length(source)) {
+    while index <= text_length(source) {
         var character = text_get(source, index);
-        if (character == " " || character == "\t" || character == "\r" || character == "\n" || character == "") {
-            if (word != "") {
+        if character == " " || character == "\t" || character == "\r" || character == "\n" || character == "" {
+            if word != "" {
                 list_set(fields, list_length(fields), word);
                 word = "";
             }
-            if (character == "\n" || character == "") {
+            if character == "\n" || character == "" {
                 log_row(fields, levels, routes, users);
                 fields = list_new();
             }

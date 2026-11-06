@@ -10,6 +10,6 @@ fn make_map() {
 var count = list_length(map_keys(make_map()));
 var stored = list_new();
 list_set(stored, 0, map_new());
-if (count == 1 && list_length(map_keys(list_get(stored, 0))) == 0) {
+if count == 1 && list_length(map_keys(list_get(stored, 0))) == 0 {
     io_write(":one");
 }

@@ -1,17 +1,17 @@
 /// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
 io_write("character: " + text_get("hello", 1) + "\n");
-if (text_get(0, 1) == "" && text_get("hello", 2000) == "") {
+if text_get(0, 1) == "" && text_get("hello", 2000) == "" {
     io_write("unavailable text: empty\n");
 }
-if (list_get(0, 2000) == 0) {
+if list_get(0, 2000) == 0 {
     io_write("unavailable list value: zero\n");
 }
 var items = list_new();
 list_set(items, 2, "last");
-if (list_get(items, 0) == 0) {
+if list_get(items, 0) == 0 {
     io_write("gap reads zero\n");
 }
 io_write("last: " + list_get(items, -1) + "\n");
-if (map_get(map_new(), "missing") == 0) {
+if map_get(map_new(), "missing") == 0 {
     io_write("missing map value: zero\n");
 }

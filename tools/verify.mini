@@ -4,12 +4,12 @@ include "../libs/tools/verify.mini";
 /// Parse arguments and print the bootstrap identity record.
 fn main() {
     var args = process_args();
-    if (list_length(args) > 1) {
+    if list_length(args) > 1 {
         io_write_error("usage: mini-verify\n");
         process_exit(1);
     }
     var root = project_root();
-    if (list_length(args) == 1) {
+    if list_length(args) == 1 {
         root = list_get(args, 0);
     }
     io_write(verify_bootstrap(root));

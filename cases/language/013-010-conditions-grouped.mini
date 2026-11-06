@@ -1,0 +1,5 @@
+var left = true;
+var right = false;
+if (left || right) && !right {
+    io_write("grouped\n");
+}

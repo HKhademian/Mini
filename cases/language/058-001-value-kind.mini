@@ -1,6 +1,6 @@
 /// Report the runtime kind of each Mini value kind.
-if (value_kind("x") == "text" && value_kind(1) == "number" && value_kind(true) == "boolean"
-    && value_kind(list_new()) == "list" && value_kind(map_new()) == "map") {
+if value_kind("x") == "text" && value_kind(1) == "number" && value_kind(true) == "boolean"
+    && value_kind(list_new()) == "list" && value_kind(map_new()) == "map" {
     io_write("kind ok\n");
 } else {
     io_write("kind bad\n");

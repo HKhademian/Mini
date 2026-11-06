@@ -1,8 +1,8 @@
 var source = io_read_all();
-if (text_length(source) == 0) {
+if text_length(source) == 0 {
     io_write("empty");
 } else {
-    if (text_length(source) == 3) {
+    if text_length(source) == 3 {
         io_write("three");
     } else {
         io_write("other");

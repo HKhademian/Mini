@@ -5,10 +5,10 @@ fn graph_words(source) {
     var words = list_new();
     var word = "";
     var position = 0;
-    while (position <= text_length(source)) {
+    while position <= text_length(source) {
         var character = text_get(source, position);
-        if (character == " " || character == "\t" || character == "\r" || character == "\n" || character == "") {
-            if (word != "") {
+        if character == " " || character == "\t" || character == "\r" || character == "\n" || character == "" {
+            if word != "" {
                 list_set(words, list_length(words), word);
                 word = "";
             }
@@ -25,9 +25,9 @@ fn app_run(source) {
     var words = graph_words(source);
     var edges = map_new();
     var position = 0;
-    while (position + 1 < list_length(words)) {
+    while position + 1 < list_length(words) {
         var from = list_get(words, position);
-        if (!map_has(edges, from)) {
+        if !map_has(edges, from) {
             map_set(edges, from, list_new());
         }
         var destinations = map_get(edges, from);
@@ -39,14 +39,14 @@ fn app_run(source) {
     var seen = map_new();
     map_set(seen, "root", true);
     position = 0;
-    while (position < list_length(queue)) {
+    while position < list_length(queue) {
         var node = list_get(queue, position);
-        if (map_has(edges, node)) {
+        if map_has(edges, node) {
             var destinations = map_get(edges, node);
             var index = 0;
-            while (index < list_length(destinations)) {
+            while index < list_length(destinations) {
                 var next = list_get(destinations, index);
-                if (!map_has(seen, next)) {
+                if !map_has(seen, next) {
                     map_set(seen, next, true);
                     list_set(queue, list_length(queue), next);
                 }

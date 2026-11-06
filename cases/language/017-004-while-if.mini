@@ -1,7 +1,7 @@
 var position = 0;
 var output = "";
-while (position < 3) {
-    if (position == 1) {
+while position < 3 {
+    if position == 1 {
         output = output + ";";
     } else {
         output = output + " ";

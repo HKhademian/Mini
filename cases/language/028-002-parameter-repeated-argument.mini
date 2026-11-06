@@ -5,7 +5,7 @@ fn replace(left, right) {
 
 var original = 1;
 var result = replace(original, original);
-if (original == 1 && result == 1) {
+if original == 1 && result == 1 {
     io_write("independent");
 } else {
     process_exit(1);

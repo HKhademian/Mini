@@ -1,6 +1,6 @@
 var expected = io_read_all();
 var items = map_new();
-if (list_length(map_keys(items)) != 0) {
+if list_length(map_keys(items)) != 0 {
     process_exit(1);
 }
 map_set(items, expected, 0);
@@ -10,20 +10,20 @@ var keys = map_keys(items);
 var position = 0;
 var found_first = false;
 var found_second = false;
-while (position < list_length(keys)) {
+while position < list_length(keys) {
     var key = list_get(keys, position);
-    if (!map_has(items, key)) {
+    if !map_has(items, key) {
         process_exit(1);
     }
-    if (key == expected) {
+    if key == expected {
         found_first = true;
     }
-    if (key == expected + "!") {
+    if key == expected + "!" {
         found_second = true;
     }
     position = position + 1;
 }
-if (list_length(keys) != 2 || !found_first || !found_second || list_length(map_keys(items)) != 2) {
+if list_length(keys) != 2 || !found_first || !found_second || list_length(map_keys(items)) != 2 {
     process_exit(1);
 }
 io_write("keys");

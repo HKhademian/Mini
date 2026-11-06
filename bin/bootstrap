@@ -945,13 +945,11 @@ function parser_statement(parser) {
     return (((("let " + $mini_map_get(declaration_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
 }
 function parser_condition(parser) {
-    parser_expect(parser, "(");
     let start = parser_token(parser);
     let condition = parser_expression(parser);
     if ((($mini_map_get(condition, "kind") !== "boolean") && ($mini_map_get(condition, "kind") !== "unknown"))) {
         parser_fail(start, "condition must be boolean");
     }
-    parser_expect(parser, ")");
     return condition;
 }
 function parser_block(parser) {

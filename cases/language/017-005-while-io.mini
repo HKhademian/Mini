@@ -1,7 +1,7 @@
 var token = io_read_all();
 var position = 0;
 var output = "";
-while (position < 3) {
+while position < 3 {
     output = output + token;
     position = position + 1;
 }

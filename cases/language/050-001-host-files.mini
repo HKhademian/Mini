@@ -2,19 +2,19 @@
 var version_args = list_new();
 list_set(version_args, 0, "--version");
 var version = process_run(process_exec_path(), version_args, "capture");
-if (map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) > 0) {
+if map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) > 0 {
     io_write("exec ok\n");
 } else {
     io_write("exec bad\n");
 }
 var directory = path_temp_directory();
-if (text_length(directory) > 0) {
+if text_length(directory) > 0 {
     io_write("temp ok\n");
 } else {
     io_write("temp bad\n");
 }
 file_write(directory + "/note.txt", "value\n");
-if (file_read(directory + "/note.txt") == "value\n") {
+if file_read(directory + "/note.txt") == "value\n" {
     io_write("file ok\n");
 } else {
     io_write("file bad\n");

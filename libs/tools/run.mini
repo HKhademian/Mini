@@ -15,7 +15,7 @@ fn run_cleanup(directory) {
 /// Compile the source and run the generated module with forwarded arguments.
 fn run_program(compiler, source, forwarded) {
     var directory = path_temp_directory();
-    if (text_length(directory) == 0) {
+    if text_length(directory) == 0 {
         io_write_error("cannot create a temporary directory\n");
         process_exit(1);
     }
@@ -27,14 +27,14 @@ fn run_program(compiler, source, forwarded) {
     list_set(compile_args, 2, source);
     list_set(compile_args, 3, output);
     var compiled = process_run(process_exec_path(), compile_args, "inherit");
-    if (map_get(compiled, "status") != 0) {
+    if map_get(compiled, "status") != 0 {
         run_cleanup(directory);
         process_exit(map_get(compiled, "status"));
     }
     var run_args = list_new();
     list_set(run_args, 0, output);
     var position = 0;
-    while (position < list_length(forwarded)) {
+    while position < list_length(forwarded) {
         list_set(run_args, list_length(run_args), list_get(forwarded, position));
         position = position + 1;
     }

@@ -5,10 +5,10 @@ include "../libs/tools/check.mini";
 fn main() {
     var args = process_args();
     var docs_only = false;
-    if (list_length(args) == 1 && list_get(args, 0) == "--docs") {
+    if list_length(args) == 1 && list_get(args, 0) == "--docs" {
         docs_only = true;
     } else {
-        if (list_length(args) != 0) {
+        if list_length(args) != 0 {
             io_write_error("usage: mini-check [--docs | SOURCE.mini | -]\n");
             process_exit(1);
         }

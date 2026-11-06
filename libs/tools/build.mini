@@ -14,7 +14,7 @@ fn build_fail(message) {
 /// Read the tool manifest and return it.
 fn build_manifest(root) {
     var parsed = json_parse_file(path_join(root, "tools/mini-tools.json"));
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         build_fail(map_get(parsed, "message"));
     }
     return map_get(parsed, "value");
@@ -23,7 +23,7 @@ fn build_manifest(root) {
 /// Return the active compiler entry.
 fn build_compiler(root) {
     var parsed = json_parse_file(path_join(root, "config/compiler.json"));
-    if (result_is_fail(parsed)) {
+    if result_is_fail(parsed) {
         build_fail(map_get(parsed, "message"));
     }
     return map_get(map_get(parsed, "value"), "entry");
@@ -38,7 +38,7 @@ fn build_compile(root, compiler, source) {
     list_set(args, 1, path_join(root, source));
     list_set(args, 2, output);
     var result = process_capture(process_exec_path(), args, root, list_new());
-    if (map_get(result, "status") != 0) {
+    if map_get(result, "status") != 0 {
         path_remove(work);
         build_fail(source + " failed:\n" + text_from_bytes(map_get(result, "stderr")));
     }
@@ -58,7 +58,7 @@ fn build_executable(root, path) {
 
 /// Return launcher text for a manifest entry.
 fn build_launcher(launcher) {
-    if (value_kind(map_get(launcher, "tool")) == "text") {
+    if value_kind(map_get(launcher, "tool")) == "text" {
         return "#!/usr/bin/env node\nimport { pathToFileURL } from 'node:url';\nimport { join } from 'node:path';\n"
             + "await import(pathToFileURL(join(import.meta.dirname, '..', '" + map_get(launcher, "tool") + "')).href);\n";
     }
@@ -72,7 +72,7 @@ fn build_all(root) {
     var compiler = build_compiler(root);
     var tools = map_get(manifest, "tools");
     var position = 0;
-    while (position < list_length(tools)) {
+    while position < list_length(tools) {
         var tool = list_get(tools, position);
         var generated = build_compile(root, compiler, map_get(tool, "source"));
         var target = path_join(root, map_get(tool, "generated"));
@@ -83,7 +83,7 @@ fn build_all(root) {
     }
     var launchers = map_get(manifest, "launchers");
     position = 0;
-    while (position < list_length(launchers)) {
+    while position < list_length(launchers) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
         file_write(path_join(root, name), build_launcher(launcher));
@@ -99,21 +99,21 @@ fn build_check(root) {
     var compiler = build_compiler(root);
     var tools = map_get(manifest, "tools");
     var position = 0;
-    while (position < list_length(tools)) {
+    while position < list_length(tools) {
         var tool = list_get(tools, position);
         var target = path_join(root, map_get(tool, "generated"));
         var generated = build_compile(root, compiler, map_get(tool, "source"));
-        if (!path_is_exists(target) || file_read(target) != generated) {
+        if !path_is_exists(target) || file_read(target) != generated {
             build_fail(map_get(tool, "generated") + " is stale; run dist/build.js");
         }
         position = position + 1;
     }
     var launchers = map_get(manifest, "launchers");
     position = 0;
-    while (position < list_length(launchers)) {
+    while position < list_length(launchers) {
         var launcher = list_get(launchers, position);
         var name = "bin/" + map_get(launcher, "name");
-        if (!path_is_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher)) {
+        if !path_is_exists(path_join(root, name)) || file_read(path_join(root, name)) != build_launcher(launcher) {
             build_fail(name + " is stale; run dist/build.js");
         }
         position = position + 1;
@@ -123,7 +123,7 @@ fn build_check(root) {
 
 /// Run the build or check mode.
 fn build_run(root, check) {
-    if (check) {
+    if check {
         return build_check(root);
     }
     return build_all(root);

@@ -3,25 +3,25 @@ include "../common/value.mini";
 fn pure_text_find_from(text, needle, start) {
     var text_size = text_length(text);
     var needle_size = text_length(needle);
-    if (needle_size == 0) {
-        if (start <= text_size) {
+    if needle_size == 0 {
+        if start <= text_size {
             return start;
         }
         return -1;
     }
     var position = start;
-    while (position + needle_size <= text_size) {
+    while position + needle_size <= text_size {
         var offset = 0;
         var matched = true;
-        while (offset < needle_size) {
-            if (text_get(text, position + offset) != text_get(needle, offset)) {
+        while offset < needle_size {
+            if text_get(text, position + offset) != text_get(needle, offset) {
                 matched = false;
                 offset = needle_size;
             } else {
                 offset = offset + 1;
             }
         }
-        if (matched) {
+        if matched {
             return position;
         }
         position = position + 1;
@@ -31,7 +31,7 @@ fn pure_text_find_from(text, needle, start) {
 
 /// Reference text_find.
 fn pure_text_find(text, needle) {
-    if (!value_is_text(text) || !value_is_text(needle)) {
+    if !value_is_text(text) || !value_is_text(needle) {
         return -1;
     }
     return pure_text_find_from(text, needle, 0);
@@ -39,34 +39,34 @@ fn pure_text_find(text, needle) {
 
 /// Reference text_slice with negative-index and clamp behavior.
 fn pure_text_slice(source, start, end) {
-    if (!value_is_text(source)) {
+    if !value_is_text(source) {
         return "";
     }
     var size = text_length(source);
-    if (start < 0) {
+    if start < 0 {
         start = size + start;
     }
-    if (end < 0) {
+    if end < 0 {
         end = size + end;
     }
-    if (start < 0) {
+    if start < 0 {
         start = 0;
     }
-    if (end < 0) {
+    if end < 0 {
         end = 0;
     }
-    if (start > size) {
+    if start > size {
         start = size;
     }
-    if (end > size) {
+    if end > size {
         end = size;
     }
-    if (end <= start) {
+    if end <= start {
         return "";
     }
     var output = "";
     var position = start;
-    while (position < end) {
+    while position < end {
         output = output + text_get(source, position);
         position = position + 1;
     }
@@ -75,10 +75,10 @@ fn pure_text_slice(source, start, end) {
 
 /// Reference text_split for text divider and text input.
 fn pure_text_split(text, divider) {
-    if (!value_is_text(text) || !value_is_text(divider)) {
+    if !value_is_text(text) || !value_is_text(divider) {
         return list_new();
     }
-    if (divider == "") {
+    if divider == "" {
         var whole = list_new();
         list_set(whole, 0, text);
         return whole;
@@ -86,7 +86,7 @@ fn pure_text_split(text, divider) {
     var result = list_new();
     var start = 0;
     var position = pure_text_find_from(text, divider, start);
-    while (position >= 0) {
+    while position >= 0 {
         list_set(result, list_length(result), pure_text_slice(text, start, position));
         start = position + text_length(divider);
         position = pure_text_find_from(text, divider, start);
