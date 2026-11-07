@@ -538,8 +538,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="./playground.css">
+  <link rel="stylesheet" href="../style.css?rev=${sourceCommit}">
+  <link rel="stylesheet" href="./playground.css?rev=${sourceCommit}">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
