@@ -1,3 +1,0 @@
-027-004-list-new-not-text.mini:1:1: expected text argument
-io_write(list_new());
-^

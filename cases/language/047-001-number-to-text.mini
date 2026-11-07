@@ -4,10 +4,10 @@ if number_to_text(0) == "0" && number_to_text(123) == "123" && number_to_text(-4
 } else {
     io_write_line("bad");
 }
-fn to_text(value) {
+fn format_number(value) {
     return number_to_text(value);
 }
-if to_text("12") == "" && to_text(list_new()) == "" {
+if format_number("12") == "" && format_number(list_new()) == "" {
     io_write_line("ok");
 } else {
     io_write_line("bad");

@@ -1,0 +1,15 @@
+{
+  "id": "language.list-new-output",
+  "kind": "feature",
+  "source": "027-004-list-new-output.mini",
+  "features": ["list.new", "text.output"],
+  "cases": [
+    {
+      "name": "prints-empty-list",
+      "stdin": {"file": "empty.stdin"},
+      "stdout": {"text": "[]"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
