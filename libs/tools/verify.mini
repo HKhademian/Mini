@@ -3,9 +3,9 @@
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 
-include "../common/value.mini";
-include "../common/list.mini";
-include "../common/text.mini";
+include "common/value.mini";
+include "common/list.mini";
+include "common/text.mini";
 include "./cases.mini";
 
 /// Report a verification failure and stop.

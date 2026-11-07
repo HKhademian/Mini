@@ -4,9 +4,9 @@
 ///        node dist/test.js --candidate COMPILER.js [FILTER]
 /// Prints PASS, PENDING, or FAIL for each scenario and exits 1 on mismatch.
 
-include "../common/io.mini";
-include "../common/text.mini";
-include "../common/list.mini";
+include "common/io.mini";
+include "common/text.mini";
+include "common/list.mini";
 include "./cases.mini";
 
 /// Report usage and stop.

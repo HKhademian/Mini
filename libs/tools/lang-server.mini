@@ -2,12 +2,12 @@
 /// Usage: node dist/lang-server.js [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
-include "../common/value.mini";
-include "../common/list.mini";
-include "../common/text.mini";
-include "../common/path.mini";
-include "../common/process.mini";
-include "../common/project.mini";
+include "common/value.mini";
+include "common/list.mini";
+include "common/text.mini";
+include "common/path.mini";
+include "common/process.mini";
+include "common/project.mini";
 
 /// Write one server log line.
 fn lsp_log(message) {

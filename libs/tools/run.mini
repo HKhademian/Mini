@@ -4,10 +4,10 @@
 /// reach the program through fn_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.
 
-include "../common/path.mini";
-include "../common/list.mini";
-include "../common/process-run.mini";
-include "../common/text.mini";
+include "common/path.mini";
+include "common/list.mini";
+include "common/process-run.mini";
+include "common/text.mini";
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {

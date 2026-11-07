@@ -2,14 +2,14 @@
 /// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.
 
-include "../common/value.mini";
-include "../common/list.mini";
-include "../common/text.mini";
-include "../common/path.mini";
-include "../common/process.mini";
-include "../common/json.mini";
-include "../common/result.mini";
-include "../common/project.mini";
+include "common/value.mini";
+include "common/list.mini";
+include "common/text.mini";
+include "common/path.mini";
+include "common/process.mini";
+include "common/json.mini";
+include "common/result.mini";
+include "common/project.mini";
 
 /// Report a release error and stop.
 fn release_fail(message) {
