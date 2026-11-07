@@ -1,3 +1,8 @@
+/// Shared case loading and scenario execution for mini tools.
+/// Inputs are case manifests under cases/ with separate source and stream files.
+/// Results are maps with `ok` and a failure `message`; scenario mismatches never
+/// terminate the host process.
+
 include "../common/value.mini";
 include "../common/list.mini";
 include "../common/text.mini";
@@ -6,10 +11,6 @@ include "../common/process.mini";
 include "../common/json.mini";
 include "../common/result.mini";
 include "../common/project.mini";
-/// Shared case loading and scenario execution for mini tools.
-/// Inputs are case manifests under cases/ with separate source and stream files.
-/// Results are maps with `ok` and a failure `message`; scenario mismatches never
-/// terminate the host process.
 
 /// Return a successful result map.
 
@@ -36,6 +37,7 @@ include "../common/project.mini";
 /// Read and parse a JSON file.
 
 /// Return the accepted case kinds.
+
 fn case_kinds() {
     kinds := list_of("tool", "feature", "reject", "compile", "sample", "example");
     return kinds;

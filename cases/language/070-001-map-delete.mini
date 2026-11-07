@@ -1,6 +1,8 @@
+/// Delete map keys and observe removal through map_has and map_keys.
+
 include "common/io.mini";
 include "common/map.mini";
-/// Delete map keys and observe removal through map_has and map_keys.
+
 items := map_of("a", 1, "b", 2);
 map_delete(items, "a");
 io_write_line(number_to_text(list_length(map_keys(items))));

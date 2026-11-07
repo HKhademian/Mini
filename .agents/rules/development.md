@@ -50,11 +50,16 @@
   new version. Verify the exact source and artifact identities before packaging.
 
 - Keep code, docs, comments, commits, and chat messages concise, clear, and direct.
-- Keep Mini source well documented: use `///` for file purpose and function
+- Keep Mini source well documented: use `///` for file purpose and declaration
   responsibilities, inputs, returned values, and shared-state changes where
-  relevant. Use `//` to explain non-obvious implementation decisions. Keep M1's
-  correspondence to T0 clear in its documentation. Mini has line comments only;
-  do not introduce block comments or documentation tags.
+  relevant. A leading `///` block documents the next declaration by default;
+  it is file documentation when a header `//` comment or following `include`
+  closes the file-doc section first. Put file documentation before imports.
+  Without an include boundary, use `//` to separate file documentation from
+  declarations. Blank lines do not separate documentation sections. Use `//` to
+  explain non-obvious implementation decisions. Keep M1's correspondence to T0
+  clear in its documentation. Mini has line comments only; do not introduce
+  block comments or documentation tags.
 - Keep this project self-contained; do not reference the predecessor project.
 
 - Executable project code uses TypeScript run directly by Node or Mini only.

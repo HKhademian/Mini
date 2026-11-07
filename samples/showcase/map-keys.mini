@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Take a key snapshot and count it.
+
+include "common/io.mini";
+
 values := map_new();
 map_set(values, "a", 1);
 map_set(values, "b", 2);

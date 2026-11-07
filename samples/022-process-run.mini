@@ -1,5 +1,6 @@
-include "common/io.mini";
 /// Run Node once, capture its output and status, and print them.
+
+include "common/io.mini";
 include "common/process-run.mini";
 
 args := list_new();

@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Exercise UTF-8 byte conversion.
+
+include "common/io.mini";
+
 bytes := text_to_bytes("Aé😀");
 output := "";
 position := 0;

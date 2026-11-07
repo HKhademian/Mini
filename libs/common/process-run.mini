@@ -5,6 +5,7 @@ include "./text.mini";
 
 /// Run command with arguments and return a result map with text output streams.
 /// The child inherits the parent environment; mode selects capture or inherit.
+
 fn process_run(command, args, mode) {
     options := map_new();
     map_set(options, "command", command);

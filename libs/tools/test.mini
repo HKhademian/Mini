@@ -1,14 +1,16 @@
-include "../common/io.mini";
-include "../common/text.mini";
-include "../common/list.mini";
-include "./cases.mini";
 /// Run case scenarios through the shared case runner.
 /// Usage: node dist/test.js [FILTER]
 ///        node dist/test.js --file CASE.json
 ///        node dist/test.js --candidate COMPILER.js [FILTER]
 /// Prints PASS, PENDING, or FAIL for each scenario and exits 1 on mismatch.
 
+include "../common/io.mini";
+include "../common/text.mini";
+include "../common/list.mini";
+include "./cases.mini";
+
 /// Report usage and stop.
+
 fn test_usage() {
     io_write_error("usage: mini-test [FILTER]\n");
     process_exit(1);

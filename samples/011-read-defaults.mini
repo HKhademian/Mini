@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
+
+include "common/io.mini";
+
 io_write_line("character: " + text_get("hello", 1));
 if text_get(0, 1) == "" && text_get("hello", 2000) == "" {
     io_write_line("unavailable text: empty");

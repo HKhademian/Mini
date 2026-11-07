@@ -1,13 +1,15 @@
+/// Run repository checks: strict TypeScript (unless --docs), generated tools,
+/// versions, editor metadata, cases, documents, portable paths, and bootstrap.
+/// Usage: node dist/check.js [--docs]
+
 include "../common/io.mini";
 include "../common/value.mini";
 include "../common/list.mini";
 include "../common/text.mini";
 include "./cases.mini";
-/// Run repository checks: strict TypeScript (unless --docs), generated tools,
-/// versions, editor metadata, cases, documents, portable paths, and bootstrap.
-/// Usage: node dist/check.js [--docs]
 
 /// Report a check failure and stop.
+
 fn check_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Combine comparisons with &&.
+
+include "common/io.mini";
+
 count := 3;
 ready := count > 0 && count < 10;
 if ready {

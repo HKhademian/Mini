@@ -1,4 +1,5 @@
 /// Time builtin descriptors.
+//
 
 builtin_add(
     "time_millis",

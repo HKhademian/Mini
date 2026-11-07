@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
+
+include "common/io.mini";
+
 names := map_new();
 if list_length(map_keys(names)) == 0 {
     io_write_line("empty");

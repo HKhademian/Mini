@@ -1,4 +1,6 @@
-include "common/io.mini";
 /// Count characters.
+
+include "common/io.mini";
+
 text := "playground";
 io_write_line(number_to_text(text_length(text)));

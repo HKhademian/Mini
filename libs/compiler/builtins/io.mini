@@ -1,5 +1,5 @@
 /// Io builtin descriptors.
-
+//
 
 builtin_add(
     "io_read_all",

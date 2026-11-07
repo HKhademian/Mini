@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Exercise path checks, directory listing, copying, and recursive removal.
+
+include "common/io.mini";
+
 root := path_temp_directory();
 sub := root + "/sub";
 directory_create(sub);

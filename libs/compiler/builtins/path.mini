@@ -1,4 +1,5 @@
 /// Path builtin descriptors.
+//
 
 builtin_add(
     "path_copy",

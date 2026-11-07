@@ -1,6 +1,8 @@
 /// Filter three-column CSV rows whose third field is yes, returning name and city as tab-separated text.
+//
 
 /// Return a selected row as text; headers and other rows contribute empty text.
+
 fn csv_row(fields) {
     if list_length(fields) == 3 && list_get(fields, 2) == "yes" {
         return list_get(fields, 0) + "\t" + list_get(fields, 1) + "\n";

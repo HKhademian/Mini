@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Accumulate numbers in a loop.
+
+include "common/io.mini";
+
 values := list_new();
 list_set(values, 0, 4);
 list_set(values, 1, 8);

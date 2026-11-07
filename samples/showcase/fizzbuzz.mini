@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Classic division and branching.
+
+include "common/io.mini";
+
 n := 1;
 while n <= 15 {
     if number_mod(n, 15) == 0 {

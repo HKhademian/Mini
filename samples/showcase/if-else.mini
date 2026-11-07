@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Choose one of two branches.
+
+include "common/io.mini";
+
 value := 7;
 if number_mod(value, 2) == 0 {
     io_write_line("even");

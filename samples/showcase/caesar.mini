@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Shift character codes by one.
+
+include "common/io.mini";
+
 source := "MINI";
 output := "";
 index := 0;

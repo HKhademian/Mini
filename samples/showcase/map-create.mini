@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Set and read text-keyed values.
+
+include "common/io.mini";
+
 values := map_new();
 map_set(values, "name", "Mini");
 map_set(values, "count", 2);

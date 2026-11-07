@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Run a block when a condition holds.
+
+include "common/io.mini";
+
 temperature := 21;
 if temperature > 18 {
     io_write_line("warm");

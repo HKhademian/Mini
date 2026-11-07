@@ -1,3 +1,7 @@
+/// Package committed sources into a release directory.
+/// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
+/// Never creates or publishes tags. Prints nothing on success.
+
 include "../common/value.mini";
 include "../common/list.mini";
 include "../common/text.mini";
@@ -6,11 +10,9 @@ include "../common/process.mini";
 include "../common/json.mini";
 include "../common/result.mini";
 include "../common/project.mini";
-/// Package committed sources into a release directory.
-/// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
-/// Never creates or publishes tags. Prints nothing on success.
 
 /// Report a release error and stop.
+
 fn release_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

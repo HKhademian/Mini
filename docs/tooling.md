@@ -119,14 +119,14 @@ JavaScript.
 Status: future and not implemented. A documentation tool. The standalone
 command will be `mini-document`; the dispatcher form will be `mini doc`.
 
-Its role is generating reference material from the language's documented source
-conventions and declarations. Decide the first useful output format and source
-of descriptions before implementation. mini selects `///` documentation comments;
-read these from source or from the compiler's comment-including analysis tokens.
-The parser token stream remains comment-free.
-Documentation tags, declaration attachment/extraction rules, export visibility,
-modules, and annotations remain undecided. This tool does not approve them
-implicitly or require richer comment syntax.
+Its role is generating reference material from documented source conventions
+and declarations. It will read `///` comments from source or comment-including
+analysis tokens. A leading doc block is file documentation when a header `//`
+comment or an `include` closes the file-doc section before a declaration;
+otherwise it documents the next declaration. Blank lines do not create section
+boundaries. The parser token stream remains comment-free. The first useful
+output format and export visibility remain undecided. This tool does not require
+richer comment syntax.
 
 Keep reference output deterministic and avoid inventing parameter or result
 types where mini's type contract has not selected them. A website generator,
@@ -161,8 +161,10 @@ positions. It advertises no symbols, references, rename, diagnostics-on-type,
 range formatting, or incremental-sync capabilities. Unknown requests receive the
 protocol error; unknown notifications are ignored.
 
-Hover on a function or variable shows its declaration and the contiguous `///`
-documentation lines immediately above it. Hover on a builtin shows its signature.
+Hover on a function or variable shows its declaration and the immediately
+preceding `///` documentation comments. Blank lines do not break the comment
+sequence; an ordinary `//` comment, include, or other token does. Hover on a
+builtin shows its signature.
 Completion offers document functions and variables, builtins, and the current
 keywords (`include`, `fn`, `return`, `if`, `else`, `while`, `true`, `false`),
 filtered by the identifier prefix at the cursor. Completion is suppressed inside

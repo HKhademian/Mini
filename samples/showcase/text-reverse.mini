@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Walk backwards and build a new string.
+
+include "common/io.mini";
+
 source := "mini";
 output := "";
 index := text_length(source) - 1;

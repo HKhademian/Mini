@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Slice with positive and negative bounds.
+
+include "common/io.mini";
+
 text := "playground";
 io_write_line(text_slice(text, 0, 4));
 io_write_line(text_slice(text, -4, text_length(text)));

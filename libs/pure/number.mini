@@ -1,8 +1,9 @@
-include "../common/value.mini";
 /// Reference numeric add derived from subtraction.
 
+include "../common/value.mini";
 
 /// Reference numeric multiply by repeated addition.
+
 fn pure_number_mul(a, b) {
     if !value_is_number(a) || !value_is_number(b) {
         return 0;

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /// Compose the mini compiler from its source files.
+
 include "common/io.mini";
 include "common/text.mini";
 include "compiler/lexer.mini";
@@ -7,6 +8,7 @@ include "compiler/parser.mini";
 include "compiler/builtins.mini";
 
 /// Return token JSON with two-space indentation and a final newline.
+
 fn token_json(tokens) {
     output := "[";
     position := 0;

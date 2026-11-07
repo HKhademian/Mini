@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Walk a list backwards and join the items.
+
+include "common/io.mini";
+
 values := list_new();
 list_set(values, 0, "one");
 list_set(values, 1, "two");

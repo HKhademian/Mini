@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Read present and missing environment variables.
+
+include "common/io.mini";
+
 if text_length(process_env("PATH")) > 0 && process_env("MINI_MISSING_ENV_NAME") == "" {
     io_write_line("env ok");
 } else {

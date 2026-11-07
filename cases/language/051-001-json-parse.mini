@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Parse JSON objects, arrays, scalars, and invalid input.
+
+include "common/io.mini";
+
 object := json_parse("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
 if map_get(object, "ok") {
     value := map_get(object, "value");

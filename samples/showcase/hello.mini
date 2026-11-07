@@ -1,3 +1,5 @@
-include "common/io.mini";
 /// Write one line of text.
+
+include "common/io.mini";
+
 io_write_line("hello, mini");

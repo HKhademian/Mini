@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Build a map and print compact deterministic JSON text.
+
+include "common/io.mini";
+
 values := map_new();
 map_set(values, "name", "Mini");
 map_set(values, "count", 2);

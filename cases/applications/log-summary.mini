@@ -1,6 +1,8 @@
 /// Aggregate whitespace-delimited LEVEL ROUTE USER log lines for a request summary.
+//
 
 /// Increment key in counts; mutate that map and return zero.
+
 fn log_increment(counts, key) {
     map_set(counts, key, map_get(counts, key) + 1);
     return 0;

@@ -1,4 +1,5 @@
 /// Hash builtin descriptors.
+//
 
 builtin_add(
     "hash_sha256",

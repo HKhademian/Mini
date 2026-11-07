@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Find a value in a sorted list.
+
+include "common/io.mini";
+
 values := list_new();
 list_set(values, 0, 2);
 list_set(values, 1, 4);

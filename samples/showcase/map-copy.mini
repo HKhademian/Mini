@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Changing the copy leaves the original intact.
+
+include "common/io.mini";
+
 original := map_new();
 map_set(original, "name", "Mini");
 copy := map_copy(original);

@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Changing the copy leaves the original intact.
+
+include "common/io.mini";
+
 original := list_new();
 list_set(original, 0, "one");
 list_set(original, 1, "two");

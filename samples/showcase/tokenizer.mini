@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Split source text into words and symbols.
+
+include "common/io.mini";
+
 source := "x:=1;";
 index := 0;
 token := "";

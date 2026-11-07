@@ -1,6 +1,8 @@
+/// Exercise path kind and temporary path helpers.
+
 include "common/io.mini";
 include "common/path.mini";
-/// Exercise path kind and temporary path helpers.
+
 directory := path_temp_directory();
 file := directory + "/file.txt";
 file_write(file, "x");

@@ -48,6 +48,12 @@ fn mine(a, b) {
 - Comments act as whitespace. Required punctuation such as `;` remains required.
 - The compiler skips both forms; they produce no tokens or generated TS text.
   Source offsets, line/column positions, and diagnostic context remain accurate.
+- `///` documents the next declaration by default, including a `:=` binding.
+  At the start of a file, a leading `///` block is file documentation only when
+  a header `//` comment or a following `include` closes the file-doc section
+  before the first declaration. A `//` before the `///` block means there are no
+  file docs. Put file documentation before includes; use `//` as the boundary
+  when no include follows. Blank lines do not separate doc sections.
 - There are no block comments or comment-continuation escapes.
 
 Keep mini source well documented. Use `///` for file purpose and immediately
@@ -58,6 +64,25 @@ comments remain in source for readers and future tools; `mini doc` is not yet
 implemented, and no documentation tags or extraction format are selected.
 
 The [comment sample](../samples/012-comments.mini) demonstrates both forms.
+
+An include can separate file docs from declaration docs:
+
+```text
+/// File purpose.
+include "common/io.mini";
+
+/// Documents the next declaration.
+message := "hello";
+```
+
+Without an include, use an ordinary comment as the boundary:
+
+```text
+/// File purpose.
+//
+/// Documents the next declaration.
+message := "hello";
+```
 
 ## Accepted form: shebang header
 

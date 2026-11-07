@@ -1,7 +1,8 @@
+/// Push at the back and pop from the front.
+
 include "common/io.mini";
 include "common/list.mini";
 
-/// Push at the back and pop from the front.
 queue := list_new();
 list_push_back(queue, "first");
 list_push_back(queue, "second");

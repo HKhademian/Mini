@@ -1,6 +1,8 @@
 /// Render a text template after a key=value header and a blank line.
+//
 
 /// Return source with each {{key}} replaced from the header; unknown keys become <missing>.
+
 fn app_run(source) {
     values := map_new();
     position := 0;

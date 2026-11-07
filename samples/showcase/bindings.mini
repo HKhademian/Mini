@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Bind text and number values and write one line.
+
+include "common/io.mini";
+
 name := "Mini";
 version := 1;
 io_write_line(name + " " + number_to_text(version));

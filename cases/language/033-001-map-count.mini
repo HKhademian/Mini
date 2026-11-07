@@ -1,4 +1,6 @@
 /// Count key snapshots before/after replacement, including empty and method-like keys.
+//
+
 items := map_new();
 key := io_read_all();
 if list_length(map_keys(items)) != 0 {

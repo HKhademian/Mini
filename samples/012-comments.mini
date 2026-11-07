@@ -1,7 +1,9 @@
-include "common/io.mini";
 /// Show documentation comments on a function and line comments in its body.
 
+include "common/io.mini";
+
 /// Return 1 for any supplied values a and b; neither argument is changed.
+
 fn mine(a, b) {
     // Both arguments are deliberately unused in this documentation example.
     return 1;

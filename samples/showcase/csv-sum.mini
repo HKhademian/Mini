@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Parse numbers from CSV text and add them.
+
+include "common/io.mini";
+
 csv := "4,8,15,16,23,42";
 fields := text_split(csv, ",");
 total := 0;

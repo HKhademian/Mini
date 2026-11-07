@@ -1,14 +1,16 @@
+/// mini language server: LSP 3.17 over standard input and output.
+/// Usage: node dist/lang-server.js [--version]
+/// Standard output carries only protocol frames; logs go to standard error.
+
 include "../common/value.mini";
 include "../common/list.mini";
 include "../common/text.mini";
 include "../common/path.mini";
 include "../common/process.mini";
 include "../common/project.mini";
-/// mini language server: LSP 3.17 over standard input and output.
-/// Usage: node dist/lang-server.js [--version]
-/// Standard output carries only protocol frames; logs go to standard error.
 
 /// Write one server log line.
+
 fn lsp_log(message) {
     io_write_error("mini-lang-server: " + message + "\n");
     return 0;
@@ -235,20 +237,18 @@ fn lsp_token_at(tokens, offset) {
     return 0;
 }
 
-/// Collect contiguous documentation comments above a token.
+/// Collect immediately preceding documentation comment tokens above a token.
 fn lsp_doc_above(tokens, index) {
     lines := list_new();
-    line := map_get(list_get(tokens, index), "line") - 1;
     cursor := index - 1;
     done := false;
     while cursor >= 0 && !done {
         token := list_get(tokens, cursor);
-        if !lsp_is_comment(token) || !text_starts_with(map_get(token, "text"), "///") || map_get(token, "line") != line {
+        if !lsp_is_comment(token) || !text_starts_with(map_get(token, "text"), "///") {
             done = true;
         } else {
             comment := text_trim(text_slice(map_get(token, "text"), 3, text_length(map_get(token, "text"))));
             list_set(lines, list_length(lines), comment);
-            line = line - 1;
             cursor = cursor - 1;
         }
     }

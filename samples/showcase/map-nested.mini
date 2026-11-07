@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Store a map inside another map.
+
+include "common/io.mini";
+
 outer := map_new();
 inner := map_new();
 map_set(inner, "name", "Mini");

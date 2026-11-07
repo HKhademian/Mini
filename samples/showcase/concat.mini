@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Join text with +.
+
+include "common/io.mini";
+
 first := "self";
 second := "-hosting";
 io_write_line(first + second);

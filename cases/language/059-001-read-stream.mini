@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Read one line, a byte count, then the remaining line.
+
+include "common/io.mini";
+
 first := io_read_line();
 three := io_read_bytes(3);
 rest := io_read_line();

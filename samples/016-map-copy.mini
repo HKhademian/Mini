@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Copy a map and show that changing the copy leaves the original intact.
+
+include "common/io.mini";
+
 original := map_new();
 map_set(original, "name", "original");
 copy := map_copy(original);

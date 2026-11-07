@@ -1,7 +1,9 @@
 /// Compile declarations, assignments, arithmetic, equality, if/else, and write using a T0-shaped emitter.
 /// This is a benchmark application using the accompanying lexer, not the complete M1 compiler.
+//
 
 /// Allocate an expression descriptor with the same code/kind fields as T0.
+
 fn parser_value(code, kind) {
     value := map_new();
     map_set(value, "code", code);

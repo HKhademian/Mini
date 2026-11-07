@@ -1,6 +1,8 @@
+/// Round-trip text and bytes through the byte primitives.
+
 include "common/path.mini";
 include "common/io.mini";
-/// Round-trip text and bytes through the byte primitives.
+
 encoded := text_to_bytes("abc");
 if list_length(encoded) == 3 && list_get(encoded, 0) == 97 && text_from_bytes(encoded) == "abc" {
     io_write_line("text ok");

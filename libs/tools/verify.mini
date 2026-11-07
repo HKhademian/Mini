@@ -1,13 +1,15 @@
-include "../common/value.mini";
-include "../common/list.mini";
-include "../common/text.mini";
-include "./cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
 /// Usage: node dist/verify.js [PROJECT_ROOT]
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 
+include "../common/value.mini";
+include "../common/list.mini";
+include "../common/text.mini";
+include "./cases.mini";
+
 /// Report a verification failure and stop.
+
 fn verify_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

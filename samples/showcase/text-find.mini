@@ -1,4 +1,6 @@
-include "common/io.mini";
 /// Locate a word inside text.
+
+include "common/io.mini";
+
 haystack := "a small compiler";
 io_write_line(number_to_text(text_find(haystack, "compiler")));

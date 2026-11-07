@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Parse an object and read a field.
+
+include "common/io.mini";
+
 parsed := json_parse("{\"name\":\"Mini\",\"count\":2}");
 if map_get(parsed, "ok") {
     value := map_get(parsed, "value");

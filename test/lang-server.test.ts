@@ -256,6 +256,26 @@ test('hovers functions and variables with their documentation', async () => {
   });
 });
 
+test('blank lines do not split declaration docs and header docs stay file scoped', async () => {
+  await session(async client => {
+    const uri = 'file:///doc-boundaries.mini';
+    const text = [
+      '/// File purpose.',
+      'include "common/io.mini";',
+      '',
+      '/// Declaration detail.',
+      '',
+      'fn documented() { return 1; }',
+    ].join('\n');
+    await openDocument(client, uri, text);
+
+    client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'documented') } });
+    const hover = await client.next();
+    assert.match(hover.result.contents.value, /Declaration detail\./);
+    assert.doesNotMatch(hover.result.contents.value, /File purpose\./);
+  });
+});
+
 test('hovers builtins and returns null for unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///builtin.mini';

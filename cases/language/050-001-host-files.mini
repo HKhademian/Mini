@@ -1,8 +1,9 @@
+/// Exercise the executable path, temporary directory, and removal primitives.
+
 include "common/path.mini";
 include "common/io.mini";
 include "common/process-run.mini";
 
-/// Exercise the executable path, temporary directory, and removal primitives.
 version_args := list_new();
 list_set(version_args, 0, "--version");
 version := process_run(process_exec_path(), version_args, "capture");

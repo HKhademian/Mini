@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Turn text into its byte values.
+
+include "common/io.mini";
+
 bytes := text_to_bytes("Mini");
 index := 0;
 while index < list_length(bytes) {

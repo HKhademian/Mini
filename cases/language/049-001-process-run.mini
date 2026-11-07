@@ -1,5 +1,6 @@
-include "common/io.mini";
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
+
+include "common/io.mini";
 include "common/process-run.mini";
 
 args := list_new();

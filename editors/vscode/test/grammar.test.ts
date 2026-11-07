@@ -48,7 +48,7 @@ test('draft preview uses ordinary theme scopes for declarations, calls and contr
     [7, 'if', 'keyword.control.mini'],
     [8, 'join', 'entity.name.function.call.mini'],
     [9, 'else', 'keyword.control.mini'],
-  ] as const) assert.ok(scopes(source, needle, line + 3).includes(scope), `${needle}: ${scope}`);
+  ] as const) assert.ok(scopes(source, needle, line + 5).includes(scope), `${needle}: ${scope}`);
 });
 
 test('strings shield keywords and calls, handle escaped quotes, and resume after closing', () => {

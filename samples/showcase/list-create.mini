@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Set two items and read the length.
+
+include "common/io.mini";
+
 items := list_new();
 list_set(items, 0, "alpha");
 list_set(items, 1, "beta");

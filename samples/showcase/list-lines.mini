@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Split text into lines and join them again.
+
+include "common/io.mini";
+
 source := "red\ngreen\nblue";
 lines := text_split(source, "\n");
 output := "";

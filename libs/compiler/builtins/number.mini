@@ -1,4 +1,5 @@
 /// Number builtin descriptors.
+//
 
 builtin_add(
     "number_div",

@@ -1,5 +1,7 @@
-include "common/io.mini";
 /// Parse standard-input JSON and print its name field.
+
+include "common/io.mini";
+
 parsed := json_parse(io_read_all());
 value := map_get(parsed, "value");
 io_write_line(map_get(value, "name"));
