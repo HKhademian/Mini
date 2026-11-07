@@ -8,4 +8,5 @@ export type Token = {
 };
 
 export function highlight(source: string, tokenize: (source: string, name: string, comments: boolean) => readonly Token[]): string;
+export function highlightJavaScript(source: string): string;
 export function escapeHtml(text: string): string;

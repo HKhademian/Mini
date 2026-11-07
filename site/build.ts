@@ -617,7 +617,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   </footer>
 
   <script type="module">
-    import { highlight } from "../highlight.js";
+    import { highlight, highlightJavaScript } from "../highlight.js";
     import { lex_tokenize } from "../playground/compiler.js";
     const samples = ${serialized};
     const source = document.getElementById("source");
@@ -694,7 +694,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     function renderCode() {
       if (latestCode === null) return;
       const shown = mode === "program" ? latestCode.program : latestCode.code;
-      code.innerHTML = highlight(shown, lex_tokenize);
+      code.innerHTML = highlightJavaScript(shown);
     }
 
     function compile(compileOnly) {

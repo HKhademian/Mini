@@ -53,12 +53,12 @@ private references remain in the tree or history.
 
 ## Syntax highlighting
 
-Code blocks are highlighted through the compiler's own lexer, not a duplicate
-grammar. [`highlight.js`](highlight.js) maps lexer token kinds to CSS classes
-(`tk-kw`, `tk-fn`, `tk-call`, `tk-str`, `tk-num`, `tk-com`, `tk-op`) and is
-copied into `dist/site/` so the playground uses the same module as the build.
-Invalid source falls back to escaped plain text, so a page never renders a
-broken fragment. The build strips the compiler's CLI entry before loading it.
+Mini source uses the compiler's lexer and maps its token kinds to CSS classes.
+Generated JavaScript uses a JavaScript scanner, so its coloring does not depend
+on Mini accepting the generated syntax. Both live in [`highlight.js`](highlight.js),
+which is copied into `dist/site/` for the playground. Invalid Mini source falls
+back to escaped plain text. The build strips the compiler's CLI entry before
+loading it.
 
 ## Generated-code modes
 

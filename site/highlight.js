@@ -1,8 +1,8 @@
-/// Syntax highlighting for Mini source that runs in the browser.
+/// Syntax highlighting for Mini source and generated JavaScript.
 ///
-/// The generated compiler already exposes `tokenize`, so highlighting uses the
-/// language's real lexer instead of a duplicate grammar. Both the static pages
-/// and the playground import this module.
+/// Mini source uses the compiler's lexer. Generated JavaScript uses a small
+/// JavaScript scanner because generated code does not follow Mini syntax.
+/// Static pages and the playground import this module.
 ///
 /// Token kinds come from the lexer: `keyword`, `identifier`, `number`, `text`,
 /// `symbol`, `comment`, and `shebang`. Identifiers that name a call are split
@@ -28,6 +28,84 @@ function isCall(tokens, index) {
 /// Return builtin-looking names by their trailing underscore convention.
 function isBuiltinName(text) {
     return text.includes("_");
+}
+
+const javascriptKeywords = new Set([
+    "as", "async", "await", "break", "case", "catch", "class", "const", "continue",
+    "debugger", "default", "delete", "do", "else", "export", "extends", "finally",
+    "for", "from", "function", "get", "if", "import", "in", "instanceof", "let",
+    "new", "of", "return", "set", "static", "super", "switch", "this", "throw", "try", "typeof",
+    "var", "void", "while", "with", "yield",
+]);
+
+const javascriptOperators = [
+    ">>>=", "<<=", ">>=", "**=", "&&=", "||=", "??=", "===", "!==", ">>>", "...", "=>", "==", "!=",
+    "<=", ">=", "++", "--", "&&", "||", "??", "?.", "+=", "-=", "*=", "/=", "%=",
+    "**", "<<", ">>", "&=", "|=", "^=",
+];
+const javascriptNumber = /(?:0[xX][\da-fA-F]+n?|0[bB][01]+n?|0[oO][0-7]+n?|(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?n?)/y;
+
+/// Highlight generated JavaScript without asking the Mini lexer to parse it.
+export function highlightJavaScript(source) {
+    let html = "";
+    let index = 0;
+    while (index < source.length) {
+        const start = index;
+        const char = source[index];
+        if (/\s/.test(char)) {
+            while (index < source.length && /\s/.test(source[index])) index++;
+            html += escapeHtml(source.slice(start, index));
+            continue;
+        }
+        if (source.startsWith("//", index)) {
+            index += 2;
+            while (index < source.length && source[index] !== "\n") index++;
+            html += `<span class="tk-com">${escapeHtml(source.slice(start, index))}</span>`;
+            continue;
+        }
+        if (source.startsWith("/*", index)) {
+            index += 2;
+            while (index < source.length && !source.startsWith("*/", index)) index++;
+            index = Math.min(source.length, index + 2);
+            html += `<span class="tk-com">${escapeHtml(source.slice(start, index))}</span>`;
+            continue;
+        }
+        if (char === "'" || char === '"' || char === "`") {
+            index++;
+            while (index < source.length) {
+                if (source[index] === "\\") {
+                    index = Math.min(source.length, index + 2);
+                } else if (source[index++] === char) {
+                    break;
+                }
+            }
+            html += `<span class="tk-str">${escapeHtml(source.slice(start, index))}</span>`;
+            continue;
+        }
+        javascriptNumber.lastIndex = index;
+        const number = javascriptNumber.exec(source);
+        if (number !== null) {
+            index += number[0].length;
+            html += `<span class="tk-num">${escapeHtml(number[0])}</span>`;
+            continue;
+        }
+        if (/[A-Za-z_$]/.test(char)) {
+            index++;
+            while (index < source.length && /[\w$]/.test(source[index])) index++;
+            const word = source.slice(start, index);
+            const next = source.slice(index).match(/^\s*\(/);
+            const kind = javascriptKeywords.has(word) ? "kw"
+                : ["true", "false", "null", "undefined", "NaN", "Infinity"].includes(word) ? "num"
+                : next !== null ? "call" : "id";
+            html += `<span class="tk-${kind}">${escapeHtml(word)}</span>`;
+            continue;
+        }
+        const operator = javascriptOperators.find(value => source.startsWith(value, index));
+        if (operator !== undefined) index += operator.length;
+        else index++;
+        html += `<span class="tk-op">${escapeHtml(source.slice(start, index))}</span>`;
+    }
+    return html;
 }
 
 /// Highlight one source string and return HTML.
