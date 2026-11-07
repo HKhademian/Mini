@@ -1,194 +1,48 @@
 # mini
 
-Self-hosting foundation for building your own language.
+Build your own language from a working, self-hosted compiler.
 
-Keep syntax and implementation small, readable, and easy to change. Include
-enough expressiveness to develop, maintain, and extend the self-hosted compiler
-directly. Broad general-purpose features are outside this project's objective.
+mini is a small language and compiler foundation for people who want to shape a
+language around their own needs. Its compiler is written in mini, compiles to
+readable JavaScript, and verifies that it can rebuild itself after changes.
 
-The main workflow is to clone this foundation and
-[grow your own language while preserving self-hosting](docs/evolving-language.md).
-Read [why mini exists](docs/why-mini.md) for its purpose, audience, and
-deliberate tradeoffs. To install a release and run a first program, see
-[getting started](docs/getting-started.md).
+## Try it
 
-[The generated compiler](docs/compiler.md) implements the reviewed language
-cases in direct Node JavaScript. The [language draft](docs/language.md) records
-the reviewed contract; cases verify compilation, generated output, execution,
-and diagnostics.
+The browser playground is published through GitHub Pages for this repository. It lets you edit and run mini programs without installing anything.
 
-From a clean checkout, build every generated artifact from the tracked
-`bin/bootstrap` seed:
+To run mini locally, use Node.js 22.18.0 or newer:
 
 ```text
+git clone <repository-url>
+cd Mini
 ./bin/bootstrap
-./bin/mini check
+./bin/mini run samples/018-list-to-text.mini
 ```
 
-For a clean rebuild that removes every untracked and ignored project file,
-regenerates project artifacts, runs all checks, and packages a local VSIX under
-`dist/rebuild/`, run `./bin/bootstrap --clean`.
+The sample prints `one | two | three`. The compiler and runtime use Node's
+built-in modules; no packages are needed to run the generated tools.
 
-`bin/bootstrap` is generated from [tools/bootstrap.mini](tools/bootstrap.mini)
-and embeds the compiler. It rebuilds the compiler, verifies the fixed point,
-then generates `dist/` and the other `bin/` commands. `dist/` and generated
-`bin/` entries are ignored by Git.
+## What you get
 
-## Self-hosting
+- A compiler written in mini that generates readable JavaScript for Node.
+- A command-line tool to check, format, compile, run, and test programs.
+- A browser playground with runnable examples and generated JavaScript.
+- A self-hosting check that verifies successive compiler generations match.
+- A focused language with functions, control flow, text, lists, maps, and JSON.
 
-The bootstrap compiler is the only seed. It is generated from mini source and is
-tracked at `bin/bootstrap`; there is no handwritten compiler. Further compiler
-work uses the self-hosted source and bootstrap regeneration. The baseline includes `//` line comments and
-`///` documentation comments. Keep mini source and functions documented using
-these forms.
-The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
-`list_length(map_keys(items))`, keeping writes free of size bookkeeping.
-The [before/after measurements](docs/map-runtime-performance.md) record its
-compiler gains and the workloads that regress.
+mini is alpha software, intended as a foundation to extend rather than a
+general-purpose application language. Read [why mini](docs/why-mini.md) for its
+goals and tradeoffs.
 
-The compiler source is written in mini and the generated JavaScript compiler is
-produced from it. The source lives in
-[tools/compiler.mini](tools/compiler.mini); the promoted generated compiler is
-[dist/compile.js](dist/compile.js), selected by
-[config/compiler.json](config/compiler.json). Keep the mini source close to the
-verified first-port boundaries, control flow, calls, lookups, and data layout.
-Defer redesign and performance refactoring until the corresponding change is
-verified.
+## Learn more
 
-The [progress page](docs/progress.md) turns the tag history into a readable
-timeline of groups, milestones, and current release identities.
+- [Getting started](docs/getting-started.md): install a release and run a program.
+- [Language draft](docs/language.md): current syntax and built-in contracts.
+- [Samples](samples/README.md): small programs with expected results.
+- [Growing a language](docs/evolving-language.md): add features while preserving self-hosting.
+- [Compiler reference](docs/compiler.md): compiler commands and generated output.
+- [Releases](docs/releases.md): artifacts and verification.
+- [VS Code support](editors/vscode/README.md): syntax support and language server.
 
-The [port history](docs/port-history.md) records how the retired
-handwritten implementation mapped to mini functions, maps, lists, and text
-helpers.
-The [generated-code performance audit](docs/runtime-performance.md) records
-measured costs and the actual-compiler comparison; the large-source compile gap
-remains a tracked follow-up.
-The [paired application benchmarks](docs/application-performance.md) compare ten
-mini/handwritten-TS applications, including scanner/parser/emitter workloads.
-
-For unchanged compiler source `S`:
-
-```text
-Compiler1 = Compiler0(S)
-Compiler2 = Compiler1(S)
-Compiler3 = Compiler2(S)
-```
-
-Compiler1, Compiler2, and Compiler3 must run and be byte-identical. The final
-compiler must also compile an example that runs with its expected output.
-Compiler0 is handwritten; its own code need not match generated code.
-
-Self-hosting belongs to the compiler path only. The generated compiler runs
-directly on Node; the CLI, checker, verifier, tests, and release tools need not
-be written in mini. They may remain TypeScript until mini or a cloned language
-can replace them conveniently.
-
-The verified generated compiler is promoted to the distributed bootstrap. The
-generated compiler, matching mini source, and rebuild instructions ship together.
-The generated compiler is the only compiler implementation.
-
-Every completed increment preserves self-hosting. A breaking change can use a
-temporary compiler written in old syntax that accepts only the new syntax;
-rewrite its source and verify the final pair before promotion. Never revive
-the handwritten compiler to bypass a migration.
-
-## Size and evolution
-
-Minimize the combined complexity of the language, compiler, and future changes.
-A tiny construct count is not useful if it forces an unreadable compiler or
-makes ordinary changes difficult. Extra language machinery also makes the
-foundation harder to implement and reshape.
-
-Add a construct when its concrete readability or migration benefit justifies
-its implementation cost. Prefer simple rules and direct compiler code. A cloned
-language should approach its target through small, self-hosted increments;
-[temporary syntax bridges](docs/evolving-language.md) can keep those steps manageable.
-
-Keep language semantics small to implement across targets. JavaScript/Node is
-the selected bootstrap target; its physical value representation does not define
-mini's semantics.
-
-## Scope
-
-Records, structs, and classes are outside mini's intended scope. Use simple
-collections for compiler data rather than adding dedicated structure syntax.
-
-mini source uses `.mini`. Other executable project code uses TypeScript run
-directly by Node. Supporting tools may start in TypeScript and move to mini
-incrementally. Compiler logic must not remain hidden in TypeScript helpers
-after bootstrap replacement.
-
-[Built-in I/O and library functions](docs/builtins.md) provide the small host
-surface; [self-containment](docs/self-containment.md) separates the irreducible
-host boundary from replaceable performance builtins.
-capabilities needed by the compiler and later tools.
-
-The [self-hosting requirements assessment](docs/self-hosting-requirements.md)
-separates necessary semantic decisions and compiler capabilities from optional
-language additions. It does not accept new syntax.
-
-Avoid speculative features, advanced mathematics, Unicode requirements, rich
-diagnostics, extra safety systems, and unnecessary layers. Rebuild checks stay
-small too. “Smallest” is a practical goal, not a mathematical claim.
-
-Type checking is deliberately absent. mini resolves identifiers, tracks the kind
-of literals and derivable expressions, and reports a few obvious mistakes, but
-it is not a typed language. A wrong argument count is a runtime concern: a
-missing argument is 0 and an extra one is discarded. A strongly typed language
-is a downstream project built on this foundation, not a change to it.
-
-## Development
-
-Use Node 22.18.0 or newer. Development and release builds pin 24.16.0 in
-[.node-version](.node-version); see [runtime requirements](docs/runtime.md).
-
-```text
-npm ci
-./bin/mini check
-./bin/mini check samples/001-bindings.mini
-./bin/mini fmt samples/001-bindings.mini
-./bin/mini run samples/003-io.mini
-./bin/mini test
-./bin/mini test --unit
-./bin/mini verify
-./bin/mini verify cases/tooling/check.case.json
-./bin/mini bench .cache/bench.json
-```
-
-Source checking uses `mini check SOURCE.mini`; `mini check -` reads standard
-input. A successful check writes nothing and creates no `.mini.js` file. A
-failure prints the compiler's first diagnostic and exits 1.
-
-`mini fmt SOURCE.mini` writes canonical source to standard output; `mini fmt -`
-reads standard input. `--write` replaces one file after successful formatting,
-and `--check` reports noncanonical input without writing.
-
-npm installs development dependencies only. Commands live in `bin/`:
-`mini`, `mini-check`, `mini-format`, `mini-lang-server`, `mini-test`, `mini-bench`,
-`mini-verify`, `mini-release`, `mini-compile`, and `minic`.
-
-Runnable [samples](samples/README.md) showcase language features and built-ins.
-Each sample has a matching JSON verification case.
-
-Basic [VS Code support](editors/vscode/README.md) provides `.mini` file icons,
-syntax highlighting, bracket/quote pairing, live diagnostics, hover, completion,
-go-to-definition, and formatting through the standalone `mini-lang-server`.
-Install it locally from a VSIX and install the server from a source distribution
-or set `mini.serverPath`.
-
-The [brand assets](brand/README.md) hold the wordmark, monogram, and favicon.
-
-[Future tooling](docs/tooling.md) records `mini-document` / `mini doc` and
-`mini-help` / `mini help`. These commands are not available yet.
-
-Read [contributing](CONTRIBUTING.md), [agent rules](AGENTS.md),
-[runtime requirements](docs/runtime.md), [versioning](docs/versioning.md),
-[cases](docs/cases.md), [bootstrap verification](docs/bootstrap.md), and
-[releases](docs/releases.md).
-The [version inventory](docs/versioning.md#current-inventory) lists current
-products, future streams, and how specifications/docs identify their versions.
-
-## License
-
-Apache-2.0. See [LICENSE](LICENSE).
+For repository development, see [contributing](CONTRIBUTING.md). mini is
+licensed under [Apache-2.0](LICENSE).

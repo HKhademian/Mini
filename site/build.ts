@@ -106,28 +106,28 @@ const samples: readonly Sample[] = [
 
 const whyCards: readonly (readonly [string, string])[] = [
     [
-        "Clone and grow",
-        "{{name}} is the starting point for your language, not the finished language. Start from the reviewed contract and add only what your target needs.",
+        "Readable generated code",
+        "Compile to JavaScript you can inspect, run on Node, and adapt for your language.",
     ],
     [
-        "Self-hosting kept honest",
-        "Every compiler change must keep three generations byte-identical, and the final compiler must compile an example that runs.",
+        "Self-hosting you can verify",
+        "Compiler updates must rebuild to the same output across successive generations and run a compiled example.",
     ],
     [
-        "Small on purpose",
-        "No records, classes, or standard library yet. Syntax and builtins stay small so the compiler and its migrations stay readable.",
+        "A focused language core",
+        "Functions, control flow, text, lists, maps, and JSON provide a practical base for growing a language.",
     ],
 ];
 
 const docs: readonly (readonly [string, string, string])[] = [
     [
         "Getting started",
-        "Extract a release, verify it, and run a first program.",
+        "Build the tools and run your first program.",
         `${repo}/blob/main/docs/getting-started.md`,
     ],
     [
         "Why {{name}}",
-        "Purpose, audience, and why it is not the smallest self-hosted language.",
+        "Goals, audience, and design choices.",
         `${repo}/blob/main/docs/why-mini.md`,
     ],
     [
@@ -220,8 +220,8 @@ function renderHero(sample: RenderedSample): string {
     return `<section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Alpha &middot; Node 22.18+ &middot; Apache-2.0</p>
-          <h1>Self-hosting foundation for building your own language.</h1>
-          <p class="lede">${renderName("Clone {{name}}, grow your own language, and keep the compiler compiling itself after every change.")}</p>
+          <h1>Build your language on a compiler that grows with it.</h1>
+          <p class="lede">${renderName("The compiler is written in {{name}} and emits readable JavaScript for Node. Extend the syntax and built-ins as your language takes shape.")}</p>
           <p class="actions">
             <a class="button" href="./playground/">Try the playground</a>
             <a class="button ghost" href="${repo}/blob/main/docs/getting-started.md">Get started</a>
@@ -272,8 +272,8 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mini &mdash; self-hosting foundation for building your own language</title>
-  <meta name="description" content="mini is a self-hosting foundation for building your own language. Clone it, grow your own language, and keep the compiler compiling itself.">
+  <title>mini &mdash; a compiler foundation for your language</title>
+  <meta name="description" content="Build your own language from a focused, self-hosted compiler foundation written in mini.">
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
@@ -299,18 +299,17 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 
     <section class="section" id="why">
       <header class="section-head">
-        <h2>Built to be changed</h2>
-        <p>${renderName("{{name}} stays useful only while the compiler still compiles itself. The foundation is designed around that constraint.")}</p>
+        <h2>A practical base for language builders</h2>
+        <p>Start with a working compiler, then extend the language in small, verifiable steps.</p>
       </header>
       <div class="features">
         ${whyCards.map((card) => renderWhyCard(card[0], card[1])).join("\n        ")}
       </div>
-      <p class="callout">${renderName("If you want the smallest possible self-hosted demonstration, {{name}} is bigger than that. If you want a starting point that survives changes, that extra is what you are choosing.")}</p>
     </section>
 
     <section class="section" id="install">
       <header class="section-head">
-        <h2>Run it in a minute</h2>
+        <h2>Build and run</h2>
         <p>Node.js 22.18.0 or newer. The compiler installs no packages.</p>
       </header>
       <ol class="steps">
@@ -333,7 +332,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
     <section class="section" id="samples">
       <header class="section-head">
         <h2>Real samples, real output</h2>
-        <p>Every output below was produced by compiling and running the sample during this site build.</p>
+        <p>Explore the language through runnable examples.</p>
       </header>
       <div class="samples">
         ${cards.map(renderSampleCard).join("\n        ")}
@@ -343,7 +342,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
     <section class="section" id="docs">
       <header class="section-head">
         <h2>Read more</h2>
-        <p>The documentation covers the contract, the compiler, and the release process.</p>
+        <p>Start with the language, then explore the compiler and release guides.</p>
       </header>
       <div class="docs">
         ${docs.map((entry) => renderDocCard(entry[0], entry[1], entry[2])).join("\n        ")}
@@ -353,7 +352,6 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 
   <footer class="site-footer">
     <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
-    <p>${renderName("Samples compiled with {{name}} during the build.")}</p>
   </footer>
 </body>
 </html>
@@ -487,7 +485,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mini playground</title>
-  <meta name="description" content="Write and run mini in your browser.">
+  <meta name="description" content="Edit mini programs, run them in your browser, and inspect the generated JavaScript.">
   <meta name="theme-color" content="#0a0d12" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#f7f9fc" media="(prefers-color-scheme: light)">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -510,7 +508,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
   <main id="main" class="playground">
     <h1>Playground</h1>
-    <p class="lede">${renderName("Write {{name}}, press Run, and see the output.")} ${data.length} samples, from bindings to a small tokenizer; the compiler and the program run in your browser.</p>
+    <p class="lede">Choose from ${data.length} examples or write your own. The compiler and program run in your browser.</p>
 
     <div class="workbench">
       <section class="pane" aria-label="Editor">
@@ -550,7 +548,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       </section>
     </div>
 
-    <p class="limits">Runs entirely in your browser. <code>include</code>, files, processes, and the network are unavailable.</p>
+    <p class="limits">Runs in your browser. File, process, network, and <code>include</code> access are unavailable.</p>
     <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)}</p>
   </main>
 
