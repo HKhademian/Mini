@@ -1,0 +1,26 @@
+{
+  "id": "native.c-non-ascii",
+  "kind": "reject",
+  "target": "c",
+  "source": "001-009-non-ascii.mini",
+  "features": [
+    "target.c",
+    "text.literal",
+    "compile.reject"
+  ],
+  "cases": [
+    {
+      "name": "non-ascii",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "001-009-non-ascii.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

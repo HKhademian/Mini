@@ -6,6 +6,7 @@ include "common/text.mini";
 include "compiler/lexer.mini";
 include "compiler/parser.mini";
 include "compiler/builtins.mini";
+include "compiler/emit-c.mini";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {
@@ -57,13 +58,22 @@ fn compiler_append_body(output, tokens) {
 
 /// Return the compiler command usage text.
 fn compiler_usage() {
-    return "usage: mini [--reference | --program-only] SOURCE.mini [OUTPUT.js] | tokens [--comments] SOURCE.mini | metadata\n";
+    return "usage: mini [--target js|c] [--reference | --program-only] SOURCE.mini [OUTPUT] | tokens [--comments] SOURCE.mini | metadata\n";
 }
 
 /// Run the mini compiler command interface.
 fn main(args) {
     reference_mode = false;
     program_only := false;
+    target_name := "js";
+    if list_length(args) > 0 && list_get(args, 0) == "--target" {
+        target_name = list_get(args, 1);
+        if target_name != "js" && target_name != "c" {
+            io_write_error(compiler_usage());
+            process_exit(1);
+        }
+        args = compiler_tail(compiler_tail(args));
+    }
     if list_length(args) > 0 && list_get(args, 0) == "--reference" {
         reference_mode = true;
         args = compiler_tail(args);
@@ -72,7 +82,15 @@ fn main(args) {
         program_only = true;
         args = compiler_tail(args);
     }
+    if target_name == "c" && (reference_mode || program_only) {
+        io_write_error("C target does not support --reference or --program-only\n");
+        process_exit(1);
+    }
     command := list_get(args, 0);
+    if target_name == "c" && (command == "tokens" || command == "metadata") {
+        io_write_error(compiler_usage());
+        process_exit(1);
+    }
     include_comments := false;
     offset := 0;
     if command == "tokens" && list_get(args, 1) == "--comments" {
@@ -124,10 +142,17 @@ fn main(args) {
     }
     tokens := lex_tokenize(file_read(source), path_basename(source), false);
     target := source + ".js";
+    if target_name == "c" {
+        target = source + ".c";
+    }
     if output != 0 {
         target = output;
     }
     expanded := lex_expand_includes(tokens, source, list_new(), map_new());
+    if target_name == "c" {
+        file_write(target, c_compile(expanded));
+        return 0;
+    }
     if reference_mode {
         root := path_parent(path_parent(process_script_path()));
         pure_path := root + "/libs/pure/reference.mini";

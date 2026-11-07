@@ -2,7 +2,6 @@
   "id": "native.c-write-arguments",
   "kind": "feature",
   "target": "c",
-  "pending": "C backend and native case execution are not implemented yet.",
   "source": "001-006-write-arguments.mini",
   "features": [
     "target.c",

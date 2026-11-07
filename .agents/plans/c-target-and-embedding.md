@@ -8,7 +8,7 @@ todos:
     status: completed
   - id: step-2-first-c
     content: "Compile a simple Mini sample to C and execute it"
-    status: pending
+    status: completed
   - id: step-3-expand-compiler
     content: "Extend C support through small feature increments"
     status: pending
@@ -43,11 +43,18 @@ compiler.
 ## Done and owner direction
 
 - Inspected the compiler, builtin templates, case harness, bootstrap, and rules.
-  Planning documents exist; no C backend or native execution is implemented.
-- 2026-11-07: specified the first ASCII literal-output slice, seven pending
-  cases under cases/native/, and source-manifest target metadata. Documentation/
-  bootstrap checks pass; a native-only test selection reports seven pending,
-  zero native passes, and exits 1 as intended before implementation.
+- 2026-11-07: specified the first ASCII literal-output slice and source-manifest
+  target metadata, with pending cases committed before implementation (584abdf).
+- 2026-11-07: implemented target selection in tools/compiler.mini and the CLI,
+  with Mini-written libs/compiler/emit-c.mini and native execution in the shared
+  case harness. Twelve C cases and test/native.test.mini cover literal bytes,
+  empty forms, flags, diagnostics, target rejection, and unchanged JS behavior.
+- Verification: bootstrap/repository gates pass; 423/423 scenarios pass with
+  four pre-existing proposal scenarios pending; 6/6 Mini units and 17/17 Node
+  LSP/release tests pass. The playground build passes. Local C11 checks used
+  Apple Clang through cc; no Linux/Windows CI or native self-hosting is claimed.
+- Parent reviewed agent changes and fixed dropped extra CLI arguments with a
+  reproducing regression. A second agent independently reviewed C/CLI lowering.
 - Generated source/header are the product. Compiler and runner logic stay in
   Mini; native storage support belongs to the backend.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
@@ -72,29 +79,6 @@ compiler.
 No child/prerequisite plans. Execute in order using small atomic commits.
 New paths below are proposed. Do not require completing all language features
 before trying a useful host or runner sample; carry forward explicit target gaps.
-
-### Step 2 — first-c
-
-**Depends on:** step-1-first-cases.
-**Files:** modify tools/compiler.mini, libs/compiler/parser.mini,
-libs/compiler/builtins.mini, libs/tools/mini.mini, libs/tools/cases.mini;
-create libs/compiler/emit-c.mini; extend config/case.schema.json only if needed.
-
-- Add explicit C target selection (proposed --target c; unavailable today).
-- Reuse lexer/parser/checks. Separate emission only as this slice needs it;
-  preserve routine boundaries and JS behavior. No whole-compiler checked-tree
-  migration is a prerequisite for emitting the first C sample.
-- Emit portable C11, required tagged/native support, and an executable entry.
-  Reject unsupported forms before writing output; do not fall back to Node.
-- Extend the shared case harness narrowly to compile emitted C with cc and run
-  it. Keep orchestration in Mini or direct Node TypeScript.
-- Regenerate the JS bootstrap normally; never hand-edit generated seeds.
-
-**Acceptance:** first cases compile/run natively, rejected forms leave no artifact,
-and JS self-hosting still works. Record the new native verification command.
-**Verify:** ./bin/bootstrap; ./bin/mini check; ./bin/mini test;
-./bin/mini test --unit; ./bin/mini verify; focused native cases compiled with
--std=c11 -Wall -Wextra -Werror on the supported toolchain.
 
 ### Step 3 — expand-compiler
 
@@ -209,5 +193,5 @@ without Node at script runtime; claims match evidence.
   as native passes. No blanket tags or routine publishing.
 - Full native compiler self-hosting is later work, not an embedding prerequisite;
   compare successive emitted C sources, not binary bytes, when attempted.
-- C implementation remains pending. Resolve deferred decisions at the relevant
+- Later C increments remain pending. Resolve deferred decisions at the relevant
   increment; do not make them first-sample prerequisites.

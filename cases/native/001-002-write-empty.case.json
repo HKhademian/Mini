@@ -2,7 +2,6 @@
   "id": "native.c-write-empty",
   "kind": "feature",
   "target": "c",
-  "pending": "C backend and native case execution are not implemented yet.",
   "source": "001-002-write-empty.mini",
   "features": [
     "target.c",

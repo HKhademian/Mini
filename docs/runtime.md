@@ -1,5 +1,16 @@
 # Runtime requirements
 
+## Native C target
+
+The compiler also emits a bounded C11 subset; see the
+[compiler reference](compiler.md). Generating C still uses the Mini-written
+compiler running on Node. Building/running generated C requires a C11 toolchain,
+with `cc` on PATH for native case tests. The resulting literal-output program
+uses the C standard library and needs no Node at execution time. Native source
+interpretation, an embedding API, and broad language support remain pending.
+
+## Node tools and JavaScript target
+
 mini requires Node.js 22.18.0 or newer. Development and release builds pin
 24.16.0 in [.node-version](../.node-version); CI runs the strict checks and case
 suites on that pin and on the 22.18.0 minimum.

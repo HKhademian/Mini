@@ -1,0 +1,26 @@
+{
+  "id": "native.c-malformed-source",
+  "kind": "reject",
+  "target": "c",
+  "source": "001-011-malformed-source.mini",
+  "features": [
+    "target.c",
+    "syntax.invalid",
+    "diagnostics.shared"
+  ],
+  "cases": [
+    {
+      "name": "malformed-source",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "001-011-malformed-source.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

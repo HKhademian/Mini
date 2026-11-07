@@ -1,8 +1,10 @@
 # C target and embeddable runner
 
 Status: proposal, 2026-11-07. The owner selected C as the next target and a
-compiler-first, incremental approach. No C backend or script interpreter is
-implemented here. See the [implementation plan](../.agents/plans/c-target-and-embedding.md).
+compiler-first, incremental approach. The first C literal-output slice is
+implemented; a script interpreter and embedding API remain pending. See the
+[compiler reference](compiler.md) for current usage and the
+[implementation plan](../.agents/plans/c-target-and-embedding.md) for later work.
 
 ## Goal and first milestone
 
@@ -31,8 +33,9 @@ ASCII text-literal arguments. Common Mini text escapes, multiple calls, empty
 text/programs, comments, and an entry shebang are included. Bindings and other
 expressions remain unsupported by this slice. C output is written only after
 the whole source passes shared language checks and native subset validation.
-The [native case fixtures](../cases/native/) record pending acceptance evidence;
-their optional target field selects C once target execution is implemented.
+The [native case fixtures](../cases/native/) execute this slice through the
+shared runner: Mini compilation, strict C11 compilation with cc, and native
+execution. Their target field selects C; future target gaps stay explicit.
 
 ## Current foundation
 
@@ -109,7 +112,7 @@ Resolve these topics as implementation reaches them:
   require safe integers; broader limits remain open. Undefined C overflow is
   not a Mini rule.
 - Text: start with ASCII literal output. Define indexing/conversion when added.
-  Current JS indexes UTF-16 units and converts bytes as UTF-8; UTF-8 byte indexing
+Current JS indexes UTF-16 units and converts bytes as UTF-8; UTF-8 byte indexing
   is not automatically equivalent.
 - Collections: add heterogeneous values, missing-zero defaults, mutation, copies,
   sparse/negative indexing, and map behavior as distinct increments.
@@ -206,7 +209,8 @@ grows. A shared library existing does not by itself prove API usability.
 
 The stages do not require completing every language feature before trying a
 host or runner sample. The [plan](../.agents/plans/c-target-and-embedding.md)
-records concrete paths and gates; all implementation remains pending.
+records concrete paths and gates. The first compiler slice works; later language
+features, native storage, and the script runner remain pending.
 
 Portable C11 is the proposed baseline. Verify macOS/Linux first; test Windows
 exports/calling convention before claiming DLL support. Full native compiler

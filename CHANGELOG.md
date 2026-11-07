@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.8 / compiler 0.4.0-alpha.9 / bootstrap 0.2.0-alpha.11 /
+  cli 0.1.0-alpha.18: add explicit JavaScript/C target selection and a first
+  C11 slice for ASCII text-literal output. The generated native runtime uses
+  tagged text views and static byte storage; unsupported forms reject before
+  writing output. No language syntax change.
+- test 0.1.0-alpha.6 / check 0.1.0-alpha.10 / verify 0.1.0-alpha.7 /
+  bench 0.1.0-alpha.6: validate source-case targets and compile/run C cases
+  through the shared harness using cc with strict C11 diagnostics.
+
 - mini 0.2.0-alpha.7 / language 0.4.0-alpha.4 / compiler 0.4.0-alpha.8 /
   builtins 0.4.0-alpha.5 / bootstrap 0.2.0-alpha.10: add `to_text(value)` as
   the shared Mini display conversion used by `io_write`.

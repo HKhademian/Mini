@@ -1,0 +1,33 @@
+{
+  "id": "native.c-literal-control-bytes",
+  "kind": "feature",
+  "target": "c",
+  "source": "001-012-literal-control-bytes.mini",
+  "features": [
+    "target.c",
+    "text.literal",
+    "text.output-bytes"
+  ],
+  "cases": [
+    {
+      "name": "literal-control-bytes",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "bytes": [
+          65,
+          0,
+          66,
+          1,
+          67,
+          127
+        ]
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -2,7 +2,6 @@
   "id": "native.c-unsupported-binding",
   "kind": "reject",
   "target": "c",
-  "pending": "C backend and native case execution are not implemented yet. Native rejection diagnostic is provisional until support is implemented.",
   "source": "001-007-unsupported-binding.mini",
   "features": [
     "target.c",

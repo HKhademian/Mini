@@ -147,6 +147,12 @@ fn case_load_case(path) {
     if !list_contains(case_kinds(), kind) {
         return result_fail("invalid case kind: " + id);
     }
+    if map_has(spec, "target") {
+        target := map_get(spec, "target");
+        if kind == "tool" || (target != "js" && target != "c") {
+            return result_fail("invalid case target: " + id);
+        }
+    }
     if map_has(spec, "pending")
         && (kind == "tool" || value_kind(map_get(spec, "pending")) != "text" || text_length(map_get(spec, "pending")) == 0) {
         return result_fail("pending needs a language case and reason");
@@ -462,9 +468,20 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
         if compiler == "" {
             compiler = project_compiler_entry(project_root);
         }
+        target := "js";
+        if map_has(definition, "target") {
+            target = map_get(definition, "target");
+        }
         output := path_join(work, "program.mini.js");
         compile_args := list_of(compiler, source, output);
+        if target == "c" {
+            output = path_join(work, "program.mini.c");
+            compile_args = list_of(compiler, "--target", "c", source, output);
+        }
         result = process_capture(process_exec_path(), compile_args, project_root, list_new());
+        if target == "c" && map_get(result, "status") == 0 && !path_is_exists(output) {
+            return result_fail(prefix + "compilation created no output artifact");
+        }
         if map_get(result, "status") == 0 && path_is_exists(output) {
             artifact = hash_sha256(file_read_bytes(output));
         }
@@ -490,14 +507,30 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             if result_is_fail(prepared_files) {
                 return prepared_files;
             }
+            executable := process_exec_path();
             run_args := list_new();
-            list_set(run_args, 0, output);
+            if target == "c" {
+                executable = path_join(work, "program");
+                native_args := list_of("-std=c11", "-Wall", "-Wextra", "-Werror", output, "-o", executable);
+                native := process_capture("cc", native_args, project_root, list_new());
+                if map_get(native, "status") != 0 {
+                    return result_fail(prefix + "C compilation failed" + case_diagnostic(native));
+                }
+                if !path_is_exists(executable) {
+                    return result_fail(prefix + "C compilation created no executable");
+                }
+            } else {
+                list_set(run_args, 0, output);
+            }
             position := 0;
             while position < list_length(args) {
                 list_set(run_args, list_length(run_args), list_get(args, position));
                 position = position + 1;
             }
-            result = process_capture(process_exec_path(), run_args, files, map_get(input, "bytes"));
+            result = process_capture(executable, run_args, files, map_get(input, "bytes"));
+            if target == "c" && text_length(map_get(result, "error")) > 0 {
+                return result_fail(prefix + "native execution failed" + case_diagnostic(result));
+            }
             checked_files := case_check_output_files(scenario, directory, files, prefix);
             if result_is_fail(checked_files) {
                 return checked_files;

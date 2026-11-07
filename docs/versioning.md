@@ -54,18 +54,18 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.5.0-v0.2.0-alpha.7
+mini-v0.5.0-v0.2.0-alpha.8
 lang-v0.5.0-v0.4.0-alpha.4
-compiler-v0.5.0-v0.4.0-alpha.8
-bootstrap-v0.5.0-v0.2.0-alpha.10
+compiler-v0.5.0-v0.4.0-alpha.9
+bootstrap-v0.5.0-v0.2.0-alpha.11
 builtins-v0.5.0-v0.4.0-alpha.5
-cli-v0.5.0-v0.1.0-alpha.17
-check-v0.5.0-v0.1.0-alpha.9
+cli-v0.5.0-v0.1.0-alpha.18
+check-v0.5.0-v0.1.0-alpha.10
 format-v0.5.0-v0.1.0-alpha.7
 lsp-v0.5.0-v0.1.0-alpha.11
-test-v0.5.0-v0.1.0-alpha.5
-verify-v0.5.0-v0.1.0-alpha.6
-bench-v0.5.0-v0.1.0-alpha.5
+test-v0.5.0-v0.1.0-alpha.6
+verify-v0.5.0-v0.1.0-alpha.7
+bench-v0.5.0-v0.1.0-alpha.6
 release-v0.5.0-v0.1.0-alpha.6
 vscode-v0.5.0-v0.3.8
 ```

@@ -1,0 +1,26 @@
+{
+  "id": "native.c-comments-shebang",
+  "kind": "feature",
+  "target": "c",
+  "source": "001-008-comments-shebang.mini",
+  "features": [
+    "target.c",
+    "source.shebang",
+    "source.comments"
+  ],
+  "cases": [
+    {
+      "name": "comments-shebang",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "comments\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

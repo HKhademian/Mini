@@ -1,0 +1,26 @@
+{
+  "id": "native.c-nonliteral-argument",
+  "kind": "reject",
+  "target": "c",
+  "source": "001-010-nonliteral-argument.mini",
+  "features": [
+    "target.c",
+    "text.output",
+    "compile.reject-before-effects"
+  ],
+  "cases": [
+    {
+      "name": "nonliteral-argument",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "001-010-nonliteral-argument.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

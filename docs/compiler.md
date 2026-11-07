@@ -7,9 +7,32 @@ selected by [config/compiler.json](../config/compiler.json). The former
 handwritten implementation was retired; only accepted [language](language.md) and
 [builtin](builtins.md) contracts are normative.
 
-The [C target and embedding proposal](c-target-and-embedding.md) plans a native
-backend and generated C source for a mini-written script runner. It is not yet
-implemented; the active target remains JavaScript.
+JavaScript is the default target. An initial C11 target supports top-level
+`io_write` calls with zero or more ASCII text-literal arguments, comments, an
+entry shebang, and empty programs. Other forms reject explicitly. The
+[C target and embedding direction](c-target-and-embedding.md) tracks later
+increments; the script interpreter and embedding API are not implemented yet.
+
+```text
+./bin/mini compile --target c cases/native/001-001-write-literal.mini /tmp/mini-hello.c
+cc -std=c11 -Wall -Wextra -Werror /tmp/mini-hello.c -o /tmp/mini-hello
+/tmp/mini-hello
+./bin/mini test native
+```
+
+The sample prints `hello from C` followed by a newline. Without an explicit
+output path, C compilation appends `.c` to the source name; `--target js` retains
+the default `.js` path. `mini-compile` and `minic` accept the same target prefix.
+The compiler produces C source; it does not invoke the native toolchain itself.
+Native case execution requires `cc` on PATH. C rejects `--reference` and
+`--program-only`, which are JavaScript emission modes.
+
+The Mini-written C emitter first runs shared language validation, then performs
+a bounded token walk for the supported slice. It uses tagged text values with
+static byte arrays and explicit lengths, preserving embedded NUL/control bytes
+without heap allocation. This second walk avoids a whole-compiler rewrite;
+later features can justify more shared lowering structure. Target rejection
+does not create or replace the output file.
 
 Run it directly with Node:
 

@@ -69,7 +69,11 @@
   of the importing file's folder. Use `./` for neighbors and child folders. Do
   not import from a parent directory with `../`.
 
-- Executable project code uses TypeScript run directly by Node or Mini only.
+- Build/test orchestration uses TypeScript run directly by Node or Mini only.
+- The C target emits native C from the Mini-written compiler. Generated C and
+  focused C host fixtures are allowed for native target verification; compiler
+  and runner logic remain Mini. Keep native build/test orchestration in Mini
+  or direct Node TypeScript, and do not hand-edit generated output.
 - Use extensionless Node shebang commands under bin/; do not route tools through npm.
 - Mini source uses .mini. Keep case manifests and source separate. Tool cases
   invoke actual bin/ commands through the shared runner; never add per-case

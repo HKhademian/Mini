@@ -1,0 +1,116 @@
+#!/usr/bin/env node
+/// Exercise the public compiler target flags and generated native program.
+include "common/text.mini";
+include "common/list.mini";
+include "common/path.mini";
+include "common/process.mini";
+include "tools/cases.mini";
+
+/// Remove the workspace and report one integration failure.
+fn native_fail(work, name, message) {
+    path_remove(work);
+    io_write_error(name + ": " + message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Invoke the public mini compile command with the supplied arguments.
+fn native_cli(root, args) {
+    command := list_of(path_join(root, "bin/mini"), "compile");
+    position := 0;
+    while position < list_length(args) {
+        list_set(command, list_length(command), list_get(args, position));
+        position = position + 1;
+    }
+    return process_capture(process_exec_path(), command, root, list_new());
+}
+
+/// Require successful compilation and creation of the selected output file.
+fn native_compile(root, work, name, args, output) {
+    result := native_cli(root, args);
+    if map_get(result, "status") != 0 || text_from_bytes(map_get(result, "stdout")) != ""
+        || text_from_bytes(map_get(result, "stderr")) != "" || !path_is_exists(output) {
+        native_fail(work, name, "compilation failed: " + text_from_bytes(map_get(result, "stderr")));
+    }
+    return 0;
+}
+
+/// Require a rejected command to leave its requested output absent.
+fn native_reject(root, work, name, args, output) {
+    result := native_cli(root, args);
+    if map_get(result, "status") == 0 || text_from_bytes(map_get(result, "stdout")) != ""
+        || text_from_bytes(map_get(result, "stderr")) == "" || path_is_exists(output) {
+        native_fail(work, name, "rejection status, diagnostic, or output artifact differs");
+    }
+    return 0;
+}
+
+/// Require target validation to reject a complete manifest for that reason.
+fn native_manifest_reject(work, name, definition) {
+    path := path_join(work, name + ".case.json");
+    file_write(path, definition);
+    result := case_load_case(path);
+    if !result_is_fail(result) || !text_starts_with(result_get_message(result), "invalid case target:") {
+        native_fail(work, name, "manifest target validation differs");
+    }
+    return 0;
+}
+
+/// Verify target selection through the public CLI rather than emitter internals.
+fn main(args) {
+    root := list_get(args, 0);
+    work := path_temp_directory();
+    if work == "" {
+        io_write_error("native CLI tests: cannot create workspace\n");
+        process_exit(1);
+    }
+    source := path_join(work, "output.mini");
+    file_write(source, "io_write(\"native\\n\");\n");
+    native_manifest_reject(work, "unknown-target", "{\"id\":\"unknown-target\",\"kind\":\"feature\",\"target\":\"other\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"native\\n\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
+    native_manifest_reject(work, "tool-target", "{\"id\":\"tool-target\",\"kind\":\"tool\",\"target\":\"c\",\"tool\":\"mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
+    explicit_c := path_join(work, "explicit.c");
+    native_compile(root, work, "explicit C output", list_of("--target", "c", source, explicit_c), explicit_c);
+    native_compile(root, work, "default C output", list_of("--target", "c", source), source + ".c");
+    if file_read(explicit_c) != file_read(source + ".c") {
+        native_fail(work, "C output paths", "explicit and default output differ");
+    }
+    binary := path_join(work, "native-program");
+    built := process_capture("cc", list_of("-std=c11", "-Wall", "-Wextra", "-Werror", explicit_c, "-o", binary), root, list_new());
+    if map_get(built, "status") != 0 {
+        native_fail(work, "C build", text_from_bytes(map_get(built, "stderr")));
+    }
+    ran := process_capture(binary, list_new(), work, list_new());
+    if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout")) != "native\n"
+        || text_from_bytes(map_get(ran, "stderr")) != "" {
+        native_fail(work, "C execution", "output or status differs");
+    }
+    explicit_js := path_join(work, "explicit.mjs");
+    default_js := source + ".js";
+    native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);
+    native_compile(root, work, "default JS target", list_of(source), default_js);
+    if file_read(explicit_js) != file_read(default_js) {
+        native_fail(work, "JS target compatibility", "explicit and default output differ");
+    }
+    js_run := process_capture(process_exec_path(), list_of(explicit_js), work, list_new());
+    if map_get(js_run, "status") != 0 || text_from_bytes(map_get(js_run, "stdout")) != "native\n"
+        || text_from_bytes(map_get(js_run, "stderr")) != "" {
+        native_fail(work, "JS execution", "output or status differs");
+    }
+    rejected := path_join(work, "rejected.c");
+    native_reject(root, work, "unknown target", list_of("--target", "other", source, rejected), rejected);
+    native_reject(root, work, "missing target", list_of("--target"), rejected);
+    native_reject(root, work, "extra compiler argument", list_of("--target", "c", source, rejected, "extra"), rejected);
+    native_reject(root, work, "C reference mode", list_of("--target", "c", "--reference", source, rejected), rejected);
+    native_reject(root, work, "C program-only mode", list_of("--target", "c", "--program-only", source, rejected), rejected);
+    unsupported := path_join(work, "unsupported.mini");
+    file_write(unsupported, "io_write(\"must not run\");\nvalue := 1;\n");
+    native_reject(root, work, "unsupported C source", list_of("--target", "c", unsupported, rejected), rejected);
+    if path_is_exists(unsupported + ".js") || path_is_exists(unsupported + ".c") {
+        native_fail(work, "unsupported C source", "default/fallback artifact was created");
+    }
+    path_remove(work);
+    io_write("native CLI targets ok\n");
+    return 0;
+}
+
+main(fn_args());

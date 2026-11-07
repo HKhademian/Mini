@@ -48,8 +48,13 @@ Use `"pending": "reason"` on an unimplemented language case. Its source and
 expectations are validated now. `test` reports it as pending, never passed.
 
 Source manifests may specify `"target": "js"` or `"target": "c"`; omission
-means JavaScript. Tool manifests have no target field. Initial C cases remain
-pending until native compilation/execution support is implemented.
+means JavaScript. Tool manifests have no target field. Runnable C cases compile
+generated source with `cc -std=c11 -Wall -Wextra -Werror`, then run the native
+executable with the same input, arguments, and file fixtures. `cc` must be on
+PATH; native compilation or launch failures fail the case. C `compile` cases
+inspect generated source without invoking `cc`; `reject` cases require a failed
+Mini compilation and no generated artifact. Unimplemented target cases stay
+pending and never count as native passes.
 The full suite may pass its implemented scenarios while listing pending ones;
 an explicitly verified pending manifest or a selection containing only pending
 scenarios exits unsuccessfully. Pending cases cannot benchmark or satisfy the
