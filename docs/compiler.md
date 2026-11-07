@@ -15,15 +15,18 @@ increments; the script interpreter and embedding API are not implemented yet.
 
 ```text
 ./bin/mini compile --target c cases/native/001-001-write-literal.mini /tmp/mini-hello.c
-cc -std=c11 -Wall -Wextra -Werror /tmp/mini-hello.c -o /tmp/mini-hello
+cc -std=c11 -E /tmp/mini-hello.c -o /tmp/mini-hello.i
+cc -std=c11 -Wall -Wextra -Werror /tmp/mini-hello.i -o /tmp/mini-hello
 /tmp/mini-hello
 ./bin/mini test native
 ```
 
 The sample prints `hello from C` followed by a newline. Without an explicit
-output path, C compilation appends `.c` to the source name; `--target js` retains
-the default `.js` path. `mini-compile` and `minic` accept the same target prefix.
-The compiler produces C source; it does not invoke the native toolchain itself.
+output path, C compilation appends `.c` to the source name and writes a matching
+`.h` companion. An explicit `test.c` output produces `test.c` and `test.h`;
+the default for `test.mini` is `test.mini.c` and `test.mini.h`. `--target js`
+retains the default `.js` path. `mini-compile` and `minic` accept the same target
+prefix. The compiler produces the source/header pair without invoking `cc`.
 Native case execution requires `cc` on PATH. C rejects `--reference` and
 `--program-only`, which are JavaScript emission modes.
 
@@ -32,7 +35,28 @@ a bounded token walk for the supported slice. It uses tagged text values with
 static byte arrays and explicit lengths, preserving embedded NUL/control bytes
 without heap allocation. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection
-does not create or replace the output file.
+does not create or replace either output file.
+
+### Native build artifacts
+
+Native case builds perform preprocessing immediately before compilation:
+
+```text
+test.mini -> test.c + test.h -> test.i -> native executable
+```
+
+The shared Mini build helper runs `cc -std=c11 -E test.c -o test.i`, followed by
+strict C11 compilation of `test.i`. This is additive: the macro-based source and
+header remain untouched, while the `.i` file contains expanded identifiers,
+types, initializers, system headers, and source line markers useful for debugging.
+No separate preprocessing flag is needed. A failed native case retains its
+workspace and prints `Native artifacts: PATH`; successful cases clean up normally.
+
+The generated header contains guarded type declarations, value initializer
+macros, and the constructor declaration. The `.c` includes it and supplies
+function definitions and the current program entry. This is not yet the planned
+script-runner embedding API. Static `.a` and shared `.so`/`.dylib`/`.dll` packaging
+remain later plan stages; `.dylib` is the macOS suffix.
 
 ### Generated C names and values
 
@@ -49,21 +73,22 @@ before including the generated source, or through the C toolchain, to choose
 another naming style. The default uses no dollar identifiers; no Mini compiler
 flag is needed. `main` and C standard-library names keep their required names.
 
-`MINI_VALUE`, `MINI_TEXT`, and `MINI_VALUE_KIND` alias the generated types through
-`MINI_ID`. The value payload uses an anonymous union, so text is available as
+Types are named directly as `MINI_ID(value)`, `MINI_ID(text)`, and
+`MINI_ID(value_kind)`, using the same convention as functions, tags, and storage.
+There is no separate type-alias macro layer. The anonymous union exposes text as
 `value.text`. `MINI_VALUE_TEXT(data, length)` is a brace initializer that works
 in static declarations. Its arguments each occur once. Use a typed cast for
 an expression, or call the constructor function:
 
 ```c
-static const MINI_VALUE saved = MINI_VALUE_TEXT(bytes, 2);
-MINI_VALUE current = MINI_ID(value_text)(bytes, 2);
-consume((MINI_VALUE) MINI_VALUE_TEXT(bytes, 2));
+static const MINI_ID(value) saved = MINI_VALUE_TEXT(bytes, 2);
+MINI_ID(value) current = MINI_ID(value_text)(bytes, 2);
+consume((MINI_ID(value)) MINI_VALUE_TEXT(bytes, 2));
 ```
 
 These lines assume the generated types and the shown host variables/functions
 are available. The constructor function itself returns
-`(MINI_VALUE) MINI_VALUE_TEXT(data, length)`: the macro supplies construction;
+`(MINI_ID(value)) MINI_VALUE_TEXT(data, length)`: the macro supplies construction;
 it does not call the function. This preserves static initialization and gives
 runtime callers a function wrapper. Other value factories follow this pattern
 when their kinds are implemented; numeric lowering remains unsupported.

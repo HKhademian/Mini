@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.10 / compiler 0.4.0-alpha.11 / bootstrap 0.2.0-alpha.13:
+  use MINI_ID directly for generated C types and emit companion .c/.h files.
+  Native builds add an adjacent .i using cc -E and compile that expanded input,
+  preserving the original pair for inspection.
+- test 0.1.0-alpha.7 / check 0.1.0-alpha.11 / verify 0.1.0-alpha.8 /
+  bench 0.1.0-alpha.7: require C source/header pairs and retain failed native
+  case workspaces with available preprocessing artifacts for debugging.
+
 - mini 0.2.0-alpha.9 / compiler 0.4.0-alpha.10 / bootstrap 0.2.0-alpha.12:
   customize generated C names through overridable MINI_ID(name), defaulting
   to mini_ without dollar identifiers. Add type aliases, an anonymous payload

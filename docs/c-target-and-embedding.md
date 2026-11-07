@@ -96,9 +96,15 @@ A tagged union is the selected value-storage direction:
 
 Generated names use `MINI_ID(name)`, defaulting to `mini_##name` behind an
 `#ifndef` guard. Hosts can override naming without a Mini compiler flag or dollar
-identifiers. Generated values use initializer macros such as `MINI_VALUE_TEXT`;
+identifiers. Types, functions, tags, and storage use `MINI_ID` directly; redundant
+type-alias macros are omitted. Values use initializers such as `MINI_VALUE_TEXT`;
 constructor functions wrap the macro for runtime calls. Payloads use an anonymous
 union. See the [generated C reference](compiler.md#generated-c-names-and-values).
+
+Generation now writes matching C/header files. Native builds add a `.i` through
+standard C preprocessing immediately before compiling it, preserving the original
+pair. Failed native cases retain available artifacts for debugging. Library
+packaging follows in the later distribution stages.
 
 Add native operations when the corresponding feature needs them. Check array
 bounds/growth arithmetic when arrays arrive; preserve valid backing storage

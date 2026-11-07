@@ -11,6 +11,7 @@ include "common/process.mini";
 include "common/json.mini";
 include "common/result.mini";
 include "common/project.mini";
+include "./native.mini";
 
 /// Return a successful result map.
 
@@ -429,6 +430,11 @@ fn case_verify_scenario(fixture, scenario, project_root, compiler_override) {
         return result_fail(prefix + "cannot create a temporary directory");
     }
     result := case_verify_in_work(fixture, scenario, project_root, compiler_override, work, prefix);
+    if result_is_fail(result) && map_get(definition, "target") == "c" {
+        map_set(result, "workspace", work);
+        map_set(result, "message", result_get_message(result) + "\nNative artifacts: " + work);
+        return result;
+    }
     path_remove(work);
     return result;
 }
@@ -479,8 +485,9 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             compile_args = list_of(compiler, "--target", "c", source, output);
         }
         result = process_capture(process_exec_path(), compile_args, project_root, list_new());
-        if target == "c" && map_get(result, "status") == 0 && !path_is_exists(output) {
-            return result_fail(prefix + "compilation created no output artifact");
+        if target == "c" && map_get(result, "status") == 0
+            && (!path_is_exists(output) || !path_is_exists(native_artifact_path(output, ".h"))) {
+            return result_fail(prefix + "compilation did not create its C source/header pair");
         }
         if map_get(result, "status") == 0 && path_is_exists(output) {
             artifact = hash_sha256(file_read_bytes(output));
@@ -494,7 +501,8 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
                 return result_fail(prefix + "generated artifact differs");
             }
         }
-        if kind == "reject" && path_is_exists(output) {
+        if kind == "reject" && (path_is_exists(output)
+            || (target == "c" && path_is_exists(native_artifact_path(output, ".h")))) {
             return result_fail(prefix + "rejection created an output artifact");
         }
         if kind != "reject" && kind != "compile" {
@@ -511,10 +519,9 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             run_args := list_new();
             if target == "c" {
                 executable = path_join(work, "program");
-                native_args := list_of("-std=c11", "-Wall", "-Wextra", "-Werror", output, "-o", executable);
-                native := process_capture("cc", native_args, project_root, list_new());
+                native := native_build(output, executable, project_root);
                 if map_get(native, "status") != 0 {
-                    return result_fail(prefix + "C compilation failed" + case_diagnostic(native));
+                    return result_fail(prefix + map_get(native, "stage") + " failed" + case_diagnostic(native));
                 }
                 if !path_is_exists(executable) {
                     return result_fail(prefix + "C compilation created no executable");

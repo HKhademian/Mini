@@ -3,6 +3,7 @@
 
 include "common/io.mini";
 include "common/text.mini";
+include "common/native.mini";
 include "compiler/lexer.mini";
 include "compiler/parser.mini";
 include "compiler/builtins.mini";
@@ -150,7 +151,10 @@ fn main(args) {
     }
     expanded := lex_expand_includes(tokens, source, list_new(), map_new());
     if target_name == "c" {
-        file_write(target, c_compile(expanded));
+        header := native_artifact_path(target, ".h");
+        code := c_compile(expanded, path_basename(header));
+        file_write(header, c_header(path_basename(header)));
+        file_write(target, code);
         return 0;
     }
     if reference_mode {

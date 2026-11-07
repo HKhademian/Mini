@@ -1,0 +1,12 @@
+/// Artifact naming shared by C generation and native builds.
+//
+
+include "common/text.mini";
+
+/// Replace a C source suffix, or append a suffix when the output has another name.
+fn native_artifact_path(source, suffix) {
+    if text_ends_with(source, ".c") {
+        return text_slice(source, 0, text_length(source) - 2) + suffix;
+    }
+    return source + suffix;
+}

@@ -7,3 +7,5 @@ node_modules/
 *.mini.ts
 *.mini.js
 *.mini.c
+*.mini.h
+*.mini.i

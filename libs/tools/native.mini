@@ -1,0 +1,26 @@
+/// Preprocess and build native C, retaining the expanded input next to the source.
+include "common/native.mini";
+include "common/process.mini";
+
+/// Run the adjacent preprocessing/compilation stages and return process status.
+/// The stage and preprocessed path identify failures; source/header files are untouched.
+fn native_build(source, executable, directory) {
+    expanded := native_artifact_path(source, ".i");
+    preprocess_args := list_of("-std=c11", "-E", source, "-o", expanded);
+    result := process_capture("cc", preprocess_args, directory, list_new());
+    map_set(result, "stage", "C preprocessing");
+    map_set(result, "preprocessed", expanded);
+    if map_get(result, "status") != 0 {
+        return result;
+    }
+    if !path_is_exists(expanded) {
+        map_set(result, "status", 1);
+        map_set(result, "error", "preprocessing created no expanded source");
+        return result;
+    }
+    compile_args := list_of("-std=c11", "-Wall", "-Wextra", "-Werror", expanded, "-o", executable);
+    result = process_capture("cc", compile_args, directory, list_new());
+    map_set(result, "stage", "C compilation");
+    map_set(result, "preprocessed", expanded);
+    return result;
+}

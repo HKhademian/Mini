@@ -15,7 +15,7 @@
       },
       "stdout": {
         "file": "check-version-file.stdout",
-        "hash": "sha256:2b59c3d02900f920e866ffc4c977814a1b8ad57bfbf200fad62cbad389f401b3"
+        "hash": "sha256:4776ee6c0f895ea1614946d15226059480847890c6c07ad33a1b6fee2e7274d9"
       },
       "stderr": {
         "file": "check-version.stderr",
@@ -33,7 +33,7 @@
         "hash": "sha256:a6c7e3c5ddd823efc8b7a30853eabc152dac866843bd7a39dc4a29e0a0eb68b3"
       },
       "stdout": {
-        "text": "check-v0.5.0-v0.1.0-alpha.10\n"
+        "text": "check-v0.5.0-v0.1.0-alpha.11\n"
       },
       "stderr": {
         "text": ""
@@ -55,7 +55,7 @@
       },
       "stdout": {
         "file": "check-version-bytes.stdout",
-        "hash": "sha256:2b59c3d02900f920e866ffc4c977814a1b8ad57bfbf200fad62cbad389f401b3"
+        "hash": "sha256:4776ee6c0f895ea1614946d15226059480847890c6c07ad33a1b6fee2e7274d9"
       },
       "stderr": {
         "text": ""

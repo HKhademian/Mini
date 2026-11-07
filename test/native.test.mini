@@ -39,7 +39,8 @@ fn native_compile(root, work, name, args, output) {
 fn native_reject(root, work, name, args, output) {
     result := native_cli(root, args);
     if map_get(result, "status") == 0 || text_from_bytes(map_get(result, "stdout")) != ""
-        || text_from_bytes(map_get(result, "stderr")) == "" || path_is_exists(output) {
+        || text_from_bytes(map_get(result, "stderr")) == "" || path_is_exists(output)
+        || path_is_exists(native_artifact_path(output, ".h")) {
         native_fail(work, name, "rejection status, diagnostic, or output artifact differs");
     }
     return 0;
@@ -80,6 +81,31 @@ fn native_macro_host(root, work, custom) {
     return 0;
 }
 
+/// Require a failed native case to retain source/header/preprocessor artifacts.
+fn native_debug_artifacts(root, work) {
+    manifest := path_join(work, "native-debug.case.json");
+    file_write(manifest, "{\"id\":\"native-debug\",\"kind\":\"feature\",\"target\":\"c\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"wrong-output\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"wrong\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
+    loaded := case_load_case(manifest);
+    if result_is_fail(loaded) {
+        native_fail(work, "debug fixture", result_get_message(loaded));
+    }
+    fixture := map_get(loaded, "fixture");
+    scenario := list_get(map_get(map_get(fixture, "definition"), "cases"), 0);
+    result := case_verify_scenario(fixture, scenario, root, "");
+    directory := map_get(result, "workspace");
+    if !result_is_fail(result) || value_kind(directory) != "text" {
+        native_fail(work, "debug fixture", "native failure did not retain a workspace");
+    }
+    complete := path_is_exists(path_join(directory, "program.mini.c"))
+        && path_is_exists(path_join(directory, "program.mini.h"))
+        && path_is_exists(path_join(directory, "program.mini.i"));
+    path_remove(directory);
+    if !complete {
+        native_fail(work, "debug fixture", "native failure artifacts were missing");
+    }
+    return 0;
+}
+
 /// Verify target selection through the public CLI rather than emitter internals.
 fn main(args) {
     root := list_get(args, 0);
@@ -95,23 +121,49 @@ fn main(args) {
     explicit_c := path_join(work, "explicit.c");
     native_compile(root, work, "explicit C output", list_of("--target", "c", source, explicit_c), explicit_c);
     native_compile(root, work, "default C output", list_of("--target", "c", source), source + ".c");
-    if file_read(explicit_c) != file_read(source + ".c") {
-        native_fail(work, "C output paths", "explicit and default output differ");
+    header := native_artifact_path(explicit_c, ".h");
+    if !path_is_exists(header) || !path_is_exists(source + ".h") {
+        native_fail(work, "C header output", "companion header was not created");
+    }
+    original_c := file_read(explicit_c);
+    original_header := file_read(header);
+    preprocessed := native_artifact_path(explicit_c, ".i");
+    if path_is_exists(preprocessed) {
+        native_fail(work, "C preprocessing", "source generation unexpectedly ran the C toolchain");
     }
     binary := path_join(work, "native-program");
-    built := process_capture("cc", list_of("-std=c11", "-Wall", "-Wextra", "-Werror", explicit_c, "-o", binary), root, list_new());
+    built := native_build(explicit_c, binary, root);
     if map_get(built, "status") != 0 {
         native_fail(work, "C build", text_from_bytes(map_get(built, "stderr")));
+    }
+    if !path_is_exists(preprocessed) || file_read(explicit_c) != original_c
+        || file_read(header) != original_header {
+        native_fail(work, "C preprocessing", "expanded artifact missing or original source/header changed");
+    }
+    expanded := file_read(preprocessed);
+    if text_find(expanded, "MINI_ID(") >= 0 || text_find(expanded, "MINI_VALUE_TEXT(") >= 0
+        || text_find(expanded, "mini_value_text") < 0 {
+        native_fail(work, "C preprocessing", "generated macros were not expanded");
     }
     ran := process_capture(binary, list_new(), work, list_new());
     if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout")) != "$mini_payload|native\n"
         || text_from_bytes(map_get(ran, "stderr")) != "" {
         native_fail(work, "C execution", "output or status differs");
     }
+    default_binary := path_join(work, "default-native-program");
+    default_build := native_build(source + ".c", default_binary, root);
+    if map_get(default_build, "status") != 0 {
+        native_fail(work, "default C build", text_from_bytes(map_get(default_build, "stderr")));
+    }
+    default_run := process_capture(default_binary, list_new(), work, list_new());
+    if map_get(default_run, "status") != 0 || !case_bytes_equal(map_get(ran, "stdout"), map_get(default_run, "stdout")) {
+        native_fail(work, "C output paths", "explicit and default programs differ");
+    }
     file_write(path_join(work, "generated.c"), file_read(explicit_c));
     file_write(path_join(work, "value-constructors.c"), file_read(path_join(root, "cases/native/value-constructors.c")));
     native_macro_host(root, work, false);
     native_macro_host(root, work, true);
+    native_debug_artifacts(root, work);
     explicit_js := path_join(work, "explicit.mjs");
     default_js := source + ".js";
     native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);

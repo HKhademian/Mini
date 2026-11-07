@@ -5,7 +5,9 @@
 The compiler also emits a bounded C11 subset; see the
 [compiler reference](compiler.md). Generating C still uses the Mini-written
 compiler running on Node. Building/running generated C requires a C11 toolchain,
-with `cc` on PATH for native case tests. The resulting literal-output program
+with `cc` on PATH for native case preprocessing and compilation. The compiler
+writes a source/header pair; native verification adds an expanded `.i` and builds
+from it. The resulting literal-output program
 uses the C standard library and needs no Node at execution time. Native source
 interpretation, an embedding API, and broad language support remain pending.
 
