@@ -7,6 +7,10 @@ selected by [config/compiler.json](../config/compiler.json). The former
 handwritten implementation was retired; only accepted [language](language.md) and
 [builtin](builtins.md) contracts are normative.
 
+The [C target and embedding proposal](c-target-and-embedding.md) plans a native
+backend and generated C source for a mini-written script runner. It is not yet
+implemented; the active target remains JavaScript.
+
 Run it directly with Node:
 
 ```text

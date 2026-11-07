@@ -42,6 +42,8 @@ goals and tradeoffs.
 - [Samples](samples/README.md): small programs with expected results.
 - [Growing a language](docs/evolving-language.md): add features while preserving self-hosting.
 - [Compiler reference](docs/compiler.md): compiler commands and generated output.
+- [C target and embedding proposal](docs/c-target-and-embedding.md): planned
+  generated C source and a mini-written script runner.
 - [Releases](docs/releases.md): artifacts and verification.
 - [VS Code support](editors/vscode/README.md): syntax support and language server.
 
