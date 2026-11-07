@@ -6,6 +6,10 @@
   untracked and ignored project files, rebuild generated tools, run all project
   checks, and package a local VSIX under `dist/rebuild/`.
 
+- compiler 0.4.0-alpha.4 / bootstrap 0.2.0-alpha.6: omit an unreachable
+  fallback return when a function ends with an explicit return. No language
+  change.
+
 - release 0.1.0-alpha.6: launch the platform-specific esbuild executable directly
   when packaging VS Code releases.
 

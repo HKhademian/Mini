@@ -409,10 +409,15 @@ fn parser_block(parser) {
     map_set(parser, "declared", map_new());
     map_set(parser, "depth", map_get(parser, "depth") + 1);
     output := "";
+    last_statement := "";
     while map_get(parser_token(parser), "text") != "}" && map_get(parser_token(parser), "kind") != "eof" {
-        output = output + parser_statement(parser);
+        last_statement = parser_statement(parser);
+        output = output + last_statement;
     }
     parser_expect(parser, "}");
+    if map_get(parser, "depth") == 1 {
+        map_set(parser, "block_ends_with_return", text_starts_with(last_statement, "return "));
+    }
     map_set(parser, "depth", map_get(parser, "depth") - 1);
     map_set(parser, "variables", outer);
     map_set(parser, "declared", outer_declared);
@@ -450,11 +455,14 @@ fn parser_function_declaration(parser) {
         map_set(map_get(parser, "variables"), list_get(parameters, position), "unknown");
         position = position + 1;
     }
+    map_set(parser, "block_ends_with_return", false);
     body := parser_block(parser);
     map_set(parser, "variables", outer);
     map_set(parser, "in_function", false);
-    body = text_slice(body, 0, text_length(body) - 1)
-        + "    return 0;\n}";
+    if !map_get(parser, "block_ends_with_return") {
+        body = text_slice(body, 0, text_length(body) - 1)
+            + "    return 0;\n}";
+    }
     capture := "";
     if map_get(info, "captures") {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";

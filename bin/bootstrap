@@ -211,7 +211,6 @@ function split_lines(source) {
         position = (position + 1);
     }
     return lines;
-    return 0;
 }
 function indent_output(output) {
 
@@ -231,7 +230,6 @@ function indent_output(output) {
         position = (position + 1);
     }
     return result;
-    return 0;
 }
 function text_ends_with(source, suffix) {
 
@@ -241,27 +239,22 @@ function text_ends_with(source, suffix) {
         return false;
     }
     return ($mini_text_slice(source, (length - size), length) === suffix);
-    return 0;
 }
 function is_letter(character) {
 
     return ($mini_text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
-    return 0;
 }
 function is_digit(character) {
 
     return ($mini_text_find("0123456789", character) >= 0);
-    return 0;
 }
 function is_identifier_part(character) {
 
     return (is_letter(character) || is_digit(character));
-    return 0;
 }
 function is_two_character_symbol(value) {
 
     return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
-    return 0;
 }
 function text_starts_with(source, prefix) {
 
@@ -270,7 +263,6 @@ function text_starts_with(source, prefix) {
         return false;
     }
     return ($mini_text_slice(source, 0, size) === prefix);
-    return 0;
 }
 function text_chomp(text) {
 
@@ -279,7 +271,6 @@ function text_chomp(text) {
         length = (length - 1);
     }
     return $mini_text_slice(text, 0, length);
-    return 0;
 }
 function text_trim_end(text) {
 
@@ -293,7 +284,6 @@ function text_trim_end(text) {
         }
     }
     return "";
-    return 0;
 }
 function text_trim(text) {
 
@@ -306,32 +296,26 @@ function text_trim(text) {
         end = (end - 1);
     }
     return $mini_text_slice(text, start, end);
-    return 0;
 }
 function value_is_text(value) {
 
     return ($mini_value_kind(value) === "text");
-    return 0;
 }
 function value_is_number(value) {
 
     return ($mini_value_kind(value) === "number");
-    return 0;
 }
 function value_is_boolean(value) {
 
     return ($mini_value_kind(value) === "boolean");
-    return 0;
 }
 function value_is_list(value) {
 
     return ($mini_value_kind(value) === "list");
-    return 0;
 }
 function value_is_map(value) {
 
     return ($mini_value_kind(value) === "map");
-    return 0;
 }
 function list_has_text(items, value) {
 
@@ -343,7 +327,6 @@ function list_has_text(items, value) {
         position = (position + 1);
     }
     return false;
-    return 0;
 }
 function list_join_from(items, start, separator) {
 
@@ -354,7 +337,6 @@ function list_join_from(items, start, separator) {
         position = (position + 1);
     }
     return $mini_list_join(parts, separator);
-    return 0;
 }
 function list_reverse(items) {
 
@@ -365,7 +347,6 @@ function list_reverse(items) {
         position = (position - 1);
     }
     return result;
-    return 0;
 }
 function list_sorted(items) {
 
@@ -384,7 +365,6 @@ function list_sorted(items) {
         position = (position + 1);
     }
     return result;
-    return 0;
 }
 function list_contains(items, value) {
 
@@ -396,7 +376,6 @@ function list_contains(items, value) {
         position = (position + 1);
     }
     return false;
-    return 0;
 }
 function list_is_text(value) {
 
@@ -411,14 +390,12 @@ function list_is_text(value) {
         position = (position + 1);
     }
     return true;
-    return 0;
 }
 function list_push_back(items, value) {
 
     if (value_is_list(items)) {
         $mini_list_set(items, (items).length, value);
     }
-    return 0;
     return 0;
 }
 function list_push_front(items, value) {
@@ -433,7 +410,6 @@ function list_push_front(items, value) {
     }
     $mini_list_set(items, 0, value);
     return 0;
-    return 0;
 }
 function list_pop_back(items) {
 
@@ -444,7 +420,6 @@ function list_pop_back(items) {
     let value = $mini_list_get(items, (length - 1));
     $mini_list_truncate(items, (length - 1));
     return value;
-    return 0;
 }
 function list_pop_front(items) {
 
@@ -460,13 +435,11 @@ function list_pop_front(items) {
     }
     $mini_list_truncate(items, (length - 1));
     return value;
-    return 0;
 }
 function list_of() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     return $mini_fn_args;
-    return 0;
 }
 function list_rest(items, count) {
 
@@ -477,7 +450,6 @@ function list_rest(items, count) {
         position = (position + 1);
     }
     return result;
-    return 0;
 }
 function path_join(left, right) {
 
@@ -491,14 +463,12 @@ function path_join(left, right) {
         return (left + right);
     }
     return ((left + "/") + right);
-    return 0;
 }
 function path_temp_file() {
 
     let path = path_join($mini_path_temp_directory(), "file");
     (writeFileSync(path, "", "utf8"), 0);
     return path;
-    return 0;
 }
 function file_remove(path) {
 
@@ -506,14 +476,12 @@ function file_remove(path) {
         return $mini_path_remove(path);
     }
     return 0;
-    return 0;
 }
 function directory_remove(path) {
 
     if ((((path !== "") && $mini_path_is_directory(path)) && (($mini_directory_list(path)).length === 0))) {
         return $mini_path_remove(path);
     }
-    return 0;
     return 0;
 }
 function path_parent(path) {
@@ -527,7 +495,6 @@ function path_parent(path) {
         position = (position - 1);
     }
     return "";
-    return 0;
 }
 function path_basename(path) {
 
@@ -540,7 +507,6 @@ function path_basename(path) {
         position = (position - 1);
     }
     return path;
-    return 0;
 }
 function path_is_absolute(path) {
 
@@ -548,7 +514,6 @@ function path_is_absolute(path) {
         return true;
     }
     return ((((path).length > 2) && ($mini_text_get(path, 1) === ":")) && (($mini_text_get(path, 2) === "/") || ($mini_text_get(path, 2) === "\\")));
-    return 0;
 }
 function path_normalize(path) {
 
@@ -589,7 +554,6 @@ function path_normalize(path) {
         return ("/" + output);
     }
     return output;
-    return 0;
 }
 function path_resolve(base, path) {
 
@@ -597,7 +561,6 @@ function path_resolve(base, path) {
         return path_normalize(path);
     }
     return path_normalize(path_join(base, path));
-    return 0;
 }
 function token_new(kind, text, source, start, end, line, column, context) {
 
@@ -611,7 +574,6 @@ function token_new(kind, text, source, start, end, line, column, context) {
     $mini_map_set(token, "column", column);
     $mini_map_set(token, "context", context);
     return token;
-    return 0;
 }
 function lex_advance(state) {
 
@@ -626,14 +588,12 @@ function lex_advance(state) {
         $mini_map_set(state, "column", ($mini_map_get(state, "column") + 1));
     }
     return value;
-    return 0;
 }
 function lex_start(state) {
 
     let lines = $mini_map_get(state, "lines");
     let token = token_new("symbol", "", $mini_map_get(state, "source"), $mini_map_get(state, "position"), $mini_map_get(state, "position"), $mini_map_get(state, "line"), $mini_map_get(state, "column"), $mini_list_get(lines, ($mini_map_get(state, "line") - 1)));
     return token;
-    return 0;
 }
 function diagnostic_indent(token) {
 
@@ -650,30 +610,25 @@ function diagnostic_indent(token) {
         position = (position + 1);
     }
     return indent;
-    return 0;
 }
 function diagnostic_text(token, label) {
 
     return ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text($mini_map_get(token, "column"))) + ": ") + label) + "\n") + $mini_map_get(token, "context")) + "\n") + diagnostic_indent(token)) + "^\n");
-    return 0;
 }
 function diagnostic_fail(token, message) {
 
     (writeSync(2, diagnostic_text(token, message)), 0);
     (process.exit(1), 0);
     return 0;
-    return 0;
 }
 function diagnostic_warn(token, message) {
 
     (writeSync(2, diagnostic_text(token, ("warning: " + message))), 0);
     return 0;
-    return 0;
 }
 function lex_fail(token, message) {
 
     return diagnostic_fail(token, message);
-    return 0;
 }
 function lex_comment(state, source, include_comments) {
 
@@ -689,7 +644,6 @@ function lex_comment(state, source, include_comments) {
         $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
     }
     return 0;
-    return 0;
 }
 function lex_word(state, source, token) {
 
@@ -702,7 +656,6 @@ function lex_word(state, source, token) {
         $mini_map_set(token, "kind", "keyword");
     }
     return 0;
-    return 0;
 }
 function lex_digits(state, source, token) {
 
@@ -710,7 +663,6 @@ function lex_digits(state, source, token) {
     while ((($mini_map_get(state, "position") < (source).length) && is_digit($mini_text_get(source, $mini_map_get(state, "position"))))) {
         lex_advance(state);
     }
-    return 0;
     return 0;
 }
 function lex_text(state, source, token) {
@@ -735,7 +687,6 @@ function lex_text(state, source, token) {
         lex_fail(token, "unterminated text");
     }
     lex_advance(state);
-    return 0;
     return 0;
 }
 function lex_tokenize(source, source_name, include_comments) {
@@ -792,7 +743,6 @@ function lex_tokenize(source, source_name, include_comments) {
     let end_tokens = $mini_map_get(state, "tokens");
     $mini_list_set(end_tokens, (end_tokens).length, end_token);
     return end_tokens;
-    return 0;
 }
 function lex_resolve_include(base, path) {
 
@@ -807,7 +757,6 @@ function lex_resolve_include(base, path) {
         return path_normalize(((directory + "/") + path));
     }
     return path_normalize(("libs/" + path));
-    return 0;
 }
 function lex_expand_includes(tokens, base, stack, seen) {
 
@@ -867,7 +816,6 @@ function lex_expand_includes(tokens, base, stack, seen) {
         }
     }
     return output;
-    return 0;
 }
 let builtin_names_list = [];
 let builtin_name_set = ({ __proto__: $mini_map_proto });
@@ -899,7 +847,6 @@ function builtin_add(name, parameters, result, layer, import_name, helper_key, h
     if ((reference !== "")) {
         $mini_map_set(builtin_reference_targets, name, reference);
     }
-    return 0;
     return 0;
 }
 builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
@@ -962,12 +909,10 @@ builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "fun
 function builtin_names() {
 
     return $mini_list_copy(builtin_names_list);
-    return 0;
 }
 function builtin_exists(name) {
 
     return $mini_map_has(builtin_name_set, name);
-    return 0;
 }
 function builtin_parameters(name) {
 
@@ -979,7 +924,6 @@ function builtin_parameters(name) {
         return [];
     }
     return $mini_text_split(kinds, ",");
-    return 0;
 }
 function builtin_result(name) {
 
@@ -987,7 +931,6 @@ function builtin_result(name) {
         return $mini_map_get(builtin_result_kinds, name);
     }
     return "unknown";
-    return 0;
 }
 function builtin_imports(name) {
 
@@ -999,7 +942,6 @@ function builtin_imports(name) {
         return [];
     }
     return $mini_text_split(imports, ",");
-    return 0;
 }
 let reference_mode = false;
 function builtin_class(name) {
@@ -1008,7 +950,6 @@ function builtin_class(name) {
         return $mini_map_get(builtin_classes, name);
     }
     return "library";
-    return 0;
 }
 function builtin_reference_target(name) {
 
@@ -1016,7 +957,6 @@ function builtin_reference_target(name) {
         return $mini_map_get(builtin_reference_targets, name);
     }
     return "";
-    return 0;
 }
 function builtin_helper_key(name) {
 
@@ -1024,12 +964,10 @@ function builtin_helper_key(name) {
         return $mini_map_get(builtin_helper_keys, name);
     }
     return "";
-    return 0;
 }
 function builtin_helper_order_keys() {
 
     return $mini_list_copy(builtin_helper_order);
-    return 0;
 }
 function builtin_used_helper_blocks(helpers) {
 
@@ -1044,7 +982,6 @@ function builtin_used_helper_blocks(helpers) {
         position = (position + 1);
     }
     return output;
-    return 0;
 }
 function builtin_helper_text(key) {
 
@@ -1052,7 +989,6 @@ function builtin_helper_text(key) {
         return $mini_map_get(builtin_helpers, key);
     }
     return "";
-    return 0;
 }
 function builtin_replace(source, needle, replacement) {
 
@@ -1068,7 +1004,6 @@ function builtin_replace(source, needle, replacement) {
         position = ((position + found) + (needle).length);
     }
     return output;
-    return 0;
 }
 function builtin_apply(form, args) {
 
@@ -1079,7 +1014,6 @@ function builtin_apply(form, args) {
         position = (position + 1);
     }
     return output;
-    return 0;
 }
 function builtin_emit(name, args) {
 
@@ -1091,12 +1025,10 @@ function builtin_emit(name, args) {
         return "";
     }
     return builtin_apply($mini_map_get(builtin_emit_forms, name), args);
-    return 0;
 }
 function parser_fail(token, message) {
 
     return diagnostic_fail(token, message);
-    return 0;
 }
 function parser_expression_new(code, kind) {
 
@@ -1104,24 +1036,20 @@ function parser_expression_new(code, kind) {
     $mini_map_set(expression, "code", code);
     $mini_map_set(expression, "kind", kind);
     return expression;
-    return 0;
 }
 function parser_token(parser) {
 
     return $mini_list_get($mini_map_get(parser, "tokens"), $mini_map_get(parser, "position"));
-    return 0;
 }
 function parser_peek(parser, offset) {
 
     return $mini_list_get($mini_map_get(parser, "tokens"), ($mini_map_get(parser, "position") + offset));
-    return 0;
 }
 function parser_take(parser) {
 
     let token = parser_token(parser);
     $mini_map_set(parser, "position", ($mini_map_get(parser, "position") + 1));
     return token;
-    return 0;
 }
 function parser_expect(parser, text) {
 
@@ -1130,7 +1058,6 @@ function parser_expect(parser, text) {
     }
     parser_take(parser);
     return 0;
-    return 0;
 }
 function parser_identifier(parser, message) {
 
@@ -1138,7 +1065,6 @@ function parser_identifier(parser, message) {
         parser_fail(parser_token(parser), message);
     }
     return parser_take(parser);
-    return 0;
 }
 function parser_expression(parser) {
 
@@ -1152,7 +1078,6 @@ function parser_expression(parser) {
         left = parser_expression_new((((("(" + $mini_map_get(left, "code")) + " || ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
     return left;
-    return 0;
 }
 function parser_conjunction(parser) {
 
@@ -1166,7 +1091,6 @@ function parser_conjunction(parser) {
         left = parser_expression_new((((("(" + $mini_map_get(left, "code")) + " && ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
     return left;
-    return 0;
 }
 function parser_equality(parser) {
 
@@ -1186,7 +1110,6 @@ function parser_equality(parser) {
         left = parser_expression_new((((((("(" + $mini_map_get(left, "code")) + " ") + symbol) + " ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
     return left;
-    return 0;
 }
 function parser_comparison(parser) {
 
@@ -1200,12 +1123,10 @@ function parser_comparison(parser) {
         left = parser_expression_new((((((("(" + $mini_map_get(left, "code")) + " ") + $mini_map_get(operator, "text")) + " ") + $mini_map_get(right, "code")) + ")"), "boolean");
     }
     return left;
-    return 0;
 }
 function parser_additive_kind(kind) {
 
     return (((kind === "number") || (kind === "text")) || (kind === "unknown"));
-    return 0;
 }
 function parser_additive(parser) {
 
@@ -1231,7 +1152,6 @@ function parser_additive(parser) {
         left = parser_expression_new((((((("(" + $mini_map_get(left, "code")) + " ") + $mini_map_get(operator, "text")) + " ") + $mini_map_get(right, "code")) + ")"), result_kind);
     }
     return left;
-    return 0;
 }
 function parser_unary(parser) {
 
@@ -1248,7 +1168,6 @@ function parser_unary(parser) {
         return parser_expression_new(((("(" + $mini_map_get(operator, "text")) + $mini_map_get(value, "code")) + ")"), kind);
     }
     return parser_primary(parser);
-    return 0;
 }
 function lex_normalize_number(text) {
 
@@ -1260,7 +1179,6 @@ function lex_normalize_number(text) {
         return "0";
     }
     return $mini_text_slice(text, position, (text).length);
-    return 0;
 }
 function parser_primary(parser) {
 
@@ -1290,7 +1208,6 @@ function parser_primary(parser) {
     }
     parser_fail(token, "expected expression");
     return parser_expression_new("", "unknown");
-    return 0;
 }
 function parser_fn_args(parser, token) {
 
@@ -1301,7 +1218,6 @@ function parser_fn_args(parser, token) {
     }
     $mini_map_set($mini_map_get(parser, "current"), "captures", true);
     return parser_expression_new("$mini_fn_args", "list");
-    return 0;
 }
 function parser_argument_code_list(args) {
 
@@ -1312,12 +1228,10 @@ function parser_argument_code_list(args) {
         position = (position + 1);
     }
     return codes;
-    return 0;
 }
 function parser_argument_codes(args) {
 
     return $mini_list_join(parser_argument_code_list(args), ", ");
-    return 0;
 }
 function parser_call(parser, name) {
 
@@ -1377,7 +1291,6 @@ function parser_call(parser, name) {
         $mini_map_set($mini_map_get(parser, "helpers"), helper, true);
     }
     return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), builtin_result(name_text));
-    return 0;
 }
 function parser_statement(parser) {
 
@@ -1438,7 +1351,6 @@ function parser_statement(parser) {
     parser_expect(parser, ";");
     $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(assignment_value, "kind"));
     return ((($mini_map_get(statement_name, "text") + " = ") + $mini_map_get(assignment_value, "code")) + ";\n");
-    return 0;
 }
 function parser_condition_parenthesized(parser) {
 
@@ -1462,7 +1374,6 @@ function parser_condition_parenthesized(parser) {
         position = (position + 1);
     }
     return false;
-    return 0;
 }
 function parser_condition(parser) {
 
@@ -1475,7 +1386,6 @@ function parser_condition(parser) {
         parser_fail(start, "condition must be boolean");
     }
     return condition;
-    return 0;
 }
 function parser_block(parser) {
 
@@ -1486,10 +1396,15 @@ function parser_block(parser) {
     $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") + 1));
     let output = "";
+    let last_statement = "";
     while ((($mini_map_get(parser_token(parser), "text") !== "}") && ($mini_map_get(parser_token(parser), "kind") !== "eof"))) {
-        output = (output + parser_statement(parser));
+        last_statement = parser_statement(parser);
+        output = (output + last_statement);
     }
     parser_expect(parser, "}");
+    if (($mini_map_get(parser, "depth") === 1)) {
+        $mini_map_set(parser, "block_ends_with_return", text_starts_with(last_statement, "return "));
+    }
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") - 1));
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "declared", outer_declared);
@@ -1498,7 +1413,6 @@ function parser_block(parser) {
         return "{\n}";
     }
     return (("{\n" + indented) + "\n}");
-    return 0;
 }
 function parser_function_declaration(parser) {
 
@@ -1527,17 +1441,19 @@ function parser_function_declaration(parser) {
         $mini_map_set($mini_map_get(parser, "variables"), $mini_list_get(parameters, position), "unknown");
         position = (position + 1);
     }
+    $mini_map_set(parser, "block_ends_with_return", false);
     let body = parser_block(parser);
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "in_function", false);
-    body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
+    if ((!$mini_map_get(parser, "block_ends_with_return"))) {
+        body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
+    }
     let capture = "";
     if ($mini_map_get(info, "captures")) {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
     }
     body = (("{\n" + capture) + $mini_text_slice(body, 1, (body).length));
     return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_join(parameters, ", ")) + ") ") + body) + "\n");
-    return 0;
 }
 function parser_import_names(imports) {
 
@@ -1558,12 +1474,10 @@ function parser_import_names(imports) {
         output = (output + "writeSync");
     }
     return output;
-    return 0;
 }
 function parser_helper_blocks(helpers) {
 
     return builtin_used_helper_blocks(helpers);
-    return 0;
 }
 function parser_program(parser) {
 
@@ -1585,8 +1499,10 @@ function parser_program(parser) {
     if ($mini_map_get(parser, "emit_helpers")) {
         helper_text = parser_helper_blocks($mini_map_get(parser, "helpers"));
     }
-    return ((((shebang + "\"use strict\";\n") + import_text) + helper_text) + output);
-    return 0;
+    if ($mini_map_get(parser, "emit_helpers")) {
+        return ((((shebang + "\"use strict\";\n") + import_text) + helper_text) + output);
+    }
+    return output;
 }
 function parser_new(tokens) {
 
@@ -1631,31 +1547,26 @@ function parser_new(tokens) {
         index = (index + 1);
     }
     return parser;
-    return 0;
 }
 function parser_compile(tokens) {
 
     return parser_program(parser_new(tokens));
-    return 0;
 }
 function parser_compile_quiet(tokens) {
 
     let parser = parser_new(tokens);
     $mini_map_set(parser, "warn", false);
     return parser_program(parser);
-    return 0;
 }
 function parser_compile_program(tokens) {
 
     let parser = parser_new(tokens);
     $mini_map_set(parser, "emit_helpers", false);
     return parser_program(parser);
-    return 0;
 }
 function io_write_line(text) {
 
     return (writeSync(1, (text + "\n")), 0);
-    return 0;
 }
 function process_capture(command, args, directory, input) {
 
@@ -1666,7 +1577,6 @@ function process_capture(command, args, directory, input) {
     $mini_map_set(options, "input", input);
     $mini_map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
-    return 0;
 }
 function result_ok(value, message) {
 
@@ -1675,7 +1585,6 @@ function result_ok(value, message) {
     $mini_map_set(result, "value", value);
     $mini_map_set(result, "message", message);
     return result;
-    return 0;
 }
 function result_fail(message) {
 
@@ -1684,7 +1593,6 @@ function result_fail(message) {
     $mini_map_set(result, "value", 0);
     $mini_map_set(result, "message", message);
     return result;
-    return 0;
 }
 function result_is_ok(result) {
 
@@ -1692,12 +1600,10 @@ function result_is_ok(result) {
         return false;
     }
     return ($mini_map_get(result, "ok") === true);
-    return 0;
 }
 function result_is_fail(result) {
 
     return (!result_is_ok(result));
-    return 0;
 }
 function result_get_message(result) {
 
@@ -1705,7 +1611,6 @@ function result_get_message(result) {
         return "";
     }
     return $mini_map_get(result, "message");
-    return 0;
 }
 function result_set_message(result, message) {
 
@@ -1713,7 +1618,6 @@ function result_set_message(result, message) {
         $mini_map_set(result, "message", message);
     }
     return result;
-    return 0;
 }
 function result_get_value(result) {
 
@@ -1721,7 +1625,6 @@ function result_get_value(result) {
         return 0;
     }
     return $mini_map_get(result, "value");
-    return 0;
 }
 function result_set_value(result, value) {
 
@@ -1729,7 +1632,6 @@ function result_set_value(result, value) {
         $mini_map_set(result, "value", value);
     }
     return result;
-    return 0;
 }
 function json_parse_file(path) {
 
@@ -1741,7 +1643,6 @@ function json_parse_file(path) {
         return result_fail(("invalid JSON: " + path));
     }
     return result_ok(result_get_value(parsed), 0);
-    return 0;
 }
 function project_root() {
 
@@ -1751,7 +1652,6 @@ function project_root() {
         return path_parent(base);
     }
     return base;
-    return 0;
 }
 function project_compiler_entry(root) {
 
@@ -1760,13 +1660,11 @@ function project_compiler_entry(root) {
         return "";
     }
     return $mini_map_get(result_get_value(parsed), "entry");
-    return 0;
 }
 function bootstrap_fail(message) {
 
     (writeSync(2, (message + "\n")), 0);
     (process.exit(1), 0);
-    return 0;
     return 0;
 }
 function bootstrap_compile_text(source) {
@@ -1774,7 +1672,6 @@ function bootstrap_compile_text(source) {
     let tokens = lex_tokenize(readFileSync(source, "utf8"), path_basename(source), false);
     let expanded = lex_expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
     return parser_compile(expanded);
-    return 0;
 }
 function bootstrap_compile_with(root, compiler, source, output) {
 
@@ -1783,7 +1680,6 @@ function bootstrap_compile_with(root, compiler, source, output) {
     if (($mini_map_get(result, "status") !== 0)) {
         bootstrap_fail(("compile failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
     }
-    return 0;
     return 0;
 }
 function bootstrap_run(root, path) {
@@ -1795,13 +1691,11 @@ function bootstrap_run(root, path) {
         bootstrap_fail(("run failed: " + $mini_text_from_bytes($mini_map_get(result, "stderr"))));
     }
     return 0;
-    return 0;
 }
 function bootstrap_executable(root, path) {
 
     let args = list_of("755", path);
     process_capture("chmod", args, root, []);
-    return 0;
     return 0;
 }
 function bootstrap_step(root, label, command, args, directory) {
@@ -1816,12 +1710,10 @@ function bootstrap_step(root, label, command, args, directory) {
         bootstrap_fail((label + " failed"));
     }
     return 0;
-    return 0;
 }
 function bootstrap_clean_generated(root) {
 
     bootstrap_step(root, "remove untracked and ignored project files", "git", list_of("clean", "-ffdx"), root);
-    return 0;
     return 0;
 }
 function bootstrap_clean_all(root) {
@@ -1855,7 +1747,6 @@ function bootstrap_clean_all(root) {
     bootstrap_step(root, "VS Code VSIX package", node, list_of(vsce, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", package_path), editor);
     io_write_line(("Clean rebuild and full project checks passed. VSIX: dist/rebuild/" + package_name));
     return 0;
-    return 0;
 }
 function bootstrap_all(root) {
 
@@ -1879,7 +1770,6 @@ function bootstrap_all(root) {
     $mini_path_remove(work);
     io_write_line("bootstrap complete");
     return 0;
-    return 0;
 }
 function main(args) {
 
@@ -1891,6 +1781,5 @@ function main(args) {
     }
     (writeSync(2, "usage: ./bin/bootstrap [--clean]\n"), 0);
     return 1;
-    return 0;
 }
 main(process.argv.slice(2));
