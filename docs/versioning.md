@@ -137,9 +137,9 @@ identities; current tooling requires the new grouped format.
 Keep legacy tags on their original commits; do not manufacture group membership
 for revisions that predate the group registry. New publications use grouped tags.
 
-Release manifests use schema version 2 and record `group`, product versions,
-and the released product's group/version. VSIX filenames include both numbers,
-for example `mini-0.4.0-v0.3.4.vsix`.
+Release manifests use schema version 2 and record the full source commit,
+`group`, product versions, and the released product's group/version. VSIX
+filenames include both numbers, for example `mini-0.4.0-v0.3.4.vsix`.
 
 Stable compiler, language, bootstrap, and mini distribution releases require a
 verified self-hosted bootstrap. Tools and implemented libraries need not be

@@ -67,6 +67,10 @@ The source archive includes the tracked bootstrap seed and is bootstrapped durin
 packaging. Generated tools and launchers are built from
 [bin/bootstrap](../bin/bootstrap), not copied from stale files.
 
+`manifest.json` and the packaged `RELEASE.json` record the full source commit.
+Release notes link the full source commit and bold its 12-character prefix. CI
+artifact names include the short source revision.
+
 ## Snapshots
 
 Every CI run builds an extracted snapshot distribution and uploads it as a

@@ -54,6 +54,21 @@ function readRepositoryUrl(): string {
 }
 const repo = readRepositoryUrl();
 
+/// Identify the exact source revision used for this site build.
+function readSourceCommit(): string {
+    const result = spawnSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" });
+    if (result.error !== undefined) {
+        throw result.error;
+    }
+    if (result.status !== 0) {
+        throw new Error("could not read the source commit");
+    }
+    return result.stdout.trim();
+}
+
+const sourceCommit = readSourceCommit();
+const shortCommit = sourceCommit.slice(0, 12);
+
 /// Load the generated compiler so pages highlight through the real lexer.
 /// The CLI entry is stripped first; importing it directly would run main().
 const compilerModule = await import(browserCompilerModule()) as {
@@ -257,6 +272,11 @@ function renderBrand(href: string): string {
     return `<a class="brand" href="${href}" aria-label="mini home"><span class="brand-logo" aria-hidden="true">${brandWordmark}</span></a>`;
 }
 
+/// Render a short revision link with the full commit in its destination.
+function renderSourceRevision(): string {
+    return `<p>Source commit: <a href="${repo}/commit/${sourceCommit}" title="${sourceCommit}"><code><strong>${shortCommit}</strong>${sourceCommit.slice(shortCommit.length)}</code></a></p>`;
+}
+
 /// Render one documentation link card.
 function renderDocCard(title: string, body: string, href: string): string {
     return `<a class="doc" href="${href}">
@@ -352,6 +372,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
 
   <footer class="site-footer">
     <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
+    ${renderSourceRevision()}
   </footer>
 </body>
 </html>
@@ -555,6 +576,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   <footer class="site-footer">
     <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
     <p><a href="../#docs">Documentation</a></p>
+    ${renderSourceRevision()}
   </footer>
 
   <script type="module">
@@ -731,6 +753,7 @@ function main(): void {
     rmSync(output, { recursive: true, force: true });
     mkdirSync(output, { recursive: true });
     writeFileSync(join(output, "index.html"), renderPage(hero, cards));
+    writeFileSync(join(output, "build.json"), JSON.stringify({ commit: sourceCommit, shortCommit }) + "\n");
     writeFileSync(join(output, "style.css"), readFileSync(join(root, "site", "style.css")));
     cpSync(join(root, "site", "highlight.js"), join(output, "highlight.js"));
     cpSync(join(root, "brand", "mini-favicon.svg"), join(output, "favicon.svg"));

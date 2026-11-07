@@ -154,9 +154,17 @@ fn release_vscode(directory, output, tooling) {
 
 /// Write release notes and checksums.
 fn release_notes(output, title, label, commit, changelog) {
-    file_write(path_join(output, "RELEASE-NOTES.md"),
-        "# " + title + "\n\nVersion: " + label + "\n\nSource: " + commit
-        + "\n\nBootstrap: verified fixed point\n\n" + changelog);
+    short_commit := text_slice(commit, 0, 12);
+    source := "\n\nSource commit: [**" + short_commit + "**" + text_slice(commit, 12, text_length(commit)) + "]";
+    repository := process_env("GITHUB_REPOSITORY");
+    if repository != "" {
+        source = source + "(https://github.com/" + repository + "/commit/" + commit + ")";
+    } else {
+        source = source + "(commit " + commit + ")";
+    }
+    notes := "# " + title + "\n\nVersion: " + label + source;
+    notes = notes + "\n\nBootstrap: verified fixed point\n\n" + changelog;
+    file_write(path_join(output, "RELEASE-NOTES.md"), notes);
     return 0;
 }
 
