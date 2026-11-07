@@ -1,6 +1,6 @@
 # Parameter passing proposal
 
-Status: under review, not an accepted language decision. T0 currently emits
+Status: under review, not an accepted language decision. The compiler currently emits
 ordinary JavaScript parameters. List/map mutation and map lookup are available.
 The review cases stay pending until the passing rule is accepted.
 
@@ -82,7 +82,7 @@ and let its caller assign it. Neither requires reference-parameter syntax.
 ## Argument counts investigation
 
 The accepted contract currently requires exactly one argument per parameter.
-T0 checks this for both user functions and built-ins before emitting a call.
+The compiler checks this for both user functions and built-ins before emitting a call.
 Whether a parameter can be omitted is independent of sharing and reassignment.
 
 Allowing omitted trailing arguments is feasible without a special runtime calling

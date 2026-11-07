@@ -241,7 +241,7 @@ for example, need not be expressible in the first mini subset.
 After bootstrap replacement, authoritative parsing, checking, and emission
 behavior must live in mini. Tool integration reuses that behavior through the
 active compiler's `tokens --comments` and `compile` commands; the language server
-does not import the T0 compiler modules. Builtin signatures for hover/completion
+does not import handwritten compiler modules. Builtin signatures for hover/completion
 come from the active compiler's `metadata` command.
 A future formatter or documenter may need syntax/trivia information that a
 direct emitter does not expose. Review that interface when needed; do not build

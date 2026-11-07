@@ -1,22 +1,30 @@
-# T0-to-T1 port reference (historical)
+# Port history (historical)
 
-Status: historical. The handwritten T0 compiler and its TypeScript modules were
-removed once the generated compiler became the only implementation. This page
-records the port mapping and is not a current interface.
+Status: historical. The handwritten TypeScript compiler and its TypeScript
+modules were removed once the generated compiler became the only
+implementation. This page records the port mapping and is not a current
+interface.
 
-T0 source baseline: group 0.3.0, compiler 0.3.0-alpha.1. M1 is the first compiler
-source written in mini, implemented in [tools/compiler.mini](../tools/compiler.mini).
-T1 is its generated TypeScript compiler and is promoted as
-[dist/compile.js](../dist/compile.js). The inventory covers the five
-retired T0 files, not the CLI tools, tests, or release system.
+Earlier revisions use short names: T0 for the handwritten compiler, M1 for the
+first compiler source written in mini, and T1 for its generated TypeScript
+compiler. Elsewhere in the docs, read them as "the handwritten compiler", "the
+mini compiler source", and "the generated compiler".
 
-M1 must preserve the compiler's responsibilities, required behavior, and
-recognizable implementation structure using mini functions, maps, lists, and
-text helpers.
+Handwritten source baseline: group 0.3.0, compiler 0.3.0-alpha.1. The first
+compiler source written in mini is implemented in
+[tools/compiler.mini](../tools/compiler.mini). Its generated TypeScript compiler
+is promoted as [dist/compile.js](../dist/compile.js). The inventory covers the
+five retired handwritten source files, not the CLI tools, tests, or release
+system.
 
-## First M1 continuity
+The mini source must preserve the compiler's responsibilities, required
+behavior, and recognizable implementation structure using mini functions, maps,
+lists, and text helpers.
 
-The first M1 is a close port of T0. Keep the two implementations easy to compare
+## First-port continuity
+
+The first port is a close copy of the handwritten compiler. Keep the two
+implementations easy to compare
 routine by routine while establishing behavior parity and the fixed point.
 
 - Retain the logical source sections, function responsibilities, and call graph.
@@ -26,7 +34,8 @@ routine by routine while establishing behavior parity and the fixed point.
 - Keep function pre-registration, recursive-descent precedence, direct emission,
   and the same points for diagnostics. No new AST or parser architecture is needed.
 - Preserve storage roles and named fields: token lists, token/expression maps,
-  binding/function tables, membership sets, and parser state. Keep T0's map/set
+  binding/function tables, membership sets, and parser state. Keep the
+  handwritten compiler's map/set
   lookups at corresponding locations. Avoid packed token rows or parallel arrays.
 - Preserve scope-copy boundaries and function-state transitions. Keep locals
   local where mini permits; introduce explicit shared state only where needed
@@ -38,14 +47,15 @@ routine by routine while establishing behavior parity and the fixed point.
   callback fields with named functions or a dispatcher because mini has no
   function values; retain the same built-in cases and output rules.
 - Document necessary deviations and their reasons in the relevant inventory
-  sections as M1 is implemented. Keep them limited to mini's available forms
+  sections as the port is implemented. Keep them limited to mini's available forms
   and reproduced blockers.
 
 Defer redesign, lookup caching, storage changes, and performance refactoring
 until parity and the fixed point are established. The
 [performance assessment](runtime-performance.md) still applies before promotion;
 a reproduced blocker warrants the smallest documented change that preserves
-clear correspondence with T0. T0 remains frozen under the existing port policy.
+clear correspondence with the handwritten compiler. It remains frozen under
+the existing port policy.
 
 ## 1. Source units and entry points
 
@@ -60,12 +70,13 @@ clear correspondence with T0. T0 remains frozen under the existing port policy.
 - `compiler/t0.ts`: argument validation, file loading, dispatch,
   token JSON output, generated-file writing, and error reporting.
 
-M1 can place these responsibilities in `tools/compiler.mini`.
+The mini source can place these responsibilities in `tools/compiler.mini`.
 Existing TypeScript imports/exports and file boundaries need no mini equivalent.
 
 ## 2. Named constants and data shapes
 
-T0 uses `as const` objects and derived TypeScript types. M1 can use named
+The handwritten compiler uses `as const` objects and derived TypeScript types. The
+mini source can use named
 bindings or maps holding the same tag strings.
 
 - Token kinds: `identifier`, `keyword`, `number`, `text`, `symbol`, `comment`,
@@ -73,7 +84,7 @@ bindings or maps holding the same tag strings.
 - Value kinds: `number`, `text`, `boolean`, `list`, `map`, `void`, `unknown`.
 - Escape tags: quote, backslash, and the letters `n`, `r`, `t`.
 
-T0's object shapes become maps with these keys:
+The handwritten compiler's object shapes become maps with these keys:
 
 - Token: `kind`, `text`, `source`, `start`, `end`, `line`, `column`, `context`.
 - Expression: `code`, `kind`.
@@ -81,7 +92,8 @@ T0's object shapes become maps with these keys:
 - Built-in information: `parameters`, `result`, `imports`, optional `helper`,
   and an `emit` callback.
 
-M1 replaces the `emit` function-valued field with a named dispatcher or top-level
+The mini source replaces the `emit` function-valued field with a named
+dispatcher or top-level
 lowering functions. It does not need first-class functions or object methods.
 
 `void` and `unknown` are compiler bookkeeping tags. They are not new mini values.
@@ -100,7 +112,8 @@ and escape sets, cursor offset, line, and column.
   text. Preserve source positions and original diagnostic context. The lexer
   also exposes an `includeComments` mode for tool analysis; that mode appends a
   comment token with the marker, text, and positions. The parser path keeps the
-  default comment-free list. M1/T1 implements the mode directly; it must not add
+  default comment-free list. The mini source and generated compiler implement
+  the mode directly; it must not add
   a general `list_filter` builtin or introduce parser comment filtering.
 - Identifier start: ASCII letter or underscore.
 - Identifier continuation: ASCII letter, underscore, or decimal digit.
@@ -119,8 +132,10 @@ Start/end offsets are zero-based and end-exclusive. Lines/columns are one-based.
 Contexts come from splitting on LF with an optional preceding CR removed;
 a final empty line is retained.
 
-T0 uses regex tests, `split`, `slice`, `includes`, `Set.has`, and nested closures
-here. M1 can use an explicit lexer-state map, top-level helpers taking that map,
+The handwritten compiler uses regex tests, `split`, `slice`, `includes`,
+`Set.has`, and nested closures
+here. The mini source can use an explicit lexer-state map, top-level helpers
+taking that map,
 character membership, text slicing, and list append through `list_set`.
 
 ## 4. Parser state and complete method inventory
@@ -134,7 +149,8 @@ The eight fields are:
 - `currentFunction`: optional function information.
 - `depth`: current brace/block depth.
 
-Use a parser-state map in M1. Replace the optional function object with explicit
+Use a parser-state map in the mini source. Replace the optional function
+object with explicit
 function-state data and an `in_function` boolean; no null value is needed.
 
 All constructor/method responsibilities:
@@ -180,16 +196,17 @@ expressions. These cycles require ordinary direct/mutual recursion.
 - Comparisons/subtraction require numbers; addition allows matching numbers or
   text; equality excludes known collection/no-result kinds.
 - Return is allowed only inside a function and must produce a value.
-- Each function must contain a value return somewhere. T0 does not prove every
+- Each function must contain a value return somewhere. The handwritten
+compiler does not prove every
   path returns, nor infer a consistent result across all paths.
-- A call statement may discard a result, so M1 procedure helpers can return zero.
+- A call statement may discard a result, so mini procedure helpers can return zero.
 
 This is the existing partial kind checker. Keep its case-covered behavior during
 the port; broader scope/name/type rules remain open. The
 [scope-copy workload](../cases/compiler/port-foundation.mini) already implements
 the needed shallow map copy in mini.
 
-## 6. TypeScript mechanisms and their M1 replacements
+## 6. TypeScript mechanisms and their mini replacements
 
 - `const` / `let`: mini `var`; retain intended constant use by convention.
 - Type aliases, type-only imports, annotations, generics, `readonly`,
@@ -218,15 +235,16 @@ the needed shallow map copy in mini.
 - Optional chaining, nullish coalescing, `undefined`, object truthiness:
   explicit bounds, membership checks, and initialized boolean/state fields.
 - A default method parameter in `identifier`: pass the message explicitly at
-  every M1 call site; optional-argument syntax is unnecessary.
+  every mini call site; optional-argument syntax is unnecessary.
 - `throw new Error` / `try...catch` / `assert`: explicit validation and
   `write_error` + `process_exit` for compiler-controlled failures.
 
-T0 also uses ordinary function calls, returns, if/else, while, short-circuit
+The handwritten compiler also uses ordinary function calls, returns, if/else,
+while, short-circuit
 booleans, comparisons, indexing, addition, subtraction, and mutable locals.
 Those are already available in mini.
 
-## 7. Text, list, and serialization helpers used by T0
+## 7. Text, list, and serialization helpers used by the handwritten compiler
 
 - Shebang header: a first-line `shebang` token; generated TypeScript uses a
   Node shebang.
@@ -260,7 +278,7 @@ Token JSON field order is `kind`, `text`, `source`, `start`, `end`, `line`,
 
 The signatures below use `value` for the internal unknown kind and `no result`
 for void. `arg0`, `arg1`, and `arg2` mean emitted argument expressions. This is
-target TS produced by the compiler, not extra syntax required in M1.
+target TS produced by the compiler, not extra syntax required in the mini source.
 
 ### Text and streams
 
@@ -356,7 +374,8 @@ initial-port reference, including whitespace. Their `$` prefix cannot collide
 with mini identifiers.
 
 The only generated module import is `node:fs`. The finite named imports, sorted
-when present, are `readFileSync`, `writeFileSync`, `writeSync`. M1 can keep these
+when present, are `readFileSync`, `writeFileSync`, `writeSync`. The mini source
+can keep these
 and the adapter blocks in fixed ordered lists rather than add general sorting.
 `process_run`, `path_temp_directory`, `file_remove`, and `directory_remove` reach
 `node:child_process`, `node:fs`, and `node:os` through `process.getBuiltinModule`,
@@ -383,8 +402,9 @@ so the generated import list stays limited to `node:fs`.
 - All generated adapter definitions retain their source strings and trailing
   newlines exactly.
 
-The same mini compiler source must produce identical TS under T0 and T1 for
-the first fixed point. Matching execution alone does not establish this.
+The same mini compiler source must produce identical TS under the handwritten
+and generated compilers for the first fixed point. Matching execution alone
+does not establish this.
 
 ## 11. Diagnostics and failure paths
 
@@ -416,14 +436,15 @@ Parser/checking messages:
 - `functions must be top-level`
 - `T0 functions require a value return`
 
-Use the existing rejection fixtures for exact locations/bytes. T0 catches its
+Use the existing rejection fixtures for exact locations/bytes. The
+handwritten compiler catches its
 own Error/assertion objects and file-operation errors and prints their message.
 The initial mini file-I/O contract covers successful regular-file operations;
 a general exception system is not a prerequisite for that path.
 
 ## 12. Compiler command interface and host facilities
 
-T0 itself uses:
+The handwritten compiler itself uses:
 
 - `import.meta.main` to guard CLI execution.
 - `process.argv` and array destructuring/rest to obtain command/source/output.
@@ -446,24 +467,28 @@ write stderr, finish with status 1, and do not create or replace an output file.
 The current usage message is
 `usage: T0 compile SOURCE.mini [OUTPUT.js] | tokens SOURCE.mini`.
 
-M1 can use `process_args`, the file primitives, `io_write`, `io_write_error`,
+The mini source can use `process_args`, the file primitives, `io_write`,
+`io_write_error`,
 `process_exit`, and text helpers. Its single-file program can run the command
 entry point last. It does not need mini imports, export syntax, an assertion
 library, or reflection over Error objects.
-T0 itself runs directly on Node. It does not use the TypeScript compiler API;
+The handwritten compiler itself runs directly on Node. It does not use the
+TypeScript compiler API;
 the TypeScript development dependency checks project code outside this path.
 
 ## 13. Port boundaries
 
-T0's essential work is scanning, positioned diagnostics, function registration,
+The handwritten compiler's essential work is scanning, positioned diagnostics,
+function registration,
 recursive parsing, scope/kind bookkeeping, built-in selection, deterministic
 emission, and the compiler command interface.
 
 Keep all of that in mini. The generated Node adapters provide primitives only.
 Verification, packaging, the dispatcher, and tests may remain TypeScript. Tests
-that import T0 modules directly need adaptation when T0 is retired; that is
+that import the handwritten modules directly need adaptation after their
+retirement; that is
 tooling integration, not another language feature.
 
 Use this inventory with the [readiness assessment](self-hosting-requirements.md)
-and [bootstrap gate](bootstrap.md). M1 is implemented; the remaining gates are
-candidate performance evidence and bootstrap promotion.
+and [bootstrap gate](bootstrap.md). The mini source is implemented; promotion
+and candidate performance evidence are recorded.

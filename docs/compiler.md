@@ -3,8 +3,8 @@
 The compiler is self-hosted. [tools/compiler.mini](../tools/compiler.mini)
 is the source and the generated
 [dist/compile.js](../dist/compile.js) is the active compiler,
-selected by [config/compiler.json](../config/compiler.json). The handwritten T0
-implementation was retired; only accepted [language](language.md) and
+selected by [config/compiler.json](../config/compiler.json). The former
+handwritten implementation was retired; only accepted [language](language.md) and
 [builtin](builtins.md) contracts are normative.
 
 Run it directly with Node:
@@ -87,7 +87,7 @@ code.
 Compiler increments implemented one feature at a time with indexed cases and
 verified version tags. Accepted language cases are active; parameter-passing
 proposals remain pending and do not count as completed conformance coverage.
-The [historical port reference](t0-t1-reference.md) records the retired T0
+The [port history](port-history.md) records the retired handwritten
 implementation and its mini replacements.
 
 Verify a candidate against every mini-source case:
@@ -203,19 +203,22 @@ of `list_get`; it does not infer an element kind from preceding mutations.
 - `0.3.0-alpha.4`: `text_split` splits on a literal divider and preserves empty
   fields.
 
-- `0.3.0-alpha.5`: `map_copy` returns a shallow map copy; M1 uses it for scope
+- `0.3.0-alpha.5`: `map_copy` returns a shallow map copy; the compiler source
+uses it for scope
   copies.
 
 - `0.3.0-alpha.6`: `list_copy` returns a shallow list copy.
 
-- `0.3.0-alpha.7`: `list_to_text` joins text elements with a separator; M1 uses
+- `0.3.0-alpha.7`: `list_to_text` joins text elements with a separator; the
+compiler source uses
   it instead of a separate join helper.
 
 - `0.3.0-alpha.8`: `number_to_text` renders safe integers as canonical decimal
-  text; M1 uses it instead of the decimal helper.
+  text; the compiler source uses it instead of the decimal helper.
 
 - `0.3.0-alpha.9`: `json_to_text` serializes values as compact deterministic JSON;
-  M1 uses it for JSON string quoting while keeping token field order explicit.
+  the compiler source uses it for JSON string quoting while keeping tok
+  en field order explicit.
 
 - `0.3.0-alpha.10`: recognize an optional first-line shebang as a `shebang`
   token; generated JavaScript begins with a Node shebang.
@@ -232,9 +235,11 @@ only compiler implementation; `config/bootstrap.json` pins it to
 `tools/compiler.mini`. Never reintroduce a handwritten compiler to bypass a
 bootstrap migration.
 
-## M1 source layout
+## Mini source layout
 
-M1 is authored as ordered sources next to the tools; [tools/compiler.mini](../tools/compiler.mini) includes `common/text.mini`, `lexer.mini`, `parser.mini`, and `builtins.mini`.
+The compiler source is authored as ordered sources next to the tools;
+[tools/compiler.mini](../tools/compiler.mini) includes `common/text.mini`,
+`lexer.mini`, `parser.mini`, and `builtins.mini`.
 `tools/compiler.mini` includes them in dependency order. Adapter text is
 source in the namespace files under `libs/compiler/builtins/`, shared by the generated compiler and
 generated tools. `mini check` verifies the generated bootstrap fixed point and

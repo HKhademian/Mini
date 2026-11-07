@@ -1,4 +1,4 @@
-# Application performance before T1 replacement
+# Application performance benchmarks
 
 The [paired application samples](../cases/applications/README.md) compare mini
 generated TS with handwritten TS across ten document-processing applications.
@@ -7,7 +7,7 @@ complete operations and realistic structured input. No language/compiler change
 or extra runtime dependency is introduced.
 The [recorded results](application-performance-results.md) and
 [raw baseline](application-performance-baseline.json) contain two clean runs
-from the committed suite and a provisional T1-readiness assessment.
+from the committed suite and a provisional replacement-readiness assessment.
 
 ## Reproduce
 
@@ -43,12 +43,14 @@ program must match those bytes and execute with the expected output.
   uses native `Map`; generated storage follows the selected compiler backend.
   Compare generated before/after runs to isolate a backend change. Cross-language
   comparisons also include storage choice and accepted fallback behavior.
-- **Generated versus actual T0:** tokenization, identifier indexing, and the
-  compiler pipeline additionally invoke the current handwritten T0 modules.
-  T0 uses its own object records, regex tests, slicing, and full parser. This is
+- **Generated versus actual handwritten compiler:** tokenization, identifier
+  indexing, and the
+  compiler pipeline additionally invoke the current handwritten compiler
+  modules. The handwritten compiler uses its own object records, regex tests,
+  slicing, and full parser. This is
   a distinct comparison of port adaptations, not just primitive lowering.
 
-The actual T0 reference is optional and its source hashes are recorded. When its
+The actual handwritten reference is optional and its source hashes are recorded. When its
 source is retired, that reference is unavailable; the benchmark does not preserve
 or revive a handwritten compiler for normal operation. The matched handwritten
 application samples remain benchmark baselines only.
@@ -90,16 +92,19 @@ time when runtime threads also work; CPU percentage is not inferred from it.
 
 These are in-memory document-processing workloads, including scanner/parser and
 emitter work. They do not measure filesystem durability, concurrent servers, a
-controlled OS cold cache, or a complete M1 self-build. Three cold samples and
+controlled OS cold cache, or a complete compiler self-build. Three cold samples and
 seven warm samples on one host do not establish universal performance.
 
-## T1 acceptance
+## Replacement acceptance
 
 Use the results to identify port costs and unexpected scaling; they informed the
-first M1. Preserve the [first-port continuity requirement](t0-t1-reference.md#first-m1-continuity);
-these samples do not authorize restructuring M1 or adding T0 features.
+first port. Preserve the
+[first-port continuity requirement](port-history.md#first-port-continuity);
+these samples do not authorize restructuring the compiler source or adding
+handwritten-compiler features.
 
-T0 retirement still requires the actual M1 source, complete conformance and
+Replacing the handwritten compiler still required the actual mini compiler
+source, complete conformance and
 diagnostics, a runnable fixed point, and time/peak-memory measurements of the real
 generated compiler and all self-build generations. There is no automatic
 performance pass/fail ratio or invented replacement budget in this harness.

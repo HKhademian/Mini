@@ -1,6 +1,7 @@
 # Samples
 
-All samples compile and run with T0. Sources and JSON cases stay separate.
+All samples compile and run with the generated compiler. Sources and JSON
+cases stay separate.
 Descriptions name the main features and built-ins; case links verify output.
 Sources use `///` for file/function documentation and `//` for implementation notes.
 

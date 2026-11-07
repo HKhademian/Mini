@@ -12,12 +12,14 @@
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
   it to MiniLang immediately. After replacement, implement compiler behavior in
   MiniLang and regenerate the bootstrap; never hand-edit generated compiler code.
-- M1 is the Mini compiler source; T1 is its generated TS compiler. Keep the first
-  M1 close to T0: preserve routine boundaries, conditions, evaluation order,
-  call structure, lookups, named fields, and collection roles. Make only the
-  adaptations Mini requires and document necessary deviations in the port
-  reference. Defer redesign and optimization until parity and the fixed point
-  are established; a reproduced blocker warrants the smallest documented change.
+- The compiler source is the mini source; the generated compiler is promoted
+  from it. Keep compiler changes close to the verified first-port boundaries:
+  preserve routine boundaries, conditions, evaluation order,
+  call structure, lookups, named fields, and collection roles unless a verified
+  change justifies more. Make only the adaptations mini requires and document
+  necessary deviations in the port history. Defer redesign and optimization
+  until the corresponding change is verified; a reproduced blocker warrants the
+  smallest documented change.
 - Self-hosting applies only to the compiler path. Other tools may remain
   TypeScript until Mini or a cloned language can replace them conveniently.
   They must not hide compiler logic needed for self-hosting.
@@ -36,7 +38,7 @@
 - Update VS Code support with syntax changes. Bump its independent version
   when editor behavior changes; keep the registry, package, and lockfile aligned.
 - After approval, implement and verify the feature before the next proposal.
-  Keep T0 support extremely granular: one feature, its indexed cases, and one
+  Keep compiler support extremely granular: one feature, its indexed cases, and one
   atomic commit and annotated version tag. Never let drafts accumulate without
   compiler support.
   Leave unresolved rules explicitly open.
@@ -57,8 +59,9 @@
   closes the file-doc section first. Put file documentation before imports.
   Without an include boundary, use `//` to separate file documentation from
   declarations. Blank lines do not separate documentation sections. Use `//` to
-  explain non-obvious implementation decisions. Keep M1's correspondence to T0
-  clear in its documentation. Mini has line comments only; do not introduce
+  explain non-obvious implementation decisions. Keep the compiler source's
+  correspondence to the verified port boundaries clear in its documentation.
+  Mini has line comments only; do not introduce
   block comments or documentation tags.
 - Keep this project self-contained; do not reference the predecessor project.
 - In `libs/` sources, resolve library imports such as `common/io.mini`,

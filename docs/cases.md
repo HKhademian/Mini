@@ -154,5 +154,5 @@ architecture, source commit, entity versions, compiler hash, and case/source/
 stream hashes. Tool identities hash their command entrypoint. Timing includes
 process startup, IO, verification, and compilation
 for program cases. Compare like workloads and hosts. Current benchmark cases
-include repository tools and the real T0 binding-emission case. CI keeps both
+include repository tools and the real compiler binding-emission case. CI keeps both
 reports; they measure fresh-process wall time, not isolated lexer/parser speed.

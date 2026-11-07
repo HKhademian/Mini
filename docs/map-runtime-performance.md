@@ -3,12 +3,12 @@
 The [object runtime](map-runtime.md) improves the tested compiler pipeline's
 elapsed time and memory, with tradeoffs: its warm CPU increases, and some
 dictionary applications slow down. Retain the simple representation for the
-M1 port, without claiming that JS objects make every map workload faster.
+compiler port, without claiming that JS objects make every map workload faster.
 
 Measured on 2026-11-03, Node.js, CPU details omitted, platform details omitted. Four clean runs
 alternate native-Map output and object output, twice each. The
 [raw evidence](map-runtime-performance-baseline.json) retains every measurement,
-source identity, correctness check, and common handwritten/T0 control.
+source identity, correctness check, and common handwritten controls.
 See the [suite method](application-performance.md) for timing boundaries.
 
 ## Largest inputs
@@ -59,11 +59,14 @@ Cold worker measurements include the shared harness and output serialization.
 ## What this establishes
 
 The object pipeline takes 1.18–1.20 times its matched handwritten map-based TS
-warm wall time, but **3.73–4.14 times actual handwritten T0**. Tokenization takes
-6.42–7.17 times T0, and source indexing 5.40–5.67 times T0. Object storage reduces
+warm wall time, but **3.73–4.14 times the actual handwritten compiler**.
+Tokenization takes
+6.42–7.17 times that compiler, and source indexing 5.40–5.67 times. Object
+storage reduces
 some costs; it does not close the compiler performance gap. The benchmark parser
-also covers a smaller language than T0, so these are workload comparisons rather
-than measurements of the future complete M1.
+also covers a smaller language than the handwritten compiler's, so these are
+workload comparisons rather
+than measurements of the complete generated compiler.
 
 Common controls show meaningful host/JIT/GC variation: unchanged handwritten
 template rendering ranges from 2.74 to 4.64 ms across the four runs; handwritten
@@ -79,9 +82,10 @@ Counting remains `list_length(map_keys(items))`: it allocates a key snapshot and
 takes work proportional to the number of keys. Compiler workloads have no need
 for a dedicated count operation or per-write count maintenance.
 
-Proceed with the structurally faithful M1 port. Keep the regressions visible
+Proceed with the structurally faithful port. Keep the regressions visible
 and profile the actual generated compiler after parity and its fixed point.
-M1 was still absent when this suite was recorded; it cannot establish that T0 can be retired.
+The port was still absent when this suite was recorded; it cannot establish that
+the handwritten compiler can be retired.
 
 ## Verification and provenance
 

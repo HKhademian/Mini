@@ -72,7 +72,8 @@ vscode-v0.5.0-v0.3.8
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
 `lang` identifies the language/specification contract. `compiler` versions the
-active generated compiler; the retired T0 reference has no product stream. `bootstrap` versions the promoted `T1` fixed point.
+active generated compiler; the retired handwritten compiler has no product
+stream. `bootstrap` versions the promoted generated fixed point.
 `mini-compile` and `minic` share the compiler version.
 `builtins` versions primitive support independently.
 Each other tool keeps the stream named by its tag.

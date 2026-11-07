@@ -3,7 +3,8 @@
 Historical native-Map baseline. The later
 [object-backed runtime](map-runtime.md) changes generated storage; the recorded
 samples below retain their original source and version identities. The
-[M1/T1 evidence](m1-performance-results.md) records a T0/T1 run of this suite:
+[compiler performance evidence](compiler-performance-results.md) records a
+handwritten-versus-generated run of this suite:
 all generated applications were byte-identical.
 
 Measured on 2026-11-03 with Node.js, CPU details omitted, platform details omitted. The
@@ -16,8 +17,9 @@ An earlier exploratory run is excluded from this baseline.
 ## Assessment
 
 The current subset runs meaningful application and compiler-style workloads
-correctly. It is a viable basis for writing the first M1. It does not establish
-performance parity with T0, nor justify retiring T0 before measuring the real M1
+correctly. It is a viable basis for writing the first port. It does not establish
+performance parity with the handwritten compiler, nor justify retiring it before
+measuring the real port
 and its generated compiler through the complete self-build.
 
 At the largest inputs, six general data-processing applications took about
@@ -26,21 +28,23 @@ evaluation took 1.61–1.65 times. The map-based scanner and source index had mo
 overhead: 1.88–1.93 and 1.57–1.61 times respectively. The compiler pipeline took
 1.40 times the matched map-based TS.
 
-Compared with the actual handwritten T0 modules, the scanner took 7.26–9.14
+Compared with the actual handwritten compiler modules, the scanner took 7.26–9.14
 times the warm wall time, indexing 6.36–6.59 times, and the compiler pipeline
 4.34–4.79 times. These comparisons include necessary port adaptations such as
 named-field maps, explicit state, and character helpers, as well as differences
-between the subset parser and the full T0 parser. They do not isolate one cause.
+between the subset parser and the full handwritten parser. They do not isolate one cause.
 
 The slowdown is material, but absolute time matters too: the 92,300-byte compiler
 input completed in about 24 ms warm. Its process RSS before output normalization
-was 106–107 MiB, versus 98–99 MiB for T0. These workloads show no crash, incorrect
+was 106–107 MiB, versus 98–99 MiB for the handwritten compiler. These
+workloads show no crash, incorrect
 result, or explosive growth across the three tested sizes. They are not a full
 compiler workload, a memory limit, or proof about larger/unusual programs.
 
 ## Coverage
 
-- Ten paired applications and three sizes each; actual-T0 variants for three
+- Ten paired applications and three sizes each; actual-handwritten-compiler
+  variants for three
   compiler-oriented applications: 69 variant/size groups per run.
 - Three cold calls and seven measured warm calls per group, plus three warmups.
   Across two runs, all **1,380 measured calls** passed result verification.
@@ -85,18 +89,22 @@ not prove lower allocation cost: Node startup, JIT, GC, and transient allocation
 all affect process high-water measurements. Heap snapshots include garbage and
 must not be presented as retained memory.
 
-## Compiler pipeline versus actual T0
+## Compiler pipeline versus the actual handwritten compiler
 
 For the 92,300-byte input with 1,600 bindings:
 
-- Generated warm wall: **24.17–24.18 ms**; T0: **5.05–5.57 ms**.
-- Generated warm CPU: **24.25–24.92 ms**; T0: **7.25–9.25 ms**.
-- Generated first-call application wall: **36.26–36.97 ms**; T0: **10.14–10.64 ms**.
-- Generated first-call application CPU: **87.54–89.90 ms**; T0: **33.38–34.55 ms**.
-- Generated cold worker wall: **91.76–95.43 ms**; T0: **69.25–71.15 ms**.
-- Generated cold process CPU: **149.74–155.42 ms**; T0: **101.99–106.47 ms**.
-- Generated application RSS: **106.31–106.70 MiB**; T0: **97.98–98.80 MiB**.
-- Generated post-call heap snapshot: **20.46–20.50 MiB**; T0: **14.95–14.97 MiB**.
+- Generated warm wall: **24.17–24.18 ms**; handwritten: **5.05–5.57 ms**.
+- Generated warm CPU: **24.25–24.92 ms**; handwritten: **7.25–9.25 ms**.
+- Generated first-call application wall: **36.26–36.97 ms**; handwritten:
+**10.14–10.64 ms**.
+- Generated first-call application CPU: **87.54–89.90 ms**; handwritten:
+**33.38–34.55 ms**.
+- Generated cold worker wall: **91.76–95.43 ms**; handwritten: **69.25–71.15 ms**.
+- Generated cold process CPU: **149.74–155.42 ms**; handwritten:
+**101.99–106.47 ms**.
+- Generated application RSS: **106.31–106.70 MiB**; handwritten: **97.98–98.80 MiB**.
+- Generated post-call heap snapshot: **20.46–20.50 MiB**; handwritten:
+**14.95–14.97 MiB**.
 
 CPU includes work by runtime threads and can exceed wall time. Cold worker time
 includes the common measurement/serialization harness, so its smaller ratio
@@ -110,13 +118,17 @@ these sizes; three points do not establish an asymptotic guarantee.
 
 ## Decision for the next step
 
-Proceed with the structurally faithful M1 port using the current language.
+Proceed with the structurally faithful port using the current language.
 Keep these samples and measurements as comparison evidence. Do not redesign
-storage or change T0 merely to improve these numbers. After M1 reaches parity
+storage or change the handwritten compiler merely to improve these numbers.
+After the port reaches parity
 and its fixed point, profile the actual generated compiler and address material
 time/memory costs before promotion.
 
-T0 replacement is not established by this evidence alone: the benchmark subset
-cannot compile its own source or general functions, M1 was still absent, and no
+Replacing the handwritten compiler is not established by this evidence alone:
+the benchmark subset
+cannot compile its own source or general functions, the port was still absent,
+and no
 actual self-build has been measured. Re-run the same application suite with the
-candidate and measure its complete self-build before removing T0.
+candidate and measure its complete self-build before removing the handwritten
+compiler.

@@ -1,14 +1,16 @@
-# Generated-code performance before T1
+# Generated-code performance audit
 
 Assessment: 2026-11-03, Node.js on CPU details omitted/platform details omitted. The compiler baseline is
-group 0.2.0, compiler 0.2.0-alpha.3. These measurements predate M1/T1 and define
-the T0 baseline; they do not establish T1's speed.
+group 0.2.0, compiler 0.2.0-alpha.3. These measurements predate the first mini
+compiler source and define the handwritten-compiler baseline; they do not
+establish the generated compiler's speed.
 This is the historical native-Map baseline. The current
 [object-backed map runtime](map-runtime.md) uses the same logical map operations
 with a different representation and no per-write size counter.
 The later [application suite](application-performance.md) adds paired complete
 operations, CPU measurements, and per-process memory without correctness checks
-inflating the cold application RSS reading. The [M1/T1 evidence](m1-performance-results.md)
+inflating the cold application RSS reading. The
+[compiler performance evidence](compiler-performance-results.md)
 runs this audit against the candidate and records compiler and self-build costs.
 
 ## What emission adds
@@ -26,7 +28,8 @@ Inspecting `libs/compiler/parser.mini` and
   checks still have costs; direct emission is not a zero-overhead guarantee.
 - Each `map_keys` call allocates a fresh array, as required by its snapshot
   contract. Scope copying allocates another map and copies its entries.
-- A mini text-copy/slice helper must access individual characters. T0 can use
+- A mini text-copy/slice helper must access individual characters. The
+  handwritten compiler can use
   native host slicing. Identical-looking compiler operations can therefore have
   different algorithms even when their primitive lowerings are small.
 
@@ -103,16 +106,18 @@ representation/library differences. Scope copying repeats work proportional
 to the number of visible bindings; repeated snapshots/copies need attention
 in deeply nested or binding-heavy programs.
 
-The first M1 must follow T0's
-[structure and access patterns](t0-t1-reference.md#first-m1-continuity). Preserve
+The first port must follow the handwritten compiler's
+[structure and access patterns](port-history.md#first-port-continuity). Preserve
 its existing local counters, parser fields, token layout, lookup locations, and
 scope-copy behavior. These microbenchmarks do not justify caching parser fields,
 packing token data, or changing algorithms during that port. After parity and
 the fixed point, actual compiler profiling can justify separate optimizations
 using existing mini. A reproduced blocker before then warrants the smallest
-documented deviation that retains clear correspondence with T0.
+documented deviation that retains clear correspondence with the handwritten
+compiler.
 
-In the T0 baseline, the `.ts` loading path had a real cold-start cost on the selected Node version.
+In the handwritten baseline, the `.ts` loading path had a real cold-start
+cost on the selected Node version.
 For the smallest successful emitted programs, `.ts` execution was around
 47–53 ms versus 22–24 ms for identical `.mjs` bytes in the initial recorded run.
 The 336 KB statement program took around 72 ms versus 24 ms. This includes
@@ -120,17 +125,20 @@ startup/parsing/execution; it is not an additional cost on every function call.
 The target at that time was TS; generated artifacts are now `.js`, so this
 loading cost no longer applies.
 
-The T0 baseline compiled a 304 KB, 16,000-assignment source in approximately
+The handwritten baseline compiled a 304 KB, 16,000-assignment source in approximately
 84 ms including process startup. Its emitted program ran successfully. Long
 text literals through 160,000 characters also compiled and ran successfully.
-These numbers establish reference workloads; they are not T1 estimates.
+These numbers establish reference workloads; they are not estimates for the
+generated compiler.
 
 ## Separate expression stress finding
 
-T0 does not contain a 1,000-term addition expression. The synthetic expression
-probe is not evidence that T1's ordinary compiler code will fail.
+The handwritten compiler does not contain a 1,000-term addition expression. The
+synthetic expression
+probe is not evidence that the generated compiler's ordinary code will fail.
 
-T0's additive loop emits a new pair of parentheses for each operation. A flat
+The handwritten compiler's additive loop emits a new pair of parentheses for
+each operation. A flat
 1,000-term source expression becomes deeply nested generated text. In this
 environment the `.ts` loading path failed with `Maximum call stack size exceeded`,
 while a flat handwritten `.ts` control and the identical generated `.mjs` ran.
@@ -142,12 +150,13 @@ The audit exits unsuccessfully after saving the report when these stress probes
 fail. Preserve this finding separately from compiler-workload acceptance; no
 language or emitter change is made by this audit.
 
-## Before retiring T0
+## Before bootstrap promotion
 
 Byte equality proves reproducibility, not useful compiler performance. Before
 bootstrap promotion:
 
-1. Capture T0 compiling the actual `compiler/compiler.mini`, representative
+1. Capture the handwritten compiler compiling the actual
+`compiler/compiler.mini`, representative
    large programs, and samples. Record cold wall time, generated bytes, and
    process peak memory on the same Node/host as the candidate.
 2. Measure the actual generated compiler on exactly those inputs. Check outputs
@@ -158,7 +167,8 @@ bootstrap promotion:
    handwritten compiler helpers. Profile the complete port before choosing
    optimizations; microbenchmark ratios alone are insufficient.
 4. Record the comparison and the accepted time/memory limits for the actual
-   compiler workload. Select the generated compiler and remove T0 only after
+   compiler workload. Select the generated compiler and remove the handwritten
+   one only after
    correctness, fixed-point, and performance evidence is reviewed together.
 
 The current audit supports beginning the port, while identifying map storage and

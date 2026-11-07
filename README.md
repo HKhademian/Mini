@@ -46,19 +46,21 @@ The [map runtime](docs/map-runtime.md) uses object storage and counts keys with
 The [before/after measurements](docs/map-runtime-performance.md) record its
 compiler gains and the workloads that regress.
 
-M1 is the compiler source written in mini; T1 is the generated JavaScript
-compiler produced from it. The source lives in
-[tools/compiler.mini](tools/compiler.mini); the promoted T1 is
+The compiler source is written in mini and the generated JavaScript compiler is
+produced from it. The source lives in
+[tools/compiler.mini](tools/compiler.mini); the promoted generated compiler is
 [dist/compile.js](dist/compile.js), selected by
-[config/compiler.json](config/compiler.json). Keep M1 close to the verified
-first-port boundaries, control flow, calls, lookups, and data layout. Defer
-redesign and performance refactoring until the corresponding change is verified.
+[config/compiler.json](config/compiler.json). Keep the mini source close to the
+verified first-port boundaries, control flow, calls, lookups, and data layout.
+Defer redesign and performance refactoring until the corresponding change is
+verified.
 
 The [progress page](docs/progress.md) turns the tag history into a readable
 timeline of groups, milestones, and current release identities.
 
-The [historical port reference](docs/t0-t1-reference.md) records how the retired
-T0 implementation mapped to mini functions, maps, lists, and text helpers.
+The [port history](docs/port-history.md) records how the retired
+handwritten implementation mapped to mini functions, maps, lists, and text
+helpers.
 The [generated-code performance audit](docs/runtime-performance.md) records
 measured costs and the actual-compiler comparison; the large-source compile gap
 remains a tracked follow-up.

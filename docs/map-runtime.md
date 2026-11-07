@@ -26,7 +26,7 @@ writes do not pay bookkeeping costs. Group 0.3.0 removes the redundant count
 builtin and updates its samples/cases to use the composition.
 
 This changes runtime storage and primitive lowering, without reorganizing the
-mini applications or the planned M1 scanner/parser. Their named fields, call
+mini applications or the compiler's own scanner/parser. Their named fields, call
 structure, scopes, and lookups remain recognizable. Other targets can choose
 their own representation while preserving these contracts.
 

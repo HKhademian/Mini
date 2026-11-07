@@ -4,10 +4,10 @@ Status: accepted syntax and built-in contracts are documented below.
 [Compiler increments](compiler.md) advance one
 feature per atomic commit. Typing and other open rules remain undecided.
 
-Unspecified behavior is undecided. T0 and T1 are bootstrap implementations;
-their internal choices, including numeric normalization, JSON output, map
-representation, helper lowering, and performance, do not define mini semantics
-unless an accepted contract below states them. Do not treat a current T0/T1
+Unspecified behavior is undecided. Bootstrap implementation choices, including
+numeric normalization, JSON output, map representation, helper lowering, and
+performance, do not define mini semantics
+unless an accepted contract below states them. Do not treat a current generated
 result as a promise for another target.
 
 After approval, implement and verify that feature in an atomic commit before
