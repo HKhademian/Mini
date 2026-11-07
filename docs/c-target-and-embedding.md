@@ -30,9 +30,10 @@ literal spellings are only initialization inputs. Runner model, general
 memory strategy, Unicode indexing, and a complete embedding API do not block it.
 
 The first accepted native slice is top-level io_write calls with zero or more
-ASCII text-literal arguments. Common Mini text escapes, multiple calls, empty
-text/programs, comments, and an entry shebang are included. Bindings and other
-expressions remain unsupported by this slice. C output is written only after
+ASCII text literals and safe-integer literals (including one unary minus).
+Common Mini text escapes, multiple calls, empty text/programs, comments, and an
+entry shebang are included. Bindings, arithmetic, and other expressions remain
+unsupported by this slice. C output is written only after
 the whole source passes shared language checks and native subset validation.
 The [native case fixtures](../cases/native/) execute this slice through the
 shared runner: Mini compilation, strict C11 compilation with cc, and native

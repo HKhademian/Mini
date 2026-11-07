@@ -1,8 +1,11 @@
 /* Verify generated value construction and namespace customization from a C host. */
 #include "explicit.h"
+#include <math.h>
 #define main MINI_ID(generated_main)
 #include "generated.c"
 #undef main
+
+static const MINI_ID(value) sample_number = MINI_VALUE_NUMBER(9007199254740991.0);
 
 static const unsigned char sample_bytes[] = { 'o', 'k' };
 static MINI_ID(text_buffer) sample_buffer = {0};
@@ -16,6 +19,17 @@ static int sample_text(MINI_ID(value) value) {
 }
 
 int main(void) {
+    if (sample_number.kind != MINI_ID(kind_number) || sample_number.number != 9007199254740991.0) return 12;
+    MINI_ID(number) numeric_count = 0;
+    MINI_ID(value) numeric_once = (MINI_ID(value)) MINI_VALUE_NUMBER(++numeric_count);
+    if (numeric_count != 1 || numeric_once.number != 1) return 13;
+    MINI_ID(value) constructed_number = MINI_ID(value_number)(-42);
+    if (constructed_number.kind != MINI_ID(kind_number) || constructed_number.number != -42) return 14;
+    if (MINI_ID(io_write)(MINI_ID(value_number)(0.5))
+        || MINI_ID(io_write)(MINI_ID(value_number)(NAN))
+        || MINI_ID(io_write)(MINI_ID(value_number)(INFINITY))
+        || MINI_ID(io_write)(MINI_ID(value_number)(9007199254740992.0))
+        || MINI_ID(io_write)(MINI_ID(value_number)(-9007199254740992.0))) return 15;
     if (MINI_ID(text_buffer_append)(&sample_buffer, sample_bytes, 2)) return 5;
     if (!sample_text(sample_static)) return 1;
     if (!sample_text(MINI_ID(value_text)(&sample_buffer, 0, 2))) return 2;

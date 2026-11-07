@@ -1,0 +1,27 @@
+{
+  "id": "native.c-number-too-small",
+  "kind": "reject",
+  "target": "c",
+  "source": "002-006-number-too-small.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output",
+    "compile.reject-before-effects"
+  ],
+  "cases": [
+    {
+      "name": "number-too-small",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "002-006-number-too-small.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

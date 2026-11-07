@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-leading-zeros",
+  "kind": "feature",
+  "target": "c",
+  "source": "002-002-number-leading-zeros.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "number-leading-zeros",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "42|-42|0|0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

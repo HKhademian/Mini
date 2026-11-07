@@ -1,0 +1,27 @@
+{
+  "id": "native.c-number-arithmetic-unsupported",
+  "kind": "reject",
+  "target": "c",
+  "source": "002-007-number-arithmetic-unsupported.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output",
+    "compile.reject-before-effects"
+  ],
+  "cases": [
+    {
+      "name": "number-arithmetic-unsupported",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "002-007-number-arithmetic-unsupported.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

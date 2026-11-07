@@ -8,8 +8,11 @@ handwritten implementation was retired; only accepted [language](language.md) an
 [builtin](builtins.md) contracts are normative.
 
 JavaScript is the default target. An initial C11 target supports top-level
-`io_write` calls with zero or more ASCII text-literal arguments, comments, an
-entry shebang, and empty programs. Other forms reject explicitly. The
+`io_write` calls with ASCII text literals and safe-integer literals, comments,
+an entry shebang, and empty programs. Numbers allow one unary minus and the
+inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
+normalized; negative zero prints `0`. Bindings and arithmetic remain unsupported.
+Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
 increments; the script interpreter and embedding API are not implemented yet.
 
@@ -31,7 +34,7 @@ Native case execution requires `cc` on PATH. C rejects `--reference` and
 `--program-only`, which are JavaScript emission modes.
 
 The Mini-written C emitter first runs shared language validation, then performs
-a bounded token walk for the supported slice. It uses tagged text values with
+a bounded token walk for the supported slice. It uses tagged text/number values with
 growable byte-buffer backing and offset/length text views. Readable C literals
 initialize that backing; raw control bytes are escaped without losing their
 lengths. This second walk avoids a whole-compiler rewrite;
@@ -54,7 +57,7 @@ No separate preprocessing flag is needed. A failed native case retains its
 workspace and prints `Native artifacts: PATH`; successful cases clean up normally.
 
 The generated header contains guarded type declarations, value initializer
-macros, and the constructor declaration. The `.c` includes it and supplies
+macros, and constructor declarations. The `.c` includes it and supplies
 function definitions and the current program entry. This is not yet the planned
 script-runner embedding API. Static `.a` and shared `.so`/`.dylib`/`.dll` packaging
 remain later plan stages; `.dylib` is the macOS suffix.
@@ -76,8 +79,9 @@ flag is needed. `main` and C standard-library names keep their required names.
 
 Types are named directly as `MINI_ID(value)`, `MINI_ID(text)`, and
 `MINI_ID(value_kind)`, using the same convention as functions, tags, and storage.
-There is no separate type-alias macro layer. The anonymous union exposes text as
-`value.text`. `MINI_VALUE_TEXT(buffer, offset, length)` is a brace initializer that works
+There is no separate type-alias macro layer. The anonymous union exposes
+`value.text` and `value.number`. `MINI_VALUE_TEXT(buffer, offset, length)` is a
+brace initializer that works
 in static declarations. Its arguments each occur once. Use a typed cast for
 an expression, or call the constructor function:
 
@@ -94,7 +98,12 @@ are available. The constructor function itself returns
 `(MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length)`: the macro supplies construction;
 it does not call the function. This preserves static initialization and gives
 runtime callers a function wrapper. Other value factories follow this pattern
-when their kinds are implemented; numeric lowering remains unsupported.
+when their kinds are implemented. `MINI_ID(number)` is `double`, with a C11
+assertion requiring a binary representation with at least 53 bits of precision.
+`MINI_VALUE_NUMBER(number)` supports static initializers, and
+`MINI_ID(value_number)(number)` is its function wrapper. Number output uses
+canonical decimal safe-integer spelling; non-safe numeric payloads supplied by
+a C host produce empty output, matching JavaScript's numeric text conversion.
 `text_buffer_append` allocates/grows owned storage and copies input bytes into it.
 Views retain a buffer-object reference and offsets, so growth does not invalidate
 them. The buffer object must stay alive; `text_buffer_free` releases its storage

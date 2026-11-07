@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-text-output",
+  "kind": "feature",
+  "target": "c",
+  "source": "002-004-number-text-output.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "number-text-output",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "answer=42; delta=-2\n0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

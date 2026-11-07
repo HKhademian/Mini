@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-boundaries",
+  "kind": "feature",
+  "target": "c",
+  "source": "002-003-number-boundaries.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "number-boundaries",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "9007199254740991|-9007199254740991\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

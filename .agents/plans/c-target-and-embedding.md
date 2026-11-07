@@ -11,7 +11,7 @@ todos:
     status: completed
   - id: step-3-expand-compiler
     content: "Extend C support through small feature increments"
-    status: pending
+    status: in_progress
   - id: step-4-native-storage
     content: "Add native storage and ownership as supported features need them"
     status: pending
@@ -75,6 +75,15 @@ compiler.
   overflow rejection, and repeated cleanup. A general collector remains deferred.
 - The C emitter's Mini helpers use emit_c_ consistently, keeping their names
   distinct from parser and other backend helpers in the shared top-level scope.
+- 2026-11-07: added safe-integer literal output, one unary minus, canonical
+  leading-zero/negative-zero handling, and mixed text/number arguments. Tagged
+  values now include MINI_ID(number), MINI_VALUE_NUMBER, and value_number.
+  Seven agent-authored fixtures pass; parent reviewed the implementation and
+  adopted the reviewer's int_least64_t portability correction.
+  Verification: 431/431 scenarios, four existing proposals pending, 6/6 units,
+  final native 20/20 and native unit 1/1, bootstrap fixed point, playground build,
+  and strict C11 host checks with address/undefined-behavior sanitizers pass.
+  Bindings and arithmetic remain unsupported; Step 3 stays in progress.
 - Add no language exceptions, interrupts, error values, or recovery constructs.
 - Start with small feature implementations and simple samples, then expand.
 - Postpone tree-versus-stack until the runner stage. Resolve broader semantics
@@ -102,7 +111,7 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 **Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
-- Add one useful feature per working increment: numeric literals/bindings,
+- Numeric literal output is complete. Add one useful feature per working increment: bindings,
   arithmetic, booleans/comparisons, control flow, then functions as needed.
 - Give each increment distinct focused cases and a small combined sample.
 - Resolve numeric limits, text indexing, calls/defaults, and other questions as

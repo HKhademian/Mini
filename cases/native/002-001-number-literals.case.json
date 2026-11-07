@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-literals",
+  "kind": "feature",
+  "target": "c",
+  "source": "002-001-number-literals.mini",
+  "features": [
+    "target.c",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "number-literals",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "42|0|-7|0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
