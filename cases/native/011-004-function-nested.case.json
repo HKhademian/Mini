@@ -2,7 +2,6 @@
   "id": "native.c-function-nested",
   "kind": "feature",
   "target": "c",
-  "pending": "C user functions pending.",
   "source": "011-004-function-nested.mini",
   "features": [
     "target.c",

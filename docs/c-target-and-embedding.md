@@ -35,7 +35,8 @@ Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
 number addition, text joining, boolean values and logic are supported;
 numeric ordering, scalar equality, braced if/else blocks, and while loops
-are supported. C output is written only after
+are supported. Initial named functions support parameters, returns, output calls,
+and nested calls; function-local control flow and bindings remain pending. C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
 runs them once, dependencies first, with each file's operations in source order.

@@ -2,7 +2,6 @@
   "id": "native.c-function-return",
   "kind": "feature",
   "target": "c",
-  "pending": "C user functions pending.",
   "source": "011-001-function-return.mini",
   "features": [
     "target.c",

@@ -2,7 +2,6 @@
   "id": "native.c-function-fallthrough",
   "kind": "feature",
   "target": "c",
-  "pending": "C user functions pending.",
   "source": "011-006-function-fallthrough.mini",
   "features": [
     "target.c",

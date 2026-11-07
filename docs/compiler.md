@@ -74,6 +74,17 @@ accepting arbitrary input counts for every builtin still needs safe default
 and kind handling. A future FFI entry can take count/pointer separately and
 construct the view internally. No function-call performance result is claimed.
 
+### Initial C function support
+
+Named functions support parameters, value-expression returns, output calls, and
+fallthrough to numeric zero. Calls may be nested, including calls before a
+function definition. Arguments are evaluated in order and passed as a
+`MINI_ID(params)` view; missing parameters become numeric zero and extra inputs
+remain in that view. Parameter values are local to each call and returned text
+uses the invocation-owned buffer. Initial function bodies do not support local
+bindings, control flow, or `fn_args()`; recursion with a base case remains pending.
+The emitted function signature is an internal compiler interface, not an FFI API.
+
 ### File initialization
 
 Both targets put operations outside named functions into generated per-file

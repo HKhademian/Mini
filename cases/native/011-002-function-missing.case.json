@@ -2,7 +2,6 @@
   "id": "native.c-function-missing",
   "kind": "feature",
   "target": "c",
-  "pending": "C user functions pending.",
   "source": "011-002-function-missing.mini",
   "features": [
     "target.c",
