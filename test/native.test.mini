@@ -183,7 +183,7 @@ fn main(args) {
     native_reject(root, work, "C reference mode", list_of("--target", "c", "--reference", source, rejected), rejected);
     native_reject(root, work, "C program-only mode", list_of("--target", "c", "--program-only", source, rejected), rejected);
     unsupported := path_join(work, "unsupported.mini");
-    file_write(unsupported, "io_write(\"must not run\");\nvalue := 1 + 2;\n");
+    file_write(unsupported, "io_write(\"must not run\");\nvalue := 1 - 2;\n");
     native_reject(root, work, "unsupported C source", list_of("--target", "c", unsupported, rejected), rejected);
     if path_is_exists(unsupported + ".js") || path_is_exists(unsupported + ".c") {
         native_fail(work, "unsupported C source", "default/fallback artifact was created");

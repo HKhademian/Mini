@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-addition",
+  "kind": "feature",
+  "target": "c",
+  "source": "006-001-add-number.mini",
+  "features": [
+    "target.c",
+    "number.addition",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "3|-5|6\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

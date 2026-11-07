@@ -1,0 +1,27 @@
+{
+  "id": "native.c-safe-integer-addition-boundaries",
+  "kind": "feature",
+  "target": "c",
+  "source": "006-004-add-limits.mini",
+  "features": [
+    "target.c",
+    "number.addition",
+    "number.safe-integer",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "9007199254740991|-9007199254740991|\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+shared := "first";
+combined := shared + "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

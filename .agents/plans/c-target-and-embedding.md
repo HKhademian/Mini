@@ -149,9 +149,9 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 **Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
-- Numeric literal output and top-level bindings are complete. Implement the next
-  increments in the user's selected order: value arithmetic (number addition and text joining);
-  boolean values and logic; comparisons; control flow (if and while); functions.
+- Numeric literal output, top-level bindings, number addition, and text joining
+  are complete. Continue in the user's selected order: boolean values and logic;
+  comparisons; control flow (if and while); functions.
 - Bindings must preserve shared top-level visibility across file initializers.
   Text values referenced by bindings need backing storage that survives those
   initializers and is released after the program's entry completes.
@@ -159,6 +159,13 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
   literal initialization, reassignment, copies, and output, and rejects reads it
   cannot establish as initialized before effects. Seven native cases cover these
   forms and cross-file ordering. General C expressions remain unsupported.
+- Addition evaluates operands in order and supports grouping and chaining.
+  Text joins allocate within invocation-owned backing; nonmatching kinds and
+  grouped unary minus remain outside the C subset. Five focused native cases
+  cover numbers, bindings, text, numeric limits, and cross-file lifetimes.
+  Verification: 452/452 scenarios (four existing proposals pending), 36/36
+  native cases, 6/6 units, bootstrap/repository checks, playground build, and
+  strict C11 host checks with address/undefined-behavior sanitizers pass.
   Verified 447/447 scenarios (four existing proposals pending), 31/31 native
   scenarios, 6/6 units, bootstrap/repository checks, playground build, and a
   strict C11 cross-file host run with address/undefined-behavior sanitizers.

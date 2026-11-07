@@ -1,0 +1,27 @@
+{
+  "id": "native.c-text-joining",
+  "kind": "feature",
+  "target": "c",
+  "source": "006-003-add-text.mini",
+  "features": [
+    "target.c",
+    "text.concatenate",
+    "bindings",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "hello mini|ab|hellohello x\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

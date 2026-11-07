@@ -33,7 +33,7 @@ The first accepted native slice is top-level io_write calls with zero or more
 ASCII text literals and safe-integer literals (including one unary minus).
 Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
-arithmetic and other expressions remain unsupported by this slice. C output is written only after
+number addition and text joining are supported; other expressions remain unsupported. C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
 runs them once, dependencies first, with each file's operations in source order.

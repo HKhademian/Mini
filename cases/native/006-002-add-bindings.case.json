@@ -1,0 +1,28 @@
+{
+  "id": "native.c-binding-addition",
+  "kind": "feature",
+  "target": "c",
+  "source": "006-002-add-bindings.mini",
+  "features": [
+    "target.c",
+    "number.addition",
+    "bindings",
+    "assignment",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "7|12\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

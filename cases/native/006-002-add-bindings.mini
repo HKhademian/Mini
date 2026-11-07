@@ -1,0 +1,6 @@
+left := 10;
+right := -3;
+result := left + right;
+io_write(result, "|");
+result = result + 5;
+io_write(result, "\n");

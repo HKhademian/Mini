@@ -12,7 +12,9 @@ JavaScript is the default target. An initial C11 target supports top-level
 an entry shebang, and empty programs. Numbers allow one unary minus and the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
 normalized; negative zero prints `0`. Bindings support declarations, reassignment,
-copies, and output. Arithmetic remains unsupported.
+copies, output, number addition, and text joining. Addition supports grouping
+and chaining; unary minus applies only to number literals. Mixed-kind addition
+is unsupported at runtime; subtraction and other arithmetic remain unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.
 Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later

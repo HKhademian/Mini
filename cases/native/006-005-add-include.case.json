@@ -1,0 +1,29 @@
+{
+  "id": "native.c-cross-file-text-join",
+  "kind": "feature",
+  "target": "c",
+  "source": "006-005-add-include.mini",
+  "features": [
+    "target.c",
+    "text.concatenate",
+    "include",
+    "include.initialization",
+    "text.buffer-growth",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "first|firstabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
