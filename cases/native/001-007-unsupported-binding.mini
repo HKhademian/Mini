@@ -1,2 +1,2 @@
 io_write("must not run\n");
-value := "later";
+value := "later" + "x";

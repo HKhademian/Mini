@@ -1,0 +1,3 @@
+value := 1;
+include "./005-006-bindings-initialized-in-dependency-helper.mini";
+io_write(value, "\n");

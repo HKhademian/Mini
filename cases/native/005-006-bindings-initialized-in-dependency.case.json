@@ -1,0 +1,29 @@
+{
+  "id": "native.c-bindings-initialized-in-dependency",
+  "kind": "feature",
+  "target": "c",
+  "source": "005-006-bindings-initialized-in-dependency.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "assignment",
+    "include",
+    "include.initialization",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "2|1\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

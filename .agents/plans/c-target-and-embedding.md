@@ -149,8 +149,19 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 **Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
-- Numeric literal output is complete. Add one useful feature per working increment: bindings,
-  arithmetic, booleans/comparisons, control flow, then functions as needed.
+- Numeric literal output and top-level bindings are complete. Implement the next
+  increments in the user's selected order: value arithmetic (number addition and text joining);
+  boolean values and logic; comparisons; control flow (if and while); functions.
+- Bindings must preserve shared top-level visibility across file initializers.
+  Text values referenced by bindings need backing storage that survives those
+  initializers and is released after the program's entry completes.
+- The C target uses invocation-owned text backing and binding slots, supports
+  literal initialization, reassignment, copies, and output, and rejects reads it
+  cannot establish as initialized before effects. Seven native cases cover these
+  forms and cross-file ordering. General C expressions remain unsupported.
+  Verified 447/447 scenarios (four existing proposals pending), 31/31 native
+  scenarios, 6/6 units, bootstrap/repository checks, playground build, and a
+  strict C11 cross-file host run with address/undefined-behavior sanitizers.
 - Give each increment distinct focused cases and a small combined sample.
 - Resolve numeric limits, text indexing, calls/defaults, and other questions as
   implemented features reach them. Follow accepted contracts, keep unresolved

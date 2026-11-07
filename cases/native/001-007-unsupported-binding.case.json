@@ -1,11 +1,11 @@
 {
-  "id": "native.c-unsupported-binding",
+  "id": "native.c-unsupported-binding-expression",
   "kind": "reject",
   "target": "c",
   "source": "001-007-unsupported-binding.mini",
   "features": [
     "target.c",
-    "bindings.initialize",
+    "arithmetic.unsupported",
     "compile.reject-before-effects"
   ],
   "cases": [

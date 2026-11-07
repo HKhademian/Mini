@@ -8,10 +8,12 @@ handwritten implementation was retired; only accepted [language](language.md) an
 [builtin](builtins.md) contracts are normative.
 
 JavaScript is the default target. An initial C11 target supports top-level
-`io_write` calls with ASCII text literals and safe-integer literals, comments,
+`io_write` calls and top-level bindings with ASCII text and safe-integer values, comments,
 an entry shebang, and empty programs. Numbers allow one unary minus and the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
-normalized; negative zero prints `0`. Bindings and arithmetic remain unsupported.
+normalized; negative zero prints `0`. Bindings support declarations, reassignment,
+copies, and output. Arithmetic remains unsupported.
+A binding read that the C target cannot establish as initialized rejects at compile time.
 Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
 increments; the script interpreter and embedding API are not implemented yet.
@@ -35,7 +37,8 @@ Native case execution requires `cc` on PATH. C rejects `--reference` and
 
 The Mini-written C emitter first runs shared language validation, then performs
 a bounded token walk for the supported slice. It uses tagged text/number values with
-growable byte-buffer backing and offset/length text views. Readable C literals
+growable byte-buffer backing and offset/length text views. The buffer belongs to
+the program invocation, so binding views survive across file initializers. Readable C literals
 initialize that backing; raw control bytes are escaped without losing their
 lengths. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection

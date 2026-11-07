@@ -11,7 +11,7 @@ fn emit_c_identifier(name) {
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {
-    return diagnostic_fail(token, "C target supports only top-level io_write calls with text or safe integer literals");
+    return diagnostic_fail(token, "C target supports only bindings and top-level io_write with literal or binding values");
 }
 
 /// Consume punctuation in the supported target shape, or reject that shape.
@@ -188,112 +188,128 @@ fn emit_c_number_literal(token, negative, location) {
     return digits + ".0";
 }
 
-/// Wrap one file's operations with local backing storage and cleanup.
-fn emit_c_file_function(index, body) {
-    if body != "" {
-        body = "    MINI_ID(text_buffer) buffer = {0};\n    int status = 0;\n" + body
-            + "    if (fflush(stdout) != 0) status = 1;\ncleanup:\n"
-            + "    MINI_ID(text_buffer_free)(&buffer);\n    return status;\n";
+/// Lower a supported literal or binding read into a destination value.
+fn emit_c_binding_value(parser, bindings, binding_orders, destination) {
+    token := parser_token(parser);
+    body := "";
+    if map_get(token, "kind") == "text" {
+        bytes := emit_c_literal_bytes(token);
+        count := number_to_text(list_length(bytes));
+        body = "    if (MINI_ID(text_buffer_append)(buffer, (const unsigned char *) "
+            + emit_c_literal_input(bytes) + ", " + count + ") != 0) return 1;\n"
+            + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, buffer->length - " + count + ", " + count + ");\n";
+    } else if map_get(token, "kind") == "identifier" && map_has(bindings, map_get(token, "text")) {
+        binding_name := map_get(token, "text");
+        if map_get(token, "file_order") < map_get(binding_orders, binding_name) {
+            diagnostic_fail(token, "C target cannot read a binding before its file runs");
+        }
+        binding := map_get(bindings, binding_name);
+        body = "    if (!context->initialized_" + binding + ") return 1;\n"
+            + "    " + destination + " = context->binding_" + binding + ";\n";
     } else {
-        body = "    return 0;\n";
+        negative := map_get(token, "text") == "-";
+        if negative { parser_take(parser); }
+        number := parser_token(parser);
+        if map_get(number, "kind") != "number" { emit_c_fail(number); }
+        spelling := emit_c_number_literal(number, negative, token);
+        body = "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(" + spelling + ");\n";
     }
-    return "static int MINI_ID(file_" + number_to_text(index) + ")(void) {\n" + body + "}\n\n";
+    parser_take(parser);
+    return body;
 }
 
-/// Validate through the shared parser, then lower literal output to C11.
-/// Return complete C source; target rejection occurs before the caller writes it.
+/// Wrap one file's operations using invocation-owned storage.
+fn emit_c_file_function(index, body) {
+    return "static int MINI_ID(file_" + number_to_text(index) + ")(MINI_ID(context) *context) {\n"
+        + "    MINI_ID(text_buffer) *buffer = &context->buffer;\n    (void)buffer;\n" + body
+        + "    return 0;\n}\n\n";
+}
+
+/// Validate the complete program and lower the supported binding/output subset.
 fn emit_c_compile(tokens, header_name) {
     parser_compile_quiet(tokens);
     parser := parser_new(tokens);
-    if map_get(parser_token(parser), "kind") == "shebang" {
-        parser_take(parser);
-    }
-    body := "";
+    if map_get(parser_token(parser), "kind") == "shebang" { parser_take(parser); }
     files := "";
     calls := "";
     bodies := map_new();
     counts := map_new();
-    offsets := map_new();
     order := list_new();
     priorities := map_new();
+    bindings := map_new();
+    binding_orders := map_new();
+    declarations := "";
+    binding_count := 0;
     has_calls := false;
-    literal_count := 0;
-    offset := 0;
-    write_name := emit_c_identifier("io_write");
     while map_get(parser_token(parser), "kind") != "eof" {
         token := parser_token(parser);
         file := parser_file_register(order, priorities, token);
-        if !map_has(bodies, file) {
-            map_set(bodies, file, "");
-            map_set(counts, file, 0);
-            map_set(offsets, file, 0);
-        }
-        body = map_get(bodies, file);
-        literal_count = map_get(counts, file);
-        offset = map_get(offsets, file);
-        if map_get(parser_peek(parser, 1), "text") == ":=" {
-            diagnostic_fail(token, "C target does not support bindings yet");
-        }
-        if map_get(token, "text") != "io_write" {
-            emit_c_fail(token);
-        }
-        parser_take(parser);
-        emit_c_expect(parser, "(");
-        argument_name := emit_c_identifier("arguments_" + number_to_text(literal_count));
-        argument_body := "";
-        argument_count := 0;
-        has_calls = true;
-        if map_get(parser_token(parser), "text") != ")" {
-            more := true;
-            while more {
-                literal := parser_token(parser);
-                name := argument_name + "[" + number_to_text(argument_count) + "]";
-                if map_get(literal, "kind") == "text" {
-                    bytes := emit_c_literal_bytes(literal);
-                    count := number_to_text(list_length(bytes));
-                    argument_body = argument_body + "    if (MINI_ID(text_buffer_append)(&buffer, (const unsigned char *) "
-                        + emit_c_literal_input(bytes) + ", " + count + ") != 0) { status = 1; goto cleanup; }\n"
-                        + "    " + name + " = (MINI_ID(value)) MINI_VALUE_TEXT(&buffer, "
-                        + number_to_text(offset) + ", " + count + ");\n";
-                    offset = offset + list_length(bytes);
-                } else {
-                    negative := map_get(literal, "text") == "-";
-                    if negative { parser_take(parser); }
-                    number := parser_token(parser);
-                    if map_get(number, "kind") != "number" { emit_c_fail(number); }
-                    spelling := emit_c_number_literal(number, negative, literal);
-                    argument_body = argument_body + "    " + name + " = (MINI_ID(value)) MINI_VALUE_NUMBER(" + spelling + ");\n";
-                }
-                argument_count = argument_count + 1;
-                literal_count = literal_count + 1;
-                parser_take(parser);
-                more = map_get(parser_token(parser), "text") == ",";
-                if more {
-                    parser_take(parser);
+        if !map_has(bodies, file) { map_set(bodies, file, ""); map_set(counts, file, 0); }
+        body := map_get(bodies, file);
+        literal_count := map_get(counts, file);
+        operator := map_get(parser_peek(parser, 1), "text");
+        if operator == ":=" || operator == "=" {
+            binding_name := map_get(token, "text");
+            if operator == ":=" {
+                binding := number_to_text(binding_count);
+                binding_count = binding_count + 1;
+                map_set(bindings, binding_name, binding);
+                map_set(binding_orders, binding_name, map_get(token, "file_order"));
+                declarations = declarations + "    MINI_ID(value) binding_" + binding + ";\n    int initialized_" + binding + ";\n";
+            }
+            binding := map_get(bindings, binding_name);
+            parser_take(parser);
+            parser_take(parser);
+            body = body + emit_c_binding_value(parser, bindings, binding_orders, "context->binding_" + binding);
+            emit_c_expect(parser, ";");
+            if map_get(token, "file_order") < map_get(binding_orders, binding_name) {
+                map_set(binding_orders, binding_name, map_get(token, "file_order"));
+            }
+            body = body + "    context->initialized_" + binding + " = 1;\n";
+        } else {
+            if map_get(token, "text") != "io_write" { emit_c_fail(token); }
+            parser_take(parser);
+            emit_c_expect(parser, "(");
+            argument_name := emit_c_identifier("arguments_" + number_to_text(literal_count));
+            argument_body := "";
+            argument_count := 0;
+            has_calls = true;
+            if map_get(parser_token(parser), "text") != ")" {
+                more := true;
+                while more {
+                    name := argument_name + "[" + number_to_text(argument_count) + "]";
+                    argument_body = argument_body + emit_c_binding_value(parser, bindings, binding_orders, name);
+                    argument_count = argument_count + 1;
+                    literal_count = literal_count + 1;
+                    more = map_get(parser_token(parser), "text") == ",";
+                    if more { parser_take(parser); }
                 }
             }
+            emit_c_expect(parser, ")");
+            emit_c_expect(parser, ";");
+            argument_code := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
+            if argument_count > 0 {
+                body = body + "    MINI_ID(value) " + argument_name + "[" + number_to_text(argument_count) + "];\n" + argument_body;
+                argument_code = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(argument_count) + ", " + argument_name + ")";
+            }
+            body = body + "    if (MINI_ID(io_write)(" + argument_code + ") != 0) return 1;\n";
         }
-        emit_c_expect(parser, ")");
-        emit_c_expect(parser, ";");
-        argument_code := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
-        if argument_count > 0 {
-            body = body + "    MINI_ID(value) " + argument_name + "[" + number_to_text(argument_count) + "];\n" + argument_body;
-            argument_code = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(argument_count) + ", " + argument_name + ")";
-        }
-        body = body + "    if (" + write_name + "(" + argument_code + ") != 0) { status = 1; goto cleanup; }\n";
         map_set(bodies, file, body);
         map_set(counts, file, literal_count);
-        map_set(offsets, file, offset);
     }
     file_index := 0;
     while file_index < list_length(order) {
         file := list_get(order, file_index);
         files = files + emit_c_file_function(file_index, map_get(bodies, file));
-        calls = calls + "    if (MINI_ID(file_" + number_to_text(file_index) + ")() != 0) return 1;\n";
+        calls = calls + "    if (MINI_ID(file_" + number_to_text(file_index) + ")(&context) != 0) { status = 1; goto cleanup; }\n";
         file_index = file_index + 1;
     }
     runtime := "";
     if has_calls { runtime = emit_c_output_runtime(); }
     return "// Generated by the mini C target.\n#include \"" + header_name + "\"\n#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n#include <string.h>\n\n"
-        + emit_c_value_constructor() + runtime + files + "int main(void) {\n" + calls + "    return 0;\n}\n";
+        + emit_c_value_constructor() + runtime
+        + "typedef struct {\n    MINI_ID(text_buffer) buffer;\n" + declarations + "} MINI_ID(context);\n\n"
+        + files + "int main(void) {\n    MINI_ID(context) context = {0};\n    int status = 0;\n" + calls
+        + "    if (fflush(stdout) != 0) status = 1;\n    goto cleanup;\ncleanup:\n"
+        + "    MINI_ID(text_buffer_free)(&context.buffer);\n    return status;\n}\n";
 }

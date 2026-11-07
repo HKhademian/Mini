@@ -1,0 +1,6 @@
+value := 1;
+io_write(value, "|");
+value = 2;
+io_write(value, "|");
+value = "text";
+io_write(value, "\n");

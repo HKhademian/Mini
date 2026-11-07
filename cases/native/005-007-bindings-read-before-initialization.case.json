@@ -1,0 +1,29 @@
+{
+  "id": "native.c-bindings-read-before-initialization",
+  "kind": "reject",
+  "target": "c",
+  "source": "005-007-bindings-read-before-initialization.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "assignment",
+    "include",
+    "include.initialization",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "005-007-bindings-read-before-initialization.stderr"
+      },
+      "exitCode": 1
+    }
+  ]
+}

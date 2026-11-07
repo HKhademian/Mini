@@ -1,3 +1,3 @@
-001-010-nonliteral-argument.mini:2:10: C target supports only top-level io_write calls with text or safe integer literals
+001-010-nonliteral-argument.mini:2:10: C target supports only bindings and top-level io_write with literal or binding values
 io_write(true);
          ^

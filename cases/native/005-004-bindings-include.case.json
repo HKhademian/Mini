@@ -1,0 +1,29 @@
+{
+  "id": "native.c-bindings-include",
+  "kind": "feature",
+  "target": "c",
+  "source": "005-004-bindings-include.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "include",
+    "include.initialization",
+    "text.buffer-growth",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "dependency|root-before|earlier|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

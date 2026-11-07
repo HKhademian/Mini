@@ -1,0 +1,4 @@
+source := "original";
+copy := source;
+source = "replacement";
+io_write(copy, "|", source, "\n");

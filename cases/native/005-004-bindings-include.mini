@@ -1,0 +1,3 @@
+io_write("root-before|");
+include "./005-004-bindings-include-helper.mini";
+io_write(shared, "|", longer, "\n");

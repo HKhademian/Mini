@@ -1,0 +1,29 @@
+{
+  "id": "native.c-bindings-reassign",
+  "kind": "feature",
+  "target": "c",
+  "source": "005-002-bindings-reassign.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "assignment",
+    "text.literal",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "1|2|text\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

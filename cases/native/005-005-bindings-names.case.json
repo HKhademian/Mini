@@ -1,0 +1,28 @@
+{
+  "id": "native.c-bindings-names",
+  "kind": "feature",
+  "target": "c",
+  "source": "005-005-bindings-names.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "text.literal",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok|7|ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

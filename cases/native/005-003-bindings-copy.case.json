@@ -1,0 +1,28 @@
+{
+  "id": "native.c-bindings-copy",
+  "kind": "feature",
+  "target": "c",
+  "source": "005-003-bindings-copy.mini",
+  "features": [
+    "target.c",
+    "bindings",
+    "assignment",
+    "text.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "original|replacement\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
