@@ -2,7 +2,6 @@
   "id": "native.c-function-recursive",
   "kind": "feature",
   "target": "c",
-  "pending": "C user functions pending.",
   "source": "011-005-function-recursive.mini",
   "features": [
     "target.c",

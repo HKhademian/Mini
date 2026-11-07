@@ -171,12 +171,14 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
   be claimed as cross-target parity without a focused decision and tests.
 - Initial simple C functions now support call-local parameters, nested calls,
   expression returns, output statements, and numeric-zero fallthrough. Six
-  previously pending native cases pass. Function-local bindings, control flow,
-  fn_args(), and recursion with a base case remain pending; the generated internal
-  status/result signature is not an embedding API.
-  Verified 479/479 scenarios (four existing proposals and one recursive C case
-  pending), 6/6 units, bootstrap/repository checks, playground build, and strict
-  C11 host sanitizer checks for a returned text value.
+  previously pending native cases pass.
+- Recursive C functions and function-local conditional branching (`if`/`else`
+  with returns) are now supported. All native C function cases pass, including
+  recursive calls with base-case returns. Function-local bindings and fn_args()
+  remain pending; the generated internal status/result signature is not an embedding API.
+  Verified 480/480 scenarios (four existing proposals pending), 6/6 units,
+  bootstrap/repository checks, playground build, and strict C11 host sanitizer
+  checks for recursive calls.
 - While uses the same condition helper on every check and a braced, scoped body.
   Six native cases cover zero iterations, nested loops, conditions, shadowing,
   and text growth across iterations.

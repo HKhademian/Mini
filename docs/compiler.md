@@ -81,9 +81,10 @@ fallthrough to numeric zero. Calls may be nested, including calls before a
 function definition. Arguments are evaluated in order and passed as a
 `MINI_ID(params)` view; missing parameters become numeric zero and extra inputs
 remain in that view. Parameter values are local to each call and returned text
-uses the invocation-owned buffer. Initial function bodies do not support local
-bindings, control flow, or `fn_args()`; recursion with a base case remains pending.
-The emitted function signature is an internal compiler interface, not an FFI API.
+uses the invocation-owned buffer. Recursive calls and function-local conditional
+control flow (`if`/`else` with returns) are supported. Function-local bindings
+and `fn_args()` remain pending. The emitted function signature is an internal
+compiler interface, not an FFI API.
 
 ### File initialization
 

@@ -36,7 +36,7 @@ entry shebang are included. Top-level binding declarations, assignments, copies,
 number addition, text joining, boolean values and logic are supported;
 numeric ordering, scalar equality, braced if/else blocks, and while loops
 are supported. Initial named functions support parameters, returns, output calls,
-and nested calls; function-local control flow and bindings remain pending. C output is written only after
+nested calls, recursion, and conditional branching (`if`/`else`); function-local bindings remain pending. C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
 runs them once, dependencies first, with each file's operations in source order.
