@@ -22,6 +22,20 @@ globalThis.Buffer = {
 
 /// Return the small process surface the generated compiler expects.
 function processStub() {
+  const fileAccessUnavailable = () => {
+    throw new Error("file access is not available in the playground");
+  };
+  const browserFileSystem = {
+    existsSync() { return false; },
+    statSync() { return { isDirectory: () => false, isFile: () => false }; },
+    readdirSync: fileAccessUnavailable,
+    readSync: fileAccessUnavailable,
+    mkdtempSync: fileAccessUnavailable,
+    mkdirSync: fileAccessUnavailable,
+    rmSync: fileAccessUnavailable,
+    cpSync: fileAccessUnavailable,
+    writeFileSync: fileAccessUnavailable,
+  };
   return {
     argv: ["node", "mini"],
     env: {},
@@ -32,6 +46,7 @@ function processStub() {
       throw error;
     },
     getBuiltinModule(name) {
+      if (name === "node:fs") return browserFileSystem;
       throw new Error("host module " + name + " is not available in the playground");
     },
   };
