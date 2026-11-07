@@ -1,0 +1,11 @@
+outer := 0;
+while outer < 2 {
+    inner := 0;
+    while inner < 3 {
+        if inner == 1 { io_write("x"); } else { io_write(inner); }
+        inner = inner + 1;
+    }
+    io_write("|");
+    outer = outer + 1;
+}
+io_write("\n");

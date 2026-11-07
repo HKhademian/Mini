@@ -34,8 +34,8 @@ ASCII text literals and safe-integer literals (including one unary minus).
 Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
 number addition, text joining, boolean values and logic are supported;
-numeric ordering, scalar equality, and braced if/else blocks are supported;
-while loops remain unsupported. C output is written only after
+numeric ordering, scalar equality, braced if/else blocks, and while loops
+are supported. C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
 runs them once, dependencies first, with each file's operations in source order.

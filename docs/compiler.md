@@ -17,7 +17,8 @@ copies, output, number addition, and text joining. Addition supports grouping
 and chaining; numeric ordering and scalar equality support numbers, text, and
 booleans as applicable. Boolean `!`, `&&`, and `||` honor precedence and
 short-circuiting. Braced `if`, `else if`, and `else` blocks support
-nesting, local shadowing, and assignments; `while` remains unsupported.
+nesting, local shadowing, and assignments. Braced `while` loops reevaluate
+their condition before each iteration.
 Unary minus applies only to number literals. Mixed-kind addition
 is unsupported at runtime; subtraction and other arithmetic remain unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.

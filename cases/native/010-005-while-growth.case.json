@@ -1,0 +1,28 @@
+{
+  "id": "native.c-while-growth",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-005-while-growth.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "text.concatenate",
+    "text.buffer-growth",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "abcdefghijklmnopqrstuvwxyz|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

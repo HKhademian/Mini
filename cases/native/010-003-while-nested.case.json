@@ -1,0 +1,28 @@
+{
+  "id": "native.c-while-nested",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-003-while-nested.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "control.if",
+    "scope.block",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "0x2|0x2|\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

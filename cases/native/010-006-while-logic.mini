@@ -1,0 +1,7 @@
+running := true;
+i := 0;
+while running && (i < 3 || false) {
+    i = i + 1;
+    if i == 2 { running = false; }
+}
+io_write(i, "|", running, "\n");

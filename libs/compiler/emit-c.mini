@@ -373,7 +373,8 @@ fn emit_c_statement(parser, bindings, binding_orders) {
     body := "";
     binding_count := map_get(parser, "c_binding_count");
     declarations := map_get(parser, "c_declarations");
-    if map_get(token, "text") == "if" {
+    if map_get(token, "text") == "if" || map_get(token, "text") == "while" {
+        loop := map_get(token, "text") == "while";
         parser_take(parser);
         index := map_get(parser, "c_temp");
         map_set(parser, "c_temp", index + 1);
@@ -388,11 +389,13 @@ fn emit_c_statement(parser, bindings, binding_orders) {
             + "    if (" + condition + ".kind != MINI_ID(kind_boolean)) return 1;\n"
             + "    *result = " + condition + ".boolean;\n    return 0;\n}\n\n";
         map_set(parser, "c_conditions", map_get(parser, "c_conditions") + helper);
-        body = "if ((context->condition_status_" + number + " = MINI_ID(condition_" + number
+        keyword := "if";
+        if loop { keyword = "while"; }
+        body = keyword + " ((context->condition_status_" + number + " = MINI_ID(condition_" + number
             + ")(context, &context->condition_value_" + number + ")) != 0 || context->condition_value_" + number + ") {\n"
             + "    if (context->condition_status_" + number + " != 0) return 1;\n";
         body = body + emit_c_block(parser, bindings, binding_orders) + "    }";
-        if map_get(parser_token(parser), "text") == "else" {
+        if !loop && map_get(parser_token(parser), "text") == "else" {
             parser_take(parser);
             if map_get(parser_token(parser), "text") == "if" {
                 body = body + " else " + emit_c_statement(parser, map_copy(bindings), map_copy(binding_orders));

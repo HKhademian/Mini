@@ -1,0 +1,28 @@
+{
+  "id": "native.c-while-count",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-002-while-count.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "assignment",
+    "number.comparison",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "0|1|2|3|4\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

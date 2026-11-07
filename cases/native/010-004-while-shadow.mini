@@ -1,0 +1,9 @@
+value := "outer";
+i := 0;
+while i < 2 {
+    value := "inner";
+    value = value + "!";
+    io_write(value, "|");
+    i = i + 1;
+}
+io_write(value, "\n");

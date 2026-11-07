@@ -1,0 +1,8 @@
+seed := "abcdefghijklmnopqrstuvwxyz";
+copy := seed;
+i := 0;
+while i < 4 {
+    seed = seed + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    i = i + 1;
+}
+io_write(copy, "|", seed, "\n");

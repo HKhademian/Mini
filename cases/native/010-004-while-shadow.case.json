@@ -1,0 +1,28 @@
+{
+  "id": "native.c-while-shadow",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-004-while-shadow.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "scope.shadow",
+    "text.concatenate",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "inner!|inner!|outer\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "native.c-while-zero",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-001-while-zero.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "boolean.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "7\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

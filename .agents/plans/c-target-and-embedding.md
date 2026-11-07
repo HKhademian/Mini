@@ -152,10 +152,16 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
 - Numeric literal output, top-level bindings, number addition, text joining,
   boolean values and logic, and scalar comparisons are complete. Continue in the
   user's selected order: control flow (if and while); functions. Braced if,
-  else if, and else lowering is implemented; while remains the next increment.
+  else if, else, and while lowering are implemented; functions are next.
 - C condition helpers evaluate branch conditions lazily and propagate native
   failures. Generated Mini branches use braces and direct else-if chains;
   scoped bindings retain shadowing and outer assignments.
+- While uses the same condition helper on every check and a braced, scoped body.
+  Six native cases cover zero iterations, nested loops, conditions, shadowing,
+  and text growth across iterations.
+  Verified 473/473 scenarios (four existing proposals pending), 6/6 units,
+  bootstrap/repository checks, playground build, and strict C11 host checks with
+  address/undefined-behavior sanitizers.
   Verified 467/467 scenarios (four existing proposals pending), 51/51 native
   cases, 6/6 units, bootstrap/repository checks, playground build, and strict
   C11 host sanitizer checks.

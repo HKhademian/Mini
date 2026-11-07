@@ -1,0 +1,29 @@
+{
+  "id": "native.c-while-logic",
+  "kind": "feature",
+  "target": "c",
+  "source": "010-006-while-logic.mini",
+  "features": [
+    "target.c",
+    "control.while",
+    "boolean.and",
+    "boolean.or",
+    "control.if",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "2|false\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
