@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/common/result.mini";
+include "common/result.mini";
 
 /// Verify result predicates for success, failure, and non-maps.
 fn main() {

@@ -1,4 +1,4 @@
-include "../libs/common/io.mini";
+include "common/io.mini";
 /// Copy a list and show that changing the copy leaves the original intact.
 original := list_new();
 list_set(original, 0, "original");

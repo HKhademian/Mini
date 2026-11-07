@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Split source text into words and symbols.
 source := "x:=1;";
 index := 0;

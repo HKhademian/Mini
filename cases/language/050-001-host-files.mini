@@ -1,6 +1,6 @@
-include "../../libs/common/path.mini";
-include "../../libs/common/io.mini";
-include "../../libs/common/process-run.mini";
+include "common/path.mini";
+include "common/io.mini";
+include "common/process-run.mini";
 
 /// Exercise the executable path, temporary directory, and removal primitives.
 version_args := list_new();

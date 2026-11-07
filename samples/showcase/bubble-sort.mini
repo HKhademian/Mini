@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Sort a small list in place.
 values := list_new();
 list_set(values, 0, 5);

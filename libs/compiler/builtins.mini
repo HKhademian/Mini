@@ -35,19 +35,19 @@ fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper,
     return 0;
 }
 
-include "builtins/directory.mini";
-include "builtins/file.mini";
-include "builtins/hash.mini";
-include "builtins/io.mini";
-include "builtins/json.mini";
-include "builtins/list.mini";
-include "builtins/map.mini";
-include "builtins/number.mini";
-include "builtins/path.mini";
-include "builtins/process.mini";
-include "builtins/text.mini";
-include "builtins/time.mini";
-include "builtins/value.mini";
+include "./builtins/directory.mini";
+include "./builtins/file.mini";
+include "./builtins/hash.mini";
+include "./builtins/io.mini";
+include "./builtins/json.mini";
+include "./builtins/list.mini";
+include "./builtins/map.mini";
+include "./builtins/number.mini";
+include "./builtins/path.mini";
+include "./builtins/process.mini";
+include "./builtins/text.mini";
+include "./builtins/time.mini";
+include "./builtins/value.mini";
 
 
 

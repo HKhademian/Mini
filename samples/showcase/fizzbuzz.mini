@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Classic division and branching.
 n := 1;
 while n <= 15 {

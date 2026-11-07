@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Set and read text-keyed values.
 values := map_new();
 map_set(values, "name", "Mini");

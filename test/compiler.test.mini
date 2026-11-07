@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-include "../libs/common/text.mini";
-include "../libs/common/list.mini";
-include "../libs/tools/cases.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "tools/cases.mini";
 
 /// Verify the generated compiler reproduces itself from its mini source.
 fn main(args) {

@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Count repeated words with a map.
 words := text_split("mini makes mini tools", " ");
 counts := map_new();

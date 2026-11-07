@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 fn slice(value) {
     return text_slice(value, 0, 2);
 }

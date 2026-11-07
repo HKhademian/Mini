@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 fn join(left, right) {
     return left + right;
 }

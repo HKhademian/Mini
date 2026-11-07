@@ -209,16 +209,19 @@ fn lex_tokenize(source, source_name, include_comments) {
 }
 
 
-/// Resolve an include path against the including file.
+/// Resolve library imports from libs and explicit paths from the including file.
 fn lex_resolve_include(base, path) {
     if text_starts_with(path, "/") {
         return path_normalize(path);
     }
-    directory := path_parent(base);
-    if directory == "" {
-        return path_normalize(path);
+    if text_starts_with(path, "./") || text_starts_with(path, "../") {
+        directory := path_parent(base);
+        if directory == "" {
+            return path_normalize(path);
+        }
+        return path_normalize(directory + "/" + path);
     }
-    return path_normalize(directory + "/" + path);
+    return path_normalize("libs/" + path);
 }
 
 

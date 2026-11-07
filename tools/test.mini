@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/tools/test.mini";
+include "tools/test.mini";
 
 /// Parse arguments and run selected case scenarios.
 fn main(args) {

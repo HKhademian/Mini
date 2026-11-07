@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Combine a loop with character comparisons.
 text := "self hosting";
 index := 0;

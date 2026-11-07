@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 fn count() {
     return list_length(fn_args());
 }

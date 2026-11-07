@@ -1,5 +1,5 @@
-include "../../libs/common/io.mini";
-include "../../libs/common/list.mini";
+include "common/io.mini";
+include "common/list.mini";
 
 /// Exercise list stack mutation.
 items := list_new();

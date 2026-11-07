@@ -1,6 +1,6 @@
 /// Common list algorithms built on representation primitives.
 
-include "value.mini";
+include "./value.mini";
 /// Return whether a list contains one text value.
 fn list_has_text(items, value) {
     position := 0;

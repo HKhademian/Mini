@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Store a map inside another map.
 outer := map_new();
 inner := map_new();

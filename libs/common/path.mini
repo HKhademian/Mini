@@ -1,4 +1,4 @@
-include "text.mini";
+include "./text.mini";
 
 /// Join two path components.
 fn path_join(left, right) {

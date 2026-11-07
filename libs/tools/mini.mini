@@ -5,7 +5,6 @@ include "../common/path.mini";
 include "../common/process.mini";
 include "../common/json.mini";
 include "../common/project.mini";
-
 /// Return the active compiler entry.
 fn mini_compiler(root) {
     parsed := json_parse_file(path_join(root, "config/compiler.json"));

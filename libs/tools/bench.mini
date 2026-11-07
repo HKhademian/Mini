@@ -1,6 +1,6 @@
 include "../common/text.mini";
 include "../common/list.mini";
-include "cases.mini";
+include "./cases.mini";
 /// Run benchmark cases and write one JSON report.
 /// Usage: node dist/bench.js OUTPUT [FILTER]
 /// Output must not exist; the parent directory is created.

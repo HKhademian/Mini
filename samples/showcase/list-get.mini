@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Use a negative index for the last item.
 items := list_new();
 list_set(items, 0, "first");

@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 args := fn_args();
 if list_length(args) == 3 && list_get(args, 0) == "copy" {
     file_write(list_get(args, 2), file_read(list_get(args, 1)));

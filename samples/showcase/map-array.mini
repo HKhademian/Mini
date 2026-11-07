@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Parse an array and read an item.
 parsed := json_parse("[10,20,30]");
 if map_get(parsed, "ok") {

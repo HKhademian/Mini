@@ -6,7 +6,6 @@ include "../common/process.mini";
 include "../common/project.mini";
 include "../compiler/lexer.mini";
 include "../compiler/parser.mini";
-
 /// Report a bootstrap failure.
 fn bootstrap_fail(message) {
     io_write_error(message + "\n");

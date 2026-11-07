@@ -89,11 +89,14 @@ io_write("ok\n");
 A top-level directive splices another mini source into the current compilation:
 
 ```text
-include "libs/common/text.mini";
+include "common/text.mini";
 ```
 
-- `include "relative/path.mini";` is recognized contextually at the top level.
-  The path is relative to the including file and is canonicalized before use.
+- A path such as `"common/text.mini"` is resolved from the project `libs/`
+  directory.
+- Paths beginning `./` or `../` are resolved relative to the including file;
+  `/path/to/file.mini` is an absolute filesystem path. Paths are canonicalized
+  before use.
 - Each canonical file is included at most once per compilation. A repeated
   include is a no-op. Includes may nest.
 - A cycle, a missing file, a shebang in an included file, or an include inside a
@@ -705,7 +708,7 @@ value := map_get(parsed, "value");
 Run one child process and inspect its result:
 
 ```text
-include "libs/common/process-run.mini";
+include "common/process-run.mini";
 arguments := list_new();
 list_set(arguments, 0, "--version");
 result := process_run("node", arguments, "capture");
@@ -733,7 +736,7 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```text
-include "libs/common/path.mini";
+include "common/path.mini";
 
 node := process_exec_path();
 directory := path_temp_directory();

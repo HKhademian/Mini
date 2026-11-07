@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 fn copy(value) {
     return list_copy(value);
 }

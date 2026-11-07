@@ -1,5 +1,5 @@
-include "lexer.mini";
-include "builtins.mini";
+include "./lexer.mini";
+include "./builtins.mini";
 /// Report a parser/checker diagnostic.
 fn parser_fail(token, message) {
     return diagnostic_fail(token, message);

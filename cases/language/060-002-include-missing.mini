@@ -1,1 +1,1 @@
-include "060-002-missing-helper.mini";
+include "./060-002-missing-helper.mini";

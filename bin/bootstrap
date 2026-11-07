@@ -795,11 +795,14 @@ function lex_resolve_include(base, path) {
     if (text_starts_with(path, "/")) {
         return path_normalize(path);
     }
-    let directory = path_parent(base);
-    if ((directory === "")) {
-        return path_normalize(path);
+    if ((text_starts_with(path, "./") || text_starts_with(path, "../"))) {
+        let directory = path_parent(base);
+        if ((directory === "")) {
+            return path_normalize(path);
+        }
+        return path_normalize(((directory + "/") + path));
     }
-    return path_normalize(((directory + "/") + path));
+    return path_normalize(("libs/" + path));
     return 0;
 }
 function lex_expand_includes(tokens, base, stack, seen) {

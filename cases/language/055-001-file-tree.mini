@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Exercise path checks, directory listing, copying, and recursive removal.
 root := path_temp_directory();
 sub := root + "/sub";

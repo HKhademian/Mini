@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/tools/check.mini";
+include "tools/check.mini";
 
 /// Parse arguments and run repository checks.
 fn main(args) {

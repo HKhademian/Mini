@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Scan a list and keep the best value.
 values := list_new();
 list_set(values, 0, 4);

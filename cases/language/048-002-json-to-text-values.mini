@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 inner := map_new();
 map_set(inner, "z", list_new());
 outer := map_new();

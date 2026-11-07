@@ -1,4 +1,4 @@
-include "../../libs/common/io.mini";
+include "common/io.mini";
 /// Bind text and number values and write one line.
 name := "Mini";
 version := 1;

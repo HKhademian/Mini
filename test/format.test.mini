@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-include "../libs/common/text.mini";
-include "../libs/common/list.mini";
-include "../libs/common/path.mini";
-include "../libs/common/process.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "common/path.mini";
+include "common/process.mini";
 
 /// Report a formatter test failure.
 fn format_fail(name, message) {

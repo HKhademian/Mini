@@ -1,5 +1,5 @@
 /// Map helpers built on the map builtins.
-include "list.mini";
+include "./list.mini";
 
 /// Build a map from alternating key and value arguments.
 ///

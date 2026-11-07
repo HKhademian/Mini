@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/tools/mini.mini";
+include "tools/mini.mini";
 
 /// Dispatch the invoked command.
 fn main(args) {

@@ -1,4 +1,4 @@
-include "060-003-include-cycle-other.mini";
+include "./060-003-include-cycle-other.mini";
 fn start() {
     return 1;
 }

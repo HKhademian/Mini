@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-include "../libs/common/text.mini";
-include "../libs/common/list.mini";
-include "../libs/tools/cases.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "tools/cases.mini";
 
 /// Compile and run one source in host and reference modes, then compare results.
 fn reference_compare(root, name, source_text) {

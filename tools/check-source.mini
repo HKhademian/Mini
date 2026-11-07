@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-include "../libs/tools/check-source.mini";
+include "tools/check-source.mini";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {

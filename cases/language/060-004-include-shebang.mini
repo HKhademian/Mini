@@ -1,1 +1,1 @@
-include "060-004-include-shebang-helper.mini";
+include "./060-004-include-shebang-helper.mini";
