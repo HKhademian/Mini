@@ -128,7 +128,7 @@
       "exitCode": 1
     },
     {
-      "name": "check-source-arity",
+      "name": "check-source-io-varargs",
       "args": [
         "cases/tooling/check-arity.mini"
       ],
@@ -138,10 +138,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "check-arity.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     },
     {
       "name": "check-source-stdin",

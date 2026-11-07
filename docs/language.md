@@ -280,11 +280,15 @@ io_write(source);
 
 - `io_read_all()` consumes remaining standard input through EOF and returns text.
   At EOF it returns empty text.
-- `io_write(text)` writes text to standard output exactly, with no added newline.
-  It returns 0; use it as a call statement ending in `;`.
-- `io_write_line(text)` is a Mini helper from `libs/common/io.mini`; it writes
-  text followed by one newline and returns the `io_write` result. Include that
-  file when using it.
+- `io_write(...values)` converts each supplied value to text, concatenates the
+  results without separators, and writes them to standard output exactly, with
+  no added newline. Text is written unchanged; numbers and booleans use their
+  standard text form; lists and maps use JSON text. It returns 0; an empty call
+  writes nothing.
+- `io_write_line(...values)` is a Mini helper from `libs/common/io.mini`; it
+  writes the same concatenated values followed by one newline and returns the
+  `io_write` result. Include that file when using it. An empty call writes only
+  the newline.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 
 These operations let small programs expose their behavior without adding

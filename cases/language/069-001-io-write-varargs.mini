@@ -1,0 +1,10 @@
+/// Write mixed values through the variadic I/O helpers.
+
+include "common/io.mini";
+include "common/map.mini";
+
+text := "Mini";
+io_write_line(text_code(text_get(text, 0)), "=", text_from_code(77));
+io_write(true, ":", 12);
+io_write_line();
+io_write_line(list_of(1, true), map_of("k", 2));

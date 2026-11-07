@@ -1,0 +1,15 @@
+{
+  "id": "language.io-write-varargs",
+  "kind": "feature",
+  "source": "069-001-io-write-varargs.mini",
+  "features": ["text.output", "functions.args"],
+  "cases": [
+    {
+      "name": "mixed-values-and-empty-call",
+      "stdin": {"file": "empty.stdin"},
+      "stdout": {"text": "77=M\ntrue:12\n[1,true]{\"k\":2}\n"},
+      "stderr": {"file": "empty.stderr"},
+      "exitCode": 0
+    }
+  ]
+}

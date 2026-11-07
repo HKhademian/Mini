@@ -1,1 +1,4 @@
+include "common/io.mini";
+
 io_write();
+io_write_line();

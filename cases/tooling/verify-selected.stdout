@@ -5,7 +5,7 @@ PASS tooling.check/check-docs
 PASS tooling.check/check-source-valid
 PASS tooling.check/check-source-invalid
 PASS tooling.check/check-source-lexer
-PASS tooling.check/check-source-arity
+PASS tooling.check/check-source-io-varargs
 PASS tooling.check/check-source-stdin
 PASS tooling.check/check-source-crlf-stdin
 PASS tooling.check/check-source-empty-stdin

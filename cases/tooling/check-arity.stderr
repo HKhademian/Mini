@@ -1,3 +1,0 @@
-cases/tooling/check-arity.mini:1:1: expected 1 argument
-io_write();
-^

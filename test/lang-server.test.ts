@@ -284,7 +284,7 @@ test('hovers builtins and returns null for unknown identifiers', async () => {
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
     const builtin = await client.next();
-    assert.match(builtin.result.contents.value, /io_write\(text\) -> number/);
+    assert.match(builtin.result.contents.value, /io_write\(\.\.\.values\) -> number/);
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
     assert.equal((await client.next()).result, null);

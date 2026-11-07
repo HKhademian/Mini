@@ -1,7 +1,13 @@
 /// Common output helpers built on primitive I/O.
 //
 
-/// Write text followed by one newline and return the primitive write result.
-fn io_write_line(text) {
-    return io_write(text + "\n");
+/// Write every supplied value followed by one newline and return the write result.
+fn io_write_line() {
+    values := fn_args();
+    position := 0;
+    while position < list_length(values) {
+        io_write(list_get(values, position));
+        position = position + 1;
+    }
+    return io_write("\n");
 }

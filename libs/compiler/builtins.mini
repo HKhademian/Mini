@@ -169,6 +169,9 @@ fn builtin_replace(source, needle, replacement) {
 /// Substitute positional arguments into an emit template.
 fn builtin_apply(form, args) {
     output := form;
+    if text_find(output, "{...}") >= 0 {
+        output = builtin_replace(output, "{...}", list_join(args, ", "));
+    }
     position := 0;
     while position < list_length(args) {
         output = builtin_replace(output, "{" + number_to_text(position) + "}", list_get(args, position));

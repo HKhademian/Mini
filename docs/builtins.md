@@ -62,13 +62,15 @@ arrays become lists, booleans remain booleans, numbers remain numbers, and JSON
 `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok` is
 true on success, and false with `value` 0 for invalid JSON or non-text input.
 
-The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(text)`:
+The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(...values)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`io_write` returns 0. The compiler implements these primitive operations.
-`io_write_line(text)` is a Mini helper in
-[libs/common/io.mini](../libs/common/io.mini); include that file to write text
-followed by one newline.
+`io_write` writes text unchanged, converts numbers and booleans to their
+standard text form, and serializes lists and maps as JSON. It concatenates
+these values without separators, writes the result, and returns 0. The
+compiler implements this variadic primitive operation.
+`io_write_line(...values)` is a Mini helper in [libs/common/io.mini](../libs/common/io.mini);
+include that file to write the same converted values followed by one newline.
 
 `fn_args()` is not a host builtin: the generated function captures its own
 argument list, so it needs no adapter and no import. It returns a list, empty

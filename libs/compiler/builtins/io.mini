@@ -36,14 +36,14 @@ builtin_add(
 );
 builtin_add(
     "io_write",
-    "text",
+    "...values",
     "number",
     "essential",
     "writeSync",
+    "io_write",
+    "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (value !== null && typeof value === \"object\") text += JSON.stringify(value);\n        else text += String(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n",
     "",
-    "",
-    "",
-    "(writeSync(1, {0}), 0)"
+    "$mini_io_write({...})"
 );
 builtin_add(
     "io_write_error",

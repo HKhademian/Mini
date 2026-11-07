@@ -1,24 +1,17 @@
 {
   "id": "language.io-write-argument",
-  "kind": "reject",
+  "kind": "feature",
   "source": "004-002-io-write-argument.mini",
-  "features": [
-    "text.input",
-    "text.output"
-  ],
+  "features": ["text.output", "functions.args"],
   "cases": [
     {
       "name": "default",
       "stdin": {
         "file": "empty.stdin"
       },
-      "stdout": {
-        "file": "empty.stdout"
-      },
-      "stderr": {
-        "file": "004-002-io-write-argument.stderr"
-      },
-      "exitCode": 1
+      "stdout": {"text": "\n"},
+      "stderr": {"file": "empty.stderr"},
+      "exitCode": 0
     }
   ]
 }

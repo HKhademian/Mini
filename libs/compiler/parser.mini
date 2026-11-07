@@ -261,12 +261,21 @@ fn parser_call(parser, name) {
     if is_builtin {
         // Builtin arity is part of the host contract, so it stays exact.
         arity := list_length(builtin_parameters(name_text));
-        if list_length(args) != arity {
+        variadic := arity > 0 && text_slice(list_get(builtin_parameters(name_text), arity - 1), 0, 3) == "...";
+        fixed_arity := arity;
+        if variadic {
+            fixed_arity = arity - 1;
+        }
+        if (!variadic && list_length(args) != arity) || (variadic && list_length(args) < fixed_arity) {
             suffix := "s";
-            if arity == 1 {
+            if (variadic && fixed_arity == 1) || (!variadic && arity == 1) {
                 suffix = "";
             }
-            parser_fail(name, "expected " + number_to_text(arity) + " argument" + suffix);
+            message := "expected " + number_to_text(arity) + " argument" + suffix;
+            if variadic {
+                message = "expected " + number_to_text(fixed_arity) + " or more argument" + suffix;
+            }
+            parser_fail(name, message);
         }
     } else {
         // User calls pad missing arguments with 0. Extra arguments reach the
@@ -283,9 +292,11 @@ fn parser_call(parser, name) {
     position := 0;
     while position < list_length(parameters) {
         kind := list_get(parameters, position);
-        actual := map_get(list_get(args, position), "kind");
-        if kind != "unknown" && actual != "unknown" && actual != kind {
-            parser_fail(name, "expected " + kind + " argument");
+        if text_slice(kind, 0, 3) != "..." {
+            actual := map_get(list_get(args, position), "kind");
+            if kind != "unknown" && actual != "unknown" && actual != kind {
+                parser_fail(name, "expected " + kind + " argument");
+            }
         }
         position = position + 1;
     }
