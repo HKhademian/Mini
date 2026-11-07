@@ -403,7 +403,17 @@ function browserCompilerSource(): string {
 /// Return the generated compiler as a browser module.
 function buildBrowserCompiler(): string {
     return browserCompilerSource()
-        .replace('from "node:fs"', 'from "./shim.js"');
+        .replace('from "node:fs"', `from "./shim.js?rev=${sourceCommit}"`);
+}
+
+/// Return the browser worker pinned to this site's source revision.
+function buildBrowserWorker(): string {
+    const source = readFileSync(join(root, "site", "playground", "worker.js"), "utf8");
+    const marker = 'const buildRevision = "";';
+    if (!source.includes(marker)) {
+        throw new Error("playground worker revision marker is missing");
+    }
+    return source.replace(marker, `const buildRevision = "${sourceCommit}";`);
 }
 
 /// Return the expanded pure reference source.
@@ -674,7 +684,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       clear();
       setStatus("working…");
       const started = performance.now();
-      const worker = new Worker("./worker.js", { type: "module" });
+      const worker = new Worker("./worker.js?rev=${sourceCommit}", { type: "module" });
       let done = false;
       const timer = setTimeout(function () {
         if (done) return;
@@ -783,7 +793,7 @@ function main(): void {
     writeFileSync(join(playground, "reference.js"), `export const referenceTokens = ${referenceTokens.trim()};\n`);
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
-    cpSync(join(root, "site", "playground", "worker.js"), join(playground, "worker.js"));
+    writeFileSync(join(playground, "worker.js"), buildBrowserWorker());
     cpSync(join(root, "site", "playground", "playground.css"), join(playground, "playground.css"));
     process.stdout.write(`wrote ${join(output, "index.html")}\n`);
 }

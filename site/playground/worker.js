@@ -1,5 +1,7 @@
 /// Compile and run Mini source inside a browser worker.
 
+const buildRevision = "";
+
 globalThis.__miniSink = () => {};
 
 /// Minimal UTF-8 Buffer for text_to_bytes and text_from_bytes.
@@ -60,9 +62,9 @@ let compiler = null;
 function loadCompiler() {
   if (compiler === null) {
     globalThis.process = processStub();
-    compiler = import("./includes.js").then(({ files }) => {
+    compiler = import("./includes.js?rev=" + buildRevision).then(({ files }) => {
       globalThis.__miniFiles = files;
-      return import("./compiler.js");
+      return import("./compiler.js?rev=" + buildRevision);
     });
   }
   return compiler;
@@ -86,7 +88,7 @@ async function compileSource(source, portable) {
     if (fd === 2) diagnostic += text;
   };
   try {
-    const referenceTokens = portable ? (await import("./reference.js")).referenceTokens : [];
+    const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
     const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
     return { code: parser_compile(prepared), program: parser_compile_program(prepared), diagnostic: "" };
   } catch (error) {
