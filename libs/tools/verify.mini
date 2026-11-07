@@ -61,6 +61,7 @@ fn verify_bootstrap(root) {
     if text_length(work) == 0 {
         verify_fail("cannot create a temporary directory");
     }
+    path_copy(path_join(root, "libs"), path_join(work, "libs"));
     file_write(path_join(work, "package.json"), "{\"type\":\"module\"}\n");
     previous := path_join(work, "compiler0.js");
     file_write_bytes(previous, seed_bytes);

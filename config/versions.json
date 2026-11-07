@@ -6,7 +6,7 @@
   "bootstrap": "0.2.0-alpha.3",
   "std": null,
   "check": "0.1.0-alpha.9",
-  "verify": "0.1.0-alpha.5",
+  "verify": "0.1.0-alpha.6",
   "release": "0.1.0-alpha.5",
   "test": "0.1.0-alpha.5",
   "bench": "0.1.0-alpha.5",

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- verify 0.1.0-alpha.6: copy project libraries into the isolated bootstrap
+  verification directory so bare `libs/...` imports resolve during fixed-point
+  checks.
+
 - compiler 0.4.0-alpha.4: add `fn_args()`, the list of arguments the current
   function received. Extra arguments now reach the callee instead of being
   discarded at the call site, so declared parameters ignore them and

@@ -62,9 +62,9 @@ builtins-v0.5.0-v0.4.0-alpha.2
 cli-v0.5.0-v0.1.0-alpha.17
 check-v0.5.0-v0.1.0-alpha.9
 format-v0.5.0-v0.1.0-alpha.7
-lsp-v0.5.0-v0.1.0-alpha.10
+lsp-v0.5.0-v0.1.0-alpha.11
 test-v0.5.0-v0.1.0-alpha.5
-verify-v0.5.0-v0.1.0-alpha.5
+verify-v0.5.0-v0.1.0-alpha.6
 bench-v0.5.0-v0.1.0-alpha.5
 release-v0.5.0-v0.1.0-alpha.5
 vscode-v0.5.0-v0.3.8
