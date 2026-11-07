@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Repeat while a condition holds.
 position := 1;
 while position <= 5 {

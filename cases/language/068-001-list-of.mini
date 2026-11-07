@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 include "../../libs/common/list.mini";
 /// Build lists of several sizes from supplied arguments.
 items := list_of(1, 2, 3);

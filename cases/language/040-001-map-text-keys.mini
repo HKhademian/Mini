@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Verify ordinary text keys, key snapshots, replacement, and argument evaluation order.
 
 /// Record receiver evaluation and return the nested map without copying it.

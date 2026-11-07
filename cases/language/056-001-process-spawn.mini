@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Run one child process with options for arguments, directory, input, and mode.
 dir := path_temp_directory();
 args := list_new();

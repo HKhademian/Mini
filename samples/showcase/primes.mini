@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Trial division up to a limit.
 fn is_prime(n) {
     if n < 2 {

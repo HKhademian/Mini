@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// A recursive function.
 fn factorial(n) {
     if n <= 1 {

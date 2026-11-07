@@ -243,7 +243,9 @@ io_write(source);
   At EOF it returns empty text.
 - `io_write(text)` writes text to standard output exactly, with no added newline.
   It returns 0; use it as a call statement ending in `;`.
-- `io_write_line(text)` writes text followed by one newline. It returns 0.
+- `io_write_line(text)` is a Mini helper from `libs/common/io.mini`; it writes
+  text followed by one newline and returns the `io_write` result. Include that
+  file when using it.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 
 These operations let small programs expose their behavior without adding

@@ -1,3 +1,4 @@
+include "../libs/common/io.mini";
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
 names := map_new();
 if list_length(map_keys(names)) == 0 {

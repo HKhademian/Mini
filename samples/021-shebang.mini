@@ -1,3 +1,4 @@
 #!/usr/bin/env -S mini run
+include "../libs/common/io.mini";
 /// Print a line from a source file with a shebang header.
 io_write_line("shebang sample");

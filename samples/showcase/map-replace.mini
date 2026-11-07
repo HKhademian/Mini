@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Setting an existing key keeps the key count.
 values := map_new();
 map_set(values, "key", "old");

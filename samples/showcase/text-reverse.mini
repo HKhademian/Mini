@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Walk backwards and build a new string.
 source := "mini";
 output := "";

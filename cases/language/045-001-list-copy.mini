@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 original := list_new();
 list_set(original, 0, "first");
 list_set(original, 1, "second");

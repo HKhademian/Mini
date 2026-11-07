@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 source := "alpha beta alpha";
 first := text_find(source, "alpha");
 second := text_find(source, "beta");

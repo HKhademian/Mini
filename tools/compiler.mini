@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+include "../libs/common/io.mini";
 /// Compose the mini compiler from its source files.
 include "../libs/common/text.mini";
 include "../libs/compiler/lexer.mini";

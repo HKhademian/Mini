@@ -1,3 +1,4 @@
+include "../libs/common/io.mini";
 /// Read text and print slices that demonstrate bounds and negative indices.
 source := io_read_all();
 io_write_line(text_slice(source, 0, 3));

@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Choose one of two branches.
 value := 7;
 if number_mod(value, 2) == 0 {

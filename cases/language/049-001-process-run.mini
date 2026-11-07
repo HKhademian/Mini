@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
 include "../../libs/common/process-run.mini";
 

@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Return a value from a named function.
 fn square(value) {
     return number_mul(value, value);

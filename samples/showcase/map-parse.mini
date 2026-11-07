@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Parse an object and read a field.
 parsed := json_parse("{\"name\":\"Mini\",\"count\":2}");
 if map_get(parsed, "ok") {

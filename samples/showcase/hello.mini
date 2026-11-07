@@ -1,2 +1,3 @@
+include "../../libs/common/io.mini";
 /// Write one line of text.
 io_write_line("hello, mini");

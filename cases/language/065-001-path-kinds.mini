@@ -1,3 +1,5 @@
+include "../../libs/common/io.mini";
+include "../../libs/common/path.mini";
 /// Exercise path kind and temporary path helpers.
 directory := path_temp_directory();
 file := directory + "/file.txt";

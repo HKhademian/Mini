@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Convert between characters and code points.
 text := "A!";
 io_write_line(number_to_text(text_code(text_get(text, 0))));

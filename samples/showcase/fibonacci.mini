@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// An iterative sequence.
 fn fib(n) {
     a := 0;

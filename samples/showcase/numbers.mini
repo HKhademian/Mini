@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Multiply and subtract numbers.
 width := 6;
 height := 7;

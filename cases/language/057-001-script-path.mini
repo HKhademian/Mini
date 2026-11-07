@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Read the running script path and confirm it exists.
 script := process_script_path();
 if text_length(script) > 0 && path_is_exists(script) {

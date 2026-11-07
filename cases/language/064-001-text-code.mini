@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Exercise code-point access and construction.
 accent := text_code("é");
 io_write_line(number_to_text(accent));

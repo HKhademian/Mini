@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 io_write("");
 io_write("mi");
 io_write("ni");

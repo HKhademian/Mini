@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 left := true;
 right := false;
 if (left || right) && !right {

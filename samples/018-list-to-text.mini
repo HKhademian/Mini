@@ -1,3 +1,4 @@
+include "../libs/common/io.mini";
 /// Join a list of words with a visible separator.
 words := list_new();
 list_set(words, 0, "one");

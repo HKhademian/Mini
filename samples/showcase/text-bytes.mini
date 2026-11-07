@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Turn text into its byte values.
 bytes := text_to_bytes("Mini");
 index := 0;

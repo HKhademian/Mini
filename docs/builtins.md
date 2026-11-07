@@ -65,8 +65,10 @@ true on success, and false with `value` 0 for invalid JSON or non-text input.
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(text)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`io_write` returns 0. `io_write_line(text)` writes text followed by one newline
-and returns 0. The compiler implements these operations.
+`io_write` returns 0. The compiler implements these primitive operations.
+`io_write_line(text)` is a Mini helper in
+[libs/common/io.mini](../libs/common/io.mini); include that file to write text
+followed by one newline.
 
 `fn_args()` is not a host builtin: the generated function captures its own
 argument list, so it needs no adapter and no import. It returns a list, empty
@@ -200,8 +202,10 @@ are needed.
 
 The accepted built-ins `process_exec_path()` and `path_temp_directory()` expose the
 running Node executable path and create a fresh empty directory under the host
-temporary directory. `path_temp_file()` creates a fresh temporary directory with
-one empty file and returns the file path. `file_remove(path)` removes a file when present and ignores
+temporary directory. `path_temp_file()` is a Mini helper in
+[libs/common/path.mini](../libs/common/path.mini); it creates one empty file in a
+fresh temporary directory and returns the file path. Include that file to use
+the helper. `file_remove(path)` removes a file when present and ignores
 a missing path. `directory_remove(path)` removes an empty directory when present
 and ignores a missing path; a non-empty directory remains a host error. These
 operations back tool process setup and cleanup.

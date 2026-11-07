@@ -1,3 +1,4 @@
+include "../libs/common/io.mini";
 /// Read comma-separated text and print each field on its own line.
 parts := text_split(io_read_all(), ",");
 position := 0;

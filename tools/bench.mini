@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+include "../libs/common/io.mini";
 include "../libs/tools/bench.mini";
 
 /// Parse arguments, run benchmarks, and report the output path.

@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Exercise UTF-8 byte conversion.
 bytes := text_to_bytes("Aé😀");
 output := "";

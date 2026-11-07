@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Read the first and last character.
 text := "Mini";
 io_write_line(text_get(text, 0) + text_get(text, 3));

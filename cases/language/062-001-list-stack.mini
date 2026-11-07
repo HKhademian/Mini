@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 include "../../libs/common/list.mini";
 
 /// Exercise list stack mutation.

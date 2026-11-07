@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 if json_to_text("abc") == "\"abc\"" && json_to_text(42) == "42" && json_to_text(true) == "true" && json_to_text(false) == "false" && json_to_text("a\"b") == "\"a\\\"b\"" {
     io_write_line("ok");
 } else {

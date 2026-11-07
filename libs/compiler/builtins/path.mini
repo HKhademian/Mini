@@ -66,14 +66,3 @@ builtin_add(
     "",
     "$mini_path_temp_directory()"
 );
-builtin_add(
-    "path_temp_file",
-    "",
-    "text",
-    "essential",
-    "",
-    "path_temp_file",
-    "function $mini_path_temp_file() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    const directory = fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n    const path = directory + \"/file\";\n    fs.writeFileSync(path, \"\");\n    return path;\n}\n",
-    "",
-    "$mini_path_temp_file()"
-);

@@ -1,3 +1,4 @@
+include "../../libs/common/io.mini";
 /// Run a block when a condition holds.
 temperature := 21;
 if temperature > 18 {
