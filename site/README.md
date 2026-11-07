@@ -70,10 +70,10 @@ The playground switches between two JavaScript views of the same program:
 - **Runtime + program**: the adapters and expanded libraries the program uses,
   then the program. This is what runs.
 
-The views are compiled on demand. **Play** sits beside the Output tab and runs
-the program; **Compile only** sits beside the JavaScript tab and updates the
-generated view without running it. Switching views does not rerun or change the
-selected panel. The build bundles `libs/` into
+The views are compiled on demand. **Play** runs the program and **Compile only**
+updates the generated view without running it. Both actions sit at the right of
+the output header, with the tabs on the left. Switching views does not rerun or
+change the selected panel. The build bundles `libs/` into
 `playground/includes.js`, allowing examples to expand library includes in the
 browser. Other filesystem access remains unavailable. A third, **Portable**
 view is present but hidden. It appends the whole `libs/pure/reference.mini` so a

@@ -505,8 +505,14 @@ fn parser_program(parser) {
         shebang = "#!/usr/bin/env node\n";
     }
     output := "";
+    tokens := map_get(parser, "tokens");
+    main_source := map_get(list_get(tokens, list_length(tokens) - 1), "source");
     while map_get(parser_token(parser), "kind") != "eof" {
-        output = output + parser_statement(parser);
+        token := parser_token(parser);
+        statement := parser_statement(parser);
+        if map_get(parser, "emit_helpers") || map_get(token, "source") == main_source {
+            output = output + statement;
+        }
     }
     imports := map_get(parser, "imports");
     import_text := "";

@@ -1487,8 +1487,14 @@ function parser_program(parser) {
         shebang = "#!/usr/bin/env node\n";
     }
     let output = "";
+    let tokens = $mini_map_get(parser, "tokens");
+    let main_source = $mini_map_get($mini_list_get(tokens, ((tokens).length - 1)), "source");
     while (($mini_map_get(parser_token(parser), "kind") !== "eof")) {
-        output = (output + parser_statement(parser));
+        let token = parser_token(parser);
+        let statement = parser_statement(parser);
+        if (($mini_map_get(parser, "emit_helpers") || ($mini_map_get(token, "source") === main_source))) {
+            output = (output + statement);
+        }
     }
     let imports = $mini_map_get(parser, "imports");
     let import_text = "";

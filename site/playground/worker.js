@@ -90,8 +90,7 @@ async function compileSource(source, portable) {
   try {
     const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
     const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
-    const programTokens = prepared.filter(token => token.source === "playground.mini");
-    return { code: parser_compile(prepared), program: parser_compile_program(programTokens), diagnostic: "" };
+    return { code: parser_compile(prepared), program: parser_compile_program(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };

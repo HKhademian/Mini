@@ -580,18 +580,14 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       </section>
 
       <section class="pane" aria-label="Output">
-        <div class="pane-head tab-actions">
-          <div class="tab-action-group">
-            <div class="tabs" role="tablist" aria-label="Program output">
-              <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
-            </div>
-            <button id="run" type="button">Play</button>
+        <div class="pane-head output-head">
+          <div class="tabs" role="tablist" aria-label="Output">
+            <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
+            <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
           </div>
-          <div class="tab-action-group">
-            <div class="tabs" role="tablist" aria-label="Generated JavaScript">
-              <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
-            </div>
-            <button id="compile" type="button">Compile only</button>
+          <div class="pane-actions">
+            <button id="run" class="action-button primary" type="button"><span aria-hidden="true">▶</span> Play</button>
+            <button id="compile" class="action-button secondary" type="button">Compile only</button>
           </div>
         </div>
         <div id="panel-output" class="tab-panel" role="tabpanel" aria-labelledby="tab-output">
