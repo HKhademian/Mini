@@ -1,0 +1,29 @@
+{
+  "id": "native.c-function-return",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-001-function-return.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.return",
+    "number.addition",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "5\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

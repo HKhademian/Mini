@@ -1,0 +1,3 @@
+fn repeat(a) { return a + a; }
+value := repeat("ha");
+io_write(value, "\n");

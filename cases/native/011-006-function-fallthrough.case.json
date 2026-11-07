@@ -1,0 +1,29 @@
+{
+  "id": "native.c-function-fallthrough",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-006-function-fallthrough.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.fallthrough",
+    "text.output",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "call|again|0\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

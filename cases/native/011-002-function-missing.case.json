@@ -1,0 +1,28 @@
+{
+  "id": "native.c-function-missing",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-002-function-missing.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.missing-argument",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "0|7|11\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

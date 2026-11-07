@@ -1,0 +1,3 @@
+fn no_result(value) { io_write(value, "|"); }
+no_result("call");
+io_write(no_result("again"), "\n");

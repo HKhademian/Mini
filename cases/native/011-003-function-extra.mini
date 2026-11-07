@@ -1,0 +1,2 @@
+fn first(a, b) { return a + b; }
+io_write(first(1, 2, 100, "extra"), "\n");

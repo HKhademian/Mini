@@ -156,6 +156,19 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
 - C condition helpers evaluate branch conditions lazily and propagate native
   failures. Generated Mini branches use braces and direct else-if chains;
   scoped bindings retain shadowing and outer assignments.
+- Function lowering in progress: keep global bindings and the text buffer in the
+  invocation context; allocate each call's parameters, locals, and condition
+  scratch in a separate stack frame so recursion cannot overwrite callers.
+  Condition helpers inside functions receive the frame. Emit function prototypes
+  before definitions for forward calls and recursion. Materialize arguments
+  left-to-right into stack arrays and pass MINI_ID(params); missing declared
+  inputs bind to numeric zero, extra inputs remain in the parameter view.
+  Internal functions may return a native status and write a Mini result through
+  an output pointer, preserving existing cleanup/error propagation; fallthrough
+  produces numeric zero. Returned text references invocation-owned backing.
+  Global writes stay in the shared context. Verify `fn_args()` separately: the
+  current JS lowering pads missing arguments, so actual argument counts must not
+  be claimed as cross-target parity without a focused decision and tests.
 - While uses the same condition helper on every check and a braced, scoped body.
   Six native cases cover zero iterations, nested loops, conditions, shadowing,
   and text growth across iterations.

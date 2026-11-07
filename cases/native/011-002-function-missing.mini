@@ -1,0 +1,2 @@
+fn add(a, b) { return a + b; }
+io_write(add(), "|", add(7), "|", add(7, 4), "\n");

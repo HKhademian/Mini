@@ -1,0 +1,28 @@
+{
+  "id": "native.c-function-nested",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-004-function-nested.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.nested",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "10\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

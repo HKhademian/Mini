@@ -1,0 +1,29 @@
+{
+  "id": "native.c-function-recursive",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-005-function-recursive.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.recursive",
+    "control.if",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "4\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

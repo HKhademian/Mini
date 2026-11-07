@@ -1,0 +1,28 @@
+{
+  "id": "native.c-function-extra",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-003-function-extra.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.extra-argument",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "3\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

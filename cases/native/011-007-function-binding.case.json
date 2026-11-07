@@ -1,0 +1,29 @@
+{
+  "id": "native.c-function-binding",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C user functions pending.",
+  "source": "011-007-function-binding.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "bindings",
+    "text.concatenate",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "haha\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
