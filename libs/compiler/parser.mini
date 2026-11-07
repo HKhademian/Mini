@@ -509,7 +509,10 @@ fn parser_program(parser) {
     if map_get(parser, "emit_helpers") {
         helper_text = parser_helper_blocks(map_get(parser, "helpers"));
     }
-    return shebang + "\"use strict\";\n" + import_text + helper_text + output;
+    if map_get(parser, "emit_helpers") {
+        return shebang + "\"use strict\";\n" + import_text + helper_text + output;
+    }
+    return output;
 }
 
 /// Return a parser state with pre-registered top-level function signatures.

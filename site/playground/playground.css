@@ -43,6 +43,74 @@
   font-size: 0.76rem;
 }
 
+.sample-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sample-picker select {
+  min-width: 0;
+}
+
+.sample-picker #reset {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.sample-picker #reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.tab-actions {
+  justify-content: flex-start;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.tab-action-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tab-action-group > button {
+  padding: 5px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-action-group > button:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+
+.tab-action-group > #compile {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--muted);
+}
+
+.tab-action-group > #compile:hover {
+  border-color: var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+
 .pane-head select {
   max-width: 100%;
   padding: 4px 8px;
@@ -270,8 +338,10 @@
 /* Generated-code mode switch: host adapters or portable reference. */
 .code-modes {
   display: flex;
+  align-items: center;
   gap: 4px;
   padding: 8px 12px 0;
+  overflow-x: auto;
 }
 
 .code-modes button {

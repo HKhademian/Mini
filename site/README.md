@@ -64,16 +64,23 @@ broken fragment. The build strips the compiler's CLI entry before loading it.
 
 The playground switches between two JavaScript views of the same program:
 
-- **Runtime + program** (default): the adapters the program uses, then the
-  program. This is what runs.
-- **Program only**: the program alone, for reading what mini source compiles to
-  without the runtime around it. It is not runnable on its own.
+- **Program only** (default): generated JavaScript for the user's source,
+  without expanded library files or host setup. It is for reading and is not
+  runnable on its own.
+- **Runtime + program**: the adapters and expanded libraries the program uses,
+  then the program. This is what runs.
 
-Both come from a single worker run; the compiler emits the second variant
-through `parser_compile_program`. The build bundles `libs/` into
+The views are compiled on demand. **Play** sits beside the Output tab and runs
+the program; **Compile only** sits beside the JavaScript tab and updates the
+generated view without running it. Switching views does not rerun or change the
+selected panel. The build bundles `libs/` into
 `playground/includes.js`, allowing examples to expand library includes in the
 browser. Other filesystem access remains unavailable. A third, **Portable**
 view is present but hidden. It appends the whole `libs/pure/reference.mini` so a
 program depends on language semantics rather than host adapters. The build
 expands that reference once into `playground/reference.js`. Keep Portable hidden
 until a host-independent runtime is a supported product.
+
+The footer reads compiler, language, and `play` product versions from the
+registry. `play` is currently unassigned. Syntax highlighting ships as part of
+the playground and has no independent version.

@@ -501,12 +501,13 @@ function loadPlaygroundSamples(): readonly PlaygroundSample[] {
     });
 }
 
-/// Read the declared compiler and language versions.
-function readVersions(): { compiler: string; language: string } {
+/// Read the declared compiler, language, and playground versions.
+function readVersions(): { compiler: string; language: string; play: string } {
     const parsed = JSON.parse(readFileSync(join(root, "config", "versions.json"), "utf8")) as Record<string, unknown>;
     const compiler = typeof parsed["compiler"] === "string" ? parsed["compiler"] : "unassigned";
     const language = typeof parsed["language"] === "string" ? parsed["language"] : "unassigned";
-    return { compiler, language };
+    const play = typeof parsed["play"] === "string" ? parsed["play"] : "unassigned";
+    return { compiler, language, play };
 }
 
 /// Render the playground page.
@@ -562,7 +563,10 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     <div class="workbench">
       <section class="pane" aria-label="Editor">
         <div class="pane-head">
-          <select id="samples" aria-label="Sample">${options}</select>
+          <div class="sample-picker">
+            <select id="samples" aria-label="Sample">${options}</select>
+            <button id="reset" class="ghost" type="button">Reset</button>
+          </div>
           <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
         </div>
         <p class="sample-meta" id="sample-meta" hidden></p>
@@ -571,17 +575,23 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <textarea id="source" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="mini source"></textarea>
         </div>
         <div class="controls">
-          <button id="run" type="button">Run</button>
-          <button id="reset" class="ghost" type="button">Reset</button>
           <span class="hint">Ctrl/&#8984; + Enter</span>
         </div>
       </section>
 
       <section class="pane" aria-label="Output">
-        <div class="pane-head">
-          <div class="tabs" role="tablist" aria-label="Output">
-            <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
-            <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
+        <div class="pane-head tab-actions">
+          <div class="tab-action-group">
+            <div class="tabs" role="tablist" aria-label="Program output">
+              <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
+            </div>
+            <button id="run" type="button">Play</button>
+          </div>
+          <div class="tab-action-group">
+            <div class="tabs" role="tablist" aria-label="Generated JavaScript">
+              <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
+            </div>
+            <button id="compile" type="button">Compile only</button>
           </div>
         </div>
         <div id="panel-output" class="tab-panel" role="tabpanel" aria-labelledby="tab-output">
@@ -591,8 +601,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         </div>
         <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
           <div class="code-modes" role="group" aria-label="Generated JavaScript">
-            <button id="mode-full" type="button" data-mode="full" aria-pressed="true">Runtime + program</button>
-            <button id="mode-program" type="button" data-mode="program" aria-pressed="false">Program only</button>
+            <button id="mode-full" type="button" data-mode="full" aria-pressed="false">Runtime + program</button>
+            <button id="mode-program" type="button" data-mode="program" aria-pressed="true">Program only</button>
             <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false" hidden>Portable</button>
           </div>
           <pre id="code"></pre>
@@ -601,7 +611,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     </div>
 
     <p class="limits">Runs in your browser. Bundled library includes work; custom file, process, and network access are unavailable.</p>
-    <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)}</p>
+    <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)} &middot; playground ${escapeHtml(versions.play)} &middot; syntax highlighter included in playground</p>
   </main>
 
   <footer class="site-footer">
@@ -631,7 +641,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const code = document.getElementById("code");
     const meta = document.getElementById("sample-meta");
     const modeButtons = Array.prototype.slice.call(document.querySelectorAll(".code-modes button"));
-    let mode = "full";
+    let mode = "program";
+    let latestCode = null;
 
     function showTab(showCode) {
       const active = showCode && !tabCode.disabled;
@@ -664,22 +675,12 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       syncSourceHighlightScroll();
     }
 
-    function clear() {
-      stdout.textContent = "(no output)";
-      stderr.textContent = "";
-      stderr.hidden = true;
-      diagnostic.textContent = "";
-      diagnostic.hidden = true;
-      code.textContent = "";
-      tabCode.disabled = true;
-      showTab(false);
-    }
-
-    function fail(text) {
+    function fail(text, keepCodeTab) {
       diagnostic.textContent = text;
       diagnostic.hidden = false;
       setStatus("failed", "error");
-      showTab(false);
+      if (keepCodeTab) code.textContent = text;
+      else showTab(false);
     }
 
     function setMode(next) {
@@ -687,17 +688,33 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       modeButtons.forEach(function (button) {
         button.setAttribute("aria-pressed", String(button.dataset.mode === mode));
       });
-      if (!tabCode.disabled) run();
+      renderCode();
     }
 
     modeButtons.forEach(function (button) {
       button.addEventListener("click", function () { setMode(button.dataset.mode); });
     });
 
-    function run() {
+    function renderCode() {
+      if (latestCode === null) return;
+      const shown = mode === "program" ? latestCode.program : latestCode.code;
+      code.innerHTML = highlight(shown, lex_tokenize);
+    }
+
+    function compile(compileOnly) {
       const sample = samples[Number(select.value)];
-      clear();
-      setStatus("working…");
+      latestCode = null;
+      code.textContent = "";
+      tabCode.disabled = !compileOnly;
+      if (!compileOnly) {
+        stdout.textContent = "(no output)";
+        stderr.textContent = "";
+        stderr.hidden = true;
+        diagnostic.textContent = "";
+        diagnostic.hidden = true;
+        showTab(false);
+      }
+      setStatus(compileOnly ? "compiling…" : "playing…");
       const started = performance.now();
       const worker = new Worker("./worker.js?rev=${sourceCommit}", { type: "module" });
       let done = false;
@@ -713,20 +730,20 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         clearTimeout(timer);
         worker.terminate();
         const data = event.data;
-        if (data.output) stdout.textContent = data.output;
+        if (!compileOnly && data.output) stdout.textContent = data.output;
         if (data.stderr) {
           stderr.textContent = data.stderr;
           stderr.hidden = false;
         }
         if (data.code) {
-          const shown = mode === "program" ? data.program : data.code;
-          code.innerHTML = highlight(shown, lex_tokenize);
+          latestCode = data;
+          renderCode();
           tabCode.disabled = false;
         }
         if (data.diagnostic) {
-          fail(data.diagnostic);
+          fail(data.diagnostic, compileOnly);
         } else {
-          setStatus("done in " + Math.round(performance.now() - started) + " ms", "ok");
+          setStatus((compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
         }
       };
       worker.onerror = function () {
@@ -736,7 +753,17 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         worker.terminate();
         fail("The playground worker failed to start.");
       };
-      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: mode === "portable" });
+      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: mode === "portable", compileOnly: compileOnly });
+    }
+
+    function run() {
+      compile(false);
+    }
+
+    function compileOnly() {
+      tabCode.disabled = false;
+      showTab(true);
+      compile(true);
     }
 
     function showSample() {
@@ -753,6 +780,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     source.addEventListener("scroll", syncSourceHighlightScroll);
     resetButton.addEventListener("click", showSample);
     runButton.addEventListener("click", run);
+    document.getElementById("compile").addEventListener("click", compileOnly);
     tabOutput.addEventListener("click", function () { showTab(false); });
     tabCode.addEventListener("click", function () { showTab(true); });
     function tabKey(event) {

@@ -80,7 +80,7 @@ function buildTokens(lexTokenize, lexExpandIncludes, source, portable, reference
   return combined.concat([{ kind: "eof", text: "", source: "playground.mini", start: 0, end: 0, line: 1, column: 1, context: "" }]);
 }
 
-/// Compile one variant and return both the runnable and program-only code.
+/// Compile one variant and return both the runnable and user-source code.
 async function compileSource(source, portable) {
   const { lex_tokenize, lex_expand_includes, parser_compile, parser_compile_program } = await loadCompiler();
   let diagnostic = "";
@@ -90,7 +90,8 @@ async function compileSource(source, portable) {
   try {
     const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
     const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
-    return { code: parser_compile(prepared), program: parser_compile_program(prepared), diagnostic: "" };
+    const programTokens = prepared.filter(token => token.source === "playground.mini");
+    return { code: parser_compile(prepared), program: parser_compile_program(programTokens), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };
@@ -140,6 +141,10 @@ self.onmessage = async (event) => {
     const compiled = await compileSource(data.source, data.portable === true);
     if (compiled.code === "") {
       self.postMessage({ ok: false, output: "", stderr: "", diagnostic: compiled.diagnostic, code: "", program: "" });
+      return;
+    }
+    if (data.compileOnly === true) {
+      self.postMessage({ ok: true, output: "", stderr: "", diagnostic: "", code: compiled.code, program: compiled.program });
       return;
     }
     const result = await runCode(compiled.code, data.stdin, data.args);
