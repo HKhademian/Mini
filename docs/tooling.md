@@ -91,14 +91,14 @@ Style is fixed for this milestone:
 
 For example:
 
-```text
+```mini
 value := 1;// keep
 if(value==1){io_write("ok");}else{io_write("no");}
 ```
 
 becomes:
 
-```text
+```mini
 value := 1; // keep
 if value == 1 {
     io_write("ok");

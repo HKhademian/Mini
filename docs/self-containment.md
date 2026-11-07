@@ -185,7 +185,7 @@ settled. Multiplication, division, modulo, floor, and power now exist in the
 `number_*` namespace, each with a pure reference implementation. A pure SHA-256
 still needs at least:
 
-```text
+```mini
 number_bit_and(a, b)
 number_bit_or(a, b)
 number_bit_xor(a, b)

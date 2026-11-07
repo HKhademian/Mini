@@ -46,7 +46,7 @@ without `npm install`. It prints nothing per file and ends with
 
 Create `hello.mini`:
 
-```text
+```mini
 /// Return a greeting line.
 fn greeting(name) {
     return "hello, " + name + "\n";

@@ -24,7 +24,7 @@ from passing a reference to the caller's variable slot.
 
 For example, using the proposed map API:
 
-```text
+```mini
 fn change(items) {
     map_set(items, "name", "shared");
     items = map_new();

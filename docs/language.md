@@ -31,7 +31,7 @@ compiler code without adding disproportionate implementation or migration cost.
 
 mini supports line comments only:
 
-```text
+```mini
 /// Return 1 for any supplied values a and b.
 fn mine(a, b) {
     // Both arguments are deliberately unused in this example.
@@ -67,7 +67,7 @@ The [comment sample](../samples/012-comments.mini) demonstrates both forms.
 
 An include can separate file docs from declaration docs:
 
-```text
+```mini
 /// File purpose.
 include "common/io.mini";
 
@@ -77,7 +77,7 @@ message := "hello";
 
 Without an include, use an ordinary comment as the boundary:
 
-```text
+```mini
 /// File purpose.
 //
 /// Documents the next declaration.
@@ -88,7 +88,7 @@ message := "hello";
 
 A mini source file may begin with a shebang line:
 
-```text
+```mini
 #!/usr/bin/env -S mini run
 io_write("ok\n");
 ```
@@ -96,7 +96,7 @@ io_write("ok\n");
 When `mini-run` is installed on `PATH`, this is an equivalent source launcher;
 it needs no `-S` because the interpreter is one command:
 
-```text
+```mini
 #!/usr/bin/env mini-run
 io_write("ok\n");
 ```
@@ -107,7 +107,7 @@ io_write("ok\n");
   original line and column numbers, so the first code token is on line 2.
 - The compiler skips the shebang for parsing and emits a Node shebang in the
   generated JavaScript:
-  ```text
+  ```js
   #!/usr/bin/env node
   "use strict";
   ```
@@ -121,7 +121,7 @@ io_write("ok\n");
 
 A top-level directive splices another mini source into the current compilation:
 
-```text
+```mini
 include "common/text.mini";
 ```
 
@@ -147,7 +147,7 @@ include "common/text.mini";
 
 Use one declaration form:
 
-```text
+```mini
 source := "";
 position := 0;
 token := "";
@@ -163,7 +163,7 @@ output := "";
 
 For example, advancing the source cursor:
 
-```text
+```mini
 position = position + 1;
 ```
 
@@ -175,7 +175,7 @@ the handwritten TypeScript sources do not decide them.
 
 Use named functions with positional parameters and brace-delimited bodies:
 
-```text
+```mini
 fn join(left, right) {
     return left + right;
 }
@@ -214,7 +214,7 @@ bindings with shared collections and investigates omitted arguments.
 
 Use `if` with an optional `else`, and `while` for repetition:
 
-```text
+```mini
 if token == ";" {
     output = output + token;
 } else {
@@ -244,7 +244,7 @@ JavaScript. The expression rules below define comparisons and boolean conditions
 
 Start with decimal integer literals, double-quoted text, and `true` / `false`:
 
-```text
+```mini
 next := position + 1;
 remaining := limit - position;
 ready := token != "" && position < limit;
@@ -273,7 +273,7 @@ mini's typing strategy, and host operation signatures remain open. mini `==` /
 
 Use ordinary calls for two primitive operations:
 
-```text
+```mini
 source := io_read_all();
 io_write("input: ", source, "\n");
 ```
@@ -306,7 +306,7 @@ Use `group_operation` names for the text family. These are flat identifiers;
 the prefix adds no namespace syntax. `text_slice` provides the common slicing
 operation; a standard library may still add conveniences on top of it.
 
-```text
+```mini
 source := io_read_all();
 position := 0;
 while position < text_length(source) {
@@ -340,7 +340,7 @@ text and numeric-zero fallbacks without an absence value.
 
 ## Accepted operation: number text
 
-```text
+```mini
 text := number_to_text(42);
 ```
 
@@ -351,7 +351,7 @@ text := number_to_text(42);
 
 ## Accepted operation: value text
 
-```text
+```mini
 text := to_text(any_value);
 ```
 
@@ -363,7 +363,7 @@ text := to_text(any_value);
 
 ## Accepted operation: JSON text
 
-```text
+```mini
 text := json_to_text(value);
 ```
 
@@ -380,7 +380,7 @@ text := json_to_text(value);
 The compiler needs to read source and write its generated script. Use two
 built-ins with ordinary call syntax:
 
-```text
+```mini
 source := file_read("input.txt");
 file_write("output.txt", source);
 ```
@@ -399,7 +399,7 @@ compiler code.
 
 Use shared list operations for a list returned by the host:
 
-```text
+```mini
 args := fn_args();
 position := 0;
 while position < list_length(args) {
@@ -432,7 +432,7 @@ command interface.
 
 ## Accepted operation: empty-list construction
 
-```text
+```mini
 items := list_new();
 count := list_length(items);
 ```
@@ -446,7 +446,7 @@ Explicit reserve remains under discussion. Unassigned positions read as zero.
 
 ## Accepted operation: list copying
 
-```text
+```mini
 copy := list_copy(items);
 ```
 
@@ -457,7 +457,7 @@ copy := list_copy(items);
 
 ## Accepted operation: list text joining
 
-```text
+```mini
 text := list_join(items, ", ");
 ```
 
@@ -468,7 +468,7 @@ text := list_join(items, ", ");
 
 ## Accepted operation: list assignment
 
-```text
+```mini
 items := list_new();
 list_set(items, 0, "first");
 list_set(items, -1, "replacement");
@@ -495,7 +495,7 @@ rebinding and the broader passing contract remain under review separately.
 
 ## Accepted operation: empty-map construction
 
-```text
+```mini
 names := map_new();
 ```
 
@@ -512,7 +512,7 @@ Missing-key lookup returns numeric zero, without introducing null. There is no
 
 ## Accepted operation: map copying
 
-```text
+```mini
 copy := map_copy(items);
 ```
 
@@ -523,7 +523,7 @@ copy := map_copy(items);
 
 ## Accepted operation: map membership
 
-```text
+```mini
 names := map_new();
 present := map_has(names, "source");
 ```
@@ -540,7 +540,7 @@ and present keys, including keys storing zero or false.
 
 ## Accepted operation: map assignment
 
-```text
+```mini
 names := map_new();
 map_set(names, "source", "input.mini");
 map_set(names, "source", "replacement.mini");
@@ -561,7 +561,7 @@ inserted keys and stored values; a host-adapter test also checks stored referenc
 
 ## Accepted operation: map lookup
 
-```text
+```mini
 names := map_new();
 map_set(names, "source", "input.mini");
 source := map_get(names, "source");
@@ -582,7 +582,7 @@ or null-checking operation is added. Argument omission remains a separate decisi
 
 ## Counting map keys with existing operations
 
-```text
+```mini
 names := map_new();
 map_set(names, "source", "input.mini");
 count := list_length(map_keys(names));
@@ -599,7 +599,7 @@ counting primitive. The [map sample](../samples/010-map.mini) combines these ope
 
 ## Accepted operation: map keys
 
-```text
+```mini
 names := map_new();
 map_set(names, "source", "input.mini");
 keys := map_keys(names);
@@ -621,7 +621,7 @@ without depending on insertion order. No missing-key value is needed for enumera
 
 Use a primitive built-in to report unsuccessful compilation or command usage:
 
-```text
+```mini
 process_exit(1);
 ```
 
@@ -636,7 +636,7 @@ variable; a bulk `process_envs()` map remains a candidate until needed.
 
 ## Accepted operations: bytes
 
-```text
+```mini
 bytes := text_to_bytes("Mini");
 io_write(text_from_bytes(bytes));
 ```
@@ -649,7 +649,7 @@ io_write(text_from_bytes(bytes));
 
 ## Accepted operation: SHA-256 hashing
 
-```text
+```mini
 io_write(hash_sha256("abc"));
 ```
 
@@ -658,7 +658,7 @@ io_write(hash_sha256("abc"));
 
 ## Accepted operation: millisecond clock
 
-```text
+```mini
 started := time_millis();
 ```
 
@@ -668,7 +668,7 @@ started := time_millis();
 
 ## Accepted operations: file tree
 
-```text
+```mini
 directory := path_temp_directory();
 directory_create(directory + "/sub");
 names := directory_list(directory);
@@ -687,7 +687,7 @@ and preserves file modes.
 
 ## Accepted operation: environment
 
-```text
+```mini
 home := process_env("HOME");
 ```
 
@@ -697,7 +697,7 @@ home := process_env("HOME");
 
 ## Accepted operation: script path
 
-```text
+```mini
 script := process_script_path();
 ```
 
@@ -706,7 +706,7 @@ script := process_script_path();
 
 ## Accepted operation: process options
 
-```text
+```mini
 options := map_new();
 map_set(options, "command", "node");
 map_set(options, "arguments", list_new());
@@ -723,7 +723,7 @@ result := process_spawn(options);
 
 ## Accepted operation: value kind
 
-```text
+```mini
 if value_kind(value) == "text" { ... }
 ```
 
@@ -732,7 +732,7 @@ if value_kind(value) == "text" { ... }
 
 ## Accepted operations: streaming input
 
-```text
+```mini
 line := io_read_line();
 bytes := io_read_bytes(16);
 ```
@@ -745,7 +745,7 @@ bytes := io_read_bytes(16);
 
 ## Accepted operation: JSON parsing
 
-```text
+```mini
 parsed := json_parse("{\"name\":\"Mini\"}");
 value := map_get(parsed, "value");
 ```
@@ -760,7 +760,7 @@ value := map_get(parsed, "value");
 
 Run one child process and inspect its result:
 
-```text
+```mini
 include "common/process-run.mini";
 arguments := list_new();
 list_set(arguments, 0, "--version");
@@ -788,7 +788,7 @@ io_write(map_get(result, "stdout"));
 
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
-```text
+```mini
 include "common/path.mini";
 
 node := process_exec_path();
@@ -812,7 +812,7 @@ directory_remove(directory);
 
 The compiler needs a separate stream for diagnostics:
 
-```text
+```mini
 io_write_error("expected ;\n");
 process_exit(1);
 ```
