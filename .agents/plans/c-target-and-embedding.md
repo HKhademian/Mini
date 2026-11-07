@@ -97,6 +97,31 @@ compiler.
   17/17 LSP/release tests, repository/bootstrap fixed point, playground build,
   and strict C11 multi-file host sanitizer checks pass. No C binding/arithmetic
   support is added by this initialization increment.
+- 2026-11-07: selected MINI_ID(params), a view bundling count and value pointer,
+  as the common generated C calling convention. Mini functions may receive any input count; declared parameters
+  consume their positions with missing values supplied as numeric zero. Extra
+  inputs remain available to the callee. Apply this convention to Mini-visible
+  helpers and builtins as their native lowering arrives. Existing JS builtin
+  arity checks still need a separate implementation with safe missing/kind
+  handling; this is selected direction, not a completed general arity change.
+- The current C io_write now takes a parameter view in one call per source call.
+  Named local argument arrays require no heap allocation; entries are filled in
+  source order. Zero inputs use a view containing (0, NULL). Text backing keeps its owned buffer.
+  A growth fixture verifies earlier argument views survive later preparation;
+  host checks cover zero inputs, nonzero NULL, and early output failure.
+  No Mini function-call performance result is claimed. Benchmark small hot calls
+  when native functions exist before selecting internal-call optimizations.
+  FFI adapters may accept separate count/pointer parameters and construct a view
+  internally, avoiding a by-value structure requirement for foreign callers.
+  MINI_PARAMS is a static brace initializer; params_make wraps it for runtime
+  calls. Neither copies/owns the argument array or allocates storage. Generated
+  calls use the macro. Host checks cover static initialization and single
+  evaluation; a local ctypes smoke check passed through a thin count/pointer
+  adapter. This does not implement or package a stable embedding API.
+  Verification: 440/440 scenarios, four existing proposals pending, native
+  24/24, 6/6 units, bootstrap/repository checks, playground build, and strict
+  C11 host checks with address/undefined-behavior sanitizers pass. Bindings and
+  arithmetic remain the next compiler increments.
 - Add no language exceptions, interrupts, error values, or recovery constructs.
 - Start with small feature implementations and simple samples, then expand.
 - Postpone tree-versus-stack until the runner stage. Resolve broader semantics

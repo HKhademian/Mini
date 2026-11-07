@@ -41,6 +41,28 @@ lengths. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection
 does not create or replace either output file.
 
+Each source `io_write` emits one C call with signature
+`int MINI_ID(io_write)(MINI_ID(params) params)`. The generated header defines
+`MINI_ID(params)` as a count and a pointer to const tagged values.
+`MINI_PARAMS(count, args)` is a brace initializer usable in static declarations;
+`MINI_ID(params_make)(count, args)` returns a view through that same macro.
+The macro evaluates each argument once. Both forms borrow the caller's argument
+storage, without copying the array or allocating memory. The caller
+fills a named local argument array in source order, then passes a parameter
+view of it. Neither the array nor the view needs heap allocation. Text backing
+still uses its growable buffer. A zero-argument Mini call passes count zero and
+NULL. Output visits values in order and stops on native output failure. A
+nonzero count with NULL is rejected by the helper.
+
+The parameter view is the selected common C convention for future generated
+Mini functions and Mini-visible helpers/builtins. Declared parameters will read
+their positions with numeric zero for missing inputs; extra inputs remain in
+the view. Native user functions and other builtin lowering are not available
+yet. Existing JavaScript builtin arity checks are unchanged by this slice;
+accepting arbitrary input counts for every builtin still needs safe default
+and kind handling. A future FFI entry can take count/pointer separately and
+construct the view internally. No function-call performance result is claimed.
+
 ### File initialization
 
 Both targets put operations outside named functions into generated per-file

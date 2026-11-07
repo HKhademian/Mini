@@ -78,6 +78,9 @@ fn emit_c_header(name) {
         + "typedef struct {\n    unsigned char *data;\n    size_t length;\n    size_t capacity;\n} MINI_ID(text_buffer);\n"
         + "typedef struct {\n    MINI_ID(text_buffer) *buffer;\n    size_t offset;\n    size_t length;\n} MINI_ID(text);\n"
         + "typedef struct {\n    MINI_ID(value_kind) kind;\n    union { MINI_ID(text) text; MINI_ID(number) number; };\n} MINI_ID(value);\n\n"
+        + "typedef struct {\n    size_t count;\n    const MINI_ID(value) *args;\n} MINI_ID(params);\n\n"
+        + "#define MINI_PARAMS(count_arg, args_arg) { .count = (count_arg), .args = (args_arg) }\n\n"
+        + "MINI_ID(params) MINI_ID(params_make)(size_t count, const MINI_ID(value) *args);\n"
         + "#define MINI_VALUE_TEXT(buffer_arg, offset_arg, length_arg) { .kind = MINI_ID(kind_text), .text = { (buffer_arg), (offset_arg), (length_arg) } }\n\n"
         + "#define MINI_VALUE_NUMBER(number_arg) { .kind = MINI_ID(kind_number), .number = (number_arg) }\n\n"
         + "MINI_ID(value) MINI_ID(value_number)(MINI_ID(number) number);\n"
@@ -88,7 +91,9 @@ fn emit_c_header(name) {
 
 /// Return the constructor definition using the static initializer as an expression.
 fn emit_c_value_constructor() {
-    return "MINI_ID(value) MINI_ID(value_number)(MINI_ID(number) number) {\n"
+    return "MINI_ID(params) MINI_ID(params_make)(size_t count, const MINI_ID(value) *args) {\n"
+        + "    return (MINI_ID(params)) MINI_PARAMS(count, args);\n}\n\n"
+        + "MINI_ID(value) MINI_ID(value_number)(MINI_ID(number) number) {\n"
         + "    return (MINI_ID(value)) MINI_VALUE_NUMBER(number);\n}\n\n"
         + "int MINI_ID(text_buffer_append)(MINI_ID(text_buffer) *buffer, const unsigned char *data, size_t length) {\n"
         + "    if (!buffer || (length && !data) || length > SIZE_MAX - buffer->length) return 1;\n"
@@ -112,9 +117,10 @@ fn emit_c_value_constructor() {
         + "    return (MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length);\n}\n\n";
 }
 
-/// Return the output helper only for programs that write literal values.
+/// Return output using a parameter view that bundles the argument count/pointer.
+/// Each source call prepares its arguments before invoking this helper.
 fn emit_c_output_runtime() {
-    return "static int MINI_ID(io_write)(MINI_ID(value) value) {\n"
+    return "static int MINI_ID(io_write_value)(MINI_ID(value) value) {\n"
         + "    if (value.kind == MINI_ID(kind_number)) {\n"
         + "        MINI_ID(number) number = value.number;\n"
         + "        if (!(number >= -9007199254740991.0 && number <= 9007199254740991.0)) return 0;\n"
@@ -127,7 +133,13 @@ fn emit_c_output_runtime() {
         + "        || value.text.length > buffer->length - value.text.offset) return 1;\n"
         + "    if (!value.text.length) return 0;\n"
         + "    return fwrite(buffer->data + value.text.offset, 1, value.text.length, stdout)\n"
-        + "        == value.text.length ? 0 : 1;\n}\n\n";
+        + "        == value.text.length ? 0 : 1;\n}\n\n"
+        + "static int MINI_ID(io_write)(MINI_ID(params) params) {\n"
+        + "    if (params.count && !params.args) return 1;\n"
+        + "    for (size_t index = 0; index < params.count; ++index) {\n"
+        + "        int status = MINI_ID(io_write_value)(params.args[index]);\n"
+        + "        if (status != 0) return status;\n    }\n"
+        + "    return 0;\n}\n\n";
 }
 
 /// Return a readable C string input, using fixed-width octal for other ASCII controls.
@@ -177,8 +189,8 @@ fn emit_c_number_literal(token, negative, location) {
 }
 
 /// Wrap one file's operations with local backing storage and cleanup.
-fn emit_c_file_function(index, body, literal_count) {
-    if literal_count > 0 {
+fn emit_c_file_function(index, body) {
+    if body != "" {
         body = "    MINI_ID(text_buffer) buffer = {0};\n    int status = 0;\n" + body
             + "    if (fflush(stdout) != 0) status = 1;\ncleanup:\n"
             + "    MINI_ID(text_buffer_free)(&buffer);\n    return status;\n";
@@ -204,7 +216,7 @@ fn emit_c_compile(tokens, header_name) {
     offsets := map_new();
     order := list_new();
     priorities := map_new();
-    has_output := false;
+    has_calls := false;
     literal_count := 0;
     offset := 0;
     write_name := emit_c_identifier("io_write");
@@ -227,17 +239,21 @@ fn emit_c_compile(tokens, header_name) {
         }
         parser_take(parser);
         emit_c_expect(parser, "(");
+        argument_name := emit_c_identifier("arguments_" + number_to_text(literal_count));
+        argument_body := "";
+        argument_count := 0;
+        has_calls = true;
         if map_get(parser_token(parser), "text") != ")" {
             more := true;
             while more {
                 literal := parser_token(parser);
-                name := emit_c_identifier("literal_" + number_to_text(literal_count));
+                name := argument_name + "[" + number_to_text(argument_count) + "]";
                 if map_get(literal, "kind") == "text" {
                     bytes := emit_c_literal_bytes(literal);
                     count := number_to_text(list_length(bytes));
-                    body = body + "    if (MINI_ID(text_buffer_append)(&buffer, (const unsigned char *) "
+                    argument_body = argument_body + "    if (MINI_ID(text_buffer_append)(&buffer, (const unsigned char *) "
                         + emit_c_literal_input(bytes) + ", " + count + ") != 0) { status = 1; goto cleanup; }\n"
-                        + "    const MINI_ID(value) " + name + " = MINI_VALUE_TEXT(&buffer, "
+                        + "    " + name + " = (MINI_ID(value)) MINI_VALUE_TEXT(&buffer, "
                         + number_to_text(offset) + ", " + count + ");\n";
                     offset = offset + list_length(bytes);
                 } else {
@@ -246,10 +262,9 @@ fn emit_c_compile(tokens, header_name) {
                     number := parser_token(parser);
                     if map_get(number, "kind") != "number" { emit_c_fail(number); }
                     spelling := emit_c_number_literal(number, negative, literal);
-                    body = body + "    const MINI_ID(value) " + name + " = MINI_VALUE_NUMBER(" + spelling + ");\n";
+                    argument_body = argument_body + "    " + name + " = (MINI_ID(value)) MINI_VALUE_NUMBER(" + spelling + ");\n";
                 }
-                body = body + "    if (" + write_name + "(" + name + ") != 0) { status = 1; goto cleanup; }\n";
-                has_output = true;
+                argument_count = argument_count + 1;
                 literal_count = literal_count + 1;
                 parser_take(parser);
                 more = map_get(parser_token(parser), "text") == ",";
@@ -260,6 +275,12 @@ fn emit_c_compile(tokens, header_name) {
         }
         emit_c_expect(parser, ")");
         emit_c_expect(parser, ";");
+        argument_code := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
+        if argument_count > 0 {
+            body = body + "    MINI_ID(value) " + argument_name + "[" + number_to_text(argument_count) + "];\n" + argument_body;
+            argument_code = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(argument_count) + ", " + argument_name + ")";
+        }
+        body = body + "    if (" + write_name + "(" + argument_code + ") != 0) { status = 1; goto cleanup; }\n";
         map_set(bodies, file, body);
         map_set(counts, file, literal_count);
         map_set(offsets, file, offset);
@@ -267,12 +288,12 @@ fn emit_c_compile(tokens, header_name) {
     file_index := 0;
     while file_index < list_length(order) {
         file := list_get(order, file_index);
-        files = files + emit_c_file_function(file_index, map_get(bodies, file), map_get(counts, file));
+        files = files + emit_c_file_function(file_index, map_get(bodies, file));
         calls = calls + "    if (MINI_ID(file_" + number_to_text(file_index) + ")() != 0) return 1;\n";
         file_index = file_index + 1;
     }
     runtime := "";
-    if has_output { runtime = emit_c_output_runtime(); }
+    if has_calls { runtime = emit_c_output_runtime(); }
     return "// Generated by the mini C target.\n#include \"" + header_name + "\"\n#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n#include <string.h>\n\n"
         + emit_c_value_constructor() + runtime + files + "int main(void) {\n" + calls + "    return 0;\n}\n";
 }

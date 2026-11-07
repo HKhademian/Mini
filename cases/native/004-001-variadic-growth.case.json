@@ -1,0 +1,16 @@
+{
+  "id": "native.c-variadic-growth",
+  "kind": "feature",
+  "target": "c",
+  "source": "004-001-variadic-growth.mini",
+  "features": ["target.c", "text.output", "text.literal", "number.literal", "io.variadic", "text.buffer-growth"],
+  "cases": [
+    {
+      "name": "earlier-view-survives-later-argument-growth",
+      "stdin": {"text": ""},
+      "stdout": {"text": "first:42:abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:-7\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
