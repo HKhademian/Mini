@@ -70,8 +70,10 @@ The playground switches between two JavaScript views of the same program:
   without the runtime around it. It is not runnable on its own.
 
 Both come from a single worker run; the compiler emits the second variant
-through `parser_compile_program`. A third, **Portable**, view is present but
-hidden. It appends the whole `libs/pure/reference.mini` so a program depends on
-language semantics rather than host adapters. The build expands that reference
-once into `playground/reference.js`, so the browser reads no include files.
-Keep it hidden until a host-independent runtime is a supported product.
+through `parser_compile_program`. The build bundles `libs/` into
+`playground/includes.js`, allowing examples to expand library includes in the
+browser. Other filesystem access remains unavailable. A third, **Portable**
+view is present but hidden. It appends the whole `libs/pure/reference.mini` so a
+program depends on language semantics rather than host adapters. The build
+expands that reference once into `playground/reference.js`. Keep Portable hidden
+until a host-independent runtime is a supported product.

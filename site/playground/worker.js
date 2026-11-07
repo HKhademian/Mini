@@ -26,7 +26,9 @@ function processStub() {
     throw new Error("file access is not available in the playground");
   };
   const browserFileSystem = {
-    existsSync() { return false; },
+    existsSync(path) {
+      return Object.prototype.hasOwnProperty.call(globalThis.__miniFiles ?? {}, path);
+    },
     statSync() { return { isDirectory: () => false, isFile: () => false }; },
     readdirSync: fileAccessUnavailable,
     readSync: fileAccessUnavailable,
@@ -58,7 +60,10 @@ let compiler = null;
 function loadCompiler() {
   if (compiler === null) {
     globalThis.process = processStub();
-    compiler = import("./compiler.js");
+    compiler = import("./includes.js").then(({ files }) => {
+      globalThis.__miniFiles = files;
+      return import("./compiler.js");
+    });
   }
   return compiler;
 }

@@ -2,7 +2,7 @@
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
 import { highlight, type Token } from "./highlight.js";
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 
@@ -419,6 +419,24 @@ function buildReferenceSource(): string {
     return JSON.stringify(body);
 }
 
+/// Return every Mini library source keyed by its compiler include path.
+function buildBrowserIncludes(): string {
+    const files: Record<string, string> = {};
+    function visit(directory: string, relativeDirectory: string): void {
+        for (const entry of readdirSync(directory, { withFileTypes: true })) {
+            const relativePath = relativeDirectory === "" ? entry.name : relativeDirectory + "/" + entry.name;
+            const path = join(directory, entry.name);
+            if (entry.isDirectory()) {
+                visit(path, relativePath);
+            } else if (entry.isFile() && entry.name.endsWith(".mini")) {
+                files["libs/" + relativePath] = readFileSync(path, "utf8");
+            }
+        }
+    }
+    visit(join(root, "libs"), "");
+    return `export const files = ${JSON.stringify(files).replaceAll("<", "\\u003c")};\n`;
+}
+
 /// Write a temporary module that exports the compiler without a CLI entry.
 ///
 /// The import keeps node:fs so the build can expand includes from the tree; the
@@ -569,7 +587,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       </section>
     </div>
 
-    <p class="limits">Runs in your browser. File, process, network, and <code>include</code> access are unavailable.</p>
+    <p class="limits">Runs in your browser. Bundled library includes work; custom file, process, and network access are unavailable.</p>
     <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)}</p>
   </main>
 
@@ -760,6 +778,7 @@ function main(): void {
     const playground = join(output, "playground");
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
+    writeFileSync(join(playground, "includes.js"), buildBrowserIncludes());
     const referenceTokens = buildReferenceSource();
     writeFileSync(join(playground, "reference.js"), `export const referenceTokens = ${referenceTokens.trim()};\n`);
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
