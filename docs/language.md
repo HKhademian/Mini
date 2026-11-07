@@ -130,6 +130,8 @@ include "common/text.mini";
 - Paths beginning `./` or `../` are resolved relative to the including file;
   `/path/to/file.mini` is an absolute filesystem path. Paths are canonicalized
   before use.
+- In project sources under `libs/`, use bare paths for library imports and
+  `./` only for neighbors in the same directory. Do not use `../` there.
 - Each canonical file is included at most once per compilation. A repeated
   include is a no-op. Includes may nest.
 - A cycle, a missing file, a shebang in an included file, or an include inside a
