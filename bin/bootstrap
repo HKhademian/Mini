@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 import { readFileSync, writeFileSync, writeSync } from "node:fs";
+function $mini_directory_create(path) {
+    process.getBuiltinModule("node:fs").mkdirSync(path, { recursive: true })
+    return 0;
+}
 function $mini_directory_list(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.readdirSync(path).sort(); } catch { return []; }
@@ -1816,39 +1820,13 @@ function bootstrap_step(root, label, command, args, directory) {
 }
 function bootstrap_clean_generated(root) {
 
-    let manifest_path = path_join(root, "tools/mini-tools.json");
-    let parsed = json_parse_file(manifest_path);
-    if (result_is_fail(parsed)) {
-        bootstrap_fail(result_get_message(parsed));
-    }
-    let manifest = result_get_value(parsed);
-    $mini_path_remove(path_join(root, "dist/compile.js"));
-    let tools = $mini_map_get(manifest, "tools");
-    let position = 0;
-    while ((position < (tools).length)) {
-        let tool = $mini_list_get(tools, position);
-        $mini_path_remove(path_join(root, $mini_map_get(tool, "generated")));
-        position = (position + 1);
-    }
-    let launchers = $mini_map_get(manifest, "launchers");
-    position = 0;
-    while ((position < (launchers).length)) {
-        let launcher = $mini_list_get(launchers, position);
-        let name = $mini_map_get(launcher, "name");
-        if ((name !== "bootstrap")) {
-            $mini_path_remove(path_join(root, ("bin/" + name)));
-        }
-        position = (position + 1);
-    }
-    $mini_path_remove(path_join(root, "node_modules"));
-    $mini_path_remove(path_join(root, "editors/vscode/node_modules"));
-    $mini_path_remove(path_join(root, "editors/vscode/dist/extension.cjs"));
+    bootstrap_step(root, "remove untracked and ignored project files", "git", list_of("clean", "-ffdx"), root);
     return 0;
     return 0;
 }
 function bootstrap_clean_all(root) {
 
-    io_write_line("Cleaning generated tools and locked dependencies...");
+    io_write_line("Removing all untracked and ignored project files...");
     bootstrap_clean_generated(root);
     bootstrap_step(root, "root npm ci", "npm", list_of("ci"), root);
     let editor = path_join(root, "editors/vscode");
@@ -1864,7 +1842,18 @@ function bootstrap_clean_all(root) {
     bootstrap_step(root, "VS Code TypeScript check", "npm", list_of("run", "check"), editor);
     bootstrap_step(root, "VS Code build", "npm", list_of("run", "build"), editor);
     bootstrap_step(root, "VS Code grammar tests", node, list_of("--test", "test/grammar.test.ts"), editor);
-    io_write_line("Clean rebuild and full project checks passed.");
+    let versions_result = json_parse_file(path_join(root, "config/versions.json"));
+    if (result_is_fail(versions_result)) {
+        bootstrap_fail(result_get_message(versions_result));
+    }
+    let versions = result_get_value(versions_result);
+    let package_name = (((("mini-" + $mini_map_get(versions, "group")) + "-v") + $mini_map_get(versions, "vscode")) + ".vsix");
+    let output_directory = path_join(root, "dist/rebuild");
+    $mini_directory_create(output_directory);
+    let package_path = path_join(output_directory, package_name);
+    let vsce = path_join(editor, "node_modules/@vscode/vsce/vsce");
+    bootstrap_step(root, "VS Code VSIX package", node, list_of(vsce, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", package_path), editor);
+    io_write_line(("Clean rebuild and full project checks passed. VSIX: dist/rebuild/" + package_name));
     return 0;
     return 0;
 }

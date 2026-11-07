@@ -17,11 +17,13 @@ rebuilds `dist/compile.js`, verifies the compiler fixed point, compiles
 ./bin/mini verify
 ```
 
-For a full clean rebuild, run `./bin/bootstrap --clean`. It removes generated
-tool outputs, the root and VS Code dependency installs, and the VS Code bundle;
-then it reinstalls locked dependencies, rebuilds the compiler and tools, and
-runs repository, case, unit, LSP, release, and editor checks. Local release
-artifacts and previews are preserved.
+For a full clean rebuild, run `./bin/bootstrap --clean`. It runs `git clean
+-ffdx` from the project root, removing every untracked and ignored item in the
+checkout, including dependency installs, generated tools, caches, prior local
+packages, and previews. Tracked source files and tracked edits are preserved.
+It then reinstalls locked dependencies, rebuilds the compiler and tools, runs
+repository, case, unit, LSP, release, and editor checks, and packages the VS
+Code extension to `dist/rebuild/mini-GROUP-vVERSION.vsix`.
 
 `dist/` and generated `bin/` entries are ignored by Git. CI bootstraps before
 running checks and publishes built tools and release artifacts.
