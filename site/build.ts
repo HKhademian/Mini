@@ -566,7 +566,10 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <span id="status" role="status" aria-live="polite" data-kind="ok">ready</span>
         </div>
         <p class="sample-meta" id="sample-meta" hidden></p>
-        <textarea id="source" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="mini source"></textarea>
+        <div class="source-editor">
+          <pre id="source-highlight" aria-hidden="true"><code></code></pre>
+          <textarea id="source" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="mini source"></textarea>
+        </div>
         <div class="controls">
           <button id="run" type="button">Run</button>
           <button id="reset" class="ghost" type="button">Reset</button>
@@ -612,6 +615,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     import { lex_tokenize } from "../playground/compiler.js";
     const samples = ${serialized};
     const source = document.getElementById("source");
+    const sourceHighlight = document.querySelector("#source-highlight code");
+    const sourceHighlightPane = document.getElementById("source-highlight");
     const select = document.getElementById("samples");
     const runButton = document.getElementById("run");
     const resetButton = document.getElementById("reset");
@@ -647,6 +652,16 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       if (sample.stdin !== "") parts.push("stdin: " + JSON.stringify(sample.stdin));
       meta.textContent = parts.join("  ·  ");
       meta.hidden = false;
+    }
+
+    function syncSourceHighlightScroll() {
+      sourceHighlightPane.scrollTop = source.scrollTop;
+      sourceHighlightPane.scrollLeft = source.scrollLeft;
+    }
+
+    function updateSourceHighlight() {
+      sourceHighlight.innerHTML = highlight(source.value, lex_tokenize);
+      syncSourceHighlightScroll();
     }
 
     function clear() {
@@ -727,12 +742,15 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     function showSample() {
       const sample = samples[Number(select.value)];
       source.value = sample.source;
+      updateSourceHighlight();
       describeSample(sample);
       history.replaceState(null, "", "?sample=" + encodeURIComponent(sample.id));
       run();
     }
 
     select.addEventListener("change", showSample);
+    source.addEventListener("input", updateSourceHighlight);
+    source.addEventListener("scroll", syncSourceHighlightScroll);
     resetButton.addEventListener("click", showSample);
     runButton.addEventListener("click", run);
     tabOutput.addEventListener("click", function () { showTab(false); });
@@ -753,6 +771,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         const start = source.selectionStart;
         const end = source.selectionEnd;
         source.setRangeText("    ", start, end, "end");
+        updateSourceHighlight();
       }
       if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
         event.preventDefault();
@@ -765,6 +784,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const initial = found >= 0 ? found : 0;
     select.value = String(initial);
     source.value = samples[initial].source;
+    updateSourceHighlight();
     describeSample(samples[initial]);
     history.replaceState(null, "", "?sample=" + encodeURIComponent(samples[initial].id));
     run();
