@@ -1,0 +1,25 @@
+{
+  "id": "native.c-literal-trigraph",
+  "kind": "feature",
+  "target": "c",
+  "source": "001-013-literal-trigraph.mini",
+  "features": [
+    "target.c",
+    "text.literal"
+  ],
+  "cases": [
+    {
+      "name": "question-marks-remain-bytes",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "??/007\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

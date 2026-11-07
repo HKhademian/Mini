@@ -25,7 +25,8 @@ io_write("hello from C\n");
 
 Expected stdout is hello from C followed by a newline, with status zero.
 Nearby cases cover empty text, escapes, and rejection of an unsupported form.
-The first slice needs no functions or heap allocation. Runner model, general
+The first slice needs no source-level functions. Text uses a growable byte buffer;
+literal spellings are only initialization inputs. Runner model, general
 memory strategy, Unicode indexing, and a complete embedding API do not block it.
 
 The first accepted native slice is top-level io_write calls with zero or more

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.11 / compiler 0.4.0-alpha.12 / bootstrap 0.2.0-alpha.14:
+  back text views with an owned growable byte buffer. Keep ordinary literals
+  readable in C, escape controls/trigraphs, preserve views across growth, and
+  release invocation storage on completion or failure.
+
 - mini 0.2.0-alpha.10 / compiler 0.4.0-alpha.11 / bootstrap 0.2.0-alpha.13:
   use MINI_ID directly for generated C types and emit companion .c/.h files.
   Native builds add an adjacent .i using cc -E and compile that expanded input,

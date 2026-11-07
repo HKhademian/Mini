@@ -32,8 +32,9 @@ Native case execution requires `cc` on PATH. C rejects `--reference` and
 
 The Mini-written C emitter first runs shared language validation, then performs
 a bounded token walk for the supported slice. It uses tagged text values with
-static byte arrays and explicit lengths, preserving embedded NUL/control bytes
-without heap allocation. This second walk avoids a whole-compiler rewrite;
+growable byte-buffer backing and offset/length text views. Readable C literals
+initialize that backing; raw control bytes are escaped without losing their
+lengths. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection
 does not create or replace either output file.
 
@@ -76,24 +77,30 @@ flag is needed. `main` and C standard-library names keep their required names.
 Types are named directly as `MINI_ID(value)`, `MINI_ID(text)`, and
 `MINI_ID(value_kind)`, using the same convention as functions, tags, and storage.
 There is no separate type-alias macro layer. The anonymous union exposes text as
-`value.text`. `MINI_VALUE_TEXT(data, length)` is a brace initializer that works
+`value.text`. `MINI_VALUE_TEXT(buffer, offset, length)` is a brace initializer that works
 in static declarations. Its arguments each occur once. Use a typed cast for
 an expression, or call the constructor function:
 
 ```c
-static const MINI_ID(value) saved = MINI_VALUE_TEXT(bytes, 2);
-MINI_ID(value) current = MINI_ID(value_text)(bytes, 2);
-consume((MINI_ID(value)) MINI_VALUE_TEXT(bytes, 2));
+static MINI_ID(text_buffer) buffer = {0};
+static const MINI_ID(value) saved = MINI_VALUE_TEXT(&buffer, 0, 2);
+/* Fill buffer before reading the view. */
+MINI_ID(value) current = MINI_ID(value_text)(&buffer, 0, 2);
+consume((MINI_ID(value)) MINI_VALUE_TEXT(&buffer, 0, 2));
 ```
 
 These lines assume the generated types and the shown host variables/functions
 are available. The constructor function itself returns
-`(MINI_ID(value)) MINI_VALUE_TEXT(data, length)`: the macro supplies construction;
+`(MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length)`: the macro supplies construction;
 it does not call the function. This preserves static initialization and gives
 runtime callers a function wrapper. Other value factories follow this pattern
 when their kinds are implemented; numeric lowering remains unsupported.
-Text construction creates a borrowed view; it does not copy or take ownership
-of the byte buffer, which must remain valid while the value is used.
+`text_buffer_append` allocates/grows owned storage and copies input bytes into it.
+Views retain a buffer-object reference and offsets, so growth does not invalidate
+them. The buffer object must stay alive; `text_buffer_free` releases its storage
+and resets it, invalidating its views. Current programs keep one buffer for their
+invocation and free it on normal completion or output/allocation failure. No
+general collector or persistent host-value lifetime is implied.
 
 Run it directly with Node:
 

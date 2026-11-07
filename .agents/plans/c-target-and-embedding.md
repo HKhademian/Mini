@@ -69,6 +69,10 @@ compiler.
   Mini; native storage support belongs to the backend.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
   storage/views are implementation responsibilities.
+- Native text now uses an owned growable byte buffer with offset/length views.
+  Readable C literals initialize the backing. Growth preserves existing views;
+  invocation cleanup frees it. Host cases cover growth, offset views, self-append,
+  overflow rejection, and repeated cleanup. A general collector remains deferred.
 - Add no language exceptions, interrupts, error values, or recovery constructs.
 - Start with small feature implementations and simple samples, then expand.
 - Postpone tree-versus-stack until the runner stage. Resolve broader semantics
