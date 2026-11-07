@@ -23,17 +23,6 @@ builtin_add(
     "$mini_file_read_bytes({0})"
 );
 builtin_add(
-    "file_remove",
-    "text",
-    "number",
-    "essential",
-    "",
-    "file_remove",
-    "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true })\n    return 0;\n}\n",
-    "",
-    "$mini_file_remove({0})"
-);
-builtin_add(
     "file_write",
     "text,text",
     "number",

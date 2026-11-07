@@ -733,6 +733,8 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```text
+include "libs/common/path.mini";
+
 node := process_exec_path();
 directory := path_temp_directory();
 file_write(directory + "/note.txt", "value\n");
@@ -744,11 +746,11 @@ directory_remove(directory);
   executable. It takes no arguments.
 - `path_temp_directory()` creates and returns a fresh empty directory under the host
   temporary directory. It takes no arguments.
-- `file_remove(path)` removes a file when present and ignores a missing path.
-  It returns 0.
-- `directory_remove(path)` removes an empty directory when present and ignores a
-  missing path. It returns 0; removing a non-empty directory is a host
-  error.
+- `file_remove(path)` and `directory_remove(path)` are helpers from
+  `libs/common/path.mini`; include that file when using them. They call
+  `path_remove(path)` only after checking the path kind and, for directories,
+  that the directory is empty.
+- `directory_remove(path)` leaves non-empty directories untouched.
 
 ## Accepted operation: diagnostic output
 

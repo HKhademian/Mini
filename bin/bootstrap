@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 "use strict";
 import { readFileSync, writeFileSync, writeSync } from "node:fs";
+function $mini_directory_list(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    try { return fs.readdirSync(path).sort(); } catch { return []; }
+}
 function $mini_file_read_bytes(path) {
     return Array.from(process.getBuiltinModule("node:fs").readFileSync(path));
 }
@@ -109,6 +113,10 @@ function $mini_number_to_text(value) {
 function $mini_path_copy(from, to) {
     process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
     return 0;
+}
+function $mini_path_is_directory(path) {
+    const fs = process.getBuiltinModule("node:fs");
+    try { return fs.statSync(path).isDirectory(); } catch { return false; }
 }
 function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
@@ -486,6 +494,22 @@ function path_temp_file() {
     let path = path_join($mini_path_temp_directory(), "file");
     (writeFileSync(path, "", "utf8"), 0);
     return path;
+    return 0;
+}
+function file_remove(path) {
+
+    if ((((path !== "") && $mini_path_is_exists(path)) && (!$mini_path_is_directory(path)))) {
+        return $mini_path_remove(path);
+    }
+    return 0;
+    return 0;
+}
+function directory_remove(path) {
+
+    if ((((path !== "") && $mini_path_is_directory(path)) && (($mini_directory_list(path)).length === 0))) {
+        return $mini_path_remove(path);
+    }
+    return 0;
     return 0;
 }
 function path_parent(path) {
@@ -873,10 +897,8 @@ function builtin_add(name, parameters, result, layer, import_name, helper_key, h
 }
 builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
 builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
-builtin_add("directory_remove", "text", "number", "essential", "", "directory_remove", "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path)\n    return 0;\n}\n", "", "$mini_directory_remove({0})");
 builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
 builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
-builtin_add("file_remove", "text", "number", "essential", "", "file_remove", "function $mini_file_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && !fs.statSync(path).isDirectory()) fs.rmSync(path, { force: true })\n    return 0;\n}\n", "", "$mini_file_remove({0})");
 builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
 builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
 builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");

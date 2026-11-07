@@ -205,10 +205,11 @@ running Node executable path and create a fresh empty directory under the host
 temporary directory. `path_temp_file()` is a Mini helper in
 [libs/common/path.mini](../libs/common/path.mini); it creates one empty file in a
 fresh temporary directory and returns the file path. Include that file to use
-the helper. `file_remove(path)` removes a file when present and ignores
-a missing path. `directory_remove(path)` removes an empty directory when present
-and ignores a missing path; a non-empty directory remains a host error. These
-operations back tool process setup and cleanup.
+the helper. The same library defines `file_remove(path)` and
+`directory_remove(path)` on top of the `path_remove(path)` builtin. `file_remove`
+skips directories; `directory_remove` removes only empty directories and leaves
+non-empty paths untouched. `path_remove` removes a file or directory tree
+recursively. These helpers support tool process setup and cleanup.
 `process_env(name)` covers the environment need; a bulk `process_envs()` map remains
 unnecessary until a concrete caller needs it.
 

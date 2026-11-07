@@ -1,9 +1,9 @@
 {
-  "id": "language.file-remove-type",
+  "id": "language.path-remove-type",
   "kind": "reject",
-  "source": "050-002-file-remove-type.mini",
+  "source": "050-002-path-remove-type.mini",
   "features": [
-    "file.remove"
+    "path.remove"
   ],
   "cases": [
     {
@@ -15,7 +15,7 @@
         "text": ""
       },
       "stderr": {
-        "file": "050-002-file-remove-type.stderr"
+        "file": "050-002-path-remove-type.stderr"
       },
       "exitCode": 1
     }

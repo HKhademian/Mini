@@ -21,6 +21,22 @@ fn path_temp_file() {
     return path;
 }
 
+/// Remove a file when present; leave directories unchanged.
+fn file_remove(path) {
+    if path != "" && path_is_exists(path) && !path_is_directory(path) {
+        return path_remove(path);
+    }
+    return 0;
+}
+
+/// Remove an empty directory when present; leave non-empty paths unchanged.
+fn directory_remove(path) {
+    if path != "" && path_is_directory(path) && list_length(directory_list(path)) == 0 {
+        return path_remove(path);
+    }
+    return 0;
+}
+
 /// Return the parent directory of a path.
 fn path_parent(path) {
     position := text_length(path) - 1;

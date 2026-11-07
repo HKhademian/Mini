@@ -21,14 +21,3 @@ builtin_add(
     "",
     "$mini_directory_list({0})"
 );
-builtin_add(
-    "directory_remove",
-    "text",
-    "number",
-    "essential",
-    "",
-    "directory_remove",
-    "function $mini_directory_remove(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    if (path !== \"\" && fs.existsSync(path) && fs.statSync(path).isDirectory()) fs.rmdirSync(path)\n    return 0;\n}\n",
-    "",
-    "$mini_directory_remove({0})"
-);
