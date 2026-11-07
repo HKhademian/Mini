@@ -1,8 +1,8 @@
-include "../common/text.mini";
-include "../common/list.mini";
-include "../compiler/lexer.mini";
-include "../compiler/parser.mini";
-include "../compiler/builtins.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "compiler/lexer.mini";
+include "compiler/parser.mini";
+include "compiler/builtins.mini";
 /// Format one mini source file or standard input.
 /// The bundled lexer and parser validate the source first, then the
 /// comment-preserving token stream is rendered with the fixed style contract.

@@ -1,7 +1,7 @@
-include "../common/path.mini";
-include "../common/list.mini";
-include "../common/process-run.mini";
-include "../common/text.mini";
+include "common/path.mini";
+include "common/list.mini";
+include "common/process-run.mini";
+include "common/text.mini";
 /// Compile and run one mini source in a temporary module.
 /// Usage: node dist/run.js COMPILER.js SOURCE.mini [ARG]...
 /// The compiler path is the active generated compiler; the remaining arguments

@@ -1,9 +1,9 @@
-include "../common/text.mini";
-include "../common/list.mini";
-include "../common/path.mini";
-include "../common/process.mini";
-include "../common/json.mini";
-include "../common/project.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "common/path.mini";
+include "common/process.mini";
+include "common/json.mini";
+include "common/project.mini";
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
     workspace := process_env("GITHUB_WORKSPACE");

@@ -1,8 +1,8 @@
-include "../common/text.mini";
-include "../common/list.mini";
-include "../compiler/lexer.mini";
-include "../compiler/parser.mini";
-include "../compiler/builtins.mini";
+include "common/text.mini";
+include "common/list.mini";
+include "compiler/lexer.mini";
+include "compiler/parser.mini";
+include "compiler/builtins.mini";
 /// Validate one mini source text; diagnostics end the process on failure.
 fn check_source_text(source, name, base) {
     tokens := lex_tokenize(source, name, false);
