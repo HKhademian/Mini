@@ -1,0 +1,3 @@
+io_write("second-before\n");
+include "./061-002-file-initialization-order-leaf.mini";
+io_write("second-after\n");

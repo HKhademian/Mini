@@ -1,0 +1,27 @@
+{
+  "id": "language.file-initialization-order",
+  "kind": "feature",
+  "source": "061-002-file-initialization-order.mini",
+  "features": [
+    "include",
+    "include.initialization",
+    "include.once",
+    "include.nested",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "leaf\nfirst-before\nfirst-after\nsecond-before\nsecond-after\nroot-before\nroot-after\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

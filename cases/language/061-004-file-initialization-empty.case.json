@@ -1,0 +1,25 @@
+{
+  "id": "language.file-initialization-empty",
+  "kind": "feature",
+  "source": "061-004-file-initialization-empty.mini",
+  "features": [
+    "include",
+    "include.initialization",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "before\nafter\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

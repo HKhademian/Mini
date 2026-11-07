@@ -1,0 +1,15 @@
+{
+  "id": "language.file-initialization-parent-binding",
+  "kind": "feature",
+  "source": "061-006-file-initialization-parent-binding.mini",
+  "features": ["include", "include.initialization", "binding", "function.call", "text.output"],
+  "cases": [
+    {
+      "name": "including-file-binding-visible-in-helper",
+      "stdin": {"text": ""},
+      "stdout": {"text": "40\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

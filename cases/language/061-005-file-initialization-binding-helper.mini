@@ -1,0 +1,5 @@
+initialized_value := 40;
+io_write("dependency|");
+fn read_initialized_value() {
+    return initialized_value;
+}

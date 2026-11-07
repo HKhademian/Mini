@@ -119,7 +119,7 @@ io_write("ok\n");
 
 ## Accepted form: include directive
 
-A top-level directive splices another mini source into the current compilation:
+A top-level directive includes another mini source in the current compilation:
 
 ```mini
 include "common/text.mini";
@@ -139,9 +139,16 @@ include "common/text.mini";
   block is a compilation error. The entry file may keep a shebang.
 - Included tokens keep their written include path as their source name, so
   diagnostics name the included file.
-- `include` adds no values, namespaces, or runtime behavior. `tokens` reports
-  directives unexpanded; `compile` expands them before parsing. Formatting keeps
-  directives and does not inline files.
+- Operations outside named functions belong to an implicit file function.
+  The generated entry calls these functions once: dependencies first, recursively
+  in include order, then the including file. Each file's operations keep their
+  source order, including operations written before its includes.
+- Named functions remain available across included files. File functions add no
+  namespace or binding isolation. Declaration checking retains textual include
+  order; the execution schedule does not add forward binding declarations.
+- Empty files have no operations to execute; their no-op initializer may be omitted.
+- `tokens` reports directives unexpanded; `compile` expands them before parsing.
+  Formatting keeps directives and does not inline files.
 
 ## Accepted form: bindings and assignment
 

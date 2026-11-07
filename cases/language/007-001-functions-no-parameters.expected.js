@@ -1,6 +1,13 @@
 "use strict";
+let position;
 function start() {
 
     return 0;
 }
-let position = start();
+function $mini_file_0() {
+    position = start();
+}
+function $mini_main() {
+    $mini_file_0();
+}
+$mini_main();

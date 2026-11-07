@@ -64,4 +64,14 @@ function join(left, right) {
 
     return (left + right);
 }
-io_write_line($mini_number_to_text((join("a", 0)).length));
+function $mini_file_0() {
+
+}
+function $mini_file_1() {
+    io_write_line($mini_number_to_text((join("a", 0)).length));
+}
+function $mini_main() {
+    $mini_file_0();
+    $mini_file_1();
+}
+$mini_main();

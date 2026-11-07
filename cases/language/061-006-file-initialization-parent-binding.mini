@@ -1,0 +1,3 @@
+parent_value := 40;
+include "./061-006-file-initialization-parent-binding-helper.mini";
+io_write(read_parent_value(), "\n");

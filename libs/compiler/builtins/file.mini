@@ -1,4 +1,6 @@
 /// File builtin descriptors.
+include "./registry.mini";
+
 //
 
 builtin_add(

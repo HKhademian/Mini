@@ -1,0 +1,4 @@
+io_write("root-before\n");
+include "./061-002-file-initialization-order-first.mini";
+include "./061-002-file-initialization-order-second.mini";
+io_write("root-after\n");

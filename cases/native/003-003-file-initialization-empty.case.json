@@ -1,0 +1,27 @@
+{
+  "id": "native.c.file-initialization-empty",
+  "kind": "feature",
+  "target": "c",
+  "source": "003-003-file-initialization-empty.mini",
+  "features": [
+    "include",
+    "include.initialization",
+    "text.output",
+    "target.c"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "before\nafter\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+fn read_parent_value() {
+    return parent_value;
+}

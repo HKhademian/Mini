@@ -1,0 +1,3 @@
+io_write("before\n");
+include "./003-003-file-initialization-empty-helper.mini";
+io_write("after\n");

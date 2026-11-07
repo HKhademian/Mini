@@ -372,6 +372,10 @@ fn parser_statement(parser) {
         parser_expect(parser, ";");
         map_set(variables, map_get(statement_name, "text"), map_get(declaration_value, "kind"));
         map_set(map_get(parser, "declared"), map_get(statement_name, "text"), true);
+        if map_get(parser, "emit_helpers") && map_get(parser, "depth") == 0 && !map_get(parser, "in_function") {
+            map_set(parser, "globals", map_get(parser, "globals") + "let " + map_get(statement_name, "text") + ";\n");
+            return map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+        }
         return "let " + map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
     }
     if !map_has(variables, map_get(statement_name, "text")) {
@@ -518,6 +522,30 @@ fn parser_helper_blocks(helpers) {
     return builtin_used_helper_blocks(helpers);
 }
 
+/// Return canonical file identity when includes supplied it, otherwise source identity.
+fn parser_file_key(token) {
+    if map_has(token, "file") { return map_get(token, "file"); }
+    return map_get(token, "source");
+}
+
+/// Register a file once, ordered after its dependencies for execution.
+/// Validation still follows the original expanded token/declaration order.
+fn parser_file_register(order, priorities, token) {
+    file := parser_file_key(token);
+    if !map_has(priorities, file) {
+        priority := 0;
+        if map_has(token, "file_order") { priority = map_get(token, "file_order"); }
+        index := list_length(order);
+        while index > 0 && map_get(priorities, list_get(order, index - 1)) > priority {
+            list_set(order, index, list_get(order, index - 1));
+            index = index - 1;
+        }
+        list_set(order, index, file);
+        map_set(priorities, file, priority);
+    }
+    return file;
+}
+
 /// Parse the token list and return the complete TypeScript program.
 fn parser_program(parser) {
     shebang := "";
@@ -526,12 +554,26 @@ fn parser_program(parser) {
         shebang = "#!/usr/bin/env node\n";
     }
     output := "";
+    declarations := "";
+    files := map_new();
+    order := list_new();
+    priorities := map_new();
     tokens := map_get(parser, "tokens");
     main_source := map_get(list_get(tokens, list_length(tokens) - 1), "source");
     while map_get(parser_token(parser), "kind") != "eof" {
         token := parser_token(parser);
         statement := parser_statement(parser);
-        if map_get(parser, "emit_helpers") || map_get(token, "source") == main_source {
+        if map_get(parser, "emit_helpers") {
+            file := parser_file_register(order, priorities, token);
+            if !map_has(files, file) {
+                map_set(files, file, "");
+            }
+            if map_get(token, "text") == "fn" {
+                declarations = declarations + statement;
+            } else {
+                map_set(files, file, map_get(files, file) + statement);
+            }
+        } else if map_get(token, "source") == main_source {
             output = output + statement;
         }
     }
@@ -545,7 +587,19 @@ fn parser_program(parser) {
         helper_text = parser_helper_blocks(map_get(parser, "helpers"));
     }
     if map_get(parser, "emit_helpers") {
-        return shebang + "\"use strict\";\n" + import_text + helper_text + output;
+        calls := "";
+        index := 0;
+        while index < list_length(order) {
+            name := "$mini_file_" + number_to_text(index);
+            output = output + "function " + name + "() {\n"
+                + indent_output(map_get(files, list_get(order, index))) + "\n}\n";
+            calls = calls + "    " + name + "();\n";
+            index = index + 1;
+        }
+        if list_length(order) > 0 {
+            output = output + "function $mini_main() {\n" + calls + "}\n$mini_main();\n";
+        }
+        return shebang + "\"use strict\";\n" + import_text + helper_text + map_get(parser, "globals") + declarations + output;
     }
     return output;
 }
@@ -554,6 +608,7 @@ fn parser_program(parser) {
 fn parser_new(tokens) {
     parser := map_new();
     map_set(parser, "tokens", tokens);
+    map_set(parser, "globals", "");
     map_set(parser, "position", 0);
     map_set(parser, "variables", map_new());
     map_set(parser, "functions", map_new());

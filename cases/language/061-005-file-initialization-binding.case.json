@@ -1,0 +1,28 @@
+{
+  "id": "language.file-initialization-binding",
+  "kind": "feature",
+  "source": "061-005-file-initialization-binding.mini",
+  "features": [
+    "include",
+    "include.initialization",
+    "binding",
+    "binding.assignment",
+    "function.call",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "dependency|40|42\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

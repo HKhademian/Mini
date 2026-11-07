@@ -1,0 +1,3 @@
+include "./003-002-file-initialization-once-helper.mini";
+include "././003-002-file-initialization-once-helper.mini";
+io_write("root:", 2, "\n");

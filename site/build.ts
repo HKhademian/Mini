@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { highlight, type Token } from "./highlight.js";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { dirname, join, relative } from "node:path";
 
 type PlaygroundEntry = {
     readonly id: string;
@@ -73,7 +73,7 @@ const shortCommit = sourceCommit.slice(0, 12);
 /// The CLI entry is stripped first; importing it directly would run main().
 const compilerModule = await import(browserCompilerModule()) as {
     readonly lex_tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
-    readonly lex_expand_includes: (tokens: readonly Token[], base: string, stack: readonly string[], seen: object) => readonly Token[];
+    readonly lex_expand_includes: (tokens: readonly Token[], base: string, stack: readonly string[], seen: object) => readonly (Token & { readonly file?: string })[];
 };
 
 const lexTokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.lex_tokenize(source, name, comments);
@@ -387,7 +387,7 @@ function browserCompilerSource(): string {
     }
     const source = readFileSync(path, "utf8");
     const importLine = 'import { readFileSync, writeFileSync, writeSync } from "node:fs";';
-    if (!source.includes(importLine) || !/main\(.*\);\s*$/.test(source)) {
+    if (!source.includes(importLine) || !source.includes("    main(process.argv.slice(2));\n")) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
     for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function parser_compile(", "function parser_compile_program("]) {
@@ -396,7 +396,7 @@ function browserCompilerSource(): string {
         }
     }
     return source
-        .replace(/main\(.*\);\s*$/, "")
+        .replace("    main(process.argv.slice(2));\n", "")
         + "\nexport { lex_tokenize, lex_expand_includes, parser_compile, parser_compile_program };\n";
 }
 
@@ -425,7 +425,8 @@ function buildReferenceSource(): string {
     const path = join(root, "libs", "pure", "reference.mini");
     const tokens = compilerModule.lex_tokenize(readFileSync(path, "utf8"), path, false);
     const expanded = compilerModule.lex_expand_includes(tokens, path, [], Object.create(null));
-    const body = expanded.filter((token) => token.kind !== "eof");
+    const body = expanded.filter((token) => token.kind !== "eof")
+        .map((token) => token.file === undefined ? token : { ...token, file: relative(root, token.file) });
     return JSON.stringify(body);
 }
 

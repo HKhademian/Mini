@@ -1,0 +1,27 @@
+{
+  "id": "language.file-initialization-once",
+  "kind": "feature",
+  "source": "061-003-file-initialization-once.mini",
+  "features": [
+    "include",
+    "include.once",
+    "include.canonical-path",
+    "function.call",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "dependency\nfunction\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

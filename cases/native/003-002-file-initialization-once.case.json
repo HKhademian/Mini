@@ -1,0 +1,29 @@
+{
+  "id": "native.c.file-initialization-once",
+  "kind": "feature",
+  "target": "c",
+  "source": "003-002-file-initialization-once.mini",
+  "features": [
+    "target.c",
+    "include",
+    "include.once",
+    "include.canonical-path",
+    "number.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "dependency:1\nroot:2\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

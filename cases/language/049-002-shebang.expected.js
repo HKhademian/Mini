@@ -61,4 +61,14 @@ function io_write_line() {
     }
     return $mini_io_write("\n");
 }
-io_write_line("ok");
+function $mini_file_0() {
+
+}
+function $mini_file_1() {
+    io_write_line("ok");
+}
+function $mini_main() {
+    $mini_file_0();
+    $mini_file_1();
+}
+$mini_main();

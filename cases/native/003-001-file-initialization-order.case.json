@@ -1,0 +1,30 @@
+{
+  "id": "native.c.file-initialization-order",
+  "kind": "feature",
+  "target": "c",
+  "source": "003-001-file-initialization-order.mini",
+  "features": [
+    "include",
+    "include.initialization",
+    "include.once",
+    "include.nested",
+    "text.output",
+    "target.c",
+    "number.literal"
+  ],
+  "cases": [
+    {
+      "name": "initialization",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "leaf:1\nfirst-before:2\nfirst-after:3\nsecond-before:6\nsecond-after:7\nroot-before:4\nroot-after:5\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

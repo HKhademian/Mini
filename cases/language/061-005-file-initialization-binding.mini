@@ -1,0 +1,4 @@
+include "./061-005-file-initialization-binding-helper.mini";
+io_write(initialized_value, "|");
+initialized_value = 42;
+io_write(read_initialized_value(), "\n");

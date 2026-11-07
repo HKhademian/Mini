@@ -84,6 +84,19 @@ compiler.
   final native 20/20 and native unit 1/1, bootstrap fixed point, playground build,
   and strict C11 host checks with address/undefined-behavior sanitizers pass.
   Bindings and arithmetic remain unsupported; Step 3 stays in progress.
+- 2026-11-07: implemented implicit file initialization in both targets. A
+  generated entry calls files once in dependency-first include order, preserving
+  each file's operation order even before includes. Named functions and existing
+  shared binding visibility remain unchanged. Textual declaration checks are
+  separate from initializer scheduling. Builtin registry state is now a shared
+  dependency, initialized before descriptor files. The browser retains registry
+  initialization while suppressing the compiler CLI operation.
+  Parent and agent review covered initialization order and binding visibility;
+  eight focused cases cover nesting, aliases, empty files, and shared bindings.
+  Verification: 439/439 scenarios, four existing proposals pending, 6/6 units,
+  17/17 LSP/release tests, repository/bootstrap fixed point, playground build,
+  and strict C11 multi-file host sanitizer checks pass. No C binding/arithmetic
+  support is added by this initialization increment.
 - Add no language exceptions, interrupts, error values, or recovery constructs.
 - Start with small feature implementations and simple samples, then expand.
 - Postpone tree-versus-stack until the runner stage. Resolve broader semantics

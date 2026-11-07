@@ -3,39 +3,7 @@
 include "common/list.mini";
 include "common/text.mini";
 
-builtin_names_list := list_new();
-builtin_name_set := map_new();
-builtin_parameter_kinds := map_new();
-builtin_result_kinds := map_new();
-builtin_import_names := map_new();
-builtin_helper_keys := map_new();
-builtin_classes := map_new();
-builtin_helpers := map_new();
-builtin_helper_order := list_new();
-builtin_reference_targets := map_new();
-builtin_emit_forms := map_new();
-
-/// Register one builtin descriptor.
-fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
-    list_set(builtin_names_list, list_length(builtin_names_list), name);
-    map_set(builtin_name_set, name, true);
-    map_set(builtin_parameter_kinds, name, parameters);
-    map_set(builtin_result_kinds, name, result);
-    map_set(builtin_import_names, name, import_name);
-    map_set(builtin_helper_keys, name, helper_key);
-    map_set(builtin_classes, name, layer);
-    map_set(builtin_emit_forms, name, emit_form);
-    if helper_key != "" {
-        map_set(builtin_helpers, helper_key, helper);
-        if !list_contains(builtin_helper_order, helper_key) {
-            list_set(builtin_helper_order, list_length(builtin_helper_order), helper_key);
-        }
-    }
-    if reference != "" {
-        map_set(builtin_reference_targets, name, reference);
-    }
-    return 0;
-}
+include "./builtins/registry.mini";
 
 include "./builtins/directory.mini";
 include "./builtins/file.mini";

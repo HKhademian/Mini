@@ -225,10 +225,12 @@ fn lex_resolve_include(base, path) {
 }
 
 
-/// Splice included files into a token stream. Includes are top-level,
-/// include-once, and rejected on cycles or missing files.
+/// Expand includes in place for declaration checks, retaining canonical file
+/// identity and dependency-first initialization order on each file's tokens.
+/// Includes are top-level, include-once, and reject cycles or missing files.
 fn lex_expand_includes(tokens, base, stack, seen) {
     output := list_new();
+    own := list_new();
     position := 0;
     depth := 0;
     while position < list_length(tokens) {
@@ -244,6 +246,7 @@ fn lex_expand_includes(tokens, base, stack, seen) {
             && map_get(list_get(tokens, position + 1), "kind") == "text"
             && map_get(list_get(tokens, position + 2), "text") == ";";
         if !is_include {
+            list_set(own, list_length(own), token);
             list_set(output, list_length(output), token);
             position = position + 1;
         } else {
@@ -285,5 +288,15 @@ fn lex_expand_includes(tokens, base, stack, seen) {
             position = position + 3;
         }
     }
+    order := 0;
+    if map_has(seen, "$file_count") { order = map_get(seen, "$file_count"); }
+    index := 0;
+    while index < list_length(own) {
+        token := list_get(own, index);
+        map_set(token, "file", base);
+        map_set(token, "file_order", order);
+        index = index + 1;
+    }
+    map_set(seen, "$file_count", order + 1);
     return output;
 }

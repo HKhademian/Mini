@@ -1,4 +1,6 @@
 /// Path builtin descriptors.
+include "./registry.mini";
+
 //
 
 builtin_add(

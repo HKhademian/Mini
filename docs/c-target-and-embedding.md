@@ -35,6 +35,8 @@ Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Bindings, arithmetic, and other expressions remain
 unsupported by this slice. C output is written only after
 the whole source passes shared language checks and native subset validation.
+Top-level operations are grouped into per-file functions; one generated main
+runs them once, dependencies first, with each file's operations in source order.
 The [native case fixtures](../cases/native/) execute this slice through the
 shared runner: Mini compilation, strict C11 compilation with cc, and native
 execution. Their target field selects C; future target gaps stay explicit.

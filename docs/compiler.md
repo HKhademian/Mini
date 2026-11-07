@@ -41,6 +41,22 @@ lengths. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection
 does not create or replace either output file.
 
+### File initialization
+
+Both targets put operations outside named functions into generated per-file
+functions. One generated entry invokes them once in dependency-first order,
+following include order recursively, then the entry file. Operations within a
+file keep their source order, even when written before an include. Named
+functions stay outside these wrappers. Declaration checks still follow textual
+include order, preserving existing shared binding visibility.
+
+C uses `MINI_ID(file_0)`, `MINI_ID(file_1)`, and so on, called by `main`.
+JavaScript uses compiler-reserved names for file functions and its generated
+entry; shared top-level bindings are declared outside the wrappers and assigned
+inside their file function. No new language scope is introduced. Empty files
+need no initializer. The playground's Program only view remains a flat view of
+the entry source; runnable output includes file initialization.
+
 ### Native build artifacts
 
 Native case builds perform preprocessing immediately before compilation:
