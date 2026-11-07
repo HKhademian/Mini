@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.6 / language 0.4.0-alpha.3 / compiler 0.4.0-alpha.7 /
+  builtins 0.4.0-alpha.4 / bootstrap 0.2.0-alpha.9: make direct I/O conversion
+  match `number_to_text` and `json_to_text`, and verify that multiple values
+  write the same bytes as separate calls.
+
 - mini 0.2.0-alpha.5 / language 0.4.0-alpha.2 / compiler 0.4.0-alpha.6 /
   builtins 0.4.0-alpha.3 / bootstrap 0.2.0-alpha.8: make `io_write` and
   `io_write_line` accept any number of values. Text passes through, scalar

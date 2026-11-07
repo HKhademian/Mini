@@ -24,7 +24,9 @@ function $mini_io_write() {
     let text = "";
     for (const value of values) {
         if (typeof value === "string") text += value;
-        else if (value !== null && typeof value === "object") text += JSON.stringify(value);
+        else if (typeof value === "number") text += $mini_number_to_text(value);
+        else if (typeof value === "boolean") text += value ? "true" : "false";
+        else if (value !== null && typeof value === "object") text += $mini_json_to_text(value);
         else text += String(value);
     }
     writeSync(1, text);
@@ -870,7 +872,7 @@ builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", 
 builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
 builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
 builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
-builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (value !== null && typeof value === \"object\") text += JSON.stringify(value);\n        else text += String(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
+builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += $mini_number_to_text(value);\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else if (value !== null && typeof value === \"object\") text += $mini_json_to_text(value);\n        else text += String(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
 builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
 builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "pure_json_parse", "$mini_json_parse({0})");
 builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") return Number.isSafeInteger(item) ? String(item) : \"null\";\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "pure_json_to_text", "$mini_json_to_text({0})");
@@ -1314,6 +1316,10 @@ function parser_call(parser, name) {
     let helper = builtin_helper_key(name_text);
     if ((helper !== "")) {
         $mini_map_set($mini_map_get(parser, "helpers"), helper, true);
+    }
+    if ((name_text === "io_write")) {
+        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
+        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("json_to_text"), true);
     }
     return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), builtin_result(name_text));
 }
