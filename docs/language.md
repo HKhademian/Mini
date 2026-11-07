@@ -68,6 +68,13 @@ A mini source file may begin with a shebang line:
 io_write("ok\n");
 ```
 
+When `mini-run` is installed on `PATH`, this is an equivalent source launcher:
+
+```text
+#!/usr/bin/env -S mini-run
+io_write("ok\n");
+```
+
 - Only a `#!` at offset 0 is a shebang. It consumes through CR, LF, or end of
   file. A `#` anywhere else remains an unexpected character.
 - The tokenizer emits a first-line `shebang` token. Following tokens keep their
