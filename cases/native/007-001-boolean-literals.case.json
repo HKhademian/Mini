@@ -1,0 +1,27 @@
+{
+  "id": "native.c-boolean-literals",
+  "kind": "feature",
+  "target": "c",
+  "source": "007-001-boolean-literals.mini",
+  "features": [
+    "target.c",
+    "boolean.literal",
+    "boolean.not",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|false|false|true\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

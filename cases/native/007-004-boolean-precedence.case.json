@@ -1,0 +1,29 @@
+{
+  "id": "native.c-boolean-precedence",
+  "kind": "feature",
+  "target": "c",
+  "source": "007-004-boolean-precedence.mini",
+  "features": [
+    "target.c",
+    "boolean.not",
+    "boolean.and",
+    "boolean.or",
+    "bindings",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "false|false|true|true\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

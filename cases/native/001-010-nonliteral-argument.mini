@@ -1,2 +1,2 @@
 io_write("before");
-io_write(true);
+io_write(1 - 2);

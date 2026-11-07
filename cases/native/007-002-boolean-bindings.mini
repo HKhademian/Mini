@@ -1,0 +1,6 @@
+ready := true;
+other := false;
+io_write(ready, "|", other, "|");
+ready = !ready;
+other = !other;
+io_write(ready, "|", other, "\n");

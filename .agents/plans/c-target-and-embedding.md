@@ -149,9 +149,18 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 **Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
-- Numeric literal output, top-level bindings, number addition, and text joining
-  are complete. Continue in the user's selected order: boolean values and logic;
+- Numeric literal output, top-level bindings, number addition, text joining,
+  boolean values and logic are complete. Continue in the user's selected order:
   comparisons; control flow (if and while); functions.
+- The C value union includes booleans with static initializer and function
+  constructor. Boolean negation, conjunction, and disjunction preserve precedence
+  and lazy right-hand evaluation. Five native cases cover literals, bindings,
+  grouping, and truth tables; instrumented generated branches verify skipping.
+  Compile-time rejection of cross-file uninitialized reads remains conservative,
+  including reads in a branch that would be skipped at runtime.
+  Verified 457/457 scenarios (four existing proposals pending), 41/41 native
+  cases, 6/6 units, bootstrap/repository checks, playground build, constructor
+  and strict C11 host sanitizer checks, and an instrumented short-circuit run.
 - Bindings must preserve shared top-level visibility across file initializers.
   Text values referenced by bindings need backing storage that survives those
   initializers and is released after the program's entry completes.

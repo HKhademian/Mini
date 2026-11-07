@@ -8,12 +8,14 @@ handwritten implementation was retired; only accepted [language](language.md) an
 [builtin](builtins.md) contracts are normative.
 
 JavaScript is the default target. An initial C11 target supports top-level
-`io_write` calls and top-level bindings with ASCII text and safe-integer values, comments,
+`io_write` calls and top-level bindings with ASCII text, safe integers, and
+boolean values, comments,
 an entry shebang, and empty programs. Numbers allow one unary minus and the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
 normalized; negative zero prints `0`. Bindings support declarations, reassignment,
 copies, output, number addition, and text joining. Addition supports grouping
-and chaining; unary minus applies only to number literals. Mixed-kind addition
+and chaining; boolean `!`, `&&`, and `||` honor precedence and short-circuiting.
+Unary minus applies only to number literals. Mixed-kind addition
 is unsupported at runtime; subtraction and other arithmetic remain unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.
 Other forms reject explicitly. The
@@ -144,6 +146,8 @@ it does not call the function. This preserves static initialization and gives
 runtime callers a function wrapper. Other value factories follow this pattern
 when their kinds are implemented. `MINI_ID(number)` is `double`, with a C11
 assertion requiring a binary representation with at least 53 bits of precision.
+`MINI_VALUE_BOOLEAN(boolean)` and `MINI_ID(value_boolean)(boolean)` construct
+boolean values using the same macro/function pattern.
 `MINI_VALUE_NUMBER(number)` supports static initializers, and
 `MINI_ID(value_number)(number)` is its function wrapper. Number output uses
 canonical decimal safe-integer spelling; non-safe numeric payloads supplied by

@@ -1,0 +1,3 @@
+x := true && true && false;
+y := false || false || true;
+io_write(x, "|", y, "|", true || false && false, "\n");

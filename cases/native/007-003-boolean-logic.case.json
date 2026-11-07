@@ -1,0 +1,27 @@
+{
+  "id": "native.c-boolean-logic",
+  "kind": "feature",
+  "target": "c",
+  "source": "007-003-boolean-logic.mini",
+  "features": [
+    "target.c",
+    "boolean.and",
+    "boolean.or",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "false|true|true|false\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

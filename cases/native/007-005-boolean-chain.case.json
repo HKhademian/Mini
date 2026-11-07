@@ -1,0 +1,28 @@
+{
+  "id": "native.c-boolean-chain",
+  "kind": "feature",
+  "target": "c",
+  "source": "007-005-boolean-chain.mini",
+  "features": [
+    "target.c",
+    "boolean.and",
+    "boolean.or",
+    "bindings",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "false|true|true\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -7,6 +7,8 @@
 
 static const MINI_ID(params) empty_static = MINI_PARAMS(0, NULL);
 
+static const MINI_ID(value) sample_boolean = MINI_VALUE_BOOLEAN(1);
+
 static const MINI_ID(value) sample_number = MINI_VALUE_NUMBER(9007199254740991.0);
 
 static const unsigned char sample_bytes[] = { 'o', 'k' };
@@ -28,6 +30,11 @@ int main(void) {
     if (parameter_count != 1 || once_params.count != 1 || once_params.args != parameter_values) return 20;
     MINI_ID(params) made_params = MINI_ID(params_make)(1, parameter_values);
     if (made_params.count != 1 || made_params.args != parameter_values) return 21;
+    int boolean_count = 0;
+    MINI_ID(value) boolean_once = (MINI_ID(value)) MINI_VALUE_BOOLEAN(++boolean_count);
+    if (sample_boolean.kind != MINI_ID(kind_boolean) || sample_boolean.boolean != 1
+        || boolean_count != 1 || boolean_once.boolean != 1
+        || MINI_ID(value_boolean)(0).boolean != 0 || MINI_ID(value_boolean)(3).boolean != 1) return 22;
     if (sample_number.kind != MINI_ID(kind_number) || sample_number.number != 9007199254740991.0) return 12;
     MINI_ID(number) numeric_count = 0;
     MINI_ID(value) numeric_once = (MINI_ID(value)) MINI_VALUE_NUMBER(++numeric_count);
