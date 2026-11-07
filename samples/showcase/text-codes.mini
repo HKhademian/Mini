@@ -1,7 +1,9 @@
-/// Convert between characters and code points.
+/// Convert between characters and code points, then print mixed values directly.
 
 include "common/io.mini";
 
 text := "A!";
-io_write_line(number_to_text(text_code(text_get(text, 0))));
-io_write_line(text_from_code(77));
+character := text_get(text, 0);
+code := text_code(character);
+io_write_line(character, " -> ", code, " -> ", text_from_code(code));
+io_write_line("number text: ", number_to_text(code), " | display text: ", to_text(code));

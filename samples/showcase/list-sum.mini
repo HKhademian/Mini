@@ -12,4 +12,4 @@ while index < list_length(values) {
     sum = sum + list_get(values, index);
     index = index + 1;
 }
-io_write_line(number_to_text(sum));
+io_write_line(sum);

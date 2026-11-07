@@ -10,8 +10,7 @@
     "list.new",
     "list.set",
     "list.get",
-    "list.length",
-    "number.to-text"
+    "list.length"
   ],
   "cases": [
     {

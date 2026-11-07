@@ -3,4 +3,4 @@
 include "common/io.mini";
 
 text := "playground";
-io_write_line(number_to_text(text_length(text)));
+io_write_line(text_length(text));

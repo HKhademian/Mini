@@ -9,8 +9,7 @@
     "text.output",
     "text.to-bytes",
     "list.get",
-    "list.length",
-    "number.to-text"
+    "list.length"
   ],
   "cases": [
     {

@@ -5,7 +5,6 @@
   "features": [
     "list.length",
     "list.get",
-    "number.to-text",
     "process.args",
     "bindings",
     "control.while",

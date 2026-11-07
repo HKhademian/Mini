@@ -8,8 +8,7 @@
     "list.new",
     "list.length",
     "list.push",
-    "list.pop",
-    "number.to-text"
+    "list.pop"
   ],
   "cases": [
     {

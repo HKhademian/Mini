@@ -7,8 +7,7 @@
     "text.output",
     "list.new",
     "list.set",
-    "list.length",
-    "number.to-text"
+    "list.length"
   ],
   "cases": [
     {

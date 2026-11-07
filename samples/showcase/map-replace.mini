@@ -5,4 +5,4 @@ include "common/io.mini";
 values := map_new();
 map_set(values, "key", "old");
 map_set(values, "key", "new");
-io_write_line(map_get(values, "key") + " " + number_to_text(list_length(map_keys(values))));
+io_write_line(map_get(values, "key"), " ", list_length(map_keys(values)));

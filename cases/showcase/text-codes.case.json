@@ -9,7 +9,8 @@
     "text.get",
     "text.code",
     "text.from-code",
-    "number.to-text"
+    "number.to-text",
+    "value.to-text"
   ],
   "cases": [
     {
@@ -19,7 +20,7 @@
       },
       "args": [],
       "stdout": {
-        "text": "65\nM\n"
+        "text": "A -> 65 -> A\nnumber text: 65 | display text: 65\n"
       },
       "stderr": {
         "text": ""

@@ -10,7 +10,6 @@
     "text.split",
     "list.get",
     "list.length",
-    "number.to-text",
     "number.from-text"
   ],
   "cases": [

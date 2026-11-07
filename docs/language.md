@@ -275,7 +275,7 @@ Use ordinary calls for two primitive operations:
 
 ```text
 source := io_read_all();
-io_write(source);
+io_write("input: ", source, "\n");
 ```
 
 - `io_read_all()` consumes remaining standard input through EOF and returns text.

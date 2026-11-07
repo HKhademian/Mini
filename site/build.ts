@@ -86,7 +86,7 @@ const playgroundSamples = JSON.parse(
 const heroSample: Sample = {
     id: "fibonacci",
     title: "Fibonacci",
-    note: "Build a number sequence with a function and loop.",
+    note: "Build and print a number sequence with a function and loop.",
     file: "samples/showcase/fibonacci.mini",
     args: [],
     stdin: "",

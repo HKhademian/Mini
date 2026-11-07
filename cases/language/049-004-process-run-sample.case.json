@@ -7,7 +7,6 @@
     "list.new",
     "list.set",
     "map.get",
-    "number.to-text",
     "text.output"
   ],
   "cases": [

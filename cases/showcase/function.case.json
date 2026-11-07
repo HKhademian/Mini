@@ -5,7 +5,6 @@
   "features": [
     "functions",
     "text.output",
-    "number.to-text",
     "number.mul"
   ],
   "cases": [

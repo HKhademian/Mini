@@ -4,4 +4,4 @@ include "common/io.mini";
 
 name := "Mini";
 version := 1;
-io_write_line(name + " " + number_to_text(version));
+io_write_line(name, " ", version);

@@ -10,4 +10,4 @@ while index < list_length(fields) {
     total = total + number_from_text(list_get(fields, index));
     index = index + 1;
 }
-io_write_line(number_to_text(total));
+io_write_line(total);

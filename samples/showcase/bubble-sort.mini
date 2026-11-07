@@ -23,7 +23,7 @@ while outer < list_length(values) {
 }
 index := 0;
 while index < list_length(values) {
-    io_write(number_to_text(list_get(values, index)) + " ");
+    io_write(list_get(values, index), " ");
     index = index + 1;
 }
 io_write_line("");

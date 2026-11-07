@@ -9,7 +9,6 @@
     "expressions.comparison",
     "expressions.equality",
     "text.output",
-    "number.to-text",
     "number.mod"
   ],
   "cases": [

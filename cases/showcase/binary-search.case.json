@@ -13,7 +13,6 @@
     "list.set",
     "list.get",
     "list.length",
-    "number.to-text",
     "number.div"
   ],
   "cases": [

@@ -5,7 +5,7 @@ include "common/io.mini";
 bytes := text_to_bytes("Mini");
 index := 0;
 while index < list_length(bytes) {
-    io_write(number_to_text(list_get(bytes, index)) + " ");
+    io_write(list_get(bytes, index), " ");
     index = index + 1;
 }
 io_write_line("");

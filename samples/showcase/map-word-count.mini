@@ -11,5 +11,5 @@ while index < list_length(words) {
     map_set(counts, word, count + 1);
     index = index + 1;
 }
-io_write_line("mini=" + number_to_text(map_get(counts, "mini")));
-io_write_line("makes=" + number_to_text(map_get(counts, "makes")));
+io_write_line("mini=", map_get(counts, "mini"));
+io_write_line("makes=", map_get(counts, "makes"));

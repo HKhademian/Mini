@@ -3,4 +3,4 @@ include "common/io.mini";
 fn square(value) {
     return number_mul(value, value);
 }
-io_write_line(number_to_text(square(9)));
+io_write_line(square(9));

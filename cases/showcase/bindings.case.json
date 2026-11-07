@@ -4,8 +4,7 @@
   "source": "../../samples/showcase/bindings.mini",
   "features": [
     "bindings",
-    "text.output",
-    "number.to-text"
+    "text.output"
   ],
   "cases": [
     {

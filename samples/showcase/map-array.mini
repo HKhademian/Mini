@@ -5,5 +5,5 @@ include "common/io.mini";
 parsed := json_parse("[10,20,30]");
 if map_get(parsed, "ok") {
     values := map_get(parsed, "value");
-    io_write_line(number_to_text(list_get(values, 1)));
+    io_write_line(list_get(values, 1));
 }

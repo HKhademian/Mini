@@ -13,7 +13,7 @@ while n <= 15 {
             if number_mod(n, 5) == 0 {
                 io_write_line("Buzz");
             } else {
-                io_write_line(number_to_text(n));
+                io_write_line(n);
             }
         }
     }

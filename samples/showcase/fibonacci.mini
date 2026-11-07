@@ -1,5 +1,7 @@
+/// Print a Fibonacci sequence using mixed-value output.
+
 include "common/io.mini";
-/// An iterative sequence.
+/// Calculate a Fibonacci number with an iterative loop.
 fn fib(n) {
     a := 0;
     b := 1;
@@ -14,7 +16,7 @@ fn fib(n) {
 }
 index := 0;
 while index < 10 {
-    io_write(number_to_text(fib(index)) + " ");
+    io_write(fib(index), " ");
     index = index + 1;
 }
 io_write_line("");

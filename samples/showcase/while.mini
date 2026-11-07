@@ -4,7 +4,7 @@ include "common/io.mini";
 
 position := 1;
 while position <= 5 {
-    io_write(number_to_text(position) + " ");
+    io_write(position, " ");
     position = position + 1;
 }
 io_write_line("");

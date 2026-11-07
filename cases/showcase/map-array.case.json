@@ -8,8 +8,7 @@
     "text.output",
     "list.get",
     "map.get",
-    "json.parse",
-    "number.to-text"
+    "json.parse"
   ],
   "cases": [
     {

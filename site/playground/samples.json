@@ -169,7 +169,7 @@
     "id": "text-codes",
     "group": "Text",
     "label": "Character codes",
-    "note": "Convert between characters and code points.",
+    "note": "Round-trip a character through its code point and print values directly.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/text-codes.mini"
@@ -385,7 +385,7 @@
     "id": "fibonacci",
     "group": "Programs",
     "label": "Fibonacci",
-    "note": "An iterative sequence.",
+    "note": "Print an iterative sequence without manual number formatting.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/fibonacci.mini"

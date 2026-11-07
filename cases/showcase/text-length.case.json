@@ -5,8 +5,7 @@
   "features": [
     "bindings",
     "text.output",
-    "text.length",
-    "number.to-text"
+    "text.length"
   ],
   "cases": [
     {

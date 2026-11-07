@@ -5,8 +5,7 @@
   "features": [
     "bindings",
     "text.output",
-    "text.find",
-    "number.to-text"
+    "text.find"
   ],
   "cases": [
     {

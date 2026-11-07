@@ -4,9 +4,9 @@
 include "common/io.mini";
 
 args := fn_args();
-io_write_line("Arguments (" + number_to_text(list_length(args)) + "):");
+io_write_line("Arguments (", list_length(args), "):");
 position := 0;
 while position < list_length(args) {
-    io_write_line("- [" + list_get(args, position) + "]");
+    io_write_line("- [", list_get(args, position), "]");
     position = position + 1;
 }

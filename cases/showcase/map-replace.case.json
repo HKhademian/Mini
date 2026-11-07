@@ -9,8 +9,7 @@
     "map.new",
     "map.set",
     "map.get",
-    "map.keys",
-    "number.to-text"
+    "map.keys"
   ],
   "cases": [
     {

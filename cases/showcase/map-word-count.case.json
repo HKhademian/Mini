@@ -12,8 +12,7 @@
     "list.length",
     "map.new",
     "map.set",
-    "map.get",
-    "number.to-text"
+    "map.get"
   ],
   "cases": [
     {

@@ -6,8 +6,7 @@
     "bindings",
     "control.while",
     "expressions.comparison",
-    "text.output",
-    "number.to-text"
+    "text.output"
   ],
   "cases": [
     {

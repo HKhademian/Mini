@@ -7,7 +7,6 @@
     "control.if",
     "expressions.comparison",
     "text.output",
-    "number.to-text",
     "number.mul"
   ],
   "cases": [

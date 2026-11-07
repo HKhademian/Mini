@@ -11,8 +11,7 @@
     "expressions.equality",
     "text.output",
     "text.length",
-    "text.get",
-    "number.to-text"
+    "text.get"
   ],
   "cases": [
     {

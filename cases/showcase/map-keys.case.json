@@ -8,8 +8,7 @@
     "list.length",
     "map.new",
     "map.set",
-    "map.keys",
-    "number.to-text"
+    "map.keys"
   ],
   "cases": [
     {

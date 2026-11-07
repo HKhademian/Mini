@@ -15,4 +15,4 @@ while index < list_length(values) {
     }
     index = index + 1;
 }
-io_write_line(number_to_text(best));
+io_write_line(best);

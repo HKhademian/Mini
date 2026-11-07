@@ -4,5 +4,5 @@ include "common/io.mini";
 
 width := 6;
 height := 7;
-io_write_line(number_to_text(number_mul(width, height)));
-io_write_line(number_to_text(20 - 5));
+io_write_line(number_mul(width, height));
+io_write_line(20 - 5);

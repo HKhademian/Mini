@@ -12,4 +12,4 @@ while index < text_length(text) {
     }
     index = index + 1;
 }
-io_write_line(number_to_text(count));
+io_write_line(count);
