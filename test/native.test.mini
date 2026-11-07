@@ -56,6 +56,30 @@ fn native_manifest_reject(work, name, definition) {
     return 0;
 }
 
+/// Build a C host using static initializers, constructor calls, and optional naming.
+fn native_macro_host(root, work, custom) {
+    name := "default-macros";
+    flags := list_of("-std=c11", "-Wall", "-Wextra", "-Werror", "-pedantic-errors");
+    if custom {
+        name = "custom-macros";
+        list_set(flags, list_length(flags), "-DMINI_ID(name)=host_##name");
+    }
+    binary := path_join(work, name);
+    list_set(flags, list_length(flags), path_join(work, "value-constructors.c"));
+    list_set(flags, list_length(flags), "-o");
+    list_set(flags, list_length(flags), binary);
+    built := process_capture("cc", flags, work, list_new());
+    if map_get(built, "status") != 0 {
+        native_fail(work, name, "macro host build failed: " + text_from_bytes(map_get(built, "stderr")));
+    }
+    ran := process_capture(binary, list_new(), work, list_new());
+    if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout")) != "$mini_payload|native\n"
+        || text_from_bytes(map_get(ran, "stderr")) != "" {
+        native_fail(work, name, "macro construction, output, or status differs");
+    }
+    return 0;
+}
+
 /// Verify target selection through the public CLI rather than emitter internals.
 fn main(args) {
     root := list_get(args, 0);
@@ -65,7 +89,7 @@ fn main(args) {
         process_exit(1);
     }
     source := path_join(work, "output.mini");
-    file_write(source, "io_write(\"native\\n\");\n");
+    file_write(source, "io_write(\"$mini_payload|native\\n\");\n");
     native_manifest_reject(work, "unknown-target", "{\"id\":\"unknown-target\",\"kind\":\"feature\",\"target\":\"other\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"native\\n\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
     native_manifest_reject(work, "tool-target", "{\"id\":\"tool-target\",\"kind\":\"tool\",\"target\":\"c\",\"tool\":\"mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
     explicit_c := path_join(work, "explicit.c");
@@ -80,10 +104,14 @@ fn main(args) {
         native_fail(work, "C build", text_from_bytes(map_get(built, "stderr")));
     }
     ran := process_capture(binary, list_new(), work, list_new());
-    if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout")) != "native\n"
+    if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout")) != "$mini_payload|native\n"
         || text_from_bytes(map_get(ran, "stderr")) != "" {
         native_fail(work, "C execution", "output or status differs");
     }
+    file_write(path_join(work, "generated.c"), file_read(explicit_c));
+    file_write(path_join(work, "value-constructors.c"), file_read(path_join(root, "cases/native/value-constructors.c")));
+    native_macro_host(root, work, false);
+    native_macro_host(root, work, true);
     explicit_js := path_join(work, "explicit.mjs");
     default_js := source + ".js";
     native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);
@@ -92,7 +120,7 @@ fn main(args) {
         native_fail(work, "JS target compatibility", "explicit and default output differ");
     }
     js_run := process_capture(process_exec_path(), list_of(explicit_js), work, list_new());
-    if map_get(js_run, "status") != 0 || text_from_bytes(map_get(js_run, "stdout")) != "native\n"
+    if map_get(js_run, "status") != 0 || text_from_bytes(map_get(js_run, "stdout")) != "$mini_payload|native\n"
         || text_from_bytes(map_get(js_run, "stderr")) != "" {
         native_fail(work, "JS execution", "output or status differs");
     }

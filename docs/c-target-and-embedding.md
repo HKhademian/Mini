@@ -94,6 +94,12 @@ A tagged union is the selected value-storage direction:
 - Numeric zero remains an ordinary value and the missing-lookup fallback.
   No Mini error/null kind is introduced.
 
+Generated names use `MINI_ID(name)`, defaulting to `mini_##name` behind an
+`#ifndef` guard. Hosts can override naming without a Mini compiler flag or dollar
+identifiers. Generated values use initializer macros such as `MINI_VALUE_TEXT`;
+constructor functions wrap the macro for runtime calls. Payloads use an anonymous
+union. See the [generated C reference](compiler.md#generated-c-names-and-values).
+
 Add native operations when the corresponding feature needs them. Check array
 bounds/growth arithmetic when arrays arrive; preserve valid backing storage
 when text views arrive. Correct ownership for an implemented operation does

@@ -55,6 +55,12 @@ compiler.
   Apple Clang through cc; no Linux/Windows CI or native self-hosting is claimed.
 - Parent reviewed agent changes and fixed dropped extra CLI arguments with a
   reproducing regression. A second agent independently reviewed C/CLI lowering.
+- Generated C names now go through overridable MINI_ID(name), defaulting to
+  mini_##name without dollar identifiers or a naming flag. Type aliases and an
+  anonymous payload union use that naming convention. MINI_VALUE_TEXT is a
+  static initializer; the value_text function wraps it with a typed cast.
+  Default/custom host prefixes, static construction, and runtime calls pass
+  strict C11 checks in test/native.test.mini and cases/native/value-constructors.c.
 - Generated source/header are the product. Compiler and runner logic stay in
   Mini; native storage support belongs to the backend.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text

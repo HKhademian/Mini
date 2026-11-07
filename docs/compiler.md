@@ -34,6 +34,42 @@ without heap allocation. This second walk avoids a whole-compiler rewrite;
 later features can justify more shared lowering structure. Target rejection
 does not create or replace the output file.
 
+### Generated C names and values
+
+Generated runtime names use an overridable preprocessor macro:
+
+```c
+#ifndef MINI_ID
+#define MINI_ID(name) mini_##name
+#endif
+```
+
+For example, `MINI_ID(value_text)` becomes `mini_value_text`. Define `MINI_ID`
+before including the generated source, or through the C toolchain, to choose
+another naming style. The default uses no dollar identifiers; no Mini compiler
+flag is needed. `main` and C standard-library names keep their required names.
+
+`MINI_VALUE`, `MINI_TEXT`, and `MINI_VALUE_KIND` alias the generated types through
+`MINI_ID`. The value payload uses an anonymous union, so text is available as
+`value.text`. `MINI_VALUE_TEXT(data, length)` is a brace initializer that works
+in static declarations. Its arguments each occur once. Use a typed cast for
+an expression, or call the constructor function:
+
+```c
+static const MINI_VALUE saved = MINI_VALUE_TEXT(bytes, 2);
+MINI_VALUE current = MINI_ID(value_text)(bytes, 2);
+consume((MINI_VALUE) MINI_VALUE_TEXT(bytes, 2));
+```
+
+These lines assume the generated types and the shown host variables/functions
+are available. The constructor function itself returns
+`(MINI_VALUE) MINI_VALUE_TEXT(data, length)`: the macro supplies construction;
+it does not call the function. This preserves static initialization and gives
+runtime callers a function wrapper. Other value factories follow this pattern
+when their kinds are implemented; numeric lowering remains unsupported.
+Text construction creates a borrowed view; it does not copy or take ownership
+of the byte buffer, which must remain valid while the value is used.
+
 Run it directly with Node:
 
 ```text

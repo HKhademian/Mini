@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.9 / compiler 0.4.0-alpha.10 / bootstrap 0.2.0-alpha.12:
+  customize generated C names through overridable MINI_ID(name), defaulting
+  to mini_ without dollar identifiers. Add type aliases, an anonymous payload
+  union, a static text initializer macro, and a function wrapper that uses it.
+  Source language support and JavaScript output are unchanged.
+
 - mini 0.2.0-alpha.8 / compiler 0.4.0-alpha.9 / bootstrap 0.2.0-alpha.11 /
   cli 0.1.0-alpha.18: add explicit JavaScript/C target selection and a first
   C11 slice for ASCII text-literal output. The generated native runtime uses
