@@ -1,9 +1,9 @@
 {
-  "id": "language.list-to-text-wrong-target",
+  "id": "language.list-join-wrong-target",
   "kind": "reject",
-  "source": "046-002-list-to-text-wrong-target.mini",
+  "source": "046-002-list-join-wrong-target.mini",
   "features": [
-    "list.to-text"
+    "list.join"
   ],
   "cases": [
     {
@@ -15,7 +15,7 @@
         "text": ""
       },
       "stderr": {
-        "file": "046-002-list-to-text-wrong-target.stderr"
+        "file": "046-002-list-join-wrong-target.stderr"
       },
       "exitCode": 1
     }

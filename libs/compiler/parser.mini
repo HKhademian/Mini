@@ -236,7 +236,7 @@ fn parser_argument_code_list(args) {
 
 /// Return argument code text joined by comma-space.
 fn parser_argument_codes(args) {
-    return list_to_text(parser_argument_code_list(args), ", ");
+    return list_join(parser_argument_code_list(args), ", ");
 }
 
 /// Parse a call and apply builtin metadata or a user signature.
@@ -460,7 +460,7 @@ fn parser_function_declaration(parser) {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
     }
     body = "{\n" + capture + text_slice(body, 1, text_length(body));
-    return "function " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ") " + body + "\n";
+    return "function " + map_get(name, "text") + "(" + list_join(parameters, ", ") + ") " + body + "\n";
 }
 
 /// Return the fixed sorted import list used by the generated program.

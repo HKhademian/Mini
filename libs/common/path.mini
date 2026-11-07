@@ -106,7 +106,7 @@ fn path_normalize(path) {
         }
         position = position + 1;
     }
-    output := list_to_text(stack, "/");
+    output := list_join(stack, "/");
     if absolute {
         return "/" + output;
     }

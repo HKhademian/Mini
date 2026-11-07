@@ -97,7 +97,7 @@ const samples: readonly Sample[] = [
         id: "lists",
         title: "Lists",
         note: "Join list items with a visible separator.",
-        file: "samples/018-list-to-text.mini",
+        file: "samples/018-list-join.mini",
         args: [],
         stdin: "",
     },
@@ -343,7 +343,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
         </li>
         <li class="step">
           <h3>Run a sample</h3>
-          ${codeBlock("./bin/mini run samples/018-list-to-text.mini", "step-code")}
+          ${codeBlock("./bin/mini run samples/018-list-join.mini", "step-code")}
           <p class="step-note">prints <code>one | two | three</code></p>
         </li>
       </ol>

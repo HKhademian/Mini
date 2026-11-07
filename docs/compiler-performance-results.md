@@ -4,7 +4,7 @@ Measured with Node.js, CPU details omitted, platform details omitted. Two compil
 are recorded:
 the first port at `c7166ed`, and the builtin-era port at `1bb2d11` after
 `text_slice`, `text_find`, `text_split`, `map_copy`, `list_copy`,
-`list_to_text`, `number_to_text`, and `json_to_text`. Both compilers emitted
+`list_join`, `number_to_text`, and `json_to_text`. Both compilers emitted
 identical bytes for every measured workload and application. "Handwritten"
 below is the retired handwritten compiler; "generated" is the compiler produced
 from the mini source.
@@ -27,7 +27,7 @@ lexer/parser helpers were replaced by host operations:
 - `text_find` replaced character-membership loops.
 - `text_split` replaced manual line scanning.
 - `map_copy` replaced scope copying.
-- `list_to_text` replaced the join helper.
+- `list_join` replaced the join helper.
 - `number_to_text` replaced decimal formatting.
 - `json_to_text` replaced JSON string quoting; token field order remains explicit.
 

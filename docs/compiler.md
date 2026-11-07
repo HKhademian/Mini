@@ -209,7 +209,7 @@ uses it for scope
 
 - `0.3.0-alpha.6`: `list_copy` returns a shallow list copy.
 
-- `0.3.0-alpha.7`: `list_to_text` joins text elements with a separator; the
+- `0.3.0-alpha.7`: `list_join` joins text elements with a separator; the
 compiler source uses
   it instead of a separate join helper.
 

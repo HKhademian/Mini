@@ -22,7 +22,7 @@ fn list_join_from(items, start, separator) {
         list_set(parts, list_length(parts), list_get(items, position));
         position = position + 1;
     }
-    return list_to_text(parts, separator);
+    return list_join(parts, separator);
 }
 
 /// Reverse a list into a new list.

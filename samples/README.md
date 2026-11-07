@@ -28,7 +28,7 @@ node samples/009-list-mutation.mini.ts
 - [015-text-split.mini](015-text-split.mini): Read comma-separated text and print each field on its own line. [Cases](../cases/language/043-005-text-split-sample.case.json).
 - [016-map-copy.mini](016-map-copy.mini): Copy a map and show that changing the copy leaves the original intact. [Cases](../cases/language/044-004-map-copy-sample.case.json).
 - [017-list-copy.mini](017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Cases](../cases/language/045-004-list-copy-sample.case.json).
-- [018-list-to-text.mini](018-list-to-text.mini): Build a list with `list_of` and join its words with `list_to_text`. [Cases](../cases/language/046-004-list-to-text-sample.case.json).
+- [018-list-join.mini](018-list-join.mini): Build a list with `list_of` and join its words with `list_join`. [Cases](../cases/language/046-004-list-join-sample.case.json).
 - [019-number-to-text.mini](019-number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Cases](../cases/language/047-003-number-to-text-sample.case.json).
 - [020-json-to-text.mini](020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Cases](../cases/language/048-004-json-to-text-sample.case.json).
 - [021-shebang.mini](021-shebang.mini): Use a first-line shebang header and print a line. [Cases](../cases/language/049-004-shebang-sample.case.json).

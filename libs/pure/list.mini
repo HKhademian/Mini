@@ -13,8 +13,8 @@ fn pure_list_copy(items) {
     return result;
 }
 
-/// Reference list_to_text: join text items with a text separator.
-fn pure_list_to_text(items, separator) {
+/// Reference list_join: join text items with a text separator.
+fn pure_list_join(items, separator) {
     if !value_is_list(items) || !value_is_text(separator) {
         return "";
     }

@@ -141,7 +141,7 @@ list and return 0 for pushes, or remove and return one value for pops. Empty or
 non-list pops return 0. `list_truncate(items, length)` is the representation
 primitive they use to shrink a list to an existing non-negative length; longer
 or invalid lengths are no-ops.
-`list_to_text(items, separator)` joins text elements with a text separator.
+`list_join(items, separator)` joins text elements with a text separator.
 Non-text elements contribute empty text; a non-list target or non-text separator
 returns empty text.
 

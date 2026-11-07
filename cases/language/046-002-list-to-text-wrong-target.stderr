@@ -1,3 +1,0 @@
-046-002-list-to-text-wrong-target.mini:1:10: expected list argument
-io_write(list_to_text(1, ","));
-         ^

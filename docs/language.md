@@ -441,10 +441,10 @@ copy := list_copy(items);
 ## Accepted operation: list text joining
 
 ```text
-text := list_to_text(items, ", ");
+text := list_join(items, ", ");
 ```
 
-- `list_to_text(items, separator)` joins text elements with a text separator.
+- `list_join(items, separator)` joins text elements with a text separator.
 - Non-text elements contribute empty text; separators are still placed between
   positions.
 - A non-list target or non-text separator returns empty text.

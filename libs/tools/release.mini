@@ -24,7 +24,7 @@ fn release_fail(message) {
 fn release_run(command, args, directory) {
     result := process_capture(command, args, directory, list_new());
     if map_get(result, "status") != 0 {
-        release_fail(command + " " + list_to_text(args, " ") + " failed:\n"
+        release_fail(command + " " + list_join(args, " ") + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
     }
     done := result_ok();
@@ -108,7 +108,7 @@ fn release_compiler_hash(active) {
         list_set(parts, list_length(parts), path + "\n" + file_read(path_join(project_root(), path)));
         position = position + 1;
     }
-    return hash_sha256(list_to_text(parts, "\n"));
+    return hash_sha256(list_join(parts, "\n"));
 }
 
 /// Return the Node version from a probe.
@@ -178,7 +178,7 @@ fn release_checksums(output) {
         list_set(lines, list_length(lines), hash_sha256(file_read_bytes(path_join(output, name))) + "  " + name + "\n");
         position = position + 1;
     }
-    file_write(path_join(output, "SHA256SUMS"), list_to_text(lines, ""));
+    file_write(path_join(output, "SHA256SUMS"), list_join(lines, ""));
     return 0;
 }
 

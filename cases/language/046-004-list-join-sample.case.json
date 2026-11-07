@@ -1,9 +1,9 @@
 {
-  "id": "language.list-to-text-sample",
+  "id": "language.list-join-sample",
   "kind": "sample",
-  "source": "../../samples/018-list-to-text.mini",
+  "source": "../../samples/018-list-join.mini",
   "features": [
-    "list.to-text",
+    "list.join",
     "functions",
     "text.output"
   ],

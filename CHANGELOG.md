@@ -292,7 +292,7 @@
   deterministic JSON with sorted map keys; M1 uses it for JSON string quoting.
 - Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for
   canonical safe-integer decimal text; M1 uses it instead of its decimal helper.
-- Language/compiler/builtins 0.3.0-alpha.7: add `list_to_text(list, separator)`
+- Language/compiler/builtins 0.3.0-alpha.7: add `list_join(list, separator)`
   and replace M1's separate join helper.
 - Language/compiler/builtins 0.3.0-alpha.6: add `list_copy(list)` with shallow
   copies and empty-list fallback.
@@ -556,7 +556,7 @@ generated bootstrap are not implemented yet.
   deterministic JSON with sorted map keys; M1 uses it for JSON string quoting.
 - Language/compiler/builtins 0.3.0-alpha.8: add `number_to_text(number)` for
   canonical safe-integer decimal text; M1 uses it instead of its decimal helper.
-- Language/compiler/builtins 0.3.0-alpha.7: add `list_to_text(list, separator)`
+- Language/compiler/builtins 0.3.0-alpha.7: add `list_join(list, separator)`
   and replace M1's separate join helper.
 - Language/compiler/builtins 0.3.0-alpha.6: add `list_copy(list)` with shallow
   copies and empty-list fallback.

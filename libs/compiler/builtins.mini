@@ -181,7 +181,7 @@ fn builtin_apply(form, args) {
 fn builtin_emit(name, args) {
     reference_target := builtin_reference_target(name);
     if reference_mode && reference_target != "" {
-        return reference_target + "(" + list_to_text(args, ", ") + ")";
+        return reference_target + "(" + list_join(args, ", ") + ")";
     }
     if !map_has(builtin_emit_forms, name) {
         return "";

@@ -278,7 +278,7 @@ fn lsp_declarations(tokens) {
                 }
                 map_set(declaration, "kind", "function");
                 map_set(declaration, "signature",
-                    "fn " + map_get(name, "text") + "(" + list_to_text(parameters, ", ") + ")");
+                    "fn " + map_get(name, "text") + "(" + list_join(parameters, ", ") + ")");
                 list_set(result, list_length(result), declaration);
             }
         }
@@ -328,7 +328,7 @@ fn lsp_builtins() {
 /// Return a builtin signature.
 fn lsp_builtin_signature(name) {
     info := map_get(lsp_builtins(), name);
-    return name + "(" + list_to_text(map_get(info, "parameters"), ", ") + ") -> " + map_get(info, "result");
+    return name + "(" + list_join(map_get(info, "parameters"), ", ") + ") -> " + map_get(info, "result");
 }
 
 /// Format markdown hover content.
@@ -337,7 +337,7 @@ fn lsp_markdown(signature, doc) {
     if list_length(doc) == 0 {
         return code;
     }
-    return code + "\n\n" + list_to_text(doc, "\n");
+    return code + "\n\n" + list_join(doc, "\n");
 }
 
 /// Return the last declaration with a name.
@@ -423,7 +423,7 @@ fn lsp_completions(tokens, text, offset) {
             if list_length(map_get(declaration, "doc")) > 0 {
                 documentation := map_new();
                 map_set(documentation, "kind", "markdown");
-                map_set(documentation, "value", list_to_text(map_get(declaration, "doc"), "\n"));
+                map_set(documentation, "value", list_join(map_get(declaration, "doc"), "\n"));
                 map_set(item, "documentation", documentation);
             }
             list_set(items, list_length(items), item);

@@ -1,3 +1,0 @@
-046-003-list-to-text-wrong-separator.mini:1:10: expected text argument
-io_write(list_to_text(list_new(), 1));
-         ^

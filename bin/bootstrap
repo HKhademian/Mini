@@ -79,7 +79,7 @@ function $mini_list_set(items, index, value) {
     if (index >= 0) items[index] = value
     return 0;
 }
-function $mini_list_to_text(items, separator) {
+function $mini_list_join(items, separator) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";
     let output = "";
     for (let index = 0; index < items.length; index++) {
@@ -353,7 +353,7 @@ function list_join_from(items, start, separator) {
         $mini_list_set(parts, (parts).length, $mini_list_get(items, position));
         position = (position + 1);
     }
-    return $mini_list_to_text(parts, separator);
+    return $mini_list_join(parts, separator);
     return 0;
 }
 function list_reverse(items) {
@@ -584,7 +584,7 @@ function path_normalize(path) {
         }
         position = (position + 1);
     }
-    let output = $mini_list_to_text(stack, "/");
+    let output = $mini_list_join(stack, "/");
     if (absolute) {
         return ("/" + output);
     }
@@ -921,7 +921,7 @@ builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list
 builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
 builtin_add("list_new", "", "list", "representation", "", "", "", "", "[]");
 builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "list_set", "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n", "", "$mini_list_set({0}, {1}, {2})");
-builtin_add("list_to_text", "list,text", "text", "performance", "", "list_to_text", "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_to_text", "$mini_list_to_text({0}, {1})");
+builtin_add("list_join", "list,text", "text", "performance", "", "list_join", "function $mini_list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_join", "$mini_list_join({0}, {1})");
 builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
 builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
 builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
@@ -1085,7 +1085,7 @@ function builtin_emit(name, args) {
 
     let reference_target = builtin_reference_target(name);
     if ((reference_mode && (reference_target !== ""))) {
-        return (((reference_target + "(") + $mini_list_to_text(args, ", ")) + ")");
+        return (((reference_target + "(") + $mini_list_join(args, ", ")) + ")");
     }
     if ((!$mini_map_has(builtin_emit_forms, name))) {
         return "";
@@ -1316,7 +1316,7 @@ function parser_argument_code_list(args) {
 }
 function parser_argument_codes(args) {
 
-    return $mini_list_to_text(parser_argument_code_list(args), ", ");
+    return $mini_list_join(parser_argument_code_list(args), ", ");
     return 0;
 }
 function parser_call(parser, name) {
@@ -1536,7 +1536,7 @@ function parser_function_declaration(parser) {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
     }
     body = (("{\n" + capture) + $mini_text_slice(body, 1, (body).length));
-    return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_to_text(parameters, ", ")) + ") ") + body) + "\n");
+    return (((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_join(parameters, ", ")) + ") ") + body) + "\n");
     return 0;
 }
 function parser_import_names(imports) {

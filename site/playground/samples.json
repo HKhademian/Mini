@@ -208,7 +208,7 @@
     "note": "Build a word list and format it with a separator.",
     "args": [],
     "stdin": "",
-    "file": "samples/018-list-to-text.mini"
+    "file": "samples/018-list-join.mini"
   },
   {
     "id": "list-sum",

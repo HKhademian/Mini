@@ -86,7 +86,7 @@ version avoids allocation, interpretation, or traversal:
 | --- | --- | --- |
 | `text_slice`, `text_find`, `text_split` | Character and array loops | Slower per call, more allocation |
 | `text_to_bytes`, `text_from_bytes` | UTF-8 encoder/decoder | Large constant factor |
-| `number_to_text`, `list_to_text` | Formatting/unboxing loops | Slower, subtle formatting rules |
+| `number_to_text`, `list_join` | Formatting/unboxing loops | Slower, subtle formatting rules |
 | `json_parse`, `json_to_text` | Recursive parser/serializer | Large implementation, slower |
 | `list_copy`, `map_copy` | Explicit traversal | Slower on large values |
 | `hash_sha256` | SHA-256 in mini | Needs arithmetic and bitwise primitives |
@@ -150,7 +150,7 @@ Current reference coverage:
 | `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |
 | `text_to_bytes`, `text_from_bytes` | Implemented in `libs/pure/bytes.mini` |
 | `number_to_text` | Implemented in `libs/pure/number.mini` |
-| `list_to_text` | Implemented in `libs/pure/list.mini` |
+| `list_join` | Implemented in `libs/pure/list.mini` |
 | `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 
 `compiler metadata` reports each builtin's `class` (`essential`,

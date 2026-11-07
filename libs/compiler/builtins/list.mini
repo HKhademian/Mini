@@ -57,15 +57,15 @@ builtin_add(
     "$mini_list_set({0}, {1}, {2})"
 );
 builtin_add(
-    "list_to_text",
+    "list_join",
     "list,text",
     "text",
     "performance",
     "",
-    "list_to_text",
-    "function $mini_list_to_text(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
-    "pure_list_to_text",
-    "$mini_list_to_text({0}, {1})"
+    "list_join",
+    "function $mini_list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
+    "pure_list_join",
+    "$mini_list_join({0}, {1})"
 );
 builtin_add(
     "list_truncate",

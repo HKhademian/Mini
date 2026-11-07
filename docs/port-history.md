@@ -256,7 +256,7 @@ Those are already available in mini.
 - String `includes`: single-character membership.
 - Array `includes`: compare complete elements; do not accidentally match across
   boundaries of concatenated operator spellings.
-- `map` / `filter`: loops; `join`: `list_to_text`.
+- `map` / `filter`: loops; `join`: `list_join`.
 - `Object.values(TextEscape)`: a fixed list/map of accepted escape letters.
 - `String(Number(token.text))`: current numeric-literal normalization. mini
   exposes `number_to_text` for canonical safe-integer decimal output; broader
@@ -300,7 +300,7 @@ target TS produced by the compiler, not extra syntax required in the mini source
 - `list_length(list) -> number`: `(arg0).length`.
 - `list_get(value, number) -> value`: `$mini_list_get(arg0, arg1)` (adapter).
 - `list_set(value, number, value) -> no result`: `$mini_list_set(arg0, arg1, arg2)` (adapter).
-- `list_to_text(list, text) -> text`: `$mini_list_to_text(arg0, arg1)` (adapter).
+- `list_join(list, text) -> text`: `$mini_list_join(arg0, arg1)` (adapter).
 
 ### Maps
 
@@ -350,7 +350,7 @@ Adapter blocks sort by their emitted text, giving this order when all are used:
    and assigned slot, otherwise return numeric zero.
 7. `$mini_list_set`: ignore non-lists; normalize negative indices; ignore an index
    still below zero; assign/grow at a nonnegative index.
-8. `$mini_list_to_text`: join text elements with a separator, treating non-text
+8. `$mini_list_join`: join text elements with a separator, treating non-text
    elements as empty text.
 9. `$mini_map_copy`: copy own text keys into a fresh map.
 10. `$mini_number_to_text`: render a safe integer as canonical decimal text.

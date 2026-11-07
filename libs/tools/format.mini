@@ -28,7 +28,7 @@ fn format_body(lines) {
     if list_length(lines) == 0 {
         return "";
     }
-    return list_to_text(lines, "\n") + "\n";
+    return list_join(lines, "\n") + "\n";
 }
 
 /// Return whether text is a word-like token for spacing.

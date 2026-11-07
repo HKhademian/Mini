@@ -40,7 +40,7 @@ fn bench_compiler_hash(root) {
         list_set(parts, list_length(parts), path + "\n" + file_read(path_join(root, path)));
         position = position + 1;
     }
-    return hash_sha256(list_to_text(parts, "\n"));
+    return hash_sha256(list_join(parts, "\n"));
 }
 
 /// Return the repository commit, or empty text outside a checkout.

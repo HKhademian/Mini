@@ -4,4 +4,4 @@ include "common/io.mini";
 include "common/list.mini";
 
 words := list_of("one", "two", "three");
-io_write_line(list_to_text(words, " | "));
+io_write_line(list_join(words, " | "));
