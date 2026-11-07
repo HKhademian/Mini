@@ -1,0 +1,26 @@
+{
+  "id": "native.c-number-order",
+  "kind": "feature",
+  "target": "c",
+  "source": "008-001-number-order.mini",
+  "features": [
+    "target.c",
+    "number.comparison",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|false|true|true|false\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

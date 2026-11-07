@@ -1,0 +1,4 @@
+a := "longer first text, forcing buffer growth";
+b := "abc";
+c := "a" + "bc";
+io_write(b == c, "|", b != "abd", "|", "" == "", "|", a == b, "\n");

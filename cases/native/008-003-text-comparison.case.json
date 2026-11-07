@@ -1,0 +1,28 @@
+{
+  "id": "native.c-text-comparison",
+  "kind": "feature",
+  "target": "c",
+  "source": "008-003-text-comparison.mini",
+  "features": [
+    "target.c",
+    "equality",
+    "text.concatenate",
+    "text.buffer-growth",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|true|true|false\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "id": "native.c-text-nul",
+  "kind": "feature",
+  "target": "c",
+  "source": "008-005-text-nul.mini",
+  "features": [
+    "target.c",
+    "equality",
+    "text.literal",
+    "text.buffer-growth",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|true|false\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

@@ -14,7 +14,9 @@ an entry shebang, and empty programs. Numbers allow one unary minus and the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
 normalized; negative zero prints `0`. Bindings support declarations, reassignment,
 copies, output, number addition, and text joining. Addition supports grouping
-and chaining; boolean `!`, `&&`, and `||` honor precedence and short-circuiting.
+and chaining; numeric ordering and scalar equality support numbers, text, and
+booleans as applicable. Boolean `!`, `&&`, and `||` honor precedence and
+short-circuiting.
 Unary minus applies only to number literals. Mixed-kind addition
 is unsupported at runtime; subtraction and other arithmetic remain unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.

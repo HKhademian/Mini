@@ -1,0 +1,29 @@
+{
+  "id": "native.c-comparison-precedence",
+  "kind": "feature",
+  "target": "c",
+  "source": "008-004-comparison-precedence.mini",
+  "features": [
+    "target.c",
+    "equality",
+    "number.comparison",
+    "boolean.and",
+    "boolean.or",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|true|true|true\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

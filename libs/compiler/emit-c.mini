@@ -257,10 +257,57 @@ fn emit_c_addition(parser, bindings, binding_orders, destination) {
     return body;
 }
 
+/// Lower numeric ordering, then scalar equality, in source order.
+fn emit_c_comparison(parser, bindings, binding_orders, destination, equality) {
+    body := "";
+    if equality { body = emit_c_comparison(parser, bindings, binding_orders, destination, false); }
+    else { body = emit_c_addition(parser, bindings, binding_orders, destination); }
+    op := map_get(parser_token(parser), "text");
+    more := op == "<" || op == "<=" || op == ">" || op == ">=";
+    if equality { more = op == "==" || op == "!="; }
+    while more {
+        parser_take(parser);
+        index := map_get(parser, "c_temp");
+        map_set(parser, "c_temp", index + 1);
+        right := "tmp" + number_to_text(index);
+        body = body + "    MINI_ID(value) " + right + ";\n";
+        if equality {
+            body = body + emit_c_comparison(parser, bindings, binding_orders, right, false);
+            map_set(parser, "c_equal_used", true);
+            expression := "MINI_ID(equal)(" + destination + ", " + right + ")";
+            if op == "!=" { expression = "!" + expression; }
+            body = body + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_BOOLEAN(" + expression + ");\n";
+        } else {
+            body = body + emit_c_addition(parser, bindings, binding_orders, right);
+            body = body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) return 1;\n"
+                + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_BOOLEAN(" + destination + ".number " + op + " " + right + ".number);\n";
+        }
+        op = map_get(parser_token(parser), "text");
+        more = op == "<" || op == "<=" || op == ">" || op == ">=";
+        if equality { more = op == "==" || op == "!="; }
+    }
+    return body;
+}
+
+/// Return scalar equality without text encoding or NUL-termination assumptions.
+fn emit_c_equal_runtime() {
+    return "static int MINI_ID(equal)(MINI_ID(value) left, MINI_ID(value) right) {\n"
+        + "    if (left.kind != right.kind) return 0;\n"
+        + "    if (left.kind == MINI_ID(kind_number)) return left.number == right.number;\n"
+        + "    if (left.kind == MINI_ID(kind_boolean)) return !!left.boolean == !!right.boolean;\n"
+        + "    if (left.kind != MINI_ID(kind_text)) return 0;\n"
+        + "    MINI_ID(text) a = left.text, b = right.text;\n"
+        + "    if (!a.buffer || !b.buffer || a.offset > a.buffer->length || b.offset > b.buffer->length\n"
+        + "        || a.length > a.buffer->length - a.offset || b.length > b.buffer->length - b.offset) return 0;\n"
+        + "    if (a.length != b.length) return 0;\n"
+        + "    if (!a.length) return 1;\n"
+        + "    return memcmp(a.buffer->data + a.offset, b.buffer->data + b.offset, a.length) == 0;\n}\n\n";
+}
+
 /// Lower conjunction or disjunction with lazy right operand evaluation.
 fn emit_c_logical(parser, bindings, binding_orders, destination, operator) {
     body := "";
-    if operator == "&&" { body = emit_c_addition(parser, bindings, binding_orders, destination); }
+    if operator == "&&" { body = emit_c_comparison(parser, bindings, binding_orders, destination, true); }
     else { body = emit_c_logical(parser, bindings, binding_orders, destination, "&&"); }
     while map_get(parser_token(parser), "text") == operator {
         parser_take(parser);
@@ -271,7 +318,7 @@ fn emit_c_logical(parser, bindings, binding_orders, destination, operator) {
         if operator == "||" { condition = "!" + condition; }
         body = body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) return 1;\n"
             + "    if (" + condition + ") {\n        MINI_ID(value) " + right + ";\n";
-        if operator == "&&" { body = body + emit_c_addition(parser, bindings, binding_orders, right); }
+        if operator == "&&" { body = body + emit_c_comparison(parser, bindings, binding_orders, right, true); }
         else { body = body + emit_c_logical(parser, bindings, binding_orders, right, "&&"); }
         body = body + "        if (" + right + ".kind != MINI_ID(kind_boolean)) return 1;\n"
             + "        " + destination + " = " + right + ";\n    }\n";
@@ -313,6 +360,7 @@ fn emit_c_compile(tokens, header_name) {
     parser := parser_new(tokens);
     map_set(parser, "c_temp", 0);
     map_set(parser, "c_add_used", false);
+    map_set(parser, "c_equal_used", false);
     if map_get(parser_token(parser), "kind") == "shebang" { parser_take(parser); }
     files := "";
     calls := "";
@@ -395,6 +443,7 @@ fn emit_c_compile(tokens, header_name) {
     runtime := "";
     if has_calls { runtime = emit_c_output_runtime(); }
     if map_get(parser, "c_add_used") { runtime = runtime + emit_c_add_runtime(); }
+    if map_get(parser, "c_equal_used") { runtime = runtime + emit_c_equal_runtime(); }
     return "// Generated by the mini C target.\n#include \"" + header_name + "\"\n#include <stdio.h>\n#include <stdint.h>\n#include <stdlib.h>\n#include <string.h>\n\n"
         + emit_c_value_constructor() + runtime
         + "typedef struct {\n    MINI_ID(text_buffer) buffer;\n" + declarations + "} MINI_ID(context);\n\n"

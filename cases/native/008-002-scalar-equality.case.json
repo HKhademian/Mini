@@ -1,0 +1,29 @@
+{
+  "id": "native.c-scalar-equality",
+  "kind": "feature",
+  "target": "c",
+  "source": "008-002-scalar-equality.mini",
+  "features": [
+    "target.c",
+    "equality",
+    "number.comparison",
+    "boolean.literal",
+    "text.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "true|true|true|true|true|true\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

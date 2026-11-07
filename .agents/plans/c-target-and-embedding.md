@@ -150,8 +150,14 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
 - Numeric literal output, top-level bindings, number addition, text joining,
-  boolean values and logic are complete. Continue in the user's selected order:
-  comparisons; control flow (if and while); functions.
+  boolean values and logic, and scalar comparisons are complete. Continue in the
+  user's selected order: control flow (if and while); functions.
+- Numeric ordering and scalar equality support expression precedence and
+  left-to-right evaluation. Text equality uses view lengths and bytes, including
+  embedded NUL. Five native cases cover boundaries, kinds, and combinations.
+  Verified 462/462 scenarios (four existing proposals pending), 46/46 native
+  cases, 6/6 units, bootstrap/repository checks, playground build, and strict
+  C11 host checks with address/undefined-behavior sanitizers.
 - The C value union includes booleans with static initializer and function
   constructor. Boolean negation, conjunction, and disjunction preserve precedence
   and lazy right-hand evaluation. Five native cases cover literals, bindings,
