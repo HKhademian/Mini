@@ -1,9 +1,9 @@
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/project.mini";
+include "../common/text.mini";
+include "../common/list.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/json.mini";
+include "../common/project.mini";
 /// Report a build failure and stop.
 fn build_fail(message) {
     io_write_error(message + "\n");

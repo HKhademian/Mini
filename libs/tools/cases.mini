@@ -1,11 +1,11 @@
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/result.mini";
-include "common/project.mini";
+include "../common/value.mini";
+include "../common/list.mini";
+include "../common/text.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/json.mini";
+include "../common/result.mini";
+include "../common/project.mini";
 /// Shared case loading and scenario execution for mini tools.
 /// Inputs are case manifests under cases/ with separate source and stream files.
 /// Results are maps with `ok` and a failure `message`; scenario mismatches never

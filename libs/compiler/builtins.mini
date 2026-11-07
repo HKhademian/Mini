@@ -1,5 +1,5 @@
-include "common/list.mini";
-include "common/text.mini";
+include "../common/list.mini";
+include "../common/text.mini";
 /// Builtin registry and lowering.
 builtin_names_list := list_new();
 builtin_name_set := map_new();

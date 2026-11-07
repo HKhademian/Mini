@@ -1,7 +1,7 @@
-include "common/io.mini";
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
+include "../common/io.mini";
+include "../common/value.mini";
+include "../common/list.mini";
+include "../common/text.mini";
 include "./cases.mini";
 /// Run repository checks: strict TypeScript (unless --docs), generated tools,
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.

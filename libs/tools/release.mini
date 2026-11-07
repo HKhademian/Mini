@@ -1,11 +1,11 @@
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/result.mini";
-include "common/project.mini";
+include "../common/value.mini";
+include "../common/list.mini";
+include "../common/text.mini";
+include "../common/path.mini";
+include "../common/process.mini";
+include "../common/json.mini";
+include "../common/result.mini";
+include "../common/project.mini";
 /// Package committed sources into a release directory.
 /// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.

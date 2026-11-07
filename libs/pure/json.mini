@@ -1,7 +1,7 @@
-include "common/text.mini";
-include "common/result.mini";
-include "common/list.mini";
-include "common/value.mini";
+include "../common/text.mini";
+include "../common/result.mini";
+include "../common/list.mini";
+include "../common/value.mini";
 /// Return whether a character is JSON whitespace.
 fn pure_json_space(character) {
     return character == " " || character == "\t" || character == "\n" || character == "\r";

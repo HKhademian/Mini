@@ -1,6 +1,6 @@
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
+include "../common/value.mini";
+include "../common/list.mini";
+include "../common/text.mini";
 include "./cases.mini";
 /// Verify the promoted bootstrap fixed point and its example case.
 /// Usage: node dist/verify.js [PROJECT_ROOT]

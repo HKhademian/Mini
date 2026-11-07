@@ -1,6 +1,6 @@
-include "common/io.mini";
-include "common/text.mini";
-include "common/list.mini";
+include "../common/io.mini";
+include "../common/text.mini";
+include "../common/list.mini";
 include "./cases.mini";
 /// Run case scenarios through the shared case runner.
 /// Usage: node dist/test.js [FILTER]

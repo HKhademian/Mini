@@ -1,5 +1,5 @@
-include "common/list.mini";
-include "common/path.mini";
+include "../common/list.mini";
+include "../common/path.mini";
 /// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {
     token := map_new();

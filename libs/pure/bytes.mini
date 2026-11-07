@@ -1,4 +1,4 @@
-include "common/value.mini";
+include "../common/value.mini";
 /// Normalize one byte value like the host conversion.
 fn pure_byte_at(bytes, index) {
     if !value_is_list(bytes) || index < 0 || index >= list_length(bytes) {
