@@ -152,8 +152,8 @@ fn main(args) {
     expanded := lex_expand_includes(tokens, source, list_new(), map_new());
     if target_name == "c" {
         header := native_artifact_path(target, ".h");
-        code := c_compile(expanded, path_basename(header));
-        file_write(header, c_header(path_basename(header)));
+        code := emit_c_compile(expanded, path_basename(header));
+        file_write(header, emit_c_header(path_basename(header)));
         file_write(target, code);
         return 0;
     }

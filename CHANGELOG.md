@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.12 / compiler 0.4.0-alpha.13 / bootstrap 0.2.0-alpha.15:
+  namespace the Mini-written C emitter helpers with emit_c_ and update callers.
+  Generated C and source-language behavior are unchanged.
+
 - mini 0.2.0-alpha.11 / compiler 0.4.0-alpha.12 / bootstrap 0.2.0-alpha.14:
   back text views with an owned growable byte buffer. Keep ordinary literals
   readable in C, escape controls/trigraphs, preserve views across growth, and

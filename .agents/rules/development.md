@@ -9,6 +9,8 @@
   unions. Use Node-compatible enum-like as-const objects without TS transforms.
 - Keep code short, readable, direct, and easy to port. Avoid speculative layers,
   dependencies, edge-case handling, and safety systems.
+- Prefix compiler emitter helpers by backend, such as `emit_c_`; includes share
+  Mini's top-level namespace, so generic target prefixes are insufficient.
 - Before self-hosting, keep the handwritten TypeScript compiler minimal and port
   it to MiniLang immediately. After replacement, implement compiler behavior in
   MiniLang and regenerate the bootstrap; never hand-edit generated compiler code.

@@ -73,6 +73,8 @@ compiler.
   Readable C literals initialize the backing. Growth preserves existing views;
   invocation cleanup frees it. Host cases cover growth, offset views, self-append,
   overflow rejection, and repeated cleanup. A general collector remains deferred.
+- The C emitter's Mini helpers use emit_c_ consistently, keeping their names
+  distinct from parser and other backend helpers in the shared top-level scope.
 - Add no language exceptions, interrupts, error values, or recovery constructs.
 - Start with small feature implementations and simple samples, then expand.
 - Postpone tree-versus-stack until the runner stage. Resolve broader semantics
