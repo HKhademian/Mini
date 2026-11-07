@@ -61,9 +61,10 @@
   clear in its documentation. Mini has line comments only; do not introduce
   block comments or documentation tags.
 - Keep this project self-contained; do not reference the predecessor project.
-- In `libs/` sources, use bare imports for library paths such as
-  `common/io.mini` and `compiler/lexer.mini`; use `./` only for same-directory
-  neighbors. Do not import from a parent directory with `../`.
+- In `libs/` sources, resolve library imports such as `common/io.mini`,
+  `compiler/lexer.mini`, and `pure/json.mini` from the `libs/` root, regardless
+  of the importing file's folder. Use `./` for neighbors and child folders. Do
+  not import from a parent directory with `../`.
 
 - Executable project code uses TypeScript run directly by Node or Mini only.
 - Use extensionless Node shebang commands under bin/; do not route tools through npm.
