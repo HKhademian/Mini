@@ -1,0 +1,4 @@
+io_write("first");
+io_write("");
+io_write("|");
+io_write("second\n");

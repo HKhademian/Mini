@@ -1,0 +1,1 @@
+io_write("quote=\" slash=\\ tab=\t line=\ncarriage=\rEND");

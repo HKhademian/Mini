@@ -1,0 +1,26 @@
+{
+  "id": "native.c-empty-program",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C backend and native case execution are not implemented yet.",
+  "source": "001-005-empty-program.mini",
+  "features": [
+    "target.c",
+    "program.empty"
+  ],
+  "cases": [
+    {
+      "name": "empty-program",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

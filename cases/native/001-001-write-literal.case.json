@@ -1,0 +1,27 @@
+{
+  "id": "native.c-write-literal",
+  "kind": "feature",
+  "target": "c",
+  "pending": "C backend and native case execution are not implemented yet.",
+  "source": "001-001-write-literal.mini",
+  "features": [
+    "target.c",
+    "text.output",
+    "text.literal"
+  ],
+  "cases": [
+    {
+      "name": "literal-line",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "hello from C\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

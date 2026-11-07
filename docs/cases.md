@@ -46,6 +46,10 @@ and execution; see the [binding sample](../samples/001-bindings.mini) and its
 
 Use `"pending": "reason"` on an unimplemented language case. Its source and
 expectations are validated now. `test` reports it as pending, never passed.
+
+Source manifests may specify `"target": "js"` or `"target": "c"`; omission
+means JavaScript. Tool manifests have no target field. Initial C cases remain
+pending until native compilation/execution support is implemented.
 The full suite may pass its implemented scenarios while listing pending ones;
 an explicitly verified pending manifest or a selection containing only pending
 scenarios exits unsuccessfully. Pending cases cannot benchmark or satisfy the

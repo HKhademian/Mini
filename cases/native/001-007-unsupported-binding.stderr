@@ -1,0 +1,3 @@
+001-007-unsupported-binding.mini:2:1: C target does not support bindings yet
+value := "later";
+^

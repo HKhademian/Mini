@@ -1,11 +1,11 @@
 ---
 name: c-target-and-embedding
-status: pending
+status: in_progress
 created: 2026-11-07
 todos:
   - id: step-1-first-cases
     content: "Specify only the first C slice and focused cases"
-    status: pending
+    status: completed
   - id: step-2-first-c
     content: "Compile a simple Mini sample to C and execute it"
     status: pending
@@ -44,6 +44,10 @@ compiler.
 
 - Inspected the compiler, builtin templates, case harness, bootstrap, and rules.
   Planning documents exist; no C backend or native execution is implemented.
+- 2026-11-07: specified the first ASCII literal-output slice, seven pending
+  cases under cases/native/, and source-manifest target metadata. Documentation/
+  bootstrap checks pass; a native-only test selection reports seven pending,
+  zero native passes, and exits 1 as intended before implementation.
 - Generated source/header are the product. Compiler and runner logic stay in
   Mini; native storage support belongs to the backend.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
@@ -68,23 +72,6 @@ compiler.
 No child/prerequisite plans. Execute in order using small atomic commits.
 New paths below are proposed. Do not require completing all language features
 before trying a useful host or runner sample; carry forward explicit target gaps.
-
-### Step 1 — first-cases
-
-**Depends on:** none.
-**Files:** create source/JSON/stream fixtures under cases/native/; update
-[the proposal](../../docs/c-target-and-embedding.md) for the selected slice.
-
-- Select a tiny initial slice: top-level ASCII text literal output through
-  io_write, with no functions, collections, or dynamic text.
-- Add a simple sample with exact stdout/status, plus empty-text, escape, and
-  unsupported-form cases. Do not mark existing JS cases pending.
-- Define only native support required for those cases. Add a bounded policy
-  clarification for generated native code/C host fixtures when support lands.
-
-**Acceptance:** the first slice and nearby cases are specified. No runner, GC,
-whole-language semantic review, or full embedding API is required to begin.
-**Verify:** ./bin/mini check --docs.
 
 ### Step 2 — first-c
 
@@ -222,5 +209,5 @@ without Node at script runtime; claims match evidence.
   as native passes. No blanket tags or routine publishing.
 - Full native compiler self-hosting is later work, not an embedding prerequisite;
   compare successive emitted C sources, not binary bytes, when attempted.
-- All implementation remains pending. Resolve deferred decisions at the relevant
+- C implementation remains pending. Resolve deferred decisions at the relevant
   increment; do not make them first-sample prerequisites.

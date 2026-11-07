@@ -1,0 +1,1 @@
+io_write("hello from C\n");
