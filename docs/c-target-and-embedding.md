@@ -19,9 +19,10 @@ compiler is used when building the generated runner, not for each loaded script.
 Each shared binary still targets a particular OS, architecture, and calling
 convention; source distribution is the portable deliverable.
 
-The owner wants to avoid a handwritten C implementation. Compiler, loader,
-checking, interpreter, and ordinary library behavior should live in mini. Do
-not create a second compiler or runner maintained in C.
+The compiler, loader, checking, interpreter, and ordinary library behavior should
+live in mini. The C backend owns native value/storage support, including growing
+arrays, allocation/deallocation, and text storage/views. Do not create a second
+compiler or runner maintained in C.
 
 ## Current foundation
 
@@ -73,22 +74,25 @@ The final embedding product is generated source, not a requirement to ship a
 prebuilt library. A single amalgamated source/header pair is the initial goal;
 generate it from maintained mini sources rather than maintaining it by hand.
 
-## How much C must be authored?
+## Native implementation responsibilities
 
 Generating C does not automatically provide allocation, value storage, operating
 system calls, or ABI entry points. Existing mini cannot express raw pointers,
 C layouts, or C exports directly. Those operations need a backend boundary.
 
-Recommended boundary: small native intrinsics and ABI emission owned by the
-mini-written C generator, with ordinary algorithms implemented in mini and
-reusing the pure libraries. The delivered `.c` and `.h` are generated artifacts.
-C fragments inside that generator are still manually authored C; do not call
-this a zero-C implementation or hide a substantial runtime in string templates.
+The owner clarified that native storage is the implementation's responsibility.
+Generate the required support through the C backend: tagged values, growing
+arrays, allocation/deallocation, text storage/views, maps, and ABI adapters.
+Reuse mini libraries where useful. Growth policy, storage layout, and helper
+organization are implementation choices, not unresolved language features.
 
-Before implementation, inventory that unavoidable substrate and settle whether
-small C templates are acceptable. If absolutely no C fragments may be authored,
-investigate how mini will express memory and ABI primitives first. That is a
-different language/backend scope, not something a runner can solve afterward.
+The delivered `.c` and `.h` remain generated artifacts. Document C fragments
+authored in the generator honestly; generated output does not imply that no C
+was authored. No separate handwritten C parser or evaluator is needed.
+
+Array growth must preserve values and check capacity arithmetic before allocation.
+Views must keep backing text alive and must not outlive or refer into invalidated
+storage. Bounds, ownership, and deallocation belong to the native implementation.
 
 ## Simple host calls and stacks
 
@@ -157,9 +161,13 @@ rejects unknown function names, so callback names cannot bypass checking.
 
 Resolve these with named cases before freezing a native ABI:
 
-- **Values:** a tagged representation for number, boolean, text, list, and map;
-  numeric zero remains an ordinary value and the missing-lookup fallback.
-  Keep runtime/internal errors separate from mini values.
+- **Values (selected direction):** a tagged union for number, boolean, text,
+  list, and map. The tag identifies the active payload; the union alone cannot
+  distinguish kinds. Store number/boolean scalars inline and references to
+  managed text/collections in the corresponding payloads. Lists, map values,
+  bindings, arguments, and results use this common value representation. Exact
+  numeric and object layouts remain implementation work. Numeric zero stays
+  an ordinary value and the missing-lookup fallback; no error/null kind is added.
 - **Numbers:** current arithmetic uses JavaScript numbers, while several
   conversions require safe integers. The [language](language.md) leaves numeric
   limits open. Propose binary64 initially; verify compiler/tool workloads and
@@ -185,11 +193,15 @@ Resolve these with named cases before freezing a native ABI:
   arguments, and host-held handles must remain reachable across allocation.
   A free-at-context-destruction prototype is a bounded experiment, not a complete
   memory policy for a long-lived scripting host. Define allocation-failure cleanup.
-- **Errors and exit:** current compiler diagnostics call `process_exit`, and the
-  language gives it whole-program termination semantics. Embedded operation
-  needs an explicit host profile: return an exit status/error to the host and
-  unwind script work without calling C `exit()`. The CLI maps that result to
-  process termination. Document this adaptation; preserve standalone behavior.
+- **Implementation validation and exit:** mini gains no exception, interrupt,
+  or recovery constructs. The implementation prevents unsafe operations through
+  bounds/capacity checks, valid lifetimes, and guards before native operations;
+  existing builtin fallback behavior remains intact. Invalid source is rejected
+  before execution. Resource exhaustion cannot always be prevented: report it
+  at the host boundary and leave implementation state valid, without introducing
+  a mini error value or script-level recovery mechanism. Current diagnostics
+  call `process_exit`; embedded diagnostics and explicit script exit must instead
+  return a host status. The CLI maps that result to process termination.
 - **Host services:** script loading accepts bytes and a host source resolver for
   includes. File, process, path, clock, and I/O operations are adapter callbacks.
   Define missing-service behavior. Keep parser/checker logic out of adapters.

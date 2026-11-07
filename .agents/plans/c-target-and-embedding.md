@@ -16,7 +16,7 @@ todos:
     content: "Complete values, memory, and the runner's required host adapters"
     status: pending
   - id: step-5-embedding-boundary
-    content: "Prove generated source embedding and host error recovery"
+    content: "Prove generated source embedding, validation, and host status reporting"
     status: pending
   - id: step-6-source-runner
     content: "Implement the source runner in mini and generate C source/header"
@@ -37,7 +37,8 @@ plans:
 Deliver generated C source and a header for a runner written in mini. Hosts can
 include/compile the source, build a static archive, or expose the C ABI through a
 shared library and FFI. The runner loads mini scripts without Node or a runtime
-C compiler. Avoid a separately handwritten C compiler, evaluator, or runtime.
+C compiler. Native storage support belongs to the C backend; the compiler and
+evaluator stay written in mini.
 This is a planning handoff, not authorization to freeze unresolved semantics.
 
 ## Done
@@ -50,6 +51,9 @@ This is a planning handoff, not authorization to freeze unresolved semantics.
   a prebuilt FFI library. AOT compilation enables a generated source interpreter.
 - Recorded the stack-machine idea as an option. Recommendation: start with one
   checked-tree evaluator for the easiest initial implementation; no VM selected.
+- Owner clarified that native arrays, growth, allocation/deallocation, and text
+  views are implementation responsibilities. Tagged-union values are the selected
+  direction. No language exceptions, interrupts, or recovery constructs are added.
 
 ## Read first
 
@@ -72,22 +76,25 @@ New paths below are proposed. Create no empty scaffolding.
 `docs/builtins.md`, `.agents/rules/development.md`; create focused fixtures in
 `cases/native/` and `cases/embedding/` when their contracts are selected.
 
-- Inventory necessary allocation/storage/ABI intrinsics and pure mini reuse.
-  Settle whether minimal generator-owned C templates meet the owner's intent;
-  C in strings is still handwritten C. Do not hide a C runtime in a generator.
+- Inventory backend-owned allocation/storage/ABI support and pure mini reuse.
+  Use tagged-union values; specify safe array growth and text-view lifetimes.
+  These are implementation responsibilities, not a zero-authored-C approval gate.
 - Bound the policy exception allowing generated native code and C host fixtures.
 - Resolve number behavior, ASCII/Unicode boundary, parameter-sharing status,
   actual/padded `fn_args()` behavior, exit adaptation, value lifetime, and roots.
   Preserve open questions where not needed for the first scalar slice.
+- Design context state and host status propagation before C generation. Guard
+  unsafe operations internally; preserve existing builtin fallbacks. Reject
+  invalid source before effects. Add no language exception/recovery feature.
 - Name cases from the proposal: 42 output, LR3 order, lazy calls, exit 7 and
-  recovery, zero/false/missing, load-before-effects, separate contexts.
+  host continuation, zero/false/missing, load-before-effects, separate contexts.
   Use separate mini sources and JSON streams. Existing schema has no target
   field: extend the shared harness narrowly when native execution is introduced.
 - Mark unsupported new cases pending. Do not make existing JS cases pending.
 
-**Acceptance:** a bounded first C slice and native substrate are selected;
-provisional versus accepted behavior and expected streams are explicit. An
-absolute zero-authored-C requirement is resolved before backend implementation.
+**Acceptance:** a bounded first C slice and its native support are specified;
+tagged payloads, validation, ownership, and host statuses have named cases.
+Provisional versus accepted behavior and expected streams are explicit.
 **Verify:** `./bin/mini check --docs` (also checks generated tools/fixed point).
 
 ### Step 2 — checked-program
@@ -123,8 +130,8 @@ modify `tools/compiler.mini`, `libs/tools/mini.mini`, `libs/tools/cases.mini`,
   Default JS behavior stays usable for bootstrap and browser consumers.
 - Emit portable C11 for the selected scalars, bindings, calls, branches, loops,
   and output. Lower effects through ordered temporaries and lazy branches.
-- Generate the minimal value/platform support from the chosen Mini-owned
-  intrinsic boundary; document manually authored C fragments honestly.
+- Generate backend-owned tagged values and required native/platform support;
+  document manually authored C fragments honestly.
 - Reject unsupported constructs/builtins with located diagnostics before writing
   an executable output. No partial artifact or Node fallback on failure.
 - Teach the shared case runner to compile generated C with a discovered `cc`
@@ -145,6 +152,8 @@ compile with `-std=c11 -Wall -Wextra -Werror` on the supported toolchain.
 
 - Add text, heterogeneous/sparse lists, maps, mutation, copies, defaults/extras,
   `fn_args()`, globals, and recursion in verified increments.
+- Use tagged-union elements in growable lists and map values; check bounds and
+  capacity arithmetic. Preserve backing storage for live text views.
 - Implement the selected allocation/reclamation strategy; root generated locals,
   constants, module state, host handles, and callback arguments. Cover cycles,
   repeated allocations, failed allocation cleanup, and context destruction.
@@ -171,8 +180,9 @@ under `cases/embedding/`, and update `docs/c-target-and-embedding.md`.
   a C API stack does not require a VM operand stack.
 - Put globals and initialization state in per-context/program instances. Define
   program release, retained values, callback roots, and cross-context rejection.
-- Separate compiler/interpreter diagnostics and termination from process exit.
-  Embedded failures return to the host; the standalone adapter keeps CLI status.
+- Implement the host status/context contract designed in Step 1. Keep native
+  operations guarded; diagnostics, resource failures, and explicit script exit
+  return to the host. The standalone adapter keeps CLI process status.
 - Prove a host can call a generated mini function and survive an error/exit.
   This is an integration fixture, not a separate AOT embedding product release.
 
@@ -230,8 +240,10 @@ supported-platform list matches CI evidence.
 
 ## Constraints and overall acceptance
 
-- All language/compiler/evaluator behavior lives in mini. Generated C is never
-  hand-edited; any manually authored native fragments stay explicit and minimal.
+- Compiler/evaluator behavior lives in mini; backend-owned native storage uses
+  tagged values. Generated C is never hand-edited; native fragments are explicit.
+- Add no mini exceptions, interrupts, error values, or recovery constructs.
+  Prevent unsafe native operations and report unpreventable failures to the host.
 - Preserve JS self-hosting, browser support, existing diagnostics, and unrelated
   work. No syntax redesign, general FFI language feature, JIT, VM optimization,
   mandatory binary bytecode, or sandbox claim belongs in this plan.
