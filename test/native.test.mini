@@ -127,6 +127,10 @@ fn main(args) {
     }
     original_c := file_read(explicit_c);
     original_header := file_read(header);
+    if text_find(original_c, "MINI_ID(arguments_") >= 0 || text_find(original_c, "MINI_ID(assignment_") >= 0
+        || text_find(original_c, "MINI_ID(add_right_") >= 0 || text_find(original_c, "MINI_ID(value) args0[") < 0 {
+        native_fail(work, "C local names", "generated local names should use ordinary C identifiers");
+    }
     preprocessed := native_artifact_path(explicit_c, ".i");
     if path_is_exists(preprocessed) {
         native_fail(work, "C preprocessing", "source generation unexpectedly ran the C toolchain");

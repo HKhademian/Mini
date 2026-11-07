@@ -115,7 +115,8 @@ Generated runtime names use an overridable preprocessor macro:
 #endif
 ```
 
-For example, `MINI_ID(value_text)` becomes `mini_value_text`. Define `MINI_ID`
+Generated function-local variables use short ordinary C names; they do not
+need `MINI_ID`. For example, `MINI_ID(value_text)` becomes `mini_value_text`. Define `MINI_ID`
 before including the generated source, or through the C toolchain, to choose
 another naming style. The default uses no dollar identifiers; no Mini compiler
 flag is needed. `main` and C standard-library names keep their required names.

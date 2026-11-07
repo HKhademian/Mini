@@ -166,6 +166,9 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
   Verification: 452/452 scenarios (four existing proposals pending), 36/36
   native cases, 6/6 units, bootstrap/repository checks, playground build, and
   strict C11 host checks with address/undefined-behavior sanitizers pass.
+- Generated function-local variables and parameter names use plain C identifiers;
+  compiler temporaries use tmp0, tmp1, and named argument arrays use args0, etc.
+  Namespace customization continues to apply to types and functions.
   Verified 447/447 scenarios (four existing proposals pending), 31/31 native
   scenarios, 6/6 units, bootstrap/repository checks, playground build, and a
   strict C11 cross-file host run with address/undefined-behavior sanitizers.
