@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.7 / language 0.4.0-alpha.4 / compiler 0.4.0-alpha.8 /
+  builtins 0.4.0-alpha.5 / bootstrap 0.2.0-alpha.10: add `to_text(value)` as
+  the shared Mini display conversion used by `io_write`.
+
 - mini 0.2.0-alpha.6 / language 0.4.0-alpha.3 / compiler 0.4.0-alpha.7 /
   builtins 0.4.0-alpha.4 / bootstrap 0.2.0-alpha.9: make direct I/O conversion
   match `number_to_text` and `json_to_text`, and verify that multiple values

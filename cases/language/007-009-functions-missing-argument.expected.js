@@ -3,13 +3,7 @@ import { writeSync } from "node:fs";
 function $mini_io_write() {
     const values = Array.prototype.slice.call(arguments);
     let text = "";
-    for (const value of values) {
-        if (typeof value === "string") text += value;
-        else if (typeof value === "number") text += $mini_number_to_text(value);
-        else if (typeof value === "boolean") text += value ? "true" : "false";
-        else if (value !== null && typeof value === "object") text += $mini_json_to_text(value);
-        else text += String(value);
-    }
+    for (const value of values) text += $mini_to_text(value);
     writeSync(1, text);
     return 0;
 }
@@ -17,7 +11,7 @@ function $mini_json_to_text(value) {
     const seen = new Set();
     function encode(item) {
         if (typeof item === "string") return JSON.stringify(item);
-        if (typeof item === "number") return Number.isSafeInteger(item) ? String(item) : "null";
+        if (typeof item === "number") { const text = $mini_number_to_text(item); return text === "" ? "null" : text; }
         if (typeof item === "boolean") return item ? "true" : "false";
         if (item === null || item === undefined) return "null";
         if (typeof item !== "object") return "null";
@@ -46,6 +40,13 @@ function $mini_list_get(items, index) {
 }
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
+}
+function $mini_to_text(value) {
+    if (typeof value === "string") return value;
+    if (typeof value === "number") return $mini_number_to_text(value);
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (value !== null && typeof value === "object") return $mini_json_to_text(value);
     return String(value);
 }
 function io_write_line() {

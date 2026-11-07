@@ -7,7 +7,7 @@
     {
       "name": "mixed-values-and-empty-call",
       "stdin": {"file": "empty.stdin"},
-      "stdout": {"text": "77=M\ntrue:12\n[\"a\",2]|[\"a\",2]|{\"a\":1,\"z\":true}|{\"a\":1,\"z\":true}|42|42|x7y\n"},
+      "stdout": {"text": "77=M\ntrue:12\n[\"a\",2]|[\"a\",2]|[\"a\",2]|{\"a\":1,\"z\":true}|{\"a\":1,\"z\":true}|{\"a\":1,\"z\":true}|42|42|42|raw|raw|true|true|x7y\n"},
       "stderr": {"file": "empty.stderr"},
       "exitCode": 0
     }

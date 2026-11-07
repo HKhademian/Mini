@@ -65,12 +65,15 @@ true on success, and false with `value` 0 for invalid JSON or non-text input.
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(...values)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`io_write` writes text unchanged, converts numbers with `number_to_text`, writes
-booleans as `true` or `false`, and serializes lists/maps with `json_to_text`.
-It concatenates these values without separators, writes the result, and returns
-0. The compiler implements this variadic primitive operation.
+`io_write` applies `to_text` to each value, concatenates the results without
+separators, writes the result, and returns 0. The compiler implements this
+variadic primitive operation.
 `io_write_line(...values)` is a Mini helper in [libs/common/io.mini](../libs/common/io.mini);
 include that file to write the same converted values followed by one newline.
+
+`to_text(any_value)` is the shared display conversion: text passes through, numbers
+use `number_to_text`, booleans become `true` or `false`, and lists/maps use
+`json_to_text`. JSON serialization remains distinct: it quotes text values.
 
 `fn_args()` is not a host builtin: the generated function captures its own
 argument list, so it needs no adapter and no import. It returns a list, empty

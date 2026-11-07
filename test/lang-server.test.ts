@@ -279,14 +279,18 @@ test('blank lines do not split declaration docs and header docs stay file scoped
 test('hovers builtins and returns null for unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///builtin.mini';
-    const text = 'io_write("ok");\nvalue := missing;\n';
+    const text = 'io_write("ok");\nto_text("ok");\nvalue := missing;\n';
     await openDocument(client, uri, text);
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
     const builtin = await client.next();
     assert.match(builtin.result.contents.value, /io_write\(\.\.\.values\) -> number/);
 
-    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
+    client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'to_text') } });
+    const toText = await client.next();
+    assert.match(toText.result.contents.value, /to_text\(any_value\) -> text/);
+
+    client.send({ jsonrpc: '2.0', id: 4, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'missing') } });
     assert.equal((await client.next()).result, null);
   });
 });

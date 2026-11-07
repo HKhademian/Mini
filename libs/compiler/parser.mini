@@ -294,7 +294,7 @@ fn parser_call(parser, name) {
         kind := list_get(parameters, position);
         if text_slice(kind, 0, 3) != "..." {
             actual := map_get(list_get(args, position), "kind");
-            if kind != "unknown" && actual != "unknown" && actual != kind {
+            if kind != "unknown" && kind != "any_value" && actual != "unknown" && actual != kind {
                 parser_fail(name, "expected " + kind + " argument");
             }
         }
@@ -310,9 +310,15 @@ fn parser_call(parser, name) {
     if helper != "" {
         map_set(map_get(parser, "helpers"), helper, true);
     }
-    if name_text == "io_write" {
+    if name_text == "io_write" || name_text == "to_text" {
         map_set(map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
         map_set(map_get(parser, "helpers"), builtin_helper_key("json_to_text"), true);
+    }
+    if name_text == "io_write" {
+        map_set(map_get(parser, "helpers"), builtin_helper_key("to_text"), true);
+    }
+    if name_text == "json_to_text" {
+        map_set(map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
     }
     return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), builtin_result(name_text));
 }

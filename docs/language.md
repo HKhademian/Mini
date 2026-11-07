@@ -281,12 +281,11 @@ io_write(source);
 - `io_read_all()` consumes remaining standard input through EOF and returns text.
   At EOF it returns empty text.
 - `io_write(...values)` converts each supplied value using the same rules as
-  the matching Mini conversion: text passes through, numbers use
-  `number_to_text`, booleans use `true` or `false`, and lists/maps use
-  `json_to_text`. It concatenates the results without separators and writes
-  them to standard output with no added newline. It returns 0; an empty call
-  writes nothing. Writing multiple values produces the same bytes as writing
-  each value separately in order.
+  `to_text(value)`: text passes through, numbers use `number_to_text`, booleans
+  use `true` or `false`, and lists/maps use `json_to_text`. It concatenates the
+  results without separators and writes them to standard output with no added
+  newline. It returns 0; an empty call writes nothing. Writing multiple values
+  produces the same bytes as writing each value separately in order.
 - `io_write_line(...values)` is a Mini helper from `libs/common/io.mini`; it
   writes the same concatenated values followed by one newline and returns the
   `io_write` result. Include that file when using it. An empty call writes only
@@ -349,6 +348,18 @@ text := number_to_text(42);
   optional minus sign, no leading zeros, `0` for zero, and no exponent.
 - Non-number values and non-safe integers return empty text.
 - This does not add implicit text/number concatenation.
+
+## Accepted operation: value text
+
+```text
+text := to_text(any_value);
+```
+
+- `to_text(any_value)` returns the display form used by `io_write`: text is
+  unchanged, numbers use `number_to_text`, booleans use `true` or `false`, and
+  lists/maps use compact `json_to_text` serialization.
+- JSON text remains a separate serialization operation: `json_to_text("x")`
+  returns a quoted JSON string, while `to_text("x")` returns `x`.
 
 ## Accepted operation: JSON text
 
