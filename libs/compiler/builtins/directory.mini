@@ -9,7 +9,8 @@ builtin_add(
     "directory_create",
     "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n",
     "",
-    "$mini_directory_create({0})");
+    "$mini_directory_create({0})"
+);
 builtin_add(
     "directory_list",
     "text",

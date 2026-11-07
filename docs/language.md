@@ -68,10 +68,11 @@ A mini source file may begin with a shebang line:
 io_write("ok\n");
 ```
 
-When `mini-run` is installed on `PATH`, this is an equivalent source launcher:
+When `mini-run` is installed on `PATH`, this is an equivalent source launcher;
+it needs no `-S` because the interpreter is one command:
 
 ```text
-#!/usr/bin/env -S mini-run
+#!/usr/bin/env mini-run
 io_write("ok\n");
 ```
 
