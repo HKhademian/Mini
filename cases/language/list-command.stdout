@@ -1,1 +1,4 @@
-compile|input.mini|output.js
+Arguments (3):
+- [compile]
+- [input.mini]
+- [output.js]

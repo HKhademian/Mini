@@ -19,8 +19,9 @@ cd Mini
 ./bin/mini run samples/018-list-to-text.mini
 ```
 
-The sample prints `one | two | three`. The compiler and runtime use Node's
-built-in modules; no packages are needed to run the generated tools.
+The sample builds a list and prints `one | two | three`. The compiler and
+runtime use Node's built-in modules; no packages are needed to run the generated
+tools.
 
 ## What you get
 

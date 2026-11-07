@@ -84,7 +84,7 @@
     "id": "arguments",
     "group": "Basics",
     "label": "Program arguments",
-    "note": "Join the command-line arguments with pipes.",
+    "note": "Print the command-line arguments one per line.",
     "args": [
       "alpha",
       "beta",
@@ -205,7 +205,7 @@
     "id": "lists",
     "group": "Lists",
     "label": "Join a list",
-    "note": "Join list items with a visible separator.",
+    "note": "Build a word list and format it with a separator.",
     "args": [],
     "stdin": "",
     "file": "samples/018-list-to-text.mini"

@@ -16,8 +16,7 @@ node samples/009-list-mutation.mini.ts
 - [003-io.mini](003-io.mini): Copy stdin to stdout with `readAll` and `write`. [Cases](../cases/language/005-002-io-sample.case.json).
 - [004-text.mini](004-text.mini): Scan with `text_length` and `text_get`, replacing tabs and newlines with spaces. [Cases](../cases/language/019-004-text-sample.case.json).
 - [005-file.mini](005-file.mini): Copy and print a file with `file_read` and `file_write`. [Cases](../cases/language/021-003-file-sample.case.json).
-- [006-list.mini](006-list.mini): Pass top-level `fn_args()` to a function and
-  join its elements with `list_length` and `list_get`. [Cases](../cases/language/024-003-list-sample.case.json).
+- [006-list.mini](006-list.mini): Read command-line arguments as a list, print its length, and visit each item with `list_get`. [Cases](../cases/language/024-003-list-sample.case.json).
 - [007-exit.mini](007-exit.mini): Use `process_exit` when an argument is missing. [Cases](../cases/language/025-004-process-exit-sample.case.json).
 - [008-diagnostic.mini](008-diagnostic.mini): Use `write_error` before an unsuccessful exit. [Cases](../cases/language/026-003-write-error-sample.case.json).
 - [009-list-mutation.mini](009-list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Cases](../cases/language/029-008-list-mutation-sample.case.json).
@@ -29,7 +28,7 @@ node samples/009-list-mutation.mini.ts
 - [015-text-split.mini](015-text-split.mini): Read comma-separated text and print each field on its own line. [Cases](../cases/language/043-005-text-split-sample.case.json).
 - [016-map-copy.mini](016-map-copy.mini): Copy a map and show that changing the copy leaves the original intact. [Cases](../cases/language/044-004-map-copy-sample.case.json).
 - [017-list-copy.mini](017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Cases](../cases/language/045-004-list-copy-sample.case.json).
-- [018-list-to-text.mini](018-list-to-text.mini): Join a list of words with a visible separator. [Cases](../cases/language/046-004-list-to-text-sample.case.json).
+- [018-list-to-text.mini](018-list-to-text.mini): Build a list with `list_of` and join its words with `list_to_text`. [Cases](../cases/language/046-004-list-to-text-sample.case.json).
 - [019-number-to-text.mini](019-number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Cases](../cases/language/047-003-number-to-text-sample.case.json).
 - [020-json-to-text.mini](020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Cases](../cases/language/048-004-json-to-text-sample.case.json).
 - [021-shebang.mini](021-shebang.mini): Use a first-line shebang header and print a line. [Cases](../cases/language/049-004-shebang-sample.case.json).

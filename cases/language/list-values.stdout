@@ -1,1 +1,4 @@
-|a b|--flag
+Arguments (3):
+- []
+- [a b]
+- [--flag]

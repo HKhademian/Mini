@@ -1,18 +1,10 @@
-/// Join the command-line text arguments and write them to stdout.
+/// Print each command-line argument on its own line.
 //
 
-/// Return items separated by pipes; leave the list unchanged and return empty text for no items.
-fn join(items) {
-    output := "";
-    position := 0;
-    while position < list_length(items) {
-        if position > 0 {
-            output = output + "|";
-        }
-        output = output + list_get(items, position);
-        position = position + 1;
-    }
-    return output;
-}
 args := fn_args();
-io_write(join(args));
+io_write_line("Arguments (" + number_to_text(list_length(args)) + "):");
+position := 0;
+while position < list_length(args) {
+    io_write_line("- [" + list_get(args, position) + "]");
+    position = position + 1;
+}

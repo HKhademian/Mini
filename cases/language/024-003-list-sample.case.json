@@ -5,11 +5,10 @@
   "features": [
     "list.length",
     "list.get",
+    "number.to-text",
     "process.args",
     "bindings",
-    "functions",
     "control.while",
-    "control.if",
     "text.output"
   ],
   "cases": [
@@ -18,7 +17,7 @@
         "file": "empty.stdin"
       },
       "stdout": {
-        "file": "empty.stdout"
+        "file": "list-none.stdout"
       },
       "stderr": {
         "file": "empty.stderr"

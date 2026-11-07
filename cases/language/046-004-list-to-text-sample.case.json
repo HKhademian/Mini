@@ -4,8 +4,7 @@
   "source": "../../samples/018-list-to-text.mini",
   "features": [
     "list.to-text",
-    "list.new",
-    "list.set",
+    "functions",
     "text.output"
   ],
   "cases": [
