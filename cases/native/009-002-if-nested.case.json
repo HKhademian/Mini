@@ -1,0 +1,27 @@
+{
+  "id": "native.c-if-nested",
+  "kind": "feature",
+  "target": "c",
+  "source": "009-002-if-nested.mini",
+  "features": [
+    "target.c",
+    "control.if",
+    "number.comparison",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "nested\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

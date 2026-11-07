@@ -1,0 +1,28 @@
+{
+  "id": "native.c-if-shadow",
+  "kind": "feature",
+  "target": "c",
+  "source": "009-004-if-shadow.mini",
+  "features": [
+    "target.c",
+    "control.if",
+    "bindings",
+    "scope.shadow",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "changed|outer\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

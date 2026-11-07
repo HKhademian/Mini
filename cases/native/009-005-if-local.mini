@@ -1,0 +1,5 @@
+if true {
+    local := "before";
+    if true { local = "after"; }
+    io_write(local, "\n");
+}

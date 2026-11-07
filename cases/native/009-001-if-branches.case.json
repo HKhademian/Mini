@@ -1,0 +1,27 @@
+{
+  "id": "native.c-if-branches",
+  "kind": "feature",
+  "target": "c",
+  "source": "009-001-if-branches.mini",
+  "features": [
+    "target.c",
+    "control.if",
+    "boolean.literal",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "yes|else\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

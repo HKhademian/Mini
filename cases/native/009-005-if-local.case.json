@@ -1,0 +1,28 @@
+{
+  "id": "native.c-if-local",
+  "kind": "feature",
+  "target": "c",
+  "source": "009-005-if-local.mini",
+  "features": [
+    "target.c",
+    "control.if",
+    "bindings",
+    "assignment",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "after\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

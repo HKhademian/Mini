@@ -1,0 +1,7 @@
+value := "outer";
+if true {
+    value := "inner";
+    value = "changed";
+    io_write(value, "|");
+}
+io_write(value, "\n");

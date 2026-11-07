@@ -151,7 +151,14 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
 - Numeric literal output, top-level bindings, number addition, text joining,
   boolean values and logic, and scalar comparisons are complete. Continue in the
-  user's selected order: control flow (if and while); functions.
+  user's selected order: control flow (if and while); functions. Braced if,
+  else if, and else lowering is implemented; while remains the next increment.
+- C condition helpers evaluate branch conditions lazily and propagate native
+  failures. Generated Mini branches use braces and direct else-if chains;
+  scoped bindings retain shadowing and outer assignments.
+  Verified 467/467 scenarios (four existing proposals pending), 51/51 native
+  cases, 6/6 units, bootstrap/repository checks, playground build, and strict
+  C11 host sanitizer checks.
 - Numeric ordering and scalar equality support expression precedence and
   left-to-right evaluation. Text equality uses view lengths and bytes, including
   embedded NUL. Five native cases cover boundaries, kinds, and combinations.

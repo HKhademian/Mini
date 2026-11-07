@@ -1,0 +1,2 @@
+if true { io_write("yes|"); } else { io_write("no|"); }
+if false { io_write("no|"); } else { io_write("else\n"); }

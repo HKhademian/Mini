@@ -1,0 +1,29 @@
+{
+  "id": "native.c-if-assign",
+  "kind": "feature",
+  "target": "c",
+  "source": "009-003-if-assign.mini",
+  "features": [
+    "target.c",
+    "control.if",
+    "bindings",
+    "assignment",
+    "boolean.and",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "7\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
