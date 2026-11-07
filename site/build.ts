@@ -69,10 +69,10 @@ const playgroundSamples = JSON.parse(
 ) as readonly PlaygroundEntry[];
 
 const heroSample: Sample = {
-    id: "json",
-    title: "Maps and JSON",
-    note: "Build a map and print compact JSON.",
-    file: "samples/020-json-to-text.mini",
+    id: "fibonacci",
+    title: "Fibonacci",
+    note: "Build a number sequence with a function and loop.",
+    file: "samples/showcase/fibonacci.mini",
     args: [],
     stdin: "",
 };
