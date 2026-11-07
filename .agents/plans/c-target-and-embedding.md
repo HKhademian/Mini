@@ -3,26 +3,26 @@ name: c-target-and-embedding
 status: pending
 created: 2026-11-07
 todos:
-  - id: step-1-contract
-    content: "Settle native substrate and behavior boundaries; add focused fixtures"
+  - id: step-1-first-cases
+    content: "Specify only the first C slice and focused cases"
     status: pending
-  - id: step-2-checked-program
-    content: "Separate checking from emission without losing JS self-hosting"
+  - id: step-2-first-c
+    content: "Compile a simple Mini sample to C and execute it"
     status: pending
-  - id: step-3-c-slice
-    content: "Generate, compile, and execute the first scalar C slice"
+  - id: step-3-expand-compiler
+    content: "Extend C support through small feature increments"
     status: pending
-  - id: step-4-native-runtime
-    content: "Complete values, memory, and the runner's required host adapters"
+  - id: step-4-native-storage
+    content: "Add native storage and ownership as supported features need them"
     status: pending
-  - id: step-5-embedding-boundary
-    content: "Prove generated source embedding, validation, and host status reporting"
+  - id: step-5-simple-host
+    content: "Prove a naive generated C entry callable by a host"
     status: pending
   - id: step-6-source-runner
-    content: "Implement the source runner in mini and generate C source/header"
+    content: "Choose and implement the Mini-written runner after compiler support exists"
     status: pending
   - id: step-7-distribution
-    content: "Verify inclusion, static/shared builds, FFI calls, and packaging"
+    content: "Expand embedding and verify source/static/shared distribution"
     status: pending
 plans:
   requires: []
@@ -30,238 +30,197 @@ plans:
   parallel: []
 ---
 
-# C generation and an embeddable mini source runner
+# Incremental C target, then an embeddable runner
 
 ## Mission
 
-Deliver generated C source and a header for a runner written in mini. Hosts can
-include/compile the source, build a static archive, or expose the C ABI through a
-shared library and FFI. The runner loads mini scripts without Node or a runtime
-C compiler. Native storage support belongs to the C backend; the compiler and
-evaluator stay written in mini.
-This is a planning handoff, not authorization to freeze unresolved semantics.
+First compile a small Mini program to readable C and run it. Extend the compiler
+in small working increments. Later compile a Mini-written script runner to
+generated C source/header, usable directly, as a static archive, or as a shared
+library through a C-compatible FFI. Runtime scripts need neither Node nor a C
+compiler.
 
-## Done
+## Done and owner direction
 
-- Inspected the current compiler, builtin templates, bootstrap, case runner,
-  project rules, and source layout. No native execution gate has been run.
-- Recorded the architecture, examples, alternatives, and unresolved decisions in
-  [the proposal](../../docs/c-target-and-embedding.md).
-- Clarified the owner wants generated source as the primary artifact, not just
-  a prebuilt FFI library. AOT compilation enables a generated source interpreter.
-- Recorded the stack-machine idea as an option. Recommendation: start with one
-  checked-tree evaluator for the easiest initial implementation; no VM selected.
-- Owner clarified that native arrays, growth, allocation/deallocation, and text
-  views are implementation responsibilities. Tagged-union values are the selected
-  direction. No language exceptions, interrupts, or recovery constructs are added.
+- Inspected the compiler, builtin templates, case harness, bootstrap, and rules.
+  Planning documents exist; no C backend or native execution is implemented.
+- Generated source/header are the product. Compiler and runner logic stay in
+  Mini; native storage support belongs to the backend.
+- Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
+  storage/views are implementation responsibilities.
+- Add no language exceptions, interrupts, error values, or recovery constructs.
+- Start with small feature implementations and simple samples, then expand.
+- Postpone tree-versus-stack until the runner stage. Resolve broader semantics
+  as features reach them. General memory policy is a mid/later implementation
+  decision. Begin with a naive host API and extend it when needed.
 
-## Read first
+## Read first and plan links
 
-- [Project guidance](../../AGENTS.md) and [development rules](../rules/development.md).
-- [Atomic commits](../rules/atomic-commits.md) and [contributing](../../CONTRIBUTING.md).
-- [Proposal](../../docs/c-target-and-embedding.md), [language](../../docs/language.md),
-  [builtins](../../docs/builtins.md), and [passing proposal](../../docs/parameter-passing.md).
-- [Bootstrap](../../docs/bootstrap.md), [evolution](../../docs/evolving-language.md),
-  [cases](../../docs/cases.md), and [pure-library boundaries](../../docs/self-containment.md).
-- [Compiler entry](../../tools/compiler.mini), [parser](../../libs/compiler/parser.mini),
-  [lexer](../../libs/compiler/lexer.mini), and [builtin registry](../../libs/compiler/builtins.mini).
+- [Architecture and scope](../../docs/c-target-and-embedding.md).
+- [Project instructions](../../AGENTS.md), [development](../rules/development.md),
+  [atomic commits](../rules/atomic-commits.md), and [contributing](../../CONTRIBUTING.md).
+- [Language](../../docs/language.md), [builtins](../../docs/builtins.md),
+  [passing proposal](../../docs/parameter-passing.md), and [cases](../../docs/cases.md).
+- [Bootstrap](../../docs/bootstrap.md) and [evolution](../../docs/evolving-language.md).
+- [Compiler](../../tools/compiler.mini), [parser](../../libs/compiler/parser.mini),
+  [lexer](../../libs/compiler/lexer.mini), and [builtins](../../libs/compiler/builtins.mini).
 
-Execute in order, using small atomic commits and preserving JS self-hosting.
-New paths below are proposed. Create no empty scaffolding.
+No child/prerequisite plans. Execute in order using small atomic commits.
+New paths below are proposed. Do not require completing all language features
+before trying a useful host or runner sample; carry forward explicit target gaps.
 
-### Step 1 — contract
+### Step 1 — first-cases
 
 **Depends on:** none.
-**Files:** update `docs/c-target-and-embedding.md`, `docs/language.md`,
-`docs/builtins.md`, `.agents/rules/development.md`; create focused fixtures in
-`cases/native/` and `cases/embedding/` when their contracts are selected.
+**Files:** create source/JSON/stream fixtures under cases/native/; update
+[the proposal](../../docs/c-target-and-embedding.md) for the selected slice.
 
-- Inventory backend-owned allocation/storage/ABI support and pure mini reuse.
-  Use tagged-union values; specify safe array growth and text-view lifetimes.
-  These are implementation responsibilities, not a zero-authored-C approval gate.
-- Bound the policy exception allowing generated native code and C host fixtures.
-- Resolve number behavior, ASCII/Unicode boundary, parameter-sharing status,
-  actual/padded `fn_args()` behavior, exit adaptation, value lifetime, and roots.
-  Preserve open questions where not needed for the first scalar slice.
-- Design context state and host status propagation before C generation. Guard
-  unsafe operations internally; preserve existing builtin fallbacks. Reject
-  invalid source before effects. Add no language exception/recovery feature.
-- Name cases from the proposal: 42 output, LR3 order, lazy calls, exit 7 and
-  host continuation, zero/false/missing, load-before-effects, separate contexts.
-  Use separate mini sources and JSON streams. Existing schema has no target
-  field: extend the shared harness narrowly when native execution is introduced.
-- Mark unsupported new cases pending. Do not make existing JS cases pending.
+- Select a tiny initial slice: top-level ASCII text literal output through
+  io_write, with no functions, collections, or dynamic text.
+- Add a simple sample with exact stdout/status, plus empty-text, escape, and
+  unsupported-form cases. Do not mark existing JS cases pending.
+- Define only native support required for those cases. Add a bounded policy
+  clarification for generated native code/C host fixtures when support lands.
 
-**Acceptance:** a bounded first C slice and its native support are specified;
-tagged payloads, validation, ownership, and host statuses have named cases.
-Provisional versus accepted behavior and expected streams are explicit.
-**Verify:** `./bin/mini check --docs` (also checks generated tools/fixed point).
+**Acceptance:** the first slice and nearby cases are specified. No runner, GC,
+whole-language semantic review, or full embedding API is required to begin.
+**Verify:** ./bin/mini check --docs.
 
-### Step 2 — checked-program
+### Step 2 — first-c
 
-**Depends on:** step-1-contract.
-**Files:** modify `libs/compiler/parser.mini`, `libs/compiler/builtins.mini`,
-`tools/compiler.mini`; create `libs/compiler/program.mini` and
-`libs/compiler/emit-js.mini`; update `test/compiler.test.mini`, `docs/compiler.md`.
+**Depends on:** step-1-first-cases.
+**Files:** modify tools/compiler.mini, libs/compiler/parser.mini,
+libs/compiler/builtins.mini, libs/tools/mini.mini, libs/tools/cases.mini;
+create libs/compiler/emit-c.mini; extend config/case.schema.json only if needed.
 
-- Extract the smallest checked nodes for the existing language, retaining
-  source locations, binding identities, scopes, signatures, and diagnostics.
-- Represent block return behavior explicitly instead of inspecting output text.
-- Separate builtin name/kind metadata from target-specific helper/call emission.
-- Keep JS output unchanged where practical; explain necessary output changes.
-  Preserve `tokens`, `metadata`, `--reference`, and `--program-only` behavior.
-- Regenerate/promote the bootstrap through the existing build flow. Do not
-  hand-edit `bin/bootstrap`, `dist/compile.js`, or revive the retired compiler.
+- Add explicit C target selection (proposed --target c; unavailable today).
+- Reuse lexer/parser/checks. Separate emission only as this slice needs it;
+  preserve routine boundaries and JS behavior. No whole-compiler checked-tree
+  migration is a prerequisite for emitting the first C sample.
+- Emit portable C11, required tagged/native support, and an executable entry.
+  Reject unsupported forms before writing output; do not fall back to Node.
+- Extend the shared case harness narrowly to compile emitted C with cc and run
+  it. Keep orchestration in Mini or direct Node TypeScript.
+- Regenerate the JS bootstrap normally; never hand-edit generated seeds.
 
-**Acceptance:** accepted/rejected programs and diagnostics retain behavior;
-successive JS generations match and ordinary examples run. No separate parser
-or checker is introduced for C or the future source runner.
-**Verify:** `./bin/bootstrap`, `./bin/mini check`, `./bin/mini test`,
-`./bin/mini test --unit`, `./bin/mini verify`.
+**Acceptance:** first cases compile/run natively, rejected forms leave no artifact,
+and JS self-hosting still works. Record the new native verification command.
+**Verify:** ./bin/bootstrap; ./bin/mini check; ./bin/mini test;
+./bin/mini test --unit; ./bin/mini verify; focused native cases compiled with
+-std=c11 -Wall -Wextra -Werror on the supported toolchain.
 
-### Step 3 — c-slice
+### Step 3 — expand-compiler
 
-**Depends on:** step-2-checked-program.
-**Files:** create `libs/compiler/emit-c.mini` and bounded native emission helpers;
-modify `tools/compiler.mini`, `libs/tools/mini.mini`, `libs/tools/cases.mini`,
-`config/case.schema.json` if required; add `cases/native/` sources/manifests.
+**Depends on:** step-2-first-c.
+**Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
+cases/native/, test/compiler.test.mini, and docs/compiler.md.
 
-- Add explicit C target selection (proposed `--target c`; not supported yet).
-  Default JS behavior stays usable for bootstrap and browser consumers.
-- Emit portable C11 for the selected scalars, bindings, calls, branches, loops,
-  and output. Lower effects through ordered temporaries and lazy branches.
-- Generate backend-owned tagged values and required native/platform support;
-  document manually authored C fragments honestly.
-- Reject unsupported constructs/builtins with located diagnostics before writing
-  an executable output. No partial artifact or Node fallback on failure.
-- Teach the shared case runner to compile generated C with a discovered `cc`
-  and compare streams/status. Document exact new verification commands now.
+- Add one useful feature per working increment: numeric literals/bindings,
+  arithmetic, booleans/comparisons, control flow, then functions as needed.
+- Give each increment distinct focused cases and a small combined sample.
+- Resolve numeric limits, text indexing, calls/defaults, and other questions as
+  implemented features reach them. Follow accepted contracts, keep unresolved
+  behavior explicit, and guard/reject unsupported ranges or forms.
+- Preserve effect order/lazy evaluation when those operations arrive. Extract
+  shared nodes/emission routines only when concrete target needs justify them.
 
-**Acceptance:** multiple focused cases run as native binaries, including nested
-effects, negative/zero values, lazy branches, and explicit unsupported-feature
-rejections. Confirm C compilation actually occurred, rather than JS execution.
-**Verify:** existing gates plus the newly documented native case command;
-compile with `-std=c11 -Wall -Wextra -Werror` on the supported toolchain.
+**Acceptance:** each increment works independently and records remaining gaps;
+small samples are not presented as full C parity.
+**Verify:** focused native cases and relevant compiler/bootstrap gates from Step 2.
 
-### Step 4 — native-runtime
+### Step 4 — native-storage
 
-**Depends on:** step-3-c-slice.
-**Files:** extend `libs/compiler/emit-c.mini`, native intrinsic emission,
-`libs/compiler/builtins/*.mini`, reusable `libs/pure/*.mini`; extend
-`cases/native/` and `docs/runtime.md`.
+**Depends on:** relevant feature support from step-3-expand-compiler.
+**Files:** extend native support under libs/compiler/, builtin lowering,
+reusable libs/pure/ sources, cases/native/, and docs/runtime.md.
 
-- Add text, heterogeneous/sparse lists, maps, mutation, copies, defaults/extras,
-  `fn_args()`, globals, and recursion in verified increments.
-- Use tagged-union elements in growable lists and map values; check bounds and
-  capacity arithmetic. Preserve backing storage for live text views.
-- Implement the selected allocation/reclamation strategy; root generated locals,
-  constants, module state, host handles, and callback arguments. Cover cycles,
-  repeated allocations, failed allocation cleanup, and context destruction.
-- Add runner-required host services behind adapters. Keep file/process/path/
-  time/hash support outside the core where not required; inventory supported and
-  rejected builtins. Native CLI tool ports must not block embedded scripting.
-- Compile and run collection-heavy native programs using the JS-built compiler.
-  Verify deterministic C emission and preserve the separate JS fixed-point gate.
+- Add dynamic text, lists, maps, mutation, and copies in small increments as
+  samples need them. Use tagged values for heterogeneous elements.
+- Implement growing arrays, allocation/deallocation, and text views where useful.
+  Specify bounds/backing-storage lifetime when each operation is introduced.
+- Begin with ownership suited to the actual sample. General reclamation/GC and
+  host-retained-value policy are mid/later decisions; no collector is selected.
+- Whole-invocation allocation with cleanup can serve bounded early programs if
+  limits are explicit. Do not promise persistent managed heaps prematurely.
+- Add only needed host services. All builtin families/native CLI ports are not
+  prerequisites for a small host or source-runner sample.
 
-**Acceptance:** runner-required values/builtins and active covered native cases
-pass; other gaps are named and rejected. Memory checks confirm lifetime behavior.
-**Verify:** existing gates, native parity, supported Clang/GCC builds, and
-sanitizer runs where available. Record actual commands/results.
+**Acceptance:** supported storage has valid lifetimes and cleanup for its stated
+scope, with explicit unsupported cases.
+**Verify:** focused native/lifetime checks, sanitizers where available, and
+compiler/bootstrap gates when compiler source changes.
 
-### Step 5 — embedding-boundary
+### Step 5 — simple-host
 
-**Depends on:** step-4-native-runtime.
-**Files:** add ABI-generation support under `libs/compiler/`, C host fixtures
-under `cases/embedding/`, and update `docs/c-target-and-embedding.md`.
+**Depends on:** enough support from Steps 3–4 for one small sample.
+**Files:** add ABI emission under libs/compiler/, cases/embedding/ fixtures,
+and update docs/c-target-and-embedding.md.
 
-- Generate a header/source pair with opaque handles, explicit lengths, stable
-  status retrieval, lifecycle, function calls, callbacks, and user data.
-- Choose API stack versus opaque value handles using a real host example;
-  a C API stack does not require a VM operand stack.
-- Put globals and initialization state in per-context/program instances. Define
-  program release, retained values, callback roots, and cross-context rejection.
-- Implement the host status/context contract designed in Step 1. Keep native
-  operations guarded; diagnostics, resource failures, and explicit script exit
-  return to the host. The standalone adapter keeps CLI process status.
-- Prove a host can call a generated mini function and survive an error/exit.
-  This is an integration fixture, not a separate AOT embedding product release.
+- Generate a naive C-callable entry/header for one compiled Mini sample.
+  Use simple scalar inputs/results or output, as the sample needs.
+- Define only the actual call/ownership/status contract. Guard native operations
+  and keep diagnostics at the host boundary; add no Mini recovery mechanism.
+- Add handles, multiple contexts, callbacks, or retained results only when later
+  examples need them. This is not a full stable API promise.
 
-**Acceptance:** two contexts are independent; values survive required lifetimes;
-callback errors and exit 7 return control; a subsequent call succeeds.
-**Verify:** real C host linked with generated output, native memory checks,
-existing gates, and focused embedding fixtures.
+**Acceptance:** a real C host calls generated code; initial API limits are explicit.
+**Verify:** compile/link/run the focused host fixture with generated source;
+existing gates appropriate to compiler changes.
 
 ### Step 6 — source-runner
 
-**Depends on:** step-5-embedding-boundary.
-**Files:** create `libs/runner/evaluate.mini`, `libs/runner/load.mini`,
-`tools/runner.mini`; reuse shared compiler nodes; extend `cases/embedding/`.
+**Depends on:** enough C compiler/storage support for the chosen runner slice.
+**Files:** create tools/runner.mini and libs/runner/ sources; adapt shared compiler
+routines where needed; extend cases/embedding/.
 
-- Implement one evaluator in mini over the checked representation. Reuse the
-  lexer/parser/checker; run it on JS first, then generate its C source/header.
-- Expose load-from-bytes, execute, and call-by-name through the generated ABI.
-  Load validates without executing; define top-level initialization/repeat rules.
-- Add host include resolution and builtin services; define callback signatures
-  in checking metadata instead of allowing arbitrary unknown function names.
-- Exercise scalar/collection/control-flow/call behavior, included diagnostics,
-  callback results, failure recovery, repeated load/release, and independent hosts.
-- No external compiler, subprocess, temporary C artifact, or Node at script
-  execution time. Keep recursive depth/resource limits honest for a tree evaluator.
-- If a stack VM becomes necessary, make that a deliberate replacement decision
-  with concrete acceptance needs; do not silently build two interpreters.
+- Now choose tree evaluation or a stack machine from concrete implementation
+  needs. Neither is selected beforehand. Implement one runner, written in Mini.
+- Start with one small script and a source-bytes entry. Reuse shared analysis;
+  extend its representation if the runner needs it.
+- Compile the runner to C. New scripts run inside it without Node, subprocess
+  compilation, or a C compiler at script execution time.
+- Reject malformed/unsupported source before effects. Host statuses/diagnostics
+  are implementation boundaries, not new Mini errors or recovery features.
+- Expand script support/API incrementally: includes, call-by-name, callbacks,
+  independent instances, and persistent results are additions when needed.
 
-**Acceptance:** a native C host submits new mini source at runtime, receives
-results/diagnostics, and remains usable afterward, with no Node/toolchain invoked.
-**Verify:** runner parity against existing accepted cases plus runtime-loading
-fixtures. Record unavailable features as gaps rather than claiming full parity.
+**Acceptance:** a native host supplies a new small script at runtime and observes
+expected output/result, with explicit feature/API limits.
+**Verify:** focused loading fixtures and parity for supported script features;
+compiler/bootstrap gates when shared compiler code changes.
 
 ### Step 7 — distribution
 
 **Depends on:** step-6-source-runner.
-**Files:** update `tools/mini-tools.json`, `libs/tools/build.mini`,
-`libs/tools/release.mini`, CI configuration, `docs/releases.md`, `docs/runtime.md`,
-`docs/getting-started.md`, README, and `config/versions.json` as warranted.
+**Files:** update tools/mini-tools.json, libs/tools/build.mini,
+libs/tools/release.mini, CI, docs/releases.md, docs/runtime.md,
+docs/getting-started.md, README, and version registry when warranted.
 
-- Generate reproducible `dist/native/mini.c` and `mini.h`; ship matching source,
-  license, ABI/build instructions, and a runnable host example.
-- Verify direct source inclusion with one implementation definition, separate
-  compilation, static archive linking, and shared-library dynamic FFI calls.
-- First verify macOS/Linux; distinguish tested targets from Windows build
-  instructions. Test DLL exports/calling convention before claiming DLL support.
-- Use one actual dynamic FFI host and check strings, arguments, callbacks,
-  errors, and destruction. No new runtime dependency for the mini compiler.
-- Follow component versioning only when implemented; no version/tag bump for
-  this planning document. Publishing is a separately authorized release action.
+- Generate reproducible dist/native/mini.c and mini.h.
+- Verify source inclusion, separate compilation, static archives, and shared
+  libraries with a real dynamic FFI caller. Grow the naive API through examples.
+- Document implemented ownership/services. Test retained handles, callbacks, or
+  multiple contexts before claiming them.
+- Validate macOS/Linux first; verify DLL exports/calling convention before
+  claiming Windows support. Ship sources, license, header, and a host example.
+- Version implemented components under repository rules. Publishing remains a
+  separately authorized release action; planning changes create no release tags.
 
-**Acceptance:** source inclusion, static linking, and dynamic FFI examples run
-from packaged artifacts without Node. Generated sources reproduce, and the
-supported-platform list matches CI evidence.
-**Verify:** existing repository/release checks and new package smoke tests.
+**Acceptance:** packaged source/static/shared examples work on tested platforms,
+without Node at script runtime; claims match evidence.
+**Verify:** release gates and focused packaged-artifact/FFI smoke checks.
 
-## Constraints and overall acceptance
+## Constraints and key facts
 
-- Compiler/evaluator behavior lives in mini; backend-owned native storage uses
-  tagged values. Generated C is never hand-edited; native fragments are explicit.
-- Add no mini exceptions, interrupts, error values, or recovery constructs.
-  Prevent unsafe native operations and report unpreventable failures to the host.
-- Preserve JS self-hosting, browser support, existing diagnostics, and unrelated
-  work. No syntax redesign, general FFI language feature, JIT, VM optimization,
-  mandatory binary bytecode, or sandbox claim belongs in this plan.
-- Initial C generation may use a native slice; final runner support is measured
-  separately. Pending cases and untested platforms never count as passes.
-- The deliverable is source/header usable directly, as an archive, or as a
-  shared library. Runtime scripts do not require a C compiler or Node.
-- Use explicit owned paths and atomic commits. Do not publish/tag merely for
-  completing a phase. Update this plan with evidence and remaining scope.
-
-## Key facts and plan links
-
-- Repository: MiniLang; this work does not modify the neighboring repositories.
-- Implementation: `tools/*.mini`, `libs/compiler/*.mini`; active generated
-  compiler is selected by `config/compiler.json`. A fully native compiler is a
-  follow-up, not a runner prerequisite; when supported, compare successive
-  emitted C generations, never native binary bytes.
-- Host harness: direct Node TypeScript or mini, extensionless `bin/` commands;
-  no npm-script, shell-script, or Python build implementation.
-- No child plans. The proposal owns architecture; this file owns execution.
-  All implementation steps remain pending. No native gate has been run.
+- Mini compiler/runner logic stays in Mini; backend storage uses tagged unions.
+  Generated C is never hand-edited; authored C fragments are explicit.
+- Preserve JS self-hosting, browser support, diagnostics, and unrelated work.
+  Active compiler: config/compiler.json. Commands use extensionless bin/ entries.
+- No upfront whole-compiler redesign, new syntax, language exceptions/interrupts/
+  recovery, mandatory VM/GC, JIT, binary bytecode format, or sandbox claim.
+- Use owned paths, focused cases, and atomic commits. Pending cases never count
+  as native passes. No blanket tags or routine publishing.
+- Full native compiler self-hosting is later work, not an embedding prerequisite;
+  compare successive emitted C sources, not binary bytes, when attempted.
+- All implementation remains pending. Resolve deferred decisions at the relevant
+  increment; do not make them first-sample prerequisites.
