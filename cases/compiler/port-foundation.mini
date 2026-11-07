@@ -3,7 +3,6 @@
 include "common/io.mini";
 
 /// Return ten times value using only addition; used by decimal formatting.
-
 fn times_ten(value) {
     twice := value + value;
     four := twice + twice;

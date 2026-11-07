@@ -2,7 +2,6 @@
 //
 
 /// Return normalized text without changing source; ordinary characters are retained.
-
 fn normalize(source) {
     output := "";
     position := 0;

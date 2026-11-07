@@ -2,7 +2,6 @@
 //
 
 /// Write text followed by one newline and return the primitive write result.
-
 fn io_write_line(text) {
     return io_write(text + "\n");
 }

@@ -2,7 +2,6 @@
 //
 
 /// Return the first text item without changing items; an empty list terminates the process.
-
 fn first(items) {
     if list_length(items) == 0 {
         process_exit(2);

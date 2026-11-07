@@ -10,7 +10,6 @@ include "../common/list.mini";
 include "./cases.mini";
 
 /// Report usage and stop.
-
 fn test_usage() {
     io_write_error("usage: mini-test [FILTER]\n");
     process_exit(1);

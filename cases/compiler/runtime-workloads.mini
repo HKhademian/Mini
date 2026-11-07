@@ -2,7 +2,6 @@
 //
 
 /// Return the next numeric value, providing an ordinary function call in the scalar probe.
-
 fn perf_step(value) {
     return value + 1;
 }

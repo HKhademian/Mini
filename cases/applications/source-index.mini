@@ -2,7 +2,6 @@
 //
 
 /// Return a map from identifier text to its occurrence offsets; comments and strings are excluded.
-
 fn app_run(source) {
     tokens := lex_tokenize(source);
     symbols := map_new();

@@ -37,7 +37,6 @@ include "../common/project.mini";
 /// Read and parse a JSON file.
 
 /// Return the accepted case kinds.
-
 fn case_kinds() {
     kinds := list_of("tool", "feature", "reject", "compile", "sample", "example");
     return kinds;

@@ -10,7 +10,6 @@ include "../common/process-run.mini";
 include "../common/text.mini";
 
 /// Remove a temporary run directory and its known files.
-
 fn run_cleanup(directory) {
     file_remove(directory + "/program.js");
     file_remove(directory + "/package.json");

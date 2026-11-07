@@ -10,7 +10,6 @@ include "../common/process.mini";
 include "../common/project.mini";
 
 /// Write one server log line.
-
 fn lsp_log(message) {
     io_write_error("mini-lang-server: " + message + "\n");
     return 0;

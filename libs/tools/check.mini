@@ -9,7 +9,6 @@ include "../common/text.mini";
 include "./cases.mini";
 
 /// Report a check failure and stop.
-
 fn check_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

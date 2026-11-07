@@ -2,7 +2,6 @@
 //
 
 /// Print a call marker and return a fresh one-key map.
-
 fn make_map() {
     io_write("m");
     items := map_new();

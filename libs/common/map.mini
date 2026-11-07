@@ -7,7 +7,6 @@ include "./list.mini";
 /// A repeated key takes the last supplied value, matching map_set. A key
 /// without a value takes 0, so the entry still exists and map_of("k") equals
 /// map_of("k", 0).
-
 fn map_of() {
     entries := fn_args();
     result := map_new();

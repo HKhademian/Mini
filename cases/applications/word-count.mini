@@ -2,7 +2,6 @@
 //
 
 /// Return a membership map for letters, digits, and underscore.
-
 fn word_letters() {
     letters := map_new();
     alphabet := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";

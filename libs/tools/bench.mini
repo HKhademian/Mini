@@ -7,7 +7,6 @@ include "../common/list.mini";
 include "./cases.mini";
 
 /// Report a benchmark error and stop.
-
 fn bench_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

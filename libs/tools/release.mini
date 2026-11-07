@@ -12,7 +12,6 @@ include "../common/result.mini";
 include "../common/project.mini";
 
 /// Report a release error and stop.
-
 fn release_fail(message) {
     io_write_error(message + "\n");
     process_exit(1);

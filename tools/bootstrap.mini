@@ -8,7 +8,6 @@ include "compiler/builtins.mini";
 include "tools/bootstrap.mini";
 
 /// Rebuild the compiler and every generated tool.
-
 fn main() {
     return bootstrap_all(project_root());
 }

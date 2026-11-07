@@ -3,7 +3,6 @@
 include "common/io.mini";
 
 /// Record receiver evaluation and return the nested map without copying it.
-
 fn receiver(state) {
     map_set(state, "calls", map_get(state, "calls") + "r");
     return map_get(state, "items");
