@@ -1800,6 +1800,74 @@ function bootstrap_executable(root, path) {
     return 0;
     return 0;
 }
+function bootstrap_step(root, label, command, args, directory) {
+
+    let options = ({ __proto__: $mini_map_proto });
+    $mini_map_set(options, "command", command);
+    $mini_map_set(options, "arguments", args);
+    $mini_map_set(options, "directory", directory);
+    $mini_map_set(options, "mode", "inherit");
+    let result = $mini_process_spawn(options);
+    if (($mini_map_get(result, "status") !== 0)) {
+        bootstrap_fail((label + " failed"));
+    }
+    return 0;
+    return 0;
+}
+function bootstrap_clean_generated(root) {
+
+    let manifest_path = path_join(root, "tools/mini-tools.json");
+    let parsed = json_parse_file(manifest_path);
+    if (result_is_fail(parsed)) {
+        bootstrap_fail(result_get_message(parsed));
+    }
+    let manifest = result_get_value(parsed);
+    $mini_path_remove(path_join(root, "dist/compile.js"));
+    let tools = $mini_map_get(manifest, "tools");
+    let position = 0;
+    while ((position < (tools).length)) {
+        let tool = $mini_list_get(tools, position);
+        $mini_path_remove(path_join(root, $mini_map_get(tool, "generated")));
+        position = (position + 1);
+    }
+    let launchers = $mini_map_get(manifest, "launchers");
+    position = 0;
+    while ((position < (launchers).length)) {
+        let launcher = $mini_list_get(launchers, position);
+        let name = $mini_map_get(launcher, "name");
+        if ((name !== "bootstrap")) {
+            $mini_path_remove(path_join(root, ("bin/" + name)));
+        }
+        position = (position + 1);
+    }
+    $mini_path_remove(path_join(root, "node_modules"));
+    $mini_path_remove(path_join(root, "editors/vscode/node_modules"));
+    $mini_path_remove(path_join(root, "editors/vscode/dist/extension.cjs"));
+    return 0;
+    return 0;
+}
+function bootstrap_clean_all(root) {
+
+    io_write_line("Cleaning generated tools and locked dependencies...");
+    bootstrap_clean_generated(root);
+    bootstrap_step(root, "root npm ci", "npm", list_of("ci"), root);
+    let editor = path_join(root, "editors/vscode");
+    bootstrap_step(root, "VS Code npm ci", "npm", list_of("ci"), editor);
+    bootstrap_all(root);
+    let node = process.execPath;
+    let mini = path_join(root, "bin/mini");
+    bootstrap_step(root, "repository check", node, list_of(mini, "check"), root);
+    bootstrap_step(root, "case suite", node, list_of(mini, "test"), root);
+    bootstrap_step(root, "Mini unit suite", node, list_of(mini, "test", "--unit"), root);
+    bootstrap_step(root, "LSP tests", node, list_of("--test", "test/lang-server.test.ts"), root);
+    bootstrap_step(root, "release tests", node, list_of("--test", "test/release.test.ts"), root);
+    bootstrap_step(root, "VS Code TypeScript check", "npm", list_of("run", "check"), editor);
+    bootstrap_step(root, "VS Code build", "npm", list_of("run", "build"), editor);
+    bootstrap_step(root, "VS Code grammar tests", node, list_of("--test", "test/grammar.test.ts"), editor);
+    io_write_line("Clean rebuild and full project checks passed.");
+    return 0;
+    return 0;
+}
 function bootstrap_all(root) {
 
     let work = $mini_path_temp_directory();
@@ -1824,9 +1892,16 @@ function bootstrap_all(root) {
     return 0;
     return 0;
 }
-function main() {
+function main(args) {
 
-    return bootstrap_all(project_root());
+    if (((args).length === 0)) {
+        return bootstrap_all(project_root());
+    }
+    if ((((args).length === 1) && ($mini_list_get(args, 0) === "--clean"))) {
+        return bootstrap_clean_all(project_root());
+    }
+    (writeSync(2, "usage: ./bin/bootstrap [--clean]\n"), 0);
+    return 1;
     return 0;
 }
-main();
+main(process.argv.slice(2));

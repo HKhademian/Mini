@@ -17,6 +17,12 @@ rebuilds `dist/compile.js`, verifies the compiler fixed point, compiles
 ./bin/mini verify
 ```
 
+For a full clean rebuild, run `./bin/bootstrap --clean`. It removes generated
+tool outputs, the root and VS Code dependency installs, and the VS Code bundle;
+then it reinstalls locked dependencies, rebuilds the compiler and tools, and
+runs repository, case, unit, LSP, release, and editor checks. Local release
+artifacts and previews are preserved.
+
 `dist/` and generated `bin/` entries are ignored by Git. CI bootstraps before
 running checks and publishes built tools and release artifacts.
 

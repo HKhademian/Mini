@@ -9,7 +9,7 @@ Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 ```text
 compiler-v0.5.0-v0.4.0-alpha.3
 builtins-v0.5.0-v0.4.0-alpha.2
-bootstrap-v0.5.0-v0.2.0-alpha.3
+bootstrap-v0.5.0-v0.2.0-alpha.4
 vscode-v0.5.0-v0.3.6
 ```
 
@@ -66,7 +66,7 @@ lsp-v0.5.0-v0.1.0-alpha.11
 test-v0.5.0-v0.1.0-alpha.5
 verify-v0.5.0-v0.1.0-alpha.6
 bench-v0.5.0-v0.1.0-alpha.5
-release-v0.5.0-v0.1.0-alpha.5
+release-v0.5.0-v0.1.0-alpha.6
 vscode-v0.5.0-v0.3.8
 ```
 

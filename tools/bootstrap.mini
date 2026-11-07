@@ -7,9 +7,16 @@ include "compiler/parser.mini";
 include "compiler/builtins.mini";
 include "tools/bootstrap.mini";
 
-/// Rebuild the compiler and every generated tool.
-fn main() {
-    return bootstrap_all(project_root());
+/// Rebuild the compiler and tools, optionally doing a clean full-project rebuild.
+fn main(args) {
+    if list_length(args) == 0 {
+        return bootstrap_all(project_root());
+    }
+    if list_length(args) == 1 && list_get(args, 0) == "--clean" {
+        return bootstrap_clean_all(project_root());
+    }
+    io_write_error("usage: ./bin/bootstrap [--clean]\n");
+    return 1;
 }
 
-main();
+main(fn_args());

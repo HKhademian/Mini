@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- bootstrap 0.2.0-alpha.4: add `./bin/bootstrap --clean` to reinstall locked
+  dependencies, rebuild generated project tools, and run the full check suites.
+
+- release 0.1.0-alpha.6: launch the platform-specific esbuild executable directly
+  when packaging VS Code releases.
+
 - verify 0.1.0-alpha.6: copy project libraries into the isolated bootstrap
   verification directory so bare `libs/...` imports resolve during fixed-point
   checks.

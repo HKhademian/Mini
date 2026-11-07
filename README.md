@@ -25,6 +25,9 @@ From a clean checkout, build every generated artifact from the tracked
 ./bin/mini check
 ```
 
+For a clean rebuild of generated tools, locked dependencies, and all project
+checks, run `./bin/bootstrap --clean`.
+
 `bin/bootstrap` is generated from [tools/bootstrap.mini](tools/bootstrap.mini)
 and embeds the compiler. It rebuilds the compiler, verifies the fixed point,
 then generates `dist/` and the other `bin/` commands. `dist/` and generated

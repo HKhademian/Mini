@@ -134,10 +134,10 @@ fn release_vscode(directory, output, tooling) {
     if !path_is_exists(bundler) {
         release_fail("install the VS Code extension bundler with npm ci in editors/vscode");
     }
-    extension := path_join(directory, "editors/vscode");
+    extension := path_join(tooling, "editors/vscode");
     directory_create(path_join(extension, "dist"));
-    bundle_args := list_of(bundler, path_join(extension, "src/extension.ts"), "--bundle", "--platform=node", "--format=cjs", "--external:vscode", "--outfile=" + path_join(extension, "dist/extension.cjs"));
-    release_run(process_exec_path(), bundle_args, extension);
+    bundle_args := list_of(path_join(extension, "src/extension.ts"), "--bundle", "--platform=node", "--format=cjs", "--external:vscode", "--outfile=" + path_join(extension, "dist/extension.cjs"));
+    release_run(bundler, bundle_args, extension);
     directory_create(output);
     file := "mini-" + map_get(current, "group") + "-v" + version + ".vsix";
     destination := path_join(output, file);
