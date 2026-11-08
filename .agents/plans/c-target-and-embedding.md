@@ -248,6 +248,9 @@ reusable libs/pure/ sources, cases/native/, and docs/runtime.md.
   samples need them. Use tagged values for heterogeneous elements.
 - Implement growing arrays, allocation/deallocation, and text views where useful.
   Specify bounds/backing-storage lifetime when each operation is introduced.
+- A generic C `MINI_ID(vec)` with function-based init, reserve, append, and free
+  operations now backs the text byte buffer. Allocation overflow/failure panics;
+  Mini list values and their indexing/mutation semantics remain pending.
 - Begin with ownership suited to the actual sample. General reclamation/GC and
   host-retained-value policy are mid/later decisions; no collector is selected.
 - Whole-invocation allocation with cleanup can serve bounded early programs if

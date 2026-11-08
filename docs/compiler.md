@@ -177,6 +177,13 @@ and resets it, invalidating its views. Current programs keep one buffer for thei
 invocation and free it on normal completion or output/allocation failure. No
 general collector or persistent host-value lifetime is implied.
 
+`MINI_ID(vec)` is the generic growable storage type, with `items`, `count`,
+`capacity`, and `item_size`. `MINI_ID(vec_init)`, `MINI_ID(vec_reserve)`,
+`MINI_ID(vec_append)`, and `MINI_ID(vec_free)` provide its operations.
+Capacity arithmetic is checked; overflow or allocation failure panics. Text
+byte storage uses this vector baseline; Mini list values will add their own
+language semantics on top of it.
+
 Run it directly with Node:
 
 ```text

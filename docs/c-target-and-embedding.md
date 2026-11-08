@@ -119,6 +119,11 @@ bounds/growth arithmetic when arrays arrive; preserve valid backing storage
 when text views arrive. Correct ownership for an implemented operation does
 not require designing the eventual collector before a scalar program.
 
+Generated C exposes a generic `MINI_ID(vec)` type and init, reserve, append, and
+free functions. Capacity overflow and allocation failure panic. The text byte
+buffer is its first use. The Mini list value will layer tagged heterogeneous
+elements and Mini indexing/mutation rules over the same storage baseline.
+
 ## Behavior grows with the supported slice
 
 Follow accepted [language](language.md) and [builtin](builtins.md) contracts.

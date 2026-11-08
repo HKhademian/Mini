@@ -18,11 +18,22 @@ static const MINI_ID(value) sample_static = MINI_VALUE_TEXT(&sample_buffer, 0, 2
 static int sample_text(MINI_ID(value) value) {
     return value.kind == MINI_ID(kind_text)
         && value.text.length == 2
-        && value.text.buffer->data[value.text.offset] == 'o'
-        && value.text.buffer->data[value.text.offset + 1] == 'k';
+        && value.text.buffer->items[value.text.offset] == 'o'
+        && value.text.buffer->items[value.text.offset + 1] == 'k';
 }
 
 int main(void) {
+    MINI_ID(vec) numbers = {0};
+    MINI_ID(vec_init)(&numbers, sizeof(int));
+    for (int index = 0; index < 100; ++index) MINI_ID(vec_append)(&numbers, &index, 1);
+    int *number_items = (int *)numbers.items;
+    if (numbers.count != 100 || number_items[0] != 0 || number_items[99] != 99
+        || numbers.capacity < numbers.count) return 23;
+    MINI_ID(vec_append)(&numbers, numbers.items, numbers.count);
+    number_items = (int *)numbers.items;
+    if (numbers.count != 200 || number_items[100] != 0 || number_items[199] != 99) return 24;
+    MINI_ID(vec_free)(&numbers);
+    if (numbers.items || numbers.count || numbers.capacity || numbers.item_size) return 25;
     if (empty_static.count != 0 || empty_static.args != NULL) return 19;
     MINI_ID(value) parameter_values[] = { MINI_VALUE_NUMBER(1) };
     size_t parameter_count = 0;
@@ -60,16 +71,16 @@ int main(void) {
     unsigned char extra[128] = {0};
     MINI_ID(value) offset_view = MINI_ID(value_text)(&sample_buffer, 1, 1);
     if (MINI_ID(text_buffer_append)(&sample_buffer, extra, sizeof extra)) return 6;
-    if (!sample_text(sample_static) || sample_buffer.capacity < sample_buffer.length
-        || offset_view.text.buffer->data[offset_view.text.offset] != 'k') return 7;
-    size_t length = sample_buffer.length;
-    if (MINI_ID(text_buffer_append)(&sample_buffer, sample_buffer.data, length)) return 8;
-    if (sample_buffer.length != length * 2 || sample_buffer.data[length] != 'o') return 9;
-    length = sample_buffer.length;
+    if (!sample_text(sample_static) || sample_buffer.capacity < sample_buffer.count
+        || offset_view.text.buffer->items[offset_view.text.offset] != 'k') return 7;
+    size_t length = sample_buffer.count;
+    if (MINI_ID(text_buffer_append)(&sample_buffer, sample_buffer.items, length)) return 8;
+    if (sample_buffer.count != length * 2 || sample_buffer.items[length] != 'o') return 9;
+    length = sample_buffer.count;
     if (!MINI_ID(text_buffer_append)(&sample_buffer, sample_bytes, SIZE_MAX)
-        || sample_buffer.length != length) return 10;
+        || sample_buffer.count != length) return 10;
     MINI_ID(text_buffer_free)(&sample_buffer);
-    if (sample_buffer.data || sample_buffer.length || sample_buffer.capacity) return 11;
+    if (sample_buffer.items || sample_buffer.count || sample_buffer.capacity) return 11;
     MINI_ID(text_buffer_free)(&sample_buffer);
     return MINI_ID(generated_main)();
 }
