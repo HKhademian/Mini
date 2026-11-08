@@ -77,19 +77,77 @@ fn main(args) {
     format_expect("empty", format_source(root, work, "empty.mini", ""), "");
     format_expect("whitespace", format_source(root, work, "space.mini", " \n\t\r\n"), "");
     format_expect("comments", format_source(root, work, "comments.mini", "/// only"), "/// only\n");
-    format_expect("comment-lines", format_source(root, work, "comment-lines.mini", "// a\n\n// b\n"), "// a\n\n// b\n");
-    format_expect("crlf", format_source(root, work, "crlf.mini", "value:=1;// keep\r\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\r\n"), canonical);
-    format_expect("operators", format_source(root, work, "operators.mini", "a:=-1;b:=1+-2;c:=!true;d:=0-(1+2);\n"),
-        "a := -1;\nb := 1 + -2;\nc := !true;\nd := 0 - (1 + 2);\n");
-    format_expect("parentheses", format_source(root, work, "paren.mini", "value:=(1+2)+3;\nif((value==6)&&(!false)){io_write(\"ok\");}\n"),
-        "value := (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write(\"ok\");\n}\n");
-    format_expect("else-comment", format_source(root, work, "else.mini", "if (true) {\n} // why\nelse {\n}\n"), "if (true) {\n} else { // why\n}\n");
-    format_expect("trailing", format_source(root, work, "trailing.mini", "value := 1;  // tail  \n"), "value := 1; // tail\n");
-    format_expect("blank-lines", format_source(root, work, "blank.mini", "a:=1;\n\n\n\nb:=2;\n"), "a := 1;\n\nb := 2;\n");
+    format_expect(
+        "comment-lines",
+        format_source(root, work, "comment-lines.mini", "// a\n\n// b\n"),
+        "// a\n\n// b\n"
+    );
+    format_expect(
+        "crlf",
+        format_source(
+            root,
+            work,
+            "crlf.mini",
+            "value:=1;// keep\r\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\r\n"
+        ),
+        canonical
+    );
+    format_expect(
+        "operators",
+        format_source(root, work, "operators.mini", "a:=-1;b:=1+-2;c:=!true;d:=0-(1+2);\n"),
+        "a := -1;\nb := 1 + -2;\nc := !true;\nd := 0 - (1 + 2);\n"
+    );
+    format_expect(
+        "parentheses",
+        format_source(root, work, "paren.mini", "value:=(1+2)+3;\nif((value==6)&&(!false)){io_write(\"ok\");}\n"),
+        "value := (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write(\"ok\");\n}\n"
+    );
+    first := "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    second := "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    third := "cccccccccccccccccccccccccccccccccc";
+    fourth := "dddddddddddddddddddddddddddddddddd";
+    fifth := "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+    wide_source := "io_write(\"" + first + "\",\"" + second + "\",\"" + third + "\",\"" + fourth + "\",\"" + fifth + "\");\n";
+    wide_expected := "io_write(\n    \"" + first + "\",\n    \"" + second + "\",\n"
+        + "    \"" + third + "\",\n    \"" + fourth + "\",\n    \"" + fifth + "\"\n);\n";
+    format_expect("line-width", format_source(root, work, "wide.mini", wide_source), wide_expected);
+    explicit_source := "io_write(\n\"first\",\n  \"second\"\n);\n";
+    explicit_expected := "io_write(\n    \"first\",\n    \"second\"\n);\n";
+    format_expect(
+        "intentional-multiline-call",
+        format_source(root, work, "multiline.mini", explicit_source),
+        explicit_expected
+    );
+    chain_source := "value := 1 +\n2 +\n3;\n";
+    chain_expected := "value := 1 +\n    2 +\n    3;\n";
+    format_expect(
+        "intentional-multiline-operator-chain",
+        format_source(root, work, "chain.mini", chain_source),
+        chain_expected
+    );
+    format_expect(
+        "else-comment",
+        format_source(root, work, "else.mini", "if (true) {\n} // why\nelse {\n}\n"),
+        "if (true) {\n} else { // why\n}\n"
+    );
+    format_expect(
+        "trailing",
+        format_source(root, work, "trailing.mini", "value := 1;  // tail  \n"),
+        "value := 1; // tail\n"
+    );
+    format_expect(
+        "blank-lines",
+        format_source(root, work, "blank.mini", "a:=1;\n\n\n\nb:=2;\n"),
+        "a := 1;\n\nb := 2;\n"
+    );
     check_args := list_of("--check", "cases/tooling/format-unformatted.mini");
     check := process_capture(path_join(root, "bin/mini-format"), check_args, root, list_new());
-    if map_get(check, "status") != 1 || text_from_bytes(map_get(check, "stdout")) != ""
-        || text_from_bytes(map_get(check, "stderr")) != "cases/tooling/format-unformatted.mini: not formatted\n" {
+    if map_get(check, "status") != 1 || text_from_bytes(map_get(check, "stdout")) != "" || text_from_bytes(
+        map_get(
+            check,
+            "stderr"
+        )
+    ) != "cases/tooling/format-unformatted.mini: not formatted\n" {
         format_fail("check", "unexpected --check result");
     }
     invalid_args := list_new();
@@ -113,7 +171,11 @@ fn main(args) {
             if format_signature(root, formatted) != format_signature(root, original) {
                 format_fail(name, "tokens changed");
             }
-            if format_compiled(root, formatted, path_join(work, "formatted.js")) != format_compiled(root, original, path_join(work, "original.js")) {
+            if format_compiled(root, formatted, path_join(work, "formatted.js")) != format_compiled(
+                root,
+                original,
+                path_join(work, "original.js")
+            ) {
                 format_fail(name, "generated code changed");
             }
             if format_source(root, work, name, file_read(formatted)) != output {

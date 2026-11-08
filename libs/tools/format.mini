@@ -39,22 +39,29 @@ fn format_is_word(token) {
 
 /// Return whether text is a binary operator.
 fn format_is_binary(text) {
-    return text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+    return text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!=" || text == "<"
+        || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
 }
 
 /// Return whether text precedes a unary minus.
 fn format_unary_minus_context(text) {
-    return text == "(" || text == "," || text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||" || text == "!" || text == "return" || text == "{" || text == ";";
+    return text == "(" || text == "," || text == "=" || text == ":=" || text == "+" || text == "-" || text == "=="
+        || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||"
+        || text == "!" || text == "return" || text == "{" || text == ";";
 }
 
 /// Return whether a unary operator needs a leading space.
 fn format_unary_space_context(text) {
-    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":=" || text == "+" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":="
+        || text == "+" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
+        || text == "&&" || text == "||";
 }
 
 /// Return whether an opening parenthesis follows a call-like keyword.
 fn format_paren_context(text) {
-    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":=" || text == "+" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":=" || text == "+"
+        || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text
+        == "||";
 }
 
 /// Append the current line to the completed lines and clear it.
@@ -64,13 +71,22 @@ fn format_newline(state) {
         list_set(lines, list_length(lines), map_get(state, "current"));
         map_set(state, "current", "");
     }
+    map_set(state, "line_has_tokens", false);
     return 0;
 }
 
 /// Start a line with the current indentation when it is empty.
 fn format_start_line(state) {
     if map_get(state, "current") == "" {
-        map_set(state, "current", format_indentation(map_get(state, "indentation")));
+        indentation := format_indentation(map_get(state, "indentation"));
+        extra := map_get(state, "continuation_extra");
+        position := 0;
+        while extra > 0 && position < extra {
+            indentation = indentation + " ";
+            position = position + 1;
+        }
+        map_set(state, "continuation_extra", -1);
+        map_set(state, "current", indentation);
     }
     return 0;
 }
@@ -130,7 +146,10 @@ fn format_stash_comment(state, index) {
 /// Emit one comment at the current position.
 fn format_emit_comment(state, token) {
     text := text_trim_end(map_get(token, "text"));
-    if map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line") && map_get(state, "current") != "" {
+    if map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line") && map_get(
+        state,
+        "current"
+    ) != "" {
         map_set(state, "current", map_get(state, "current") + " " + text);
         format_newline(state);
         map_set(state, "pending_break", false);
@@ -196,7 +215,7 @@ fn format_unary_space(state) {
 
 /// Return whether a space is required before token.
 fn format_needs_space(state, token, unary) {
-    if map_get(state, "current") == "" || !map_get(state, "has_previous_code") {
+    if !map_get(state, "line_has_tokens") || !map_get(state, "has_previous_code") {
         return false;
     }
     if map_get(state, "previous_unary") {
@@ -225,6 +244,53 @@ fn format_needs_space(state, token, unary) {
     return format_is_binary(text);
 }
 
+/// Mark calls whose flattened argument list exceeds the formatter's line width.
+fn format_vertical_calls(tokens) {
+    calls := map_new();
+    index := 0;
+    while index < list_length(tokens) {
+        token := list_get(tokens, index);
+        if map_get(token, "text") == "(" {
+            previous_index := index - 1;
+            while previous_index >= 0 && map_get(list_get(tokens, previous_index), "kind") == "comment" {
+                previous_index = previous_index - 1;
+            }
+            if previous_index >= 0 && map_get(list_get(tokens, previous_index), "kind") == "identifier" {
+                cursor := previous_index;
+                depth := 0;
+                flat_length := 0;
+                finished := false;
+                source_break := false;
+                previous_line := map_get(list_get(tokens, previous_index), "line");
+                while cursor < list_length(tokens) && !finished {
+                    current := list_get(tokens, cursor);
+                    if map_get(current, "kind") != "comment" && map_get(current, "kind") != "eof" {
+                        flat_length = flat_length + text_length(map_get(current, "text")) + 1;
+                        if map_get(current, "line") > previous_line {
+                            source_break = true;
+                        }
+                        previous_line = map_get(current, "line");
+                        text := map_get(current, "text");
+                        if text == "(" {
+                            depth = depth + 1;
+                        }
+                        if text == ")" {
+                            depth = depth - 1;
+                            finished = depth == 0;
+                        }
+                    }
+                    cursor = cursor + 1;
+                }
+                if finished && (flat_length > 120 || source_break) {
+                    map_set(calls, number_to_text(index), true);
+                }
+            }
+        }
+        index = index + 1;
+    }
+    return calls;
+}
+
 /// Return a fresh formatter state for a token list.
 fn format_state(tokens) {
     state := map_new();
@@ -232,6 +298,7 @@ fn format_state(tokens) {
     map_set(state, "lines", list_new());
     map_set(state, "stashed", list_new());
     map_set(state, "current", "");
+    map_set(state, "line_has_tokens", false);
     map_set(state, "indentation", 0);
     map_set(state, "pending_break", false);
     map_set(state, "statement_start", true);
@@ -240,6 +307,10 @@ fn format_state(tokens) {
     map_set(state, "previous", 0);
     map_set(state, "previous_code", 0);
     map_set(state, "previous_unary", false);
+    map_set(state, "continuation_extra", -1);
+    map_set(state, "vertical_calls", format_vertical_calls(tokens));
+    map_set(state, "vertical_parens", map_new());
+    map_set(state, "paren_depth", 0);
     map_set(state, "shebang", "");
     first := list_get(tokens, 0);
     if map_get(first, "kind") == "shebang" {
@@ -268,10 +339,34 @@ fn format_token(state, token) {
     }
     text := map_get(token, "text");
     unary := text == "!" || (text == "-" && format_unary_minus(state));
-    if format_needs_space(state, token, unary) {
+    needs_space := format_needs_space(state, token, unary);
+    projected_length := text_length(map_get(state, "current")) + text_length(text);
+    if needs_space {
+        projected_length = projected_length + 1;
+    }
+    previous := "";
+    if map_get(state, "has_previous_code") {
+        previous = map_get(map_get(state, "previous_code"), "text");
+    }
+    source_break := map_get(state, "has_previous_code") && map_get(token, "line") > map_get(
+        map_get(
+            state,
+            "previous_code"
+        ),
+        "line"
+    ) && (format_is_binary(text) || format_is_binary(previous));
+    if map_get(state, "line_has_tokens")
+        && (source_break || (projected_length > 120 && (previous == "," || format_is_binary(text)))) {
+        format_newline(state);
+        map_set(state, "continuation_extra", 4);
+        format_start_line(state);
+        needs_space = false;
+    }
+    if needs_space {
         map_set(state, "current", map_get(state, "current") + " ");
     }
     map_set(state, "current", map_get(state, "current") + text);
+    map_set(state, "line_has_tokens", true);
     if text == "{" {
         map_set(state, "indentation", map_get(state, "indentation") + 1);
         if list_length(map_get(state, "stashed")) > 0 {
@@ -289,6 +384,55 @@ fn format_token(state, token) {
         }
     }
     format_previous(state, token, true, unary);
+    return 0;
+}
+
+/// Emit a code token while preserving long calls as vertical argument lists.
+fn format_continuation_spaces(levels) {
+    return number_mul(levels, 4);
+}
+
+fn format_vertical_token(state, token, index) {
+    text := map_get(token, "text");
+    depth := map_get(state, "paren_depth");
+    key := number_to_text(depth);
+    vertical := map_get(state, "vertical_parens");
+    if text == "(" {
+        calls := map_get(state, "vertical_calls");
+        is_vertical := map_has(calls, number_to_text(index));
+        if is_vertical {
+            map_set(vertical, key, true);
+        }
+        format_token(state, token);
+        map_set(state, "paren_depth", depth + 1);
+        if is_vertical {
+            format_newline(state);
+            map_set(state, "continuation_extra", format_continuation_spaces(depth + 1));
+        }
+        return 0;
+    }
+    if text == "," && depth > 0 && map_get(vertical, number_to_text(depth - 1)) {
+        format_token(state, token);
+        format_newline(state);
+        map_set(state, "continuation_extra", format_continuation_spaces(depth));
+        return 0;
+    }
+    if text == ")" && depth > 0 && map_get(vertical, number_to_text(depth - 1)) {
+        format_newline(state);
+        map_set(state, "continuation_extra", format_continuation_spaces(depth - 1));
+        format_token(state, token);
+        map_set(vertical, number_to_text(depth - 1), false);
+        map_set(state, "paren_depth", depth - 1);
+        return 0;
+    }
+    format_token(state, token);
+    if text == "(" {
+        depth = depth + 1;
+    }
+    if text == ")" {
+        depth = depth - 1;
+    }
+    map_set(state, "paren_depth", depth);
     return 0;
 }
 
@@ -313,6 +457,7 @@ fn format_tokens(tokens) {
                 if text == "else" && map_get(map_get(state, "previous_code"), "text") == "}" {
                     map_set(state, "pending_break", false);
                     map_set(state, "current", map_get(state, "current") + " else");
+                    map_set(state, "line_has_tokens", true);
                     format_previous(state, token, true, false);
                     map_set(state, "statement_start", false);
                 } else {
@@ -330,11 +475,12 @@ fn format_tokens(tokens) {
                         }
                         format_start_line(state);
                         map_set(state, "current", map_get(state, "current") + "}");
+                        map_set(state, "line_has_tokens", true);
                         format_previous(state, token, true, false);
                         map_set(state, "pending_break", true);
                         map_set(state, "statement_start", true);
                     } else {
-                        format_token(state, token);
+                        format_vertical_token(state, token, index);
                     }
                 }
             }

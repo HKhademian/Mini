@@ -51,7 +51,10 @@ mini tool.
 Its job is consistent indentation, spacing, and line breaks for accepted mini
 syntax. Preserve program meaning, literal values, evaluation order, and `//`
 and `///` comment text. Reformatting already formatted source produces identical
-bytes.
+bytes. The formatter wraps at 120 columns, prints long calls vertically with
+one argument per line, and preserves calls intentionally split across source
+lines while normalizing their indentation. Long operator chains break at
+operator boundaries when needed.
 
 ```text
 mini fmt SOURCE.mini
