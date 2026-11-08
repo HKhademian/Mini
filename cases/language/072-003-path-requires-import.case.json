@@ -1,0 +1,15 @@
+{
+  "id": "language.path-requires-import",
+  "kind": "reject",
+  "source": "072-003-path-requires-import.mini",
+  "features": ["import", "path.exists"],
+  "cases": [
+    {
+      "name": "missing-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "072-003-path-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

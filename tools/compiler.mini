@@ -8,6 +8,7 @@ import "common/list";
 import "common/map";
 import "common/io";
 import "common/file";
+import "common/path";
 import "common/text";
 import "common/native";
 import "compiler/lexer";

@@ -1,40 +1,11 @@
 #!/usr/bin/env node
 "use strict";
-function $mini_directory_create(path) {
-    process.getBuiltinModule("node:fs").mkdirSync(path, { recursive: true })
-    return 0;
-}
-function $mini_directory_list(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.readdirSync(path).sort(); } catch { return []; }
-}
 function $mini_hash_sha256(value) {
     const crypto = process.getBuiltinModule("node:crypto");
     const bytes = Array.isArray(value)
         ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
         : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
     return crypto.createHash("sha256").update(bytes).digest("hex");
-}
-function $mini_path_copy(from, to) {
-    process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
-    return 0;
-}
-function $mini_path_is_directory(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.statSync(path).isDirectory(); } catch { return false; }
-}
-function $mini_path_is_exists(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.existsSync(path); } catch { return false; }
-}
-function $mini_path_remove(path) {
-    process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true })
-    return 0;
-}
-function $mini_path_temp_directory() {
-    const fs = process.getBuiltinModule("node:fs");
-    const os = process.getBuiltinModule("node:os");
-    return fs.mkdtempSync(os.tmpdir() + "/mini-");
 }
 function $mini_process_spawn(options) {
     const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
@@ -526,6 +497,125 @@ function file_read(path) { return process.getBuiltinModule("node:fs").readFileSy
 function file_read_bytes(path) { return Array.from(process.getBuiltinModule("node:fs").readFileSync(path)); }
 function file_write(path, text) { process.getBuiltinModule("node:fs").writeFileSync(path, text, "utf8"); return 0; }
 function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule("node:fs").writeFileSync(path, Buffer.from(values)); return 0; }
+function directory_create(path) { process.getBuiltinModule("node:fs").mkdirSync(path, { recursive: true }); return 0; }
+function directory_list(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.readdirSync(path).sort(); } catch { return []; } }
+function path_copy(from, to) { process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }
+function path_is_directory(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.statSync(path).isDirectory(); } catch { return false; } }
+function path_is_exists(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.existsSync(path); } catch { return false; } }
+function path_is_file(path) { try { return process.getBuiltinModule("node:fs").statSync(path).isFile(); } catch { return false; } }
+function path_remove(path) { process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true }); return 0; }
+function path_temp_directory() { const fs = process.getBuiltinModule("node:fs"); const os = process.getBuiltinModule("node:os"); return fs.mkdtempSync(os.tmpdir() + "/mini-"); }
+function path_join(left, right) {
+
+    if ((left === "")) {
+        return right;
+    }
+    if ((right === "")) {
+        return left;
+    }
+    if ((text_ends_with(left, "/") || text_ends_with(left, "\\"))) {
+        return (left + right);
+    }
+    return ((left + "/") + right);
+}
+function path_temp_file() {
+
+    let path = path_join(path_temp_directory(), "file");
+    file_write(path, "");
+    return path;
+}
+function file_remove(path) {
+
+    if ((((path !== "") && path_is_exists(path)) && (!path_is_directory(path)))) {
+        return path_remove(path);
+    }
+    return 0;
+}
+function directory_remove(path) {
+
+    if ((((path !== "") && path_is_directory(path)) && ((directory_list(path)).length === 0))) {
+        return path_remove(path);
+    }
+    return 0;
+}
+function path_parent(path) {
+
+    let position = (text_length(path) - 1);
+    while ((position >= 0)) {
+        let character = text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return text_slice(path, 0, position);
+        }
+        position = (position - 1);
+    }
+    return "";
+}
+function path_basename(path) {
+
+    let position = (text_length(path) - 1);
+    while ((position >= 0)) {
+        let character = text_get(path, position);
+        if (((character === "/") || (character === "\\"))) {
+            return text_slice(path, (position + 1), text_length(path));
+        }
+        position = (position - 1);
+    }
+    return path;
+}
+function path_is_absolute(path) {
+
+    if (text_starts_with(path, "/")) {
+        return true;
+    }
+    return (((text_length(path) > 2) && (text_get(path, 1) === ":")) && ((text_get(path, 2) === "/") || (text_get(path, 2) === "\\")));
+}
+function path_normalize(path) {
+
+    let absolute = text_starts_with(path, "/");
+    let parts = text_split(path, "/");
+    let stack = list_new();
+    let position = 0;
+    while ((position < (parts).length)) {
+        let part = list_get(parts, position);
+        if (((part === "") || (part === "."))) {
+        } else {
+            if ((part === "..")) {
+                if ((((stack).length > 0) && (list_get(stack, ((stack).length - 1)) !== ".."))) {
+                    list_set(stack, ((stack).length - 1), "");
+                    list_set(stack, (stack).length, "");
+                    let kept = list_new();
+                    let index = 0;
+                    while ((index < (stack).length)) {
+                        if ((list_get(stack, index) !== "")) {
+                            list_set(kept, (kept).length, list_get(stack, index));
+                        }
+                        index = (index + 1);
+                    }
+                    stack = kept;
+                } else {
+                    if ((!absolute)) {
+                        list_set(stack, (stack).length, part);
+                    }
+                }
+            } else {
+                list_set(stack, (stack).length, part);
+            }
+        }
+        position = (position + 1);
+    }
+    let output = list_join(stack, "/");
+    if (absolute) {
+        return ("/" + output);
+    }
+    return output;
+}
+function path_resolve(base, path) {
+
+    if (path_is_absolute(path)) {
+        return path_normalize(path);
+    }
+    return path_normalize(path_join(base, path));
+}
 function map_new() { return Object.create(null); }
 function map_get(items, key) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
@@ -624,7 +714,7 @@ function result_set_value(result, value) {
 }
 function json_parse_file(path) {
 
-    if ((!$mini_path_is_exists(path))) {
+    if ((!path_is_exists(path))) {
         return result_fail(("cannot read " + path));
     }
     let parsed = json_parse(file_read(path));
@@ -1024,149 +1114,6 @@ function json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
-function directory_create(path) {
-
-    return panic("directory_create requires a host implementation");
-}
-function directory_list(path) {
-
-    return panic("directory_list requires a host implementation");
-}
-function path_copy(from, to) {
-
-    return panic("path_copy requires a host implementation");
-}
-function path_is_directory(path) {
-
-    return panic("path_is_directory requires a host implementation");
-}
-function path_is_exists(path) {
-
-    return panic("path_is_exists requires a host implementation");
-}
-function path_is_file(path) {
-
-    return panic("path_is_file requires a host implementation");
-}
-function path_remove(path) {
-
-    return panic("path_remove requires a host implementation");
-}
-function path_temp_directory() {
-
-    return panic("path_temp_directory requires a host implementation");
-}
-function path_join(left, right) {
-
-    if ((left === "")) {
-        return right;
-    }
-    if ((right === "")) {
-        return left;
-    }
-    if ((text_ends_with(left, "/") || text_ends_with(left, "\\"))) {
-        return (left + right);
-    }
-    return ((left + "/") + right);
-}
-function path_temp_file() {
-
-    let path = path_join($mini_path_temp_directory(), "file");
-    file_write(path, "");
-    return path;
-}
-function file_remove(path) {
-
-    if ((((path !== "") && $mini_path_is_exists(path)) && (!$mini_path_is_directory(path)))) {
-        return $mini_path_remove(path);
-    }
-    return 0;
-}
-function directory_remove(path) {
-
-    if ((((path !== "") && $mini_path_is_directory(path)) && (($mini_directory_list(path)).length === 0))) {
-        return $mini_path_remove(path);
-    }
-    return 0;
-}
-function path_parent(path) {
-
-    let position = (text_length(path) - 1);
-    while ((position >= 0)) {
-        let character = text_get(path, position);
-        if (((character === "/") || (character === "\\"))) {
-            return text_slice(path, 0, position);
-        }
-        position = (position - 1);
-    }
-    return "";
-}
-function path_basename(path) {
-
-    let position = (text_length(path) - 1);
-    while ((position >= 0)) {
-        let character = text_get(path, position);
-        if (((character === "/") || (character === "\\"))) {
-            return text_slice(path, (position + 1), text_length(path));
-        }
-        position = (position - 1);
-    }
-    return path;
-}
-function path_is_absolute(path) {
-
-    if (text_starts_with(path, "/")) {
-        return true;
-    }
-    return (((text_length(path) > 2) && (text_get(path, 1) === ":")) && ((text_get(path, 2) === "/") || (text_get(path, 2) === "\\")));
-}
-function path_normalize(path) {
-
-    let absolute = text_starts_with(path, "/");
-    let parts = text_split(path, "/");
-    let stack = list_new();
-    let position = 0;
-    while ((position < (parts).length)) {
-        let part = list_get(parts, position);
-        if (((part === "") || (part === "."))) {
-        } else {
-            if ((part === "..")) {
-                if ((((stack).length > 0) && (list_get(stack, ((stack).length - 1)) !== ".."))) {
-                    list_set(stack, ((stack).length - 1), "");
-                    list_set(stack, (stack).length, "");
-                    let kept = list_new();
-                    let index = 0;
-                    while ((index < (stack).length)) {
-                        if ((list_get(stack, index) !== "")) {
-                            list_set(kept, (kept).length, list_get(stack, index));
-                        }
-                        index = (index + 1);
-                    }
-                    stack = kept;
-                } else {
-                    if ((!absolute)) {
-                        list_set(stack, (stack).length, part);
-                    }
-                }
-            } else {
-                list_set(stack, (stack).length, part);
-            }
-        }
-        position = (position + 1);
-    }
-    let output = list_join(stack, "/");
-    if (absolute) {
-        return ("/" + output);
-    }
-    return output;
-}
-function path_resolve(base, path) {
-
-    if (path_is_absolute(path)) {
-        return path_normalize(path);
-    }
-    return path_normalize(path_join(base, path));
-}
 function token_new(kind, text, source, start, end, line, column, context) {
 
     let token = map_new();
@@ -1400,7 +1347,7 @@ function lex_expand_imports(tokens, base, seen) {
             let resolved = lex_resolve_import(base, path);
             let action = "import";
             if ((!map_has(seen, resolved))) {
-                if ((!$mini_path_is_exists(resolved))) {
+                if ((!path_is_exists(resolved))) {
                     diagnostic_fail(token, ((("cannot " + action) + " ") + path));
                 }
                 let raw = lex_tokenize(file_read(resolved), path, false);
@@ -2803,7 +2750,7 @@ function bootstrap_clean_all(root) {
     let versions = result_get_value(versions_result);
     let package_name = (((("mini-" + map_get(versions, "group")) + "-v") + map_get(versions, "vscode")) + ".vsix");
     let output_directory = path_join(root, "dist/rebuild");
-    $mini_directory_create(output_directory);
+    directory_create(output_directory);
     let package_path = path_join(output_directory, package_name);
     let vsce = path_join(editor, "node_modules/@vscode/vsce/vsce");
     bootstrap_step(root, "VS Code VSIX package", node, list_of(vsce, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", package_path), editor);
@@ -2812,7 +2759,7 @@ function bootstrap_clean_all(root) {
 }
 function bootstrap_all(root) {
 
-    let work = $mini_path_temp_directory();
+    let work = path_temp_directory();
     let source = path_join(root, "tools/compiler.mini");
     let first = path_join(work, "compiler1.js");
     let second = path_join(work, "compiler2.js");
@@ -2823,13 +2770,13 @@ function bootstrap_all(root) {
         bootstrap_fail("compiler fixed point mismatch");
     }
     let seed = path_join(root, "dist/compile.js");
-    $mini_path_copy(first, seed);
+    path_copy(first, seed);
     bootstrap_executable(root, seed);
     let build = path_join(root, "dist/build.js");
     bootstrap_compile_with(root, seed, path_join(root, "tools/build.mini"), build);
     bootstrap_executable(root, build);
     bootstrap_run(root, build);
-    $mini_path_remove(work);
+    path_remove(work);
     io_write_line("bootstrap complete");
     return 0;
 }
@@ -2914,8 +2861,10 @@ function $mini_file_13() {
     builtin_source_functions = map_new();
 }
 function $mini_file_14() {
-    builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
-    builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
+    builtin_add("directory_create", "text", "number", "essential", "", "", "", "", "");
+    builtin_source_api("directory_create");
+    builtin_add("directory_list", "text", "list", "essential", "", "", "", "", "");
+    builtin_source_api("directory_list");
 }
 function $mini_file_15() {
     builtin_add("file_read", "text", "text", "essential", "", "", "", "", "");
@@ -3005,12 +2954,18 @@ function $mini_file_21() {
     builtin_source_api("number_to_text");
 }
 function $mini_file_22() {
-    builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
-    builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
-    builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
-    builtin_add("path_is_file", "text", "boolean", "essential", "", "path_is_file", "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n", "", "$mini_path_is_file({0})");
-    builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
-    builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
+    builtin_add("path_copy", "text,text", "number", "essential", "", "", "", "", "");
+    builtin_source_api("path_copy");
+    builtin_add("path_is_directory", "text", "boolean", "essential", "", "", "", "", "");
+    builtin_source_api("path_is_directory");
+    builtin_add("path_is_exists", "text", "boolean", "essential", "", "", "", "", "");
+    builtin_source_api("path_is_exists");
+    builtin_add("path_is_file", "text", "boolean", "essential", "", "", "", "", "");
+    builtin_source_api("path_is_file");
+    builtin_add("path_remove", "text", "number", "essential", "", "", "", "", "");
+    builtin_source_api("path_remove");
+    builtin_add("path_temp_directory", "", "text", "essential", "", "", "", "", "");
+    builtin_source_api("path_temp_directory");
 }
 function $mini_file_23() {
     builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
@@ -3123,10 +3078,17 @@ function $mini_file_38() {
     emit_js_host_function_add("file_write_bytes", "function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values)); return 0; }\n", true, "");
 }
 function $mini_file_39() {
-    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
+    emit_js_host_function_add("directory_create", "function directory_create(path) { process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true }); return 0; }\n", true, "");
+    emit_js_host_function_add("directory_list", "function directory_list(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.readdirSync(path).sort(); } catch { return []; } }\n", true, "");
+    emit_js_host_function_add("path_copy", "function path_copy(from, to) { process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }\n", true, "");
+    emit_js_host_function_add("path_is_directory", "function path_is_directory(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.statSync(path).isDirectory(); } catch { return false; } }\n", true, "");
+    emit_js_host_function_add("path_is_exists", "function path_is_exists(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.existsSync(path); } catch { return false; } }\n", true, "");
+    emit_js_host_function_add("path_is_file", "function path_is_file(path) { try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; } }\n", true, "");
+    emit_js_host_function_add("path_remove", "function path_remove(path) { process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true }); return 0; }\n", true, "");
+    emit_js_host_function_add("path_temp_directory", "function path_temp_directory() { const fs = process.getBuiltinModule(\"node:fs\"); const os = process.getBuiltinModule(\"node:os\"); return fs.mkdtempSync(os.tmpdir() + \"/mini-\"); }\n", true, "");
 }
 function $mini_file_40() {
-
+    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
 }
 function $mini_file_41() {
 
@@ -3141,6 +3103,9 @@ function $mini_file_44() {
 
 }
 function $mini_file_45() {
+
+}
+function $mini_file_46() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -3190,5 +3155,6 @@ function $mini_main() {
     $mini_file_43();
     $mini_file_44();
     $mini_file_45();
+    $mini_file_46();
 }
 $mini_main();

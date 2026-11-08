@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/list";
+import "common/path";
 import "tools/release";
 
 /// Parse arguments and package a release.

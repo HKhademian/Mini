@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "common/path";
 import "tools/mini";
 
 /// Dispatch the invoked command.

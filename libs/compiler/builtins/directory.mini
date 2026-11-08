@@ -1,26 +1,8 @@
-/// Directory builtin descriptors.
+/// Directory API contracts; implementations live in common/path and emitter registries.
 
 import "./registry";
 
-builtin_add(
-    "directory_create",
-    "text",
-    "number",
-    "essential",
-    "",
-    "directory_create",
-    "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n",
-    "",
-    "$mini_directory_create({0})"
-);
-builtin_add(
-    "directory_list",
-    "text",
-    "list",
-    "essential",
-    "",
-    "directory_list",
-    "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n",
-    "",
-    "$mini_directory_list({0})"
-);
+builtin_add("directory_create", "text", "number", "essential", "", "", "", "", "");
+builtin_source_api("directory_create");
+builtin_add("directory_list", "text", "list", "essential", "", "", "", "", "");
+builtin_source_api("directory_list");

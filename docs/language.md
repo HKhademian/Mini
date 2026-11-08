@@ -822,8 +822,10 @@ directory_remove(directory);
 
 - `process_exec_path()` returns the absolute path of the running Node
   executable. It takes no arguments.
-- `path_temp_directory()` creates and returns a fresh empty directory under the host
-  temporary directory. It takes no arguments.
+- Directory and path host functions are declared in `common/path`; import that
+  module before calling them.
+- `path_temp_directory()` creates and returns a fresh empty directory under the
+  host temporary directory. It takes no arguments.
 - `file_remove(path)` and `directory_remove(path)` are helpers from
   `libs/common/path.mini`; import that module when using them. They call
   `path_remove(path)` only after checking the path kind and, for directories,

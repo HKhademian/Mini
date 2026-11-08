@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.41 / builtins 0.4.0-alpha.17 / compiler
+  0.5.0-alpha.52 / bootstrap 0.3.0-alpha.54: move directory and filesystem
+  path operations into imported `common/path` APIs and register JavaScript
+  host overrides.
+
 - mini 0.3.0-alpha.40 / compiler 0.5.0-alpha.51 / bootstrap
   0.3.0-alpha.53: add native C host implementations for the imported file API.
 

@@ -1,0 +1,3 @@
+072-003-path-requires-import.mini:1:1: unknown function path_is_exists
+path_is_exists("not imported");
+^

@@ -3,6 +3,7 @@
 import "common/number";
 import "common/list";
 import "common/io";
+import "common/path";
 import "tools/bench";
 
 /// Parse arguments, run benchmarks, and report the output path.

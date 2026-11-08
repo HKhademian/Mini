@@ -1,70 +1,16 @@
-/// Path builtin descriptors.
+/// Path API contracts; implementations live in common/path and emitter registries.
 
 import "./registry";
 
-builtin_add(
-    "path_copy",
-    "text,text",
-    "number",
-    "essential",
-    "",
-    "path_copy",
-    "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n",
-    "",
-    "$mini_path_copy({0}, {1})"
-);
-builtin_add(
-    "path_is_directory",
-    "text",
-    "boolean",
-    "essential",
-    "",
-    "path_is_directory",
-    "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n",
-    "",
-    "$mini_path_is_directory({0})"
-);
-builtin_add(
-    "path_is_exists",
-    "text",
-    "boolean",
-    "essential",
-    "",
-    "path_is_exists",
-    "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n",
-    "",
-    "$mini_path_is_exists({0})"
-);
-builtin_add(
-    "path_is_file",
-    "text",
-    "boolean",
-    "essential",
-    "",
-    "path_is_file",
-    "function $mini_path_is_file(path) {\n    try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; }\n}\n",
-    "",
-    "$mini_path_is_file({0})"
-);
-builtin_add(
-    "path_remove",
-    "text",
-    "number",
-    "essential",
-    "",
-    "path_remove",
-    "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n",
-    "",
-    "$mini_path_remove({0})"
-);
-builtin_add(
-    "path_temp_directory",
-    "",
-    "text",
-    "essential",
-    "",
-    "path_temp_directory",
-    "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n",
-    "",
-    "$mini_path_temp_directory()"
-);
+builtin_add("path_copy", "text,text", "number", "essential", "", "", "", "", "");
+builtin_source_api("path_copy");
+builtin_add("path_is_directory", "text", "boolean", "essential", "", "", "", "", "");
+builtin_source_api("path_is_directory");
+builtin_add("path_is_exists", "text", "boolean", "essential", "", "", "", "", "");
+builtin_source_api("path_is_exists");
+builtin_add("path_is_file", "text", "boolean", "essential", "", "", "", "", "");
+builtin_source_api("path_is_file");
+builtin_add("path_remove", "text", "number", "essential", "", "", "", "", "");
+builtin_source_api("path_remove");
+builtin_add("path_temp_directory", "", "text", "essential", "", "", "", "", "");
+builtin_source_api("path_temp_directory");

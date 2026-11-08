@@ -10,6 +10,7 @@ import "./overrides/value";
 import "./overrides/display";
 import "./overrides/io";
 import "./overrides/file";
+import "./overrides/path";
 import "./overrides/panic";
 
 /// Return a registered host implementation unless reference mode is active.
