@@ -1,0 +1,13 @@
+import "common/file";
+import "common/io";
+import "common/list";
+
+text_status := file_write("note.txt", "ok");
+bytes_status := file_write_bytes("bytes.bin", list_of(65, 0, 255));
+io_write(text_status);
+io_write(bytes_status);
+io_write(file_read("note.txt"));
+bytes := file_read_bytes("bytes.bin");
+io_write(list_get(bytes, 0));
+io_write(list_get(bytes, 1));
+io_write(list_get(bytes, 2));

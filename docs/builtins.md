@@ -25,7 +25,7 @@ declared in
 registers same-name host overrides for the representation and performance paths.
 The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
 and require `import "common/file"`. Their Mini implementations panic when a
-target has no file host; the JavaScript emitter registers same-name host
+target has no file host; the JavaScript and C emitters register same-name host
 overrides. `file_read(path)` returns UTF-8 text, `file_write(path, text)` writes
 UTF-8 text and returns zero, and the byte variants read or replace whole files
 as byte lists.

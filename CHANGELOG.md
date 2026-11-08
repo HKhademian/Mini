@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.40 / compiler 0.5.0-alpha.51 / bootstrap
+  0.3.0-alpha.53: add native C host implementations for the imported file API.
+
 - mini 0.3.0-alpha.39 / builtins 0.4.0-alpha.16 / compiler
   0.5.0-alpha.50 / bootstrap 0.3.0-alpha.52: move file operations into
   same-name `common/file` APIs, require explicit imports, and register

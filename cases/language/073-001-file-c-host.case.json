@@ -1,0 +1,16 @@
+{
+  "id": "language.file-c-host",
+  "kind": "feature",
+  "target": "c",
+  "source": "073-001-file-c-host.mini",
+  "features": ["import", "file.read", "file.write", "file.bytes", "target.c"],
+  "cases": [
+    {
+      "name": "read-write-text-and-bytes",
+      "stdin": {"text": ""},
+      "stdout": {"text": "00ok650255"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
