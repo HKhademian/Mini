@@ -66,6 +66,9 @@ bootstrap example gate. Unmarked cases with unavailable compilers still fail.
 
 Run `./bin/mini test` or `./bin/mini test FILTER`.
 Run one manifest with `./bin/mini verify cases/tooling/check.case.json`.
+Both commands print a short summary by default. Use `--verbose` (or `-v`) to
+show passing scenarios and pending cases; failures always show their details.
+The same flag works with `mini test --unit` and `mini test --candidate`.
 [The manifest schema](../config/case.schema.json) and
 [stream schema](../config/stream.schema.json) describe the format.
 The runner validates structure and unique IDs/scenario names.

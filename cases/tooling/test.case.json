@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "test-version.stdout",
-        "hash": "sha256:9ffe513db758fdef7e5ea9559547eae02cb911174fbf5d5a2e8ca474752aff19"
+        "hash": "sha256:4ebee2b5ae5362c59feb697a7f2cd2778d7b9744765872676dbbed8ade931243"
       },
       "stderr": {
         "text": ""
@@ -30,7 +30,7 @@
         "text": ""
       },
       "stdout": {
-        "file": "test-supported-filter.stdout"
+        "text": "1/1 scenarios passed\n"
       },
       "stderr": {
         "file": "../language/empty.stderr"
@@ -47,7 +47,79 @@
         "text": ""
       },
       "stdout": {
+        "text": "1/1 unit tests passed\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "test-verbose-filter",
+      "args": [
+        "-v",
+        "language.write-error-missing-text"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "file": "test-supported-filter.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "test-verbose-unit",
+      "args": [
+        "--unit",
+        "compiler",
+        "--verbose"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
         "file": "test-unit.stdout"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "test-candidate",
+      "args": [
+        "--candidate",
+        "dist/compile.js",
+        "language.bindings-initialize"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "1/1 mini-source scenarios passed\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "test-verbose-candidate",
+      "args": [
+        "--verbose",
+        "--candidate",
+        "dist/compile.js",
+        "language.bindings-initialize"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "PASS language.bindings-initialize/default\n1/1 mini-source scenarios passed\n"
       },
       "stderr": {
         "text": ""

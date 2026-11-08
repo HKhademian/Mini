@@ -40,31 +40,6 @@ fn ci_run(root, command, args, directory) {
     return 0;
 }
 
-/// Build a one-argument list.
-fn ci_args1(a) {
-    result := list_new();
-    list_set(result, 0, a);
-    return result;
-}
-
-/// Build a two-argument list.
-fn ci_args2(a, b) {
-    result := list_of(a, b);
-    return result;
-}
-
-/// Build a three-argument list.
-fn ci_args3(a, b, c) {
-    result := list_of(a, b, c);
-    return result;
-}
-
-/// Build a four-argument list.
-fn ci_args4(a, b, c, d) {
-    result := list_of(a, b, c, d);
-    return result;
-}
-
 /// Run the repository dispatcher.
 fn ci_mini(root, args) {
     return ci_run(root, path_join(root, "bin/mini"), args, root);
@@ -147,24 +122,24 @@ fn ci_publish(root) {
 /// Run one named CI task.
 fn ci_task(root, task) {
     if task == "install" {
-        ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
-        return ci_run(root, "npm", ci_args4("ci", "--ignore-scripts", "--no-audit", "--no-fund"), path_join(root, "editors/vscode"));
+        ci_run(root, "npm", list_of("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
+        return ci_run(root, "npm", list_of("ci", "--ignore-scripts", "--no-audit", "--no-fund"), path_join(root, "editors/vscode"));
     }
     if task == "check" {
-        return ci_mini(root, ci_args1("check"));
+        return ci_mini(root, list_of("check"));
     }
     if task == "test" {
-        ci_mini(root, ci_args1("test"));
-        ci_mini(root, ci_args2("test", "--unit"));
-        ci_node(root, ci_args2("--test", "test/lang-server.test.ts"), root);
-        ci_run(root, "npm", ci_args2("run", "check"), path_join(root, "editors/vscode"));
-        ci_node(root, ci_args2("--test", "test/grammar.test.ts"), path_join(root, "editors/vscode"));
-        ci_node(root, ci_args2("--test", "test/release.test.ts"), root);
-        return ci_node(root, ci_args2("test/performance/application-performance.ts", "--check"), root);
+        ci_mini(root, list_of("test", "--verbose"));
+        ci_mini(root, list_of("test", "--unit", "--verbose"));
+        ci_node(root, list_of("--test", "test/lang-server.test.ts"), root);
+        ci_run(root, "npm", list_of("run", "check"), path_join(root, "editors/vscode"));
+        ci_node(root, list_of("--test", "test/grammar.test.ts"), path_join(root, "editors/vscode"));
+        ci_node(root, list_of("--test", "test/release.test.ts"), root);
+        return ci_node(root, list_of("test/performance/application-performance.ts", "--check"), root);
     }
     if task == "bench" {
-        ci_mini(root, ci_args3("bench", ".cache/bench-ci.json", "tooling.check"));
-        return ci_mini(root, ci_args3("bench", ".cache/bench-compiler-ci.json", "compiler.bindings-emission"));
+        ci_mini(root, list_of("bench", ".cache/bench-ci.json", "tooling.check"));
+        return ci_mini(root, list_of("bench", ".cache/bench-compiler-ci.json", "compiler.bindings-emission"));
     }
     if task == "package" {
         return ci_package(root);

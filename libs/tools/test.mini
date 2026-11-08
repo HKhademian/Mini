@@ -1,8 +1,9 @@
 /// Run case scenarios through the shared case runner.
-/// Usage: node dist/test.js [FILTER]
-///        node dist/test.js --file CASE.json
-///        node dist/test.js --candidate COMPILER.js [FILTER]
-/// Prints PASS, PENDING, or FAIL for each scenario and exits 1 on mismatch.
+/// Usage: node dist/test.js [--verbose] [FILTER]
+///        node dist/test.js --unit [--verbose] [FILTER]
+///        node dist/test.js --file CASE.json [--verbose]
+///        node dist/test.js --candidate COMPILER.js [--verbose] [FILTER]
+/// Prints scenario summaries by default, showing PASS lines when --verbose is set.
 
 include "common/io.mini";
 include "common/text.mini";
@@ -11,13 +12,13 @@ include "./cases.mini";
 
 /// Report usage and stop.
 fn test_usage() {
-    io_write_error("usage: mini-test [FILTER]\n");
+    io_write_error("usage: mini-test [--verbose] [FILTER]\n");
     process_exit(1);
     return 0;
 }
 
 /// Run selected fixtures and return the process status.
-fn test_run(root, filter, file, candidate) {
+fn test_run(root, filter, file, candidate, verbose) {
     fixtures := list_new();
     if file != "" {
         loaded := case_load_case(file);
@@ -35,7 +36,7 @@ fn test_run(root, filter, file, candidate) {
         fixtures = map_get(selected, "fixtures");
     }
     if candidate != "" {
-        return test_candidate(fixtures, root, candidate);
+        return test_candidate(fixtures, root, candidate, verbose);
     }
     failures := 0;
     count := 0;
@@ -52,12 +53,16 @@ fn test_run(root, filter, file, candidate) {
             name := map_get(scenario, "name");
             if map_has(definition, "pending") {
                 pending = pending + 1;
-                io_write_line("PENDING " + id + "/" + name + ": " + map_get(definition, "pending"));
+                if verbose {
+                    io_write_line("PENDING " + id + "/" + name + ": " + map_get(definition, "pending"));
+                }
             } else {
                 count = count + 1;
                 result := case_verify_scenario(fixture, scenario, root, "");
                 if result_is_ok(result) {
-                    io_write_line("PASS " + id + "/" + name);
+                    if verbose {
+                        io_write_line("PASS " + id + "/" + name);
+                    }
                 } else {
                     failures = failures + 1;
                     io_write_error("FAIL " + id + "/" + name + ": " + result_get_message(result) + "\n");
@@ -78,7 +83,7 @@ fn test_run(root, filter, file, candidate) {
 }
 
 /// Run non-tool cases through a candidate compiler and report the summary.
-fn test_candidate(fixtures, root, compiler) {
+fn test_candidate(fixtures, root, compiler, verbose) {
     passed := 0;
     failed := 0;
     pending := 0;
@@ -93,6 +98,9 @@ fn test_candidate(fixtures, root, compiler) {
         } else {
             if map_has(definition, "pending") {
                 pending = pending + 1;
+                if verbose {
+                    io_write_line("PENDING " + map_get(definition, "id") + ": " + map_get(definition, "pending"));
+                }
             } else {
                 scenarios := map_get(definition, "cases");
                 scenario_index := 0;
@@ -101,6 +109,9 @@ fn test_candidate(fixtures, root, compiler) {
                     result := case_verify_scenario(fixture, scenario, root, compiler);
                     if result_is_ok(result) {
                         passed = passed + 1;
+                        if verbose {
+                            io_write_line("PASS " + map_get(definition, "id") + "/" + map_get(scenario, "name"));
+                        }
                     } else {
                         failed = failed + 1;
                         io_write_error("FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
@@ -126,7 +137,7 @@ fn test_candidate(fixtures, root, compiler) {
 }
 
 /// Compile and run every matching test/*.test.mini program.
-fn test_units(root, filter) {
+fn test_units(root, filter, verbose) {
     compiler := project_compiler_entry(root);
     directory := path_join(root, "test");
     entries := directory_list(directory);
@@ -154,7 +165,9 @@ fn test_units(root, filter) {
                     io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));
                 } else {
                     passed = passed + 1;
-                    io_write_line("PASS " + name);
+                    if verbose {
+                        io_write_line("PASS " + name);
+                    }
                 }
             }
             path_remove(work);

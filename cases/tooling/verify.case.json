@@ -27,6 +27,23 @@
         "text": ""
       },
       "stdout": {
+        "text": "13/13 scenarios passed\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    },
+    {
+      "name": "verify-selected-verbose",
+      "args": [
+        "--verbose",
+        "cases/tooling/check.case.json"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
         "file": "verify-selected.stdout",
         "hash": "sha256:150ad6a14b2d0b88ce143552984922fbf53ec5ee083ad0ff62a1e449bb7f5ba7"
       },
@@ -95,6 +112,23 @@
         "text": ""
       },
       "stdout": {
+        "text": "0/0 scenarios passed\n1 scenarios pending\n"
+      },
+      "stderr": {
+        "file": "verify-pending.stderr"
+      },
+      "exitCode": 1
+    },
+    {
+      "name": "verify-pending-verbose",
+      "args": [
+        "cases/tooling/pending.fixture.json",
+        "-v"
+      ],
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
         "file": "verify-pending.stdout"
       },
       "stderr": {
@@ -127,7 +161,7 @@
         "text": ""
       },
       "stdout": {
-        "file": "verify-language-supported.stdout"
+        "text": "1/1 scenarios passed\n"
       },
       "stderr": {
         "text": ""

@@ -20,7 +20,9 @@ see [runtime requirements](docs/runtime.md).
 `check --docs` omits TypeScript checking and needs no installed dependencies.
 A configured bootstrap is verified in either mode. `verify CASE.json` runs one
 case manifest; bare `verify` checks the bootstrap and fails while the compiler
-is unavailable. Release output directories must be empty.
+is unavailable. `test` and selected-case `verify` print summaries by default;
+pass `--verbose` for per-case output. CI uses verbose test output. Release output
+directories must be empty.
 
 Run compiler host-adapter tests with `node --test compiler/builtins.test.ts`.
 CI runs them alongside the editor and release checks.

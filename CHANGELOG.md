@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.25 / CLI 0.1.0-alpha.19 / test 0.1.0-alpha.8 /
+  verify 0.1.0-alpha.9: show test summaries by default and per-case results
+  with `--verbose`; retain detailed CI test logs.
+
 - mini 0.2.0-alpha.12 / compiler 0.4.0-alpha.13 / bootstrap 0.2.0-alpha.15:
   namespace the Mini-written C emitter helpers with emit_c_ and update callers.
   Generated C and source-language behavior are unchanged.

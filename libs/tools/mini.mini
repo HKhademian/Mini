@@ -77,7 +77,7 @@ fn mini_usage(message) {
 /// Print the dispatcher help.
 fn mini_help() {
     io_write("mini: self-hosting foundation for building your own language\n");
-    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [FILTER] | bench OUTPUT [FILTER] | verify [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n");
+    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [--verbose] [--unit] [FILTER] | bench OUTPUT [FILTER] | verify [--verbose] [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n");
     io_write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
     return 0;
 }
@@ -147,7 +147,28 @@ fn mini_command(root, command, args) {
         if list_length(args) == 0 {
             return mini_spawn(root, "dist/verify.js", list_new());
         }
-        file_args := list_of("--file", list_get(args, 0));
+        file := "";
+        verbose := false;
+        position := 0;
+        while position < list_length(args) {
+            arg := list_get(args, position);
+            if arg == "--verbose" || arg == "-v" {
+                verbose = true;
+            } else {
+                if file != "" {
+                    return mini_usage("usage: mini-verify [--verbose] [CASE.json]");
+                }
+                file = arg;
+            }
+            position = position + 1;
+        }
+        if file == "" {
+            return mini_spawn(root, "dist/verify.js", list_new());
+        }
+        file_args := list_of("--file", file);
+        if verbose {
+            list_set(file_args, list_length(file_args), "--verbose");
+        }
         return mini_spawn(root, "dist/test.js", file_args);
     }
     if command == "release" {
