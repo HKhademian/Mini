@@ -1,16 +1,28 @@
 include "./lexer.mini";
+include "./ast.mini";
 include "./builtins.mini";
 /// Report a parser/checker diagnostic.
 fn parser_fail(token, message) {
     return diagnostic_fail(token, message);
 }
 
-/// Return an expression map with emitted code and kind.
-fn parser_expression_new(code, kind) {
+/// Return a typed AST expression with temporary legacy JavaScript code.
+fn parser_expression_new(code, kind, ast) {
     expression := map_new();
     map_set(expression, "code", code);
     map_set(expression, "kind", kind);
+    map_set(expression, "ast", ast);
     return expression;
+}
+
+/// Build one typed binary expression node and retain its legacy JS spelling.
+fn parser_binary_expression(code, kind, left, operator, right) {
+    node := ast_derive(AST_BINARY, map_get(left, "ast"), kind);
+    map_set(node, "operator", map_get(operator, "text"));
+    map_set(node, "left", map_get(left, "ast"));
+    map_set(node, "right", map_get(right, "ast"));
+    ast_finish_node(node, map_get(right, "ast"));
+    return parser_expression_new(code, kind, node);
 }
 
 /// Return the current parser token.
@@ -53,11 +65,10 @@ fn parser_expression(parser) {
     while map_get(parser_token(parser), "text") == "||" {
         operator := parser_take(parser);
         right := parser_conjunction(parser);
-        if (map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
-            || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
+        if (map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown") || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "|| needs booleans");
         }
-        left = parser_expression_new("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean");
+        left = parser_binary_expression("(" + map_get(left, "code") + " || " + map_get(right, "code") + ")", "boolean", left, operator, right);
     }
     return left;
 }
@@ -68,11 +79,10 @@ fn parser_conjunction(parser) {
     while map_get(parser_token(parser), "text") == "&&" {
         operator := parser_take(parser);
         right := parser_equality(parser);
-        if (map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown")
-            || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
+        if (map_get(left, "kind") != "boolean" && map_get(left, "kind") != "unknown") || (map_get(right, "kind") != "boolean" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "&& needs booleans");
         }
-        left = parser_expression_new("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean");
+        left = parser_binary_expression("(" + map_get(left, "code") + " && " + map_get(right, "code") + ")", "boolean", left, operator, right);
     }
     return left;
 }
@@ -85,16 +95,14 @@ fn parser_equality(parser) {
         right := parser_comparison(parser);
         left_kind := map_get(left, "kind");
         right_kind := map_get(right, "kind");
-        if left_kind == "list" || right_kind == "list"
-            || left_kind == "map" || right_kind == "map"
-            || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
+        if left_kind == "list" || right_kind == "list" || left_kind == "map" || right_kind == "map" || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
             parser_fail(operator, "equality needs matching scalar kinds");
         }
         symbol := "===";
         if map_get(operator, "text") == "!=" {
             symbol = "!==";
         }
-        left = parser_expression_new("(" + map_get(left, "code") + " " + symbol + " " + map_get(right, "code") + ")", "boolean");
+        left = parser_binary_expression("(" + map_get(left, "code") + " " + symbol + " " + map_get(right, "code") + ")", "boolean", left, operator, right);
     }
     return left;
 }
@@ -102,15 +110,13 @@ fn parser_equality(parser) {
 /// Parse numeric comparisons.
 fn parser_comparison(parser) {
     left := parser_additive(parser);
-    while map_get(parser_token(parser), "text") == "<" || map_get(parser_token(parser), "text") == "<="
-        || map_get(parser_token(parser), "text") == ">" || map_get(parser_token(parser), "text") == ">=" {
+    while map_get(parser_token(parser), "text") == "<" || map_get(parser_token(parser), "text") == "<=" || map_get(parser_token(parser), "text") == ">" || map_get(parser_token(parser), "text") == ">=" {
         operator := parser_take(parser);
         right := parser_additive(parser);
-        if (map_get(left, "kind") != "number" && map_get(left, "kind") != "unknown")
-            || (map_get(right, "kind") != "number" && map_get(right, "kind") != "unknown") {
+        if (map_get(left, "kind") != "number" && map_get(left, "kind") != "unknown") || (map_get(right, "kind") != "number" && map_get(right, "kind") != "unknown") {
             parser_fail(operator, "comparison needs numbers");
         }
-        left = parser_expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean");
+        left = parser_binary_expression("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", "boolean", left, operator, right);
     }
     return left;
 }
@@ -129,13 +135,11 @@ fn parser_additive(parser) {
         left_kind := map_get(left, "kind");
         right_kind := map_get(right, "kind");
         if map_get(operator, "text") == "-" {
-            if (left_kind != "number" && left_kind != "unknown")
-                || (right_kind != "number" && right_kind != "unknown") {
+            if (left_kind != "number" && left_kind != "unknown") || (right_kind != "number" && right_kind != "unknown") {
                 parser_fail(operator, "- needs two numbers");
             }
         } else {
-            if !parser_additive_kind(left_kind) || !parser_additive_kind(right_kind)
-                || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
+            if !parser_additive_kind(left_kind) || !parser_additive_kind(right_kind) || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
                 parser_fail(operator, "+ needs two numbers or two texts");
             }
         }
@@ -143,7 +147,7 @@ fn parser_additive(parser) {
         if left_kind == "unknown" {
             result_kind = right_kind;
         }
-        left = parser_expression_new("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", result_kind);
+        left = parser_binary_expression("(" + map_get(left, "code") + " " + map_get(operator, "text") + " " + map_get(right, "code") + ")", result_kind, left, operator, right);
     }
     return left;
 }
@@ -157,7 +161,14 @@ fn parser_unary(parser) {
             parser_fail(operator, "- must precede a number literal");
         }
         parser_take(parser);
-        return parser_expression_new("(-" + lex_normalize_number(map_get(number, "text")) + ")", "number");
+        value := "-" + lex_normalize_number(map_get(number, "text"));
+        node := ast_node(AST_LITERAL, operator);
+        map_set(node, "literal_kind", "number");
+        map_set(node, "value", value);
+        map_set(node, "raw", "-" + map_get(number, "text"));
+        ast_finish(node, number);
+        map_set(node, "value_kind", "number");
+        return parser_expression_new("(" + value + ")", "number", node);
     }
     if map_get(parser_token(parser), "text") == "!" {
         operator := parser_take(parser);
@@ -166,7 +177,11 @@ fn parser_unary(parser) {
         if map_get(value, "kind") != kind && map_get(value, "kind") != "unknown" {
             parser_fail(operator, map_get(operator, "text") + " needs a " + kind);
         }
-        return parser_expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind);
+        node := ast_derive(AST_UNARY, operator, kind);
+        map_set(node, "operator", map_get(operator, "text"));
+        map_set(node, "operand", map_get(value, "ast"));
+        ast_finish_node(node, map_get(value, "ast"));
+        return parser_expression_new("(" + map_get(operator, "text") + map_get(value, "code") + ")", kind, node);
     }
     return parser_primary(parser);
 }
@@ -188,17 +203,34 @@ fn parser_primary(parser) {
     token := parser_take(parser);
     if map_get(token, "text") == "(" {
         value := parser_expression(parser);
+        close := parser_token(parser);
         parser_expect(parser, ")");
-        return value;
+        node := ast_node(AST_GROUP, token);
+        map_set(node, "expression", map_get(value, "ast"));
+        ast_finish(node, close);
+        map_set(node, "value_kind", map_get(value, "kind"));
+        return parser_expression_new(map_get(value, "code"), map_get(value, "kind"), node);
     }
     if map_get(token, "kind") == "number" {
-        return parser_expression_new(lex_normalize_number(map_get(token, "text")), "number");
+        node := ast_expression(AST_LITERAL, token, "number");
+        map_set(node, "literal_kind", "number");
+        map_set(node, "raw", map_get(token, "text"));
+        map_set(node, "value", lex_normalize_number(map_get(token, "text")));
+        return parser_expression_new(lex_normalize_number(map_get(token, "text")), "number", node);
     }
     if map_get(token, "kind") == "text" {
-        return parser_expression_new(map_get(token, "text"), "text");
+        node := ast_expression(AST_LITERAL, token, "text");
+        map_set(node, "literal_kind", "text");
+        map_set(node, "raw", map_get(token, "text"));
+        map_set(node, "value", map_get(token, "text"));
+        return parser_expression_new(map_get(token, "text"), "text", node);
     }
     if map_get(token, "text") == "true" || map_get(token, "text") == "false" {
-        return parser_expression_new(map_get(token, "text"), "boolean");
+        node := ast_expression(AST_LITERAL, token, "boolean");
+        map_set(node, "literal_kind", "boolean");
+        map_set(node, "raw", map_get(token, "text"));
+        map_set(node, "value", map_get(token, "text") == "true");
+        return parser_expression_new(map_get(token, "text"), "boolean", node);
     }
     if map_get(token, "kind") == "identifier" && map_get(token, "text") == "fn_args" {
         return parser_fn_args(parser, token);
@@ -207,10 +239,15 @@ fn parser_primary(parser) {
         return parser_call(parser, token);
     }
     if map_get(token, "kind") == "identifier" && map_has(map_get(parser, "variables"), map_get(token, "text")) {
-        return parser_expression_new(map_get(token, "text"), map_get(map_get(parser, "variables"), map_get(token, "text")));
+        value_kind := map_get(map_get(parser, "variables"), map_get(token, "text"));
+        node := ast_expression(AST_NAME, token, value_kind);
+        map_set(node, "name", map_get(token, "text"));
+        return parser_expression_new(map_get(token, "text"), value_kind, node);
     }
     parser_fail(token, "expected expression");
-    return parser_expression_new("", "unknown");
+    node := ast_expression(AST_LITERAL, token, "unknown");
+    map_set(node, "value", "");
+    return parser_expression_new("", "unknown", node);
 }
 
 /// Return the supplied arguments of the current context as a list.
@@ -221,12 +258,19 @@ fn parser_primary(parser) {
 /// is included, even beyond the declared parameters.
 fn parser_fn_args(parser, token) {
     parser_expect(parser, "(");
+    close := parser_token(parser);
     parser_expect(parser, ")");
     if !map_get(parser, "in_function") {
-        return parser_expression_new("process.argv.slice(2)", "list");
+        node := ast_expression(AST_FN_ARGS, token, "list");
+        map_set(node, "captures", false);
+        ast_finish(node, close);
+        return parser_expression_new("process.argv.slice(2)", "list", node);
     }
     map_set(map_get(parser, "current"), "captures", true);
-    return parser_expression_new("$mini_fn_args", "list");
+    node := ast_expression(AST_FN_ARGS, token, "list");
+    map_set(node, "captures", true);
+    ast_finish(node, close);
+    return parser_expression_new("$mini_fn_args", "list", node);
 }
 
 /// Return argument code texts.
@@ -243,6 +287,23 @@ fn parser_argument_code_list(args) {
 /// Return argument code text joined by comma-space.
 fn parser_argument_codes(args) {
     return list_join(parser_argument_code_list(args), ", ");
+}
+
+/// Create one call node from a resolved callee and checked argument expressions.
+fn parser_call_node(name, args, result_kind, is_builtin, close) {
+    node := ast_node(AST_CALL, name);
+    map_set(node, "callee", map_get(name, "text"));
+    map_set(node, "is_builtin", is_builtin);
+    map_set(node, "value_kind", result_kind);
+    argument_nodes := list_new();
+    position := 0;
+    while position < list_length(args) {
+        list_set(argument_nodes, list_length(argument_nodes), map_get(list_get(args, position), "ast"));
+        position = position + 1;
+    }
+    map_set(node, "arguments", argument_nodes);
+    ast_finish(node, close);
+    return node;
 }
 
 /// Parse a call and apply builtin metadata or a user signature.
@@ -263,6 +324,7 @@ fn parser_call(parser, name) {
             list_set(args, list_length(args), parser_expression(parser));
         }
     }
+    close := parser_token(parser);
     parser_expect(parser, ")");
     if is_builtin {
         // Builtin arity is part of the host contract, so it stays exact.
@@ -288,11 +350,18 @@ fn parser_call(parser, name) {
         // callee, where declared parameters ignore them and fn_args() sees all.
         arity := map_get(map_get(functions, name_text), "arity");
         while list_length(args) < arity {
-            list_set(args, list_length(args), parser_expression_new("0", "number"));
+            zero := ast_expression(AST_LITERAL, name, "number");
+            map_set(zero, "literal_kind", "number");
+            map_set(zero, "raw", "0");
+            map_set(zero, "value", "0");
+            map_set(zero, "synthetic", true);
+            list_set(args, list_length(args), parser_expression_new("0", "number", zero));
         }
     }
     if !is_builtin {
-        return parser_expression_new(name_text + "(" + parser_argument_codes(args) + ")", map_get(map_get(functions, name_text), "result"));
+        result_kind := map_get(map_get(functions, name_text), "result");
+        node := parser_call_node(name, args, result_kind, false, close);
+        return parser_expression_new(name_text + "(" + parser_argument_codes(args) + ")", result_kind, node);
     }
     parameters := builtin_parameters(name_text);
     position := 0;
@@ -326,28 +395,61 @@ fn parser_call(parser, name) {
     if name_text == "json_to_text" {
         map_set(map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
     }
-    return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), builtin_result(name_text));
+    result_kind := builtin_result(name_text);
+    node := parser_call_node(name, args, result_kind, true, close);
+    return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), result_kind, node);
 }
 
-/// Parse a statement and return emitted TypeScript.
+/// Pair one parsed statement node with its temporary legacy JS rendering.
+fn parser_statement_result(code, ast) {
+    result := map_new();
+    map_set(result, "code", code);
+    map_set(result, "ast", ast);
+    return result;
+}
+
+/// Parse and check one statement while retaining its temporary legacy JS rendering.
 fn parser_statement(parser) {
     if map_get(parser_token(parser), "text") == "while" {
-        parser_take(parser);
+        token := parser_take(parser);
         while_condition := parser_condition(parser);
-        return "while (" + map_get(while_condition, "code") + ") " + parser_block(parser) + "\n";
+        body := parser_block(parser);
+        node := ast_node(AST_WHILE, token);
+        map_set(node, "condition", map_get(while_condition, "ast"));
+        map_set(node, "body", map_get(body, "ast"));
+        ast_finish_node(node, map_get(body, "ast"));
+        return parser_statement_result("while (" + map_get(while_condition, "code") + ") " + map_get(body, "code") + "\n", node);
     }
     if map_get(parser_token(parser), "text") == "if" {
-        parser_take(parser);
+        token := parser_take(parser);
         if_condition := parser_condition(parser);
-        output := "if (" + map_get(if_condition, "code") + ") " + parser_block(parser);
+        consequent := parser_block(parser);
+        alternate := map_new();
+        output := "if (" + map_get(if_condition, "code") + ") " + map_get(consequent, "code");
         if map_get(parser_token(parser), "text") == "else" {
             parser_take(parser);
             if map_get(parser_token(parser), "text") == "if" {
-                return output + " else " + parser_statement(parser);
+                alternate = parser_statement(parser);
+                node := ast_node(AST_IF, token);
+                map_set(node, "condition", map_get(if_condition, "ast"));
+                map_set(node, "consequent", map_get(consequent, "ast"));
+                map_set(node, "alternate", map_get(alternate, "ast"));
+                ast_finish_node(node, map_get(alternate, "ast"));
+                return parser_statement_result(output + " else " + map_get(alternate, "code"), node);
             }
-            output = output + " else " + parser_block(parser);
+            alternate = parser_block(parser);
+            output = output + " else " + map_get(alternate, "code");
         }
-        return output + "\n";
+        node := ast_node(AST_IF, token);
+        map_set(node, "condition", map_get(if_condition, "ast"));
+        map_set(node, "consequent", map_get(consequent, "ast"));
+        if map_get(alternate, "ast") != 0 {
+            map_set(node, "alternate", map_get(alternate, "ast"));
+            ast_finish_node(node, map_get(alternate, "ast"));
+        } else {
+            ast_finish_node(node, map_get(consequent, "ast"));
+        }
+        return parser_statement_result(output + "\n", node);
     }
     if map_get(parser_token(parser), "text") == "fn" {
         return parser_function_declaration(parser);
@@ -358,14 +460,22 @@ fn parser_statement(parser) {
             parser_fail(return_token, "return outside function");
         }
         return_value := parser_expression(parser);
+        semicolon := parser_token(parser);
         parser_expect(parser, ";");
         map_set(map_get(parser, "current"), "result", map_get(return_value, "kind"));
-        return "return " + map_get(return_value, "code") + ";\n";
+        node := ast_node(AST_RETURN, return_token);
+        map_set(node, "value", map_get(return_value, "ast"));
+        ast_finish(node, semicolon);
+        return parser_statement_result("return " + map_get(return_value, "code") + ";\n", node);
     }
     if map_get(parser_token(parser), "kind") == "identifier" && map_get(parser_peek(parser, 1), "text") == "(" {
         call_value := parser_expression(parser);
+        semicolon := parser_token(parser);
         parser_expect(parser, ";");
-        return map_get(call_value, "code") + ";\n";
+        node := ast_node(AST_CALL_STATEMENT, map_get(call_value, "ast"));
+        map_set(node, "expression", map_get(call_value, "ast"));
+        ast_finish(node, semicolon);
+        return parser_statement_result(map_get(call_value, "code") + ";\n", node);
     }
     variables := map_get(parser, "variables");
     statement_name := parser_identifier(parser, "expected binding name");
@@ -375,23 +485,45 @@ fn parser_statement(parser) {
             parser_fail(statement_name, "duplicate binding " + map_get(statement_name, "text"));
         }
         declaration_value := parser_expression(parser);
+        semicolon := parser_token(parser);
         parser_expect(parser, ";");
         map_set(variables, map_get(statement_name, "text"), map_get(declaration_value, "kind"));
         map_set(map_get(parser, "declared"), map_get(statement_name, "text"), true);
-        if map_get(parser, "emit_helpers") && map_get(parser, "depth") == 0 && !map_get(parser, "in_function") {
+        top_level := map_get(parser, "depth") == 0 && !map_get(parser, "in_function");
+        if map_get(parser, "emit_helpers") && top_level {
             map_set(parser, "globals", map_get(parser, "globals") + "let " + map_get(statement_name, "text") + ";\n");
-            return map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+            code := map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+            node := ast_node(AST_BINDING, statement_name);
+            map_set(node, "name", map_get(statement_name, "text"));
+            map_set(node, "value_kind", map_get(declaration_value, "kind"));
+            map_set(node, "initializer", map_get(declaration_value, "ast"));
+            map_set(node, "top_level", true);
+            ast_finish(node, semicolon);
+            return parser_statement_result(code, node);
         }
-        return "let " + map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+        code := "let " + map_get(statement_name, "text") + " = " + map_get(declaration_value, "code") + ";\n";
+        node := ast_node(AST_BINDING, statement_name);
+        map_set(node, "name", map_get(statement_name, "text"));
+        map_set(node, "value_kind", map_get(declaration_value, "kind"));
+        map_set(node, "initializer", map_get(declaration_value, "ast"));
+        map_set(node, "top_level", top_level);
+        ast_finish(node, semicolon);
+        return parser_statement_result(code, node);
     }
     if !map_has(variables, map_get(statement_name, "text")) {
         parser_fail(statement_name, "unknown binding " + map_get(statement_name, "text"));
     }
     parser_expect(parser, "=");
     assignment_value := parser_expression(parser);
+    semicolon := parser_token(parser);
     parser_expect(parser, ";");
     map_set(variables, map_get(statement_name, "text"), map_get(assignment_value, "kind"));
-    return map_get(statement_name, "text") + " = " + map_get(assignment_value, "code") + ";\n";
+    node := ast_node(AST_ASSIGNMENT, statement_name);
+    map_set(node, "name", map_get(statement_name, "text"));
+    map_set(node, "value_kind", map_get(assignment_value, "kind"));
+    map_set(node, "value", map_get(assignment_value, "ast"));
+    ast_finish(node, semicolon);
+    return parser_statement_result(map_get(statement_name, "text") + " = " + map_get(assignment_value, "code") + ";\n", node);
 }
 
 /// Return whether parentheses enclose the complete following condition.
@@ -433,6 +565,7 @@ fn parser_condition(parser) {
 
 /// Parse a braced block with copied binding and declaration scopes.
 fn parser_block(parser) {
+    open := parser_token(parser);
     parser_expect(parser, "{");
     outer := map_get(parser, "variables");
     outer_declared := map_get(parser, "declared");
@@ -441,10 +574,14 @@ fn parser_block(parser) {
     map_set(parser, "depth", map_get(parser, "depth") + 1);
     output := "";
     last_statement := "";
+    statements := list_new();
     while map_get(parser_token(parser), "text") != "}" && map_get(parser_token(parser), "kind") != "eof" {
-        last_statement = parser_statement(parser);
+        statement := parser_statement(parser);
+        last_statement = map_get(statement, "code");
         output = output + last_statement;
+        list_set(statements, list_length(statements), map_get(statement, "ast"));
     }
+    close := parser_token(parser);
     parser_expect(parser, "}");
     if map_get(parser, "depth") == 1 {
         map_set(parser, "block_ends_with_return", text_starts_with(last_statement, "return "));
@@ -452,11 +589,14 @@ fn parser_block(parser) {
     map_set(parser, "depth", map_get(parser, "depth") - 1);
     map_set(parser, "variables", outer);
     map_set(parser, "declared", outer_declared);
+    node := ast_node(AST_BLOCK, open);
+    map_set(node, "statements", statements);
+    ast_finish(node, close);
     indented := indent_output(output);
     if indented == "" {
-        return "{\n}";
+        return parser_statement_result("{\n}", node);
     }
-    return "{\n" + indented + "\n}";
+    return parser_statement_result("{\n" + indented + "\n}", node);
 }
 
 /// Parse a top-level function declaration.
@@ -468,11 +608,22 @@ fn parser_function_declaration(parser) {
     name := parser_identifier(parser, "expected function name");
     parser_expect(parser, "(");
     parameters := list_new();
+    parameter_nodes := list_new();
     if map_get(parser_token(parser), "text") != ")" {
-        list_set(parameters, list_length(parameters), map_get(parser_identifier(parser, "expected parameter name"), "text"));
+        first_parameter := parser_identifier(parser, "expected parameter name");
+        list_set(parameters, list_length(parameters), map_get(first_parameter, "text"));
+        first_node := ast_node(AST_NAME, first_parameter);
+        map_set(first_node, "name", map_get(first_parameter, "text"));
+        map_set(first_node, "role", "parameter");
+        list_set(parameter_nodes, list_length(parameter_nodes), first_node);
         while map_get(parser_token(parser), "text") == "," {
             parser_take(parser);
-            list_set(parameters, list_length(parameters), map_get(parser_identifier(parser, "expected parameter name"), "text"));
+            next_parameter := parser_identifier(parser, "expected parameter name");
+            list_set(parameters, list_length(parameters), map_get(next_parameter, "text"));
+            next_node := ast_node(AST_NAME, next_parameter);
+            map_set(next_node, "name", map_get(next_parameter, "text"));
+            map_set(next_node, "role", "parameter");
+            list_set(parameter_nodes, list_length(parameter_nodes), next_node);
         }
     }
     parser_expect(parser, ")");
@@ -490,16 +641,23 @@ fn parser_function_declaration(parser) {
     body := parser_block(parser);
     map_set(parser, "variables", outer);
     map_set(parser, "in_function", false);
+    body_code := map_get(body, "code");
     if !map_get(parser, "block_ends_with_return") {
-        body = text_slice(body, 0, text_length(body) - 1)
-            + "    return 0;\n}";
+        body_code = text_slice(body_code, 0, text_length(body_code) - 1) + "    return 0;\n}";
     }
     capture := "";
     if map_get(info, "captures") {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
     }
-    body = "{\n" + capture + text_slice(body, 1, text_length(body));
-    return "function " + map_get(name, "text") + "(" + list_join(parameters, ", ") + ") " + body + "\n";
+    body_code = "{\n" + capture + text_slice(body_code, 1, text_length(body_code));
+    node := ast_node(AST_FUNCTION, token);
+    map_set(node, "name", map_get(name, "text"));
+    map_set(node, "parameters", parameter_nodes);
+    map_set(node, "body", map_get(body, "ast"));
+    map_set(node, "captures_arguments", map_get(info, "captures"));
+    map_set(node, "result_kind", map_get(info, "result"));
+    ast_finish_node(node, map_get(body, "ast"));
+    return parser_statement_result("function " + map_get(name, "text") + "(" + list_join(parameters, ", ") + ") " + body_code + "\n", node);
 }
 
 /// Return the fixed sorted import list used by the generated program.
@@ -530,7 +688,9 @@ fn parser_helper_blocks(helpers) {
 
 /// Return canonical file identity when includes supplied it, otherwise source identity.
 fn parser_file_key(token) {
-    if map_has(token, "file") { return map_get(token, "file"); }
+    if map_has(token, "file") {
+        return map_get(token, "file");
+    }
     return map_get(token, "source");
 }
 
@@ -540,7 +700,9 @@ fn parser_file_register(order, priorities, token) {
     file := parser_file_key(token);
     if !map_has(priorities, file) {
         priority := 0;
-        if map_has(token, "file_order") { priority = map_get(token, "file_order"); }
+        if map_has(token, "file_order") {
+            priority = map_get(token, "file_order");
+        }
         index := list_length(order);
         while index > 0 && map_get(priorities, list_get(order, index - 1)) > priority {
             list_set(order, index, list_get(order, index - 1));
@@ -555,32 +717,36 @@ fn parser_file_register(order, priorities, token) {
 /// Parse the token list and return the complete TypeScript program.
 fn parser_program(parser) {
     shebang := "";
+    has_shebang := false;
     if map_get(parser_token(parser), "kind") == "shebang" {
         parser_take(parser);
         shebang = "#!/usr/bin/env node\n";
+        has_shebang = true;
     }
     output := "";
     declarations := "";
     files := map_new();
     order := list_new();
     priorities := map_new();
+    ast_body := list_new();
     tokens := map_get(parser, "tokens");
     main_source := map_get(list_get(tokens, list_length(tokens) - 1), "source");
     while map_get(parser_token(parser), "kind") != "eof" {
         token := parser_token(parser);
         statement := parser_statement(parser);
+        list_set(ast_body, list_length(ast_body), map_get(statement, "ast"));
         if map_get(parser, "emit_helpers") {
             file := parser_file_register(order, priorities, token);
             if !map_has(files, file) {
                 map_set(files, file, "");
             }
             if map_get(token, "text") == "fn" {
-                declarations = declarations + statement;
+                declarations = declarations + map_get(statement, "code");
             } else {
-                map_set(files, file, map_get(files, file) + statement);
+                map_set(files, file, map_get(files, file) + map_get(statement, "code"));
             }
         } else if map_get(token, "source") == main_source {
-            output = output + statement;
+            output = output + map_get(statement, "code");
         }
     }
     imports := map_get(parser, "imports");
@@ -597,16 +763,31 @@ fn parser_program(parser) {
         index := 0;
         while index < list_length(order) {
             name := "$mini_file_" + number_to_text(index);
-            output = output + "function " + name + "() {\n"
-                + indent_output(map_get(files, list_get(order, index))) + "\n}\n";
+            output = output + "function " + name + "() {\n" + indent_output(map_get(files, list_get(order, index))) + "\n}\n";
             calls = calls + "    " + name + "();\n";
             index = index + 1;
         }
         if list_length(order) > 0 {
             output = output + "function $mini_main() {\n" + calls + "}\n$mini_main();\n";
         }
+        ast := ast_node(AST_PROGRAM, list_get(tokens, 0));
+        map_set(ast, "body", ast_body);
+        map_set(ast, "files", order);
+        map_set(ast, "main_source", main_source);
+        map_set(ast, "has_shebang", has_shebang);
+        map_set(ast, "tokens", tokens);
+        ast_finish(ast, list_get(tokens, list_length(tokens) - 1));
+        map_set(parser, "ast", ast);
         return shebang + "\"use strict\";\n" + import_text + helper_text + map_get(parser, "globals") + declarations + output;
     }
+    ast := ast_node(AST_PROGRAM, list_get(tokens, 0));
+    map_set(ast, "body", ast_body);
+    map_set(ast, "files", list_new());
+    map_set(ast, "main_source", main_source);
+    map_set(ast, "has_shebang", has_shebang);
+    map_set(ast, "tokens", tokens);
+    ast_finish(ast, list_get(tokens, list_length(tokens) - 1));
+    map_set(parser, "ast", ast);
     return output;
 }
 
@@ -639,8 +820,7 @@ fn parser_new(tokens) {
         if depth == 0 && map_get(token, "text") == "fn" && map_get(list_get(tokens, index + 1), "kind") == "identifier" {
             arity := 0;
             cursor := index + 3;
-            while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")"
-                && map_get(list_get(tokens, cursor), "text") != "{" {
+            while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")" && map_get(list_get(tokens, cursor), "text") != "{" {
                 if map_get(list_get(tokens, cursor), "kind") == "identifier" {
                     arity = arity + 1;
                 }
@@ -662,6 +842,13 @@ fn parser_compile(tokens) {
     return parser_program(parser_new(tokens));
 }
 
+/// Parse and check a token list into a shared target-neutral program AST.
+fn parser_ast(tokens) {
+    parser := parser_new(tokens);
+    parser_program(parser);
+    return map_get(parser, "ast");
+}
+
 /// Compile a token list without condition warnings.
 fn parser_compile_quiet(tokens) {
     parser := parser_new(tokens);
@@ -675,4 +862,3 @@ fn parser_compile_program(tokens) {
     map_set(parser, "emit_helpers", false);
     return parser_program(parser);
 }
-

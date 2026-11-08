@@ -51,6 +51,13 @@ while leaving actual-candidate performance and self-build acceptance outstanding
 
 ## mini compiler source
 
+**Architecture update, 2026-11-08:** The original direct-emission port guidance
+below is historical. The selected architecture is now one shared parser/checker
+that produces a target-neutral AST, followed by separate JS and C emitters.
+Source spans and semantic kinds belong on AST nodes; source and lexer trivia stay
+available beside it for formatter and tooling consumers. The migration is tracked
+in the [shared AST plan](../.agents/plans/compiler-ast-backends.md).
+
 The mini compiler source is `tools/compiler.mini`; the JavaScript compiler is
 generated from it.
 It ports the five retired handwritten TypeScript source files with close

@@ -26,6 +26,19 @@ Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
 increments; the script interpreter and embedding API are not implemented yet.
 
+## Shared AST and backends
+
+On 2026-11-08, the compiler architecture moved toward one checked, target-neutral
+AST consumed by separate JavaScript and C emitters. The parser currently builds
+that AST alongside its legacy JavaScript rendering as a migration bridge; the
+C backend still performs its token walk. Both backends consuming the AST is the
+acceptance point, not a claim about the current implementation. The nodes carry
+source spans and inferred value kinds. `parser_ast(tokens)` exposes the tree,
+which retains the expanded token list it received. The ordinary compile path
+omits comment tokens; formatter consumers must carry source text and trivia
+beside the AST. See the [migration plan](../.agents/plans/compiler-ast-backends.md)
+and [AST definitions](../libs/compiler/ast.mini).
+
 ```text
 ./bin/mini compile --target c cases/native/001-001-write-literal.mini /tmp/mini-hello.c
 cc -std=c11 -E /tmp/mini-hello.c -o /tmp/mini-hello.i

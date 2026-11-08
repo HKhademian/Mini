@@ -1,0 +1,73 @@
+/// Shared node tags for the target-neutral compiler syntax tree.
+AST_PROGRAM := "Program";
+AST_BLOCK := "Block";
+AST_FUNCTION := "Function";
+AST_RETURN := "Return";
+AST_IF := "If";
+AST_WHILE := "While";
+AST_BINDING := "Binding";
+AST_ASSIGNMENT := "Assignment";
+AST_CALL_STATEMENT := "CallStatement";
+AST_LITERAL := "Literal";
+AST_NAME := "Name";
+AST_CALL := "Call";
+AST_FN_ARGS := "FnArgs";
+AST_UNARY := "Unary";
+AST_BINARY := "Binary";
+AST_GROUP := "Group";
+
+/// Create a target-neutral syntax node anchored to its first token.
+fn ast_node(kind, token) {
+    node := map_new();
+    map_set(node, "node_kind", kind);
+    map_set(node, "source", map_get(token, "source"));
+    map_set(node, "start", map_get(token, "start"));
+    map_set(node, "end", map_get(token, "end"));
+    map_set(node, "line", map_get(token, "line"));
+    map_set(node, "column", map_get(token, "column"));
+    if map_has(token, "file") {
+        map_set(node, "file", map_get(token, "file"));
+    }
+    if map_has(token, "file_order") {
+        map_set(node, "file_order", map_get(token, "file_order"));
+    }
+    return node;
+}
+
+/// Create a node using another node's source identity and starting location.
+fn ast_derive(kind, first, value_kind) {
+    node := map_new();
+    map_set(node, "node_kind", kind);
+    map_set(node, "source", map_get(first, "source"));
+    map_set(node, "start", map_get(first, "start"));
+    map_set(node, "end", map_get(first, "end"));
+    map_set(node, "line", map_get(first, "line"));
+    map_set(node, "column", map_get(first, "column"));
+    if map_has(first, "file") {
+        map_set(node, "file", map_get(first, "file"));
+    }
+    if map_has(first, "file_order") {
+        map_set(node, "file_order", map_get(first, "file_order"));
+    }
+    map_set(node, "value_kind", value_kind);
+    return node;
+}
+
+/// Extend a node's half-open source span through its final token.
+fn ast_finish(node, token) {
+    map_set(node, "end", map_get(token, "end"));
+    return node;
+}
+
+/// Extend a node through another node's final source offset.
+fn ast_finish_node(node, last) {
+    map_set(node, "end", map_get(last, "end"));
+    return node;
+}
+
+/// Create an expression node with its inferred Mini value kind.
+fn ast_expression(kind, token, value_kind) {
+    node := ast_node(kind, token);
+    map_set(node, "value_kind", value_kind);
+    return node;
+}

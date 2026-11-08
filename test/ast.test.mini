@@ -1,0 +1,53 @@
+#!/usr/bin/env node
+include "common/io.mini";
+include "common/list.mini";
+include "common/text.mini";
+include "compiler/parser.mini";
+
+/// Fail an AST shape assertion with its location in the test.
+fn ast_test_fail(message) {
+    io_write_error("compiler AST: " + message + "\n");
+    process_exit(1);
+    return 0;
+}
+
+/// Verify shared parser nodes carry semantics and source locations.
+fn main() {
+    source := "fn plus(a, b) { return a + b; }\nvalue := plus(1, 2);\nif value == 3 { io_write(\"ok\"); }\n";
+    tokens := lex_tokenize(source, "ast-test.mini", false);
+    program := parser_ast(tokens);
+    body := map_get(program, "body");
+    if map_get(program, "node_kind") != AST_PROGRAM || list_length(body) != 3 {
+        ast_test_fail("program body shape");
+    }
+    function_node := list_get(body, 0);
+    if map_get(function_node, "node_kind") != AST_FUNCTION || map_get(function_node, "name") != "plus" || list_length(map_get(function_node, "parameters")) != 2 || map_get(function_node, "result_kind") != "unknown" {
+        ast_test_fail("function metadata");
+    }
+    function_body := map_get(function_node, "body");
+    returned := list_get(map_get(function_body, "statements"), 0);
+    sum := map_get(returned, "value");
+    if map_get(returned, "node_kind") != AST_RETURN || map_get(sum, "node_kind") != AST_BINARY || map_get(sum, "operator") != "+" || map_get(sum, "value_kind") != "unknown" {
+        ast_test_fail("typed return expression");
+    }
+    binding := list_get(body, 1);
+    call := map_get(binding, "initializer");
+    if map_get(binding, "node_kind") != AST_BINDING || map_get(call, "node_kind") != AST_CALL || map_get(call, "callee") != "plus" || list_length(map_get(call, "arguments")) != 2 {
+        ast_test_fail("binding call expression");
+    }
+    conditional := list_get(body, 2);
+    condition := map_get(conditional, "condition");
+    if map_get(conditional, "node_kind") != AST_IF || map_get(condition, "node_kind") != AST_BINARY || map_get(condition, "operator") != "==" || map_get(map_get(conditional, "consequent"), "node_kind") != AST_BLOCK {
+        ast_test_fail("conditional tree");
+    }
+    if map_get(binding, "source") != "ast-test.mini" || map_get(binding, "start") != text_find(source, "value") || map_get(binding, "end") <= map_get(binding, "start") {
+        ast_test_fail("source span");
+    }
+    if text_length(json_to_text(program)) == 0 {
+        ast_test_fail("AST should be serializable for inspection");
+    }
+    io_write("compiler AST ok\n");
+    return 0;
+}
+
+main();

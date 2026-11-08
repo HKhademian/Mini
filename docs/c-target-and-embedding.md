@@ -53,7 +53,8 @@ execution. Their target field selects C; future target gaps stay explicit.
 
 - [Compiler entry](../tools/compiler.mini) drives tokenization, include expansion,
   checking, and JavaScript output. The [parser](../libs/compiler/parser.mini)
-  checks while emitting strings; it has no reusable program tree today.
+  builds a checked AST alongside legacy JavaScript rendering as the first step
+  toward shared lowering; the C token walk is still in place during migration.
 - [Builtin registry](../libs/compiler/builtins.mini) combines metadata with
   JavaScript helpers/call templates. Separate only what each C slice needs.
 - [Pure libraries](self-containment.md) supply algorithms, while native storage
@@ -79,11 +80,13 @@ Ahead-of-time compilation and runtime interpretation are separate stages.
 The eventual runner executes new scripts without Node or a C compiler; C
 compilation happens when building the runner.
 
-Reuse lexer/parser/checks. Separate emission as concrete C slices need it.
-A whole-compiler conversion to checked nodes is not an initial gate. Shared
-nodes may become useful for later features or the runner; that does not select
-tree evaluation over a stack machine now. Preserve existing routine boundaries
-and diagnostics unless a verified change justifies otherwise.
+Reuse one lexer/parser/checker and lower its AST separately for each target.
+On 2026-11-08 the owner selected this shared-AST architecture, superseding the
+earlier incremental token-walk direction. The AST migration preserves current
+behavior while moving JavaScript first and C second onto the common tree. It does
+not select tree evaluation over a stack machine for the future script runner.
+Preserve existing routine boundaries and diagnostics unless a verified change
+justifies otherwise.
 
 ## Native implementation responsibilities
 

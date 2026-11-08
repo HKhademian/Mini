@@ -247,9 +247,12 @@ behavior must live in mini. Tool integration reuses that behavior through the
 active compiler's `tokens --comments` and `compile` commands; the language server
 does not import handwritten compiler modules. Builtin signatures for hover/completion
 come from the active compiler's `metadata` command.
-A future formatter or documenter may need syntax/trivia information that a
-direct emitter does not expose. Review that interface when needed; do not build
-an AST or persistent compiler service solely for hypothetical tools.
+The compiler now builds a shared AST with source spans and semantic kinds; the
+current migration bridge still keeps direct JavaScript rendering in the parser.
+AST dumps and LSP analysis can consume this representation as it becomes the
+backend contract. A formatter also needs the retained source and token/trivia
+stream because the AST does not encode comments or whitespace. No persistent
+compiler service is implied by this shared representation.
 
 Follow the existing layout: extensionless Node commands in `bin/`, tool
 implementations in `tools/`, mini library source in `std/` when introduced, and
