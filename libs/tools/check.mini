@@ -202,7 +202,20 @@ fn check_documents(directory) {
 
 /// Return whether a file name has a checked extension.
 fn check_portable_file(name) {
-    suffixes := list_of(".json", ".ts", ".md", ".mdc", ".mini", ".yml", ".yaml", ".stdout", ".stderr", ".stdin", ".svg", ".js");
+    suffixes := list_of(
+        ".json",
+        ".ts",
+        ".md",
+        ".mdc",
+        ".mini",
+        ".yml",
+        ".yaml",
+        ".stdout",
+        ".stderr",
+        ".stdin",
+        ".svg",
+        ".js"
+    );
     position := 0;
     while position < list_length(suffixes) {
         if text_ends_with(name, list_get(suffixes, position)) {
@@ -292,7 +305,25 @@ fn check_sample_walk(directory, relative, covered) {
 fn check_versions(root) {
     current := check_json(path_join(root, "config/versions.json"));
     expected := list_new();
-    names := list_of("group", "mini", "language", "compiler", "bootstrap", "std", "check", "verify", "release", "test", "bench", "cli", "vscode", "builtins", "format", "lsp");
+    names := list_of(
+        "group",
+        "mini",
+        "language",
+        "ast",
+        "compiler",
+        "bootstrap",
+        "std",
+        "check",
+        "verify",
+        "release",
+        "test",
+        "bench",
+        "cli",
+        "vscode",
+        "builtins",
+        "format",
+        "lsp"
+    );
     position := 0;
     while position < list_length(names) {
         list_set(expected, position, list_get(names, position));

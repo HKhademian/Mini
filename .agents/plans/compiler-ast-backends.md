@@ -1,6 +1,6 @@
 ---
 name: compiler-ast-backends
-status: in_progress
+status: complete
 created: 2026-11-08
 ---
 
@@ -16,8 +16,8 @@ runtime support target-specific.
 
 The AST is also a reusable compiler product for future LSP queries, stable AST
 dumps/debugging, and source tools. Keep source spans and semantic annotations
-on nodes. Retain source text and lexer tokens/trivia beside the AST because a
-semantic AST alone cannot preserve comments and formatting choices.
+on nodes. Retain source text and lexer tokens beside the AST because a semantic
+AST alone cannot preserve comments and formatting choices.
 
 ## Migration
 
@@ -27,8 +27,8 @@ semantic AST alone cannot preserve comments and formatting choices.
    the parser now returns AST nodes only and has no target source strings.
 3. **Complete:** Port the C backend from its token walk to the same AST. Keep
    unsupported target forms explicit and preserve generated C/header behavior.
-4. **In progress:** Expose a stable AST inspection path now that both backends
-   consume the schema; keep formatting trivia available to future consumers.
+4. **Complete:** Version the AST inspection contract and document the parser,
+   schema, and target backend boundaries independently.
 
 Each completed migration step is a separate atomic commit with focused parity,
 bootstrap fixed-point, and case verification. Do not hand-edit generated
@@ -44,15 +44,26 @@ compiler artifacts.
   token adapter that parses once and delegates. Generated C runtime fragments
   stay in the C backend and are assembled from readable line lists.
 - Both backends lower the shared AST; the stable AST inspection interface and
-  retained source trivia for formatters remain.
+  retained token list are available through `parser_ast(tokens)`. The tree root
+  reports the independently registered AST schema version. Whitespace trivia
+  still belongs to the original source, not the AST.
 
 ## Acceptance
 
 - Both backends consume the same checked AST; neither backend reparses tokens.
 - Existing supported-program output and rejection diagnostics remain stable,
   except for separately accepted language changes.
-- AST nodes identify source/file spans and carry resolved value kinds where
-  known; tokens/trivia remain available for source-oriented tools.
+- AST nodes identify source/file spans and carry parser-computed value kinds
+  where known; the input token list remains available for source-oriented tools.
 - The generated compiler reaches the documented fixed point from its source.
 - Compiler docs distinguish the reusable AST/front end from backend-specific
   lowering and generated runtime code.
+- The `ast` product version, root schema version, and release-tag registry stay
+  aligned.
+
+## Follow-up: post-AST verification
+
+No standalone post-parse verifier exists yet. Candidate independent stages are
+AST shape and required-field validation, source-span checks, semantic consistency
+checks after scope/type facts are explicit, and target capability analysis
+before backend lowering. Keep target checks out of the shared AST verifier.

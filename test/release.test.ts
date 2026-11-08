@@ -4,7 +4,15 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symli
 import { tmpdir } from 'node:os';
 import { basename, join } from 'node:path';
 import { test } from 'node:test';
-import { root, run, sha256, versions } from './support.ts';
+import { releaseTag, root, run, selectRelease, sha256, versions } from './support.ts';
+
+test('AST schema has an independent versioned release identity', () => {
+  const current = versions(root);
+  const tag = releaseTag('ast', current);
+  assert.deepEqual(selectRelease(tag, current), {
+    component: 'ast', group: current.group, version: current.ast,
+  });
+});
 
 function fixture() {
   const work = mkdtempSync(join(tmpdir(), 'mini-vscode-release-'));

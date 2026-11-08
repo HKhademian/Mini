@@ -33,12 +33,23 @@ AST consumed by separate JavaScript and C emitters. The parser returns AST nodes
 only. [`emit-js.mini`](../libs/compiler/emit-js.mini) and
 [`emit-c.mini`](../libs/compiler/emit-c.mini) each have an AST lowering entry
 point; their token-based compile adapters parse once and delegate to it. Nodes
-carry source spans, file identity, and inferred value kinds. `parser_ast(tokens)`
-exposes the tree and its input token list. The ordinary compile path omits
-comment tokens; formatter consumers carry source text and trivia beside the
-AST. See the
-[migration plan](../.agents/plans/compiler-ast-backends.md) and
+carry source spans, file identity, and inferred value kinds. The eager
+hand-written recursive-descent parser returns one complete `Program` tree;
+`parser_ast(tokens)` exposes that tree and its input token list. The root carries
+`ast_schema_version`, currently `0.1.0-alpha.1`, and the independent `ast`
+component is tracked in [the version registry](../config/versions.json).
+The ordinary compile path omits comment tokens; formatter consumers carry
+source text and trivia beside the AST. See the independent
+[parser documentation](parser.md), [AST schema](ast.md),
+[migration plan](../.agents/plans/compiler-ast-backends.md), and
 [AST definitions](../libs/compiler/ast.mini).
+
+The JavaScript emitter produces a complete Node source string and manages
+JavaScript builtin helpers, imports, file initializers, and target syntax. The C
+emitter produces a C source/header pair for its supported subset and owns C
+runtime fragments, target capability failures, and C syntax lowering. Neither
+emitter owns lexing or shared parsing/checking. Their Mini source files document
+the AST entry points and compile adapters.
 
 Emitters and other source generators collect output fragments or lines in
 lists and join them at the output boundary. For line-oriented output, an empty

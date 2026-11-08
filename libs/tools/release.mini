@@ -24,8 +24,10 @@ fn release_fail(message) {
 fn release_run(command, args, directory) {
     result := process_capture(command, args, directory, list_new());
     if map_get(result, "status") != 0 {
-        release_fail(command + " " + list_join(args, " ") + " failed:\n"
-            + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
+        release_fail(
+            command + " " + list_join(args, " ") + " failed:\n"
+            + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr"))
+        );
     }
     done := result_ok();
     map_set(done, "stdout", map_get(result, "stdout"));
@@ -37,8 +39,10 @@ fn release_run(command, args, directory) {
 fn release_check(check, directory) {
     result := process_capture(process_exec_path(), list_of(check, "--docs"), directory, list_new());
     if map_get(result, "status") != 0 {
-        release_fail(path_basename(check) + " failed:\n"
-            + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr")));
+        release_fail(
+            path_basename(check) + " failed:\n"
+            + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr"))
+        );
     }
     return 0;
 }
@@ -64,7 +68,7 @@ fn release_component(name) {
     if name == "lang" {
         return "language";
     }
-    if name == "mini" || name == "compiler" || name == "bootstrap" || name == "builtins"
+    if name == "mini" || name == "ast" || name == "compiler" || name == "bootstrap" || name == "builtins"
         || name == "std" || name == "check" || name == "format" || name == "verify"
         || name == "release" || name == "test" || name == "bench" || name == "cli"
         || name == "lsp" || name == "vscode" {
@@ -136,7 +140,14 @@ fn release_vscode(directory, output, tooling) {
     }
     extension := path_join(tooling, "editors/vscode");
     directory_create(path_join(extension, "dist"));
-    bundle_args := list_of(path_join(extension, "src/extension.ts"), "--bundle", "--platform=node", "--format=cjs", "--external:vscode", "--outfile=" + path_join(extension, "dist/extension.cjs"));
+    bundle_args := list_of(
+        path_join(extension, "src/extension.ts"),
+        "--bundle",
+        "--platform=node",
+        "--format=cjs",
+        "--external:vscode",
+        "--outfile=" + path_join(extension, "dist/extension.cjs")
+    );
     release_run(bundler, bundle_args, extension);
     directory_create(output);
     file := "mini-" + map_get(current, "group") + "-v" + version + ".vsix";
@@ -144,7 +155,15 @@ fn release_vscode(directory, output, tooling) {
     if path_is_exists(destination) {
         release_fail("VSIX output already exists");
     }
-    package_args := list_of(packager, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", destination);
+    package_args := list_of(
+        packager,
+        "package",
+        "--no-dependencies",
+        "--allow-missing-repository",
+        "--skip-license",
+        "--out",
+        destination
+    );
     release_run(process_exec_path(), package_args, extension);
     asset := map_new();
     map_set(asset, "file", file);
@@ -175,7 +194,11 @@ fn release_checksums(output) {
     position := 0;
     while position < list_length(assets) {
         name := list_get(assets, position);
-        list_set(lines, list_length(lines), hash_sha256(file_read_bytes(path_join(output, name))) + "  " + name + "\n");
+        list_set(
+            lines,
+            list_length(lines),
+            hash_sha256(file_read_bytes(path_join(output, name))) + "  " + name + "\n"
+        );
         position = position + 1;
     }
     file_write(path_join(output, "SHA256SUMS"), list_join(lines, ""));
@@ -220,7 +243,8 @@ fn release_prepare(directory, output, tag) {
     compiler_release := false;
     if released != 0 {
         component := map_get(released, "component");
-        compiler_release = component == "mini" || component == "language" || component == "compiler" || component == "bootstrap";
+        compiler_release = component == "mini" || component == "language" || component == "ast"
+            || component == "compiler" || component == "bootstrap";
     }
     if !available && compiler_release {
         release_fail("this release requires a verified compiler bootstrap");

@@ -1,4 +1,6 @@
-/// Map shared syntax nodes to the current JavaScript target.
+/// Lower Mini's checked AST to Node-compatible JavaScript source.
+/// AST traversal, builtin mapping, and generated source assembly live here;
+/// parsing and shared syntax checks remain in parser.mini.
 
 include "./parser.mini";
 
@@ -362,17 +364,17 @@ fn emit_js_program(program) {
     );
 }
 
-/// Parse and emit one token list for the full JavaScript target.
+/// Parse one prepared token list once and return complete JavaScript source.
 fn emit_js_compile(tokens) {
     return emit_js_program(parser_ast(tokens));
 }
 
-/// Parse and emit the main source body without the normal runtime wrappers.
+/// Parse once and return the main-source body without runtime wrappers.
 fn emit_js_compile_program_only(tokens) {
     return emit_js_program_only(parser_ast(tokens));
 }
 
-/// Parse and emit the full JavaScript program without condition warnings.
+/// Parse without condition warnings and return complete JavaScript source.
 fn emit_js_compile_quiet(tokens) {
     return emit_js_program(parser_ast_quiet(tokens));
 }

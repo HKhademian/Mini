@@ -1,3 +1,6 @@
+/// Eager recursive-descent parser and shallow checker over a complete token list.
+/// Returns one checked Program AST; it does not emit target source.
+
 include "./lexer.mini";
 include "./ast.mini";
 include "./builtins.mini";
@@ -56,7 +59,10 @@ fn parser_expression(parser) {
     while map_get(parser_token(parser), "text") == "||" {
         operator := parser_take(parser);
         right := parser_conjunction(parser);
-        if (map_get(left, "value_kind") != "boolean" && map_get(left, "value_kind") != "unknown") || (map_get(right, "value_kind") != "boolean" && map_get(right, "value_kind") != "unknown") {
+        if (map_get(left, "value_kind") != "boolean" && map_get(left, "value_kind") != "unknown") || (map_get(
+                right,
+                "value_kind"
+            ) != "boolean" && map_get(right, "value_kind") != "unknown") {
             parser_fail(operator, "|| needs booleans");
         }
         left = parser_binary_expression("boolean", left, operator, right);
@@ -70,7 +76,10 @@ fn parser_conjunction(parser) {
     while map_get(parser_token(parser), "text") == "&&" {
         operator := parser_take(parser);
         right := parser_equality(parser);
-        if (map_get(left, "value_kind") != "boolean" && map_get(left, "value_kind") != "unknown") || (map_get(right, "value_kind") != "boolean" && map_get(right, "value_kind") != "unknown") {
+        if (map_get(left, "value_kind") != "boolean" && map_get(left, "value_kind") != "unknown") || (map_get(
+                right,
+                "value_kind"
+            ) != "boolean" && map_get(right, "value_kind") != "unknown") {
             parser_fail(operator, "&& needs booleans");
         }
         left = parser_binary_expression("boolean", left, operator, right);
@@ -86,7 +95,8 @@ fn parser_equality(parser) {
         right := parser_comparison(parser);
         left_kind := map_get(left, "value_kind");
         right_kind := map_get(right, "value_kind");
-        if left_kind == "list" || right_kind == "list" || left_kind == "map" || right_kind == "map" || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
+        if left_kind == "list" || right_kind == "list" || left_kind == "map" || right_kind == "map" || (left_kind != "unknown"
+            && right_kind != "unknown" && left_kind != right_kind) {
             parser_fail(operator, "equality needs matching scalar kinds");
         }
         left = parser_binary_expression("boolean", left, operator, right);
@@ -97,10 +107,16 @@ fn parser_equality(parser) {
 /// Parse numeric comparisons.
 fn parser_comparison(parser) {
     left := parser_additive(parser);
-    while map_get(parser_token(parser), "text") == "<" || map_get(parser_token(parser), "text") == "<=" || map_get(parser_token(parser), "text") == ">" || map_get(parser_token(parser), "text") == ">=" {
+    while map_get(parser_token(parser), "text") == "<" || map_get(parser_token(parser), "text") == "<=" || map_get(
+        parser_token(parser),
+        "text"
+    ) == ">" || map_get(parser_token(parser), "text") == ">=" {
         operator := parser_take(parser);
         right := parser_additive(parser);
-        if (map_get(left, "value_kind") != "number" && map_get(left, "value_kind") != "unknown") || (map_get(right, "value_kind") != "number" && map_get(right, "value_kind") != "unknown") {
+        if (map_get(left, "value_kind") != "number" && map_get(left, "value_kind") != "unknown") || (map_get(
+                right,
+                "value_kind"
+            ) != "number" && map_get(right, "value_kind") != "unknown") {
             parser_fail(operator, "comparison needs numbers");
         }
         left = parser_binary_expression("boolean", left, operator, right);
@@ -126,7 +142,8 @@ fn parser_additive(parser) {
                 parser_fail(operator, "- needs two numbers");
             }
         } else {
-            if !parser_additive_kind(left_kind) || !parser_additive_kind(right_kind) || (left_kind != "unknown" && right_kind != "unknown" && left_kind != right_kind) {
+            if !parser_additive_kind(left_kind) || !parser_additive_kind(right_kind) || (left_kind != "unknown" && right_kind
+                != "unknown" && left_kind != right_kind) {
                 parser_fail(operator, "+ needs two numbers or two texts");
             }
         }
@@ -512,7 +529,11 @@ fn parser_block(parser) {
     close := parser_token(parser);
     parser_expect(parser, "}");
     if map_get(parser, "depth") == 1 {
-        map_set(parser, "block_ends_with_return", last_statement != 0 && map_get(last_statement, "node_kind") == AST_RETURN);
+        map_set(
+            parser,
+            "block_ends_with_return",
+            last_statement != 0 && map_get(last_statement, "node_kind") == AST_RETURN
+        );
     }
     map_set(parser, "depth", map_get(parser, "depth") - 1);
     map_set(parser, "variables", outer);
@@ -624,6 +645,7 @@ fn parser_program(parser) {
         parser_file_register(order, priorities, token);
     }
     program := ast_node(AST_PROGRAM, list_get(tokens, 0));
+    map_set(program, "ast_schema_version", AST_SCHEMA_VERSION);
     map_set(program, "body", ast_body);
     map_set(program, "files", order);
     map_set(program, "main_source", main_source);
@@ -658,7 +680,13 @@ fn parser_new(tokens) {
         if depth == 0 && map_get(token, "text") == "fn" && map_get(list_get(tokens, index + 1), "kind") == "identifier" {
             arity := 0;
             cursor := index + 3;
-            while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")" && map_get(list_get(tokens, cursor), "text") != "{" {
+            while cursor < list_length(tokens) && map_get(list_get(tokens, cursor), "text") != ")" && map_get(
+                list_get(
+                    tokens,
+                    cursor
+                ),
+                "text"
+            ) != "{" {
                 if map_get(list_get(tokens, cursor), "kind") == "identifier" {
                     arity = arity + 1;
                 }

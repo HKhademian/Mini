@@ -213,6 +213,7 @@ function $mini_value_kind(value) {
     if (value !== null && typeof value === "object") return "map";
     return "other";
 }
+let AST_SCHEMA_VERSION;
 let AST_PROGRAM;
 let AST_BLOCK;
 let AST_FUNCTION;
@@ -1663,6 +1664,7 @@ function parser_program(parser) {
         parser_file_register(order, priorities, token);
     }
     let program = ast_node(AST_PROGRAM, $mini_list_get(tokens, 0));
+    $mini_map_set(program, "ast_schema_version", AST_SCHEMA_VERSION);
     $mini_map_set(program, "body", ast_body);
     $mini_map_set(program, "files", order);
     $mini_map_set(program, "main_source", main_source);
@@ -2298,6 +2300,7 @@ function $mini_file_4() {
 
 }
 function $mini_file_5() {
+    AST_SCHEMA_VERSION = "0.1.0-alpha.1";
     AST_PROGRAM = "Program";
     AST_BLOCK = "Block";
     AST_FUNCTION = "Function";

@@ -7,6 +7,7 @@
 Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 
 ```text
+ast-v0.6.0-v0.1.0-alpha.1
 compiler-v0.5.0-v0.4.0-alpha.5
 builtins-v0.5.0-v0.4.0-alpha.2
 bootstrap-v0.5.0-v0.2.0-alpha.7
@@ -54,24 +55,26 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.6.0-v0.3.0-alpha.35
+mini-v0.6.0-v0.3.0-alpha.36
 lang-v0.6.0-v0.5.0-alpha.6
-compiler-v0.6.0-v0.5.0-alpha.34
-bootstrap-v0.6.0-v0.3.0-alpha.36
+ast-v0.6.0-v0.1.0-alpha.1
+compiler-v0.6.0-v0.5.0-alpha.35
+bootstrap-v0.6.0-v0.3.0-alpha.37
 builtins-v0.6.0-v0.4.0-alpha.6
 cli-v0.6.0-v0.1.0-alpha.20
-check-v0.6.0-v0.1.0-alpha.12
+check-v0.6.0-v0.1.0-alpha.13
 format-v0.6.0-v0.1.0-alpha.9
 lsp-v0.6.0-v0.1.0-alpha.11
 test-v0.6.0-v0.1.0-alpha.8
 verify-v0.6.0-v0.1.0-alpha.10
 bench-v0.6.0-v0.1.0-alpha.7
-release-v0.6.0-v0.1.0-alpha.7
+release-v0.6.0-v0.1.0-alpha.8
 vscode-v0.6.0-v0.3.8
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
-`lang` identifies the language/specification contract. `compiler` versions the
+`lang` identifies the language/specification contract. `ast` versions the
+target-neutral AST schema and `Program` inspection contract. `compiler` versions the
 active generated compiler; the retired handwritten compiler has no product
 stream. `bootstrap` versions the promoted generated fixed point.
 `mini-compile` and `minic` share the compiler version.

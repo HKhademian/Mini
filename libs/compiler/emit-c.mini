@@ -1,6 +1,7 @@
-/// C11 lowering for the checked shared AST.
-/// The parser owns syntax and name checks; this module owns C code and runtime lowering.
-/// Text views reference a growable byte buffer.
+/// Lower Mini's checked AST to C11 source and its companion header.
+/// The parser owns syntax and shared name/kind checks; this module owns C
+/// capability checks, syntax lowering, runtime fragments, and source assembly.
+/// Text views reference a growable byte buffer owned by each program invocation.
 
 include "./parser.mini";
 
@@ -1130,7 +1131,8 @@ fn emit_c_ast_function(node, state, bindings, binding_orders) {
     return "";
 }
 
-/// Lower the checked AST using the C target's syntax and runtime rules.
+/// Lower one complete checked Program AST and header name to C source text.
+/// Unsupported C forms fail with their source location before an artifact is written.
 fn emit_c_program(program, header_name) {
     state := map_new();
     map_set(state, "c_temp", 0);
@@ -1243,7 +1245,7 @@ fn emit_c_program(program, header_name) {
     return emit_c_join_lines(lines, 1);
 }
 
-/// Parse a token stream once, then delegate to the AST-only C backend.
+/// Parse one prepared token list once, then delegate to the AST-only C backend.
 fn emit_c_compile(tokens, header_name) {
     return emit_c_program(parser_ast_quiet(tokens), header_name);
 }
