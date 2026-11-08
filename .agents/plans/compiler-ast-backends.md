@@ -25,10 +25,10 @@ semantic AST alone cannot preserve comments and formatting choices.
    preserve current JavaScript output as a parity bridge.
 2. **Complete:** Move JavaScript lowering into `libs/compiler/emit-js.mini`;
    the parser now returns AST nodes only and has no target source strings.
-3. **In progress:** Port the C backend from its token walk to the same AST. Keep unsupported
-   target forms explicit and preserve generated C/header behavior.
-4. Expose a stable AST inspection path after the AST schema is exercised
-   by both backends; keep formatting trivia available to future consumers.
+3. **Complete:** Port the C backend from its token walk to the same AST. Keep
+   unsupported target forms explicit and preserve generated C/header behavior.
+4. **In progress:** Expose a stable AST inspection path now that both backends
+   consume the schema; keep formatting trivia available to future consumers.
 
 Each completed migration step is a separate atomic commit with focused parity,
 bootstrap fixed-point, and case verification. Do not hand-edit generated
@@ -40,10 +40,11 @@ compiler artifacts.
   returning a source-spanned AST without target source strings.
 - `libs/compiler/emit-js.mini` consumes the AST for JS syntax and builtin
   lowering; the playground and CLI use its public entry points.
-- `libs/compiler/emit-c.mini` validates through the shared AST parser, then
-  still walks tokens for C lowering.
-- The C token walk is the remaining duplicated parse/lowering path. The C
-  backend migration and AST inspection interface remain.
+- `libs/compiler/emit-c.mini` exposes an AST-only C lowering entry point and a
+  token adapter that parses once and delegates. Generated C runtime fragments
+  stay in the C backend and are assembled from readable line lists.
+- Both backends lower the shared AST; the stable AST inspection interface and
+  retained source trivia for formatters remain.
 
 ## Acceptance
 

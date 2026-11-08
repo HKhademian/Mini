@@ -882,6 +882,9 @@ function ast_node(kind, token) {
     $mini_map_set(node, "end", $mini_map_get(token, "end"));
     $mini_map_set(node, "line", $mini_map_get(token, "line"));
     $mini_map_set(node, "column", $mini_map_get(token, "column"));
+    if ($mini_map_has(token, "context")) {
+        $mini_map_set(node, "context", $mini_map_get(token, "context"));
+    }
     if ($mini_map_has(token, "file")) {
         $mini_map_set(node, "file", $mini_map_get(token, "file"));
     } else {
@@ -901,6 +904,9 @@ function ast_derive(kind, first, value_kind) {
     $mini_map_set(node, "end", $mini_map_get(first, "end"));
     $mini_map_set(node, "line", $mini_map_get(first, "line"));
     $mini_map_set(node, "column", $mini_map_get(first, "column"));
+    if ($mini_map_has(first, "context")) {
+        $mini_map_set(node, "context", $mini_map_get(first, "context"));
+    }
     if ($mini_map_has(first, "file")) {
         $mini_map_set(node, "file", $mini_map_get(first, "file"));
     } else {

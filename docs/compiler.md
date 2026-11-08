@@ -28,15 +28,15 @@ increments; the script interpreter and embedding API are not implemented yet.
 
 ## Shared AST and backends
 
-On 2026-11-08, the compiler architecture moved toward one checked, target-neutral
-AST consumed by separate JavaScript and C emitters. The parser currently builds
-AST consumed by separate JavaScript and C emitters. The parser now returns only
-that AST, and [`emit-js.mini`](../libs/compiler/emit-js.mini) lowers it to JS.
-The C backend still performs its token walk after shared AST validation; moving
-it to the AST is the remaining backend migration. Nodes carry source spans and
-inferred value kinds. `parser_ast(tokens)` exposes the tree and its input token
-list. The ordinary compile path omits comment tokens; formatter consumers must
-carry source text and trivia beside the AST. See the
+On 2026-11-08, the compiler architecture moved to one checked, target-neutral
+AST consumed by separate JavaScript and C emitters. The parser returns AST nodes
+only. [`emit-js.mini`](../libs/compiler/emit-js.mini) and
+[`emit-c.mini`](../libs/compiler/emit-c.mini) each have an AST lowering entry
+point; their token-based compile adapters parse once and delegate to it. Nodes
+carry source spans, file identity, and inferred value kinds. `parser_ast(tokens)`
+exposes the tree and its input token list. The ordinary compile path omits
+comment tokens; formatter consumers carry source text and trivia beside the
+AST. See the
 [migration plan](../.agents/plans/compiler-ast-backends.md) and
 [AST definitions](../libs/compiler/ast.mini).
 
@@ -57,14 +57,12 @@ prefix. The compiler produces the source/header pair without invoking `cc`.
 Native case execution requires `cc` on PATH. C rejects `--reference` and
 `--program-only`, which are JavaScript emission modes.
 
-The Mini-written C emitter first runs shared language validation, then performs
-a bounded token walk for the supported slice. It uses tagged text/number values with
-growable byte-buffer backing and offset/length text views. The buffer belongs to
-the program invocation, so binding views survive across file initializers. Readable C literals
-initialize that backing; raw control bytes are escaped without losing their
-lengths. This second walk avoids a whole-compiler rewrite;
-later features can justify more shared lowering structure. Target rejection
-does not create or replace either output file.
+The Mini-written C emitter lowers the checked AST for the supported slice. It
+uses tagged text/number values with growable byte-buffer backing and
+offset/length text views. The buffer belongs to the program invocation, so
+binding views survive across file initializers. Readable C literals initialize
+that backing; raw control bytes are escaped without losing their lengths. Target
+rejection does not create or replace either output file.
 
 Each source `io_write` emits one C call with signature
 `int MINI_ID(io_write)(MINI_ID(params) params)`. The generated header defines
