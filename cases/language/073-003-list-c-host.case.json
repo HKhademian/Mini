@@ -1,0 +1,16 @@
+{
+  "id": "language.list-c-host",
+  "kind": "feature",
+  "target": "c",
+  "source": "073-003-list-c-host.mini",
+  "features": ["import", "list", "target.c"],
+  "cases": [
+    {
+      "name": "list-api-host-overrides",
+      "stdin": {"text": ""},
+      "stdout": {"text": "first,middle,lastfirstlast1"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

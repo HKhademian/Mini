@@ -1,0 +1,85 @@
+/// Native C replacements for common list representation operations.
+
+import "./registry";
+
+emit_c_host_function_add(
+    "list_new",
+    "int MINI_ID(fn_list_new)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 0) return 1; *result = MINI_ID(list_new)(context); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_of",
+    "int MINI_ID(fn_list_of)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(list_new)(context);\n"
+    + "    for (size_t index = 0; index < params.count; ++index) MINI_ID(list_push)(result->list, params.args[index], 0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_get",
+    "int MINI_ID(fn_list_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1; *result = MINI_ID(list_get)(params.args[0], params.args[1]); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_length",
+    "int MINI_ID(fn_list_length)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = MINI_ID(list_length)(params.args[0]); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_set",
+    "int MINI_ID(fn_list_set)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 3 || !params.args) return 1;\n"
+    + "    MINI_ID(list_set)(params.args[0], params.args[1], params.args[2]); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_truncate",
+    "int MINI_ID(fn_list_truncate)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
+    + "    MINI_ID(list_truncate)(params.args[0], params.args[1]); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_copy",
+    "int MINI_ID(fn_list_copy)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = MINI_ID(list_copy)(context, params.args[0]); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_join",
+    "int MINI_ID(fn_list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
+    + "    return MINI_ID(list_join)(context, params.args[0], params.args[1], result);\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_push_back",
+    "int MINI_ID(fn_list_push_back)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) MINI_ID(list_push)(params.args[0].list, params.args[1], 0);\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_push_front",
+    "int MINI_ID(fn_list_push_front)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) MINI_ID(list_push)(params.args[0].list, params.args[1], 1);\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_pop_back",
+    "int MINI_ID(fn_list_pop_back)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) *result = MINI_ID(list_pop)(params.args[0].list, 0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "list_pop_front",
+    "int MINI_ID(fn_list_pop_front)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) *result = MINI_ID(list_pop)(params.args[0].list, 1); return 0;\n}\n"
+);

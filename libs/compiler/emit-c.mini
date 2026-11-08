@@ -12,6 +12,7 @@ import "./emit-c/overrides/panic";
 import "./emit-c/overrides/io";
 import "./emit-c/overrides/file";
 import "./emit-c/overrides/path";
+import "./emit-c/overrides/list";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {
@@ -43,18 +44,9 @@ fn emit_c_ast_location(node) {
     return location;
 }
 
-/// Return whether a common-list helper has a native C runtime implementation.
-fn emit_c_native_list_call(name) {
-    return name == "list_new" || name == "list_of" || name == "list_push_back" || name == "list_push_front" || name == "list_pop_back"
-        || name == "list_pop_front" || name == "list_truncate" || name == "list_length" || name == "list_get" || name == "list_set"
-        || name == "list_copy" || name == "list_join";
-}
-
-/// Return whether an imported list helper definition should be skipped in C.
-fn emit_c_skip_list_definition(name) {
-    return emit_c_native_list_call(name) || name == "list_has_text" || name == "list_join_from" || name == "list_sorted"
-        || name == "list_is_text" || name == "list_rest" || name == "value_is_text" || name == "value_is_number" || name
-        == "value_is_boolean" || name == "value_is_list" || name == "value_is_map";
+/// Return whether the C registry replaces a same-name Mini library definition.
+fn emit_c_skip_host_definition(name) {
+    return emit_c_host_function_exists(name);
 }
 
 /// Prefix nonempty generated-code lines by one nested C indentation level.
@@ -773,93 +765,7 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
         );
         position = position + 1;
     }
-    if name == "list_new" {
-        list_set(body, list_length(body), "    " + destination + " = MINI_ID(list_new)(context);\n");
-        return list_join(body, "");
-    }
-    if name == "list_of" {
-        list_set(body, list_length(body), "    " + destination + " = MINI_ID(list_new)(context);\n");
-        position = 0;
-        while position < count {
-            list_set(
-                body,
-                list_length(body),
-                "    MINI_ID(list_push)(" + destination + ".list, " + array + "[" + number_to_text(position) + "], 0);\n"
-            );
-            position = position + 1;
-        }
-        return list_join(body, "");
-    }
-    if name == "list_push_back" || name == "list_push_front" {
-        front := "0";
-        if name == "list_push_front" {
-            front = "1";
-        }
-        list_set(
-            body,
-            list_length(body),
-            "    if (" + array + "[0].kind == MINI_ID(kind_list)) MINI_ID(list_push)(" + array + "[0].list, "
-            + array + "[1], " + front + ");\n"
-        );
-        list_set(body, list_length(body), "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n");
-        return list_join(body, "");
-    }
-    if name == "list_pop_back" || name == "list_pop_front" {
-        front := "0";
-        if name == "list_pop_front" {
-            front = "1";
-        }
-        list_set(body, list_length(body), "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n");
-        list_set(
-            body,
-            list_length(body),
-            "    if (" + array + "[0].kind == MINI_ID(kind_list)) " + destination + " = MINI_ID(list_pop)(" + array
-            + "[0].list, " + front + ");\n"
-        );
-        return list_join(body, "");
-    }
-    if name == "list_truncate" {
-        list_set(body, list_length(body), "    MINI_ID(list_truncate)(" + array + "[0], " + array + "[1]);\n");
-        list_set(body, list_length(body), "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n");
-        return list_join(body, "");
-    }
-    if name == "list_length" {
-        list_set(body, list_length(body), "    " + destination + " = MINI_ID(list_length)(" + array + "[0]);\n");
-        return list_join(body, "");
-    }
-    if name == "list_get" {
-        list_set(
-            body,
-            list_length(body),
-            "    " + destination + " = MINI_ID(list_get)(" + array + "[0], " + array + "[1]);\n"
-        );
-        return list_join(body, "");
-    }
-    if name == "list_set" {
-        list_set(
-            body,
-            list_length(body),
-            "    MINI_ID(list_set)(" + array + "[0], " + array + "[1], " + array + "[2]);\n"
-        );
-        list_set(body, list_length(body), "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n");
-        return list_join(body, "");
-    }
-    if name == "list_copy" {
-        list_set(body, list_length(body), "    " + destination + " = MINI_ID(list_copy)(context, " + array + "[0]);\n");
-        return list_join(body, "");
-    }
-    if name == "list_join" {
-        list_set(
-            body,
-            list_length(body),
-            "    if (MINI_ID(list_join)(context, " + array + "[0], " + array + "[1], &" + destination + ") != 0) return 1;\n"
-        );
-        return list_join(body, "");
-    }
-    if map_get(node, "is_builtin") && name != "io_write" && !emit_c_native_list_call(name) {
-        emit_c_fail(node);
-    }
-    if (text_starts_with(name, "list_") && emit_c_skip_list_definition(name)) || text_starts_with(name, "value_is_") {
+    if map_get(node, "is_builtin") && name != "io_write" && !emit_c_host_function_exists(name) {
         emit_c_fail(node);
     }
     params := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
@@ -1096,7 +1002,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
 fn emit_c_ast_function(node, state, bindings, binding_orders) {
     name := map_get(node, "name");
     reachable := map_get(state, "c_reachable_functions");
-    if !map_has(reachable, name) || emit_c_skip_list_definition(name) || emit_c_host_function_exists(name) {
+    if !map_has(reachable, name) || emit_c_skip_host_definition(name) {
         return "";
     }
     params := map_get(node, "parameters");
@@ -1196,7 +1102,7 @@ fn emit_c_collect_calls(node, calls) {
 /// Mark a Mini function and its transitive Mini function dependencies reachable.
 fn emit_c_mark_reachable(name, functions, reachable) {
     if !map_has(functions, name) || map_has(reachable, name) || emit_c_host_function_exists(name)
-        || emit_c_skip_list_definition(name) {
+        || emit_c_skip_host_definition(name) {
         return 0;
     }
     map_set(reachable, name, true);

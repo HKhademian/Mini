@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.43 / compiler 0.5.0-alpha.54 / bootstrap
+  0.3.0-alpha.56: move native C list operations from emitter branches to the
+  imported host override registry.
+
 - mini 0.3.0-alpha.42 / compiler 0.5.0-alpha.53 / bootstrap
   0.3.0-alpha.55: add native C host implementations for the common directory
   and path APIs.
