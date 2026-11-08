@@ -250,7 +250,12 @@ reusable libs/pure/ sources, cases/native/, and docs/runtime.md.
   Specify bounds/backing-storage lifetime when each operation is introduced.
 - A generic C `MINI_ID(vec)` with function-based init, reserve, append, and free
   operations now backs the text byte buffer. Allocation overflow/failure panics;
-  Mini list values and their indexing/mutation semantics remain pending.
+  tagged Mini lists use it for storage. The first C list slice supports new/of,
+  front/back push/pop, truncation, and nested JSON output. Indexed get/set and
+  `fn_args()` remain pending.
+- Verified list creation, mutation, nested/escaped output, and growth beyond the
+  initial capacity: 489/489 scenarios (four proposals pending), 6/6 units,
+  repository/bootstrap checks, and tooling verification.
 - Begin with ownership suited to the actual sample. General reclamation/GC and
   host-retained-value policy are mid/later decisions; no collector is selected.
 - Whole-invocation allocation with cleanup can serve bounded early programs if

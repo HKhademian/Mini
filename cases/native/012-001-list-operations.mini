@@ -1,0 +1,17 @@
+include "common/list.mini";
+
+items := list_of("b", "c");
+list_push_front(items, "a");
+list_push_back(items, "d");
+io_write(items, "\n");
+io_write(list_pop_front(items), ",", list_pop_back(items), "\n");
+list_truncate(items, 1);
+io_write(items, "\n");
+empty := list_new();
+io_write(empty, "\n", list_pop_front(empty), ",", list_pop_back(empty), "\n");
+nested := list_of(items);
+io_write(nested, "\n");
+grown := list_of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+io_write(grown, "\n");
+mixed := list_of(true, "x\n\"y", 5);
+io_write(mixed, "\n");

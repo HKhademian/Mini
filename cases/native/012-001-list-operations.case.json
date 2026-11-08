@@ -1,0 +1,25 @@
+{
+  "id": "native.c-list-operations",
+  "kind": "feature",
+  "target": "c",
+  "source": "012-001-list-operations.mini",
+  "features": [
+    "target.c",
+    "list.value",
+    "list.new",
+    "list.of",
+    "list.push",
+    "list.pop",
+    "list.truncate",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "list-operations-and-output",
+      "stdin": { "text": "" },
+      "stdout": { "text": "[\"a\",\"b\",\"c\",\"d\"]\na,d\n[\"b\"]\n[]\n0,0\n[[\"b\"]]\n[0,1,2,3,4,5,6,7,8,9]\n[true,\"x\\n\\\"y\",5]\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

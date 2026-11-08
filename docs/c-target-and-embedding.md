@@ -37,7 +37,9 @@ number addition, text joining, boolean values and logic are supported;
 numeric ordering, scalar equality, braced if/else blocks, and while loops
 are supported. Initial named functions support parameters, returns, output calls,
 nested calls, recursion, conditional branching (`if`/`else`), and stack-local
-bindings. C output is written only after
+bindings. List values support construction (`list_new`, `list_of`), front/back
+push and pop, truncation, and JSON output through `io_write`; list indexing and
+assignment remain pending. C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
 runs them once, dependencies first, with each file's operations in source order.
@@ -120,9 +122,9 @@ when text views arrive. Correct ownership for an implemented operation does
 not require designing the eventual collector before a scalar program.
 
 Generated C exposes a generic `MINI_ID(vec)` type and init, reserve, append, and
-free functions. Capacity overflow and allocation failure panic. The text byte
-buffer is its first use. The Mini list value will layer tagged heterogeneous
-elements and Mini indexing/mutation rules over the same storage baseline.
+free functions. Capacity overflow and allocation failure panic. Text bytes and
+Mini list values use this storage; lists add tagged heterogeneous elements and
+the supported Mini list operations.
 
 ## Behavior grows with the supported slice
 

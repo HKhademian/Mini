@@ -88,6 +88,12 @@ their block scope is preserved across recursive calls. `fn_args()` remains
 pending. The emitted function signature is an internal compiler interface, not
 an FFI API.
 
+The C target also supports tagged list values with `list_new()`, `list_of(...)`,
+front/back push and pop, and `list_truncate`. `io_write` serializes lists as JSON,
+including nested lists and text escaping. JSON output rejects nesting deeper
+than 128. Generated execution owns these lists through cleanup at program exit.
+`list_get`, `list_set`, and `fn_args()` remain pending for C.
+
 ### File initialization
 
 Both targets put operations outside named functions into generated per-file
