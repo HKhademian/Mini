@@ -1,8 +1,7 @@
 /// Panic when a Mini operation has no available host implementation.
 
-/// Stop execution after writing a message to standard error.
+/// Stop execution with a non-zero status.
 fn panic(message) {
-    io_write_error(message + "\n");
     process_exit(1);
     return 0;
 }

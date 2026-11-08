@@ -1,12 +1,14 @@
-/// Register native C I/O call lowering for the imported Mini API.
+/// Register native C lowering for the imported Mini I/O API.
 
 import "./registry";
 
-// io_write calls the runtime writer directly, so suppress its Mini wrapper.
+// io_write uses the runtime writer; io_write_line has no native variadic lowering.
 emit_c_host_function_add("io_write", "");
-// C programs cannot read stdin through the current target subset.
-emit_c_host_function_add("io_read_all", "");
-emit_c_host_function_add("io_read_bytes", "");
-emit_c_host_function_add("io_read_line", "");
-emit_c_host_function_add("io_write_error", "");
-emit_c_host_function_add("io_write_line", "");
+emit_c_host_function_add(
+    "io_write_line",
+    "int MINI_ID(fn_io_write_line)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!result) return 1;\n"
+    + "    (void)params;\n"
+    + "    return MINI_ID(fn_panic)(context, (MINI_ID(params)) MINI_PARAMS(0, NULL), result);\n"
+    + "}\n"
+);

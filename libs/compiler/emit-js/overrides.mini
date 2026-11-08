@@ -8,6 +8,8 @@ import "./overrides/text";
 import "./overrides/json";
 import "./overrides/value";
 import "./overrides/display";
+import "./overrides/io";
+import "./overrides/panic";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {

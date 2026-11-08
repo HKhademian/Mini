@@ -1,0 +1,15 @@
+{
+  "id": "language.io-requires-import",
+  "kind": "reject",
+  "source": "072-001-io-requires-import.mini",
+  "features": ["import", "io.output"],
+  "cases": [
+    {
+      "name": "missing-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "072-001-io-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

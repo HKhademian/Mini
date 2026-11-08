@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 "use strict";
-import { readFileSync, writeFileSync, writeSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 function $mini_directory_create(path) {
     process.getBuiltinModule("node:fs").mkdirSync(path, { recursive: true })
     return 0;
@@ -18,27 +18,6 @@ function $mini_hash_sha256(value) {
         ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
         : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
     return crypto.createHash("sha256").update(bytes).digest("hex");
-}
-function $mini_io_write() {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
-    }
-    const values = Array.prototype.slice.call(arguments);
-    let text = "";
-    for (const value of values) {
-        if (typeof value === "string") text += value;
-        else if (typeof value === "number") text += Number.isSafeInteger(value) ? String(value) : "";
-        else if (typeof value === "boolean") text += value ? "true" : "false";
-        else if (Array.isArray(value) || (value !== null && typeof value === "object")) text += JSON.stringify(normalize(value));
-    }
-    writeSync(1, text);
-    return 0;
 }
 function $mini_path_copy(from, to) {
     process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
@@ -120,12 +99,7 @@ let builtin_emit_forms;
 let builtin_source_functions;
 let reference_mode;
 let js_host_functions;
-function panic(message) {
-
-    (writeSync(2, (message + "\n")), 0);
-    (process.exit(1), 0);
-    return 0;
-}
+function panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
@@ -308,6 +282,43 @@ function list_rest(items, count) {
         position = (position + 1);
     }
     return result;
+}
+function io_read_all() { return process.getBuiltinModule("node:fs").readFileSync(0, "utf8"); }
+function io_read_bytes(count) { if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }
+function io_read_line() { const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString("utf8"); }
+function io_write(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
+    return 0;
+}
+function io_write_error(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(typeof message === "string" ? message : "", "utf8")); return 0; }
+function io_write_line() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    let position = 0;
+    while ((position < (values).length)) {
+        io_write(list_get(values, position));
+        position = (position + 1);
+    }
+    return io_write("\n");
 }
 function number_add(a, b) {
     if (typeof a !== "number" || typeof b !== "number") return 0;
@@ -515,37 +526,6 @@ function text_byte_push(bytes, value) {
 }
 function text_to_bytes(source) { return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : []; }
 function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return ""; return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8"); }
-function io_read_all() {
-
-    return panic("io_read_all requires a host implementation");
-}
-function io_read_bytes(count) {
-
-    return panic("io_read_bytes requires a host implementation");
-}
-function io_read_line() {
-
-    return panic("io_read_line requires a host implementation");
-}
-function io_write() {
-
-    return panic("io_write requires a host implementation");
-}
-function io_write_error(message) {
-
-    return panic("io_write_error requires a host implementation");
-}
-function io_write_line() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let values = $mini_fn_args;
-    let position = 0;
-    while ((position < (values).length)) {
-        $mini_io_write(list_get(values, position));
-        position = (position + 1);
-    }
-    return $mini_io_write("\n");
-}
 function map_new() { return Object.create(null); }
 function map_get(items, key) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
@@ -1211,13 +1191,13 @@ function diagnostic_text(token, label) {
 }
 function diagnostic_fail(token, message) {
 
-    (writeSync(2, diagnostic_text(token, message)), 0);
+    io_write_error(diagnostic_text(token, message));
     (process.exit(1), 0);
     return 0;
 }
 function diagnostic_warn(token, message) {
 
-    (writeSync(2, diagnostic_text(token, ("warning: " + message))), 0);
+    io_write_error(diagnostic_text(token, ("warning: " + message)));
     return 0;
 }
 function lex_fail(token, message) {
@@ -2713,7 +2693,7 @@ function project_compiler_entry(root) {
 }
 function bootstrap_fail(message) {
 
-    (writeSync(2, (message + "\n")), 0);
+    io_write_error((message + "\n"));
     (process.exit(1), 0);
     return 0;
 }
@@ -2829,7 +2809,7 @@ function main(args) {
     if ((((args).length === 1) && (list_get(args, 0) === "--clean"))) {
         return bootstrap_clean_all(project_root());
     }
-    (writeSync(2, "usage: ./bin/bootstrap [--clean]\n"), 0);
+    io_write_error("usage: ./bin/bootstrap [--clean]\n");
     return 1;
 }
 function $mini_file_0() {
@@ -2912,11 +2892,16 @@ function $mini_file_15() {
     builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
 }
 function $mini_file_16() {
-    builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
-    builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
-    builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
-    builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else if (Array.isArray(value) || (value !== null && typeof value === \"object\")) text += JSON.stringify(normalize(value));\n    }\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
-    builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
+    builtin_add("io_read_all", "", "text", "essential", "", "", "", "", "");
+    builtin_source_api("io_read_all");
+    builtin_add("io_read_bytes", "number", "list", "essential", "", "", "", "", "");
+    builtin_source_api("io_read_bytes");
+    builtin_add("io_read_line", "", "text", "essential", "", "", "", "", "");
+    builtin_source_api("io_read_line");
+    builtin_add("io_write", "...values", "number", "essential", "", "", "", "", "");
+    builtin_source_api("io_write");
+    builtin_add("io_write_error", "text", "number", "essential", "", "", "", "", "");
+    builtin_source_api("io_write_error");
 }
 function $mini_file_17() {
     builtin_add("json_parse", "text", "map", "performance", "", "", "", "", "");
@@ -3086,10 +3071,14 @@ function $mini_file_35() {
     emit_js_host_function_add("to_text", "function to_text(value) { if (typeof value === \"string\") return value; if (typeof value === \"number\") return number_to_text(value); if (typeof value === \"boolean\") return value ? \"true\" : \"false\"; if (value !== null && typeof value === \"object\") return json_to_text(value); return \"0\"; }\n", false, "");
 }
 function $mini_file_36() {
-
+    emit_js_host_function_add("io_read_all", "function io_read_all() { return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\"); }\n", true, "");
+    emit_js_host_function_add("io_read_bytes", "function io_read_bytes(count) { if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }\n", true, "");
+    emit_js_host_function_add("io_read_line", "function io_read_line() { const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString(\"utf8\"); }\n", true, "");
+    emit_js_host_function_add("io_write", "function io_write(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
+    emit_js_host_function_add("io_write_error", "function io_write_error(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(typeof message === \"string\" ? message : \"\", \"utf8\")); return 0; }\n", true, "");
 }
 function $mini_file_37() {
-
+    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
 }
 function $mini_file_38() {
 
@@ -3101,6 +3090,12 @@ function $mini_file_40() {
 
 }
 function $mini_file_41() {
+
+}
+function $mini_file_42() {
+
+}
+function $mini_file_43() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -3146,5 +3141,7 @@ function $mini_main() {
     $mini_file_39();
     $mini_file_40();
     $mini_file_41();
+    $mini_file_42();
+    $mini_file_43();
 }
 $mini_main();

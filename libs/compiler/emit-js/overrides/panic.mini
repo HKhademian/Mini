@@ -1,0 +1,10 @@
+/// Native JavaScript panic implementation replacing the Mini fallback.
+
+import "./registry";
+
+emit_js_host_function_add(
+    "panic",
+    "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n",
+    true,
+    ""
+);

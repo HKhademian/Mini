@@ -1,33 +1,6 @@
 #!/usr/bin/env node
 "use strict";
-import { writeSync } from "node:fs";
-function $mini_io_write() {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
-    }
-    const values = Array.prototype.slice.call(arguments);
-    let text = "";
-    for (const value of values) {
-        if (typeof value === "string") text += value;
-        else if (typeof value === "number") text += Number.isSafeInteger(value) ? String(value) : "";
-        else if (typeof value === "boolean") text += value ? "true" : "false";
-        else if (Array.isArray(value) || (value !== null && typeof value === "object")) text += JSON.stringify(normalize(value));
-    }
-    writeSync(1, text);
-    return 0;
-}
-function panic(message) {
-
-    (writeSync(2, (message + "\n")), 0);
-    (process.exit(1), 0);
-    return 0;
-}
+function panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
@@ -211,36 +184,42 @@ function list_rest(items, count) {
     }
     return result;
 }
-function io_read_all() {
-
-    return panic("io_read_all requires a host implementation");
+function io_read_all() { return process.getBuiltinModule("node:fs").readFileSync(0, "utf8"); }
+function io_read_bytes(count) { if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }
+function io_read_line() { const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString("utf8"); }
+function io_write(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
+    return 0;
 }
-function io_read_bytes(count) {
-
-    return panic("io_read_bytes requires a host implementation");
-}
-function io_read_line() {
-
-    return panic("io_read_line requires a host implementation");
-}
-function io_write() {
-
-    return panic("io_write requires a host implementation");
-}
-function io_write_error(message) {
-
-    return panic("io_write_error requires a host implementation");
-}
+function io_write_error(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(typeof message === "string" ? message : "", "utf8")); return 0; }
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
     let values = $mini_fn_args;
     let position = 0;
     while ((position < (values).length)) {
-        $mini_io_write(list_get(values, position));
+        io_write(list_get(values, position));
         position = (position + 1);
     }
-    return $mini_io_write("\n");
+    return io_write("\n");
 }
 function $mini_file_0() {
 

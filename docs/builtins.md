@@ -83,10 +83,13 @@ The accepted [text I/O contract](language.md) starts with `io_read_all()` and `i
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `io_write` applies `to_text` to each value, concatenates the results without
-separators, writes the result, and returns 0. The compiler implements this
-variadic primitive operation.
-`io_write_line(...values)` is a Mini helper in [libs/common/io.mini](../libs/common/io.mini);
-import that module to write the same converted values followed by one newline.
+separators, writes the result, and returns 0. These same-name Mini APIs are
+declared in [libs/common/io.mini](../libs/common/io.mini) and require
+`import "common/io"`. Their fallback panics when a target has no I/O host
+implementation; the JavaScript emitter replaces the same functions through its
+override registry. The C target lowers `io_write` through its native writer.
+`io_write_line(...values)` is a Mini helper in the same module and writes the
+converted values followed by one newline.
 
 `to_text(any_value)` is the shared display conversion in
 [libs/common/display.mini](../libs/common/display.mini); import `common/display`.

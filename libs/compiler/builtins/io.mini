@@ -1,59 +1,14 @@
-/// Io builtin descriptors.
+/// I/O operation contracts; imported Mini APIs own their implementations.
 
 import "./registry";
 
-builtin_add(
-    "io_read_all",
-    "",
-    "text",
-    "essential",
-    "readFileSync",
-    "",
-    "",
-    "",
-    "readFileSync(0, \"utf8\")"
-);
-builtin_add(
-    "io_read_bytes",
-    "number",
-    "list",
-    "essential",
-    "",
-    "read_bytes",
-    "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n",
-    "",
-    "$mini_read_bytes({0})"
-);
-builtin_add(
-    "io_read_line",
-    "",
-    "text",
-    "essential",
-    "",
-    "read_line",
-    "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n",
-    "",
-    "$mini_read_line()"
-);
-builtin_add(
-    "io_write",
-    "...values",
-    "number",
-    "essential",
-    "writeSync",
-    "io_write",
-    "function $mini_io_write() {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else if (Array.isArray(value) || (value !== null && typeof value === \"object\")) text += JSON.stringify(normalize(value));\n    }\n    writeSync(1, text);\n    return 0;\n}\n",
-    "",
-    "$mini_io_write({...})"
-);
-builtin_add(
-    "io_write_error",
-    "text",
-    "number",
-    "essential",
-    "writeSync",
-    "",
-    "",
-    "",
-    "(writeSync(2, {0}), 0)"
-);
+builtin_add("io_read_all", "", "text", "essential", "", "", "", "", "");
+builtin_source_api("io_read_all");
+builtin_add("io_read_bytes", "number", "list", "essential", "", "", "", "", "");
+builtin_source_api("io_read_bytes");
+builtin_add("io_read_line", "", "text", "essential", "", "", "", "", "");
+builtin_source_api("io_read_line");
+builtin_add("io_write", "...values", "number", "essential", "", "", "", "", "");
+builtin_source_api("io_write");
+builtin_add("io_write_error", "text", "number", "essential", "", "", "", "", "");
+builtin_source_api("io_write_error");
