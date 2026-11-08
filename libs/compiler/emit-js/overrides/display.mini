@@ -1,0 +1,10 @@
+/// JavaScript host replacement for common display conversion.
+
+import "./registry";
+
+emit_js_host_function_add(
+    "to_text",
+    "function to_text(value) { if (typeof value === \"string\") return value; if (typeof value === \"number\") return number_to_text(value); if (typeof value === \"boolean\") return value ? \"true\" : \"false\"; if (value !== null && typeof value === \"object\") return json_to_text(value); return \"0\"; }\n",
+    false,
+    ""
+);

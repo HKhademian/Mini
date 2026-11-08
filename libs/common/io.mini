@@ -1,9 +1,9 @@
 /// Common output helpers built on primitive I/O.
-//
+
+import "common/list";
+import "common/display";
 
 /// Write every supplied value followed by one newline and return the write result.
-import "common/list";
-import "common/json";
 fn io_write_line() {
     values := fn_args();
     position := 0;

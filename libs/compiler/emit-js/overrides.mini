@@ -6,6 +6,8 @@ import "./overrides/list";
 import "./overrides/map";
 import "./overrides/text";
 import "./overrides/json";
+import "./overrides/value";
+import "./overrides/display";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Exercise the public compiler target flags and generated native program.
 
+import "common/value";
 import "common/map";
 import "common/text";
 import "common/list";

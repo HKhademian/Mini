@@ -197,12 +197,6 @@ fn emit_js_collect_helpers(node, imports, helpers) {
         if helper != "" {
             map_set(helpers, helper, true);
         }
-        if name == "io_write" || name == "to_text" {
-            map_set(helpers, builtin_helper_key("number_to_text"), true);
-        }
-        if name == "io_write" {
-            map_set(helpers, builtin_helper_key("to_text"), true);
-        }
     }
     if kind == AST_PROGRAM || kind == AST_BLOCK {
         nodes := map_get(node, "body");

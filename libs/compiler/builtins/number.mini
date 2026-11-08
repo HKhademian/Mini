@@ -1,4 +1,5 @@
 /// Number API contracts; implementations live in common/number and emitter registries.
+
 import "./registry";
 
 builtin_add("number_add", "unknown,unknown", "number", "performance", "", "", "", "", "");
@@ -21,15 +22,5 @@ builtin_add("number_mul", "number,number", "number", "performance", "", "", "", 
 builtin_source_api("number_mul");
 builtin_add("number_pow", "number,number", "number", "performance", "", "", "", "", "");
 builtin_source_api("number_pow");
-builtin_add(
-    "number_to_text",
-    "number",
-    "text",
-    "performance",
-    "",
-    "number_to_text",
-    "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n",
-    "",
-    ""
-);
+builtin_add("number_to_text", "number", "text", "performance", "", "", "", "", "");
 builtin_source_api("number_to_text");

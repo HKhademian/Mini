@@ -1,27 +1,8 @@
-/// Value builtin descriptors.
+/// Value API contracts; implementations live in common/value and emitter registries.
+
 import "./registry";
 
-//
-
-builtin_add(
-    "to_text",
-    "any_value",
-    "text",
-    "essential",
-    "",
-    "to_text",
-    "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return json_to_text(value);\n    return String(value);\n}\n",
-    "",
-    "$mini_to_text({0})"
-);
-builtin_add(
-    "value_kind",
-    "unknown",
-    "text",
-    "essential",
-    "",
-    "value_kind",
-    "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n",
-    "",
-    "$mini_value_kind({0})"
-);
+builtin_add("to_text", "any_value", "text", "library", "", "", "", "", "");
+builtin_source_api("to_text");
+builtin_add("value_kind", "unknown", "text", "representation", "", "", "", "", "");
+builtin_source_api("value_kind");

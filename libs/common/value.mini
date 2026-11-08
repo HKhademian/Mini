@@ -1,3 +1,10 @@
+import "common/panic";
+
+/// Return the runtime kind; targets without a representation host panic.
+fn value_kind(value) {
+    return panic("value_kind requires a host implementation");
+}
+
 /// Return whether a value is text.
 fn value_is_text(value) {
     return value_kind(value) == "text";

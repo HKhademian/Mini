@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.13 / builtins 0.4.0-alpha.13 / compiler
+  0.5.0-alpha.47 / bootstrap 0.3.0-alpha.49: move `to_text` and `number_to_text` to same-name common APIs, and give
+  `value_kind` a panic fallback with a registered JS host override with registered JS overrides.
+
 - language 0.5.0-alpha.12 / builtins 0.4.0-alpha.12 / compiler
   0.5.0-alpha.46 / bootstrap 0.3.0-alpha.48: move JSON parsing and encoding
   into same-name `common/json` APIs, register JS host overrides, and remove

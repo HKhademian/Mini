@@ -37,7 +37,7 @@ the operating system or host runtime:
 | `process_exit` | Process interface |
 | `process_spawn`, `process_exec_path`, `process_script_path`, `process_env` | Child processes and host environment |
 | `time_millis` | Host clock |
-| `value_kind` | Runtime representation introspection |
+| `value_kind` | Runtime representation introspection; same-name Mini panic fallback in `libs/common/value.mini` |
 
 Every pure or reference mode still needs these operations. Removing them would
 require a different runtime, not a different mini program.

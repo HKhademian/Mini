@@ -63,8 +63,9 @@ A target that cannot implement a required map primitive uses the panic fallback.
 `map_set` and `map_delete` return zero, so these operations never produce a
 void result.
 
-`value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
-`other` for the runtime kind of a value.
+`value_kind(value)` is declared in `common/value` and returns `text`, `number`,
+`boolean`, `list`, `map`, or `other` for the runtime kind of a value. Targets
+without a representation primitive use its panic fallback.
 
 `io_read_line()` reads one line from standard input through LF, strips a trailing
 CR, and returns its UTF-8 text. End of input returns empty text.
@@ -87,17 +88,20 @@ variadic primitive operation.
 `io_write_line(...values)` is a Mini helper in [libs/common/io.mini](../libs/common/io.mini);
 import that module to write the same converted values followed by one newline.
 
-`to_text(any_value)` is the shared display conversion: text passes through, numbers
-use `number_to_text`, booleans become `true` or `false`, and lists/maps use
-`json_to_text`. Import `common/json` to serialize values. JSON serialization
-remains distinct: it quotes text values.
+`to_text(any_value)` is the shared display conversion in
+[libs/common/display.mini](../libs/common/display.mini); import `common/display`.
+Text passes through, numbers use `number_to_text`, booleans become `true` or
+`false`, and lists/maps use `json_to_text`. JSON serialization remains distinct:
+it quotes text values.
 
 `fn_args()` is not a host builtin: the generated function captures its own
 argument list, so it needs no adapter and no import. It returns a list, empty
 when the function received nothing.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
-empty text for other values. Import `common/number` before calling number functions.
+empty text for other values. It is implemented in `common/number` and uses the
+same-name JavaScript host override. Import `common/number` before calling number
+functions.
 
 `number_mul(a, b)`, `number_div(a, b)`, `number_mod(a, b)`, `number_floor(a)`,
 `number_pow(a, b)`, and `number_from_text(text)` cover operations that `+` and

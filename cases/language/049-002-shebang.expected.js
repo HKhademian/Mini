@@ -4,32 +4,18 @@ import { readFileSync, writeSync } from "node:fs";
 function $mini_io_write() {
     const values = Array.prototype.slice.call(arguments);
     let text = "";
-    for (const value of values) text += $mini_to_text(value);
+    for (const value of values) {
+        if (typeof value === "string") text += value;
+        else if (typeof value === "number") text += Number.isSafeInteger(value) ? String(value) : "";
+        else if (typeof value === "boolean") text += value ? "true" : "false";
+        else text += to_text(value);
+    }
     writeSync(1, text);
     return 0;
-}
-function $mini_number_to_text(value) {
-    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
-    return String(value);
 }
 function $mini_path_is_exists(path) {
     const fs = process.getBuiltinModule("node:fs");
     try { return fs.existsSync(path); } catch { return false; }
-}
-function $mini_to_text(value) {
-    if (typeof value === "string") return value;
-    if (typeof value === "number") return $mini_number_to_text(value);
-    if (typeof value === "boolean") return value ? "true" : "false";
-    if (value !== null && typeof value === "object") return json_to_text(value);
-    return String(value);
-}
-function $mini_value_kind(value) {
-    if (typeof value === "string") return "text";
-    if (typeof value === "number") return "number";
-    if (typeof value === "boolean") return "boolean";
-    if (Array.isArray(value)) return "list";
-    if (value !== null && typeof value === "object") return "map";
-    return "other";
 }
 function panic(message) {
 
@@ -37,25 +23,26 @@ function panic(message) {
     (process.exit(1), 0);
     return 0;
 }
+function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
-    return ($mini_value_kind(value) === "text");
+    return (value_kind(value) === "text");
 }
 function value_is_number(value) {
 
-    return ($mini_value_kind(value) === "number");
+    return (value_kind(value) === "number");
 }
 function value_is_boolean(value) {
 
-    return ($mini_value_kind(value) === "boolean");
+    return (value_kind(value) === "boolean");
 }
 function value_is_list(value) {
 
-    return ($mini_value_kind(value) === "list");
+    return (value_kind(value) === "list");
 }
 function value_is_map(value) {
 
-    return ($mini_value_kind(value) === "map");
+    return (value_kind(value) === "map");
 }
 function list_new() { return []; }
 function list_get(items, index) {
@@ -152,7 +139,7 @@ function list_is_text(value) {
     }
     let position = 0;
     while ((position < (value).length)) {
-        if (($mini_value_kind(list_get(value, position)) !== "text")) {
+        if ((value_kind(list_get(value, position)) !== "text")) {
             return false;
         }
         position = (position + 1);
@@ -923,6 +910,7 @@ function json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function to_text(value) { if (typeof value === "string") return value; if (typeof value === "number") return number_to_text(value); if (typeof value === "boolean") return value ? "true" : "false"; if (value !== null && typeof value === "object") return json_to_text(value); return "0"; }
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -962,6 +950,9 @@ function $mini_file_8() {
 
 }
 function $mini_file_9() {
+
+}
+function $mini_file_10() {
     io_write_line("ok");
 }
 function $mini_main() {
@@ -975,5 +966,6 @@ function $mini_main() {
     $mini_file_7();
     $mini_file_8();
     $mini_file_9();
+    $mini_file_10();
 }
 $mini_main();

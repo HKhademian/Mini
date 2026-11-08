@@ -22,13 +22,14 @@ function $mini_hash_sha256(value) {
 function $mini_io_write() {
     const values = Array.prototype.slice.call(arguments);
     let text = "";
-    for (const value of values) text += $mini_to_text(value);
+    for (const value of values) {
+        if (typeof value === "string") text += value;
+        else if (typeof value === "number") text += Number.isSafeInteger(value) ? String(value) : "";
+        else if (typeof value === "boolean") text += value ? "true" : "false";
+        else text += to_text(value);
+    }
     writeSync(1, text);
     return 0;
-}
-function $mini_number_to_text(value) {
-    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
-    return String(value);
 }
 function $mini_path_copy(from, to) {
     process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true })
@@ -79,21 +80,6 @@ function $mini_process_spawn(options) {
     }
     return output;
 }
-function $mini_to_text(value) {
-    if (typeof value === "string") return value;
-    if (typeof value === "number") return $mini_number_to_text(value);
-    if (typeof value === "boolean") return value ? "true" : "false";
-    if (value !== null && typeof value === "object") return json_to_text(value);
-    return String(value);
-}
-function $mini_value_kind(value) {
-    if (typeof value === "string") return "text";
-    if (typeof value === "number") return "number";
-    if (typeof value === "boolean") return "boolean";
-    if (Array.isArray(value)) return "list";
-    if (value !== null && typeof value === "object") return "map";
-    return "other";
-}
 let AST_SCHEMA_VERSION;
 let AST_PROGRAM;
 let AST_BLOCK;
@@ -131,25 +117,26 @@ function panic(message) {
     (process.exit(1), 0);
     return 0;
 }
+function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
-    return ($mini_value_kind(value) === "text");
+    return (value_kind(value) === "text");
 }
 function value_is_number(value) {
 
-    return ($mini_value_kind(value) === "number");
+    return (value_kind(value) === "number");
 }
 function value_is_boolean(value) {
 
-    return ($mini_value_kind(value) === "boolean");
+    return (value_kind(value) === "boolean");
 }
 function value_is_list(value) {
 
-    return ($mini_value_kind(value) === "list");
+    return (value_kind(value) === "list");
 }
 function value_is_map(value) {
 
-    return ($mini_value_kind(value) === "map");
+    return (value_kind(value) === "map");
 }
 function list_new() { return []; }
 function list_get(items, index) {
@@ -246,7 +233,7 @@ function list_is_text(value) {
     }
     let position = 0;
     while ((position < (value).length)) {
-        if (($mini_value_kind(list_get(value, position)) !== "text")) {
+        if ((value_kind(list_get(value, position)) !== "text")) {
             return false;
         }
         position = (position + 1);
@@ -2490,12 +2477,6 @@ function emit_js_collect_helpers(node, imports, helpers) {
         if ((helper !== "")) {
             map_set(helpers, helper, true);
         }
-        if (((name === "io_write") || (name === "to_text"))) {
-            map_set(helpers, builtin_helper_key("number_to_text"), true);
-        }
-        if ((name === "io_write")) {
-            map_set(helpers, builtin_helper_key("to_text"), true);
-        }
     }
     if (((kind === AST_PROGRAM) || (kind === AST_BLOCK))) {
         let nodes = map_get(node, "body");
@@ -2663,6 +2644,7 @@ function emit_js_compile_quiet(tokens) {
 
     return emit_js_program(parser_ast_quiet(tokens));
 }
+function to_text(value) { if (typeof value === "string") return value; if (typeof value === "number") return number_to_text(value); if (typeof value === "boolean") return value ? "true" : "false"; if (value !== null && typeof value === "object") return json_to_text(value); return "0"; }
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -2902,7 +2884,7 @@ function $mini_file_15() {
     builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
     builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
     builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
-    builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) text += $mini_to_text(value);\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
+    builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else text += to_text(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
     builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
 }
 function $mini_file_16() {
@@ -2964,7 +2946,7 @@ function $mini_file_19() {
     builtin_source_api("number_mul");
     builtin_add("number_pow", "number,number", "number", "performance", "", "", "", "", "");
     builtin_source_api("number_pow");
-    builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "", "");
+    builtin_add("number_to_text", "number", "text", "performance", "", "", "", "", "");
     builtin_source_api("number_to_text");
 }
 function $mini_file_20() {
@@ -3006,8 +2988,10 @@ function $mini_file_23() {
     builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
 }
 function $mini_file_24() {
-    builtin_add("to_text", "any_value", "text", "essential", "", "to_text", "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return json_to_text(value);\n    return String(value);\n}\n", "", "$mini_to_text({0})");
-    builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
+    builtin_add("to_text", "any_value", "text", "library", "", "", "", "", "");
+    builtin_source_api("to_text");
+    builtin_add("value_kind", "unknown", "text", "representation", "", "", "", "", "");
+    builtin_source_api("value_kind");
 }
 function $mini_file_25() {
     reference_mode = false;
@@ -3065,10 +3049,10 @@ function $mini_file_32() {
     emit_js_host_function_add("json_to_text", "function json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", false, "");
 }
 function $mini_file_33() {
-
+    emit_js_host_function_add("value_kind", "function value_kind(value) { if (typeof value === \"string\") return \"text\"; if (typeof value === \"number\") return \"number\"; if (typeof value === \"boolean\") return \"boolean\"; if (Array.isArray(value)) return \"list\"; if (value !== null && typeof value === \"object\") return \"map\"; return \"other\"; }\n", true, "");
 }
 function $mini_file_34() {
-
+    emit_js_host_function_add("to_text", "function to_text(value) { if (typeof value === \"string\") return value; if (typeof value === \"number\") return number_to_text(value); if (typeof value === \"boolean\") return value ? \"true\" : \"false\"; if (value !== null && typeof value === \"object\") return json_to_text(value); return \"0\"; }\n", false, "");
 }
 function $mini_file_35() {
 
@@ -3083,6 +3067,15 @@ function $mini_file_38() {
 
 }
 function $mini_file_39() {
+
+}
+function $mini_file_40() {
+
+}
+function $mini_file_41() {
+
+}
+function $mini_file_42() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -3126,5 +3119,8 @@ function $mini_main() {
     $mini_file_37();
     $mini_file_38();
     $mini_file_39();
+    $mini_file_40();
+    $mini_file_41();
+    $mini_file_42();
 }
 $mini_main();

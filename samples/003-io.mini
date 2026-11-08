@@ -1,5 +1,6 @@
 /// Copy all stdin to stdout, preserving empty input and line endings.
-//
+
+import "common/io";
 
 source := io_read_all();
 io_write(source);

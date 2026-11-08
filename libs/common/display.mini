@@ -1,0 +1,24 @@
+import "common/json";
+import "common/number";
+import "common/value";
+
+/// Convert a value to its display text.
+fn to_text(value) {
+    kind := value_kind(value);
+    if kind == "text" {
+        return value;
+    }
+    if kind == "number" {
+        return number_to_text(value);
+    }
+    if kind == "boolean" {
+        if value {
+            return "true";
+        }
+        return "false";
+    }
+    if kind == "list" || kind == "map" {
+        return json_to_text(value);
+    }
+    return "0";
+}

@@ -1,7 +1,6 @@
 /// Io builtin descriptors.
-import "./registry";
 
-//
+import "./registry";
 
 builtin_add(
     "io_read_all",
@@ -43,7 +42,7 @@ builtin_add(
     "essential",
     "writeSync",
     "io_write",
-    "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) text += $mini_to_text(value);\n    writeSync(1, text);\n    return 0;\n}\n",
+    "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else text += to_text(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n",
     "",
     "$mini_io_write({...})"
 );

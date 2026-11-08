@@ -1,5 +1,6 @@
 /// Report the runtime kind of each mini value kind.
 
+import "common/value";
 import "common/list";
 import "common/map";
 import "common/io";
