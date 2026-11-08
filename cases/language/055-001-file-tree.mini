@@ -3,6 +3,7 @@
 import "common/list";
 import "common/io";
 import "common/file";
+import "common/path";
 
 root := path_temp_directory();
 sub := root + "/sub";
