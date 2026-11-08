@@ -242,6 +242,7 @@ let builtin_helper_order;
 let builtin_reference_targets;
 let builtin_emit_forms;
 let reference_mode;
+let js_host_functions;
 function split_lines(source) {
 
     let lines = $mini_text_split(source, "\n");
@@ -1740,6 +1741,18 @@ function parser_ast_quiet(tokens) {
     $mini_map_set(parser, "warn", false);
     return parser_program(parser);
 }
+function emit_js_host_function_add(name, definition) {
+
+    $mini_map_set(js_host_functions, name, definition);
+    return 0;
+}
+function emit_js_host_function(name) {
+
+    if ((reference_mode || (!$mini_map_has(js_host_functions, name)))) {
+        return "";
+    }
+    return $mini_map_get(js_host_functions, name);
+}
 function emit_js_operator(operator) {
 
     if ((operator === "==")) {
@@ -1830,8 +1843,9 @@ function emit_js_function_body(node) {
 function emit_js_function(node) {
 
     let name = $mini_map_get(node, "name");
-    if (((!reference_mode) && (name === "number_add"))) {
-        return "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n";
+    let host_override = emit_js_host_function(name);
+    if ((host_override !== "")) {
+        return host_override;
     }
     let parameters = [];
     let nodes = $mini_map_get(node, "parameters");
@@ -2442,10 +2456,10 @@ function $mini_file_21() {
 
 }
 function $mini_file_22() {
-
+    emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n");
 }
 function $mini_file_23() {
-
+    js_host_functions = ({ __proto__: $mini_map_proto });
 }
 function $mini_file_24() {
 
@@ -2463,6 +2477,12 @@ function $mini_file_28() {
 
 }
 function $mini_file_29() {
+
+}
+function $mini_file_30() {
+
+}
+function $mini_file_31() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -2496,5 +2516,7 @@ function $mini_main() {
     $mini_file_27();
     $mini_file_28();
     $mini_file_29();
+    $mini_file_30();
+    $mini_file_31();
 }
 $mini_main();

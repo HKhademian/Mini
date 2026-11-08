@@ -3,6 +3,7 @@
 /// parsing and shared syntax checks remain in parser.mini.
 
 include "./parser.mini";
+include "./emit-js/overrides.mini";
 
 /// Format one target-specific JavaScript operator.
 fn emit_js_operator(operator) {
@@ -100,8 +101,9 @@ fn emit_js_function_body(node) {
 /// Emit one function declaration from its syntax and semantic annotations.
 fn emit_js_function(node) {
     name := map_get(node, "name");
-    if !reference_mode && name == "number_add" {
-        return "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n";
+    host_override := emit_js_host_function(name);
+    if host_override != "" {
+        return host_override;
     }
     parameters := list_new();
     nodes := map_get(node, "parameters");

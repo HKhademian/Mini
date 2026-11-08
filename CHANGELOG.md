@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- compiler 0.5.0-alpha.38 / bootstrap 0.3.0-alpha.40: move JavaScript host
+  function replacements into a target-specific registry with numeric namespace
+  definitions.
+
 - compiler 0.5.0-alpha.37 / bootstrap 0.3.0-alpha.39: establish an emitter
   override for the imported `number_add` function while retaining its pure Mini
   definition as the reference behavior.

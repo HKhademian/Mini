@@ -1,0 +1,6 @@
+/// JavaScript host replacements for common numeric functions.
+
+emit_js_host_function_add(
+    "number_add",
+    "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n"
+);

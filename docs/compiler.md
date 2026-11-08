@@ -141,7 +141,10 @@ The JavaScript emitter may replace an included library function with a host
 implementation under the same function name. `number_add` demonstrates this:
 the Mini definition is the reference behavior, and the default JavaScript
 function uses guarded native addition while preserving its return value for
-invalid operands. Reference mode emits the Mini definition.
+invalid operands. Reference mode emits the Mini definition. Overrides are
+registered in [libs/compiler/emit-js/overrides](../libs/compiler/emit-js/overrides),
+grouped by operation namespace; AST emission asks the registry rather than
+branching on individual function names.
 
 C uses `MINI_ID(file_0)`, `MINI_ID(file_1)`, and so on, called by `main`.
 JavaScript uses compiler-reserved names for file functions and its generated
