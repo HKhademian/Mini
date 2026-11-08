@@ -1,4 +1,6 @@
+import "common/io";
 import "common/list";
+
 inner := list_new();
 untouched := list_new();
 list_set(inner, 0, "nested");

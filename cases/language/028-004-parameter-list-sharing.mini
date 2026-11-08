@@ -1,4 +1,6 @@
+import "common/io";
 import "common/list";
+
 fn change(items) {
     list_set(items, 0, "shared");
     items = list_new();

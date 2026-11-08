@@ -1,4 +1,6 @@
+import "common/io";
 import "common/list";
+
 fn target() {
     io_write("t");
     return "hello";

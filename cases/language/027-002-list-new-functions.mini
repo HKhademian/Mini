@@ -1,4 +1,6 @@
+import "common/io";
 import "common/list";
+
 fn make_list() {
     return list_new();
 }

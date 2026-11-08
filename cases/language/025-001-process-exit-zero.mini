@@ -1,2 +1,4 @@
+import "common/io";
+
 process_exit(0);
 io_write("after");

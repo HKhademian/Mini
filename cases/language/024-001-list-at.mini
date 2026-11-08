@@ -1,3 +1,4 @@
+import "common/io";
 import "common/list";
 
 args := fn_args();
