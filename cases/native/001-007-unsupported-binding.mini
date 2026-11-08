@@ -1,3 +1,5 @@
+import "common/io";
+
 io_write("must not run\n");
 x := 2;
 value := -x;

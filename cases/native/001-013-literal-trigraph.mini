@@ -1,1 +1,3 @@
+import "common/io";
+
 io_write("??/007\n");

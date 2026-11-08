@@ -1,1 +1,2 @@
+import "common/io";
 io_write(-9007199254740992);

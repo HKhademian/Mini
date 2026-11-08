@@ -1,1 +1,2 @@
+import "common/io";
 io_write("dependency:", 1, "\n");

@@ -1,2 +1,4 @@
+import "common/io";
+
 io_write();
 io_write("left", "|", "", "right", "\n");

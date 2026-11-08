@@ -1,3 +1,4 @@
+import "common/io";
 io_write("second-before:", 6, "\n");
 import "./003-001-file-initialization-order-leaf";
 io_write("second-after:", 7, "\n");

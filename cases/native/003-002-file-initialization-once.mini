@@ -1,3 +1,4 @@
+import "common/io";
 import "./003-002-file-initialization-once-helper";
 import "././003-002-file-initialization-once-helper";
 io_write("root:", 2, "\n");

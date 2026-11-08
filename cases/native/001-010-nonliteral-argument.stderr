@@ -1,3 +1,3 @@
-001-010-nonliteral-argument.mini:3:10: - must precede a number literal
+001-010-nonliteral-argument.mini:5:10: - must precede a number literal
 io_write(-x);
          ^
