@@ -104,9 +104,10 @@ the JavaScript emitter replaces that same function with guarded `a + b` for the
 default fast path. The host and Mini implementations are checked for equivalent
 results. The `+` operator remains separately type-checked syntax.
 
-The accepted built-ins `text_length(text)`, `text_get(text, index)`,
-`text_find(text, needle)`, `text_slice(text, start, end)`, and
-`text_split(text, divider)` scan ASCII source. `text_get` uses zero-based
+The built-ins `text_length(text)`, `text_get(text, index)`, `text_find(text, needle)`,
+and `text_split(text, divider)` scan ASCII source. `text_slice` is an imported
+Mini function in [libs/common/text.mini](../libs/common/text.mini); use
+`import "common/text"`. `text_get` uses zero-based
 integer indices and returns empty text for a non-text target or an out-of-range
 position, including negative indices. `text_find` returns the first zero-based
 occurrence or `-1`; an empty needle returns `0`, and non-text inputs return

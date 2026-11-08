@@ -1,0 +1,15 @@
+{
+  "id": "language.text-slice-requires-import",
+  "kind": "reject",
+  "source": "064-002-text-slice-requires-import.mini",
+  "features": ["import", "text.slice"],
+  "cases": [
+    {
+      "name": "missing-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "064-002-text-slice-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

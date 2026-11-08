@@ -250,8 +250,16 @@ fn lex_resolve_include(base, path) {
     return path_normalize("libs/" + path);
 }
 
-/// Expand each included file once in depth-first postorder.
-/// Revisited files, including include cycles, are skipped; missing files fail.
+/// Resolve an import path, adding the Mini source extension when omitted.
+fn lex_resolve_import(base, path) {
+    if text_ends_with(path, ".mini") {
+        return lex_resolve_include(base, path);
+    }
+    return lex_resolve_include(base, path + ".mini");
+}
+
+/// Expand each imported or included file once in depth-first postorder.
+/// Revisited files, including cycles, are skipped; missing files fail.
 fn lex_expand_includes(tokens, base, seen) {
     if map_has(seen, base) {
         return list_new();
@@ -270,10 +278,13 @@ fn lex_expand_includes(tokens, base, seen) {
         if text == "}" {
             depth = depth - 1;
         }
+        is_import := text == "import" && position + 2 < list_length(tokens)
+            && map_get(list_get(tokens, position + 1), "kind") == "text"
+            && map_get(list_get(tokens, position + 2), "text") == ";";
         is_include := text == "include" && position + 2 < list_length(tokens)
             && map_get(list_get(tokens, position + 1), "kind") == "text"
             && map_get(list_get(tokens, position + 2), "text") == ";";
-        if !is_include {
+        if !is_include && !is_import {
             list_set(own, list_length(own), token);
             position = position + 1;
         } else {
@@ -283,9 +294,14 @@ fn lex_expand_includes(tokens, base, seen) {
             quoted := map_get(list_get(tokens, position + 1), "text");
             path := text_slice(quoted, 1, text_length(quoted) - 1);
             resolved := lex_resolve_include(base, path);
+            action := "include";
+            if is_import {
+                resolved = lex_resolve_import(base, path);
+                action = "import";
+            }
             if !map_has(seen, resolved) {
                 if !path_is_exists(resolved) {
-                    diagnostic_fail(token, "cannot include " + path);
+                    diagnostic_fail(token, "cannot " + action + " " + path);
                 }
                 raw := lex_tokenize(file_read(resolved), path, false);
                 included := list_new();

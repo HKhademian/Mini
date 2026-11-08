@@ -123,7 +123,7 @@ implementation** or **pure backend**.
 Implemented layout:
 
 ```text
-libs/pure/text.mini      pure_text_slice, pure_text_find, pure_text_split
+libs/pure/text.mini      pure_text_find, pure_text_split
 libs/pure/list.mini      pure_list_copy
 libs/pure/map.mini       pure_map_copy
 libs/pure/reference.mini include aggregator
@@ -144,7 +144,8 @@ Current reference coverage:
 
 | Builtin | Reference status |
 | --- | --- |
-| `text_slice`, `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
+| `text_slice` | Implemented as `text_slice` in `libs/common/text.mini`; JS host override registered under `libs/compiler/emit-js/overrides` |
+| `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
 | `list_copy` | Implemented in `libs/pure/list.mini` |
 | `map_copy` | Implemented in `libs/pure/map.mini` |
 | `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |

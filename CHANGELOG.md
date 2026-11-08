@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- builtins 0.4.0-alpha.7 / compiler 0.5.0-alpha.39 / bootstrap 0.3.0-alpha.41:
+  move `text_slice` to the imported `common/text.mini` API and use its registered
+  JavaScript host override by default.
+
+- language 0.5.0-alpha.8: add extensionless `import "common/module"` syntax for
+  library modules, sharing include-once cycle traversal and postorder behavior.
+
 - compiler 0.5.0-alpha.38 / bootstrap 0.3.0-alpha.40: move JavaScript host
   function replacements into a target-specific registry with numeric namespace
   definitions.

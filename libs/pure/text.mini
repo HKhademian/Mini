@@ -1,3 +1,4 @@
+import "common/text";
 include "common/value.mini";
 /// Reference text_find: return the first code-unit index, or -1.
 fn pure_text_find_from(text, needle, start) {
@@ -37,42 +38,6 @@ fn pure_text_find(text, needle) {
     return pure_text_find_from(text, needle, 0);
 }
 
-/// Reference text_slice with negative-index and clamp behavior.
-fn pure_text_slice(source, start, end) {
-    if !value_is_text(source) {
-        return "";
-    }
-    size := text_length(source);
-    if start < 0 {
-        start = size + start;
-    }
-    if end < 0 {
-        end = size + end;
-    }
-    if start < 0 {
-        start = 0;
-    }
-    if end < 0 {
-        end = 0;
-    }
-    if start > size {
-        start = size;
-    }
-    if end > size {
-        end = size;
-    }
-    if end <= start {
-        return "";
-    }
-    parts := list_new();
-    position := start;
-    while position < end {
-        list_set(parts, list_length(parts), text_get(source, position));
-        position = position + 1;
-    }
-    return list_join(parts, "");
-}
-
 /// Reference text_split for text divider and text input.
 fn pure_text_split(text, divider) {
     if !value_is_text(text) || !value_is_text(divider) {
@@ -87,10 +52,10 @@ fn pure_text_split(text, divider) {
     start := 0;
     position := pure_text_find_from(text, divider, start);
     while position >= 0 {
-        list_set(result, list_length(result), pure_text_slice(text, start, position));
+        list_set(result, list_length(result), text_slice(text, start, position));
         start = position + text_length(divider);
         position = pure_text_find_from(text, divider, start);
     }
-    list_set(result, list_length(result), pure_text_slice(text, start, text_length(text)));
+    list_set(result, list_length(result), text_slice(text, start, text_length(text)));
     return result;
 }

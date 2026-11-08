@@ -117,6 +117,10 @@ function $mini_map_set(items, key, value) {
     if (items !== null && typeof items === "object" && !Array.isArray(items)) items[key] = value
     return 0;
 }
+function $mini_number_floor(a) {
+    if (typeof a !== "number") return 0;
+    return Math.floor(a);
+}
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
@@ -182,17 +186,6 @@ function $mini_text_get(text, index) {
     if (typeof text === "string" && index >= 0 && index < text.length) return text[index];
     return "";
 }
-function $mini_text_slice(source, start, end) {
-    if (typeof source !== "string") return "";
-    if (start < 0) start = source.length + start;
-    if (end < 0) end = source.length + end;
-    if (start < 0) start = 0;
-    if (end < 0) end = 0;
-    if (start > source.length) start = source.length;
-    if (end > source.length) end = source.length;
-    if (end <= start) return "";
-    return source.slice(start, end);
-}
 function $mini_text_split(text, divider) {
     if (typeof text !== "string" || typeof divider !== "string") return [];
     if (divider === "") return [text];
@@ -241,8 +234,60 @@ let builtin_helpers;
 let builtin_helper_order;
 let builtin_reference_targets;
 let builtin_emit_forms;
+let builtin_source_functions;
 let reference_mode;
 let js_host_functions;
+function value_is_text(value) {
+
+    return ($mini_value_kind(value) === "text");
+}
+function value_is_number(value) {
+
+    return ($mini_value_kind(value) === "number");
+}
+function value_is_boolean(value) {
+
+    return ($mini_value_kind(value) === "boolean");
+}
+function value_is_list(value) {
+
+    return ($mini_value_kind(value) === "list");
+}
+function value_is_map(value) {
+
+    return ($mini_value_kind(value) === "map");
+}
+function number_add(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a + b;
+}
+function number_sub(a, b) {
+
+    if (((!value_is_number(a)) || (!value_is_number(b)))) {
+        return 0;
+    }
+    return (a - b);
+}
+function number_min(a, b) {
+
+    if (((!value_is_number(a)) || (!value_is_number(b)))) {
+        return 0;
+    }
+    if ((a < b)) {
+        return a;
+    }
+    return b;
+}
+function number_max(a, b) {
+
+    if (((!value_is_number(a)) || (!value_is_number(b)))) {
+        return 0;
+    }
+    if ((a > b)) {
+        return a;
+    }
+    return b;
+}
 function split_lines(source) {
 
     let lines = $mini_text_split(source, "\n");
@@ -250,11 +295,22 @@ function split_lines(source) {
     while ((position < ((lines).length - 1))) {
         let line = $mini_list_get(lines, position);
         if ((((line).length > 0) && ($mini_text_get(line, ((line).length - 1)) === "\r"))) {
-            $mini_list_set(lines, position, $mini_text_slice(line, 0, ((line).length - 1)));
+            $mini_list_set(lines, position, text_slice(line, 0, ((line).length - 1)));
         }
         position = (position + 1);
     }
     return lines;
+}
+function text_slice(source, start, end) {
+    if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
+    if (start < 0) start = source.length + start;
+    if (end < 0) end = source.length + end;
+    if (start < 0) start = 0;
+    if (end < 0) end = 0;
+    if (start > source.length) start = source.length;
+    if (end > source.length) end = source.length;
+    if (end <= start) return "";
+    return source.slice(start, end);
 }
 function indent_output(output) {
 
@@ -277,7 +333,7 @@ function text_ends_with(source, suffix) {
     if ((size > length)) {
         return false;
     }
-    return ($mini_text_slice(source, (length - size), length) === suffix);
+    return (text_slice(source, (length - size), length) === suffix);
 }
 function is_letter(character) {
 
@@ -301,7 +357,7 @@ function text_starts_with(source, prefix) {
     if ((size > (source).length)) {
         return false;
     }
-    return ($mini_text_slice(source, 0, size) === prefix);
+    return (text_slice(source, 0, size) === prefix);
 }
 function text_chomp(text) {
 
@@ -309,7 +365,7 @@ function text_chomp(text) {
     while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
         length = (length - 1);
     }
-    return $mini_text_slice(text, 0, length);
+    return text_slice(text, 0, length);
 }
 function text_trim_end(text) {
 
@@ -319,7 +375,7 @@ function text_trim_end(text) {
         if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
             length = (length - 1);
         } else {
-            return $mini_text_slice(text, 0, length);
+            return text_slice(text, 0, length);
         }
     }
     return "";
@@ -334,27 +390,7 @@ function text_trim(text) {
     while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
         end = (end - 1);
     }
-    return $mini_text_slice(text, start, end);
-}
-function value_is_text(value) {
-
-    return ($mini_value_kind(value) === "text");
-}
-function value_is_number(value) {
-
-    return ($mini_value_kind(value) === "number");
-}
-function value_is_boolean(value) {
-
-    return ($mini_value_kind(value) === "boolean");
-}
-function value_is_list(value) {
-
-    return ($mini_value_kind(value) === "list");
-}
-function value_is_map(value) {
-
-    return ($mini_value_kind(value) === "map");
+    return text_slice(text, start, end);
 }
 function list_has_text(items, value) {
 
@@ -529,7 +565,7 @@ function path_parent(path) {
     while ((position >= 0)) {
         let character = $mini_text_get(path, position);
         if (((character === "/") || (character === "\\"))) {
-            return $mini_text_slice(path, 0, position);
+            return text_slice(path, 0, position);
         }
         position = (position - 1);
     }
@@ -541,7 +577,7 @@ function path_basename(path) {
     while ((position >= 0)) {
         let character = $mini_text_get(path, position);
         if (((character === "/") || (character === "\\"))) {
-            return $mini_text_slice(path, (position + 1), (path).length);
+            return text_slice(path, (position + 1), (path).length);
         }
         position = (position - 1);
     }
@@ -678,7 +714,7 @@ function lex_comment(state, source, include_comments) {
     }
     if (include_comments) {
         $mini_map_set(comment_token, "kind", "comment");
-        $mini_map_set(comment_token, "text", $mini_text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
+        $mini_map_set(comment_token, "text", text_slice(source, $mini_map_get(comment_token, "start"), $mini_map_get(state, "position")));
         $mini_map_set(comment_token, "end", $mini_map_get(state, "position"));
         let comment_tokens = $mini_map_get(state, "tokens");
         $mini_list_set(comment_tokens, (comment_tokens).length, comment_token);
@@ -691,7 +727,7 @@ function lex_word(state, source, token) {
     while ((($mini_map_get(state, "position") < (source).length) && is_identifier_part($mini_text_get(source, $mini_map_get(state, "position"))))) {
         lex_advance(state);
     }
-    let spelling = $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
+    let spelling = text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position"));
     if ((((((((spelling === "fn") || (spelling === "return")) || (spelling === "if")) || (spelling === "else")) || (spelling === "while")) || (spelling === "true")) || (spelling === "false"))) {
         $mini_map_set(token, "kind", "keyword");
     }
@@ -745,7 +781,7 @@ function lex_tokenize(source, source_name, include_comments) {
         while (((($mini_map_get(state, "position") < (source).length) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\r")) && ($mini_text_get(source, $mini_map_get(state, "position")) !== "\n"))) {
             lex_advance(state);
         }
-        $mini_map_set(shebang_token, "text", $mini_text_slice(source, $mini_map_get(shebang_token, "start"), $mini_map_get(state, "position")));
+        $mini_map_set(shebang_token, "text", text_slice(source, $mini_map_get(shebang_token, "start"), $mini_map_get(state, "position")));
         $mini_map_set(shebang_token, "end", $mini_map_get(state, "position"));
         let initial_tokens = $mini_map_get(state, "tokens");
         $mini_list_set(initial_tokens, (initial_tokens).length, shebang_token);
@@ -764,7 +800,7 @@ function lex_tokenize(source, source_name, include_comments) {
                 lex_digits(state, source, token);
             } else if ((character === "\"")) {
                 lex_text(state, source, token);
-            } else if (is_two_character_symbol($mini_text_slice(source, $mini_map_get(state, "position"), ($mini_map_get(state, "position") + 2)))) {
+            } else if (is_two_character_symbol(text_slice(source, $mini_map_get(state, "position"), ($mini_map_get(state, "position") + 2)))) {
                 lex_advance(state);
                 lex_advance(state);
             } else if (($mini_text_find("=+-!<>(),;{}", character) >= 0)) {
@@ -772,7 +808,7 @@ function lex_tokenize(source, source_name, include_comments) {
             } else {
                 lex_fail(token, ("unexpected character " + $mini_json_to_text(character)));
             }
-            $mini_map_set(token, "text", $mini_text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position")));
+            $mini_map_set(token, "text", text_slice(source, $mini_map_get(token, "start"), $mini_map_get(state, "position")));
             $mini_map_set(token, "end", $mini_map_get(state, "position"));
             let tokens = $mini_map_get(state, "tokens");
             $mini_list_set(tokens, (tokens).length, token);
@@ -798,6 +834,13 @@ function lex_resolve_include(base, path) {
     }
     return path_normalize(("libs/" + path));
 }
+function lex_resolve_import(base, path) {
+
+    if (text_ends_with(path, ".mini")) {
+        return lex_resolve_include(base, path);
+    }
+    return lex_resolve_include(base, (path + ".mini"));
+}
 function lex_expand_includes(tokens, base, seen) {
 
     if ($mini_map_has(seen, base)) {
@@ -817,8 +860,9 @@ function lex_expand_includes(tokens, base, seen) {
         if ((text === "}")) {
             depth = (depth - 1);
         }
+        let is_import = ((((text === "import") && ((position + 2) < (tokens).length)) && ($mini_map_get($mini_list_get(tokens, (position + 1)), "kind") === "text")) && ($mini_map_get($mini_list_get(tokens, (position + 2)), "text") === ";"));
         let is_include = ((((text === "include") && ((position + 2) < (tokens).length)) && ($mini_map_get($mini_list_get(tokens, (position + 1)), "kind") === "text")) && ($mini_map_get($mini_list_get(tokens, (position + 2)), "text") === ";"));
-        if ((!is_include)) {
+        if (((!is_include) && (!is_import))) {
             $mini_list_set(own, (own).length, token);
             position = (position + 1);
         } else {
@@ -826,11 +870,16 @@ function lex_expand_includes(tokens, base, seen) {
                 diagnostic_fail(token, "include must be top-level");
             }
             let quoted = $mini_map_get($mini_list_get(tokens, (position + 1)), "text");
-            let path = $mini_text_slice(quoted, 1, ((quoted).length - 1));
+            let path = text_slice(quoted, 1, ((quoted).length - 1));
             let resolved = lex_resolve_include(base, path);
+            let action = "include";
+            if (is_import) {
+                resolved = lex_resolve_import(base, path);
+                action = "import";
+            }
             if ((!$mini_map_has(seen, resolved))) {
                 if ((!$mini_path_is_exists(resolved))) {
-                    diagnostic_fail(token, ("cannot include " + path));
+                    diagnostic_fail(token, ((("cannot " + action) + " ") + path));
                 }
                 let raw = lex_tokenize(readFileSync(resolved, "utf8"), path, false);
                 let included = [];
@@ -966,6 +1015,11 @@ function builtin_add(name, parameters, result, layer, import_name, helper_key, h
     }
     return 0;
 }
+function builtin_source_api(name) {
+
+    $mini_map_set(builtin_source_functions, name, true);
+    return 0;
+}
 function builtin_names() {
 
     return $mini_list_copy(builtin_names_list);
@@ -973,6 +1027,10 @@ function builtin_names() {
 function builtin_exists(name) {
 
     return $mini_map_has(builtin_name_set, name);
+}
+function builtin_source_required(name) {
+
+    return $mini_map_has(builtin_source_functions, name);
 }
 function builtin_parameters(name) {
 
@@ -1054,13 +1112,13 @@ function builtin_replace(source, needle, replacement) {
     let parts = [];
     let position = 0;
     while ((position < (source).length)) {
-        let rest = $mini_text_slice(source, position, (source).length);
+        let rest = text_slice(source, position, (source).length);
         let found = $mini_text_find(rest, needle);
         if ((found < 0)) {
-            $mini_list_set(parts, (parts).length, $mini_text_slice(source, position, (source).length));
+            $mini_list_set(parts, (parts).length, text_slice(source, position, (source).length));
             return $mini_list_join(parts, "");
         }
-        $mini_list_set(parts, (parts).length, $mini_text_slice(source, position, (position + found)));
+        $mini_list_set(parts, (parts).length, text_slice(source, position, (position + found)));
         $mini_list_set(parts, (parts).length, replacement);
         position = ((position + found) + (needle).length);
     }
@@ -1258,7 +1316,7 @@ function lex_normalize_number(text) {
     if ((position === (text).length)) {
         return "0";
     }
-    return $mini_text_slice(text, position, (text).length);
+    return text_slice(text, position, (text).length);
 }
 function parser_primary(parser) {
 
@@ -1347,10 +1405,12 @@ function parser_call_node(name, args, result_kind, is_builtin, close) {
 function parser_call(parser, name) {
 
     let name_text = $mini_map_get(name, "text");
-    let is_builtin = builtin_exists(name_text);
+    let has_builtin_contract = builtin_exists(name_text);
+    let source_required = builtin_source_required(name_text);
+    let is_builtin = (has_builtin_contract && (!source_required));
     let functions = $mini_map_get(parser, "functions");
     let has_user = $mini_map_has(functions, name_text);
-    if (((!is_builtin) && (!has_user))) {
+    if ((((!is_builtin) && (!has_user)) || (source_required && (!has_user)))) {
         parser_fail(name, ("unknown function " + name_text));
     }
     parser_expect(parser, "(");
@@ -1364,9 +1424,9 @@ function parser_call(parser, name) {
     }
     let close = parser_token(parser);
     parser_expect(parser, ")");
-    if (is_builtin) {
+    if (has_builtin_contract) {
         let arity = (builtin_parameters(name_text)).length;
-        let variadic = ((arity > 0) && ($mini_text_slice($mini_list_get(builtin_parameters(name_text), (arity - 1)), 0, 3) === "..."));
+        let variadic = ((arity > 0) && (text_slice($mini_list_get(builtin_parameters(name_text), (arity - 1)), 0, 3) === "..."));
         let fixed_arity = arity;
         if (variadic) {
             fixed_arity = (arity - 1);
@@ -1382,7 +1442,7 @@ function parser_call(parser, name) {
             }
             parser_fail(name, message);
         }
-    } else {
+    } else if ((!has_builtin_contract)) {
         let arity = $mini_map_get($mini_map_get(functions, name_text), "arity");
         while (((args).length < arity)) {
             let zero = ast_expression(AST_LITERAL, name, "number");
@@ -1393,15 +1453,11 @@ function parser_call(parser, name) {
             $mini_list_set(args, (args).length, zero);
         }
     }
-    if ((!is_builtin)) {
-        let result_kind = $mini_map_get($mini_map_get(functions, name_text), "result");
-        return parser_call_node(name, args, result_kind, false, close);
-    }
     let parameters = builtin_parameters(name_text);
     let position = 0;
-    while ((position < (parameters).length)) {
+    while (((position < (parameters).length) && has_builtin_contract)) {
         let kind = $mini_list_get(parameters, position);
-        if (($mini_text_slice(kind, 0, 3) !== "...")) {
+        if ((text_slice(kind, 0, 3) !== "...")) {
             let actual = $mini_map_get($mini_list_get(args, position), "value_kind");
             if (((((kind !== "unknown") && (kind !== "any_value")) && (actual !== "unknown")) && (actual !== kind))) {
                 parser_fail(name, (("expected " + kind) + " argument"));
@@ -1409,8 +1465,15 @@ function parser_call(parser, name) {
         }
         position = (position + 1);
     }
+    if (source_required) {
+        return parser_call_node(name, args, builtin_result(name_text), false, close);
+    }
+    if ((!is_builtin)) {
+        let result_kind = $mini_map_get($mini_map_get(functions, name_text), "result");
+        return parser_call_node(name, args, result_kind, false, close);
+    }
     let result_kind = builtin_result(name_text);
-    return parser_call_node(name, args, result_kind, true, close);
+    return parser_call_node(name, args, result_kind, is_builtin, close);
 }
 function parser_statement(parser) {
 
@@ -1741,6 +1804,23 @@ function parser_ast_quiet(tokens) {
     $mini_map_set(parser, "warn", false);
     return parser_program(parser);
 }
+function map_of() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let entries = $mini_fn_args;
+    let result = ({ __proto__: $mini_map_proto });
+    let position = 0;
+    while ((position < (entries).length)) {
+        let key = $mini_list_get(entries, position);
+        let value = 0;
+        if (((position + 1) < (entries).length)) {
+            value = $mini_list_get(entries, (position + 1));
+        }
+        $mini_map_set(result, key, value);
+        position = (position + 2);
+    }
+    return result;
+}
 function emit_js_host_function_add(name, definition) {
 
     $mini_map_set(js_host_functions, name, definition);
@@ -1832,13 +1912,13 @@ function emit_js_function_body(node) {
     let body_node = $mini_map_get(node, "body");
     let body = emit_js_block(body_node);
     if ((!$mini_map_get(node, "has_final_return"))) {
-        body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
+        body = (text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
     }
     let capture = "";
     if ($mini_map_get(node, "captures_arguments")) {
         capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
     }
-    return (("{\n" + capture) + $mini_text_slice(body, 1, (body).length));
+    return (("{\n" + capture) + text_slice(body, 1, (body).length));
 }
 function emit_js_function(node) {
 
@@ -2334,6 +2414,9 @@ function $mini_file_4() {
 
 }
 function $mini_file_5() {
+
+}
+function $mini_file_6() {
     AST_SCHEMA_VERSION = "0.1.0-alpha.1";
     AST_PROGRAM = "Program";
     AST_BLOCK = "Block";
@@ -2352,7 +2435,7 @@ function $mini_file_5() {
     AST_BINARY = "Binary";
     AST_GROUP = "Group";
 }
-function $mini_file_6() {
+function $mini_file_7() {
     builtin_names_list = [];
     builtin_name_set = ({ __proto__: $mini_map_proto });
     builtin_parameter_kinds = ({ __proto__: $mini_map_proto });
@@ -2364,32 +2447,33 @@ function $mini_file_6() {
     builtin_helper_order = [];
     builtin_reference_targets = ({ __proto__: $mini_map_proto });
     builtin_emit_forms = ({ __proto__: $mini_map_proto });
+    builtin_source_functions = ({ __proto__: $mini_map_proto });
 }
-function $mini_file_7() {
+function $mini_file_8() {
     builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
     builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
 }
-function $mini_file_8() {
+function $mini_file_9() {
     builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
     builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
     builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
     builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
 }
-function $mini_file_9() {
+function $mini_file_10() {
     builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
 }
-function $mini_file_10() {
+function $mini_file_11() {
     builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
     builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
     builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
     builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) text += $mini_to_text(value);\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
     builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
 }
-function $mini_file_11() {
+function $mini_file_12() {
     builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "pure_json_parse", "$mini_json_parse({0})");
     builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = $mini_number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "pure_json_to_text", "$mini_json_to_text({0})");
 }
-function $mini_file_12() {
+function $mini_file_13() {
     builtin_add("list_copy", "list", "list", "performance", "", "list_copy", "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n", "pure_list_copy", "$mini_list_copy({0})");
     builtin_add("list_get", "unknown,number", "unknown", "representation", "", "list_get", "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n", "", "$mini_list_get({0}, {1})");
     builtin_add("list_length", "list", "number", "representation", "", "", "", "", "({0}).length");
@@ -2398,7 +2482,7 @@ function $mini_file_12() {
     builtin_add("list_join", "list,text", "text", "performance", "", "list_join", "function $mini_list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", "pure_list_join", "$mini_list_join({0}, {1})");
     builtin_add("list_truncate", "list,number", "number", "representation", "", "list_truncate", "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n", "", "$mini_list_truncate({0}, {1})");
 }
-function $mini_file_13() {
+function $mini_file_14() {
     builtin_add("map_copy", "map", "map", "performance", "", "map_copy", "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", "pure_map_copy", "$mini_map_copy({0})");
     builtin_add("map_get", "unknown,text", "unknown", "representation", "", "map_get", "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n", "", "$mini_map_get({0}, {1})");
     builtin_add("map_has", "map,text", "boolean", "representation", "", "map_has", "function $mini_map_has(items, key) {\n    return key in items;\n}\n", "", "$mini_map_has({0}, {1})");
@@ -2407,7 +2491,7 @@ function $mini_file_13() {
     builtin_add("map_delete", "unknown,text", "number", "representation", "", "map_delete", "function $mini_map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) delete items[key];\n    return 0;\n}\n", "", "$mini_map_delete({0}, {1})");
     builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "map_set", "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n", "", "$mini_map_set({0}, {1}, {2})");
 }
-function $mini_file_14() {
+function $mini_file_15() {
     builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
     builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
     builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
@@ -2416,7 +2500,7 @@ function $mini_file_14() {
     builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
     builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "pure_number_to_text", "$mini_number_to_text({0})");
 }
-function $mini_file_15() {
+function $mini_file_16() {
     builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
     builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
     builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
@@ -2424,51 +2508,49 @@ function $mini_file_15() {
     builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
     builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
 }
-function $mini_file_16() {
+function $mini_file_17() {
     builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
     builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
     builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
     builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
     builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
 }
-function $mini_file_17() {
+function $mini_file_18() {
     builtin_add("text_code", "text", "number", "representation", "", "text_code", "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", "", "$mini_text_code({0})");
     builtin_add("text_find", "text,text", "number", "performance", "", "text_find", "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n", "pure_text_find", "$mini_text_find({0}, {1})");
     builtin_add("text_from_bytes", "list", "text", "performance", "", "text_from_bytes", "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n", "pure_text_from_bytes", "$mini_text_from_bytes({0})");
     builtin_add("text_from_code", "number", "text", "representation", "", "text_from_code", "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n", "", "$mini_text_from_code({0})");
     builtin_add("text_get", "unknown,number", "text", "representation", "", "text_get", "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n", "", "$mini_text_get({0}, {1})");
     builtin_add("text_length", "text", "number", "representation", "", "", "", "", "({0}).length");
-    builtin_add("text_slice", "text,number,number", "text", "performance", "", "text_slice", "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", "pure_text_slice", "$mini_text_slice({0}, {1}, {2})");
     builtin_add("text_split", "text,text", "list", "performance", "", "text_split", "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n", "pure_text_split", "$mini_text_split({0}, {1})");
+    builtin_add("text_slice", "text,number,number", "text", "performance", "", "", "", "", "");
+    builtin_source_api("text_slice");
     builtin_add("text_to_bytes", "text", "list", "performance", "", "text_to_bytes", "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n", "pure_text_to_bytes", "$mini_text_to_bytes({0})");
 }
-function $mini_file_18() {
+function $mini_file_19() {
     builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
 }
-function $mini_file_19() {
+function $mini_file_20() {
     builtin_add("to_text", "any_value", "text", "essential", "", "to_text", "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return $mini_json_to_text(value);\n    return String(value);\n}\n", "", "$mini_to_text({0})");
     builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
 }
-function $mini_file_20() {
+function $mini_file_21() {
     reference_mode = false;
 }
-function $mini_file_21() {
-
-}
 function $mini_file_22() {
-    emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n");
+
 }
 function $mini_file_23() {
-    js_host_functions = ({ __proto__: $mini_map_proto });
+
 }
 function $mini_file_24() {
-
+    js_host_functions = ({ __proto__: $mini_map_proto });
 }
 function $mini_file_25() {
-
+    emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n");
 }
 function $mini_file_26() {
-
+    emit_js_host_function_add("text_slice", "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n");
 }
 function $mini_file_27() {
 
@@ -2483,6 +2565,18 @@ function $mini_file_30() {
 
 }
 function $mini_file_31() {
+
+}
+function $mini_file_32() {
+
+}
+function $mini_file_33() {
+
+}
+function $mini_file_34() {
+
+}
+function $mini_file_35() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -2518,5 +2612,9 @@ function $mini_main() {
     $mini_file_29();
     $mini_file_30();
     $mini_file_31();
+    $mini_file_32();
+    $mini_file_33();
+    $mini_file_34();
+    $mini_file_35();
 }
 $mini_main();

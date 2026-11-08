@@ -298,10 +298,12 @@ fn parser_call_node(name, args, result_kind, is_builtin, close) {
 /// Parse a call and apply builtin metadata or a user signature.
 fn parser_call(parser, name) {
     name_text := map_get(name, "text");
-    is_builtin := builtin_exists(name_text);
+    has_builtin_contract := builtin_exists(name_text);
+    source_required := builtin_source_required(name_text);
+    is_builtin := has_builtin_contract && !source_required;
     functions := map_get(parser, "functions");
     has_user := map_has(functions, name_text);
-    if !is_builtin && !has_user {
+    if (!is_builtin && !has_user) || (source_required && !has_user) {
         parser_fail(name, "unknown function " + name_text);
     }
     parser_expect(parser, "(");
@@ -315,7 +317,7 @@ fn parser_call(parser, name) {
     }
     close := parser_token(parser);
     parser_expect(parser, ")");
-    if is_builtin {
+    if has_builtin_contract {
         // Builtin arity is part of the host contract, so it stays exact.
         arity := list_length(builtin_parameters(name_text));
         variadic := arity > 0 && text_slice(list_get(builtin_parameters(name_text), arity - 1), 0, 3) == "...";
@@ -334,7 +336,7 @@ fn parser_call(parser, name) {
             }
             parser_fail(name, message);
         }
-    } else {
+    } else if !has_builtin_contract {
         // User calls pad missing arguments with 0. Extra arguments reach the
         // callee, where declared parameters ignore them and fn_args() sees all.
         arity := map_get(map_get(functions, name_text), "arity");
@@ -347,13 +349,9 @@ fn parser_call(parser, name) {
             list_set(args, list_length(args), zero);
         }
     }
-    if !is_builtin {
-        result_kind := map_get(map_get(functions, name_text), "result");
-        return parser_call_node(name, args, result_kind, false, close);
-    }
     parameters := builtin_parameters(name_text);
     position := 0;
-    while position < list_length(parameters) {
+    while position < list_length(parameters) && has_builtin_contract {
         kind := list_get(parameters, position);
         if text_slice(kind, 0, 3) != "..." {
             actual := map_get(list_get(args, position), "value_kind");
@@ -363,8 +361,15 @@ fn parser_call(parser, name) {
         }
         position = position + 1;
     }
+    if source_required {
+        return parser_call_node(name, args, builtin_result(name_text), false, close);
+    }
+    if !is_builtin {
+        result_kind := map_get(map_get(functions, name_text), "result");
+        return parser_call_node(name, args, result_kind, false, close);
+    }
     result_kind := builtin_result(name_text);
-    return parser_call_node(name, args, result_kind, true, close);
+    return parser_call_node(name, args, result_kind, is_builtin, close);
 }
 
 /// Parse and check one statement into the shared AST.

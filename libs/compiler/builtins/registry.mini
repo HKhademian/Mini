@@ -14,6 +14,7 @@ builtin_helpers := map_new();
 builtin_helper_order := list_new();
 builtin_reference_targets := map_new();
 builtin_emit_forms := map_new();
+builtin_source_functions := map_new();
 
 /// Register one builtin descriptor.
 fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
@@ -34,5 +35,11 @@ fn builtin_add(name, parameters, result, layer, import_name, helper_key, helper,
     if reference != "" {
         map_set(builtin_reference_targets, name, reference);
     }
+    return 0;
+}
+
+/// Mark a builtin contract as requiring a same-name imported Mini function.
+fn builtin_source_api(name) {
+    map_set(builtin_source_functions, name, true);
     return 0;
 }

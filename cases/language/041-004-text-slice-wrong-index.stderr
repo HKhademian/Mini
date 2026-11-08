@@ -1,3 +1,3 @@
-041-004-text-slice-wrong-index.mini:1:10: expected number argument
+041-004-text-slice-wrong-index.mini:3:10: expected number argument
 io_write(text_slice("abc", "0", 1));
          ^

@@ -1,3 +1,5 @@
+import "common/number";
+
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
     lines := text_split(source, "\n");
@@ -10,6 +12,43 @@ fn split_lines(source) {
         position = position + 1;
     }
     return lines;
+}
+
+/// Slice text by zero-based end-exclusive bounds; negative bounds count from the end.
+fn text_slice(source, start, end) {
+    if value_kind(source) != "text" || value_kind(start) != "number" || value_kind(end) != "number"
+        || number_floor(start) != start || number_floor(end) != end {
+        return "";
+    }
+    size := text_length(source);
+    if start < 0 {
+        start = size + start;
+    }
+    if end < 0 {
+        end = size + end;
+    }
+    if start < 0 {
+        start = 0;
+    }
+    if end < 0 {
+        end = 0;
+    }
+    if start > size {
+        start = size;
+    }
+    if end > size {
+        end = size;
+    }
+    if end <= start {
+        return "";
+    }
+    parts := list_new();
+    position := start;
+    while position < end {
+        list_set(parts, list_length(parts), text_get(source, position));
+        position = position + 1;
+    }
+    return list_join(parts, "");
 }
 
 /// Return output lines with nonempty lines prefixed by four spaces and joined by LF.

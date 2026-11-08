@@ -1,3 +1,4 @@
+import "common/text";
 include "common/value.mini";
 /// Normalize one byte value like the host conversion.
 fn pure_byte_at(bytes, index) {

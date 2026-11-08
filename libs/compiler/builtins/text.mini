@@ -70,17 +70,6 @@ builtin_add(
     "({0}).length"
 );
 builtin_add(
-    "text_slice", 
-    "text,number,number", 
-    "text", 
-    "performance", 
-    "", 
-    "text_slice", 
-    "function $mini_text_slice(source, start, end) {\n    if (typeof source !== \"string\") return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", 
-    "pure_text_slice", 
-    "$mini_text_slice({0}, {1}, {2})"
-);
-builtin_add(
     "text_split", 
     "text,text", 
     "list", 
@@ -91,6 +80,18 @@ builtin_add(
     "pure_text_split", 
     "$mini_text_split({0}, {1})"
 );
+builtin_add(
+    "text_slice",
+    "text,number,number",
+    "text",
+    "performance",
+    "",
+    "",
+    "",
+    "",
+    ""
+);
+builtin_source_api("text_slice");
 builtin_add(
     "text_to_bytes", 
     "text", 

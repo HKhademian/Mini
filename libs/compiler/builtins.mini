@@ -29,6 +29,11 @@ fn builtin_exists(name) {
     return map_has(builtin_name_set, name);
 }
 
+/// Return whether a builtin API must be imported as a Mini function.
+fn builtin_source_required(name) {
+    return map_has(builtin_source_functions, name);
+}
+
 /// Return parameter kinds for a builtin.
 fn builtin_parameters(name) {
     if !map_has(builtin_parameter_kinds, name) {

@@ -1,0 +1,15 @@
+{
+  "id": "language.import-extensionless",
+  "kind": "feature",
+  "source": "064-001-import-extensionless.mini",
+  "features": ["import", "import.extensionless", "text.slice"],
+  "cases": [
+    {
+      "name": "common-library",
+      "stdin": {"text": ""},
+      "stdout": {"text": "bcd\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

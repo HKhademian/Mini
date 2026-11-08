@@ -1,0 +1,11 @@
+/// Shared registration table for JavaScript host function replacements.
+
+import "common/map";
+
+js_host_functions := map_new();
+
+/// Register emitted JavaScript for one public Mini function.
+fn emit_js_host_function_add(name, definition) {
+    map_set(js_host_functions, name, definition);
+    return 0;
+}

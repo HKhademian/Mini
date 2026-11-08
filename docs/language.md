@@ -117,33 +117,35 @@ io_write("ok\n");
   and executes a mini source directly, and `mini compile` makes shebang output
   executable where the platform supports it.
 
-## Accepted form: include directive
+## Accepted form: source imports
 
-A top-level directive includes another mini source in the current compilation:
+A top-level import resolves a library from `libs/`; a top-level include accepts
+an explicit path. Both add another Mini source to the current compilation.
 
 ```mini
-include "common/text.mini";
+import "common/text";
+include "./local.mini";
 ```
 
-- A path such as `"common/text.mini"` is resolved from the project `libs/`
-  directory.
+- `import "common/text"` resolves to `libs/common/text.mini`; the `.mini`
+  extension may also be written.
 - Paths beginning `./` or `../` are resolved relative to the including file;
   `/path/to/file.mini` is an absolute filesystem path. Paths are canonicalized
   before use.
 - In project sources under `libs/`, resolve library paths from the `libs/` root,
   regardless of the importing file's folder. Use `./` for a neighbor or a path
   into a child folder. Do not use `../` there.
-- Each canonical file is included at most once per compilation. A repeated
-  include, including a path back to a file already being opened, is a no-op.
-  Includes may nest and may form cycles.
+- Each canonical file is imported or included at most once per compilation. A
+  repeated path, including a path back to a file already being opened, is a
+  no-op. Imports and includes may nest and may form cycles.
 - Files are traversed depth-first. Their declarations and top-level operations
   are ordered in postorder: included files first, then the including file.
-  Each file's own declarations and operations retain source order; include
-  directives do not execute inline. A target-generated entry point runs each
+  Each file's own declarations and operations retain source order; import and
+  include directives do not execute inline. A target-generated entry point runs each
   file's top-level operations once in that same order.
-- A missing file, a shebang in an included file, or an include inside a block
-  is a compilation error. The entry file may keep a shebang.
-- Included tokens keep their written include path as their source name, so
+- A missing file, a shebang in an imported file, or an import/include inside a
+  block is a compilation error. The entry file may keep a shebang.
+- Imported tokens keep their written import path as their source name, so
   diagnostics name the included file.
 - Operations outside named functions belong to an implicit file function.
   Top-level binding names and named functions across the complete include graph
@@ -313,11 +315,12 @@ them only when concrete compiler or tool code needs them.
 
 ## Accepted operations: text access
 
-Scanning uses two primitive built-ins.
+`text_length` and `text_get` are primitive built-ins. The common text library
+provides the higher-level slicing operation.
 
 Use `group_operation` names for the text family. These are flat identifiers;
-the prefix adds no namespace syntax. `text_slice` provides the common slicing
-operation; a standard library may still add conveniences on top of it.
+the prefix adds no namespace syntax. Import `common/text` to use `text_slice`
+and the other text helpers.
 
 ```mini
 source := io_read_all();
@@ -338,9 +341,10 @@ while position < text_length(source) {
 - `text_split(text, divider)` returns a list of text fields split on a literal
   divider. Empty fields are preserved. An empty divider returns a one-element
   list containing the source. A non-text target or divider returns an empty list.
-- `text_slice(text, start, end)` returns text from `start` through the exclusive
-  `end`. Bounds are zero-based integers. Negative bounds count from the end;
-  bounds clamp to the text; a non-text target or an empty/reversed range returns
+- `text_slice(text, start, end)` is supplied by `import "common/text"`. It
+  returns text from `start` through the exclusive `end`. Bounds are zero-based
+  integers. Negative bounds count from the end; bounds clamp to the text;
+  invalid argument kinds, a non-text target, or an empty/reversed range return
   empty text.
 - The caller supplies integer indices. All arguments are required and evaluate
   once, from left to right, even when the target is not text.

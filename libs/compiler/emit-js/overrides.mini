@@ -1,12 +1,7 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
-js_host_functions := map_new();
-
-/// Register emitted JavaScript for one public Mini function.
-fn emit_js_host_function_add(name, definition) {
-    map_set(js_host_functions, name, definition);
-    return 0;
-}
+include "./overrides/number.mini";
+include "./overrides/text.mini";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {
@@ -15,5 +10,3 @@ fn emit_js_host_function(name) {
     }
     return map_get(js_host_functions, name);
 }
-
-include "./overrides/number.mini";
