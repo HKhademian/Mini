@@ -1,3 +1,5 @@
+import "common/io";
+
 parent_value := 40;
 import "./061-006-file-initialization-parent-binding-helper";
 io_write(read_parent_value(), "\n");

@@ -1,3 +1,5 @@
+import "common/io";
+
 import "./061-005-file-initialization-binding-helper";
 io_write(initialized_value, "|");
 initialized_value = 42;

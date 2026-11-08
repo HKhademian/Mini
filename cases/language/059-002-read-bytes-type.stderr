@@ -1,3 +1,3 @@
-059-002-read-bytes-type.mini:1:1: expected number argument
+059-002-read-bytes-type.mini:3:1: expected number argument
 io_read_bytes("three");
 ^

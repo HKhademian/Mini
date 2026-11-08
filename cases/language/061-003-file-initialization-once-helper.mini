@@ -1,3 +1,5 @@
+import "common/io";
+
 io_write("dependency\n");
 fn initialized_message() {
     return "function";
