@@ -1,3 +1,4 @@
+import "common/io";
 if true {
     local := "before";
     if true { local = "after"; }

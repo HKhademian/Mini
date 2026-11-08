@@ -1,3 +1,4 @@
+import "common/io";
 import "common/list";
 
 x := 3;

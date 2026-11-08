@@ -1,3 +1,4 @@
+import "common/io";
 seed := "abcdefghijklmnopqrstuvwxyz";
 copy := seed;
 i := 0;

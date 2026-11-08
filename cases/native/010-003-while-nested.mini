@@ -1,3 +1,4 @@
+import "common/io";
 outer := 0;
 while outer < 2 {
     inner := 0;

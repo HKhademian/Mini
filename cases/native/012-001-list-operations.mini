@@ -1,3 +1,4 @@
+import "common/io";
 import "common/list";
 
 items := list_of("b", "c");

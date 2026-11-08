@@ -1,3 +1,4 @@
+import "common/io";
 a := 42;
 b := true;
 io_write(a == 42, "|", a != -42, "|", b == true, "|", b != false, "|", "hello" == "hello", "|", "hello" != "world", "\n");
