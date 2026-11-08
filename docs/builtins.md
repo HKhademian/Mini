@@ -23,8 +23,12 @@ declared in
 [libs/common/text.mini](../libs/common/text.mini) and require
 `import "common/text"`. Their Mini implementations are the fallback; JavaScript
 registers same-name host overrides for the representation and performance paths.
-`file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
-whole files as byte lists.
+The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
+and require `import "common/file"`. Their Mini implementations panic when a
+target has no file host; the JavaScript emitter registers same-name host
+overrides. `file_read(path)` returns UTF-8 text, `file_write(path, text)` writes
+UTF-8 text and returns zero, and the byte variants read or replace whole files
+as byte lists.
 
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
 

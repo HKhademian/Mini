@@ -1,4 +1,5 @@
 import "common/io";
+import "common/file";
 import "common/json";
 import "common/text";
 import "common/number";

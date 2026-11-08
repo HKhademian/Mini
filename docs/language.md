@@ -666,7 +666,8 @@ io_write(text_from_bytes(bytes));
 - `text_from_bytes(bytes)` decodes such a list as UTF-8. Non-integer or out-of-range
   elements count as zero.
 - `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace a
-  whole file as a byte list.
+  whole file as a byte list. File operations are declared in `common/file`;
+  import that module before calling any `file_*` function.
 
 ## Accepted operation: SHA-256 hashing
 

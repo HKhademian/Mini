@@ -1,4 +1,5 @@
 import "common/text";
+import "common/file";
 import "common/list";
 import "./text";
 

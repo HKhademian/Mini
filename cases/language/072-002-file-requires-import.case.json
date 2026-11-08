@@ -1,0 +1,15 @@
+{
+  "id": "language.file-requires-import",
+  "kind": "reject",
+  "source": "072-002-file-requires-import.mini",
+  "features": ["import", "file.read"],
+  "cases": [
+    {
+      "name": "missing-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "072-002-file-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

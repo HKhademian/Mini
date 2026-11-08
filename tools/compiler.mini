@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /// Compose the mini compiler from its source files.
 
 import "common/json";
@@ -6,6 +7,7 @@ import "common/number";
 import "common/list";
 import "common/map";
 import "common/io";
+import "common/file";
 import "common/text";
 import "common/native";
 import "compiler/lexer";

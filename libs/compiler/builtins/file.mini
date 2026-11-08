@@ -1,49 +1,12 @@
-/// File builtin descriptors.
+/// File API contracts; implementations live in common/file and emitter registries.
+
 import "./registry";
 
-//
-
-builtin_add(
-    "file_read",
-    "text",
-    "text",
-    "essential",
-    "readFileSync",
-    "",
-    "",
-    "",
-    "readFileSync({0}, \"utf8\")"
-);
-builtin_add(
-    "file_read_bytes",
-    "text",
-    "list",
-    "essential",
-    "",
-    "file_read_bytes",
-    "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n",
-    "",
-    "$mini_file_read_bytes({0})"
-);
-builtin_add(
-    "file_write",
-    "text,text",
-    "number",
-    "essential",
-    "writeFileSync",
-    "",
-    "",
-    "",
-    "(writeFileSync({0}, {1}, \"utf8\"), 0)"
-);
-builtin_add(
-    "file_write_bytes",
-    "text,list",
-    "number",
-    "essential",
-    "",
-    "file_write_bytes",
-    "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n",
-    "",
-    "$mini_file_write_bytes({0}, {1})"
-);
+builtin_add("file_read", "text", "text", "essential", "", "", "", "", "");
+builtin_source_api("file_read");
+builtin_add("file_read_bytes", "text", "list", "essential", "", "", "", "", "");
+builtin_source_api("file_read_bytes");
+builtin_add("file_write", "text,text", "number", "essential", "", "", "", "", "");
+builtin_source_api("file_write");
+builtin_add("file_write_bytes", "text,list", "number", "essential", "", "", "", "", "");
+builtin_source_api("file_write_bytes");

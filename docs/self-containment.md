@@ -31,7 +31,7 @@ the operating system or host runtime:
 | Operation | Why it is host-only |
 | --- | --- |
 | `io_write`, `io_write_error`, `io_read_all`, `io_read_line`, `io_read_bytes` | Standard streams |
-| `file_read`, `file_write`, `file_read_bytes`, `file_write_bytes` | File contents |
+| `file_read`, `file_write`, `file_read_bytes`, `file_write_bytes` | File contents; same-name panic fallbacks in `libs/common/file.mini` and JavaScript host overrides |
 | `path_temp_directory` | Filesystem mutation |
 | `directory_list`, `directory_create`, `path_is_exists`, `path_is_directory`, `path_copy`, `path_remove` | Filesystem queries and mutation |
 | `process_exit` | Process interface |

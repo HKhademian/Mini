@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.39 / builtins 0.4.0-alpha.16 / compiler
+  0.5.0-alpha.50 / bootstrap 0.3.0-alpha.52: move file operations into
+  same-name `common/file` APIs, require explicit imports, and register
+  JavaScript host overrides.
+
 - language 0.5.0-alpha.13 / builtins 0.4.0-alpha.13 / compiler
   0.5.0-alpha.47 / bootstrap 0.3.0-alpha.49: move `to_text` and `number_to_text` to same-name common APIs, and give
   `value_kind` a panic fallback with a registered JS host override with registered JS overrides.
