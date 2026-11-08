@@ -1,5 +1,6 @@
 /// Parse standard-input JSON and print its name field.
 
+import "common/json";
 import "common/map";
 import "common/io";
 

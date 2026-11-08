@@ -347,7 +347,7 @@
   line-height: 1.5;
 }
 
-/* Generated-code mode switch: host adapters or portable reference. */
+/* Generated-code mode switch: host overrides or Mini fallback. */
 .code-modes {
   display: flex;
   align-items: center;

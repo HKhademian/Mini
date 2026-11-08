@@ -1,5 +1,6 @@
 /// Parse JSON objects, arrays, scalars, and invalid input.
 
+import "common/json";
 import "common/list";
 import "common/map";
 import "common/io";

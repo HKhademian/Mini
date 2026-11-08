@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.12 / builtins 0.4.0-alpha.12 / compiler
+  0.5.0-alpha.46 / bootstrap 0.3.0-alpha.48: move JSON parsing and encoding
+  into same-name `common/json` APIs, register JS host overrides, and remove
+  the injected `pure` library aggregate.
+
 - language 0.5.0-alpha.11 / builtins 0.4.0-alpha.11 / compiler
   0.5.0-alpha.45 / bootstrap 0.3.0-alpha.47: move text and UTF-8 helpers
   into same-name `common/text` APIs, register JavaScript host overrides, and

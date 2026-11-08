@@ -1,5 +1,6 @@
 /// Build a map and print compact deterministic JSON text.
 
+import "common/json";
 import "common/map";
 import "common/io";
 

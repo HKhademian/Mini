@@ -124,20 +124,18 @@ implementation** or **pure backend**.
 
 Library implementations use the public API name in `libs/common/`. A target
 may replace that implementation implicitly through its emitter registry; source
-programs call one name and import one API. The `libs/pure/` tree is being retired
-as these APIs migrate.
+programs call one name and import one API. Library APIs are being moved into `libs/common/` under their public names.
 
 Current reference coverage:
 
 | Builtin | Reference status |
 | --- | --- |
 | `text_slice`, `text_find`, `text_split` | Same-name Mini implementations in `libs/common/text.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
-| `list_copy` | In migration |
-| `map_copy` | In migration |
-| `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |
+| `list_copy`, `list_join` | Same-name Mini implementations in `libs/common/list.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
+| `map_copy` | Same-name Mini implementation in `libs/common/map.mini`; JS host override registered under `libs/compiler/emit-js/overrides` |
+| `json_parse`, `json_to_text` | Same-name Mini implementations in `libs/common/json.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
 | `text_to_bytes`, `text_from_bytes` | Same-name Mini implementations in `libs/common/text.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
-| `number_to_text` | Implemented in `libs/pure/number.mini` |
-| `list_join` | Implemented in `libs/pure/list.mini` |
+| `number_to_text` | Same-name Mini implementation in `libs/common/number.mini`; JS host override registered under `libs/compiler/emit-js/overrides` |
 | `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 
 The registry records operation classes. Target overrides are implicit and do
@@ -196,9 +194,8 @@ not remove the arithmetic requirement.
 
 ### Large pure implementations
 
-`json_parse`, `json_to_text`, and UTF-8 conversion are pure-able, but they are
-large enough that they should be introduced as reference implementations first,
-with performance measurements, before becoming defaults.
+JSON parsing, serialization, and UTF-8 conversion use Mini fallbacks under
+`libs/common/`; emitters may replace those functions under the same public names.
 
 ## Self-hosting versus self-contained
 
@@ -207,7 +204,7 @@ with performance measurements, before becoming defaults.
 | Self-hosted | The compiler source is mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.js` |
 | Hosted | The compiler runs on a host runtime | Yes; generated JavaScript on Node |
 | Self-contained | No host beyond the language runtime | No |
-| Pure reference-capable | Performance builtins have mini implementations selected by a mode | Not yet; proposed |
+| Mini fallback available | Imported APIs provide Mini implementations selected when host overrides are disabled | Partial |
 
 Self-hosting is about the language in which the compiler is written.
 Self-containment is about the runtime surface the compiled program needs. mini
@@ -231,7 +228,7 @@ reference implementation.
 
 1. Add `essential`, `representation`, `performance`, and `library` metadata to
    the builtin registry.
-2. Create `libs/pure/` reference implementations for the performance layer.
+2. Add same-name Mini fallbacks under `libs/common/` for replaceable operations.
 3. Add a `--reference` compiler mode that selects them.
 4. Add equivalence cases that run both modes.
 5. Decide the numeric model before attempting a pure `hash_sha256`.

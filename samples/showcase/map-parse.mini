@@ -1,5 +1,6 @@
 /// Parse an object and read a field.
 
+import "common/json";
 import "common/map";
 import "common/io";
 

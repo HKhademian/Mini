@@ -390,14 +390,14 @@ function browserCompilerSource(): string {
     if (!source.includes(importLine) || !source.includes("    main(process.argv.slice(2));\n")) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
-    for (const name of ["function lex_tokenize(", "function lex_expand_imports(", "function emit_js_compile(", "function emit_js_compile_program_only("]) {
+    for (const name of ["function lex_tokenize(", "function lex_expand_imports(", "function emit_js_compile(", "function emit_js_compile_program_only(", "function emit_js_set_reference_mode("]) {
         if (!source.includes(name)) {
             throw new Error(`compiler entry is missing ${name}; update the playground build`);
         }
     }
     return source
         .replace("    main(process.argv.slice(2));\n", "")
-        + "\nexport { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only };\n";
+        + "\nexport { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only, emit_js_set_reference_mode };\n";
 }
 
 /// Return the generated compiler as a browser module.
@@ -414,20 +414,6 @@ function buildBrowserWorker(): string {
         throw new Error("playground worker revision marker is missing");
     }
     return source.replace(marker, `const buildRevision = "${sourceCommit}";`);
-}
-
-/// Return the expanded pure reference source.
-///
-/// Compiling libs/pure/reference.mini expands its imports into the pure
-/// builtin implementations. The playground appends these tokens for its
-/// portable variant, so the browser needs no filesystem import access.
-function buildReferenceSource(): string {
-    const path = join(root, "libs", "pure", "reference.mini");
-    const tokens = compilerModule.lex_tokenize(readFileSync(path, "utf8"), path, false);
-    const expanded = compilerModule.lex_expand_imports(tokens, path, Object.create(null));
-    const body = expanded.filter((token) => token.kind !== "eof")
-        .map((token) => token.file === undefined ? token : { ...token, file: relative(root, token.file) });
-    return JSON.stringify(body);
 }
 
 /// Return every Mini library source keyed by its compiler import path.
@@ -600,7 +586,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <div class="code-modes" role="group" aria-label="Generated JavaScript">
             <button id="mode-full" type="button" data-mode="full" aria-pressed="false">Runtime + program</button>
             <button id="mode-program" type="button" data-mode="program" aria-pressed="true">Program only</button>
-            <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false" hidden>Portable</button>
+            <button id="mode-portable" type="button" data-mode="portable" aria-pressed="false" hidden>Reference</button>
           </div>
           <pre id="code"></pre>
         </div>
@@ -834,8 +820,6 @@ function main(): void {
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
     writeFileSync(join(playground, "imports.js"), buildBrowserImports());
-    const referenceTokens = buildReferenceSource();
-    writeFileSync(join(playground, "reference.js"), `export const referenceTokens = ${referenceTokens.trim()};\n`);
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
     writeFileSync(join(playground, "worker.js"), buildBrowserWorker());

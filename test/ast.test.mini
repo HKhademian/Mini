@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "common/json";
 import "common/map";
 import "common/io";
 import "common/list";

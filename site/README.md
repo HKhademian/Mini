@@ -75,11 +75,11 @@ updates the generated view without running it. Both actions sit at the right of
 the output header, with the tabs on the left. Switching views does not rerun or
 change the selected panel. The build bundles `libs/` into
 `playground/imports.js`, allowing examples to expand library imports in the
-browser. Other filesystem access remains unavailable. A third, **Portable**
-view is present but hidden. It appends the whole `libs/pure/reference.mini` so a
-program depends on language semantics rather than host adapters. The build
-expands that reference once into `playground/reference.js`. Keep Portable hidden
-until a host-independent runtime is a supported product.
+browser. Other filesystem access remains unavailable. A third, **Reference**
+view is present but hidden. It uses the imported Mini implementations instead
+of emitter host overrides where those fallbacks exist. It still relies on host
+access for representation primitives and I/O, so keep it hidden until the view
+is ready for users.
 
 The footer reads compiler, language, and `play` product versions from the
 registry. `play` is currently unassigned. Syntax highlighting ships as part of

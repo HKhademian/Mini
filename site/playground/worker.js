@@ -71,30 +71,29 @@ function loadCompiler() {
 }
 
 /// Compile one source string and return its code or diagnostic text.
-/// Return the expanded program tokens, optionally with the pure reference.
-function buildTokens(lexTokenize, lexExpandImports, source, portable, referenceTokens) {
+/// Return the expanded program tokens.
+function buildTokens(lexTokenize, lexExpandImports, source) {
   const tokens = lexTokenize(source, "playground.mini", false);
-  const expanded = lexExpandImports(tokens, "playground.mini", Object.create(null));
-  if (!portable) return expanded;
-  const combined = expanded.filter(token => token.kind !== "eof").concat(referenceTokens);
-  return combined.concat([{ kind: "eof", text: "", source: "playground.mini", start: 0, end: 0, line: 1, column: 1, context: "" }]);
+  return lexExpandImports(tokens, "playground.mini", Object.create(null));
 }
 
 /// Compile one variant and return both the runnable and user-source code.
 async function compileSource(source, portable) {
-  const { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only } = await loadCompiler();
+  const { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only, emit_js_set_reference_mode } = await loadCompiler();
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
   };
   try {
-    const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
-    const prepared = buildTokens(lex_tokenize, lex_expand_imports, source, portable, referenceTokens);
+    emit_js_set_reference_mode(portable);
+    const prepared = buildTokens(lex_tokenize, lex_expand_imports, source);
     return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };
   } finally {
+    const compiler = await loadCompiler();
+    compiler.emit_js_set_reference_mode(false);
     globalThis.__miniSink = () => {};
   }
 }

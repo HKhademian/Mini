@@ -1,3 +1,0 @@
-/// Reference implementations for replaceable performance builtins.
-
-import "./json";

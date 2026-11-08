@@ -1,1 +1,2 @@
+import "common/json";
 json_parse(1);

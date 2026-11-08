@@ -26,50 +26,6 @@ function $mini_io_write() {
     writeSync(1, text);
     return 0;
 }
-function $mini_json_parse(text) {
-    const result = { __proto__: null, ok: false, value: 0 };
-    if (typeof text !== "string") return result;
-    let parsed;
-    try { parsed = JSON.parse(text); } catch { return result; }
-    const clean = (item) => {
-        if (item === null) return 0;
-        if (Array.isArray(item)) return item.map(clean);
-        if (typeof item === "object") {
-            const out = { __proto__: null };
-            for (const key of Object.keys(item)) out[key] = clean(item[key]);
-            return out;
-        }
-        return item;
-    };
-    result.ok = true;
-    result.value = clean(parsed);
-    return result;
-}
-function $mini_json_to_text(value) {
-    const seen = new Set();
-    function encode(item) {
-        if (typeof item === "string") return JSON.stringify(item);
-        if (typeof item === "number") { const text = $mini_number_to_text(item); return text === "" ? "null" : text; }
-        if (typeof item === "boolean") return item ? "true" : "false";
-        if (item === null || item === undefined) return "null";
-        if (typeof item !== "object") return "null";
-        if (seen.has(item)) throw 0;
-        seen.add(item);
-        let output;
-        if (Array.isArray(item)) {
-            const parts = [];
-            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
-            output = "[" + parts.join(",") + "]";
-        } else {
-            const parts = [];
-            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
-            output = "{" + parts.join(",") + "}";
-        }
-        seen.delete(item);
-        return output;
-    }
-    try { return encode(value); } catch { return ""; }
-}
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
@@ -127,7 +83,7 @@ function $mini_to_text(value) {
     if (typeof value === "string") return value;
     if (typeof value === "number") return $mini_number_to_text(value);
     if (typeof value === "boolean") return value ? "true" : "false";
-    if (value !== null && typeof value === "object") return $mini_json_to_text(value);
+    if (value !== null && typeof value === "object") return json_to_text(value);
     return String(value);
 }
 function $mini_value_kind(value) {
@@ -604,6 +560,463 @@ function map_of() {
     }
     return result;
 }
+function result_ok(value, message) {
+
+    let result = map_new();
+    map_set(result, "ok", true);
+    map_set(result, "value", value);
+    map_set(result, "message", message);
+    return result;
+}
+function result_fail(message) {
+
+    let result = map_new();
+    map_set(result, "ok", false);
+    map_set(result, "value", 0);
+    map_set(result, "message", message);
+    return result;
+}
+function result_is_ok(result) {
+
+    if ((!value_is_map(result))) {
+        return false;
+    }
+    return (map_get(result, "ok") === true);
+}
+function result_is_fail(result) {
+
+    return (!result_is_ok(result));
+}
+function result_get_message(result) {
+
+    if ((!value_is_map(result))) {
+        return "";
+    }
+    return map_get(result, "message");
+}
+function result_set_message(result, message) {
+
+    if (value_is_map(result)) {
+        map_set(result, "message", message);
+    }
+    return result;
+}
+function result_get_value(result) {
+
+    if ((!value_is_map(result))) {
+        return 0;
+    }
+    return map_get(result, "value");
+}
+function result_set_value(result, value) {
+
+    if (value_is_map(result)) {
+        map_set(result, "value", value);
+    }
+    return result;
+}
+function json_parse_file(path) {
+
+    if ((!$mini_path_is_exists(path))) {
+        return result_fail(("cannot read " + path));
+    }
+    let parsed = json_parse(readFileSync(path, "utf8"));
+    if (result_is_fail(parsed)) {
+        return result_fail(("invalid JSON: " + path));
+    }
+    return result_ok(result_get_value(parsed), 0);
+}
+function json_parse_result(ok, value) {
+
+    let result = map_new();
+    map_set(result, "ok", ok);
+    map_set(result, "value", value);
+    return result;
+}
+function json_space(character) {
+
+    return ((((character === " ") || (character === "\t")) || (character === "\n")) || (character === "\r"));
+}
+function json_skip(state) {
+
+    while (((map_get(state, "position") < text_length(map_get(state, "text"))) && json_space(text_get(map_get(state, "text"), map_get(state, "position"))))) {
+        map_set(state, "position", (map_get(state, "position") + 1));
+    }
+    return 0;
+}
+function json_fail(state) {
+
+    map_set(state, "ok", false);
+    return 0;
+}
+function json_peek(state) {
+
+    let position = map_get(state, "position");
+    if ((position >= text_length(map_get(state, "text")))) {
+        return "";
+    }
+    return text_get(map_get(state, "text"), position);
+}
+function json_take(state, expected) {
+
+    if ((json_peek(state) !== expected)) {
+        return json_fail(state);
+    }
+    map_set(state, "position", (map_get(state, "position") + 1));
+    return 0;
+}
+function json_hex_value(character) {
+
+    let digit = text_find("0123456789abcdef", character);
+    if ((digit >= 0)) {
+        return digit;
+    }
+    digit = text_find("0123456789ABCDEF", character);
+    return digit;
+}
+function json_hex4(state) {
+
+    let value = 0;
+    let count = 0;
+    while ((count < 4)) {
+        let digit = json_hex_value(json_peek(state));
+        if ((digit < 0)) {
+            json_fail(state);
+            return 0;
+        }
+        value = (number_mul(value, 16) + digit);
+        map_set(state, "position", (map_get(state, "position") + 1));
+        count = (count + 1);
+    }
+    return value;
+}
+function json_string(state) {
+
+    json_take(state, "\"");
+    let parts = list_new();
+    while ((map_get(state, "ok") && (map_get(state, "position") < text_length(map_get(state, "text"))))) {
+        let character = json_peek(state);
+        if ((character === "\"")) {
+            map_set(state, "position", (map_get(state, "position") + 1));
+            return list_join(parts, "");
+        }
+        if ((character === "\\")) {
+            map_set(state, "position", (map_get(state, "position") + 1));
+            let escaped = json_peek(state);
+            map_set(state, "position", (map_get(state, "position") + 1));
+            if ((escaped === "\"")) {
+                list_set(parts, (parts).length, "\"");
+            } else {
+                if ((escaped === "\\")) {
+                    list_set(parts, (parts).length, "\\");
+                } else {
+                    if ((escaped === "/")) {
+                        list_set(parts, (parts).length, "/");
+                    } else {
+                        if ((escaped === "b")) {
+                            list_set(parts, (parts).length, text_from_code(8));
+                        } else {
+                            if ((escaped === "f")) {
+                                list_set(parts, (parts).length, text_from_code(12));
+                            } else {
+                                if ((escaped === "n")) {
+                                    list_set(parts, (parts).length, "\n");
+                                } else {
+                                    if ((escaped === "r")) {
+                                        list_set(parts, (parts).length, "\r");
+                                    } else {
+                                        if ((escaped === "t")) {
+                                            list_set(parts, (parts).length, "\t");
+                                        } else {
+                                            if ((escaped === "u")) {
+                                                let code = json_hex4(state);
+                                                if (((((code >= 55296) && (code <= 56319)) && (json_peek(state) === "\\")) && (text_get(map_get(state, "text"), (map_get(state, "position") + 1)) === "u"))) {
+                                                    map_set(state, "position", (map_get(state, "position") + 2));
+                                                    let low = json_hex4(state);
+                                                    if (((low >= 56320) && (low <= 57343))) {
+                                                        code = ((65536 + number_mul((code - 55296), 1024)) + (low - 56320));
+                                                    } else {
+                                                        json_fail(state);
+                                                    }
+                                                }
+                                                list_set(parts, (parts).length, text_from_code(code));
+                                            } else {
+                                                json_fail(state);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            list_set(parts, (parts).length, character);
+            map_set(state, "position", (map_get(state, "position") + 1));
+        }
+    }
+    json_fail(state);
+    return "";
+}
+function json_number(state) {
+
+    let start = map_get(state, "position");
+    if ((json_peek(state) === "-")) {
+        map_set(state, "position", (map_get(state, "position") + 1));
+    }
+    if ((text_find("0123456789", json_peek(state)) < 0)) {
+        json_fail(state);
+        return 0;
+    }
+    while ((text_find("0123456789", json_peek(state)) >= 0)) {
+        map_set(state, "position", (map_get(state, "position") + 1));
+    }
+    if ((((json_peek(state) === ".") || (json_peek(state) === "e")) || (json_peek(state) === "E"))) {
+        json_fail(state);
+        return 0;
+    }
+    return number_from_text(text_slice(map_get(state, "text"), start, map_get(state, "position")));
+}
+function json_array(state) {
+
+    json_take(state, "[");
+    let result = list_new();
+    json_skip(state);
+    if ((json_peek(state) === "]")) {
+        map_set(state, "position", (map_get(state, "position") + 1));
+        return result;
+    }
+    while (map_get(state, "ok")) {
+        let value = json_value(state);
+        if ((!map_get(state, "ok"))) {
+            return result;
+        }
+        list_set(result, (result).length, value);
+        json_skip(state);
+        if ((json_peek(state) === "]")) {
+            map_set(state, "position", (map_get(state, "position") + 1));
+            return result;
+        }
+        json_take(state, ",");
+        json_skip(state);
+    }
+    return result;
+}
+function json_object(state) {
+
+    json_take(state, "{");
+    let result = map_new();
+    json_skip(state);
+    if ((json_peek(state) === "}")) {
+        map_set(state, "position", (map_get(state, "position") + 1));
+        return result;
+    }
+    while (map_get(state, "ok")) {
+        json_skip(state);
+        let key = json_string(state);
+        json_skip(state);
+        json_take(state, ":");
+        json_skip(state);
+        let value = json_value(state);
+        if ((!map_get(state, "ok"))) {
+            return result;
+        }
+        map_set(result, key, value);
+        json_skip(state);
+        if ((json_peek(state) === "}")) {
+            map_set(state, "position", (map_get(state, "position") + 1));
+            return result;
+        }
+        json_take(state, ",");
+    }
+    return result;
+}
+function json_value(state) {
+
+    json_skip(state);
+    let character = json_peek(state);
+    if ((character === "\"")) {
+        return json_string(state);
+    }
+    if ((character === "[")) {
+        return json_array(state);
+    }
+    if ((character === "{")) {
+        return json_object(state);
+    }
+    if (((character === "-") || (text_find("0123456789", character) >= 0))) {
+        return json_number(state);
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "true")) {
+        map_set(state, "position", (map_get(state, "position") + 4));
+        return true;
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "false")) {
+        map_set(state, "position", (map_get(state, "position") + 5));
+        return false;
+    }
+    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "null")) {
+        map_set(state, "position", (map_get(state, "position") + 4));
+        return 0;
+    }
+    json_fail(state);
+    return 0;
+}
+function json_parse(text) {
+    const result = Object.create(null);
+    result.ok = false;
+    result.value = 0;
+    if (typeof text !== "string") return result;
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { return result; }
+    const clean = (item) => {
+        if (item === null) return 0;
+        if (typeof item === "number") { if (!Number.isSafeInteger(item)) throw 0; return item; }
+        if (Array.isArray(item)) return item.map(clean);
+        if (typeof item === "object") {
+            const out = Object.create(null);
+            for (const key of Object.keys(item)) out[key] = clean(item[key]);
+            return out;
+        }
+        return item;
+    };
+    try { result.value = clean(parsed); } catch { return result; }
+    result.ok = true;
+    return result;
+}
+function json_escape(text) {
+
+    let parts = list_of("\"");
+    let position = 0;
+    while ((position < text_length(text))) {
+        let character = text_get(text, position);
+        if ((character === "\"")) {
+            list_set(parts, (parts).length, "\\\"");
+        } else {
+            if ((character === "\\")) {
+                list_set(parts, (parts).length, "\\\\");
+            } else {
+                if ((text_code(character) === 8)) {
+                    list_set(parts, (parts).length, "\\b");
+                } else {
+                    if ((text_code(character) === 12)) {
+                        list_set(parts, (parts).length, "\\f");
+                    } else {
+                        if ((character === "\n")) {
+                            list_set(parts, (parts).length, "\\n");
+                        } else {
+                            if ((character === "\r")) {
+                                list_set(parts, (parts).length, "\\r");
+                            } else {
+                                if ((character === "\t")) {
+                                    list_set(parts, (parts).length, "\\t");
+                                } else {
+                                    if ((text_code(character) < 32)) {
+                                        let code = text_code(character);
+                                        let digits = "0123456789abcdef";
+                                        list_set(parts, (parts).length, (("\\u00" + text_get(digits, number_div(code, 16))) + text_get(digits, number_mod(code, 16))));
+                                    } else {
+                                        list_set(parts, (parts).length, character);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        position = (position + 1);
+    }
+    list_set(parts, (parts).length, "\"");
+    return list_join(parts, "");
+}
+function json_encode(value, seen, state) {
+
+    if (value_is_text(value)) {
+        return json_escape(value);
+    }
+    if (value_is_number(value)) {
+        if ((number_to_text(value) === "")) {
+            return "null";
+        }
+        return number_to_text(value);
+    }
+    if (value_is_boolean(value)) {
+        if (value) {
+            return "true";
+        }
+        return "false";
+    }
+    if ((value_is_list(value) || value_is_map(value))) {
+        if (list_contains(seen, value)) {
+            map_set(state, "ok", false);
+            return "";
+        }
+        list_push_back(seen, value);
+        let parts = list_new();
+        if (value_is_list(value)) {
+            list_set(parts, (parts).length, "[");
+            let position = 0;
+            while ((position < (value).length)) {
+                if ((position > 0)) {
+                    list_set(parts, (parts).length, ",");
+                }
+                list_set(parts, (parts).length, json_encode(list_get(value, position), seen, state));
+                if ((!map_get(state, "ok"))) {
+                    return "";
+                }
+                position = (position + 1);
+            }
+            list_set(parts, (parts).length, "]");
+        } else {
+            list_set(parts, (parts).length, "{");
+            let keys = list_sorted(map_keys(value));
+            let index = 0;
+            while ((index < (keys).length)) {
+                if ((index > 0)) {
+                    list_set(parts, (parts).length, ",");
+                }
+                let key = list_get(keys, index);
+                list_set(parts, (parts).length, (json_escape(key) + ":"));
+                list_set(parts, (parts).length, json_encode(map_get(value, key), seen, state));
+                if ((!map_get(state, "ok"))) {
+                    return "";
+                }
+                index = (index + 1);
+            }
+            list_set(parts, (parts).length, "}");
+        }
+        list_pop_back(seen);
+        return list_join(parts, "");
+    }
+    return "null";
+}
+function json_to_text(value) {
+    const seen = new Set();
+    function encode(item) {
+        if (typeof item === "string") return JSON.stringify(item);
+        if (typeof item === "number") { const text = number_to_text(item); return text === "" ? "null" : text; }
+        if (typeof item === "boolean") return item ? "true" : "false";
+        if (item === null || item === undefined) return "null";
+        if (typeof item !== "object") return "null";
+        if (seen.has(item)) throw 0;
+        seen.add(item);
+        let output;
+        if (Array.isArray(item)) {
+            const parts = [];
+            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
+            output = "[" + parts.join(",") + "]";
+        } else {
+            const parts = [];
+            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
+            output = "{" + parts.join(",") + "}";
+        }
+        seen.delete(item);
+        return output;
+    }
+    try { return encode(value); } catch { return ""; }
+}
 function path_join(left, right) {
 
     if ((left === "")) {
@@ -884,7 +1297,7 @@ function lex_tokenize(source, source_name, include_comments) {
             } else if ((text_find("=+-!<>(),;{}", character) >= 0)) {
                 lex_advance(state);
             } else {
-                lex_fail(token, ("unexpected character " + $mini_json_to_text(character)));
+                lex_fail(token, ("unexpected character " + json_to_text(character)));
             }
             map_set(token, "text", text_slice(source, map_get(token, "start"), map_get(state, "position")));
             map_set(token, "end", map_get(state, "position"));
@@ -2079,13 +2492,9 @@ function emit_js_collect_helpers(node, imports, helpers) {
         }
         if (((name === "io_write") || (name === "to_text"))) {
             map_set(helpers, builtin_helper_key("number_to_text"), true);
-            map_set(helpers, builtin_helper_key("json_to_text"), true);
         }
         if ((name === "io_write")) {
             map_set(helpers, builtin_helper_key("to_text"), true);
-        }
-        if ((name === "json_to_text")) {
-            map_set(helpers, builtin_helper_key("number_to_text"), true);
         }
     }
     if (((kind === AST_PROGRAM) || (kind === AST_BLOCK))) {
@@ -2237,6 +2646,11 @@ function emit_js_program(program) {
     }
     return list_join(list_of(shebang, "\"use strict\";\n", import_text, helper_text, list_join(globals, ""), list_join(declarations, ""), emit_js_file_initializers(program)), "");
 }
+function emit_js_set_reference_mode(enabled) {
+
+    reference_mode = enabled;
+    return 0;
+}
 function emit_js_compile(tokens) {
 
     return emit_js_program(parser_ast(tokens));
@@ -2269,72 +2683,6 @@ function process_capture(command, args, directory, input) {
     map_set(options, "input", input);
     map_set(options, "timeout", 30000);
     return $mini_process_spawn(options);
-}
-function result_ok(value, message) {
-
-    let result = map_new();
-    map_set(result, "ok", true);
-    map_set(result, "value", value);
-    map_set(result, "message", message);
-    return result;
-}
-function result_fail(message) {
-
-    let result = map_new();
-    map_set(result, "ok", false);
-    map_set(result, "value", 0);
-    map_set(result, "message", message);
-    return result;
-}
-function result_is_ok(result) {
-
-    if ((!value_is_map(result))) {
-        return false;
-    }
-    return (map_get(result, "ok") === true);
-}
-function result_is_fail(result) {
-
-    return (!result_is_ok(result));
-}
-function result_get_message(result) {
-
-    if ((!value_is_map(result))) {
-        return "";
-    }
-    return map_get(result, "message");
-}
-function result_set_message(result, message) {
-
-    if (value_is_map(result)) {
-        map_set(result, "message", message);
-    }
-    return result;
-}
-function result_get_value(result) {
-
-    if ((!value_is_map(result))) {
-        return 0;
-    }
-    return map_get(result, "value");
-}
-function result_set_value(result, value) {
-
-    if (value_is_map(result)) {
-        map_set(result, "value", value);
-    }
-    return result;
-}
-function json_parse_file(path) {
-
-    if ((!$mini_path_is_exists(path))) {
-        return result_fail(("cannot read " + path));
-    }
-    let parsed = $mini_json_parse(readFileSync(path, "utf8"));
-    if (result_is_fail(parsed)) {
-        return result_fail(("invalid JSON: " + path));
-    }
-    return result_ok(result_get_value(parsed), 0);
 }
 function project_root() {
 
@@ -2499,6 +2847,12 @@ function $mini_file_7() {
 
 }
 function $mini_file_8() {
+
+}
+function $mini_file_9() {
+
+}
+function $mini_file_10() {
     AST_SCHEMA_VERSION = "0.1.0-alpha.1";
     AST_PROGRAM = "Program";
     AST_BLOCK = "Block";
@@ -2517,7 +2871,7 @@ function $mini_file_8() {
     AST_BINARY = "Binary";
     AST_GROUP = "Group";
 }
-function $mini_file_9() {
+function $mini_file_11() {
     builtin_names_list = list_new();
     builtin_name_set = map_new();
     builtin_parameter_kinds = map_new();
@@ -2531,31 +2885,33 @@ function $mini_file_9() {
     builtin_emit_forms = map_new();
     builtin_source_functions = map_new();
 }
-function $mini_file_10() {
+function $mini_file_12() {
     builtin_add("directory_create", "text", "number", "essential", "", "directory_create", "function $mini_directory_create(path) {\n    process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true })\n    return 0;\n}\n", "", "$mini_directory_create({0})");
     builtin_add("directory_list", "text", "list", "essential", "", "directory_list", "function $mini_directory_list(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.readdirSync(path).sort(); } catch { return []; }\n}\n", "", "$mini_directory_list({0})");
 }
-function $mini_file_11() {
+function $mini_file_13() {
     builtin_add("file_read", "text", "text", "essential", "readFileSync", "", "", "", "readFileSync({0}, \"utf8\")");
     builtin_add("file_read_bytes", "text", "list", "essential", "", "file_read_bytes", "function $mini_file_read_bytes(path) {\n    return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));\n}\n", "", "$mini_file_read_bytes({0})");
     builtin_add("file_write", "text,text", "number", "essential", "writeFileSync", "", "", "", "(writeFileSync({0}, {1}, \"utf8\"), 0)");
     builtin_add("file_write_bytes", "text,list", "number", "essential", "", "file_write_bytes", "function $mini_file_write_bytes(path, bytes) {\n    const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : [];\n    process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values))\n    return 0;\n}\n", "", "$mini_file_write_bytes({0}, {1})");
 }
-function $mini_file_12() {
+function $mini_file_14() {
     builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
 }
-function $mini_file_13() {
+function $mini_file_15() {
     builtin_add("io_read_all", "", "text", "essential", "readFileSync", "", "", "", "readFileSync(0, \"utf8\")");
     builtin_add("io_read_bytes", "number", "list", "essential", "", "read_bytes", "function $mini_read_bytes(count) {\n    if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return [];\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(count);\n    const read = fs.readSync(0, buffer, 0, count, null);\n    return Array.from(buffer.subarray(0, read));\n}\n", "", "$mini_read_bytes({0})");
     builtin_add("io_read_line", "", "text", "essential", "", "read_line", "function $mini_read_line() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const buffer = Buffer.alloc(1);\n    const bytes = [];\n    while (true) {\n        const count = fs.readSync(0, buffer, 0, 1, null);\n        if (count === 0) break;\n        if (buffer[0] === 10) break;\n        bytes.push(buffer[0]);\n    }\n    if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop();\n    return Buffer.from(bytes).toString(\"utf8\");\n}\n", "", "$mini_read_line()");
     builtin_add("io_write", "...values", "number", "essential", "writeSync", "io_write", "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) text += $mini_to_text(value);\n    writeSync(1, text);\n    return 0;\n}\n", "", "$mini_io_write({...})");
     builtin_add("io_write_error", "text", "number", "essential", "writeSync", "", "", "", "(writeSync(2, {0}), 0)");
 }
-function $mini_file_14() {
-    builtin_add("json_parse", "text", "map", "performance", "", "json_parse", "function $mini_json_parse(text) {\n    const result = { __proto__: null, ok: false, value: 0 };\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = { __proto__: null };\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    result.ok = true;\n    result.value = clean(parsed);\n    return result;\n}\n", "pure_json_parse", "$mini_json_parse({0})");
-    builtin_add("json_to_text", "unknown", "text", "performance", "", "json_to_text", "function $mini_json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = $mini_number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", "pure_json_to_text", "$mini_json_to_text({0})");
+function $mini_file_16() {
+    builtin_add("json_parse", "text", "map", "performance", "", "", "", "", "");
+    builtin_source_api("json_parse");
+    builtin_add("json_to_text", "unknown", "text", "performance", "", "", "", "", "");
+    builtin_source_api("json_to_text");
 }
-function $mini_file_15() {
+function $mini_file_17() {
     builtin_add("list_copy", "list", "list", "performance", "", "", "", "", "");
     builtin_source_api("list_copy");
     builtin_add("list_get", "unknown,number", "unknown", "representation", "", "", "", "", "");
@@ -2571,7 +2927,7 @@ function $mini_file_15() {
     builtin_add("list_truncate", "list,number", "number", "representation", "", "", "", "", "");
     builtin_source_api("list_truncate");
 }
-function $mini_file_16() {
+function $mini_file_18() {
     builtin_add("map_copy", "map", "map", "performance", "", "", "", "", "");
     builtin_source_api("map_copy");
     builtin_add("map_get", "unknown,text", "unknown", "representation", "", "", "", "", "");
@@ -2587,7 +2943,7 @@ function $mini_file_16() {
     builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "", "", "", 0);
     builtin_source_api("map_set");
 }
-function $mini_file_17() {
+function $mini_file_19() {
     builtin_add("number_add", "unknown,unknown", "number", "performance", "", "", "", "", "");
     builtin_source_api("number_add");
     builtin_add("number_sub", "unknown,unknown", "number", "performance", "", "", "", "", "");
@@ -2611,7 +2967,7 @@ function $mini_file_17() {
     builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "", "");
     builtin_source_api("number_to_text");
 }
-function $mini_file_18() {
+function $mini_file_20() {
     builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
     builtin_add("path_is_directory", "text", "boolean", "essential", "", "path_is_directory", "function $mini_path_is_directory(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.statSync(path).isDirectory(); } catch { return false; }\n}\n", "", "$mini_path_is_directory({0})");
     builtin_add("path_is_exists", "text", "boolean", "essential", "", "path_is_exists", "function $mini_path_is_exists(path) {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    try { return fs.existsSync(path); } catch { return false; }\n}\n", "", "$mini_path_is_exists({0})");
@@ -2619,14 +2975,14 @@ function $mini_file_18() {
     builtin_add("path_remove", "text", "number", "essential", "", "path_remove", "function $mini_path_remove(path) {\n    process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true })\n    return 0;\n}\n", "", "$mini_path_remove({0})");
     builtin_add("path_temp_directory", "", "text", "essential", "", "path_temp_directory", "function $mini_path_temp_directory() {\n    const fs = process.getBuiltinModule(\"node:fs\");\n    const os = process.getBuiltinModule(\"node:os\");\n    return fs.mkdtempSync(os.tmpdir() + \"/mini-\");\n}\n", "", "$mini_path_temp_directory()");
 }
-function $mini_file_19() {
+function $mini_file_21() {
     builtin_add("process_env", "text", "text", "essential", "", "", "", "", "(process.env[{0}] ?? \"\")");
     builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "process.execPath");
     builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "(process.exit({0}), 0)");
     builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "process.argv[1]");
     builtin_add("process_spawn", "map", "map", "essential", "", "process_spawn", "function $mini_process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", "", "$mini_process_spawn({0})");
 }
-function $mini_file_20() {
+function $mini_file_22() {
     builtin_add("text_code", "text", "number", "representation", "", "", "", "", "");
     builtin_source_api("text_code");
     builtin_add("text_find", "text,text", "number", "performance", "", "", "", "", "");
@@ -2646,23 +3002,23 @@ function $mini_file_20() {
     builtin_add("text_to_bytes", "text", "list", "performance", "", "", "", "", "");
     builtin_source_api("text_to_bytes");
 }
-function $mini_file_21() {
+function $mini_file_23() {
     builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
 }
-function $mini_file_22() {
-    builtin_add("to_text", "any_value", "text", "essential", "", "to_text", "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return $mini_json_to_text(value);\n    return String(value);\n}\n", "", "$mini_to_text({0})");
+function $mini_file_24() {
+    builtin_add("to_text", "any_value", "text", "essential", "", "to_text", "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return json_to_text(value);\n    return String(value);\n}\n", "", "$mini_to_text({0})");
     builtin_add("value_kind", "unknown", "text", "essential", "", "value_kind", "function $mini_value_kind(value) {\n    if (typeof value === \"string\") return \"text\";\n    if (typeof value === \"number\") return \"number\";\n    if (typeof value === \"boolean\") return \"boolean\";\n    if (Array.isArray(value)) return \"list\";\n    if (value !== null && typeof value === \"object\") return \"map\";\n    return \"other\";\n}\n", "", "$mini_value_kind({0})");
 }
-function $mini_file_23() {
+function $mini_file_25() {
     reference_mode = false;
 }
-function $mini_file_24() {
+function $mini_file_26() {
 
 }
-function $mini_file_25() {
+function $mini_file_27() {
     js_host_functions = map_new();
 }
-function $mini_file_26() {
+function $mini_file_28() {
     emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n", false, "");
     emit_js_host_function_add("number_sub", "function number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n", false, "");
     emit_js_host_function_add("number_min", "function number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.min(a, b);\n}\n", false, "");
@@ -2675,7 +3031,7 @@ function $mini_file_26() {
     emit_js_host_function_add("number_pow", "function number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", false, "");
     emit_js_host_function_add("number_to_text", "function number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", false, "");
 }
-function $mini_file_27() {
+function $mini_file_29() {
     emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");
     emit_js_host_function_add("list_get", "function list_get(items, index) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    return index >= 0 && index < items.length && index in items ? items[index] : 0;\n}\n", true, "");
     emit_js_host_function_add("list_length", "function list_length(items) { return Array.isArray(items) ? items.length : 0; }\n", true, "({0}).length");
@@ -2684,7 +3040,7 @@ function $mini_file_27() {
     emit_js_host_function_add("list_copy", "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n", false, "");
     emit_js_host_function_add("list_join", "function list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", false, "");
 }
-function $mini_file_28() {
+function $mini_file_30() {
     emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");
     emit_js_host_function_add("map_get", "function map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;\n}\n", true, "");
     emit_js_host_function_add("map_set", "function map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") items[key] = value;\n    return 0;\n}\n", true, "");
@@ -2693,7 +3049,7 @@ function $mini_file_28() {
     emit_js_host_function_add("map_delete", "function map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") delete items[key];\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("map_copy", "function map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", false, "");
 }
-function $mini_file_29() {
+function $mini_file_31() {
     emit_js_host_function_add("text_code", "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n", true, "");
     emit_js_host_function_add("text_find", "function text_find(source, needle) { return typeof source === \"string\" && typeof needle === \"string\" ? source.indexOf(needle) : -1; }\n", false, "");
     emit_js_host_function_add("text_from_bytes", "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n", false, "");
@@ -2704,14 +3060,9 @@ function $mini_file_29() {
     emit_js_host_function_add("text_split", "function text_split(source, divider) { if (typeof source !== \"string\" || typeof divider !== \"string\") return []; if (divider === \"\") return [source]; return source.split(divider); }\n", false, "");
     emit_js_host_function_add("text_to_bytes", "function text_to_bytes(source) { return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : []; }\n", false, "");
 }
-function $mini_file_30() {
-
-}
-function $mini_file_31() {
-
-}
 function $mini_file_32() {
-
+    emit_js_host_function_add("json_parse", "function json_parse(text) {\n    const result = Object.create(null);\n    result.ok = false;\n    result.value = 0;\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (typeof item === \"number\") { if (!Number.isSafeInteger(item)) throw 0; return item; }\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = Object.create(null);\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    try { result.value = clean(parsed); } catch { return result; }\n    result.ok = true;\n    return result;\n}\n", false, "");
+    emit_js_host_function_add("json_to_text", "function json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", false, "");
 }
 function $mini_file_33() {
 
@@ -2729,6 +3080,9 @@ function $mini_file_37() {
 
 }
 function $mini_file_38() {
+
+}
+function $mini_file_39() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -2771,5 +3125,6 @@ function $mini_main() {
     $mini_file_36();
     $mini_file_37();
     $mini_file_38();
+    $mini_file_39();
 }
 $mini_main();

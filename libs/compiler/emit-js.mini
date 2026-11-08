@@ -199,13 +199,9 @@ fn emit_js_collect_helpers(node, imports, helpers) {
         }
         if name == "io_write" || name == "to_text" {
             map_set(helpers, builtin_helper_key("number_to_text"), true);
-            map_set(helpers, builtin_helper_key("json_to_text"), true);
         }
         if name == "io_write" {
             map_set(helpers, builtin_helper_key("to_text"), true);
-        }
-        if name == "json_to_text" {
-            map_set(helpers, builtin_helper_key("number_to_text"), true);
         }
     }
     if kind == AST_PROGRAM || kind == AST_BLOCK {
@@ -379,6 +375,11 @@ fn emit_js_program(program) {
 }
 
 /// Parse one prepared token list once and return complete JavaScript source.
+fn emit_js_set_reference_mode(enabled) {
+    reference_mode = enabled;
+    return 0;
+}
+
 fn emit_js_compile(tokens) {
     return emit_js_program(parser_ast(tokens));
 }

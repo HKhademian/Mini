@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Compose the mini compiler from its source files.
 
+import "common/json";
 import "common/number";
 import "common/list";
 import "common/map";
@@ -168,20 +169,6 @@ fn main(args) {
         file_write(header, emit_c_header(path_basename(header)));
         file_write(target, code);
         return 0;
-    }
-    if reference_mode {
-        root := path_parent(path_parent(process_script_path()));
-        pure_path := root + "/libs/pure/reference.mini";
-        pure_tokens := lex_expand_imports(
-            lex_tokenize(file_read(pure_path), "libs/pure/reference.mini", false),
-            pure_path,
-            seen
-        );
-        combined := list_new();
-        compiler_append_body(combined, expanded);
-        compiler_append_body(combined, pure_tokens);
-        list_set(combined, list_length(combined), list_get(expanded, list_length(expanded) - 1));
-        expanded = combined;
     }
     if program_only {
         file_write(target, emit_js_compile_program_only(expanded));

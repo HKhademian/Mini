@@ -1,5 +1,6 @@
 /// Parse an array and read an item.
 
+import "common/json";
 import "common/list";
 import "common/map";
 import "common/io";

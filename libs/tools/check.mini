@@ -8,6 +8,7 @@ import "common/io";
 import "common/value";
 import "common/list";
 import "common/text";
+import "common/json";
 import "./cases";
 
 /// Report a check failure and stop.

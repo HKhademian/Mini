@@ -10,7 +10,7 @@ builtin_add(
     "essential",
     "",
     "to_text",
-    "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return $mini_json_to_text(value);\n    return String(value);\n}\n",
+    "function $mini_to_text(value) {\n    if (typeof value === \"string\") return value;\n    if (typeof value === \"number\") return $mini_number_to_text(value);\n    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n    if (value !== null && typeof value === \"object\") return json_to_text(value);\n    return String(value);\n}\n",
     "",
     "$mini_to_text({0})"
 );

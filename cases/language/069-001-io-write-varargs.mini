@@ -1,5 +1,6 @@
 /// Write mixed values through the variadic I/O helpers.
 
+import "common/json";
 import "common/text";
 import "common/number";
 import "common/list";
