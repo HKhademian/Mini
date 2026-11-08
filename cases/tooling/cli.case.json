@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "cli-version.stdout",
-        "hash": "sha256:1272cd78e4a42a354a66888bab98860e66fc037490c62b273335435ca72c9117"
+        "hash": "sha256:54e266a966e359f1072c0ead30c2d322d5af8653222ea5add566ff0fc48238a2"
       },
       "stderr": {
         "text": ""

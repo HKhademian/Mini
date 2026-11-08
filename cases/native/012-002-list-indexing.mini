@@ -1,0 +1,9 @@
+include "common/list.mini";
+
+items := list_new();
+list_set(items, 2, "c");
+io_write(list_length(items), ":", list_get(items, 0), ":", list_get(items, 1), ":", list_get(items, -1), "\n");
+list_set(items, -2, "b");
+list_set(items, -5, "ignored");
+list_set(items, 0, false);
+io_write(items, "\n", list_get(items, 10), ",", list_get(items, -5), "\n");

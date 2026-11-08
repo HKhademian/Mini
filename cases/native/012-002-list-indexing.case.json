@@ -1,0 +1,23 @@
+{
+  "id": "native.c-list-indexing",
+  "kind": "feature",
+  "target": "c",
+  "source": "012-002-list-indexing.mini",
+  "features": [
+    "target.c",
+    "list.value",
+    "list.get",
+    "list.set",
+    "list.length",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "sparse-assignment-and-negative-indexing",
+      "stdin": { "text": "" },
+      "stdout": { "text": "3:0:0:c\n[false,\"b\",\"c\"]\n0,0\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}
