@@ -1,0 +1,16 @@
+{
+  "id": "native.c-list-reverse-helper",
+  "kind": "feature",
+  "target": "c",
+  "source": "012-005-list-reverse-helper.mini",
+  "features": ["target.c", "number.subtraction", "list.reverse", "function.while"],
+  "cases": [
+    {
+      "name": "subtraction-and-mini-helper",
+      "stdin": { "text": "" },
+      "stdout": { "text": "9,-3,2\n[3,2,1]\n[1,2,3]\n[]\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

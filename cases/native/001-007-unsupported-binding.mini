@@ -1,2 +1,3 @@
 io_write("must not run\n");
-value := 1 - 2;
+x := 2;
+value := -x;

@@ -1,0 +1,6 @@
+include "common/list.mini";
+
+x := 3;
+io_write(10 - x + 2, ",", 0 - x, ",", 1 - -1, "\n");
+items := list_of(1, 2, 3);
+io_write(list_reverse(items), "\n", items, "\n", list_reverse(list_new()), "\n");

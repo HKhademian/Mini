@@ -1,3 +1,3 @@
-001-007-unsupported-binding.mini:2:12: C target supports only bindings and top-level io_write with literal or binding values
-value := 1 - 2;
-           ^
+001-007-unsupported-binding.mini:3:11: C target supports only bindings and top-level io_write with literal or binding values
+value := -x;
+          ^

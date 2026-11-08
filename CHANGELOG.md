@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.33 / compiler 0.4.0-alpha.32 / bootstrap 0.2.0-alpha.34:
+  lower binary numeric subtraction and compile the Mini `list_reverse` helper for C.
+
 - mini 0.2.0-alpha.32 / compiler 0.4.0-alpha.31 / bootstrap 0.2.0-alpha.33:
   lower `while` loops in function bodies and compile the Mini `list_contains`
   helper for C, including its early returns.

@@ -33,13 +33,13 @@ The first accepted native slice is top-level io_write calls with zero or more
 ASCII text literals and safe-integer literals (including one unary minus).
 Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
-number addition, text joining, boolean values and logic are supported;
+number addition and subtraction, text joining, boolean values and logic are supported;
 numeric ordering, scalar equality, braced if/else blocks, and while loops
 are supported. Initial named functions support parameters, returns, output calls,
 nested calls, recursion, conditional branching (`if`/`else`), and stack-local
 bindings. List values support construction (`list_new`, `list_of`), front/back
 push and pop, truncation, length, indexed reads and writes, shallow copying,
-text joining, `list_contains` from its Mini helper, and JSON output through
+text joining, the Mini helpers `list_contains` and `list_reverse`, and JSON output through
 `io_write`. Sparse assignment fills skipped positions with numeric zero.
 C output is written only after
 the whole source passes shared language checks and native subset validation.

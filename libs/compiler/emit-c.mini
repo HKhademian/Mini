@@ -20,7 +20,7 @@ fn emit_c_native_list_call(name) {
 /// Return whether an included list helper definition should be skipped in C.
 fn emit_c_skip_list_definition(name) {
     return emit_c_native_list_call(name) || name == "list_has_text" || name == "list_join_from"
-        || name == "list_reverse" || name == "list_sorted"
+        || name == "list_sorted"
         || name == "list_is_text" || name == "list_rest" || name == "value_is_text"
         || name == "value_is_number" || name == "value_is_boolean" || name == "value_is_list"
         || name == "value_is_map";
@@ -505,18 +505,23 @@ fn emit_c_unary(parser, bindings, binding_orders, destination) {
     return emit_c_binding_value(parser, bindings, binding_orders, destination);
 }
 
-/// Lower addition in left-to-right order.
+/// Lower addition and numeric subtraction in left-to-right order.
 fn emit_c_addition(parser, bindings, binding_orders, destination) {
     body := emit_c_unary(parser, bindings, binding_orders, destination);
-    while map_get(parser_token(parser), "text") == "+" {
-        parser_take(parser);
+    while map_get(parser_token(parser), "text") == "+" || map_get(parser_token(parser), "text") == "-" {
+        operator := map_get(parser_take(parser), "text");
         index := map_get(parser, "c_temp");
         map_set(parser, "c_temp", index + 1);
         right := "tmp" + number_to_text(index);
         body = body + "    MINI_ID(value) " + right + ";\n"
             + emit_c_unary(parser, bindings, binding_orders, right);
-        map_set(parser, "c_add_used", true);
-        body = body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) return 1;\n";
+        if operator == "+" {
+            map_set(parser, "c_add_used", true);
+            body = body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) return 1;\n";
+        } else {
+            body = body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) return 1;\n"
+                + "    " + destination + ".number -= " + right + ".number;\n";
+        }
     }
     return body;
 }

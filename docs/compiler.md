@@ -13,14 +13,14 @@ boolean values, comments,
 an entry shebang, and empty programs. Numbers allow one unary minus and the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
 normalized; negative zero prints `0`. Bindings support declarations, reassignment,
-copies, output, number addition, and text joining. Addition supports grouping
-and chaining; numeric ordering and scalar equality support numbers, text, and
+copies, output, number addition and subtraction, and text joining. Addition and
+subtraction support grouping and chaining; numeric ordering and scalar equality support numbers, text, and
 booleans as applicable. Boolean `!`, `&&`, and `||` honor precedence and
 short-circuiting. Braced `if`, `else if`, and `else` blocks support
 nesting, local shadowing, and assignments. Braced `while` loops reevaluate
 their condition before each iteration.
 Unary minus applies only to number literals. Mixed-kind addition
-is unsupported at runtime; subtraction and other arithmetic remain unsupported.
+is unsupported at runtime; other arithmetic remains unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.
 Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
@@ -93,7 +93,7 @@ front/back push and pop, `list_truncate`, `list_length`, `list_get`, and `list_s
 It also supports shallow `list_copy` and `list_join`, which inserts separators
 between positions and contributes text values. `io_write` serializes lists as
 JSON, including nested lists and text escaping.
-`list_contains` is compiled from its Mini library definition. Other common list
+`list_contains` and `list_reverse` are compiled from their Mini library definitions. Other common list
 algorithms remain unavailable to C for now.
 JSON output rejects nesting deeper than 128. Generated execution owns these lists
 through cleanup at program exit. `fn_args()` remains pending for C.
