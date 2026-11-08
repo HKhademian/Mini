@@ -46,7 +46,8 @@ fn emit_js_expression(node) {
         return "(" + map_get(node, "operator") + emit_js_expression(map_get(node, "operand")) + ")";
     }
     if kind == AST_BINARY {
-        return "(" + emit_js_expression(map_get(node, "left")) + " " + emit_js_operator(map_get(node, "operator")) + " " + emit_js_expression(map_get(node, "right")) + ")";
+        return "(" + emit_js_expression(map_get(node, "left")) + " " + emit_js_operator(map_get(node, "operator")) + " "
+            + emit_js_expression(map_get(node, "right")) + ")";
     }
     if kind == AST_CALL {
         argument_codes := emit_js_arguments(map_get(node, "arguments"));
@@ -75,9 +76,9 @@ fn emit_js_block(node) {
     body := emit_js_statements(map_get(node, "statements"));
     indented := indent_output(body);
     if indented == "" {
-        return "{\n}";
+        return list_join(list_of("{", "}"), "\n");
     }
-    return "{\n" + indented + "\n}";
+    return list_join(list_of("{", indented, "}"), "\n");
 }
 
 /// Emit one function body, including capture and fallthrough handling.
@@ -103,7 +104,8 @@ fn emit_js_function(node) {
         list_set(parameters, list_length(parameters), map_get(list_get(nodes, position), "name"));
         position = position + 1;
     }
-    return "function " + map_get(node, "name") + "(" + list_join(parameters, ", ") + ") " + emit_js_function_body(node) + "\n";
+    return "function " + map_get(node, "name") + "(" + list_join(parameters, ", ") + ") " + emit_js_function_body(node)
+        + "\n";
 }
 
 /// Emit one statement node.
@@ -131,7 +133,12 @@ fn emit_js_statement(node) {
         return map_get(node, "name") + " = " + emit_js_expression(map_get(node, "value")) + ";\n";
     }
     if kind == AST_IF {
-        output := "if (" + emit_js_expression(map_get(node, "condition")) + ") " + emit_js_block(map_get(node, "consequent"));
+        output := "if (" + emit_js_expression(map_get(node, "condition")) + ") " + emit_js_block(
+            map_get(
+                node,
+                "consequent"
+            )
+        );
         alternate := map_get(node, "alternate");
         if alternate != 0 {
             if map_get(alternate, "node_kind") == AST_IF {
@@ -142,20 +149,21 @@ fn emit_js_statement(node) {
         return output + "\n";
     }
     if kind == AST_WHILE {
-        return "while (" + emit_js_expression(map_get(node, "condition")) + ") " + emit_js_block(map_get(node, "body")) + "\n";
+        return "while (" + emit_js_expression(map_get(node, "condition")) + ") " + emit_js_block(map_get(node, "body"))
+            + "\n";
     }
     return "";
 }
 
 /// Emit a list of statement nodes in source order.
 fn emit_js_statements(nodes) {
-    output := "";
+    parts := list_new();
     position := 0;
     while position < list_length(nodes) {
-        output = output + emit_js_statement(list_get(nodes, position));
+        list_set(parts, list_length(parts), emit_js_statement(list_get(nodes, position)));
         position = position + 1;
     }
-    return output;
+    return list_join(parts, "");
 }
 
 /// Register target helper dependencies used anywhere in an AST subtree.
@@ -255,41 +263,43 @@ fn emit_js_import_names(imports) {
 
 /// Emit a source file's top-level executable statements.
 fn emit_js_file_body(nodes, file) {
-    output := "";
+    parts := list_new();
     position := 0;
     while position < list_length(nodes) {
         node := list_get(nodes, position);
         if map_get(node, "file") == file && map_get(node, "node_kind") != AST_FUNCTION {
-            output = output + emit_js_statement(node);
+            list_set(parts, list_length(parts), emit_js_statement(node));
         }
         position = position + 1;
     }
-    return output;
+    return list_join(parts, "");
 }
 
 /// Emit file initializer wrappers and their dependency-first entry point.
 fn emit_js_file_initializers(program) {
-    output := "";
-    calls := "";
+    wrappers := list_new();
+    calls := list_new();
     files := map_get(program, "files");
     body := map_get(program, "body");
     index := 0;
     while index < list_length(files) {
         name := "$mini_file_" + number_to_text(index);
         code := emit_js_file_body(body, list_get(files, index));
-        output = output + "function " + name + "() {\n" + indent_output(code) + "\n}\n";
-        calls = calls + "    " + name + "();\n";
+        wrapper_lines := list_of("function " + name + "() {", indent_output(code), "}", "");
+        list_set(wrappers, list_length(wrappers), list_join(wrapper_lines, "\n"));
+        list_set(calls, list_length(calls), "    " + name + "();");
         index = index + 1;
     }
     if list_length(files) > 0 {
-        output = output + "function $mini_main() {\n" + calls + "}\n$mini_main();\n";
+        main_lines := list_of("function $mini_main() {", list_join(calls, "\n"), "}", "$mini_main();", "");
+        list_set(wrappers, list_length(wrappers), list_join(main_lines, "\n"));
     }
-    return output;
+    return list_join(wrappers, "");
 }
 
 /// Emit the program without helper/import wrappers, retaining main-source statements only.
 fn emit_js_program_only(program) {
-    output := "";
+    output := list_new();
     body := map_get(program, "body");
     main_source := map_get(program, "main_source");
     position := 0;
@@ -297,14 +307,18 @@ fn emit_js_program_only(program) {
         node := list_get(body, position);
         if map_get(node, "source") == main_source {
             if map_get(node, "node_kind") == AST_BINDING && map_get(node, "top_level") {
-                output = output + "let " + map_get(node, "name") + " = " + emit_js_expression(map_get(node, "initializer")) + ";\n";
+                list_set(
+                    output,
+                    list_length(output),
+                    "let " + map_get(node, "name") + " = " + emit_js_expression(map_get(node, "initializer")) + ";\n"
+                );
             } else {
-                output = output + emit_js_statement(node);
+                list_set(output, list_length(output), emit_js_statement(node));
             }
         }
         position = position + 1;
     }
-    return output;
+    return list_join(output, "");
 }
 
 /// Emit a complete JavaScript program from the checked shared AST.
@@ -313,15 +327,15 @@ fn emit_js_program(program) {
     helpers := map_new();
     body := map_get(program, "body");
     position := 0;
-    globals := "";
-    declarations := "";
+    globals := list_new();
+    declarations := list_new();
     while position < list_length(body) {
         node := list_get(body, position);
         emit_js_collect_helpers(node, imports, helpers);
         if map_get(node, "node_kind") == AST_FUNCTION {
-            declarations = declarations + emit_js_function(node);
+            list_set(declarations, list_length(declarations), emit_js_function(node));
         } else if map_get(node, "node_kind") == AST_BINDING && map_get(node, "top_level") {
-            globals = globals + "let " + map_get(node, "name") + ";\n";
+            list_set(globals, list_length(globals), "let " + map_get(node, "name") + ";\n");
         }
         position = position + 1;
     }
@@ -334,7 +348,18 @@ fn emit_js_program(program) {
     if map_get(program, "has_shebang") {
         shebang = "#!/usr/bin/env node\n";
     }
-    return shebang + "\"use strict\";\n" + import_text + helper_text + globals + declarations + emit_js_file_initializers(program);
+    return list_join(
+        list_of(
+            shebang,
+            "\"use strict\";\n",
+            import_text,
+            helper_text,
+            list_join(globals, ""),
+            list_join(declarations, ""),
+            emit_js_file_initializers(program)
+        ),
+        ""
+    );
 }
 
 /// Parse and emit one token list for the full JavaScript target.

@@ -40,6 +40,12 @@ AST. See the
 [migration plan](../.agents/plans/compiler-ast-backends.md) and
 [AST definitions](../libs/compiler/ast.mini).
 
+Emitters and other source generators collect output fragments or lines in
+lists and join them at the output boundary. For line-oriented output, an empty
+final list item represents a trailing newline; multiple empty items represent
+multiple trailing newlines. Avoid growing large generated strings with repeated
+concatenation in loops.
+
 ```text
 ./bin/mini compile --target c cases/native/001-001-write-literal.mini /tmp/mini-hello.c
 cc -std=c11 -E /tmp/mini-hello.c -o /tmp/mini-hello.i

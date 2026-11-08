@@ -19,8 +19,6 @@ include "./builtins/text.mini";
 include "./builtins/time.mini";
 include "./builtins/value.mini";
 
-
-
 /// Return the builtin names.
 fn builtin_names() {
     return list_copy(builtin_names_list);
@@ -98,16 +96,16 @@ fn builtin_helper_order_keys() {
 /// Return the used helper blocks, ordered by registration.
 fn builtin_used_helper_blocks(helpers) {
     order := builtin_helper_order;
-    output := "";
+    parts := list_new();
     position := 0;
     while position < list_length(order) {
         key := list_get(order, position);
         if map_has(helpers, key) {
-            output = output + builtin_helper_text(key);
+            list_set(parts, list_length(parts), builtin_helper_text(key));
         }
         position = position + 1;
     }
-    return output;
+    return list_join(parts, "");
 }
 
 /// Return the adapter text for a helper key.
@@ -120,18 +118,20 @@ fn builtin_helper_text(key) {
 
 /// Replace every occurrence of a template token.
 fn builtin_replace(source, needle, replacement) {
-    output := "";
+    parts := list_new();
     position := 0;
     while position < text_length(source) {
         rest := text_slice(source, position, text_length(source));
         found := text_find(rest, needle);
         if found < 0 {
-            return output + text_slice(source, position, text_length(source));
+            list_set(parts, list_length(parts), text_slice(source, position, text_length(source)));
+            return list_join(parts, "");
         }
-        output = output + text_slice(source, position, position + found) + replacement;
+        list_set(parts, list_length(parts), text_slice(source, position, position + found));
+        list_set(parts, list_length(parts), replacement);
         position = position + found + text_length(needle);
     }
-    return output;
+    return list_join(parts, "");
 }
 
 /// Substitute positional arguments into an emit template.

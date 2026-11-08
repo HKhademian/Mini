@@ -64,13 +64,13 @@ fn pure_text_slice(source, start, end) {
     if end <= start {
         return "";
     }
-    output := "";
+    parts := list_new();
     position := start;
     while position < end {
-        output = output + text_get(source, position);
+        list_set(parts, list_length(parts), text_get(source, position));
         position = position + 1;
     }
-    return output;
+    return list_join(parts, "");
 }
 
 /// Reference text_split for text divider and text input.

@@ -70,21 +70,21 @@ fn pure_text_from_bytes(bytes) {
     if !value_is_list(bytes) {
         return "";
     }
-    output := "";
+    parts := list_new();
     position := 0;
     while position < list_length(bytes) {
         first := pure_byte_at(bytes, position);
         if first < 128 {
-            output = output + text_from_code(first);
+            list_set(parts, list_length(parts), text_from_code(first));
             position = position + 1;
         } else {
             if first >= 194 && first <= 223 && position + 1 < list_length(bytes) {
                 second := pure_byte_at(bytes, position + 1);
                 if second >= 128 && second <= 191 {
-                    output = output + text_from_code(number_mul(first - 192, 64) + (second - 128));
+                    list_set(parts, list_length(parts), text_from_code(number_mul(first - 192, 64) + (second - 128)));
                     position = position + 2;
                 } else {
-                    output = output + text_from_code(65533);
+                    list_set(parts, list_length(parts), text_from_code(65533));
                     position = position + 1;
                 }
             } else {
@@ -92,10 +92,14 @@ fn pure_text_from_bytes(bytes) {
                     second := pure_byte_at(bytes, position + 1);
                     third := pure_byte_at(bytes, position + 2);
                     if second >= 128 && second <= 191 && third >= 128 && third <= 191 {
-                        output = output + text_from_code(number_mul(first - 224, 4096) + number_mul(second - 128, 64) + (third - 128));
+                        list_set(
+                            parts,
+                            list_length(parts),
+                            text_from_code(number_mul(first - 224, 4096) + number_mul(second - 128, 64) + (third - 128))
+                        );
                         position = position + 3;
                     } else {
-                        output = output + text_from_code(65533);
+                        list_set(parts, list_length(parts), text_from_code(65533));
                         position = position + 1;
                     }
                 } else {
@@ -105,19 +109,26 @@ fn pure_text_from_bytes(bytes) {
                         fourth := pure_byte_at(bytes, position + 3);
                         if second >= 128 && second <= 191 && third >= 128 && third <= 191
                             && fourth >= 128 && fourth <= 191 {
-                            output = output + text_from_code(number_mul(first - 240, 262144) + number_mul(second - 128, 4096) + number_mul(third - 128, 64) + (fourth - 128));
+                            list_set(
+                                parts,
+                                list_length(parts),
+                                text_from_code(
+                                    number_mul(first - 240, 262144) + number_mul(second - 128, 4096)
+                                + number_mul(third - 128, 64) + (fourth - 128)
+                                )
+                            );
                             position = position + 4;
                         } else {
-                            output = output + text_from_code(65533);
+                            list_set(parts, list_length(parts), text_from_code(65533));
                             position = position + 1;
                         }
                     } else {
-                        output = output + text_from_code(65533);
+                        list_set(parts, list_length(parts), text_from_code(65533));
                         position = position + 1;
                     }
                 }
             }
         }
     }
-    return output;
+    return list_join(parts, "");
 }

@@ -257,21 +257,16 @@ function split_lines(source) {
 function indent_output(output) {
 
     let lines = split_lines(output);
-    let result = "";
-    let first = true;
+    let result = [];
     let position = 0;
     while ((position < (lines).length)) {
         let line = $mini_list_get(lines, position);
         if (((line).length > 0)) {
-            if ((!first)) {
-                result = (result + "\n");
-            }
-            result = ((result + "    ") + line);
-            first = false;
+            $mini_list_set(result, (result).length, ("    " + line));
         }
         position = (position + 1);
     }
-    return result;
+    return $mini_list_join(result, "\n");
 }
 function text_ends_with(source, suffix) {
 
@@ -655,7 +650,8 @@ function diagnostic_indent(token) {
 }
 function diagnostic_text(token, label) {
 
-    return ((((((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text($mini_map_get(token, "column"))) + ": ") + label) + "\n") + $mini_map_get(token, "context")) + "\n") + diagnostic_indent(token)) + "^\n");
+    let lines = list_of((((((($mini_map_get(token, "source") + ":") + $mini_number_to_text($mini_map_get(token, "line"))) + ":") + $mini_number_to_text($mini_map_get(token, "column"))) + ": ") + label), $mini_map_get(token, "context"), (diagnostic_indent(token) + "^"), "");
+    return $mini_list_join(lines, "\n");
 }
 function diagnostic_fail(token, message) {
 
@@ -1020,16 +1016,16 @@ function builtin_helper_order_keys() {
 function builtin_used_helper_blocks(helpers) {
 
     let order = builtin_helper_order;
-    let output = "";
+    let parts = [];
     let position = 0;
     while ((position < (order).length)) {
         let key = $mini_list_get(order, position);
         if ($mini_map_has(helpers, key)) {
-            output = (output + builtin_helper_text(key));
+            $mini_list_set(parts, (parts).length, builtin_helper_text(key));
         }
         position = (position + 1);
     }
-    return output;
+    return $mini_list_join(parts, "");
 }
 function builtin_helper_text(key) {
 
@@ -1040,18 +1036,20 @@ function builtin_helper_text(key) {
 }
 function builtin_replace(source, needle, replacement) {
 
-    let output = "";
+    let parts = [];
     let position = 0;
     while ((position < (source).length)) {
         let rest = $mini_text_slice(source, position, (source).length);
         let found = $mini_text_find(rest, needle);
         if ((found < 0)) {
-            return (output + $mini_text_slice(source, position, (source).length));
+            $mini_list_set(parts, (parts).length, $mini_text_slice(source, position, (source).length));
+            return $mini_list_join(parts, "");
         }
-        output = ((output + $mini_text_slice(source, position, (position + found))) + replacement);
+        $mini_list_set(parts, (parts).length, $mini_text_slice(source, position, (position + found)));
+        $mini_list_set(parts, (parts).length, replacement);
         position = ((position + found) + (needle).length);
     }
-    return output;
+    return $mini_list_join(parts, "");
 }
 function builtin_apply(form, args) {
 
@@ -1794,9 +1792,9 @@ function emit_js_block(node) {
     let body = emit_js_statements($mini_map_get(node, "statements"));
     let indented = indent_output(body);
     if ((indented === "")) {
-        return "{\n}";
+        return $mini_list_join(list_of("{", "}"), "\n");
     }
-    return (("{\n" + indented) + "\n}");
+    return $mini_list_join(list_of("{", indented, "}"), "\n");
 }
 function emit_js_function_body(node) {
 
@@ -1864,13 +1862,13 @@ function emit_js_statement(node) {
 }
 function emit_js_statements(nodes) {
 
-    let output = "";
+    let parts = [];
     let position = 0;
     while ((position < (nodes).length)) {
-        output = (output + emit_js_statement($mini_list_get(nodes, position)));
+        $mini_list_set(parts, (parts).length, emit_js_statement($mini_list_get(nodes, position)));
         position = (position + 1);
     }
-    return output;
+    return $mini_list_join(parts, "");
 }
 function emit_js_collect_helpers(node, imports, helpers) {
 
@@ -1967,39 +1965,41 @@ function emit_js_import_names(imports) {
 }
 function emit_js_file_body(nodes, file) {
 
-    let output = "";
+    let parts = [];
     let position = 0;
     while ((position < (nodes).length)) {
         let node = $mini_list_get(nodes, position);
         if ((($mini_map_get(node, "file") === file) && ($mini_map_get(node, "node_kind") !== AST_FUNCTION))) {
-            output = (output + emit_js_statement(node));
+            $mini_list_set(parts, (parts).length, emit_js_statement(node));
         }
         position = (position + 1);
     }
-    return output;
+    return $mini_list_join(parts, "");
 }
 function emit_js_file_initializers(program) {
 
-    let output = "";
-    let calls = "";
+    let wrappers = [];
+    let calls = [];
     let files = $mini_map_get(program, "files");
     let body = $mini_map_get(program, "body");
     let index = 0;
     while ((index < (files).length)) {
         let name = ("$mini_file_" + $mini_number_to_text(index));
         let code = emit_js_file_body(body, $mini_list_get(files, index));
-        output = (((((output + "function ") + name) + "() {\n") + indent_output(code)) + "\n}\n");
-        calls = (((calls + "    ") + name) + "();\n");
+        let wrapper_lines = list_of((("function " + name) + "() {"), indent_output(code), "}", "");
+        $mini_list_set(wrappers, (wrappers).length, $mini_list_join(wrapper_lines, "\n"));
+        $mini_list_set(calls, (calls).length, (("    " + name) + "();"));
         index = (index + 1);
     }
     if (((files).length > 0)) {
-        output = (((output + "function $mini_main() {\n") + calls) + "}\n$mini_main();\n");
+        let main_lines = list_of("function $mini_main() {", $mini_list_join(calls, "\n"), "}", "$mini_main();", "");
+        $mini_list_set(wrappers, (wrappers).length, $mini_list_join(main_lines, "\n"));
     }
-    return output;
+    return $mini_list_join(wrappers, "");
 }
 function emit_js_program_only(program) {
 
-    let output = "";
+    let output = [];
     let body = $mini_map_get(program, "body");
     let main_source = $mini_map_get(program, "main_source");
     let position = 0;
@@ -2007,14 +2007,14 @@ function emit_js_program_only(program) {
         let node = $mini_list_get(body, position);
         if (($mini_map_get(node, "source") === main_source)) {
             if ((($mini_map_get(node, "node_kind") === AST_BINDING) && $mini_map_get(node, "top_level"))) {
-                output = (((((output + "let ") + $mini_map_get(node, "name")) + " = ") + emit_js_expression($mini_map_get(node, "initializer"))) + ";\n");
+                $mini_list_set(output, (output).length, (((("let " + $mini_map_get(node, "name")) + " = ") + emit_js_expression($mini_map_get(node, "initializer"))) + ";\n"));
             } else {
-                output = (output + emit_js_statement(node));
+                $mini_list_set(output, (output).length, emit_js_statement(node));
             }
         }
         position = (position + 1);
     }
-    return output;
+    return $mini_list_join(output, "");
 }
 function emit_js_program(program) {
 
@@ -2022,15 +2022,15 @@ function emit_js_program(program) {
     let helpers = ({ __proto__: $mini_map_proto });
     let body = $mini_map_get(program, "body");
     let position = 0;
-    let globals = "";
-    let declarations = "";
+    let globals = [];
+    let declarations = [];
     while ((position < (body).length)) {
         let node = $mini_list_get(body, position);
         emit_js_collect_helpers(node, imports, helpers);
         if (($mini_map_get(node, "node_kind") === AST_FUNCTION)) {
-            declarations = (declarations + emit_js_function(node));
+            $mini_list_set(declarations, (declarations).length, emit_js_function(node));
         } else if ((($mini_map_get(node, "node_kind") === AST_BINDING) && $mini_map_get(node, "top_level"))) {
-            globals = (((globals + "let ") + $mini_map_get(node, "name")) + ";\n");
+            $mini_list_set(globals, (globals).length, (("let " + $mini_map_get(node, "name")) + ";\n"));
         }
         position = (position + 1);
     }
@@ -2043,7 +2043,7 @@ function emit_js_program(program) {
     if ($mini_map_get(program, "has_shebang")) {
         shebang = "#!/usr/bin/env node\n";
     }
-    return ((((((shebang + "\"use strict\";\n") + import_text) + helper_text) + globals) + declarations) + emit_js_file_initializers(program));
+    return $mini_list_join(list_of(shebang, "\"use strict\";\n", import_text, helper_text, $mini_list_join(globals, ""), $mini_list_join(declarations, ""), emit_js_file_initializers(program)), "");
 }
 function emit_js_compile(tokens) {
 

@@ -15,23 +15,17 @@ fn split_lines(source) {
 /// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
 fn indent_output(output) {
     lines := split_lines(output);
-    result := "";
-    first := true;
+    result := list_new();
     position := 0;
     while position < list_length(lines) {
         line := list_get(lines, position);
         if text_length(line) > 0 {
-            if !first {
-                result = result + "\n";
-            }
-            result = result + "    " + line;
-            first = false;
+            list_set(result, list_length(result), "    " + line);
         }
         position = position + 1;
     }
-    return result;
+    return list_join(result, "\n");
 }
-
 
 /// Return whether text ends with suffix.
 fn text_ends_with(source, suffix) {
@@ -64,7 +58,6 @@ fn is_two_character_symbol(value) {
         || value == ":=";
 }
 
-
 /// Return whether text starts with prefix.
 fn text_starts_with(source, prefix) {
     size := text_length(prefix);
@@ -73,8 +66,6 @@ fn text_starts_with(source, prefix) {
     }
     return text_slice(source, 0, size) == prefix;
 }
-
-
 
 /// Remove trailing CR/LF characters.
 fn text_chomp(text) {

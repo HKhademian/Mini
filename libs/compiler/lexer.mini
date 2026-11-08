@@ -32,9 +32,16 @@ fn lex_advance(state) {
 /// Return a token at the current lexer position.
 fn lex_start(state) {
     lines := map_get(state, "lines");
-    token := token_new("symbol", "", map_get(state, "source"), map_get(state, "position"),
-        map_get(state, "position"), map_get(state, "line"), map_get(state, "column"),
-        list_get(lines, map_get(state, "line") - 1));
+    token := token_new(
+        "symbol",
+        "",
+        map_get(state, "source"),
+        map_get(state, "position"),
+        map_get(state, "position"),
+        map_get(state, "line"),
+        map_get(state, "column"),
+        list_get(lines, map_get(state, "line") - 1)
+    );
     return token;
 }
 
@@ -57,9 +64,14 @@ fn diagnostic_indent(token) {
 
 /// Return one positioned diagnostic block.
 fn diagnostic_text(token, label) {
-    return map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":"
-        + number_to_text(map_get(token, "column")) + ": " + label + "\n"
-        + map_get(token, "context") + "\n" + diagnostic_indent(token) + "^\n";
+    lines := list_of(
+        map_get(token, "source") + ":" + number_to_text(map_get(token, "line")) + ":"
+        + number_to_text(map_get(token, "column")) + ": " + label,
+        map_get(token, "context"),
+        diagnostic_indent(token) + "^",
+        ""
+    );
+    return list_join(lines, "\n");
 }
 
 /// Report a positioned diagnostic and stop the compiler.
@@ -90,7 +102,11 @@ fn lex_comment(state, source, include_comments) {
     }
     if include_comments {
         map_set(comment_token, "kind", "comment");
-        map_set(comment_token, "text", text_slice(source, map_get(comment_token, "start"), map_get(state, "position")));
+        map_set(
+            comment_token,
+            "text",
+            text_slice(source, map_get(comment_token, "start"), map_get(state, "position"))
+        );
         map_set(comment_token, "end", map_get(state, "position"));
         comment_tokens := map_get(state, "tokens");
         list_set(comment_tokens, list_length(comment_tokens), comment_token);
@@ -168,7 +184,11 @@ fn lex_tokenize(source, source_name, include_comments) {
             && text_get(source, map_get(state, "position")) != "\n" {
             lex_advance(state);
         }
-        map_set(shebang_token, "text", text_slice(source, map_get(shebang_token, "start"), map_get(state, "position")));
+        map_set(
+            shebang_token,
+            "text",
+            text_slice(source, map_get(shebang_token, "start"), map_get(state, "position"))
+        );
         map_set(shebang_token, "end", map_get(state, "position"));
         initial_tokens := map_get(state, "tokens");
         list_set(initial_tokens, list_length(initial_tokens), shebang_token);
@@ -187,7 +207,14 @@ fn lex_tokenize(source, source_name, include_comments) {
                 lex_digits(state, source, token);
             } else if character == "\"" {
                 lex_text(state, source, token);
-            } else if is_two_character_symbol(text_slice(source, map_get(state, "position"), map_get(state, "position") + 2)) {
+            } else if is_two_character_symbol(
+                text_slice(
+                    source,
+                    map_get(state, "position"),
+                    map_get(state, "position")
+                + 2
+                )
+            ) {
                 lex_advance(state);
                 lex_advance(state);
             } else if text_find("=+-!<>(),;{}", character) >= 0 {
@@ -208,7 +235,6 @@ fn lex_tokenize(source, source_name, include_comments) {
     return end_tokens;
 }
 
-
 /// Resolve library imports from libs and explicit paths from the including file.
 fn lex_resolve_include(base, path) {
     if text_starts_with(path, "/") {
@@ -223,7 +249,6 @@ fn lex_resolve_include(base, path) {
     }
     return path_normalize("libs/" + path);
 }
-
 
 /// Expand includes in place for declaration checks, retaining canonical file
 /// identity and dependency-first initialization order on each file's tokens.
@@ -289,7 +314,9 @@ fn lex_expand_includes(tokens, base, stack, seen) {
         }
     }
     order := 0;
-    if map_has(seen, "$file_count") { order = map_get(seen, "$file_count"); }
+    if map_has(seen, "$file_count") {
+        order = map_get(seen, "$file_count");
+    }
     index := 0;
     while index < list_length(own) {
         token := list_get(own, index);
