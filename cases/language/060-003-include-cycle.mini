@@ -1,4 +1,6 @@
-include "./060-003-include-cycle-other.mini";
-fn start() {
-    return 1;
+io_write("P-before|");
+fn from_p() {
+    return "p";
 }
+include "./060-003-include-cycle-other.mini";
+io_write("P-after|", from_b(), "\n");

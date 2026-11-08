@@ -1,3 +1,0 @@
-./060-003-include-cycle.mini:1:1: include cycle: ./060-003-include-cycle-other.mini
-include "./060-003-include-cycle-other.mini";
-^

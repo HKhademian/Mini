@@ -22,9 +22,10 @@ source text
 The lexer scans a complete source string and stores token maps in a list. Tokens
 carry spelling, kind, source identity, half-open offsets, line and column, and
 the source line used for diagnostics. The include expander recursively scans
-included files and creates a dependency-first token list with canonical file
-identity and execution order. The parser consumes that list by an integer
-cursor and returns a complete AST in memory. It does not yield tokens or AST
+included files once in depth-first postorder and creates a token list with
+canonical file identity and execution order. Revisited files, including
+ancestors reached through a cycle, are skipped. The parser consumes that list
+by an integer cursor and returns a complete AST in memory. It does not yield tokens or AST
 nodes incrementally, and there is no AST stream between the parser and emitter.
 
 This is a hand-written recursive-descent parser, not a parser-combinator library

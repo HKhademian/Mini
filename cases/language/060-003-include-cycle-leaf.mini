@@ -1,0 +1,6 @@
+io_write("B-before|", from_a(), "|");
+fn from_b() {
+    return from_p();
+}
+include "./060-003-include-cycle.mini";
+io_write("B-after|\n");

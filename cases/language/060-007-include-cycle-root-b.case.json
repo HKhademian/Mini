@@ -1,0 +1,15 @@
+{
+  "id": "language.include-cycle-root-b",
+  "kind": "feature",
+  "source": "060-003-include-cycle-leaf.mini",
+  "features": ["include", "include.cycle", "include.postorder", "function", "text.output"],
+  "cases": [
+    {
+      "name": "root-b",
+      "stdin": {"text": ""},
+      "stdout": {"text": "A-before|A-after|p\nP-before|P-after|p\nB-before|p|B-after|\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

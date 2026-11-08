@@ -10,20 +10,21 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.5.0-v0.2.0-alpha.4
-lang      lang-v0.5.0-v0.4.0-alpha.1
-compiler  compiler-v0.5.0-v0.4.0-alpha.5
-bootstrap bootstrap-v0.5.0-v0.2.0-alpha.7
-builtins  builtins-v0.5.0-v0.4.0-alpha.2
-cli       cli-v0.5.0-v0.1.0-alpha.17
-check     check-v0.5.0-v0.1.0-alpha.9
-format    format-v0.5.0-v0.1.0-alpha.7
-lsp       lsp-v0.5.0-v0.1.0-alpha.11
-test      test-v0.5.0-v0.1.0-alpha.5
-verify    verify-v0.5.0-v0.1.0-alpha.6
-bench     bench-v0.5.0-v0.1.0-alpha.5
-release   release-v0.5.0-v0.1.0-alpha.6
-vscode    vscode-v0.5.0-v0.3.8
+mini      mini-v0.6.0-v0.3.0-alpha.36
+lang      lang-v0.6.0-v0.5.0-alpha.7
+ast       ast-v0.6.0-v0.1.0-alpha.1
+compiler  compiler-v0.6.0-v0.5.0-alpha.36
+bootstrap bootstrap-v0.6.0-v0.3.0-alpha.38
+builtins  builtins-v0.6.0-v0.4.0-alpha.6
+cli       cli-v0.6.0-v0.1.0-alpha.20
+check     check-v0.6.0-v0.1.0-alpha.13
+format    format-v0.6.0-v0.1.0-alpha.9
+lsp       lsp-v0.6.0-v0.1.0-alpha.11
+test      test-v0.6.0-v0.1.0-alpha.8
+verify    verify-v0.6.0-v0.1.0-alpha.10
+bench     bench-v0.6.0-v0.1.0-alpha.7
+release   release-v0.6.0-v0.1.0-alpha.8
+vscode    vscode-v0.6.0-v0.3.8
 ```
 
 ## Groups

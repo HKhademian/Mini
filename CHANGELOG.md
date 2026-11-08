@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.7 / compiler 0.5.0-alpha.36 / bootstrap 0.3.0-alpha.38:
+  allow cyclic includes by visiting each file once; emit declarations and run
+  top-level operations in depth-first postorder, with a target entry point.
+
 - mini 0.3.0-alpha.34 / language 0.5.0-alpha.6 / compiler 0.5.0-alpha.33 /
   bootstrap 0.3.0-alpha.35: remove unary numeric negation. Negative number
   literals remain supported; use `0 - value` for expressions. Migration SHA-256

@@ -1,0 +1,16 @@
+{
+  "id": "language.include-cycle-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "060-003-include-cycle.mini",
+  "features": ["include", "include.cycle", "include.postorder", "function", "text.output", "target.c"],
+  "cases": [
+    {
+      "name": "root-p",
+      "stdin": {"text": ""},
+      "stdout": {"text": "B-before|p|B-after|\nA-before|A-after|p\nP-before|P-after|p\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

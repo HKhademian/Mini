@@ -130,11 +130,12 @@ through cleanup at program exit. `fn_args()` remains pending for C.
 ### File initialization
 
 Both targets put operations outside named functions into generated per-file
-functions. One generated entry invokes them once in dependency-first order,
-following include order recursively, then the entry file. Operations within a
-file keep their source order, even when written before an include. Named
-functions stay outside these wrappers. Declaration checks still follow textual
-include order, preserving existing shared binding visibility.
+functions. One generated entry invokes them once in depth-first postorder,
+including the entry file last. Operations within a file keep their source order;
+include directives do not execute inline. All named functions are emitted before
+the generated entry, so an initializer can call a function from a file later in
+postorder. Runtime dependencies among top-level initializers follow that order
+and are the program author's responsibility.
 
 C uses `MINI_ID(file_0)`, `MINI_ID(file_1)`, and so on, called by `main`.
 JavaScript uses compiler-reserved names for file functions and its generated

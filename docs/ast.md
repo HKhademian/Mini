@@ -33,7 +33,7 @@ trivia are not stored in the AST.
 
 ## Node shapes
 
-- `Program`: `body` in expanded source order, dependency-first `files`,
+- `Program`: `body` in expanded postorder, postorder `files`,
   `main_source`, `has_shebang`, `tokens`, and `ast_schema_version`.
 - `Block`: `statements` and `ends_with_return`.
 - `Function`: `name`, parameter nodes, `body`, `captures_arguments`,

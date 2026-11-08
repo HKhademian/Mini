@@ -1,0 +1,16 @@
+{
+  "id": "language.file-initialization-parent-binding-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "061-006-file-initialization-parent-binding.mini",
+  "features": ["include", "include.postorder", "binding", "function.call", "text.output", "target.c"],
+  "cases": [
+    {
+      "name": "function-reads-entry-binding-after-init",
+      "stdin": {"text": ""},
+      "stdout": {"text": "40\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

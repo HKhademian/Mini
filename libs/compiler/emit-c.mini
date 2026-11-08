@@ -628,7 +628,7 @@ fn emit_c_collect_fragments(lines, fragments) {
 }
 
 /// Lower one target-neutral expression into a C value destination.
-fn emit_c_ast_expression(node, state, bindings, binding_orders, destination) {
+fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_function) {
     kind := map_get(node, "node_kind");
     if kind == AST_LITERAL {
         literal_kind := map_get(node, "literal_kind");
@@ -665,7 +665,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination) {
         if !map_has(bindings, name) {
             emit_c_fail(node);
         }
-        if map_get(node, "file_order") < map_get(binding_orders, name) {
+        if !in_function && map_get(node, "file_order") < map_get(binding_orders, name) {
             diagnostic_fail(emit_c_ast_location(node), "C target cannot read a binding before its file runs");
         }
         binding := map_get(bindings, name);
@@ -676,23 +676,23 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination) {
             + binding + ";\n";
     }
     if kind == AST_GROUP {
-        return emit_c_ast_expression(map_get(node, "expression"), state, bindings, binding_orders, destination);
+        return emit_c_ast_expression(map_get(node, "expression"), state, bindings, binding_orders, destination, in_function);
     }
     if kind == AST_FN_ARGS {
         emit_c_fail(node);
     }
     if kind == AST_CALL {
-        return emit_c_ast_call(node, state, bindings, binding_orders, destination);
+        return emit_c_ast_call(node, state, bindings, binding_orders, destination, in_function);
     }
     if kind == AST_UNARY {
-        body := emit_c_ast_expression(map_get(node, "operand"), state, bindings, binding_orders, destination);
+        body := emit_c_ast_expression(map_get(node, "operand"), state, bindings, binding_orders, destination, in_function);
         return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) return 1;\n" + "    " + destination + ".boolean = !"
             + destination + ".boolean;\n";
     }
     if kind == AST_BINARY {
         operator := map_get(node, "operator");
         if operator == "&&" || operator == "||" {
-            body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination);
+            body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function);
             index := map_get(state, "c_temp");
             map_set(state, "c_temp", index + 1);
             right := "tmp" + number_to_text(index);
@@ -702,15 +702,15 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination) {
             }
             return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) return 1;\n"
                 + "    if (" + condition + ") {\n        MINI_ID(value) " + right + ";\n"
-                + emit_c_indent(emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right))
+                + emit_c_indent(emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function))
                 + "        if (" + right + ".kind != MINI_ID(kind_boolean)) return 1;\n"
                 + "        " + destination + " = " + right + ";\n    }\n";
         }
         index := map_get(state, "c_temp");
         map_set(state, "c_temp", index + 1);
         right := "tmp" + number_to_text(index);
-        body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination) + "    MINI_ID(value) "
-            + right + ";\n" + emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right);
+        body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function) + "    MINI_ID(value) "
+            + right + ";\n" + emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function);
         if operator == "+" {
             map_set(state, "c_add_used", true);
             return body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) return 1;\n";
@@ -738,7 +738,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination) {
 }
 
 /// Lower one checked call node and its argument expressions.
-fn emit_c_ast_call(node, state, bindings, binding_orders, destination) {
+fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_function) {
     name := map_get(node, "callee");
     nodes := map_get(node, "arguments");
     index := map_get(state, "c_arg_count");
@@ -759,7 +759,8 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination) {
                 state,
                 bindings,
                 binding_orders,
-                array + "[" + number_to_text(position) + "]"
+                array + "[" + number_to_text(position) + "]",
+                in_function
             )
         );
         position = position + 1;
@@ -904,18 +905,22 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             state,
             bindings,
             binding_orders,
-            temporary
+            temporary,
+            in_function
         );
         if kind == AST_BINDING && (map_get(node, "top_level") || !in_function) {
-            binding := number_to_text(map_get(state, "c_binding_count"));
-            map_set(state, "c_binding_count", map_get(state, "c_binding_count") + 1);
-            map_set(bindings, name, binding);
-            map_set(binding_orders, name, map_get(node, "file_order"));
-            list_set(
-                map_get(state, "c_declarations"),
-                list_length(map_get(state, "c_declarations")),
-                "    MINI_ID(value) binding_" + binding + ";\n    int initialized_" + binding + ";\n"
-            );
+            binding := map_get(bindings, name);
+            if !map_has(bindings, name) || !map_get(node, "top_level") {
+                binding = number_to_text(map_get(state, "c_binding_count"));
+                map_set(state, "c_binding_count", map_get(state, "c_binding_count") + 1);
+                map_set(bindings, name, binding);
+                map_set(binding_orders, name, map_get(node, "file_order"));
+                list_set(
+                    map_get(state, "c_declarations"),
+                    list_length(map_get(state, "c_declarations")),
+                    "    MINI_ID(value) binding_" + binding + ";\n    int initialized_" + binding + ";\n"
+                );
+            }
             return body + "    context->binding_" + binding + " = " + temporary + ";\n    context->initialized_" + binding
                 + " = 1;\n";
         }
@@ -944,7 +949,8 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             state,
             bindings,
             binding_orders,
-            temporary
+            temporary,
+            in_function
         ) + "    (void)" + temporary + ";\n";
     }
     if kind == AST_RETURN {
@@ -959,7 +965,8 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             state,
             bindings,
             binding_orders,
-            temporary
+            temporary,
+            in_function
         ) + "    *result = " + temporary + ";\n    return 0;\n";
     }
     if kind == AST_IF || kind == AST_WHILE {
@@ -971,7 +978,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
         map_set(state, "c_temp", index + 1);
         number := number_to_text(index);
         condition := "tmp" + number;
-        expression := emit_c_ast_expression(map_get(node, "condition"), state, bindings, binding_orders, condition);
+        expression := emit_c_ast_expression(map_get(node, "condition"), state, bindings, binding_orders, condition, in_function);
         if in_function {
             if kind == AST_WHILE {
                 return list_join(
@@ -1158,6 +1165,25 @@ fn emit_c_program(program, header_name) {
     }
     nodes := map_get(program, "body");
     position := 0;
+    while position < list_length(nodes) {
+        node := list_get(nodes, position);
+        if map_get(node, "node_kind") == AST_BINDING && map_get(node, "top_level") {
+            name := map_get(node, "name");
+            if !map_has(bindings, name) {
+                binding := number_to_text(map_get(state, "c_binding_count"));
+                map_set(state, "c_binding_count", map_get(state, "c_binding_count") + 1);
+                map_set(bindings, name, binding);
+                map_set(binding_orders, name, map_get(node, "file_order"));
+                list_set(
+                    map_get(state, "c_declarations"),
+                    list_length(map_get(state, "c_declarations")),
+                    "    MINI_ID(value) binding_" + binding + ";\n    int initialized_" + binding + ";\n"
+                );
+            }
+        }
+        position = position + 1;
+    }
+    position = 0;
     while position < list_length(nodes) {
         node := list_get(nodes, position);
         if map_get(node, "node_kind") == AST_FUNCTION {

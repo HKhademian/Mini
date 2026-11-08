@@ -250,11 +250,14 @@ fn lex_resolve_include(base, path) {
     return path_normalize("libs/" + path);
 }
 
-/// Expand includes in place for declaration checks, retaining canonical file
-/// identity and dependency-first initialization order on each file's tokens.
-/// Includes are top-level, include-once, and reject cycles or missing files.
-fn lex_expand_includes(tokens, base, stack, seen) {
-    output := list_new();
+/// Expand each included file once in depth-first postorder.
+/// Revisited files, including include cycles, are skipped; missing files fail.
+fn lex_expand_includes(tokens, base, seen) {
+    if map_has(seen, base) {
+        return list_new();
+    }
+    map_set(seen, base, true);
+    dependencies := list_new();
     own := list_new();
     position := 0;
     depth := 0;
@@ -272,7 +275,6 @@ fn lex_expand_includes(tokens, base, stack, seen) {
             && map_get(list_get(tokens, position + 2), "text") == ";";
         if !is_include {
             list_set(own, list_length(own), token);
-            list_set(output, list_length(output), token);
             position = position + 1;
         } else {
             if depth != 0 {
@@ -281,9 +283,6 @@ fn lex_expand_includes(tokens, base, stack, seen) {
             quoted := map_get(list_get(tokens, position + 1), "text");
             path := text_slice(quoted, 1, text_length(quoted) - 1);
             resolved := lex_resolve_include(base, path);
-            if list_has_text(stack, resolved) {
-                diagnostic_fail(token, "include cycle: " + path);
-            }
             if !map_has(seen, resolved) {
                 if !path_is_exists(resolved) {
                     diagnostic_fail(token, "cannot include " + path);
@@ -300,13 +299,10 @@ fn lex_expand_includes(tokens, base, stack, seen) {
                 if list_length(included) > 0 && map_get(list_get(included, 0), "kind") == "shebang" {
                     diagnostic_fail(token, "included file must not have a shebang");
                 }
-                map_set(seen, resolved, true);
-                nested_stack := list_copy(stack);
-                list_set(nested_stack, list_length(nested_stack), resolved);
-                expanded := lex_expand_includes(included, resolved, nested_stack, seen);
+                expanded := lex_expand_includes(included, resolved, seen);
                 index := 0;
                 while index < list_length(expanded) {
-                    list_set(output, list_length(output), list_get(expanded, index));
+                    list_set(dependencies, list_length(dependencies), list_get(expanded, index));
                     index = index + 1;
                 }
             }
@@ -325,5 +321,22 @@ fn lex_expand_includes(tokens, base, stack, seen) {
         index = index + 1;
     }
     map_set(seen, "$file_count", order + 1);
+    output := list_new();
+    own_start := 0;
+    if list_length(own) > 0 && map_get(list_get(own, 0), "kind") == "shebang" {
+        // Keep the entry marker first even though its file follows dependencies.
+        list_set(output, list_length(output), list_get(own, 0));
+        own_start = 1;
+    }
+    index = 0;
+    while index < list_length(dependencies) {
+        list_set(output, list_length(output), list_get(dependencies, index));
+        index = index + 1;
+    }
+    index = own_start;
+    while index < list_length(own) {
+        list_set(output, list_length(output), list_get(own, index));
+        index = index + 1;
+    }
     return output;
 }

@@ -797,9 +797,13 @@ function lex_resolve_include(base, path) {
     }
     return path_normalize(("libs/" + path));
 }
-function lex_expand_includes(tokens, base, stack, seen) {
+function lex_expand_includes(tokens, base, seen) {
 
-    let output = [];
+    if ($mini_map_has(seen, base)) {
+        return [];
+    }
+    $mini_map_set(seen, base, true);
+    let dependencies = [];
     let own = [];
     let position = 0;
     let depth = 0;
@@ -815,7 +819,6 @@ function lex_expand_includes(tokens, base, stack, seen) {
         let is_include = ((((text === "include") && ((position + 2) < (tokens).length)) && ($mini_map_get($mini_list_get(tokens, (position + 1)), "kind") === "text")) && ($mini_map_get($mini_list_get(tokens, (position + 2)), "text") === ";"));
         if ((!is_include)) {
             $mini_list_set(own, (own).length, token);
-            $mini_list_set(output, (output).length, token);
             position = (position + 1);
         } else {
             if ((depth !== 0)) {
@@ -824,9 +827,6 @@ function lex_expand_includes(tokens, base, stack, seen) {
             let quoted = $mini_map_get($mini_list_get(tokens, (position + 1)), "text");
             let path = $mini_text_slice(quoted, 1, ((quoted).length - 1));
             let resolved = lex_resolve_include(base, path);
-            if (list_has_text(stack, resolved)) {
-                diagnostic_fail(token, ("include cycle: " + path));
-            }
             if ((!$mini_map_has(seen, resolved))) {
                 if ((!$mini_path_is_exists(resolved))) {
                     diagnostic_fail(token, ("cannot include " + path));
@@ -843,13 +843,10 @@ function lex_expand_includes(tokens, base, stack, seen) {
                 if ((((included).length > 0) && ($mini_map_get($mini_list_get(included, 0), "kind") === "shebang"))) {
                     diagnostic_fail(token, "included file must not have a shebang");
                 }
-                $mini_map_set(seen, resolved, true);
-                let nested_stack = $mini_list_copy(stack);
-                $mini_list_set(nested_stack, (nested_stack).length, resolved);
-                let expanded = lex_expand_includes(included, resolved, nested_stack, seen);
+                let expanded = lex_expand_includes(included, resolved, seen);
                 let index = 0;
                 while ((index < (expanded).length)) {
-                    $mini_list_set(output, (output).length, $mini_list_get(expanded, index));
+                    $mini_list_set(dependencies, (dependencies).length, $mini_list_get(expanded, index));
                     index = (index + 1);
                 }
             }
@@ -868,6 +865,22 @@ function lex_expand_includes(tokens, base, stack, seen) {
         index = (index + 1);
     }
     $mini_map_set(seen, "$file_count", (order + 1));
+    let output = [];
+    let own_start = 0;
+    if ((((own).length > 0) && ($mini_map_get($mini_list_get(own, 0), "kind") === "shebang"))) {
+        $mini_list_set(output, (output).length, $mini_list_get(own, 0));
+        own_start = 1;
+    }
+    index = 0;
+    while ((index < (dependencies).length)) {
+        $mini_list_set(output, (output).length, $mini_list_get(dependencies, index));
+        index = (index + 1);
+    }
+    index = own_start;
+    while ((index < (own).length)) {
+        $mini_list_set(output, (output).length, $mini_list_get(own, index));
+        index = (index + 1);
+    }
     return output;
 }
 function ast_node(kind, token) {
@@ -1695,6 +1708,9 @@ function parser_new(tokens) {
         if (($mini_map_get(token, "text") === "}")) {
             depth = (depth - 1);
         }
+        if ((((depth === 0) && ($mini_map_get(token, "kind") === "identifier")) && ($mini_map_get($mini_list_get(tokens, (index + 1)), "text") === ":="))) {
+            $mini_map_set($mini_map_get(parser, "variables"), $mini_map_get(token, "text"), "unknown");
+        }
         if ((((depth === 0) && ($mini_map_get(token, "text") === "fn")) && ($mini_map_get($mini_list_get(tokens, (index + 1)), "kind") === "identifier"))) {
             let arity = 0;
             let cursor = (index + 3);
@@ -2172,7 +2188,7 @@ function bootstrap_fail(message) {
 function bootstrap_compile_text(source) {
 
     let tokens = lex_tokenize(readFileSync(source, "utf8"), path_basename(source), false);
-    let expanded = lex_expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
+    let expanded = lex_expand_includes(tokens, source, ({ __proto__: $mini_map_proto }));
     return emit_js_compile(expanded);
 }
 function bootstrap_compile_with(root, compiler, source, output) {

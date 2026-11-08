@@ -677,6 +677,10 @@ fn parser_new(tokens) {
         if map_get(token, "text") == "}" {
             depth = depth - 1;
         }
+        if depth == 0 && map_get(token, "kind") == "identifier"
+            && map_get(list_get(tokens, index + 1), "text") == ":=" {
+            map_set(map_get(parser, "variables"), map_get(token, "text"), "unknown");
+        }
         if depth == 0 && map_get(token, "text") == "fn" && map_get(list_get(tokens, index + 1), "kind") == "identifier" {
             arity := 0;
             cursor := index + 3;

@@ -1,1 +1,6 @@
-include "./060-003-include-cycle.mini";
+io_write("A-before|");
+fn from_a() {
+    return from_p();
+}
+include "./060-003-include-cycle-leaf.mini";
+io_write("A-after|", from_b(), "\n");

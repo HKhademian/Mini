@@ -1,15 +1,15 @@
 {
-  "id": "language.include-cycle",
-  "kind": "reject",
+  "id": "language.include-cycle-root-p",
+  "kind": "feature",
   "source": "060-003-include-cycle.mini",
-  "features": ["include"],
+  "features": ["include", "include.cycle", "include.postorder", "function", "text.output"],
   "cases": [
     {
-      "name": "cycle",
+      "name": "root-p",
       "stdin": {"text": ""},
-      "stdout": {"text": ""},
-      "stderr": {"file": "060-003-include-cycle.stderr"},
-      "exitCode": 1
+      "stdout": {"text": "B-before|p|B-after|\nA-before|A-after|p\nP-before|P-after|p\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

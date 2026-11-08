@@ -134,18 +134,24 @@ include "common/text.mini";
   regardless of the importing file's folder. Use `./` for a neighbor or a path
   into a child folder. Do not use `../` there.
 - Each canonical file is included at most once per compilation. A repeated
-  include is a no-op. Includes may nest.
-- A cycle, a missing file, a shebang in an included file, or an include inside a
-  block is a compilation error. The entry file may keep a shebang.
+  include, including a path back to a file already being opened, is a no-op.
+  Includes may nest and may form cycles.
+- Files are traversed depth-first. Their declarations and top-level operations
+  are ordered in postorder: included files first, then the including file.
+  Each file's own declarations and operations retain source order; include
+  directives do not execute inline. A target-generated entry point runs each
+  file's top-level operations once in that same order.
+- A missing file, a shebang in an included file, or an include inside a block
+  is a compilation error. The entry file may keep a shebang.
 - Included tokens keep their written include path as their source name, so
   diagnostics name the included file.
 - Operations outside named functions belong to an implicit file function.
-  The generated entry calls these functions once: dependencies first, recursively
-  in include order, then the including file. Each file's operations keep their
-  source order, including operations written before its includes.
-- Named functions remain available across included files. File functions add no
-  namespace or binding isolation. Declaration checking retains textual include
-  order; the execution schedule does not add forward binding declarations.
+  Top-level binding names and named functions across the complete include graph
+  are available before file operations begin. An earlier initializer can call
+  a function declared in a later file. File functions add no namespace or
+  binding isolation. Runtime dependencies between top-level initializers follow
+  the deterministic postorder; programs that depend on a later initializer
+  running first are responsible for that dependency.
 - Empty files have no operations to execute; their no-op initializer may be omitted.
 - `tokens` reports directives unexpanded; `compile` expands them before parsing.
   Formatting keeps directives and does not inline files.
