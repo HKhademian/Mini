@@ -1,5 +1,6 @@
 /// Read stdin, replace each tab or line-ending character with a space, and print it.
-//
+
+import "common/io";
 
 /// Return normalized text without changing source; ordinary characters are retained.
 import "common/text";

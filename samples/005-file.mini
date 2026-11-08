@@ -1,5 +1,6 @@
 /// Copy input.txt to output.txt, then print the saved copy.
-//
+
+import "common/io";
 
 source := file_read("input.txt");
 file_write("output.txt", source);

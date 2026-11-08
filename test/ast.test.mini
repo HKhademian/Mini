@@ -16,7 +16,7 @@ fn ast_test_fail(message) {
 
 /// Verify shared parser nodes carry semantics and source locations.
 fn main() {
-    source := "fn plus(a, b) { return a + b; }\nvalue := plus(1, 2);\nif value == 3 { io_write(\"ok\"); }\n";
+    source := "fn plus(a, b) { return a + b; }\nvalue := plus(1, 2);\nif value == 3 { value = value; }\n";
     tokens := lex_tokenize(source, "ast-test.mini", false);
     program := parser_ast(tokens);
     if map_get(program, "ast_schema_version") != AST_SCHEMA_VERSION {

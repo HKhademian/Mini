@@ -1,3 +1,4 @@
+import "common/io";
 import "common/value";
 import "common/map";
 import "common/text";

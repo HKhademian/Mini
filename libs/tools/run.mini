@@ -4,6 +4,7 @@
 /// reach the program through fn_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.
 
+import "common/io";
 import "common/map";
 import "common/path";
 import "common/list";

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Exercise the public compiler target flags and generated native program.
 
+import "common/io";
 import "common/value";
 import "common/map";
 import "common/text";
@@ -118,7 +119,7 @@ fn main(args) {
         process_exit(1);
     }
     source := path_join(work, "output.mini");
-    file_write(source, "io_write(\"$mini_payload|native\\n\");\n");
+    file_write(source, "import \"common/io\";\nio_write(\"$mini_payload|native\\n\");\n");
     native_manifest_reject(work, "unknown-target", "{\"id\":\"unknown-target\",\"kind\":\"feature\",\"target\":\"other\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"native\\n\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
     native_manifest_reject(work, "tool-target", "{\"id\":\"tool-target\",\"kind\":\"tool\",\"target\":\"c\",\"tool\":\"mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
     explicit_c := path_join(work, "explicit.c");
@@ -190,7 +191,7 @@ fn main(args) {
     native_reject(root, work, "C reference mode", list_of("--target", "c", "--reference", source, rejected), rejected);
     native_reject(root, work, "C program-only mode", list_of("--target", "c", "--program-only", source, rejected), rejected);
     unsupported := path_join(work, "unsupported.mini");
-    file_write(unsupported, "io_write(\"must not run\");\nvalue := text_length(\"x\");\n");
+    file_write(unsupported, "import \"common/io\";\nio_write(\"must not run\");\nvalue := text_length(\"x\");\n");
     native_reject(root, work, "unsupported C source", list_of("--target", "c", unsupported, rejected), rejected);
     if path_is_exists(unsupported + ".js") || path_is_exists(unsupported + ".c") {
         native_fail(work, "unsupported C source", "default/fallback artifact was created");

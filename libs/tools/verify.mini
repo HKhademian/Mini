@@ -3,6 +3,7 @@
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 
+import "common/io";
 import "common/json";
 import "common/number";
 import "common/map";

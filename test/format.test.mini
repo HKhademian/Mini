@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "common/io";
 import "common/json";
 import "common/map";
 import "common/text";
@@ -17,13 +18,21 @@ fn format_fail(name, message) {
 /// Format one temporary source and return stdout.
 fn format_source(root, work, name, source) {
     path := path_join(work, name);
+    has_io := text_find(source, "io_write(") >= 0 && text_find(source, "import \"common/io\";") < 0;
+    if has_io {
+        source = "import \"common/io\";\n" + source;
+    }
     file_write(path, source);
     args := list_of(path_join(root, "bin/mini-format"), path);
     result := process_capture(process_exec_path(), args, root, list_new());
     if map_get(result, "status") != 0 {
         format_fail(name, text_from_bytes(map_get(result, "stderr")));
     }
-    return text_from_bytes(map_get(result, "stdout"));
+    output := text_from_bytes(map_get(result, "stdout"));
+    if has_io {
+        return text_slice(output, text_find(output, "\n") + 1, text_length(output));
+    }
+    return output;
 }
 
 /// Compare a formatted result with an expected value.
