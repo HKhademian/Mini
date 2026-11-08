@@ -1,5 +1,7 @@
+import "common/io";
 import "common/list";
 import "common/map";
+
 expected := io_read_all();
 items := map_new();
 if list_length(map_keys(items)) != 0 {

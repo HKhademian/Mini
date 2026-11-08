@@ -1,5 +1,7 @@
+import "common/io";
 import "common/list";
 import "common/map";
+
 items := map_new();
 key := io_read_all();
 if map_get(items, key) != 0 || map_has(items, key) || list_length(map_keys(items)) != 0 {

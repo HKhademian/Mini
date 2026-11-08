@@ -1,5 +1,7 @@
+import "common/io";
 import "common/list";
 import "common/map";
+
 fn make_map() {
     return map_new();
 }

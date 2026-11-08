@@ -1,4 +1,6 @@
+import "common/io";
 import "common/text";
+
 fn text() {
     io_write("t");
     return "hello";

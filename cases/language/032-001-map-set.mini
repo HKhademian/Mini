@@ -1,4 +1,6 @@
+import "common/io";
 import "common/map";
+
 items := map_new();
 fresh := map_new();
 key := io_read_all();

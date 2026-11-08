@@ -1,5 +1,7 @@
+import "common/io";
 import "common/text";
 import "common/list";
+
 items := list_new();
 list_set(items, 0, "first");
 io_write(text_get("hello", 1));

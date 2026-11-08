@@ -1,5 +1,7 @@
+import "common/io";
 import "common/list";
 import "common/map";
+
 if map_get("hello", "key") != 0 || map_get(false, "key") != 0 || map_get(list_new(), "key") != 0 {
     process_exit(1);
 }

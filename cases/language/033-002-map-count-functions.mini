@@ -1,9 +1,10 @@
 /// Check that nested key-count compositions evaluate the map-producing call once.
-//
 
-/// Print a call marker and return a fresh one-key map.
+import "common/io";
 import "common/list";
 import "common/map";
+
+/// Print a call marker and return a fresh one-key map.
 fn make_map() {
     io_write("m");
     items := map_new();

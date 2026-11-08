@@ -1,2 +1,4 @@
+import "common/io";
+
 value := 1 // This comment does not end the declaration.
 io_write("unreachable");

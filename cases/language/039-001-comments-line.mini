@@ -1,4 +1,7 @@
 // Quotes, braces, and invented declarations here are not code: " fn hidden() {
+
+import "common/io";
+
 output := "line"; // Ignore the rest of this line.
 output = output + // A comment can separate tokens across a line break.
     " comments\n";

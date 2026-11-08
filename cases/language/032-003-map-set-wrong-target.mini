@@ -1,5 +1,7 @@
+import "common/io";
 import "common/list";
 import "common/map";
+
 fn target() {
     io_write("t");
     return "hello";
