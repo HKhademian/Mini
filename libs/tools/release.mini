@@ -12,6 +12,7 @@ import "common/process";
 import "common/json";
 import "common/result";
 import "common/project";
+import "common/file";
 
 /// Report a release error and stop.
 fn release_fail(message) {

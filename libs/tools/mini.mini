@@ -6,6 +6,7 @@ import "common/path";
 import "common/process";
 import "common/json";
 import "common/project";
+import "common/file";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {

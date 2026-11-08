@@ -9,6 +9,7 @@ import "common/value";
 import "common/list";
 import "common/text";
 import "common/json";
+import "common/file";
 import "./cases";
 
 /// Report a check failure and stop.

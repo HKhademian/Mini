@@ -6,6 +6,7 @@ import "common/path";
 import "common/process";
 import "common/json";
 import "common/project";
+import "common/file";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";

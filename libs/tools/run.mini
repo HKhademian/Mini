@@ -10,6 +10,7 @@ import "common/path";
 import "common/list";
 import "common/process-run";
 import "common/text";
+import "common/file";
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {

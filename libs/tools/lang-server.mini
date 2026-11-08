@@ -12,6 +12,7 @@ import "common/text";
 import "common/path";
 import "common/process";
 import "common/project";
+import "common/file";
 
 /// Write one server log line.
 fn lsp_log(message) {

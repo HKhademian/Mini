@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/list";
+import "common/file";
 import "tools/format";
 
 /// Report a command error and stop.

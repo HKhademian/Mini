@@ -7,6 +7,7 @@ import "common/json";
 import "common/map";
 import "common/text";
 import "common/list";
+import "common/file";
 import "./cases";
 
 /// Report a benchmark error and stop.
