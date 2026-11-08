@@ -6,6 +6,7 @@ import "common/map";
 import "common/path";
 import "common/io";
 import "common/process-run";
+import "common/file";
 
 version_args := list_new();
 list_set(version_args, 0, "--version");

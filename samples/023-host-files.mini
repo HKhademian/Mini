@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/path";
+import "common/file";
 
 directory := path_temp_directory();
 file_write(directory + "/note.txt", "Mini\n");

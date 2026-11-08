@@ -1,3 +1,4 @@
 import "common/io";
+import "common/file";
 
 io_write(file_read("input.txt"));

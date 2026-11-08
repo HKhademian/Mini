@@ -2,6 +2,7 @@
 
 import "common/list";
 import "common/io";
+import "common/file";
 
 root := path_temp_directory();
 sub := root + "/sub";

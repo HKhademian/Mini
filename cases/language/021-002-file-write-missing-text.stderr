@@ -1,3 +1,3 @@
-021-002-file-write-missing-text.mini:1:1: expected 2 arguments
+021-002-file-write-missing-text.mini:3:1: expected 2 arguments
 file_write("output.txt");
 ^
