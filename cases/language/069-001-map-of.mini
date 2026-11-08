@@ -1,5 +1,6 @@
 /// Build maps from alternating key and value arguments.
 
+import "common/number";
 import "common/list";
 import "common/io";
 import "common/map";

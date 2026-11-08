@@ -1,5 +1,6 @@
 /// Exercise UTF-8 byte conversion.
 
+import "common/number";
 import "common/list";
 import "common/io";
 

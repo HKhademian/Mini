@@ -1,5 +1,6 @@
 /// Multiply and subtract numbers.
 
+import "common/number";
 import "common/io";
 
 width := 6;

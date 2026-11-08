@@ -1,1 +1,2 @@
+import "common/number";
 io_write(number_to_text("1"));

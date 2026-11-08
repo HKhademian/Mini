@@ -1,3 +1,4 @@
+import "common/number";
 fn wrapper() {
     import "./060-001-import-helper";
     return 1;

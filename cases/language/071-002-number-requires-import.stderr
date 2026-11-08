@@ -1,0 +1,3 @@
+071-002-number-requires-import.mini:1:1: unknown function number_mul
+number_mul(6, 7);
+^

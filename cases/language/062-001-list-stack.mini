@@ -1,5 +1,6 @@
 /// Exercise list stack mutation.
 
+import "common/number";
 import "common/io";
 import "common/list";
 

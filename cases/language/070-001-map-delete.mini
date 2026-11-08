@@ -1,5 +1,6 @@
 /// Delete map keys and observe removal through map_has and map_keys.
 
+import "common/number";
 import "common/list";
 import "common/io";
 import "common/map";

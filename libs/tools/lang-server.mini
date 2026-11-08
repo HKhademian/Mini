@@ -2,6 +2,7 @@
 /// Usage: node dist/lang-server.js [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
+import "common/number";
 import "common/map";
 import "common/value";
 import "common/list";

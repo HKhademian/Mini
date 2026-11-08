@@ -1,6 +1,5 @@
 /// Reference implementations for replaceable performance builtins.
 
 import "./text";
-import "./number";
 import "./bytes";
 import "./json";

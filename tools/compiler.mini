@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Compose the mini compiler from its source files.
 
+import "common/number";
 import "common/list";
 import "common/map";
 import "common/io";

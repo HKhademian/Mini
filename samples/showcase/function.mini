@@ -1,3 +1,4 @@
+import "common/number";
 import "common/io";
 
 /// Return a value from a named function.

@@ -2,6 +2,7 @@
 /// AST traversal, builtin mapping, and generated source assembly live here;
 /// parsing and shared syntax checks remain in parser.mini.
 
+import "common/number";
 import "common/list";
 import "common/map";
 import "./parser";

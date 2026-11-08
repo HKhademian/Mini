@@ -1,4 +1,6 @@
-import "./value";
+import "common/list";
+import "common/text";
+import "common/value";
 
 /// Total numeric addition: non-number operands return 0.
 fn number_add(a, b) {
@@ -36,4 +38,189 @@ fn number_max(a, b) {
         return a;
     }
     return b;
+}
+
+/// Total numeric multiply by repeated addition.
+fn number_mul(a, b) {
+    if !value_is_number(a) || !value_is_number(b) {
+        return 0;
+    }
+    left := a;
+    right := b;
+    negative := false;
+    if left < 0 {
+        left = 0 - left;
+        negative = !negative;
+    }
+    if right < 0 {
+        right = 0 - right;
+        negative = !negative;
+    }
+    result := 0;
+    while right > 0 {
+        result = result + left;
+        right = right - 1;
+    }
+    if negative {
+        return 0 - result;
+    }
+    return result;
+}
+
+/// Total numeric division truncated toward zero.
+fn number_div(a, b) {
+    if !value_is_number(a) || !value_is_number(b) || b == 0 {
+        return 0;
+    }
+    left := a;
+    right := b;
+    negative := false;
+    if left < 0 {
+        left = 0 - left;
+        negative = !negative;
+    }
+    if right < 0 {
+        right = 0 - right;
+        negative = !negative;
+    }
+    result := 0;
+    while left >= right {
+        left = left - right;
+        result = result + 1;
+    }
+    if negative {
+        return 0 - result;
+    }
+    return result;
+}
+
+/// Total numeric remainder with the dividend's sign.
+fn number_mod(a, b) {
+    if !value_is_number(a) || !value_is_number(b) || b == 0 {
+        return 0;
+    }
+    left := a;
+    right := b;
+    if left < 0 {
+        left = 0 - left;
+    }
+    if right < 0 {
+        right = 0 - right;
+    }
+    while left >= right {
+        left = left - right;
+    }
+    if a < 0 {
+        return 0 - left;
+    }
+    return left;
+}
+
+/// Total numeric floor.
+fn number_floor(a) {
+    if !value_is_number(a) {
+        return 0;
+    }
+    value := a;
+    whole := 0;
+    if value >= 0 {
+        while value >= 1 {
+            value = value - 1;
+            whole = whole + 1;
+        }
+    } else {
+        while value < 0 {
+            value = value + 1;
+            whole = whole - 1;
+        }
+    }
+    return whole;
+}
+
+/// Total numeric power for non-negative integer exponents.
+fn number_pow(a, b) {
+    if !value_is_number(a) || !value_is_number(b) || b < 0 || number_floor(b) != b {
+        return 0;
+    }
+    result := 1;
+    exponent := b;
+    while exponent > 0 {
+        result = number_mul(result, a);
+        exponent = exponent - 1;
+    }
+    return result;
+}
+
+/// Total decimal integer parsing for safe integers.
+fn number_from_text(text) {
+    if !value_is_text(text) || text_length(text) == 0 {
+        return 0;
+    }
+    start := 0;
+    negative := false;
+    if text_get(text, 0) == "-" {
+        negative = true;
+        start = 1;
+    }
+    if start >= text_length(text) {
+        return 0;
+    }
+    result := 0;
+    position := start;
+    while position < text_length(text) {
+        digit := text_find("0123456789", text_get(text, position));
+        if digit < 0 {
+            return 0;
+        }
+        result = result + number_mul(result, 9) + digit;
+        if result > 9007199254740991 {
+            return 0;
+        }
+        position = position + 1;
+    }
+    if negative {
+        return 0 - result;
+    }
+    return result;
+}
+
+/// Total canonical decimal formatting for safe integers.
+fn number_to_text(value) {
+    if !value_is_number(value) {
+        return "";
+    }
+    if value > 9007199254740991 || value < -9007199254740991 {
+        return "";
+    }
+    if value == 0 {
+        return "0";
+    }
+    negative := value < 0;
+    if negative {
+        value = 0 - value;
+    }
+    powers := list_new();
+    list_set(powers, 0, 1);
+    next := 10;
+    while next <= value {
+        list_set(powers, list_length(powers), next);
+        next = number_mul(next, 10);
+    }
+    digits := "0123456789";
+    output := "";
+    position := list_length(powers) - 1;
+    while position >= 0 {
+        power := list_get(powers, position);
+        digit := 0;
+        while digit < 9 && value >= number_mul(power, digit + 1) {
+            digit = digit + 1;
+        }
+        output = output + text_get(digits, digit);
+        value = value - number_mul(power, digit);
+        position = position - 1;
+    }
+    if negative {
+        return "-" + output;
+    }
+    return output;
 }

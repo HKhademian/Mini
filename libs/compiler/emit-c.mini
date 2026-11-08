@@ -3,6 +3,7 @@
 /// capability checks, syntax lowering, runtime fragments, and source assembly.
 /// Text views reference a growable byte buffer owned by each program invocation.
 
+import "common/number";
 import "common/list";
 import "common/map";
 import "./parser";

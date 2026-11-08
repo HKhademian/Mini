@@ -1,3 +1,4 @@
+import "common/number";
 import "common/list";
 import "common/io";
 fn join(left, right) {

@@ -1,5 +1,6 @@
 /// Classic division and branching.
 
+import "common/number";
 import "common/io";
 
 n := 1;

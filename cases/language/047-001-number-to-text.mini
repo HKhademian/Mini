@@ -1,3 +1,4 @@
+import "common/number";
 import "common/list";
 import "common/io";
 if number_to_text(0) == "0" && number_to_text(123) == "123" && number_to_text(-45) == "-45" && number_to_text(1 + 2) == "3" && number_to_text(0 - 7) == "-7" {

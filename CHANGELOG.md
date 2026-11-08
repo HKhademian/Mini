@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.10 / builtins 0.4.0-alpha.10 / compiler
+  0.5.0-alpha.44 / bootstrap 0.3.0-alpha.46: move `number_*` Mini
+  implementations into `common/number`, require its import, and register
+  same-name JavaScript host overrides. Remove the separate pure-number module.
+
+
 - compiler 0.5.0-alpha.43 / bootstrap 0.3.0-alpha.45: let each JavaScript
   host override register an optional call-site lowering in the same registry
   entry; restore the `list_length` property lowering without emitter hardcoding.

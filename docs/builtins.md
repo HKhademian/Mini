@@ -91,7 +91,7 @@ argument list, so it needs no adapter and no import. It returns a list, empty
 when the function received nothing.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
-empty text for other values.
+empty text for other values. Import `common/number` before calling number functions.
 
 `number_mul(a, b)`, `number_div(a, b)`, `number_mod(a, b)`, `number_floor(a)`,
 `number_pow(a, b)`, and `number_from_text(text)` cover operations that `+` and
@@ -100,18 +100,18 @@ maximum use comparisons. Non-number operands return 0. Division and remainder
 by zero return 0. Division truncates toward zero and remainder keeps the
 dividend's sign. `number_pow` accepts a non-negative integer exponent.
 `number_from_text` accepts an optional minus sign followed by decimal digits.
-These six have pure reference implementations selected by `--reference`.
-`json_parse` and `json_to_text` also have pure reference implementations in
-[libs/pure/json.mini](../libs/pure/json.mini); the pure parser currently accepts
+These number functions have same-name Mini implementations in
+[libs/common/number.mini](../libs/common/number.mini), with JavaScript host
+implementations selected by the emitter. The Mini implementations also serve
+reference mode. The separate JSON reference implementation currently accepts
 integer JSON numbers only.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
-are total library functions in [libs/common/number.mini](../libs/common/number.mini), not
-builtins, and require that import. They return 0 when either operand is not a
-number. `number_add` has a pure Mini implementation derived from subtraction;
-the JavaScript emitter replaces that same function with guarded `a + b` for the
-default fast path. The host and Mini implementations are checked for equivalent
-results. The `+` operator remains separately type-checked syntax.
+are imported functions in [libs/common/number.mini](../libs/common/number.mini)
+and require `import "common/number"`. They return 0 when either operand is not
+a number. The JavaScript emitter replaces each same-name Mini implementation
+with its registered host function. The `+` operator remains separately
+type-checked syntax. The `+` operator remains separately type-checked syntax.
 
 The built-ins `text_length(text)`, `text_get(text, index)`, `text_find(text, needle)`,
 and `text_split(text, divider)` scan ASCII source. `text_slice` is an imported

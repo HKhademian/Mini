@@ -1,3 +1,4 @@
+import "common/number";
 import "common/io";
 import "./060-001-import-helper";
 import "./060-001-import-helper";

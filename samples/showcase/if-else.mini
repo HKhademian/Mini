@@ -1,5 +1,6 @@
 /// Choose one of two branches.
 
+import "common/number";
 import "common/io";
 
 value := 7;

@@ -1,3 +1,4 @@
+import "common/number";
 import "common/map";
 import "common/list";
 import "common/path";

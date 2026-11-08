@@ -1,3 +1,4 @@
+import "common/number";
 import "common/io";
 value := io_write_line("first");
 io_write_line(number_to_text(value));

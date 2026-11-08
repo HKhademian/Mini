@@ -1,3 +1,4 @@
+import "common/number";
 import "common/io";
 
 /// Trial division up to a limit.

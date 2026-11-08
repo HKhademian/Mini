@@ -70,10 +70,6 @@ function $mini_json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
-function $mini_number_floor(a) {
-    if (typeof a !== "number") return 0;
-    return Math.floor(a);
-}
 function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
@@ -383,31 +379,45 @@ function number_add(a, b) {
     return a + b;
 }
 function number_sub(a, b) {
-
-    if (((!value_is_number(a)) || (!value_is_number(b)))) {
-        return 0;
-    }
-    return (a - b);
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a - b;
 }
 function number_min(a, b) {
-
-    if (((!value_is_number(a)) || (!value_is_number(b)))) {
-        return 0;
-    }
-    if ((a < b)) {
-        return a;
-    }
-    return b;
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.min(a, b);
 }
 function number_max(a, b) {
-
-    if (((!value_is_number(a)) || (!value_is_number(b)))) {
-        return 0;
-    }
-    if ((a > b)) {
-        return a;
-    }
-    return b;
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.max(a, b);
+}
+function number_mul(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a * b;
+}
+function number_div(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return Math.trunc(a / b);
+}
+function number_mod(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return a % b;
+}
+function number_floor(value) {
+    if (typeof value !== "number") return 0;
+    return Math.floor(value);
+}
+function number_pow(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) return 0;
+    return Math.pow(a, b);
+}
+function number_from_text(text) {
+    if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) return 0;
+    const value = Number(text);
+    return Number.isSafeInteger(value) ? value : 0;
+}
+function number_to_text(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
 }
 function split_lines(source) {
 
@@ -716,7 +726,7 @@ function diagnostic_indent(token) {
 }
 function diagnostic_text(token, label) {
 
-    let lines = list_of(((((((map_get(token, "source") + ":") + $mini_number_to_text(map_get(token, "line"))) + ":") + $mini_number_to_text(map_get(token, "column"))) + ": ") + label), map_get(token, "context"), (diagnostic_indent(token) + "^"), "");
+    let lines = list_of(((((((map_get(token, "source") + ":") + number_to_text(map_get(token, "line"))) + ":") + number_to_text(map_get(token, "column"))) + ": ") + label), map_get(token, "context"), (diagnostic_indent(token) + "^"), "");
     return list_join(lines, "\n");
 }
 function diagnostic_fail(token, message) {
@@ -1152,7 +1162,7 @@ function builtin_apply(form, args) {
     }
     let position = 0;
     while ((position < (args).length)) {
-        output = builtin_replace(output, (("{" + $mini_number_to_text(position)) + "}"), list_get(args, position));
+        output = builtin_replace(output, (("{" + number_to_text(position)) + "}"), list_get(args, position));
         position = (position + 1);
     }
     return output;
@@ -1456,9 +1466,9 @@ function parser_call(parser, name) {
             if (((variadic && (fixed_arity === 1)) || ((!variadic) && (arity === 1)))) {
                 suffix = "";
             }
-            let message = ((("expected " + $mini_number_to_text(arity)) + " argument") + suffix);
+            let message = ((("expected " + number_to_text(arity)) + " argument") + suffix);
             if (variadic) {
-                message = ((("expected " + $mini_number_to_text(fixed_arity)) + " or more argument") + suffix);
+                message = ((("expected " + number_to_text(fixed_arity)) + " or more argument") + suffix);
             }
             parser_fail(name, message);
         }
@@ -2126,7 +2136,7 @@ function emit_js_file_initializers(program) {
     let body = map_get(program, "body");
     let index = 0;
     while ((index < (files).length)) {
-        let name = ("$mini_file_" + $mini_number_to_text(index));
+        let name = ("$mini_file_" + number_to_text(index));
         let code = emit_js_file_body(body, list_get(files, index));
         let wrapper_lines = list_of((("function " + name) + "() {"), indent_output(code), "}", "");
         list_set(wrappers, (wrappers).length, list_join(wrapper_lines, "\n"));
@@ -2538,13 +2548,28 @@ function $mini_file_16() {
     builtin_source_api("map_set");
 }
 function $mini_file_17() {
-    builtin_add("number_div", "number,number", "number", "performance", "", "number_div", "function $mini_number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", "pure_number_div", "$mini_number_div({0}, {1})");
-    builtin_add("number_floor", "number", "number", "performance", "", "number_floor", "function $mini_number_floor(a) {\n    if (typeof a !== \"number\") return 0;\n    return Math.floor(a);\n}\n", "pure_number_floor", "$mini_number_floor({0})");
-    builtin_add("number_from_text", "text", "number", "performance", "", "number_from_text", "function $mini_number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", "pure_number_from_text", "$mini_number_from_text({0})");
-    builtin_add("number_mod", "number,number", "number", "performance", "", "number_mod", "function $mini_number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", "pure_number_mod", "$mini_number_mod({0}, {1})");
-    builtin_add("number_mul", "number,number", "number", "performance", "", "number_mul", "function $mini_number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", "pure_number_mul", "$mini_number_mul({0}, {1})");
-    builtin_add("number_pow", "number,number", "number", "performance", "", "number_pow", "function $mini_number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", "pure_number_pow", "$mini_number_pow({0}, {1})");
-    builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "pure_number_to_text", "$mini_number_to_text({0})");
+    builtin_add("number_add", "unknown,unknown", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_add");
+    builtin_add("number_sub", "unknown,unknown", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_sub");
+    builtin_add("number_min", "unknown,unknown", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_min");
+    builtin_add("number_max", "unknown,unknown", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_max");
+    builtin_add("number_div", "number,number", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_div");
+    builtin_add("number_floor", "number", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_floor");
+    builtin_add("number_from_text", "text", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_from_text");
+    builtin_add("number_mod", "number,number", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_mod");
+    builtin_add("number_mul", "number,number", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_mul");
+    builtin_add("number_pow", "number,number", "number", "performance", "", "", "", "", "");
+    builtin_source_api("number_pow");
+    builtin_add("number_to_text", "number", "text", "performance", "", "number_to_text", "function $mini_number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", "", "");
+    builtin_source_api("number_to_text");
 }
 function $mini_file_18() {
     builtin_add("path_copy", "text,text", "number", "essential", "", "path_copy", "function $mini_path_copy(from, to) {\n    process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true })\n    return 0;\n}\n", "", "$mini_path_copy({0}, {1})");
@@ -2591,6 +2616,16 @@ function $mini_file_25() {
 }
 function $mini_file_26() {
     emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n", false, "");
+    emit_js_host_function_add("number_sub", "function number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n", false, "");
+    emit_js_host_function_add("number_min", "function number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.min(a, b);\n}\n", false, "");
+    emit_js_host_function_add("number_max", "function number_max(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.max(a, b);\n}\n", false, "");
+    emit_js_host_function_add("number_div", "function number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", false, "");
+    emit_js_host_function_add("number_floor", "function number_floor(value) {\n    if (typeof value !== \"number\") return 0;\n    return Math.floor(value);\n}\n", false, "");
+    emit_js_host_function_add("number_from_text", "function number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", false, "");
+    emit_js_host_function_add("number_mod", "function number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", false, "");
+    emit_js_host_function_add("number_mul", "function number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", false, "");
+    emit_js_host_function_add("number_pow", "function number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", false, "");
+    emit_js_host_function_add("number_to_text", "function number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", false, "");
 }
 function $mini_file_27() {
     emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");

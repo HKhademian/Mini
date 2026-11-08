@@ -1,0 +1,15 @@
+{
+  "id": "language.number-requires-import",
+  "kind": "reject",
+  "source": "071-002-number-requires-import.mini",
+  "features": ["number", "import"],
+  "cases": [
+    {
+      "name": "missing-number-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "071-002-number-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

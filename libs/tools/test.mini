@@ -5,6 +5,7 @@
 ///        node dist/test.js --candidate COMPILER.js [--verbose] [FILTER]
 /// Prints scenario summaries by default, showing PASS lines when --verbose is set.
 
+import "common/number";
 import "common/map";
 import "common/io";
 import "common/text";

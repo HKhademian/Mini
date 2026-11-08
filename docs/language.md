@@ -360,9 +360,11 @@ text and numeric-zero fallbacks without an absence value.
 ## Accepted operation: number text
 
 ```mini
+import "common/number";
 text := number_to_text(42);
 ```
 
+- Import `common/number` before calling a `number_*` function.
 - `number_to_text(value)` returns canonical decimal text for a safe integer:
   optional minus sign, no leading zeros, `0` for zero, and no exponent.
 - Non-number values and non-safe integers return empty text.

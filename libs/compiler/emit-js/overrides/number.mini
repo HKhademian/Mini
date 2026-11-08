@@ -8,3 +8,63 @@ emit_js_host_function_add(
     false,
     ""
 );
+emit_js_host_function_add(
+    "number_sub",
+    "function number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_min",
+    "function number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.min(a, b);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_max",
+    "function number_max(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.max(a, b);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_div",
+    "function number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_floor",
+    "function number_floor(value) {\n    if (typeof value !== \"number\") return 0;\n    return Math.floor(value);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_from_text",
+    "function number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_mod",
+    "function number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_mul",
+    "function number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_pow",
+    "function number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "number_to_text",
+    "function number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n",
+    false,
+    ""
+);

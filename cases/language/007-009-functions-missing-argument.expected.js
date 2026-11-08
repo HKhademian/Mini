@@ -36,6 +36,19 @@ function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
+function $mini_text_find(text, needle) {
+    if (typeof text !== "string" || typeof needle !== "string") return -1;
+    return text.indexOf(needle);
+}
+function $mini_text_get(text, index) {
+    if (typeof text === "string" && index >= 0 && index < text.length) return text[index];
+    return "";
+}
+function $mini_text_split(text, divider) {
+    if (typeof text !== "string" || typeof divider !== "string") return [];
+    if (divider === "") return [text];
+    return text.split(divider);
+}
 function $mini_to_text(value) {
     if (typeof value === "string") return value;
     if (typeof value === "number") return $mini_number_to_text(value);
@@ -239,6 +252,155 @@ function list_rest(items, count) {
     }
     return result;
 }
+function split_lines(source) {
+
+    let lines = $mini_text_split(source, "\n");
+    let position = 0;
+    while ((position < ((lines).length - 1))) {
+        let line = list_get(lines, position);
+        if ((((line).length > 0) && ($mini_text_get(line, ((line).length - 1)) === "\r"))) {
+            list_set(lines, position, text_slice(line, 0, ((line).length - 1)));
+        }
+        position = (position + 1);
+    }
+    return lines;
+}
+function text_slice(source, start, end) {
+    if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
+    if (start < 0) start = source.length + start;
+    if (end < 0) end = source.length + end;
+    if (start < 0) start = 0;
+    if (end < 0) end = 0;
+    if (start > source.length) start = source.length;
+    if (end > source.length) end = source.length;
+    if (end <= start) return "";
+    return source.slice(start, end);
+}
+function indent_output(output) {
+
+    let lines = split_lines(output);
+    let result = list_new();
+    let position = 0;
+    while ((position < (lines).length)) {
+        let line = list_get(lines, position);
+        if (((line).length > 0)) {
+            list_set(result, (result).length, ("    " + line));
+        }
+        position = (position + 1);
+    }
+    return list_join(result, "\n");
+}
+function text_ends_with(source, suffix) {
+
+    let size = (suffix).length;
+    let length = (source).length;
+    if ((size > length)) {
+        return false;
+    }
+    return (text_slice(source, (length - size), length) === suffix);
+}
+function is_letter(character) {
+
+    return ($mini_text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
+}
+function is_digit(character) {
+
+    return ($mini_text_find("0123456789", character) >= 0);
+}
+function is_identifier_part(character) {
+
+    return (is_letter(character) || is_digit(character));
+}
+function is_two_character_symbol(value) {
+
+    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
+}
+function text_starts_with(source, prefix) {
+
+    let size = (prefix).length;
+    if ((size > (source).length)) {
+        return false;
+    }
+    return (text_slice(source, 0, size) === prefix);
+}
+function text_chomp(text) {
+
+    let length = (text).length;
+    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+
+    let length = (text).length;
+    while ((length > 0)) {
+        let character = $mini_text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+
+    let start = 0;
+    let end = (text).length;
+    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return text_slice(text, start, end);
+}
+function number_add(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a + b;
+}
+function number_sub(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a - b;
+}
+function number_min(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.min(a, b);
+}
+function number_max(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.max(a, b);
+}
+function number_mul(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a * b;
+}
+function number_div(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return Math.trunc(a / b);
+}
+function number_mod(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return a % b;
+}
+function number_floor(value) {
+    if (typeof value !== "number") return 0;
+    return Math.floor(value);
+}
+function number_pow(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) return 0;
+    return Math.pow(a, b);
+}
+function number_from_text(text) {
+    if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) return 0;
+    const value = Number(text);
+    return Number.isSafeInteger(value) ? value : 0;
+}
+function number_to_text(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
+}
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -267,7 +429,13 @@ function $mini_file_3() {
 
 }
 function $mini_file_4() {
-    io_write_line($mini_number_to_text((join("a", 0)).length));
+
+}
+function $mini_file_5() {
+
+}
+function $mini_file_6() {
+    io_write_line(number_to_text((join("a", 0)).length));
 }
 function $mini_main() {
     $mini_file_0();
@@ -275,5 +443,7 @@ function $mini_main() {
     $mini_file_2();
     $mini_file_3();
     $mini_file_4();
+    $mini_file_5();
+    $mini_file_6();
 }
 $mini_main();

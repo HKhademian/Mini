@@ -1,5 +1,6 @@
 /// Find a value in a sorted list.
 
+import "common/number";
 import "common/list";
 import "common/io";
 

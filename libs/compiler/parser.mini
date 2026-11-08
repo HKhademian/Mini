@@ -1,6 +1,7 @@
 /// Eager recursive-descent parser and shallow checker over a complete token list.
 /// Returns one checked Program AST; it does not emit target source.
 
+import "common/number";
 import "common/list";
 import "common/map";
 import "./lexer";

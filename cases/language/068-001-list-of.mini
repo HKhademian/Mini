@@ -1,5 +1,6 @@
 /// Build lists of several sizes from supplied arguments.
 
+import "common/number";
 import "common/io";
 import "common/list";
 

@@ -1,3 +1,4 @@
+import "common/number";
 import "common/io";
 fn classify(value) {
     if value < 0 {

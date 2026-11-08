@@ -1,5 +1,6 @@
 /// Print canonical decimal text for zero, a positive number, and a negative number.
 
+import "common/number";
 import "common/io";
 
 io_write_line(number_to_text(42));

@@ -1,5 +1,6 @@
 /// Exercise code-point access and construction.
 
+import "common/number";
 import "common/io";
 
 accent := text_code("é");
