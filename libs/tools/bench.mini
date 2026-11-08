@@ -2,6 +2,7 @@
 /// Usage: node dist/bench.js OUTPUT [FILTER]
 /// Output must not exist; the parent directory is created.
 
+import "common/map";
 include "common/text.mini";
 include "common/list.mini";
 include "./cases.mini";

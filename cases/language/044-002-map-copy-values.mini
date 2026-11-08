@@ -1,3 +1,4 @@
+import "common/map";
 include "common/io.mini";
 fn copy(value) {
     return map_copy(value);

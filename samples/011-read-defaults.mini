@@ -1,5 +1,6 @@
 /// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
 
+import "common/map";
 include "common/io.mini";
 
 io_write_line("character: " + text_get("hello", 1));

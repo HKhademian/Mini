@@ -1,12 +1,18 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
+import "common/map";
 include "./overrides/number.mini";
+include "./overrides/map.mini";
 include "./overrides/text.mini";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {
-    if reference_mode || !map_has(js_host_functions, name) {
+    if !map_has(js_host_functions, name) {
         return "";
     }
-    return map_get(js_host_functions, name);
+    entry := map_get(js_host_functions, name);
+    if reference_mode && !map_get(entry, "keep_reference") {
+        return "";
+    }
+    return map_get(entry, "definition");
 }

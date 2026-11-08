@@ -1,1 +1,3 @@
 map_get(map_new());
+
+import "common/map";

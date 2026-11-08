@@ -1,3 +1,4 @@
+import "common/map";
 nested := list_new();
 list_set(nested, 0, "nested");
 child := map_new();

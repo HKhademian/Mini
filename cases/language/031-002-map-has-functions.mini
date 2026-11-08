@@ -1,3 +1,4 @@
+import "common/map";
 fn make_map() {
     io_write("m");
     return map_new();

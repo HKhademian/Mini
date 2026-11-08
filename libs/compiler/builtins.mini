@@ -1,5 +1,6 @@
 /// Builtin registry and lowering.
 
+import "common/map";
 include "common/list.mini";
 include "common/text.mini";
 

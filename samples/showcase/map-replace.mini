@@ -1,5 +1,6 @@
 /// Setting an existing key keeps the key count.
 
+import "common/map";
 include "common/io.mini";
 
 values := map_new();

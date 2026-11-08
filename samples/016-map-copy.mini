@@ -1,5 +1,6 @@
 /// Copy a map and show that changing the copy leaves the original intact.
 
+import "common/map";
 include "common/io.mini";
 
 original := map_new();

@@ -2,6 +2,7 @@
 //
 
 /// Run a process and capture its result.
+import "common/map";
 fn process_capture(command, args, directory, input) {
     options := map_new();
     map_set(options, "command", command);

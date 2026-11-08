@@ -2,6 +2,7 @@
 //
 
 /// Print a call marker and return a fresh one-key map.
+import "common/map";
 fn make_map() {
     io_write("m");
     items := map_new();

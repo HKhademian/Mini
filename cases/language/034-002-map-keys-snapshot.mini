@@ -1,3 +1,4 @@
+import "common/map";
 items := map_new();
 map_set(items, "first", 0);
 keys := map_keys(items);

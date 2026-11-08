@@ -51,6 +51,15 @@ zero waits indefinitely). The result map holds `status`, `signal`, `stdout`,
 connected to the parent and stay empty. `status` is 1 when the command cannot
 start or ends by a signal.
 
+## Map operations
+
+Map APIs are declared in [libs/common/map.mini](../libs/common/map.mini) and
+require `import "common/map"`. Their Mini definitions provide the fallback
+contract; a target may replace the same function with a host implementation.
+A target that cannot implement a required map primitive uses the panic fallback.
+`map_set` and `map_delete` return zero, so these operations never produce a
+void result.
+
 `value_kind(value)` returns `text`, `number`, `boolean`, `list`, `map`, or
 `other` for the runtime kind of a value.
 

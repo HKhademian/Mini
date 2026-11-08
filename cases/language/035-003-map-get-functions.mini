@@ -1,3 +1,4 @@
+import "common/map";
 fn target() {
     io_write("m");
     items := map_new();

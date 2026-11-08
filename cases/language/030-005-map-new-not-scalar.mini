@@ -1,1 +1,3 @@
 same := map_new() == map_new();
+
+import "common/map";

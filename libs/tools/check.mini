@@ -2,6 +2,7 @@
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
 /// Usage: node dist/check.js [--docs]
 
+import "common/map";
 include "common/io.mini";
 include "common/value.mini";
 include "common/list.mini";

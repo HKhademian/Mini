@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /// Compose the mini compiler from its source files.
 
+import "common/map";
 include "common/io.mini";
 include "common/text.mini";
 include "common/native.mini";

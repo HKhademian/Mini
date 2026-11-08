@@ -1,1 +1,3 @@
 map_has(map_new());
+
+import "common/map";

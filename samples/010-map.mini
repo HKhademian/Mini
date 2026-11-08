@@ -1,5 +1,6 @@
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
 
+import "common/map";
 include "common/io.mini";
 
 names := map_new();

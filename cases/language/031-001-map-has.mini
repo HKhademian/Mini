@@ -1,3 +1,4 @@
+import "common/map";
 items := map_new();
 key := io_read_all();
 first := map_has(items, key);

@@ -1,7 +1,7 @@
 /// Build maps from alternating key and value arguments.
 
 include "common/io.mini";
-include "common/map.mini";
+import "common/map";
 
 pairs := map_of("hi", 2, "test", 3);
 repeated := map_of("k", 1, "k", 2);

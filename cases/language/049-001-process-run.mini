@@ -1,5 +1,6 @@
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
 
+import "common/map";
 include "common/io.mini";
 include "common/process-run.mini";
 

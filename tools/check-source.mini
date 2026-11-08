@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import "common/map";
 include "tools/check-source.mini";
 
 /// Report a command error and stop.

@@ -1,5 +1,6 @@
 /// Store a map inside another map.
 
+import "common/map";
 include "common/io.mini";
 
 outer := map_new();

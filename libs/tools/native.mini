@@ -1,4 +1,5 @@
 /// Preprocess and build native C, retaining the expanded input next to the source.
+import "common/map";
 include "common/native.mini";
 include "common/process.mini";
 

@@ -128,7 +128,9 @@ include "./local.mini";
 ```
 
 - `import "common/text"` resolves to `libs/common/text.mini`; the `.mini`
-  extension may also be written.
+  extension may also be written. Import the module that declares each source API;
+  for example, map operations such as `map_new` and `map_get` require
+  `import "common/map"`. A source API is unknown until its module is imported.
 - Paths beginning `./` or `../` are resolved relative to the including file;
   `/path/to/file.mini` is an absolute filesystem path. Paths are canonicalized
   before use.

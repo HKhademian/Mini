@@ -2,6 +2,7 @@
 //
 
 /// Return whether a single character is in choices; empty text is never a member.
+import "common/map";
 fn lex_contains(choices, character) {
     index := 0;
     while index < text_length(choices) {

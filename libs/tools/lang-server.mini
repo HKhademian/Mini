@@ -2,6 +2,7 @@
 /// Usage: node dist/lang-server.js [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
+import "common/map";
 include "common/value.mini";
 include "common/list.mini";
 include "common/text.mini";

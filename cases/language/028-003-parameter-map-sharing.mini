@@ -1,3 +1,4 @@
+import "common/map";
 fn change(items) {
     map_set(items, "name", "shared");
     items = map_new();

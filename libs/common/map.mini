@@ -1,6 +1,54 @@
-/// Map helpers built on the map builtins.
+/// Map functions with Mini fallbacks and target-provided representation primitives.
 
-include "./list.mini";
+import "common/list";
+import "common/panic";
+import "common/value";
+
+/// Create a fresh map; targets without a map host implementation panic.
+fn map_new() {
+    return panic("map_new requires a host implementation");
+}
+
+/// Read one map value, returning zero when the key is absent.
+fn map_get(items, key) {
+    return panic("map_get requires a host implementation");
+}
+
+/// Store one map value and return zero.
+fn map_set(items, key, value) {
+    return panic("map_set requires a host implementation");
+}
+
+/// Test whether a text key is present in a map.
+fn map_has(items, key) {
+    return panic("map_has requires a host implementation");
+}
+
+/// Return the map's keys as a fresh list.
+fn map_keys(items) {
+    return panic("map_keys requires a host implementation");
+}
+
+/// Delete a key if present and return zero.
+fn map_delete(items, key) {
+    return panic("map_delete requires a host implementation");
+}
+
+/// Return a shallow map copy.
+fn map_copy(items) {
+    if !value_is_map(items) {
+        return map_new();
+    }
+    result := map_new();
+    keys := map_keys(items);
+    position := 0;
+    while position < list_length(keys) {
+        key := list_get(keys, position);
+        map_set(result, key, map_get(items, key));
+        position = position + 1;
+    }
+    return result;
+}
 
 /// Build a map from alternating key and value arguments.
 ///

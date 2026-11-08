@@ -1,1 +1,2 @@
+import "common/map";
 io_write(map_new());

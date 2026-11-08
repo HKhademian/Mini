@@ -1,5 +1,6 @@
 /// Run Node once, capture its output and status, and print them.
 
+import "common/map";
 include "common/io.mini";
 include "common/process-run.mini";
 

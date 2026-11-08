@@ -1,5 +1,6 @@
 /// Exercise the executable path, temporary directory, and removal primitives.
 
+import "common/map";
 include "common/path.mini";
 include "common/io.mini";
 include "common/process-run.mini";

@@ -1,3 +1,4 @@
+import "common/map";
 include "common/io.mini";
 include "common/process-run.mini";
 args := list_new();

@@ -1,1 +1,3 @@
 map_keys();
+
+import "common/map";

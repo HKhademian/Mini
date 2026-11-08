@@ -1,5 +1,6 @@
 /// Test for a key before reading it.
 
+import "common/map";
 include "common/io.mini";
 
 values := map_new();

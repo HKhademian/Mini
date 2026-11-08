@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- builtins 0.4.0-alpha.8 / compiler 0.5.0-alpha.40 / bootstrap 0.3.0-alpha.42:
+  move map operations to explicit `import "common/map"` APIs, add pure Mini
+  `map_copy`, and register JavaScript host implementations for map primitives.
+
 - builtins 0.4.0-alpha.7 / compiler 0.5.0-alpha.39 / bootstrap 0.3.0-alpha.41:
   move `text_slice` to the imported `common/text.mini` API and use its registered
   JavaScript host override by default.

@@ -1,3 +1,4 @@
+import "common/map";
 include "common/list.mini";
 include "common/path.mini";
 /// Return a token map with the fields used by the compiler.

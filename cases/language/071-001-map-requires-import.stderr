@@ -1,0 +1,3 @@
+071-001-map-requires-import.mini:1:10: unknown function map_new
+io_write(map_new());
+         ^

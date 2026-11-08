@@ -4,5 +4,6 @@ include "./registry.mini";
 
 emit_js_host_function_add(
     "text_slice",
-    "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n"
+    "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n",
+    false
 );

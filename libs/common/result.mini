@@ -1,3 +1,4 @@
+import "common/map";
 include "./value.mini";
 /// Return a successful result map.
 ///

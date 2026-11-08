@@ -4,6 +4,7 @@
 /// reach the program through fn_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.
 
+import "common/map";
 include "common/path.mini";
 include "common/list.mini";
 include "common/process-run.mini";

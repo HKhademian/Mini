@@ -1,82 +1,17 @@
-/// Map builtin descriptors.
+/// Map API contracts; implementations live in common/map and emitter registries.
 include "./registry.mini";
 
-//
-
-builtin_add(
-    "map_copy",
-    "map",
-    "map",
-    "performance",
-    "",
-    "map_copy",
-    "function $mini_map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n",
-    "pure_map_copy",
-    "$mini_map_copy({0})"
-);
-builtin_add(
-    "map_get",
-    "unknown,text",
-    "unknown",
-    "representation",
-    "",
-    "map_get",
-    "function $mini_map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    const value = items[key];\n    return value !== undefined || key in items ? value : 0;\n}\n",
-    "",
-    "$mini_map_get({0}, {1})"
-);
-builtin_add(
-    "map_has",
-    "map,text",
-    "boolean",
-    "representation",
-    "",
-    "map_has",
-    "function $mini_map_has(items, key) {\n    return key in items;\n}\n",
-    "",
-    "$mini_map_has({0}, {1})"
-);
-builtin_add(
-    "map_keys",
-    "map",
-    "list",
-    "representation",
-    "",
-    "",
-    "",
-    "",
-    "Object.keys({0})"
-);
-builtin_add(
-    "map_new",
-    "",
-    "map",
-    "representation",
-    "",
-    "map_new",
-    "const $mini_map_proto = { __proto__: null };\n",
-    "",
-    "({ __proto__: $mini_map_proto })"
-);
-builtin_add(
-    "map_delete",
-    "unknown,text",
-    "number",
-    "representation",
-    "",
-    "map_delete",
-    "function $mini_map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) delete items[key];\n    return 0;\n}\n",
-    "",
-    "$mini_map_delete({0}, {1})"
-);
-builtin_add(
-    "map_set",
-    "unknown,text,unknown",
-    "number",
-    "representation",
-    "",
-    "map_set",
-    "function $mini_map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items)) items[key] = value\n    return 0;\n}\n",
-    "",
-    "$mini_map_set({0}, {1}, {2})"
-);
+builtin_add("map_copy", "map", "map", "performance", "", "", "", "", "");
+builtin_source_api("map_copy");
+builtin_add("map_get", "unknown,text", "unknown", "representation", "", "", "", "", "");
+builtin_source_api("map_get");
+builtin_add("map_has", "map,text", "boolean", "representation", "", "", "", "", "");
+builtin_source_api("map_has");
+builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "");
+builtin_source_api("map_keys");
+builtin_add("map_new", "", "map", "representation", "", "", "", "", "");
+builtin_source_api("map_new");
+builtin_add("map_delete", "unknown,text", "number", "representation", "", "", "", "", "");
+builtin_source_api("map_delete");
+builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "", "", "");
+builtin_source_api("map_set");

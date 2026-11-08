@@ -1,3 +1,4 @@
+import "common/map";
 include "common/io.mini";
 original := map_new();
 map_set(original, "name", "original");

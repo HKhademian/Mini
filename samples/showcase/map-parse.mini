@@ -1,5 +1,6 @@
 /// Parse an object and read a field.
 
+import "common/map";
 include "common/io.mini";
 
 parsed := json_parse("{\"name\":\"Mini\",\"count\":2}");

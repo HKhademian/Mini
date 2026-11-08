@@ -4,6 +4,7 @@
 /// `--write` replaces a file only after successful formatting; `--check`
 /// reports noncanonical input without writing.
 
+import "common/map";
 include "common/text.mini";
 include "common/list.mini";
 include "compiler/lexer.mini";

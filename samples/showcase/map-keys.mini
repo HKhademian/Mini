@@ -1,5 +1,6 @@
 /// Take a key snapshot and count it.
 
+import "common/map";
 include "common/io.mini";
 
 values := map_new();

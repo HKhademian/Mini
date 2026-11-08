@@ -2,6 +2,7 @@
 //
 
 /// Return whitespace-delimited words, preserving their source order.
+import "common/map";
 fn graph_words(source) {
     words := list_new();
     word := "";

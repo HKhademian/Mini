@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /// Exercise the public compiler target flags and generated native program.
+import "common/map";
 include "common/text.mini";
 include "common/list.mini";
 include "common/path.mini";

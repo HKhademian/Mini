@@ -1,3 +1,4 @@
+import "common/map";
 include "./path.mini";
 include "./json.mini";
 include "./result.mini";

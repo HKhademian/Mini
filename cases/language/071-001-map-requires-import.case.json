@@ -1,0 +1,15 @@
+{
+  "id": "language.map-requires-import",
+  "kind": "reject",
+  "source": "071-001-map-requires-import.mini",
+  "features": ["import", "map"],
+  "cases": [
+    {
+      "name": "missing-import",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "071-001-map-requires-import.stderr"},
+      "exitCode": 1
+    }
+  ]
+}
