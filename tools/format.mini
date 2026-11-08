@@ -3,6 +3,7 @@
 import "common/io";
 import "common/list";
 import "common/file";
+import "common/path";
 import "tools/format";
 
 /// Report a command error and stop.

@@ -4,6 +4,7 @@ import "common/io";
 import "common/list";
 import "common/map";
 import "common/file";
+import "common/path";
 import "tools/check-source";
 
 /// Report a command error and stop.

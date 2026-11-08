@@ -8,6 +8,7 @@ import "common/map";
 import "common/text";
 import "common/list";
 import "common/file";
+import "common/path";
 import "./cases";
 
 /// Report a benchmark error and stop.

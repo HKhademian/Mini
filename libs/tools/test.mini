@@ -10,6 +10,7 @@ import "common/map";
 import "common/io";
 import "common/text";
 import "common/list";
+import "common/path";
 import "./cases";
 
 /// Report usage and stop.

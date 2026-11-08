@@ -11,6 +11,7 @@ import "common/value";
 import "common/list";
 import "common/text";
 import "common/file";
+import "common/path";
 import "./cases";
 
 /// Report a verification failure and stop.

@@ -10,6 +10,7 @@ import "common/list";
 import "common/text";
 import "common/json";
 import "common/file";
+import "common/path";
 import "./cases";
 
 /// Report a check failure and stop.

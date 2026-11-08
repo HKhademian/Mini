@@ -2,6 +2,7 @@
 
 import "common/list";
 import "common/map";
+import "common/path";
 import "common/native";
 import "common/process";
 
