@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.45 / compiler 0.5.0-alpha.56 / bootstrap
+  0.3.0-alpha.58: move C output runtime and `io_write` implementation into the
+  imported host override registry.
+
 - mini 0.3.0-alpha.44 / compiler 0.5.0-alpha.55 / bootstrap
   0.3.0-alpha.57: add C value-kind overrides so imported pure numeric
   algorithms can run against native C values.

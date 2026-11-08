@@ -17,7 +17,7 @@ import "./emit-c/overrides/value";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {
-    message := "C target supports only bindings and top-level io_write with literal or binding values";
+    message := "C target cannot lower this syntax or operation";
     if token != 0 && map_has(token, "node_kind") {
         message = message + " (unsupported " + map_get(token, "node_kind") + ")";
     }
@@ -400,81 +400,6 @@ fn emit_c_list_runtime() {
     );
 }
 
-/// Return output using a parameter view that bundles the argument count/pointer.
-/// Each source call prepares its arguments before invoking this helper.
-fn emit_c_output_runtime() {
-    return emit_c_join_lines(
-        list_of(
-            "static int MINI_ID(io_write_json_value)(MINI_ID(value) value, size_t depth);",
-            "static int MINI_ID(io_write_json_text)(MINI_ID(text) text) {",
-            "    MINI_ID(text_buffer) *buffer = text.buffer;",
-            "    if (!buffer || text.offset > buffer->count || text.length > buffer->count - text.offset) return 1;",
-            "    if (fputc('\\\"', stdout) == EOF) return 1;",
-            "    for (size_t index = 0; index < text.length; ++index) {",
-            "        unsigned char byte = buffer->items[text.offset + index];",
-            "        if (byte == '\\\"' || byte == '\\\\') { if (fputc('\\\\', stdout) == EOF || fputc(byte, stdout) == EOF) return 1; }",
-            "        else if (byte == '\\n') { if (fputs(\"\\\\n\", stdout) == EOF) return 1; }",
-            "        else if (byte == '\\r') { if (fputs(\"\\\\r\", stdout) == EOF) return 1; }",
-            "        else if (byte == '\\t') { if (fputs(\"\\\\t\", stdout) == EOF) return 1; }",
-            "        else if (byte < 32) { if (fprintf(stdout, \"\\\\u%04x\", byte) < 0) return 1; }",
-            "        else if (fputc(byte, stdout) == EOF) return 1;",
-            "    }",
-            "    return fputc('\\\"', stdout) == EOF ? 1 : 0;",
-            "}",
-            "",
-            "static int MINI_ID(io_write_json_value)(MINI_ID(value) value, size_t depth) {",
-            "    if (depth > 128) return 1;",
-            "    if (value.kind == MINI_ID(kind_text)) return MINI_ID(io_write_json_text)(value.text);",
-            "    if (value.kind == MINI_ID(kind_boolean)) return fputs(value.boolean ? \"true\" : \"false\", stdout) == EOF ? 1 : 0;",
-            "    if (value.kind == MINI_ID(kind_number)) {",
-            "        if (!(value.number == value.number) || value.number > DBL_MAX || value.number < -DBL_MAX) return fputs(\"null\", stdout) == EOF ? 1 : 0;",
-            "        if (value.number == 0) return fputs(\"0\", stdout) == EOF ? 1 : 0;",
-            "        return fprintf(stdout, \"%.0f\", value.number) < 0 ? 1 : 0;",
-            "    }",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list) return fputs(\"null\", stdout) == EOF ? 1 : 0;",
-            "    if (fputc('[', stdout) == EOF) return 1;",
-            "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
-            "    for (size_t index = 0; index < value.list->values.count; ++index) {",
-            "        if (index && fputc(',', stdout) == EOF) return 1;",
-            "        if (MINI_ID(io_write_json_value)(items[index], depth + 1) != 0) return 1;",
-            "    }",
-            "    return fputc(']', stdout) == EOF ? 1 : 0;",
-            "}",
-            "",
-            "static int MINI_ID(io_write_value)(MINI_ID(value) value) {",
-            "    if (value.kind == MINI_ID(kind_list)) return MINI_ID(io_write_json_value)(value, 0);",
-            "    if (value.kind == MINI_ID(kind_boolean))",
-            "        return fputs(value.boolean ? \"true\" : \"false\", stdout) == EOF ? 1 : 0;",
-            "    if (value.kind == MINI_ID(kind_number)) {",
-            "        MINI_ID(number) number = value.number;",
-            "        if (!(number >= -9007199254740991.0 && number <= 9007199254740991.0)) return 0;",
-            "        if ((MINI_ID(number))(int_least64_t)number != number) return 0;",
-            "        if (number == 0) return fputs(\"0\", stdout) == EOF ? 1 : 0;",
-            "        return fprintf(stdout, \"%.0f\", number) < 0 ? 1 : 0;",
-            "    }",
-            "    if (value.kind != MINI_ID(kind_text)) return 1;",
-            "    MINI_ID(text_buffer) *buffer = value.text.buffer;",
-            "    if (!buffer || value.text.offset > buffer->count",
-            "        || value.text.length > buffer->count - value.text.offset) return 1;",
-            "    if (!value.text.length) return 0;",
-            "    return fwrite(buffer->items + value.text.offset, 1, value.text.length, stdout)",
-            "        == value.text.length ? 0 : 1;",
-            "}",
-            "",
-            "static int MINI_ID(io_write)(MINI_ID(params) params) {",
-            "    if (params.count && !params.args) return 1;",
-            "    for (size_t index = 0; index < params.count; ++index) {",
-            "        int status = MINI_ID(io_write_value)(params.args[index]);",
-            "        if (status != 0) return status;",
-            "    }",
-            "    return 0;",
-            "}",
-            ""
-        ),
-        2
-    );
-}
-
 /// Return a readable C string input, using fixed-width octal for other ASCII controls.
 fn emit_c_literal_input(bytes) {
     parts := list_of("\"");
@@ -766,18 +691,16 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
         );
         position = position + 1;
     }
-    if map_get(node, "is_builtin") && name != "io_write" && !emit_c_host_function_exists(name) {
+    if map_get(node, "is_builtin") && !emit_c_host_function_exists(name) {
         emit_c_fail(node);
+    }
+    runtime_name := emit_c_host_function_runtime(name);
+    if runtime_name != "" {
+        map_set(map_get(state, "c_required_host_runtimes"), runtime_name, true);
     }
     params := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
     if count > 0 {
         params = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(count) + ", " + array + ")";
-    }
-    if name == "io_write" {
-        map_set(state, "c_has_calls", true);
-        list_set(body, list_length(body), "    if (MINI_ID(io_write)(" + params + ") != 0) return 1;\n");
-        list_set(body, list_length(body), "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n");
-        return list_join(body, "");
     }
     list_set(
         body,
@@ -1130,7 +1053,7 @@ fn emit_c_program(program, header_name) {
     map_set(state, "c_conditions", list_new());
     map_set(state, "c_functions", list_new());
     map_set(state, "c_prototypes", list_new());
-    map_set(state, "c_has_calls", false);
+    map_set(state, "c_required_host_runtimes", map_new());
     files := list_new();
     calls := list_new();
     bodies := map_new();
@@ -1218,8 +1141,9 @@ fn emit_c_program(program, header_name) {
         file_index = file_index + 1;
     }
     runtime_parts := list_new();
-    if map_get(state, "c_has_calls") {
-        list_set(runtime_parts, list_length(runtime_parts), emit_c_output_runtime());
+    host_runtimes := emit_c_host_runtime_definitions(map_get(state, "c_required_host_runtimes"));
+    if host_runtimes != "" {
+        list_set(runtime_parts, list_length(runtime_parts), host_runtimes);
     }
     if map_get(state, "c_add_used") {
         list_set(runtime_parts, list_length(runtime_parts), emit_c_add_runtime());
