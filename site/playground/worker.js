@@ -82,7 +82,7 @@ function buildTokens(lexTokenize, lexExpandIncludes, source, portable, reference
 
 /// Compile one variant and return both the runnable and user-source code.
 async function compileSource(source, portable) {
-  const { lex_tokenize, lex_expand_includes, parser_compile, parser_compile_program } = await loadCompiler();
+  const { lex_tokenize, lex_expand_includes, emit_js_compile, emit_js_compile_program_only } = await loadCompiler();
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
@@ -90,7 +90,7 @@ async function compileSource(source, portable) {
   try {
     const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
     const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
-    return { code: parser_compile(prepared), program: parser_compile_program(prepared), diagnostic: "" };
+    return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };

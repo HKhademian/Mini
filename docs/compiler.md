@@ -30,14 +30,15 @@ increments; the script interpreter and embedding API are not implemented yet.
 
 On 2026-11-08, the compiler architecture moved toward one checked, target-neutral
 AST consumed by separate JavaScript and C emitters. The parser currently builds
-that AST alongside its legacy JavaScript rendering as a migration bridge; the
-C backend still performs its token walk. Both backends consuming the AST is the
-acceptance point, not a claim about the current implementation. The nodes carry
-source spans and inferred value kinds. `parser_ast(tokens)` exposes the tree,
-which retains the expanded token list it received. The ordinary compile path
-omits comment tokens; formatter consumers must carry source text and trivia
-beside the AST. See the [migration plan](../.agents/plans/compiler-ast-backends.md)
-and [AST definitions](../libs/compiler/ast.mini).
+AST consumed by separate JavaScript and C emitters. The parser now returns only
+that AST, and [`emit-js.mini`](../libs/compiler/emit-js.mini) lowers it to JS.
+The C backend still performs its token walk after shared AST validation; moving
+it to the AST is the remaining backend migration. Nodes carry source spans and
+inferred value kinds. `parser_ast(tokens)` exposes the tree and its input token
+list. The ordinary compile path omits comment tokens; formatter consumers must
+carry source text and trivia beside the AST. See the
+[migration plan](../.agents/plans/compiler-ast-backends.md) and
+[AST definitions](../libs/compiler/ast.mini).
 
 ```text
 ./bin/mini compile --target c cases/native/001-001-write-literal.mini /tmp/mini-hello.c

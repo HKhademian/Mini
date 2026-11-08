@@ -7,6 +7,7 @@ include "common/native.mini";
 include "compiler/lexer.mini";
 include "compiler/parser.mini";
 include "compiler/builtins.mini";
+include "compiler/emit-js.mini";
 include "compiler/emit-c.mini";
 
 /// Return token JSON with two-space indentation and a final newline.
@@ -168,10 +169,10 @@ fn main(args) {
         expanded = combined;
     }
     if program_only {
-        file_write(target, parser_compile_program(expanded));
+        file_write(target, emit_js_compile_program_only(expanded));
         return 0;
     }
-    file_write(target, parser_compile(expanded));
+    file_write(target, emit_js_compile(expanded));
     return 0;
 }
 

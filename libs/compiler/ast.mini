@@ -27,6 +27,8 @@ fn ast_node(kind, token) {
     map_set(node, "column", map_get(token, "column"));
     if map_has(token, "file") {
         map_set(node, "file", map_get(token, "file"));
+    } else {
+        map_set(node, "file", map_get(token, "source"));
     }
     if map_has(token, "file_order") {
         map_set(node, "file_order", map_get(token, "file_order"));
@@ -45,6 +47,8 @@ fn ast_derive(kind, first, value_kind) {
     map_set(node, "column", map_get(first, "column"));
     if map_has(first, "file") {
         map_set(node, "file", map_get(first, "file"));
+    } else {
+        map_set(node, "file", map_get(first, "source"));
     }
     if map_has(first, "file_order") {
         map_set(node, "file_order", map_get(first, "file_order"));

@@ -33,7 +33,7 @@ fn main(args) {
     if path != "-" {
         base = path;
     }
-    parser_compile(lex_expand_includes(tokens, base, list_new(), map_new()));
+    parser_ast(lex_expand_includes(tokens, base, list_new(), map_new()));
     return 0;
 }
 

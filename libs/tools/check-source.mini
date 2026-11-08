@@ -6,6 +6,6 @@ include "compiler/builtins.mini";
 /// Validate one mini source text; diagnostics end the process on failure.
 fn check_source_text(source, name, base) {
     tokens := lex_tokenize(source, name, false);
-    parser_compile(lex_expand_includes(tokens, base, list_new(), map_new()));
+    parser_ast(lex_expand_includes(tokens, base, list_new(), map_new()));
     return 0;
 }

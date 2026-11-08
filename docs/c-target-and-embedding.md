@@ -53,8 +53,9 @@ execution. Their target field selects C; future target gaps stay explicit.
 
 - [Compiler entry](../tools/compiler.mini) drives tokenization, include expansion,
   checking, and JavaScript output. The [parser](../libs/compiler/parser.mini)
-  builds a checked AST alongside legacy JavaScript rendering as the first step
-  toward shared lowering; the C token walk is still in place during migration.
+  produces the checked AST; [`emit-js.mini`](../libs/compiler/emit-js.mini)
+  lowers it to JavaScript. The C backend still uses a token walk after shared
+  AST validation and is next to migrate.
 - [Builtin registry](../libs/compiler/builtins.mini) combines metadata with
   JavaScript helpers/call templates. Separate only what each C slice needs.
 - [Pure libraries](self-containment.md) supply algorithms, while native storage

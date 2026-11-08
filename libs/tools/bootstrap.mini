@@ -7,6 +7,7 @@ include "common/json.mini";
 include "common/project.mini";
 include "compiler/lexer.mini";
 include "compiler/parser.mini";
+include "compiler/emit-js.mini";
 /// Report a bootstrap failure.
 fn bootstrap_fail(message) {
     io_write_error(message + "\n");
@@ -18,7 +19,7 @@ fn bootstrap_fail(message) {
 fn bootstrap_compile_text(source) {
     tokens := lex_tokenize(file_read(source), path_basename(source), false);
     expanded := lex_expand_includes(tokens, source, list_new(), map_new());
-    return parser_compile(expanded);
+    return emit_js_compile(expanded);
 }
 
 /// Compile one source with a generated compiler.

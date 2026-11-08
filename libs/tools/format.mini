@@ -39,30 +39,22 @@ fn format_is_word(token) {
 
 /// Return whether text is a binary operator.
 fn format_is_binary(text) {
-    return text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!="
-        || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+    return text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
 }
 
 /// Return whether text precedes a unary minus.
 fn format_unary_minus_context(text) {
-    return text == "(" || text == "," || text == "=" || text == ":=" || text == "+" || text == "-"
-        || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
-        || text == "&&" || text == "||" || text == "!" || text == "return" || text == "{" || text == ";";
+    return text == "(" || text == "," || text == "=" || text == ":=" || text == "+" || text == "-" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||" || text == "!" || text == "return" || text == "{" || text == ";";
 }
 
 /// Return whether a unary operator needs a leading space.
 fn format_unary_space_context(text) {
-    return text == "if" || text == "while" || text == "return" || text == "," || text == "="
-        || text == ":=" || text == "+"
-        || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">="
-        || text == "&&" || text == "||";
+    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":=" || text == "+" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
 }
 
 /// Return whether an opening parenthesis follows a call-like keyword.
 fn format_paren_context(text) {
-    return text == "if" || text == "while" || text == "return" || text == ","
-        || text == "=" || text == ":=" || text == "+" || text == "==" || text == "!="
-        || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
+    return text == "if" || text == "while" || text == "return" || text == "," || text == "=" || text == ":=" || text == "+" || text == "==" || text == "!=" || text == "<" || text == "<=" || text == ">" || text == ">=" || text == "&&" || text == "||";
 }
 
 /// Append the current line to the completed lines and clear it.
@@ -138,8 +130,7 @@ fn format_stash_comment(state, index) {
 /// Emit one comment at the current position.
 fn format_emit_comment(state, token) {
     text := text_trim_end(map_get(token, "text"));
-    if map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line")
-        && map_get(state, "current") != "" {
+    if map_get(state, "has_previous") && map_get(token, "line") == map_get(map_get(state, "previous"), "line") && map_get(state, "current") != "" {
         map_set(state, "current", map_get(state, "current") + " " + text);
         format_newline(state);
         map_set(state, "pending_break", false);
@@ -364,6 +355,6 @@ fn format_tokens(tokens) {
 /// Format one source text; return the canonical text.
 fn format_source(source, name, base) {
     tokens := lex_tokenize(source, name, true);
-    parser_compile_quiet(lex_expand_includes(lex_tokenize(source, name, false), base, list_new(), map_new()));
+    parser_ast_quiet(lex_expand_includes(lex_tokenize(source, name, false), base, list_new(), map_new()));
     return format_tokens(tokens);
 }

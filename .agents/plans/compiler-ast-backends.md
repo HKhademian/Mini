@@ -21,14 +21,13 @@ semantic AST alone cannot preserve comments and formatting choices.
 
 ## Migration
 
-1. Add the AST data model and make the existing parser build it while retaining
-   current JavaScript output as a parity bridge. Preserve the public compiler
-   output and current diagnostic behavior.
-2. Move JavaScript lowering into `libs/compiler/emit-js.mini`; render from AST
-   only, then remove JavaScript snippets and builtin lowering from parser state.
-3. Port the C backend from its token walk to the same AST. Keep unsupported
+1. **Complete:** Add the AST data model and build it with the existing parser;
+   preserve current JavaScript output as a parity bridge.
+2. **Complete:** Move JavaScript lowering into `libs/compiler/emit-js.mini`;
+   the parser now returns AST nodes only and has no target source strings.
+3. **In progress:** Port the C backend from its token walk to the same AST. Keep unsupported
    target forms explicit and preserve generated C/header behavior.
-4. Expose a stable AST inspection path only after the AST schema is exercised
+4. Expose a stable AST inspection path after the AST schema is exercised
    by both backends; keep formatting trivia available to future consumers.
 
 Each completed migration step is a separate atomic commit with focused parity,
@@ -37,15 +36,14 @@ compiler artifacts.
 
 ## Current state
 
-- `libs/compiler/parser.mini` performs recursive descent, shallow checking,
-  and JavaScript emission together.
-- `libs/compiler/emit-c.mini` runs the JavaScript parser for validation, then
-  walks the token stream again for C lowering.
-- `tools/compiler.mini` selects between `parser_compile` and
-  `emit_c_compile`.
-- `docs/self-hosting-requirements.md` and the C target docs describe direct JS
-  emission and the C token-walk as the current bootstrap architecture. Update
-  those descriptions as each phase lands.
+- `libs/compiler/parser.mini` performs recursive descent and shallow checking,
+  returning a source-spanned AST without target source strings.
+- `libs/compiler/emit-js.mini` consumes the AST for JS syntax and builtin
+  lowering; the playground and CLI use its public entry points.
+- `libs/compiler/emit-c.mini` validates through the shared AST parser, then
+  still walks tokens for C lowering.
+- The C token walk is the remaining duplicated parse/lowering path. The C
+  backend migration and AST inspection interface remain.
 
 ## Acceptance
 

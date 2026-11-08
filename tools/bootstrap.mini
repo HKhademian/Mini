@@ -5,6 +5,7 @@ include "common/text.mini";
 include "compiler/lexer.mini";
 include "compiler/parser.mini";
 include "compiler/builtins.mini";
+include "compiler/emit-js.mini";
 include "tools/bootstrap.mini";
 
 /// Rebuild the compiler and tools, optionally doing a clean full-project rebuild.

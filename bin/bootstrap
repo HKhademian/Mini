@@ -884,6 +884,8 @@ function ast_node(kind, token) {
     $mini_map_set(node, "column", $mini_map_get(token, "column"));
     if ($mini_map_has(token, "file")) {
         $mini_map_set(node, "file", $mini_map_get(token, "file"));
+    } else {
+        $mini_map_set(node, "file", $mini_map_get(token, "source"));
     }
     if ($mini_map_has(token, "file_order")) {
         $mini_map_set(node, "file_order", $mini_map_get(token, "file_order"));
@@ -901,6 +903,8 @@ function ast_derive(kind, first, value_kind) {
     $mini_map_set(node, "column", $mini_map_get(first, "column"));
     if ($mini_map_has(first, "file")) {
         $mini_map_set(node, "file", $mini_map_get(first, "file"));
+    } else {
+        $mini_map_set(node, "file", $mini_map_get(first, "source"));
     }
     if ($mini_map_has(first, "file_order")) {
         $mini_map_set(node, "file_order", $mini_map_get(first, "file_order"));
@@ -1071,22 +1075,14 @@ function parser_fail(token, message) {
 
     return diagnostic_fail(token, message);
 }
-function parser_expression_new(code, kind, ast) {
+function parser_binary_expression(kind, left, operator, right) {
 
-    let expression = ({ __proto__: $mini_map_proto });
-    $mini_map_set(expression, "code", code);
-    $mini_map_set(expression, "kind", kind);
-    $mini_map_set(expression, "ast", ast);
-    return expression;
-}
-function parser_binary_expression(code, kind, left, operator, right) {
-
-    let node = ast_derive(AST_BINARY, $mini_map_get(left, "ast"), kind);
+    let node = ast_derive(AST_BINARY, left, kind);
     $mini_map_set(node, "operator", $mini_map_get(operator, "text"));
-    $mini_map_set(node, "left", $mini_map_get(left, "ast"));
-    $mini_map_set(node, "right", $mini_map_get(right, "ast"));
-    ast_finish_node(node, $mini_map_get(right, "ast"));
-    return parser_expression_new(code, kind, node);
+    $mini_map_set(node, "left", left);
+    $mini_map_set(node, "right", right);
+    ast_finish_node(node, right);
+    return node;
 }
 function parser_token(parser) {
 
@@ -1123,10 +1119,10 @@ function parser_expression(parser) {
     while (($mini_map_get(parser_token(parser), "text") === "||")) {
         let operator = parser_take(parser);
         let right = parser_conjunction(parser);
-        if (((($mini_map_get(left, "kind") !== "boolean") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "boolean") && ($mini_map_get(right, "kind") !== "unknown")))) {
+        if (((($mini_map_get(left, "value_kind") !== "boolean") && ($mini_map_get(left, "value_kind") !== "unknown")) || (($mini_map_get(right, "value_kind") !== "boolean") && ($mini_map_get(right, "value_kind") !== "unknown")))) {
             parser_fail(operator, "|| needs booleans");
         }
-        left = parser_binary_expression((((("(" + $mini_map_get(left, "code")) + " || ") + $mini_map_get(right, "code")) + ")"), "boolean", left, operator, right);
+        left = parser_binary_expression("boolean", left, operator, right);
     }
     return left;
 }
@@ -1136,10 +1132,10 @@ function parser_conjunction(parser) {
     while (($mini_map_get(parser_token(parser), "text") === "&&")) {
         let operator = parser_take(parser);
         let right = parser_equality(parser);
-        if (((($mini_map_get(left, "kind") !== "boolean") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "boolean") && ($mini_map_get(right, "kind") !== "unknown")))) {
+        if (((($mini_map_get(left, "value_kind") !== "boolean") && ($mini_map_get(left, "value_kind") !== "unknown")) || (($mini_map_get(right, "value_kind") !== "boolean") && ($mini_map_get(right, "value_kind") !== "unknown")))) {
             parser_fail(operator, "&& needs booleans");
         }
-        left = parser_binary_expression((((("(" + $mini_map_get(left, "code")) + " && ") + $mini_map_get(right, "code")) + ")"), "boolean", left, operator, right);
+        left = parser_binary_expression("boolean", left, operator, right);
     }
     return left;
 }
@@ -1149,16 +1145,12 @@ function parser_equality(parser) {
     while ((($mini_map_get(parser_token(parser), "text") === "==") || ($mini_map_get(parser_token(parser), "text") === "!="))) {
         let operator = parser_take(parser);
         let right = parser_comparison(parser);
-        let left_kind = $mini_map_get(left, "kind");
-        let right_kind = $mini_map_get(right, "kind");
+        let left_kind = $mini_map_get(left, "value_kind");
+        let right_kind = $mini_map_get(right, "value_kind");
         if ((((((left_kind === "list") || (right_kind === "list")) || (left_kind === "map")) || (right_kind === "map")) || (((left_kind !== "unknown") && (right_kind !== "unknown")) && (left_kind !== right_kind)))) {
             parser_fail(operator, "equality needs matching scalar kinds");
         }
-        let symbol = "===";
-        if (($mini_map_get(operator, "text") === "!=")) {
-            symbol = "!==";
-        }
-        left = parser_binary_expression((((((("(" + $mini_map_get(left, "code")) + " ") + symbol) + " ") + $mini_map_get(right, "code")) + ")"), "boolean", left, operator, right);
+        left = parser_binary_expression("boolean", left, operator, right);
     }
     return left;
 }
@@ -1168,10 +1160,10 @@ function parser_comparison(parser) {
     while ((((($mini_map_get(parser_token(parser), "text") === "<") || ($mini_map_get(parser_token(parser), "text") === "<=")) || ($mini_map_get(parser_token(parser), "text") === ">")) || ($mini_map_get(parser_token(parser), "text") === ">="))) {
         let operator = parser_take(parser);
         let right = parser_additive(parser);
-        if (((($mini_map_get(left, "kind") !== "number") && ($mini_map_get(left, "kind") !== "unknown")) || (($mini_map_get(right, "kind") !== "number") && ($mini_map_get(right, "kind") !== "unknown")))) {
+        if (((($mini_map_get(left, "value_kind") !== "number") && ($mini_map_get(left, "value_kind") !== "unknown")) || (($mini_map_get(right, "value_kind") !== "number") && ($mini_map_get(right, "value_kind") !== "unknown")))) {
             parser_fail(operator, "comparison needs numbers");
         }
-        left = parser_binary_expression((((((("(" + $mini_map_get(left, "code")) + " ") + $mini_map_get(operator, "text")) + " ") + $mini_map_get(right, "code")) + ")"), "boolean", left, operator, right);
+        left = parser_binary_expression("boolean", left, operator, right);
     }
     return left;
 }
@@ -1185,8 +1177,8 @@ function parser_additive(parser) {
     while ((($mini_map_get(parser_token(parser), "text") === "+") || ($mini_map_get(parser_token(parser), "text") === "-"))) {
         let operator = parser_take(parser);
         let right = parser_unary(parser);
-        let left_kind = $mini_map_get(left, "kind");
-        let right_kind = $mini_map_get(right, "kind");
+        let left_kind = $mini_map_get(left, "value_kind");
+        let right_kind = $mini_map_get(right, "value_kind");
         if (($mini_map_get(operator, "text") === "-")) {
             if ((((left_kind !== "number") && (left_kind !== "unknown")) || ((right_kind !== "number") && (right_kind !== "unknown")))) {
                 parser_fail(operator, "- needs two numbers");
@@ -1200,7 +1192,7 @@ function parser_additive(parser) {
         if ((left_kind === "unknown")) {
             result_kind = right_kind;
         }
-        left = parser_binary_expression((((((("(" + $mini_map_get(left, "code")) + " ") + $mini_map_get(operator, "text")) + " ") + $mini_map_get(right, "code")) + ")"), result_kind, left, operator, right);
+        left = parser_binary_expression(result_kind, left, operator, right);
     }
     return left;
 }
@@ -1220,20 +1212,21 @@ function parser_unary(parser) {
         $mini_map_set(node, "raw", ("-" + $mini_map_get(number, "text")));
         ast_finish(node, number);
         $mini_map_set(node, "value_kind", "number");
-        return parser_expression_new((("(" + value) + ")"), "number", node);
+        return node;
     }
     if (($mini_map_get(parser_token(parser), "text") === "!")) {
         let operator = parser_take(parser);
         let value = parser_unary(parser);
         let kind = "boolean";
-        if ((($mini_map_get(value, "kind") !== kind) && ($mini_map_get(value, "kind") !== "unknown"))) {
+        if ((($mini_map_get(value, "value_kind") !== kind) && ($mini_map_get(value, "value_kind") !== "unknown"))) {
             parser_fail(operator, (($mini_map_get(operator, "text") + " needs a ") + kind));
         }
-        let node = ast_derive(AST_UNARY, operator, kind);
+        let node = ast_node(AST_UNARY, operator);
+        $mini_map_set(node, "value_kind", kind);
         $mini_map_set(node, "operator", $mini_map_get(operator, "text"));
-        $mini_map_set(node, "operand", $mini_map_get(value, "ast"));
-        ast_finish_node(node, $mini_map_get(value, "ast"));
-        return parser_expression_new(((("(" + $mini_map_get(operator, "text")) + $mini_map_get(value, "code")) + ")"), kind, node);
+        $mini_map_set(node, "operand", value);
+        ast_finish_node(node, value);
+        return node;
     }
     return parser_primary(parser);
 }
@@ -1256,31 +1249,31 @@ function parser_primary(parser) {
         let close = parser_token(parser);
         parser_expect(parser, ")");
         let node = ast_node(AST_GROUP, token);
-        $mini_map_set(node, "expression", $mini_map_get(value, "ast"));
+        $mini_map_set(node, "expression", value);
         ast_finish(node, close);
-        $mini_map_set(node, "value_kind", $mini_map_get(value, "kind"));
-        return parser_expression_new($mini_map_get(value, "code"), $mini_map_get(value, "kind"), node);
+        $mini_map_set(node, "value_kind", $mini_map_get(value, "value_kind"));
+        return node;
     }
     if (($mini_map_get(token, "kind") === "number")) {
         let node = ast_expression(AST_LITERAL, token, "number");
         $mini_map_set(node, "literal_kind", "number");
         $mini_map_set(node, "raw", $mini_map_get(token, "text"));
         $mini_map_set(node, "value", lex_normalize_number($mini_map_get(token, "text")));
-        return parser_expression_new(lex_normalize_number($mini_map_get(token, "text")), "number", node);
+        return node;
     }
     if (($mini_map_get(token, "kind") === "text")) {
         let node = ast_expression(AST_LITERAL, token, "text");
         $mini_map_set(node, "literal_kind", "text");
         $mini_map_set(node, "raw", $mini_map_get(token, "text"));
         $mini_map_set(node, "value", $mini_map_get(token, "text"));
-        return parser_expression_new($mini_map_get(token, "text"), "text", node);
+        return node;
     }
     if ((($mini_map_get(token, "text") === "true") || ($mini_map_get(token, "text") === "false"))) {
         let node = ast_expression(AST_LITERAL, token, "boolean");
         $mini_map_set(node, "literal_kind", "boolean");
         $mini_map_set(node, "raw", $mini_map_get(token, "text"));
         $mini_map_set(node, "value", ($mini_map_get(token, "text") === "true"));
-        return parser_expression_new($mini_map_get(token, "text"), "boolean", node);
+        return node;
     }
     if ((($mini_map_get(token, "kind") === "identifier") && ($mini_map_get(token, "text") === "fn_args"))) {
         return parser_fn_args(parser, token);
@@ -1292,12 +1285,12 @@ function parser_primary(parser) {
         let value_kind = $mini_map_get($mini_map_get(parser, "variables"), $mini_map_get(token, "text"));
         let node = ast_expression(AST_NAME, token, value_kind);
         $mini_map_set(node, "name", $mini_map_get(token, "text"));
-        return parser_expression_new($mini_map_get(token, "text"), value_kind, node);
+        return node;
     }
     parser_fail(token, "expected expression");
     let node = ast_expression(AST_LITERAL, token, "unknown");
     $mini_map_set(node, "value", "");
-    return parser_expression_new("", "unknown", node);
+    return node;
 }
 function parser_fn_args(parser, token) {
 
@@ -1308,27 +1301,13 @@ function parser_fn_args(parser, token) {
         let node = ast_expression(AST_FN_ARGS, token, "list");
         $mini_map_set(node, "captures", false);
         ast_finish(node, close);
-        return parser_expression_new("process.argv.slice(2)", "list", node);
+        return node;
     }
     $mini_map_set($mini_map_get(parser, "current"), "captures", true);
     let node = ast_expression(AST_FN_ARGS, token, "list");
     $mini_map_set(node, "captures", true);
     ast_finish(node, close);
-    return parser_expression_new("$mini_fn_args", "list", node);
-}
-function parser_argument_code_list(args) {
-
-    let codes = [];
-    let position = 0;
-    while ((position < (args).length)) {
-        $mini_list_set(codes, (codes).length, $mini_map_get($mini_list_get(args, position), "code"));
-        position = (position + 1);
-    }
-    return codes;
-}
-function parser_argument_codes(args) {
-
-    return $mini_list_join(parser_argument_code_list(args), ", ");
+    return node;
 }
 function parser_call_node(name, args, result_kind, is_builtin, close) {
 
@@ -1339,7 +1318,7 @@ function parser_call_node(name, args, result_kind, is_builtin, close) {
     let argument_nodes = [];
     let position = 0;
     while ((position < (args).length)) {
-        $mini_list_set(argument_nodes, (argument_nodes).length, $mini_map_get($mini_list_get(args, position), "ast"));
+        $mini_list_set(argument_nodes, (argument_nodes).length, $mini_list_get(args, position));
         position = (position + 1);
     }
     $mini_map_set(node, "arguments", argument_nodes);
@@ -1392,56 +1371,27 @@ function parser_call(parser, name) {
             $mini_map_set(zero, "raw", "0");
             $mini_map_set(zero, "value", "0");
             $mini_map_set(zero, "synthetic", true);
-            $mini_list_set(args, (args).length, parser_expression_new("0", "number", zero));
+            $mini_list_set(args, (args).length, zero);
         }
     }
     if ((!is_builtin)) {
         let result_kind = $mini_map_get($mini_map_get(functions, name_text), "result");
-        let node = parser_call_node(name, args, result_kind, false, close);
-        return parser_expression_new((((name_text + "(") + parser_argument_codes(args)) + ")"), result_kind, node);
+        return parser_call_node(name, args, result_kind, false, close);
     }
     let parameters = builtin_parameters(name_text);
     let position = 0;
     while ((position < (parameters).length)) {
         let kind = $mini_list_get(parameters, position);
         if (($mini_text_slice(kind, 0, 3) !== "...")) {
-            let actual = $mini_map_get($mini_list_get(args, position), "kind");
+            let actual = $mini_map_get($mini_list_get(args, position), "value_kind");
             if (((((kind !== "unknown") && (kind !== "any_value")) && (actual !== "unknown")) && (actual !== kind))) {
                 parser_fail(name, (("expected " + kind) + " argument"));
             }
         }
         position = (position + 1);
     }
-    let imports = builtin_imports(name_text);
-    position = 0;
-    while ((position < (imports).length)) {
-        $mini_map_set($mini_map_get(parser, "imports"), $mini_list_get(imports, position), true);
-        position = (position + 1);
-    }
-    let helper = builtin_helper_key(name_text);
-    if ((helper !== "")) {
-        $mini_map_set($mini_map_get(parser, "helpers"), helper, true);
-    }
-    if (((name_text === "io_write") || (name_text === "to_text"))) {
-        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
-        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("json_to_text"), true);
-    }
-    if ((name_text === "io_write")) {
-        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("to_text"), true);
-    }
-    if ((name_text === "json_to_text")) {
-        $mini_map_set($mini_map_get(parser, "helpers"), builtin_helper_key("number_to_text"), true);
-    }
     let result_kind = builtin_result(name_text);
-    let node = parser_call_node(name, args, result_kind, true, close);
-    return parser_expression_new(builtin_emit(name_text, parser_argument_code_list(args)), result_kind, node);
-}
-function parser_statement_result(code, ast) {
-
-    let result = ({ __proto__: $mini_map_proto });
-    $mini_map_set(result, "code", code);
-    $mini_map_set(result, "ast", ast);
-    return result;
+    return parser_call_node(name, args, result_kind, true, close);
 }
 function parser_statement(parser) {
 
@@ -1450,41 +1400,39 @@ function parser_statement(parser) {
         let while_condition = parser_condition(parser);
         let body = parser_block(parser);
         let node = ast_node(AST_WHILE, token);
-        $mini_map_set(node, "condition", $mini_map_get(while_condition, "ast"));
-        $mini_map_set(node, "body", $mini_map_get(body, "ast"));
-        ast_finish_node(node, $mini_map_get(body, "ast"));
-        return parser_statement_result((((("while (" + $mini_map_get(while_condition, "code")) + ") ") + $mini_map_get(body, "code")) + "\n"), node);
+        $mini_map_set(node, "condition", while_condition);
+        $mini_map_set(node, "body", body);
+        ast_finish_node(node, body);
+        return node;
     }
     if (($mini_map_get(parser_token(parser), "text") === "if")) {
         let token = parser_take(parser);
         let if_condition = parser_condition(parser);
         let consequent = parser_block(parser);
-        let alternate = ({ __proto__: $mini_map_proto });
-        let output = ((("if (" + $mini_map_get(if_condition, "code")) + ") ") + $mini_map_get(consequent, "code"));
+        let alternate = 0;
         if (($mini_map_get(parser_token(parser), "text") === "else")) {
             parser_take(parser);
             if (($mini_map_get(parser_token(parser), "text") === "if")) {
                 alternate = parser_statement(parser);
                 let node = ast_node(AST_IF, token);
-                $mini_map_set(node, "condition", $mini_map_get(if_condition, "ast"));
-                $mini_map_set(node, "consequent", $mini_map_get(consequent, "ast"));
-                $mini_map_set(node, "alternate", $mini_map_get(alternate, "ast"));
-                ast_finish_node(node, $mini_map_get(alternate, "ast"));
-                return parser_statement_result(((output + " else ") + $mini_map_get(alternate, "code")), node);
+                $mini_map_set(node, "condition", if_condition);
+                $mini_map_set(node, "consequent", consequent);
+                $mini_map_set(node, "alternate", alternate);
+                ast_finish_node(node, alternate);
+                return node;
             }
             alternate = parser_block(parser);
-            output = ((output + " else ") + $mini_map_get(alternate, "code"));
         }
         let node = ast_node(AST_IF, token);
-        $mini_map_set(node, "condition", $mini_map_get(if_condition, "ast"));
-        $mini_map_set(node, "consequent", $mini_map_get(consequent, "ast"));
-        if (($mini_map_get(alternate, "ast") !== 0)) {
-            $mini_map_set(node, "alternate", $mini_map_get(alternate, "ast"));
-            ast_finish_node(node, $mini_map_get(alternate, "ast"));
+        $mini_map_set(node, "condition", if_condition);
+        $mini_map_set(node, "consequent", consequent);
+        if ((alternate !== 0)) {
+            $mini_map_set(node, "alternate", alternate);
+            ast_finish_node(node, alternate);
         } else {
-            ast_finish_node(node, $mini_map_get(consequent, "ast"));
+            ast_finish_node(node, consequent);
         }
-        return parser_statement_result((output + "\n"), node);
+        return node;
     }
     if (($mini_map_get(parser_token(parser), "text") === "fn")) {
         return parser_function_declaration(parser);
@@ -1497,20 +1445,20 @@ function parser_statement(parser) {
         let return_value = parser_expression(parser);
         let semicolon = parser_token(parser);
         parser_expect(parser, ";");
-        $mini_map_set($mini_map_get(parser, "current"), "result", $mini_map_get(return_value, "kind"));
+        $mini_map_set($mini_map_get(parser, "current"), "result", $mini_map_get(return_value, "value_kind"));
         let node = ast_node(AST_RETURN, return_token);
-        $mini_map_set(node, "value", $mini_map_get(return_value, "ast"));
+        $mini_map_set(node, "value", return_value);
         ast_finish(node, semicolon);
-        return parser_statement_result((("return " + $mini_map_get(return_value, "code")) + ";\n"), node);
+        return node;
     }
     if ((($mini_map_get(parser_token(parser), "kind") === "identifier") && ($mini_map_get(parser_peek(parser, 1), "text") === "("))) {
         let call_value = parser_expression(parser);
         let semicolon = parser_token(parser);
         parser_expect(parser, ";");
-        let node = ast_node(AST_CALL_STATEMENT, $mini_map_get(call_value, "ast"));
-        $mini_map_set(node, "expression", $mini_map_get(call_value, "ast"));
+        let node = ast_node(AST_CALL_STATEMENT, call_value);
+        $mini_map_set(node, "expression", call_value);
         ast_finish(node, semicolon);
-        return parser_statement_result(($mini_map_get(call_value, "code") + ";\n"), node);
+        return node;
     }
     let variables = $mini_map_get(parser, "variables");
     let statement_name = parser_identifier(parser, "expected binding name");
@@ -1522,28 +1470,17 @@ function parser_statement(parser) {
         let declaration_value = parser_expression(parser);
         let semicolon = parser_token(parser);
         parser_expect(parser, ";");
-        $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(declaration_value, "kind"));
+        let value_kind = $mini_map_get(declaration_value, "value_kind");
+        $mini_map_set(variables, $mini_map_get(statement_name, "text"), value_kind);
         $mini_map_set($mini_map_get(parser, "declared"), $mini_map_get(statement_name, "text"), true);
         let top_level = (($mini_map_get(parser, "depth") === 0) && (!$mini_map_get(parser, "in_function")));
-        if (($mini_map_get(parser, "emit_helpers") && top_level)) {
-            $mini_map_set(parser, "globals", ((($mini_map_get(parser, "globals") + "let ") + $mini_map_get(statement_name, "text")) + ";\n"));
-            let code = ((($mini_map_get(statement_name, "text") + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
-            let node = ast_node(AST_BINDING, statement_name);
-            $mini_map_set(node, "name", $mini_map_get(statement_name, "text"));
-            $mini_map_set(node, "value_kind", $mini_map_get(declaration_value, "kind"));
-            $mini_map_set(node, "initializer", $mini_map_get(declaration_value, "ast"));
-            $mini_map_set(node, "top_level", true);
-            ast_finish(node, semicolon);
-            return parser_statement_result(code, node);
-        }
-        let code = (((("let " + $mini_map_get(statement_name, "text")) + " = ") + $mini_map_get(declaration_value, "code")) + ";\n");
         let node = ast_node(AST_BINDING, statement_name);
         $mini_map_set(node, "name", $mini_map_get(statement_name, "text"));
-        $mini_map_set(node, "value_kind", $mini_map_get(declaration_value, "kind"));
-        $mini_map_set(node, "initializer", $mini_map_get(declaration_value, "ast"));
+        $mini_map_set(node, "value_kind", value_kind);
+        $mini_map_set(node, "initializer", declaration_value);
         $mini_map_set(node, "top_level", top_level);
         ast_finish(node, semicolon);
-        return parser_statement_result(code, node);
+        return node;
     }
     if ((!$mini_map_has(variables, $mini_map_get(statement_name, "text")))) {
         parser_fail(statement_name, ("unknown binding " + $mini_map_get(statement_name, "text")));
@@ -1552,13 +1489,14 @@ function parser_statement(parser) {
     let assignment_value = parser_expression(parser);
     let semicolon = parser_token(parser);
     parser_expect(parser, ";");
-    $mini_map_set(variables, $mini_map_get(statement_name, "text"), $mini_map_get(assignment_value, "kind"));
+    let value_kind = $mini_map_get(assignment_value, "value_kind");
+    $mini_map_set(variables, $mini_map_get(statement_name, "text"), value_kind);
     let node = ast_node(AST_ASSIGNMENT, statement_name);
     $mini_map_set(node, "name", $mini_map_get(statement_name, "text"));
-    $mini_map_set(node, "value_kind", $mini_map_get(assignment_value, "kind"));
-    $mini_map_set(node, "value", $mini_map_get(assignment_value, "ast"));
+    $mini_map_set(node, "value_kind", value_kind);
+    $mini_map_set(node, "value", assignment_value);
     ast_finish(node, semicolon);
-    return parser_statement_result(((($mini_map_get(statement_name, "text") + " = ") + $mini_map_get(assignment_value, "code")) + ";\n"), node);
+    return node;
 }
 function parser_condition_parenthesized(parser) {
 
@@ -1590,7 +1528,7 @@ function parser_condition(parser) {
         diagnostic_warn(start, "unnecessary condition parentheses");
     }
     let condition = parser_expression(parser);
-    if ((($mini_map_get(condition, "kind") !== "boolean") && ($mini_map_get(condition, "kind") !== "unknown"))) {
+    if ((($mini_map_get(condition, "value_kind") !== "boolean") && ($mini_map_get(condition, "value_kind") !== "unknown"))) {
         parser_fail(start, "condition must be boolean");
     }
     return condition;
@@ -1604,31 +1542,26 @@ function parser_block(parser) {
     $mini_map_set(parser, "variables", $mini_map_copy(outer));
     $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") + 1));
-    let output = "";
-    let last_statement = "";
+    let last_statement = 0;
     let statements = [];
     while ((($mini_map_get(parser_token(parser), "text") !== "}") && ($mini_map_get(parser_token(parser), "kind") !== "eof"))) {
         let statement = parser_statement(parser);
-        last_statement = $mini_map_get(statement, "code");
-        output = (output + last_statement);
-        $mini_list_set(statements, (statements).length, $mini_map_get(statement, "ast"));
+        last_statement = statement;
+        $mini_list_set(statements, (statements).length, statement);
     }
     let close = parser_token(parser);
     parser_expect(parser, "}");
     if (($mini_map_get(parser, "depth") === 1)) {
-        $mini_map_set(parser, "block_ends_with_return", text_starts_with(last_statement, "return "));
+        $mini_map_set(parser, "block_ends_with_return", ((last_statement !== 0) && ($mini_map_get(last_statement, "node_kind") === AST_RETURN)));
     }
     $mini_map_set(parser, "depth", ($mini_map_get(parser, "depth") - 1));
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "declared", outer_declared);
     let node = ast_node(AST_BLOCK, open);
     $mini_map_set(node, "statements", statements);
+    $mini_map_set(node, "ends_with_return", ((last_statement !== 0) && ($mini_map_get(last_statement, "node_kind") === AST_RETURN)));
     ast_finish(node, close);
-    let indented = indent_output(output);
-    if ((indented === "")) {
-        return parser_statement_result("{\n}", node);
-    }
-    return parser_statement_result((("{\n" + indented) + "\n}"), node);
+    return node;
 }
 function parser_function_declaration(parser) {
 
@@ -1672,47 +1605,15 @@ function parser_function_declaration(parser) {
     let body = parser_block(parser);
     $mini_map_set(parser, "variables", outer);
     $mini_map_set(parser, "in_function", false);
-    let body_code = $mini_map_get(body, "code");
-    if ((!$mini_map_get(parser, "block_ends_with_return"))) {
-        body_code = ($mini_text_slice(body_code, 0, ((body_code).length - 1)) + "    return 0;\n}");
-    }
-    let capture = "";
-    if ($mini_map_get(info, "captures")) {
-        capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
-    }
-    body_code = (("{\n" + capture) + $mini_text_slice(body_code, 1, (body_code).length));
     let node = ast_node(AST_FUNCTION, token);
     $mini_map_set(node, "name", $mini_map_get(name, "text"));
     $mini_map_set(node, "parameters", parameter_nodes);
-    $mini_map_set(node, "body", $mini_map_get(body, "ast"));
+    $mini_map_set(node, "body", body);
     $mini_map_set(node, "captures_arguments", $mini_map_get(info, "captures"));
     $mini_map_set(node, "result_kind", $mini_map_get(info, "result"));
-    ast_finish_node(node, $mini_map_get(body, "ast"));
-    return parser_statement_result((((((("function " + $mini_map_get(name, "text")) + "(") + $mini_list_join(parameters, ", ")) + ") ") + body_code) + "\n"), node);
-}
-function parser_import_names(imports) {
-
-    let output = "";
-    if ($mini_map_has(imports, "readFileSync")) {
-        output = (output + "readFileSync");
-    }
-    if ($mini_map_has(imports, "writeFileSync")) {
-        if ((output !== "")) {
-            output = (output + ", ");
-        }
-        output = (output + "writeFileSync");
-    }
-    if ($mini_map_has(imports, "writeSync")) {
-        if ((output !== "")) {
-            output = (output + ", ");
-        }
-        output = (output + "writeSync");
-    }
-    return output;
-}
-function parser_helper_blocks(helpers) {
-
-    return builtin_used_helper_blocks(helpers);
+    $mini_map_set(node, "has_final_return", $mini_map_get(body, "ends_with_return"));
+    ast_finish_node(node, body);
+    return node;
 }
 function parser_file_key(token) {
 
@@ -1741,16 +1642,11 @@ function parser_file_register(order, priorities, token) {
 }
 function parser_program(parser) {
 
-    let shebang = "";
     let has_shebang = false;
     if (($mini_map_get(parser_token(parser), "kind") === "shebang")) {
         parser_take(parser);
-        shebang = "#!/usr/bin/env node\n";
         has_shebang = true;
     }
-    let output = "";
-    let declarations = "";
-    let files = ({ __proto__: $mini_map_proto });
     let order = [];
     let priorities = ({ __proto__: $mini_map_proto });
     let ast_body = [];
@@ -1759,75 +1655,27 @@ function parser_program(parser) {
     while (($mini_map_get(parser_token(parser), "kind") !== "eof")) {
         let token = parser_token(parser);
         let statement = parser_statement(parser);
-        $mini_list_set(ast_body, (ast_body).length, $mini_map_get(statement, "ast"));
-        if ($mini_map_get(parser, "emit_helpers")) {
-            let file = parser_file_register(order, priorities, token);
-            if ((!$mini_map_has(files, file))) {
-                $mini_map_set(files, file, "");
-            }
-            if (($mini_map_get(token, "text") === "fn")) {
-                declarations = (declarations + $mini_map_get(statement, "code"));
-            } else {
-                $mini_map_set(files, file, ($mini_map_get(files, file) + $mini_map_get(statement, "code")));
-            }
-        } else if (($mini_map_get(token, "source") === main_source)) {
-            output = (output + $mini_map_get(statement, "code"));
-        }
+        $mini_list_set(ast_body, (ast_body).length, statement);
+        parser_file_register(order, priorities, token);
     }
-    let imports = $mini_map_get(parser, "imports");
-    let import_text = "";
-    if (((Object.keys(imports)).length > 0)) {
-        import_text = (("import { " + parser_import_names(imports)) + " } from \"node:fs\";\n");
-    }
-    let helper_text = "";
-    if ($mini_map_get(parser, "emit_helpers")) {
-        helper_text = parser_helper_blocks($mini_map_get(parser, "helpers"));
-    }
-    if ($mini_map_get(parser, "emit_helpers")) {
-        let calls = "";
-        let index = 0;
-        while ((index < (order).length)) {
-            let name = ("$mini_file_" + $mini_number_to_text(index));
-            output = (((((output + "function ") + name) + "() {\n") + indent_output($mini_map_get(files, $mini_list_get(order, index)))) + "\n}\n");
-            calls = (((calls + "    ") + name) + "();\n");
-            index = (index + 1);
-        }
-        if (((order).length > 0)) {
-            output = (((output + "function $mini_main() {\n") + calls) + "}\n$mini_main();\n");
-        }
-        let ast = ast_node(AST_PROGRAM, $mini_list_get(tokens, 0));
-        $mini_map_set(ast, "body", ast_body);
-        $mini_map_set(ast, "files", order);
-        $mini_map_set(ast, "main_source", main_source);
-        $mini_map_set(ast, "has_shebang", has_shebang);
-        $mini_map_set(ast, "tokens", tokens);
-        ast_finish(ast, $mini_list_get(tokens, ((tokens).length - 1)));
-        $mini_map_set(parser, "ast", ast);
-        return ((((((shebang + "\"use strict\";\n") + import_text) + helper_text) + $mini_map_get(parser, "globals")) + declarations) + output);
-    }
-    let ast = ast_node(AST_PROGRAM, $mini_list_get(tokens, 0));
-    $mini_map_set(ast, "body", ast_body);
-    $mini_map_set(ast, "files", []);
-    $mini_map_set(ast, "main_source", main_source);
-    $mini_map_set(ast, "has_shebang", has_shebang);
-    $mini_map_set(ast, "tokens", tokens);
-    ast_finish(ast, $mini_list_get(tokens, ((tokens).length - 1)));
-    $mini_map_set(parser, "ast", ast);
-    return output;
+    let program = ast_node(AST_PROGRAM, $mini_list_get(tokens, 0));
+    $mini_map_set(program, "body", ast_body);
+    $mini_map_set(program, "files", order);
+    $mini_map_set(program, "main_source", main_source);
+    $mini_map_set(program, "has_shebang", has_shebang);
+    $mini_map_set(program, "tokens", tokens);
+    ast_finish(program, $mini_list_get(tokens, ((tokens).length - 1)));
+    return program;
 }
 function parser_new(tokens) {
 
     let parser = ({ __proto__: $mini_map_proto });
     $mini_map_set(parser, "tokens", tokens);
-    $mini_map_set(parser, "globals", "");
     $mini_map_set(parser, "position", 0);
     $mini_map_set(parser, "variables", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "functions", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "declared", ({ __proto__: $mini_map_proto }));
     $mini_map_set(parser, "warn", true);
-    $mini_map_set(parser, "imports", ({ __proto__: $mini_map_proto }));
-    $mini_map_set(parser, "helpers", ({ __proto__: $mini_map_proto }));
-    $mini_map_set(parser, "emit_helpers", true);
     $mini_map_set(parser, "depth", 0);
     $mini_map_set(parser, "in_function", false);
     $mini_map_set(parser, "current", ({ __proto__: $mini_map_proto }));
@@ -1860,27 +1708,348 @@ function parser_new(tokens) {
     }
     return parser;
 }
-function parser_compile(tokens) {
+function parser_ast(tokens) {
 
     return parser_program(parser_new(tokens));
 }
-function parser_ast(tokens) {
-
-    let parser = parser_new(tokens);
-    parser_program(parser);
-    return $mini_map_get(parser, "ast");
-}
-function parser_compile_quiet(tokens) {
+function parser_ast_quiet(tokens) {
 
     let parser = parser_new(tokens);
     $mini_map_set(parser, "warn", false);
     return parser_program(parser);
 }
-function parser_compile_program(tokens) {
+function emit_js_operator(operator) {
 
-    let parser = parser_new(tokens);
-    $mini_map_set(parser, "emit_helpers", false);
-    return parser_program(parser);
+    if ((operator === "==")) {
+        return "===";
+    }
+    if ((operator === "!=")) {
+        return "!==";
+    }
+    return operator;
+}
+function emit_js_expression(node) {
+
+    let kind = $mini_map_get(node, "node_kind");
+    if ((kind === AST_LITERAL)) {
+        let literal_kind = $mini_map_get(node, "literal_kind");
+        if ((literal_kind === "boolean")) {
+            if ($mini_map_get(node, "value")) {
+                return "true";
+            }
+            return "false";
+        }
+        let value = $mini_map_get(node, "value");
+        if (((literal_kind === "number") && text_starts_with(value, "-"))) {
+            return (("(" + value) + ")");
+        }
+        return value;
+    }
+    if ((kind === AST_NAME)) {
+        return $mini_map_get(node, "name");
+    }
+    if ((kind === AST_GROUP)) {
+        return emit_js_expression($mini_map_get(node, "expression"));
+    }
+    if ((kind === AST_FN_ARGS)) {
+        if ($mini_map_get(node, "captures")) {
+            return "$mini_fn_args";
+        }
+        return "process.argv.slice(2)";
+    }
+    if ((kind === AST_UNARY)) {
+        return ((("(" + $mini_map_get(node, "operator")) + emit_js_expression($mini_map_get(node, "operand"))) + ")");
+    }
+    if ((kind === AST_BINARY)) {
+        return (((((("(" + emit_js_expression($mini_map_get(node, "left"))) + " ") + emit_js_operator($mini_map_get(node, "operator"))) + " ") + emit_js_expression($mini_map_get(node, "right"))) + ")");
+    }
+    if ((kind === AST_CALL)) {
+        let argument_codes = emit_js_arguments($mini_map_get(node, "arguments"));
+        let callee = $mini_map_get(node, "callee");
+        if ($mini_map_get(node, "is_builtin")) {
+            return builtin_emit(callee, argument_codes);
+        }
+        return (((callee + "(") + $mini_list_join(argument_codes, ", ")) + ")");
+    }
+    return "";
+}
+function emit_js_arguments(nodes) {
+
+    let output = [];
+    let position = 0;
+    while ((position < (nodes).length)) {
+        $mini_list_set(output, (output).length, emit_js_expression($mini_list_get(nodes, position)));
+        position = (position + 1);
+    }
+    return output;
+}
+function emit_js_block(node) {
+
+    let body = emit_js_statements($mini_map_get(node, "statements"));
+    let indented = indent_output(body);
+    if ((indented === "")) {
+        return "{\n}";
+    }
+    return (("{\n" + indented) + "\n}");
+}
+function emit_js_function_body(node) {
+
+    let body_node = $mini_map_get(node, "body");
+    let body = emit_js_block(body_node);
+    if ((!$mini_map_get(node, "has_final_return"))) {
+        body = ($mini_text_slice(body, 0, ((body).length - 1)) + "    return 0;\n}");
+    }
+    let capture = "";
+    if ($mini_map_get(node, "captures_arguments")) {
+        capture = "    const $mini_fn_args = Array.prototype.slice.call(arguments);\n";
+    }
+    return (("{\n" + capture) + $mini_text_slice(body, 1, (body).length));
+}
+function emit_js_function(node) {
+
+    let parameters = [];
+    let nodes = $mini_map_get(node, "parameters");
+    let position = 0;
+    while ((position < (nodes).length)) {
+        $mini_list_set(parameters, (parameters).length, $mini_map_get($mini_list_get(nodes, position), "name"));
+        position = (position + 1);
+    }
+    return (((((("function " + $mini_map_get(node, "name")) + "(") + $mini_list_join(parameters, ", ")) + ") ") + emit_js_function_body(node)) + "\n");
+}
+function emit_js_statement(node) {
+
+    let kind = $mini_map_get(node, "node_kind");
+    if ((kind === AST_FUNCTION)) {
+        return emit_js_function(node);
+    }
+    if ((kind === AST_BLOCK)) {
+        return emit_js_block(node);
+    }
+    if ((kind === AST_RETURN)) {
+        return (("return " + emit_js_expression($mini_map_get(node, "value"))) + ";\n");
+    }
+    if ((kind === AST_CALL_STATEMENT)) {
+        return (emit_js_expression($mini_map_get(node, "expression")) + ";\n");
+    }
+    if ((kind === AST_BINDING)) {
+        if ($mini_map_get(node, "top_level")) {
+            return ((($mini_map_get(node, "name") + " = ") + emit_js_expression($mini_map_get(node, "initializer"))) + ";\n");
+        }
+        return (((("let " + $mini_map_get(node, "name")) + " = ") + emit_js_expression($mini_map_get(node, "initializer"))) + ";\n");
+    }
+    if ((kind === AST_ASSIGNMENT)) {
+        return ((($mini_map_get(node, "name") + " = ") + emit_js_expression($mini_map_get(node, "value"))) + ";\n");
+    }
+    if ((kind === AST_IF)) {
+        let output = ((("if (" + emit_js_expression($mini_map_get(node, "condition"))) + ") ") + emit_js_block($mini_map_get(node, "consequent")));
+        let alternate = $mini_map_get(node, "alternate");
+        if ((alternate !== 0)) {
+            if (($mini_map_get(alternate, "node_kind") === AST_IF)) {
+                return ((output + " else ") + emit_js_statement(alternate));
+            }
+            output = ((output + " else ") + emit_js_block(alternate));
+        }
+        return (output + "\n");
+    }
+    if ((kind === AST_WHILE)) {
+        return (((("while (" + emit_js_expression($mini_map_get(node, "condition"))) + ") ") + emit_js_block($mini_map_get(node, "body"))) + "\n");
+    }
+    return "";
+}
+function emit_js_statements(nodes) {
+
+    let output = "";
+    let position = 0;
+    while ((position < (nodes).length)) {
+        output = (output + emit_js_statement($mini_list_get(nodes, position)));
+        position = (position + 1);
+    }
+    return output;
+}
+function emit_js_collect_helpers(node, imports, helpers) {
+
+    let kind = $mini_map_get(node, "node_kind");
+    if (((kind === AST_CALL) && $mini_map_get(node, "is_builtin"))) {
+        let name = $mini_map_get(node, "callee");
+        let required_imports = builtin_imports(name);
+        let position = 0;
+        while ((position < (required_imports).length)) {
+            $mini_map_set(imports, $mini_list_get(required_imports, position), true);
+            position = (position + 1);
+        }
+        let helper = builtin_helper_key(name);
+        if ((helper !== "")) {
+            $mini_map_set(helpers, helper, true);
+        }
+        if (((name === "io_write") || (name === "to_text"))) {
+            $mini_map_set(helpers, builtin_helper_key("number_to_text"), true);
+            $mini_map_set(helpers, builtin_helper_key("json_to_text"), true);
+        }
+        if ((name === "io_write")) {
+            $mini_map_set(helpers, builtin_helper_key("to_text"), true);
+        }
+        if ((name === "json_to_text")) {
+            $mini_map_set(helpers, builtin_helper_key("number_to_text"), true);
+        }
+    }
+    if (((kind === AST_PROGRAM) || (kind === AST_BLOCK))) {
+        let nodes = $mini_map_get(node, "body");
+        if ((kind === AST_BLOCK)) {
+            nodes = $mini_map_get(node, "statements");
+        }
+        let position = 0;
+        while ((position < (nodes).length)) {
+            emit_js_collect_helpers($mini_list_get(nodes, position), imports, helpers);
+            position = (position + 1);
+        }
+    } else if ((kind === AST_FUNCTION)) {
+        emit_js_collect_helpers($mini_map_get(node, "body"), imports, helpers);
+    } else if ((kind === AST_IF)) {
+        emit_js_collect_helpers($mini_map_get(node, "condition"), imports, helpers);
+        emit_js_collect_helpers($mini_map_get(node, "consequent"), imports, helpers);
+        let alternate = $mini_map_get(node, "alternate");
+        if ((alternate !== 0)) {
+            emit_js_collect_helpers(alternate, imports, helpers);
+        }
+    } else if ((kind === AST_WHILE)) {
+        emit_js_collect_helpers($mini_map_get(node, "condition"), imports, helpers);
+        emit_js_collect_helpers($mini_map_get(node, "body"), imports, helpers);
+    } else if ((kind === AST_RETURN)) {
+        emit_js_collect_helpers($mini_map_get(node, "value"), imports, helpers);
+    } else if ((kind === AST_CALL_STATEMENT)) {
+        emit_js_collect_helpers($mini_map_get(node, "expression"), imports, helpers);
+    } else if ((kind === AST_BINDING)) {
+        emit_js_collect_helpers($mini_map_get(node, "initializer"), imports, helpers);
+    } else if ((kind === AST_ASSIGNMENT)) {
+        emit_js_collect_helpers($mini_map_get(node, "value"), imports, helpers);
+    } else if ((kind === AST_CALL)) {
+        let argument_nodes = $mini_map_get(node, "arguments");
+        let position = 0;
+        while ((position < (argument_nodes).length)) {
+            emit_js_collect_helpers($mini_list_get(argument_nodes, position), imports, helpers);
+            position = (position + 1);
+        }
+    } else if ((kind === AST_BINARY)) {
+        emit_js_collect_helpers($mini_map_get(node, "left"), imports, helpers);
+        emit_js_collect_helpers($mini_map_get(node, "right"), imports, helpers);
+    } else if ((kind === AST_UNARY)) {
+        emit_js_collect_helpers($mini_map_get(node, "operand"), imports, helpers);
+    } else if ((kind === AST_GROUP)) {
+        emit_js_collect_helpers($mini_map_get(node, "expression"), imports, helpers);
+    }
+    return 0;
+}
+function emit_js_import_names(imports) {
+
+    let output = "";
+    if ($mini_map_has(imports, "readFileSync")) {
+        output = (output + "readFileSync");
+    }
+    if ($mini_map_has(imports, "writeFileSync")) {
+        if ((output !== "")) {
+            output = (output + ", ");
+        }
+        output = (output + "writeFileSync");
+    }
+    if ($mini_map_has(imports, "writeSync")) {
+        if ((output !== "")) {
+            output = (output + ", ");
+        }
+        output = (output + "writeSync");
+    }
+    return output;
+}
+function emit_js_file_body(nodes, file) {
+
+    let output = "";
+    let position = 0;
+    while ((position < (nodes).length)) {
+        let node = $mini_list_get(nodes, position);
+        if ((($mini_map_get(node, "file") === file) && ($mini_map_get(node, "node_kind") !== AST_FUNCTION))) {
+            output = (output + emit_js_statement(node));
+        }
+        position = (position + 1);
+    }
+    return output;
+}
+function emit_js_file_initializers(program) {
+
+    let output = "";
+    let calls = "";
+    let files = $mini_map_get(program, "files");
+    let body = $mini_map_get(program, "body");
+    let index = 0;
+    while ((index < (files).length)) {
+        let name = ("$mini_file_" + $mini_number_to_text(index));
+        let code = emit_js_file_body(body, $mini_list_get(files, index));
+        output = (((((output + "function ") + name) + "() {\n") + indent_output(code)) + "\n}\n");
+        calls = (((calls + "    ") + name) + "();\n");
+        index = (index + 1);
+    }
+    if (((files).length > 0)) {
+        output = (((output + "function $mini_main() {\n") + calls) + "}\n$mini_main();\n");
+    }
+    return output;
+}
+function emit_js_program_only(program) {
+
+    let output = "";
+    let body = $mini_map_get(program, "body");
+    let main_source = $mini_map_get(program, "main_source");
+    let position = 0;
+    while ((position < (body).length)) {
+        let node = $mini_list_get(body, position);
+        if (($mini_map_get(node, "source") === main_source)) {
+            if ((($mini_map_get(node, "node_kind") === AST_BINDING) && $mini_map_get(node, "top_level"))) {
+                output = (((((output + "let ") + $mini_map_get(node, "name")) + " = ") + emit_js_expression($mini_map_get(node, "initializer"))) + ";\n");
+            } else {
+                output = (output + emit_js_statement(node));
+            }
+        }
+        position = (position + 1);
+    }
+    return output;
+}
+function emit_js_program(program) {
+
+    let imports = ({ __proto__: $mini_map_proto });
+    let helpers = ({ __proto__: $mini_map_proto });
+    let body = $mini_map_get(program, "body");
+    let position = 0;
+    let globals = "";
+    let declarations = "";
+    while ((position < (body).length)) {
+        let node = $mini_list_get(body, position);
+        emit_js_collect_helpers(node, imports, helpers);
+        if (($mini_map_get(node, "node_kind") === AST_FUNCTION)) {
+            declarations = (declarations + emit_js_function(node));
+        } else if ((($mini_map_get(node, "node_kind") === AST_BINDING) && $mini_map_get(node, "top_level"))) {
+            globals = (((globals + "let ") + $mini_map_get(node, "name")) + ";\n");
+        }
+        position = (position + 1);
+    }
+    let import_text = "";
+    if (((Object.keys(imports)).length > 0)) {
+        import_text = (("import { " + emit_js_import_names(imports)) + " } from \"node:fs\";\n");
+    }
+    let helper_text = builtin_used_helper_blocks(helpers);
+    let shebang = "";
+    if ($mini_map_get(program, "has_shebang")) {
+        shebang = "#!/usr/bin/env node\n";
+    }
+    return ((((((shebang + "\"use strict\";\n") + import_text) + helper_text) + globals) + declarations) + emit_js_file_initializers(program));
+}
+function emit_js_compile(tokens) {
+
+    return emit_js_program(parser_ast(tokens));
+}
+function emit_js_compile_program_only(tokens) {
+
+    return emit_js_program_only(parser_ast(tokens));
+}
+function emit_js_compile_quiet(tokens) {
+
+    return emit_js_program(parser_ast_quiet(tokens));
 }
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
@@ -1996,7 +2165,7 @@ function bootstrap_compile_text(source) {
 
     let tokens = lex_tokenize(readFileSync(source, "utf8"), path_basename(source), false);
     let expanded = lex_expand_includes(tokens, source, [], ({ __proto__: $mini_map_proto }));
-    return parser_compile(expanded);
+    return emit_js_compile(expanded);
 }
 function bootstrap_compile_with(root, compiler, source, output) {
 
@@ -2262,6 +2431,9 @@ function $mini_file_27() {
 
 }
 function $mini_file_28() {
+
+}
+function $mini_file_29() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -2294,5 +2466,6 @@ function $mini_main() {
     $mini_file_26();
     $mini_file_27();
     $mini_file_28();
+    $mini_file_29();
 }
 $mini_main();

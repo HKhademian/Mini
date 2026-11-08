@@ -886,7 +886,7 @@ fn emit_c_statement(parser, bindings, binding_orders) {
 
 /// Validate the complete program and lower the supported binding/output subset.
 fn emit_c_compile(tokens, header_name) {
-    parser_compile_quiet(tokens);
+    parser_ast_quiet(tokens);
     parser := parser_new(tokens);
     map_set(parser, "c_temp", 0);
     map_set(parser, "c_add_used", false);
