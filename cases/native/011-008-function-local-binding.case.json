@@ -1,0 +1,22 @@
+{
+  "id": "native.c-function-local-binding",
+  "kind": "feature",
+  "target": "c",
+  "source": "011-008-function-local-binding.mini",
+  "features": [
+    "target.c",
+    "function.call",
+    "function.local-binding",
+    "number.addition",
+    "number.output"
+  ],
+  "cases": [
+    {
+      "name": "declaration-and-assignment",
+      "stdin": { "text": "" },
+      "stdout": { "text": "15\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

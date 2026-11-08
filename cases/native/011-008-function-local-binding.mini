@@ -1,0 +1,6 @@
+fn calculate(a) {
+    result := a + 2;
+    result = result + 10;
+    return result;
+}
+io_write(calculate(3), "\n");

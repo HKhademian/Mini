@@ -1,5 +1,6 @@
 fn count(n) {
     if n <= 0 { return 0; }
-    return 1 + count(n + -1);
+    next := n + -1;
+    return 1 + count(next);
 }
 io_write(count(4), "\n");

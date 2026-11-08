@@ -173,9 +173,13 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
   expression returns, output statements, and numeric-zero fallthrough. Six
   previously pending native cases pass.
 - Recursive C functions and function-local conditional branching (`if`/`else`
-  with returns) are now supported. All native C function cases pass, including
-  recursive calls with base-case returns. Function-local bindings and fn_args()
-  remain pending; the generated internal status/result signature is not an embedding API.
+  with returns) are supported. Function-local bindings use per-call stack
+  storage, with `:=` declarations and `=` updates scoped to their blocks.
+  `fn_args()` remains pending; the generated internal status/result signature
+  is not an embedding API.
+- Verified function-local initialization and reassignment, including a local
+  carried through recursive calls: 488/488 scenarios (four proposal cases
+  pending), 6/6 units, repository/bootstrap checks, and tooling verification.
   Verified 480/480 scenarios (four existing proposals pending), 6/6 units,
   bootstrap/repository checks, playground build, and strict C11 host sanitizer
   checks for recursive calls.

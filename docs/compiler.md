@@ -83,8 +83,10 @@ function definition. Arguments are evaluated in order and passed as a
 remain in that view. Parameter values are local to each call and returned text
 uses the invocation-owned buffer. Recursive calls and function-local conditional
 control flow (`if`/`else` with returns) are supported. Function-local bindings
-and `fn_args()` remain pending. The emitted function signature is an internal
-compiler interface, not an FFI API.
+use stack storage and support declaration with `:=` and reassignment with `=`;
+their block scope is preserved across recursive calls. `fn_args()` remains
+pending. The emitted function signature is an internal compiler interface, not
+an FFI API.
 
 ### File initialization
 
