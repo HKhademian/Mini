@@ -1,6 +1,6 @@
 /// Slice with positive and negative bounds.
 
-include "common/io.mini";
+import "common/io";
 import "common/text";
 
 text := "playground";

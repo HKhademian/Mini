@@ -1,3 +1,4 @@
+import "common/list";
 import "common/map";
 items := map_new();
 nested := list_new();

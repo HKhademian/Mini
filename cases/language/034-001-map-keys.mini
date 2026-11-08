@@ -1,3 +1,4 @@
+import "common/list";
 import "common/map";
 expected := io_read_all();
 items := map_new();

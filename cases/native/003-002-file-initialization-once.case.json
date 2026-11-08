@@ -5,9 +5,9 @@
   "source": "003-002-file-initialization-once.mini",
   "features": [
     "target.c",
-    "include",
-    "include.once",
-    "include.canonical-path",
+    "import",
+    "import.once",
+    "import.canonical-path",
     "number.literal",
     "text.output"
   ],

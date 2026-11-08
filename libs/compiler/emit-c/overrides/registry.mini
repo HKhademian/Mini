@@ -1,0 +1,33 @@
+/// Store C definitions that transparently replace same-name Mini functions.
+
+import "common/list";
+import "common/map";
+
+c_host_function_names := list_new();
+c_host_function_definitions := map_new();
+
+/// Register one C implementation under its public Mini function name.
+fn emit_c_host_function_add(name, definition) {
+    if !map_has(c_host_function_definitions, name) {
+        list_set(c_host_function_names, list_length(c_host_function_names), name);
+    }
+    map_set(c_host_function_definitions, name, definition);
+    return 0;
+}
+
+/// Return whether C replaces one Mini function.
+fn emit_c_host_function_exists(name) {
+    return map_has(c_host_function_definitions, name);
+}
+
+/// Return registered C implementation definitions in registration order.
+fn emit_c_host_function_definitions() {
+    output := list_new();
+    position := 0;
+    while position < list_length(c_host_function_names) {
+        name := list_get(c_host_function_names, position);
+        list_set(output, list_length(output), map_get(c_host_function_definitions, name));
+        position = position + 1;
+    }
+    return list_join(output, "\n");
+}

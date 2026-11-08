@@ -1,6 +1,8 @@
 #!/usr/bin/env node
+
+import "common/list";
 import "common/map";
-include "tools/check-source.mini";
+import "tools/check-source";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {
@@ -34,7 +36,7 @@ fn main(args) {
     if path != "-" {
         base = path;
     }
-    parser_ast(lex_expand_includes(tokens, base, map_new()));
+    parser_ast(lex_expand_imports(tokens, base, map_new()));
     return 0;
 }
 

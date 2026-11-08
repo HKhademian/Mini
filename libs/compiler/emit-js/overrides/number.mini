@@ -1,6 +1,6 @@
 /// JavaScript host replacements for common numeric functions.
 
-include "./registry.mini";
+import "./registry";
 
 emit_js_host_function_add(
     "number_add",

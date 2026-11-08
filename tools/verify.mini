@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-include "tools/verify.mini";
-include "tools/test.mini";
+
+import "common/list";
+import "tools/verify";
+import "tools/test";
 
 /// Consume verify options, then check one case or the bootstrap.
 fn main(args) {

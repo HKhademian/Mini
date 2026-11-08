@@ -1,7 +1,8 @@
 /// Setting an existing key keeps the key count.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 values := map_new();
 map_set(values, "key", "old");

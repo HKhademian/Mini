@@ -1,5 +1,5 @@
 /// Map API contracts; implementations live in common/map and emitter registries.
-include "./registry.mini";
+import "./registry";
 
 builtin_add("map_copy", "map", "map", "performance", "", "", "", "", "");
 builtin_source_api("map_copy");

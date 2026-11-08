@@ -5,11 +5,11 @@
 /// reports noncanonical input without writing.
 
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "compiler/lexer.mini";
-include "compiler/parser.mini";
-include "compiler/builtins.mini";
+import "common/text";
+import "common/list";
+import "compiler/lexer";
+import "compiler/parser";
+import "compiler/builtins";
 
 /// Return one line's indentation text for a block depth.
 fn format_indentation(depth) {
@@ -503,6 +503,6 @@ fn format_tokens(tokens) {
 /// Format one source text; return the canonical text.
 fn format_source(source, name, base) {
     tokens := lex_tokenize(source, name, true);
-    parser_ast_quiet(lex_expand_includes(lex_tokenize(source, name, false), base, map_new()));
+    parser_ast_quiet(lex_expand_imports(lex_tokenize(source, name, false), base, map_new()));
     return format_tokens(tokens);
 }

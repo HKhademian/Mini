@@ -1,7 +1,7 @@
 /// Copy a map and show that changing the copy leaves the original intact.
 
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 original := map_new();
 map_set(original, "name", "original");

@@ -2,7 +2,7 @@
 
 The parser is the shared front end for Mini's target backends. Its source is
 [`libs/compiler/parser.mini`](../libs/compiler/parser.mini); token production and
-include expansion live in [`lexer.mini`](../libs/compiler/lexer.mini). The
+import expansion live in [`lexer.mini`](../libs/compiler/lexer.mini). The
 parser returns the versioned target-neutral AST described in
 [`ast.md`](ast.md).
 
@@ -13,7 +13,7 @@ The current compiler processes a program eagerly:
 ```text
 source text
   -> complete token list
-  -> include-expanded token list
+  -> import-expanded token list
   -> one checked Program AST
   -> target emitter
   -> generated source text
@@ -22,7 +22,7 @@ source text
 The lexer scans a complete source string and stores token maps in a list. Tokens
 carry spelling, kind, source identity, half-open offsets, line and column, and
 the source line used for diagnostics. The source expander recursively scans
-imported and included files once in depth-first postorder and creates a token list with
+imported files once in depth-first postorder and creates a token list with
 canonical file identity and execution order. Revisited files, including
 ancestors reached through a cycle, are skipped. The parser consumes that list
 by an integer cursor and returns a complete AST in memory. It does not yield tokens or AST
@@ -55,6 +55,6 @@ Whitespace trivia is not represented in the AST. Formatters therefore retain
 the original source and comment-preserving token list beside the tree.
 
 The parser is coupled to Mini's current lexer token maps, builtin registry,
-include-expanded file ordering, and language contract. `parser_ast(tokens)` is
+import-expanded file ordering, and language contract. `parser_ast(tokens)` is
 the in-memory front-end entry point for an already prepared token list. It does
-not read files or expand includes itself.
+not read files or expand imports itself.

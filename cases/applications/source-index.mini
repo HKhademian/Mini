@@ -1,8 +1,9 @@
 /// Index declarations and references by identifier, retaining source order in each posting list.
-//
+
+import "common/list";
+import "common/map";
 
 /// Return a map from identifier text to its occurrence offsets; comments and strings are excluded.
-import "common/map";
 fn app_run(source) {
     tokens := lex_tokenize(source);
     symbols := map_new();

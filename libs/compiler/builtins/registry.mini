@@ -1,7 +1,7 @@
 /// Shared builtin registry storage and registration, initialized before descriptors.
 
-include "common/list.mini";
-include "common/text.mini";
+import "common/list";
+import "common/text";
 import "common/map";
 
 builtin_names_list := list_new();

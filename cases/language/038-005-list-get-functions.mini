@@ -1,3 +1,4 @@
+import "common/list";
 fn items() {
     io_write("l");
     result := list_new();

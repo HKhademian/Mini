@@ -1,6 +1,6 @@
 /// JavaScript host replacements for common text functions.
 
-include "./registry.mini";
+import "./registry";
 
 emit_js_host_function_add(
     "text_slice",

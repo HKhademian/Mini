@@ -1,7 +1,7 @@
 /// Set and read text-keyed values.
 
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 values := map_new();
 map_set(values, "name", "Mini");

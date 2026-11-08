@@ -1,11 +1,12 @@
 import "common/map";
-include "common/io.mini";
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/project.mini";
+import "common/io";
+import "common/text";
+import "common/list";
+import "common/path";
+import "common/process";
+import "common/json";
+import "common/project";
+
 /// Return the active compiler entry.
 fn mini_compiler(root) {
     parsed := json_parse_file(path_join(root, "config/compiler.json"));

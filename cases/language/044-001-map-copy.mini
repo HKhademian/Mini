@@ -1,5 +1,5 @@
 import "common/map";
-include "common/io.mini";
+import "common/io";
 original := map_new();
 map_set(original, "name", "original");
 copy := map_copy(original);

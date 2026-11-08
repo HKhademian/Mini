@@ -132,12 +132,12 @@ through cleanup at program exit. `fn_args()` remains pending for C.
 Both targets put operations outside named functions into generated per-file
 functions. One generated entry invokes them once in depth-first postorder,
 including the entry file last. Operations within a file keep their source order;
-include directives do not execute inline. All named functions are emitted before
+import directives do not execute inline. All named functions are emitted before
 the generated entry, so an initializer can call a function from a file later in
 postorder. Runtime dependencies among top-level initializers follow that order
 and are the program author's responsibility.
 
-The JavaScript emitter may replace an included library function with a host
+The JavaScript emitter may replace an imported library function with a host
 implementation under the same function name. `number_add` demonstrates this:
 the Mini definition is the reference behavior, and the default JavaScript
 function uses guarded native addition while preserving its return value for
@@ -469,5 +469,5 @@ The compiler source is authored as ordered sources next to the tools;
 `tools/compiler.mini` includes them in dependency order. Adapter text is
 source in the namespace files under `libs/compiler/builtins/`, shared by the generated compiler and
 generated tools. `mini check` verifies the generated bootstrap fixed point and
-stale generated tools. `include` is a mini language feature; there is no module
+stale generated tools. `import` is a mini language feature; there is no module
 or import syntax.

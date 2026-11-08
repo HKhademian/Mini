@@ -1,7 +1,7 @@
 /// Exercise path kind and temporary path helpers.
 
-include "common/io.mini";
-include "common/path.mini";
+import "common/io";
+import "common/path";
 
 directory := path_temp_directory();
 file := directory + "/file.txt";

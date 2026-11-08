@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-include "tools/format.mini";
+
+import "common/list";
+import "tools/format";
 
 /// Report a command error and stop.
 fn format_fail(message) {

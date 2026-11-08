@@ -1,1 +1,2 @@
+import "common/list";
 io_write(list_new());

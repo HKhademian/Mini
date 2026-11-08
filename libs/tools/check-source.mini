@@ -1,12 +1,13 @@
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "compiler/lexer.mini";
-include "compiler/parser.mini";
-include "compiler/builtins.mini";
+import "common/text";
+import "common/list";
+import "compiler/lexer";
+import "compiler/parser";
+import "compiler/builtins";
+
 /// Validate one mini source text; diagnostics end the process on failure.
 fn check_source_text(source, name, base) {
     tokens := lex_tokenize(source, name, false);
-    parser_ast(lex_expand_includes(tokens, base, map_new()));
+    parser_ast(lex_expand_imports(tokens, base, map_new()));
     return 0;
 }

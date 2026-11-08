@@ -1,5 +1,6 @@
 /// Print the first command-line argument, or terminate with status 2 when absent.
-//
+
+import "common/list";
 
 /// Return the first text item without changing items; an empty list terminates the process.
 fn first(items) {

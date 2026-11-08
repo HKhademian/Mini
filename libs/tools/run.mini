@@ -5,10 +5,10 @@
 /// A failed compilation skips execution and keeps its exit status.
 
 import "common/map";
-include "common/path.mini";
-include "common/list.mini";
-include "common/process-run.mini";
-include "common/text.mini";
+import "common/path";
+import "common/list";
+import "common/process-run";
+import "common/text";
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {

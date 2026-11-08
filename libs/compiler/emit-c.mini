@@ -3,8 +3,10 @@
 /// capability checks, syntax lowering, runtime fragments, and source assembly.
 /// Text views reference a growable byte buffer owned by each program invocation.
 
+import "common/list";
 import "common/map";
-include "./parser.mini";
+import "./parser";
+import "./emit-c/overrides/panic";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {
@@ -43,7 +45,7 @@ fn emit_c_native_list_call(name) {
         || name == "list_copy" || name == "list_join";
 }
 
-/// Return whether an included list helper definition should be skipped in C.
+/// Return whether an imported list helper definition should be skipped in C.
 fn emit_c_skip_list_definition(name) {
     return emit_c_native_list_call(name) || name == "list_has_text" || name == "list_join_from" || name == "list_sorted"
         || name == "list_is_text" || name == "list_rest" || name == "value_is_text" || name == "value_is_number" || name
@@ -1088,7 +1090,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
 /// Lower a checked top-level function declaration.
 fn emit_c_ast_function(node, state, bindings, binding_orders) {
     name := map_get(node, "name");
-    if emit_c_skip_list_definition(name) {
+    if emit_c_skip_list_definition(name) || emit_c_host_function_exists(name) {
         return "";
     }
     params := map_get(node, "parameters");
@@ -1244,6 +1246,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "};");
     list_set(lines, list_length(lines), "");
     emit_c_collect_lines(lines, emit_c_list_runtime());
+    emit_c_collect_lines(lines, emit_c_host_function_definitions());
     emit_c_collect_fragments(lines, map_get(state, "c_prototypes"));
     list_set(lines, list_length(lines), "");
     emit_c_collect_fragments(lines, map_get(state, "c_functions"));

@@ -1,7 +1,8 @@
 /// Count repeated words with a map.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 words := text_split("mini makes mini tools", " ");
 counts := map_new();

@@ -1,3 +1,4 @@
+import "common/list";
 args := fn_args();
 if list_length(args) == 0 {
     io_write("none");

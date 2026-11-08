@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
+import "common/text";
+import "common/list";
+import "common/path";
+import "common/process";
 
 /// Report a formatter test failure.
 fn format_fail(name, message) {

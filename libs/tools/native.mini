@@ -1,7 +1,9 @@
 /// Preprocess and build native C, retaining the expanded input next to the source.
+
+import "common/list";
 import "common/map";
-include "common/native.mini";
-include "common/process.mini";
+import "common/native";
+import "common/process";
 
 /// Run the adjacent preprocessing/compilation stages and return process status.
 /// The stage and preprocessed path identify failures; source/header files are untouched.

@@ -51,7 +51,7 @@ execution. Their target field selects C; future target gaps stay explicit.
 
 ## Current foundation
 
-- [Compiler entry](../tools/compiler.mini) drives tokenization, include expansion,
+- [Compiler entry](../tools/compiler.mini) drives tokenization, import expansion,
   checking, and target dispatch. The [parser](../libs/compiler/parser.mini)
   produces the checked AST; [`emit-js.mini`](../libs/compiler/emit-js.mini) and
   [`emit-c.mini`](../libs/compiler/emit-c.mini) lower it to their respective
@@ -71,7 +71,7 @@ Mini source -> Mini-written compiler + C emission -> C source -> native program
 
 LATER, AT BUILD TIME
 runner written in Mini -> C backend -> generated mini.c + mini.h
-    -> include in host / static archive / shared library
+    -> imported in host / static archive / shared library
 
 LATER, INSIDE THE HOST
 new script bytes -> runner compiled to C -> result/output or host diagnostic

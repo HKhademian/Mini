@@ -1,0 +1,15 @@
+{
+  "id": "language.import-top-level",
+  "kind": "reject",
+  "source": "060-005-import-nested-block.mini",
+  "features": ["import"],
+  "cases": [
+    {
+      "name": "inside-function",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-005-import-nested-block.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 /// Walk backwards and build a new string.
 
-include "common/io.mini";
+import "common/io";
 
 source := "mini";
 output := "";

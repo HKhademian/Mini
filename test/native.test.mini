@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /// Exercise the public compiler target flags and generated native program.
+
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "tools/cases.mini";
+import "common/text";
+import "common/list";
+import "common/path";
+import "common/process";
+import "tools/cases";
 
 /// Remove the workspace and report one integration failure.
 fn native_fail(work, name, message) {

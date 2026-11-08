@@ -1,6 +1,6 @@
 /// Count characters.
 
-include "common/io.mini";
+import "common/io";
 
 text := "playground";
 io_write_line(text_length(text));

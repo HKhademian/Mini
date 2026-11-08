@@ -99,7 +99,7 @@ Standalone mini tests use the `test/*.test.mini` suffix. Run them with
 `./bin/mini test --unit [FILTER]`. Each test receives the repository root as its
 first argument, runs with captured streams, and passes when it exits 0. Compile
 failures and nonzero exits are reported as failures. Tests may include `libs/`
-helpers through `include`.
+helpers through `import`.
 
 `mini test` remains the JSON case runner. Node test files under `test/` cover
 host integrations such as VSIX packaging, archive extraction, and LSP sessions.

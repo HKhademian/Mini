@@ -1,4 +1,4 @@
-include "common/io.mini";
+import "common/io";
 import "common/text";
 source := "abcdef";
 io_write_line(text_slice(source, 0, 3) + "|" + text_slice(source, 1, 4) + "|" + text_slice(source, -2, -1) + "|" + text_slice(source, 2, 100) + "|" + text_slice(source, 4, 2));

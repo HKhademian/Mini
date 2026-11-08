@@ -3,9 +3,9 @@
   "kind": "feature",
   "source": "061-003-file-initialization-once.mini",
   "features": [
-    "include",
-    "include.once",
-    "include.canonical-path",
+    "import",
+    "import.once",
+    "import.canonical-path",
     "function.call",
     "text.output"
   ],

@@ -1,4 +1,4 @@
-include "common/io.mini";
+import "common/io";
 left := true;
 right := false;
 if (left || right) && !right {

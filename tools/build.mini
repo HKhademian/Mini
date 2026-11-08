@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-include "tools/build.mini";
+
+import "common/list";
+import "tools/build";
 
 /// Parse arguments and build or check generated artifacts.
 fn main(args) {

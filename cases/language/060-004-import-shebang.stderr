@@ -1,0 +1,3 @@
+060-004-import-shebang.mini:1:1: imported file must not have a shebang
+import "./060-004-import-shebang-helper";
+^

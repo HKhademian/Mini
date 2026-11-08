@@ -74,7 +74,7 @@ The views are compiled on demand. **Play** runs the program and **Compile only**
 updates the generated view without running it. Both actions sit at the right of
 the output header, with the tabs on the left. Switching views does not rerun or
 change the selected panel. The build bundles `libs/` into
-`playground/includes.js`, allowing examples to expand library includes in the
+`playground/imports.js`, allowing examples to expand library imports in the
 browser. Other filesystem access remains unavailable. A third, **Portable**
 view is present but hidden. It appends the whole `libs/pure/reference.mini` so a
 program depends on language semantics rather than host adapters. The build

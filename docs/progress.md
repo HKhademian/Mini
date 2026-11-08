@@ -11,11 +11,11 @@ The current assigned versions are in
 
 ```text
 mini      mini-v0.6.0-v0.3.0-alpha.36
-lang      lang-v0.6.0-v0.5.0-alpha.8
+lang      lang-v0.6.0-v0.5.0-alpha.9
 ast       ast-v0.6.0-v0.1.0-alpha.1
-compiler  compiler-v0.6.0-v0.5.0-alpha.40
-bootstrap bootstrap-v0.6.0-v0.3.0-alpha.42
-builtins  builtins-v0.6.0-v0.4.0-alpha.8
+compiler  compiler-v0.6.0-v0.5.0-alpha.42
+bootstrap bootstrap-v0.6.0-v0.3.0-alpha.44
+builtins  builtins-v0.6.0-v0.4.0-alpha.9
 cli       cli-v0.6.0-v0.1.0-alpha.20
 check     check-v0.6.0-v0.1.0-alpha.13
 format    format-v0.6.0-v0.1.0-alpha.9
@@ -24,7 +24,7 @@ test      test-v0.6.0-v0.1.0-alpha.8
 verify    verify-v0.6.0-v0.1.0-alpha.10
 bench     bench-v0.6.0-v0.1.0-alpha.7
 release   release-v0.6.0-v0.1.0-alpha.8
-vscode    vscode-v0.6.0-v0.3.8
+vscode    vscode-v0.6.0-v0.3.9
 ```
 
 ## Groups
@@ -43,7 +43,7 @@ vscode    vscode-v0.6.0-v0.3.8
   through the bootstrap fixed point.
 - **Tooling generated from mini.** Build, dispatcher, checks, formatter, language
   server, tests, benchmarks, release, and CI tasks are mini sources.
-- **`include` composition.** Source files declare their dependencies instead of
+- **`import` composition.** Source files declare their dependencies instead of
   being concatenated by a central parts list.
 - **Bootstrap-only distribution.** [bin/bootstrap](../bin/bootstrap) is the only
   tracked executable under `bin/`; it rebuilds the compiler and every generated

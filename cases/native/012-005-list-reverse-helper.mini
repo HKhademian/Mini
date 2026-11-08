@@ -1,4 +1,4 @@
-include "common/list.mini";
+import "common/list";
 
 x := 3;
 io_write(10 - x + 2, ",", 0 - x, ",", 1 - -1, "\n");

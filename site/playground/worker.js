@@ -62,7 +62,7 @@ let compiler = null;
 function loadCompiler() {
   if (compiler === null) {
     globalThis.process = processStub();
-    compiler = import("./includes.js?rev=" + buildRevision).then(({ files }) => {
+    compiler = import("./imports.js?rev=" + buildRevision).then(({ files }) => {
       globalThis.__miniFiles = files;
       return import("./compiler.js?rev=" + buildRevision);
     });
@@ -72,9 +72,9 @@ function loadCompiler() {
 
 /// Compile one source string and return its code or diagnostic text.
 /// Return the expanded program tokens, optionally with the pure reference.
-function buildTokens(lexTokenize, lexExpandIncludes, source, portable, referenceTokens) {
+function buildTokens(lexTokenize, lexExpandImports, source, portable, referenceTokens) {
   const tokens = lexTokenize(source, "playground.mini", false);
-  const expanded = lexExpandIncludes(tokens, "playground.mini", [], Object.create(null));
+  const expanded = lexExpandImports(tokens, "playground.mini", Object.create(null));
   if (!portable) return expanded;
   const combined = expanded.filter(token => token.kind !== "eof").concat(referenceTokens);
   return combined.concat([{ kind: "eof", text: "", source: "playground.mini", start: 0, end: 0, line: 1, column: 1, context: "" }]);
@@ -82,14 +82,14 @@ function buildTokens(lexTokenize, lexExpandIncludes, source, portable, reference
 
 /// Compile one variant and return both the runnable and user-source code.
 async function compileSource(source, portable) {
-  const { lex_tokenize, lex_expand_includes, emit_js_compile, emit_js_compile_program_only } = await loadCompiler();
+  const { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only } = await loadCompiler();
   let diagnostic = "";
   globalThis.__miniSink = (fd, text) => {
     if (fd === 2) diagnostic += text;
   };
   try {
     const referenceTokens = portable ? (await import("./reference.js?rev=" + buildRevision)).referenceTokens : [];
-    const prepared = buildTokens(lex_tokenize, lex_expand_includes, source, portable, referenceTokens);
+    const prepared = buildTokens(lex_tokenize, lex_expand_imports, source, portable, referenceTokens);
     return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);

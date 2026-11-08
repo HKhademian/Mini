@@ -1,4 +1,4 @@
 io_write("root-before:", 4, "\n");
-include "./003-001-file-initialization-order-first.mini";
-include "./003-001-file-initialization-order-second.mini";
+import "./003-001-file-initialization-order-first";
+import "./003-001-file-initialization-order-second";
 io_write("root-after:", 5, "\n");

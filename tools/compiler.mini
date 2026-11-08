@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /// Compose the mini compiler from its source files.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
-include "common/text.mini";
-include "common/native.mini";
-include "compiler/lexer.mini";
-include "compiler/parser.mini";
-include "compiler/builtins.mini";
-include "compiler/emit-js.mini";
-include "compiler/emit-c.mini";
+import "common/io";
+import "common/text";
+import "common/native";
+import "compiler/lexer";
+import "compiler/parser";
+import "compiler/builtins";
+import "compiler/emit-js";
+import "compiler/emit-c";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {
@@ -159,7 +160,7 @@ fn main(args) {
         target = output;
     }
     seen := map_new();
-    expanded := lex_expand_includes(tokens, source, seen);
+    expanded := lex_expand_imports(tokens, source, seen);
     if target_name == "c" {
         header := native_artifact_path(target, ".h");
         code := emit_c_compile(expanded, path_basename(header));
@@ -170,7 +171,7 @@ fn main(args) {
     if reference_mode {
         root := path_parent(path_parent(process_script_path()));
         pure_path := root + "/libs/pure/reference.mini";
-        pure_tokens := lex_expand_includes(
+        pure_tokens := lex_expand_imports(
             lex_tokenize(file_read(pure_path), "libs/pure/reference.mini", false),
             pure_path,
             seen

@@ -1,6 +1,7 @@
 /// Exercise path checks, directory listing, copying, and recursive removal.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 root := path_temp_directory();
 sub := root + "/sub";

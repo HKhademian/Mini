@@ -4,10 +4,10 @@
 /// and artifact hashes. Exits 1 on any mismatch.
 
 import "common/map";
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "./cases.mini";
+import "common/value";
+import "common/list";
+import "common/text";
+import "./cases";
 
 /// Report a verification failure and stop.
 fn verify_fail(message) {

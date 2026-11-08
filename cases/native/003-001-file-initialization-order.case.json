@@ -4,10 +4,10 @@
   "target": "c",
   "source": "003-001-file-initialization-order.mini",
   "features": [
-    "include",
-    "include.initialization",
-    "include.once",
-    "include.nested",
+    "import",
+    "import.initialization",
+    "import.once",
+    "import.nested",
     "text.output",
     "target.c",
     "number.literal"

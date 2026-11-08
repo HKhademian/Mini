@@ -1,3 +1,3 @@
-023-002-list-length-extra-argument.mini:1:10: expected 1 argument
+023-002-list-length-extra-argument.mini:3:10: expected 1 argument
 count := list_length(fn_args(), 0);
          ^

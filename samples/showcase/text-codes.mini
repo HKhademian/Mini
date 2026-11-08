@@ -1,6 +1,6 @@
 /// Convert between characters and code points, then print mixed values directly.
 
-include "common/io.mini";
+import "common/io";
 
 text := "A!";
 character := text_get(text, 0);

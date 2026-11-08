@@ -1,5 +1,7 @@
+import "common/list";
 import "common/text";
-include "common/value.mini";
+import "common/value";
+
 /// Normalize one byte value like the host conversion.
 fn pure_byte_at(bytes, index) {
     if !value_is_list(bytes) || index < 0 || index >= list_length(bytes) {

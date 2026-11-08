@@ -1,6 +1,7 @@
 /// Delete map keys and observe removal through map_has and map_keys.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 import "common/map";
 
 items := map_of("a", 1, "b", 2);

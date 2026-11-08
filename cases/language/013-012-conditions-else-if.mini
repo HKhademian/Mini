@@ -1,4 +1,4 @@
-include "common/io.mini";
+import "common/io";
 fn classify(value) {
     if value < 0 {
         return -1;

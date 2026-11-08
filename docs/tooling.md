@@ -26,7 +26,7 @@ Status: implemented with the check and cli streams. Repository checking remains
 SOURCE.mini`; `mini check -` reads standard input. `mini-check` accepts the same
 forms. Source checking is a generated mini tool
 ([tools/check-source.mini](../tools/check-source.mini)) composed with compiler
-the compiler source through `include`; `--docs` skips strict TypeScript checking.
+the compiler source through `import`; `--docs` skips strict TypeScript checking.
 
 On success, source checking prints nothing and exits 0. On a mini source failure,
 it prints one compiler diagnostic on standard error and exits 1. The diagnostic
@@ -45,7 +45,7 @@ behavior. Diagnostics, offsets, and ranges use the
 Status: implemented with the format and cli streams. The standalone command is
 `mini-format`; the dispatcher form is `mini fmt`. The command is a generated
 mini tool ([tools/format.mini](../tools/format.mini)) composed with compiler
-the compiler source through `include`; the language server runs as a generated
+the compiler source through `import`; the language server runs as a generated
 mini tool.
 
 Its job is consistent indentation, spacing, and line breaks for accepted mini
@@ -129,7 +129,7 @@ command will be `mini-document`; the dispatcher form will be `mini doc`.
 Its role is generating reference material from documented source conventions
 and declarations. It will read `///` comments from source or comment-including
 analysis tokens. A leading doc block is file documentation when a header `//`
-comment or an `include` closes the file-doc section before a declaration;
+comment or an `import` closes the file-doc section before a declaration;
 otherwise it documents the next declaration. Blank lines do not create section
 boundaries. The parser token stream remains comment-free. The first useful
 output format and export visibility remain undecided. This tool does not require
@@ -170,10 +170,10 @@ protocol error; unknown notifications are ignored.
 
 Hover on a function or variable shows its declaration and the immediately
 preceding `///` documentation comments. Blank lines do not break the comment
-sequence; an ordinary `//` comment, include, or other token does. Hover on a
+sequence; an ordinary `//` comment, import, or other token does. Hover on a
 builtin shows its signature.
 Completion offers document functions and variables, builtins, and the current
-keywords (`include`, `fn`, `return`, `if`, `else`, `while`, `true`, `false`),
+keywords (`import`, `fn`, `return`, `if`, `else`, `while`, `true`, `false`),
 filtered by the identifier prefix at the cursor. Completion is suppressed inside
 comments and text literals. Go-to-definition returns the declaration of a
 document function or variable; builtins have no source location and return no
@@ -224,9 +224,9 @@ generated JavaScript file and declares the `bin/` launchers:
 }
 ```
 
-Each tool source declares its dependencies with mini `include` directives, for
-example `include "common/text.mini";`. The build helper compiles the
-source directly with the tracked bootstrap; include expansion is part of the
+Each tool source declares its dependencies with mini `import` directives, for
+example `import "common/text";`. The build helper compiles the
+source directly with the tracked bootstrap; import expansion is part of the
 compiler.
 
 ```text

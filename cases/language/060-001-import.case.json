@@ -1,8 +1,8 @@
 {
-  "id": "language.include",
+  "id": "language.import",
   "kind": "feature",
-  "source": "060-001-include.mini",
-  "features": ["include", "include.once", "include.nested", "number.to-text", "text.output"],
+  "source": "060-001-import.mini",
+  "features": ["import", "import.once", "import.nested", "number.to-text", "text.output"],
   "cases": [
     {
       "name": "nested-once",

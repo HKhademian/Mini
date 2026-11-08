@@ -30,6 +30,7 @@ vscode-v0.3.0-v0.3.3  go to definition; same group
 vscode-v0.5.0-v0.3.6  := grammar; new group
 vscode-v0.5.0-v0.3.7  include syntax; same group
 vscode-v0.5.0-v0.3.8  canonical file icon; same group
+vscode-v0.6.0-v0.3.9  import syntax; new group
 ```
 
 The editor keeps one counter while its group changes. Use one continuous
@@ -56,11 +57,11 @@ increments:
 
 ```text
 mini-v0.6.0-v0.3.0-alpha.36
-lang-v0.6.0-v0.5.0-alpha.8
+lang-v0.6.0-v0.5.0-alpha.9
 ast-v0.6.0-v0.1.0-alpha.1
-compiler-v0.6.0-v0.5.0-alpha.40
-bootstrap-v0.6.0-v0.3.0-alpha.42
-builtins-v0.6.0-v0.4.0-alpha.8
+compiler-v0.6.0-v0.5.0-alpha.42
+bootstrap-v0.6.0-v0.3.0-alpha.44
+builtins-v0.6.0-v0.4.0-alpha.9
 cli-v0.6.0-v0.1.0-alpha.20
 check-v0.6.0-v0.1.0-alpha.13
 format-v0.6.0-v0.1.0-alpha.9
@@ -69,7 +70,7 @@ test-v0.6.0-v0.1.0-alpha.8
 verify-v0.6.0-v0.1.0-alpha.10
 bench-v0.6.0-v0.1.0-alpha.7
 release-v0.6.0-v0.1.0-alpha.8
-vscode-v0.6.0-v0.3.8
+vscode-v0.6.0-v0.3.9
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.

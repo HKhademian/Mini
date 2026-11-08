@@ -1,6 +1,6 @@
 /// Print canonical decimal text for zero, a positive number, and a negative number.
 
-include "common/io.mini";
+import "common/io";
 
 io_write_line(number_to_text(42));
 io_write_line(number_to_text(-7));

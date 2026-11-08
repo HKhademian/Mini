@@ -1,6 +1,6 @@
 /// Join text with +.
 
-include "common/io.mini";
+import "common/io";
 
 first := "self";
 second := "-hosting";

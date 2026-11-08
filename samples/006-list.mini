@@ -1,7 +1,7 @@
 /// Print each command-line argument on its own line.
-//
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 args := fn_args();
 io_write_line("Arguments (", list_length(args), "):");

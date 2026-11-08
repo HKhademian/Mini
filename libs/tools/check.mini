@@ -3,11 +3,11 @@
 /// Usage: node dist/check.js [--docs]
 
 import "common/map";
-include "common/io.mini";
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "./cases.mini";
+import "common/io";
+import "common/value";
+import "common/list";
+import "common/text";
+import "./cases";
 
 /// Report a check failure and stop.
 fn check_fail(message) {

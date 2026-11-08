@@ -223,15 +223,15 @@
       "exitCode": 0
     },
     {
-      "name": "format-include",
+      "name": "format-import",
       "args": [
-        "cases/tooling/format-include.mini"
+        "cases/tooling/format-import.mini"
       ],
       "stdin": {
         "text": ""
       },
       "stdout": {
-        "file": "format-include.stdout"
+        "file": "format-import.stdout"
       },
       "stderr": {
         "text": ""

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
-include "common/text.mini";
-include "common/number.mini";
+
+import "common/text";
+import "common/number";
 
 /// Check total numeric helpers against valid and invalid operands.
 fn main() {

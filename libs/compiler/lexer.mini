@@ -1,6 +1,7 @@
 import "common/map";
-include "common/list.mini";
-include "common/path.mini";
+import "common/list";
+import "common/path";
+
 /// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {
     token := map_new();
@@ -236,32 +237,28 @@ fn lex_tokenize(source, source_name, include_comments) {
     return end_tokens;
 }
 
-/// Resolve library imports from libs and explicit paths from the including file.
-fn lex_resolve_include(base, path) {
+/// Resolve an extensionless or explicit import path.
+fn lex_resolve_import(base, path) {
+    resolved_path := path;
+    if !text_ends_with(resolved_path, ".mini") {
+        resolved_path = resolved_path + ".mini";
+    }
     if text_starts_with(path, "/") {
-        return path_normalize(path);
+        return path_normalize(resolved_path);
     }
     if text_starts_with(path, "./") || text_starts_with(path, "../") {
         directory := path_parent(base);
         if directory == "" {
-            return path_normalize(path);
+            return path_normalize(resolved_path);
         }
-        return path_normalize(directory + "/" + path);
+        return path_normalize(directory + "/" + resolved_path);
     }
-    return path_normalize("libs/" + path);
+    return path_normalize("libs/" + resolved_path);
 }
 
-/// Resolve an import path, adding the Mini source extension when omitted.
-fn lex_resolve_import(base, path) {
-    if text_ends_with(path, ".mini") {
-        return lex_resolve_include(base, path);
-    }
-    return lex_resolve_include(base, path + ".mini");
-}
-
-/// Expand each imported or included file once in depth-first postorder.
+/// Expand each imported file once in depth-first postorder.
 /// Revisited files, including cycles, are skipped; missing files fail.
-fn lex_expand_includes(tokens, base, seen) {
+fn lex_expand_imports(tokens, base, seen) {
     if map_has(seen, base) {
         return list_new();
     }
@@ -282,41 +279,34 @@ fn lex_expand_includes(tokens, base, seen) {
         is_import := text == "import" && position + 2 < list_length(tokens)
             && map_get(list_get(tokens, position + 1), "kind") == "text"
             && map_get(list_get(tokens, position + 2), "text") == ";";
-        is_include := text == "include" && position + 2 < list_length(tokens)
-            && map_get(list_get(tokens, position + 1), "kind") == "text"
-            && map_get(list_get(tokens, position + 2), "text") == ";";
-        if !is_include && !is_import {
+        if !is_import {
             list_set(own, list_length(own), token);
             position = position + 1;
         } else {
             if depth != 0 {
-                diagnostic_fail(token, "include must be top-level");
+                diagnostic_fail(token, "import must be top-level");
             }
             quoted := map_get(list_get(tokens, position + 1), "text");
             path := text_slice(quoted, 1, text_length(quoted) - 1);
-            resolved := lex_resolve_include(base, path);
-            action := "include";
-            if is_import {
-                resolved = lex_resolve_import(base, path);
-                action = "import";
-            }
+            resolved := lex_resolve_import(base, path);
+            action := "import";
             if !map_has(seen, resolved) {
                 if !path_is_exists(resolved) {
                     diagnostic_fail(token, "cannot " + action + " " + path);
                 }
                 raw := lex_tokenize(file_read(resolved), path, false);
-                included := list_new();
+                imported := list_new();
                 raw_position := 0;
                 while raw_position < list_length(raw) {
                     if map_get(list_get(raw, raw_position), "kind") != "eof" {
-                        list_set(included, list_length(included), list_get(raw, raw_position));
+                        list_set(imported, list_length(imported), list_get(raw, raw_position));
                     }
                     raw_position = raw_position + 1;
                 }
-                if list_length(included) > 0 && map_get(list_get(included, 0), "kind") == "shebang" {
-                    diagnostic_fail(token, "included file must not have a shebang");
+                if list_length(imported) > 0 && map_get(list_get(imported, 0), "kind") == "shebang" {
+                    diagnostic_fail(token, "imported file must not have a shebang");
                 }
-                expanded := lex_expand_includes(included, resolved, seen);
+                expanded := lex_expand_imports(imported, resolved, seen);
                 index := 0;
                 while index < list_length(expanded) {
                     list_set(dependencies, list_length(dependencies), list_get(expanded, index));

@@ -1,6 +1,7 @@
 /// Build maps from alternating key and value arguments.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 import "common/map";
 
 pairs := map_of("hi", 2, "test", 3);

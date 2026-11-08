@@ -1,6 +1,7 @@
 /// Use a negative index for the last item.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 items := list_new();
 list_set(items, 0, "first");

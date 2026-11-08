@@ -1,0 +1,3 @@
+060-002-import-missing.mini:1:1: cannot import ./060-002-missing-helper
+import "./060-002-missing-helper";
+^

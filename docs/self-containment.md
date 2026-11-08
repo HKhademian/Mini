@@ -126,7 +126,7 @@ Implemented layout:
 libs/pure/text.mini      pure_text_find, pure_text_split
 libs/pure/list.mini      pure_list_copy
 libs/pure/map.mini       pure_map_copy
-libs/pure/reference.mini include aggregator
+libs/pure/reference.mini import aggregator
 ```
 
 Compiler modes:

@@ -1,6 +1,7 @@
 /// Parse numbers from CSV text and add them.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 csv := "4,8,15,16,23,42";
 fields := text_split(csv, ",");

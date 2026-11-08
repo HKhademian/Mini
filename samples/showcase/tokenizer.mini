@@ -1,6 +1,6 @@
 /// Split source text into words and symbols.
 
-include "common/io.mini";
+import "common/io";
 
 source := "x:=1;";
 index := 0;

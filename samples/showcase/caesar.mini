@@ -1,6 +1,6 @@
 /// Shift character codes by one.
 
-include "common/io.mini";
+import "common/io";
 
 source := "MINI";
 output := "";

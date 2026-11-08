@@ -261,7 +261,7 @@ test('blank lines do not split declaration docs and header docs stay file scoped
     const uri = 'file:///doc-boundaries.mini';
     const text = [
       '/// File purpose.',
-      'include "common/io.mini";',
+      'import "common/io";',
       '',
       '/// Declaration detail.',
       '',
@@ -312,7 +312,7 @@ test('completes declarations, builtins, and keywords by prefix', async () => {
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/completion', params: { textDocument: { uri }, position: { line: 9, character: 0 } } });
     const all = await client.next();
     const labels = all.result.items.map((item: { label: string }) => item.label);
-    for (const label of ['add', 'answer', 'io_write', 'include', 'fn', 'while']) assert.ok(labels.includes(label), label);
+    for (const label of ['add', 'answer', 'io_write', 'import', 'fn', 'while']) assert.ok(labels.includes(label), label);
     assert.ok(!labels.includes('var'));
     const add = all.result.items.find((item: { label: string }) => item.label === 'add');
     assert.equal(add.detail, 'fn add(a, b)');

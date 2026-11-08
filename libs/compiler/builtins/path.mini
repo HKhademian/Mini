@@ -1,5 +1,5 @@
 /// Path builtin descriptors.
-include "./registry.mini";
+import "./registry";
 
 //
 

@@ -1,4 +1,4 @@
-/// Format include helper.
+/// Format import helper.
 fn included() {
     return 1;
 }

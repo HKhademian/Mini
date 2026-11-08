@@ -1,6 +1,6 @@
 /// Repeat while a condition holds.
 
-include "common/io.mini";
+import "common/io";
 
 position := 1;
 while position <= 5 {

@@ -1,7 +1,7 @@
 /// Build a map and print compact deterministic JSON text.
 
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 values := map_new();
 map_set(values, "name", "Mini");

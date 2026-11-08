@@ -1,8 +1,9 @@
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
-include "common/process-run.mini";
+import "common/io";
+import "common/process-run";
 
 args := list_new();
 list_set(args, 0, "-e");

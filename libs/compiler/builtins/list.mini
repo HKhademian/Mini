@@ -1,82 +1,17 @@
-/// List builtin descriptors.
-include "./registry.mini";
+/// List API contracts; implementations live in common/list and emitter registries.
+import "./registry";
 
-//
-
-builtin_add(
-    "list_copy",
-    "list",
-    "list",
-    "performance",
-    "",
-    "list_copy",
-    "function $mini_list_copy(items) {\n    if (!Array.isArray(items)) return [];\n    return items.slice();\n}\n",
-    "pure_list_copy",
-    "$mini_list_copy({0})"
-);
-builtin_add(
-    "list_get",
-    "unknown,number",
-    "unknown",
-    "representation",
-    "",
-    "list_get",
-    "function $mini_list_get(items, index) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0 && index < items.length && index in items) return items[index];\n    return 0;\n}\n",
-    "",
-    "$mini_list_get({0}, {1})"
-);
-builtin_add(
-    "list_length",
-    "list",
-    "number",
-    "representation",
-    "",
-    "",
-    "",
-    "",
-    "({0}).length"
-);
-builtin_add(
-    "list_new",
-    "",
-    "list",
-    "representation",
-    "",
-    "",
-    "",
-    "",
-    "[]"
-);
-builtin_add(
-    "list_set",
-    "unknown,number,unknown",
-    "number",
-    "representation",
-    "",
-    "list_set",
-    "function $mini_list_set(items, index, value) {\n    if (!Array.isArray(items)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value\n    return 0;\n}\n",
-    "",
-    "$mini_list_set({0}, {1}, {2})"
-);
-builtin_add(
-    "list_join",
-    "list,text",
-    "text",
-    "performance",
-    "",
-    "list_join",
-    "function $mini_list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
-    "pure_list_join",
-    "$mini_list_join({0}, {1})"
-);
-builtin_add(
-    "list_truncate",
-    "list,number",
-    "number",
-    "representation",
-    "",
-    "list_truncate",
-    "function $mini_list_truncate(items, length) {\n    if (Array.isArray(items) && typeof length === \"number\" && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length\n    return 0;\n}\n",
-    "",
-    "$mini_list_truncate({0}, {1})"
-);
+builtin_add("list_copy", "list", "list", "performance", "", "", "", "", "");
+builtin_source_api("list_copy");
+builtin_add("list_get", "unknown,number", "unknown", "representation", "", "", "", "", "");
+builtin_source_api("list_get");
+builtin_add("list_length", "list", "number", "representation", "", "", "", "", "");
+builtin_source_api("list_length");
+builtin_add("list_new", "", "list", "representation", "", "", "", "", "");
+builtin_source_api("list_new");
+builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "", "", "", "");
+builtin_source_api("list_set");
+builtin_add("list_join", "list,text", "text", "performance", "", "", "", "", "");
+builtin_source_api("list_join");
+builtin_add("list_truncate", "list,number", "number", "representation", "", "", "", "", "");
+builtin_source_api("list_truncate");

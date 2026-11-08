@@ -6,10 +6,10 @@
 /// Prints scenario summaries by default, showing PASS lines when --verbose is set.
 
 import "common/map";
-include "common/io.mini";
-include "common/text.mini";
-include "common/list.mini";
-include "./cases.mini";
+import "common/io";
+import "common/text";
+import "common/list";
+import "./cases";
 
 /// Report usage and stop.
 fn test_usage() {

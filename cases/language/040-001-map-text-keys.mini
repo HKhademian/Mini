@@ -1,7 +1,8 @@
 /// Verify ordinary text keys, key snapshots, replacement, and argument evaluation order.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 /// Record receiver evaluation and return the nested map without copying it.
 fn receiver(state) {

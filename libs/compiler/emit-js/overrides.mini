@@ -1,9 +1,10 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
 import "common/map";
-include "./overrides/number.mini";
-include "./overrides/map.mini";
-include "./overrides/text.mini";
+import "./overrides/number";
+import "./overrides/list";
+import "./overrides/map";
+import "./overrides/text";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {

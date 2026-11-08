@@ -1,1 +1,3 @@
 copied := list_copy(1);
+
+import "common/list";

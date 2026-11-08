@@ -71,7 +71,7 @@ test('keyword boundaries and illustrated operators stay distinct', () => {
   for (const value of ['true', 'false']) {
     assert.ok(scopes(value, value).includes('constant.language.mini'));
   }
-  assert.ok(scopes('include "library.mini";', 'include').includes('keyword.control.import.mini'));
+  assert.ok(scopes('import "library";', 'import').includes('keyword.control.import.mini'));
   assert.deepEqual(scopes('include_value := 1;', 'include_value'), ['source.mini', 'variable.other.mini']);
   assert.deepEqual(scopes('var := 1;', 'var'), ['source.mini', 'variable.other.mini']);
   for (const name of [

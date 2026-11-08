@@ -4,8 +4,8 @@
   "target": "c",
   "source": "003-003-file-initialization-empty.mini",
   "features": [
-    "include",
-    "include.initialization",
+    "import",
+    "import.initialization",
     "text.output",
     "target.c"
   ],

@@ -1,0 +1,3 @@
+060-009-legacy-include-rejected.mini:1:1: unknown binding include
+include "./060-001-import-helper";
+^

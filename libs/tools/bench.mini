@@ -3,9 +3,9 @@
 /// Output must not exist; the parent directory is created.
 
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "./cases.mini";
+import "common/text";
+import "common/list";
+import "./cases";
 
 /// Report a benchmark error and stop.
 fn bench_fail(message) {

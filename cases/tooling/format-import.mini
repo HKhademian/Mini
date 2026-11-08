@@ -1,0 +1,2 @@
+import "./format-import-helper";
+value:=1;

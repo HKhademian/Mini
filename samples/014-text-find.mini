@@ -1,6 +1,6 @@
 /// Read text and report whether it contains the two sample words.
 
-include "common/io.mini";
+import "common/io";
 
 source := io_read_all();
 if text_find(source, "Mini") >= 0 {

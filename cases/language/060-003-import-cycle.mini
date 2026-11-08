@@ -2,5 +2,5 @@ io_write("P-before|");
 fn from_p() {
     return "p";
 }
-include "./060-003-include-cycle-other.mini";
+import "./060-003-import-cycle-other";
 io_write("P-after|", from_b(), "\n");

@@ -1,6 +1,7 @@
 /// Reference numeric add derived from subtraction.
 
-include "common/value.mini";
+import "common/list";
+import "common/value";
 
 /// Reference numeric multiply by repeated addition.
 fn pure_number_mul(a, b) {

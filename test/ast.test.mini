@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+
 import "common/map";
-include "common/io.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "compiler/parser.mini";
+import "common/io";
+import "common/list";
+import "common/text";
+import "compiler/parser";
 
 /// Fail an AST shape assertion with its location in the test.
 fn ast_test_fail(message) {

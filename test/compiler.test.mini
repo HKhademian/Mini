@@ -1,8 +1,9 @@
 #!/usr/bin/env node
+
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "tools/cases.mini";
+import "common/text";
+import "common/list";
+import "tools/cases";
 
 /// Verify the generated compiler reproduces itself from its mini source.
 fn main(args) {

@@ -1,6 +1,6 @@
 /// Classic division and branching.
 
-include "common/io.mini";
+import "common/io";
 
 n := 1;
 while n <= 15 {

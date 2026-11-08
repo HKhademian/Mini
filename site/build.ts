@@ -73,7 +73,7 @@ const shortCommit = sourceCommit.slice(0, 12);
 /// The CLI entry is stripped first; importing it directly would run main().
 const compilerModule = await import(browserCompilerModule()) as {
     readonly lex_tokenize: (source: string, name: string, comments: boolean) => readonly Token[];
-    readonly lex_expand_includes: (tokens: readonly Token[], base: string, stack: readonly string[], seen: object) => readonly (Token & { readonly file?: string })[];
+    readonly lex_expand_imports: (tokens: readonly Token[], base: string, seen: object) => readonly (Token & { readonly file?: string })[];
 };
 
 const lexTokenize = (source: string, name: string, comments: boolean): readonly Token[] => compilerModule.lex_tokenize(source, name, comments);
@@ -390,14 +390,14 @@ function browserCompilerSource(): string {
     if (!source.includes(importLine) || !source.includes("    main(process.argv.slice(2));\n")) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
-    for (const name of ["function lex_tokenize(", "function lex_expand_includes(", "function emit_js_compile(", "function emit_js_compile_program_only("]) {
+    for (const name of ["function lex_tokenize(", "function lex_expand_imports(", "function emit_js_compile(", "function emit_js_compile_program_only("]) {
         if (!source.includes(name)) {
             throw new Error(`compiler entry is missing ${name}; update the playground build`);
         }
     }
     return source
         .replace("    main(process.argv.slice(2));\n", "")
-        + "\nexport { lex_tokenize, lex_expand_includes, emit_js_compile, emit_js_compile_program_only };\n";
+        + "\nexport { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only };\n";
 }
 
 /// Return the generated compiler as a browser module.
@@ -418,20 +418,20 @@ function buildBrowserWorker(): string {
 
 /// Return the expanded pure reference source.
 ///
-/// Compiling libs/pure/reference.mini expands its includes into the pure
+/// Compiling libs/pure/reference.mini expands its imports into the pure
 /// builtin implementations. The playground appends these tokens for its
-/// portable variant, so the browser needs no filesystem include access.
+/// portable variant, so the browser needs no filesystem import access.
 function buildReferenceSource(): string {
     const path = join(root, "libs", "pure", "reference.mini");
     const tokens = compilerModule.lex_tokenize(readFileSync(path, "utf8"), path, false);
-    const expanded = compilerModule.lex_expand_includes(tokens, path, [], Object.create(null));
+    const expanded = compilerModule.lex_expand_imports(tokens, path, Object.create(null));
     const body = expanded.filter((token) => token.kind !== "eof")
         .map((token) => token.file === undefined ? token : { ...token, file: relative(root, token.file) });
     return JSON.stringify(body);
 }
 
-/// Return every Mini library source keyed by its compiler include path.
-function buildBrowserIncludes(): string {
+/// Return every Mini library source keyed by its compiler import path.
+function buildBrowserImports(): string {
     const files: Record<string, string> = {};
     function visit(directory: string, relativeDirectory: string): void {
         for (const entry of readdirSync(directory, { withFileTypes: true })) {
@@ -450,7 +450,7 @@ function buildBrowserIncludes(): string {
 
 /// Write a temporary module that exports the compiler without a CLI entry.
 ///
-/// The import keeps node:fs so the build can expand includes from the tree; the
+/// The import keeps node:fs so the build can expand imports from the tree; the
 /// browser copy swaps in the shim separately.
 function browserCompilerModule(): string {
     const path = join(tmpdir(), "mini-highlight-" + String(process.pid) + ".mjs");
@@ -833,7 +833,7 @@ function main(): void {
     const playground = join(output, "playground");
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
-    writeFileSync(join(playground, "includes.js"), buildBrowserIncludes());
+    writeFileSync(join(playground, "imports.js"), buildBrowserImports());
     const referenceTokens = buildReferenceSource();
     writeFileSync(join(playground, "reference.js"), `export const referenceTokens = ${referenceTokens.trim()};\n`);
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));

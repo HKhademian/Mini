@@ -1,5 +1,6 @@
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 fn copy(value) {
     return map_copy(value);
 }

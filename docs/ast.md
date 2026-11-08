@@ -19,12 +19,12 @@ Nodes created from source carry:
 
 - `node_kind`: one of the tags below.
 - `source`: source identity used by the lexer.
-- `file`: canonical file identity after include expansion, or `source` when no
+- `file`: canonical file identity after import expansion, or `source` when no
   separate file field was supplied.
 - `start` and `end`: half-open source offsets; `line` and `column` are the
   one-based starting location.
 - `context`: the source line used for diagnostics when available.
-- `file_order`: include execution order when available.
+- `file_order`: import execution order when available.
 
 Expression nodes also carry `value_kind`: currently `number`, `text`, `boolean`,
 `list`, or `unknown`. Program nodes retain the token list given to the parser.

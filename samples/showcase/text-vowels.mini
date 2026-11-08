@@ -1,6 +1,6 @@
 /// Combine a loop with character comparisons.
 
-include "common/io.mini";
+import "common/io";
 
 text := "self hosting";
 index := 0;

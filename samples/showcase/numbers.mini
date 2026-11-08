@@ -1,6 +1,6 @@
 /// Multiply and subtract numbers.
 
-include "common/io.mini";
+import "common/io";
 
 width := 6;
 height := 7;

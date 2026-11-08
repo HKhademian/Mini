@@ -7,13 +7,13 @@ The language picker shows **mini**. File icon themes can override the supplied
 language icons. The build regenerates both supplied icons from the canonical
 mini monogram in `brand/mini-mark.svg`.
 
-Highlights `include`, `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
+Highlights `import`, `:=`, `fn`, `return`, `if`, `else`, `while`, function declarations
 and calls, identifiers, double-quoted strings, integers, booleans, punctuation,
 assignment, and the arithmetic, comparison, and boolean operators in the draft.
 Strings shield their contents from other rules; backslash escapes receive a
 separate scope. Line comments (`//`) and documentation comments (`///`) receive
 separate comment scopes and shield their contents from code highlighting. A
-header `//` or `include` can separate file docs from declaration docs;
+header `//` or `import` can separate file docs from declaration docs;
 declaration comments remain available to hover.
 
 Highlighting follows the accepted forms in the language draft. It does not imply

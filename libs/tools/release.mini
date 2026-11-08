@@ -3,14 +3,14 @@
 /// Never creates or publishes tags. Prints nothing on success.
 
 import "common/map";
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/result.mini";
-include "common/project.mini";
+import "common/value";
+import "common/list";
+import "common/text";
+import "common/path";
+import "common/process";
+import "common/json";
+import "common/result";
+import "common/project";
 
 /// Report a release error and stop.
 fn release_fail(message) {

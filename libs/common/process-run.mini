@@ -1,8 +1,8 @@
 /// Text-stream process helper built on the general process primitive.
 
 import "common/map";
-include "./process.mini";
-include "./text.mini";
+import "./process";
+import "./text";
 
 /// Run command with arguments and return a result map with text output streams.
 /// The child inherits the parent environment; mode selects capture or inherit.

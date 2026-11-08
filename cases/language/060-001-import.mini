@@ -1,0 +1,5 @@
+import "common/io";
+import "./060-001-import-helper";
+import "./060-001-import-helper";
+import "./060-001-import-nested";
+io_write_line(number_to_text(add_one(1)) + "|" + nested_marker());

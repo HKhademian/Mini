@@ -1,6 +1,7 @@
 /// Exercise UTF-8 byte conversion.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 bytes := text_to_bytes("Aé😀");
 output := "";

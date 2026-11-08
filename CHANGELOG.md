@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.9 / builtins 0.4.0-alpha.9 / compiler
+  0.5.0-alpha.42 / bootstrap 0.3.0-alpha.44: require explicit
+  `import "common/list"`, register JS host implementations separately from Mini
+  fallbacks, and remove `include` in favor of extensionless `import` paths,
+  including relative sibling and child paths.
+
 - builtins 0.4.0-alpha.8 / compiler 0.5.0-alpha.40 / bootstrap 0.3.0-alpha.42:
   move map operations to explicit `import "common/map"` APIs, add pure Mini
   `map_copy`, and register JavaScript host implementations for map primitives.
@@ -11,7 +17,7 @@
   JavaScript host override by default.
 
 - language 0.5.0-alpha.8: add extensionless `import "common/module"` syntax for
-  library modules, sharing include-once cycle traversal and postorder behavior.
+  library modules, sharing import-once cycle traversal and postorder behavior.
 
 - compiler 0.5.0-alpha.38 / bootstrap 0.3.0-alpha.40: move JavaScript host
   function replacements into a target-specific registry with numeric namespace

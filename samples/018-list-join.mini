@@ -1,7 +1,7 @@
 /// Build a list of words and print them as one line.
 
-include "common/io.mini";
-include "common/list.mini";
+import "common/io";
+import "common/list";
 
 words := list_of("one", "two", "three");
 io_write_line(list_join(words, " | "));

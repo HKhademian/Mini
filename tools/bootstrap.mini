@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 /// Bootstrap seed: embeds the compiler and rebuilds the compiler and tools.
 
-include "common/text.mini";
-include "compiler/lexer.mini";
-include "compiler/parser.mini";
-include "compiler/builtins.mini";
-include "compiler/emit-js.mini";
-include "tools/bootstrap.mini";
+import "common/list";
+import "common/text";
+import "compiler/lexer";
+import "compiler/parser";
+import "compiler/builtins";
+import "compiler/emit-js";
+import "tools/bootstrap";
 
 /// Rebuild the compiler and tools, optionally doing a clean full-project rebuild.
 fn main(args) {

@@ -1,0 +1,2 @@
+import "./006-005-add-import-helper";
+io_write(shared, "|", combined, "\n");

@@ -1,7 +1,7 @@
 /// Parse standard-input JSON and print its name field.
 
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 parsed := json_parse(io_read_all());
 value := map_get(parsed, "value");

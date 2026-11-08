@@ -1,5 +1,5 @@
 /// Hash builtin descriptors.
-include "./registry.mini";
+import "./registry";
 
 //
 

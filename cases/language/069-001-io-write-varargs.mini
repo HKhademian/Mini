@@ -1,6 +1,7 @@
 /// Write mixed values through the variadic I/O helpers.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 import "common/map";
 
 text := "Mini";

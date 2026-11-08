@@ -1,6 +1,8 @@
 #!/usr/bin/env node
-include "common/io.mini";
-include "tools/bench.mini";
+
+import "common/list";
+import "common/io";
+import "tools/bench";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main(args) {

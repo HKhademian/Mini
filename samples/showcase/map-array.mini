@@ -1,7 +1,8 @@
 /// Parse an array and read an item.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 parsed := json_parse("[10,20,30]");
 if map_get(parsed, "ok") {

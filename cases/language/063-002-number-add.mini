@@ -1,4 +1,4 @@
-include "common/number.mini";
+import "common/number";
 
 io_write(
     number_add(2, 3), "|",

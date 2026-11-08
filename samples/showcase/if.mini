@@ -1,6 +1,6 @@
 /// Run a block when a condition holds.
 
-include "common/io.mini";
+import "common/io";
 
 temperature := 21;
 if temperature > 18 {

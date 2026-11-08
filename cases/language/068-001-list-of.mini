@@ -1,7 +1,7 @@
 /// Build lists of several sizes from supplied arguments.
 
-include "common/io.mini";
-include "common/list.mini";
+import "common/io";
+import "common/list";
 
 items := list_of(1, 2, 3);
 empty := list_of();

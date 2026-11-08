@@ -1,10 +1,12 @@
 /// Eager recursive-descent parser and shallow checker over a complete token list.
 /// Returns one checked Program AST; it does not emit target source.
 
+import "common/list";
 import "common/map";
-include "./lexer.mini";
-include "./ast.mini";
-include "./builtins.mini";
+import "./lexer";
+import "./ast";
+import "./builtins";
+
 /// Report a parser/checker diagnostic.
 fn parser_fail(token, message) {
     return diagnostic_fail(token, message);
@@ -261,7 +263,7 @@ fn parser_primary(parser) {
 /// Top level means the process. The invoked name and the node entry are
 /// munched there, so the result is the program arguments in every invocation
 /// shape. Any other position means the enclosing call: every supplied argument
-/// is included, even beyond the declared parameters.
+/// is imported, even beyond the declared parameters.
 fn parser_fn_args(parser, token) {
     parser_expect(parser, "(");
     close := parser_token(parser);
@@ -604,7 +606,7 @@ fn parser_function_declaration(parser) {
     return node;
 }
 
-/// Return canonical file identity when includes supplied it, otherwise source identity.
+/// Return canonical file identity when imports supplied it, otherwise source identity.
 fn parser_file_key(token) {
     if map_has(token, "file") {
         return map_get(token, "file");

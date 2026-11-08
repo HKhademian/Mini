@@ -1,7 +1,8 @@
 /// Run one child process with options for arguments, directory, input, and mode.
 
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 
 dir := path_temp_directory();
 args := list_new();

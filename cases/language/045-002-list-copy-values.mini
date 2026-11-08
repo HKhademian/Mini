@@ -1,4 +1,5 @@
-include "common/io.mini";
+import "common/list";
+import "common/io";
 fn copy(value) {
     return list_copy(value);
 }

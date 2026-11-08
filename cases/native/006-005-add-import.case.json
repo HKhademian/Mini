@@ -1,13 +1,13 @@
 {
-  "id": "native.c-bindings-include",
+  "id": "native.c-cross-file-text-join",
   "kind": "feature",
   "target": "c",
-  "source": "005-004-bindings-include.mini",
+  "source": "006-005-add-import.mini",
   "features": [
     "target.c",
-    "bindings",
-    "include",
-    "include.initialization",
+    "text.concatenate",
+    "import",
+    "import.initialization",
     "text.buffer-growth",
     "text.output"
   ],
@@ -18,7 +18,7 @@
         "text": ""
       },
       "stdout": {
-        "text": "dependency|root-before|earlier|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
+        "text": "first|firstabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\n"
       },
       "stderr": {
         "text": ""

@@ -1,5 +1,6 @@
 /// Explain a missing argument on stderr and exit with status 2; otherwise print it.
-//
+
+import "common/list";
 
 args := fn_args();
 if list_length(args) == 0 {

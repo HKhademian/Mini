@@ -7,8 +7,8 @@
     "target.c",
     "bindings",
     "assignment",
-    "include",
-    "include.initialization",
+    "import",
+    "import.initialization",
     "text.output"
   ],
   "cases": [

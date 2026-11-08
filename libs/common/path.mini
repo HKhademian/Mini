@@ -1,4 +1,5 @@
-include "./text.mini";
+import "common/list";
+import "./text";
 
 /// Join two path components.
 fn path_join(left, right) {

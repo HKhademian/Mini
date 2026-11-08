@@ -1,7 +1,7 @@
 /// Exercise list stack mutation.
 
-include "common/io.mini";
-include "common/list.mini";
+import "common/io";
+import "common/list";
 
 items := list_new();
 list_push_back(items, "b");

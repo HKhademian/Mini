@@ -1,6 +1,7 @@
 /// Count key snapshots before/after replacement, including empty and method-like keys.
 //
 
+import "common/list";
 import "common/map";
 items := map_new();
 key := io_read_all();

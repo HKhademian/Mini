@@ -1,0 +1,3 @@
+060-005-import-nested-block.mini:2:5: import must be top-level
+    import "./060-001-import-helper";
+    ^

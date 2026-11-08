@@ -1,0 +1,15 @@
+{
+  "id": "language.legacy-include-rejected",
+  "kind": "reject",
+  "source": "060-009-legacy-include-rejected.mini",
+  "features": ["import", "legacy-syntax"],
+  "cases": [
+    {
+      "name": "include-is-not-a-directive",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-009-legacy-include-rejected.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

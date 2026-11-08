@@ -1,6 +1,6 @@
 /// Choose one of two branches.
 
-include "common/io.mini";
+import "common/io";
 
 value := 7;
 if number_mod(value, 2) == 0 {

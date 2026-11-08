@@ -1,8 +1,8 @@
 {
-  "id": "language.include-cycle-root-a",
+  "id": "language.import-cycle-root-a",
   "kind": "feature",
-  "source": "060-003-include-cycle-other.mini",
-  "features": ["include", "include.cycle", "include.postorder", "function", "text.output"],
+  "source": "060-003-import-cycle-other.mini",
+  "features": ["import", "import.cycle", "import.postorder", "function", "text.output"],
   "cases": [
     {
       "name": "root-a",

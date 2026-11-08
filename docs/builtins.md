@@ -80,7 +80,7 @@ without a newline. EOF yields empty text. Neither operation converts newlines.
 separators, writes the result, and returns 0. The compiler implements this
 variadic primitive operation.
 `io_write_line(...values)` is a Mini helper in [libs/common/io.mini](../libs/common/io.mini);
-include that file to write the same converted values followed by one newline.
+import that module to write the same converted values followed by one newline.
 
 `to_text(any_value)` is the shared display conversion: text passes through, numbers
 use `number_to_text`, booleans become `true` or `false`, and lists/maps use
@@ -107,7 +107,7 @@ integer JSON numbers only.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
 are total library functions in [libs/common/number.mini](../libs/common/number.mini), not
-builtins, and require that include. They return 0 when either operand is not a
+builtins, and require that import. They return 0 when either operand is not a
 number. `number_add` has a pure Mini implementation derived from subtraction;
 the JavaScript emitter replaces that same function with guarded `a + b` for the
 default fast path. The host and Mini implementations are checked for equivalent
@@ -168,11 +168,10 @@ returns empty text.
 carries `ok`, `value`, and `message`. `result_is_ok` and `result_is_fail` test
 it. `result_get_message`, `result_get_value`, `result_set_message`, and
 `result_set_value` read and write fields without exposing the map shape, so
-callers include the library rather than indexing keys.
+callers import the library rather than indexing keys.
 
 `list_of(...)` and `map_of(...)` build collections from their arguments. They are
-library helpers under [libs/common](../libs/common), not builtins, so they need an
-include. `list_of` returns its arguments as a list. `map_of` reads alternating
+library helpers under [libs/common](../libs/common), not builtins, so callers import `common/list` or `common/map`. `list_of` returns its arguments as a list. `map_of` reads alternating
 keys and values; a repeated key takes the last value, and a key without a value
 takes 0, so `map_of("k")` equals `map_of("k", 0)`.
 

@@ -1,24 +1,22 @@
 /// Builtin registry and lowering.
 
 import "common/map";
-include "common/list.mini";
-include "common/text.mini";
-
-include "./builtins/registry.mini";
-
-include "./builtins/directory.mini";
-include "./builtins/file.mini";
-include "./builtins/hash.mini";
-include "./builtins/io.mini";
-include "./builtins/json.mini";
-include "./builtins/list.mini";
-include "./builtins/map.mini";
-include "./builtins/number.mini";
-include "./builtins/path.mini";
-include "./builtins/process.mini";
-include "./builtins/text.mini";
-include "./builtins/time.mini";
-include "./builtins/value.mini";
+import "common/list";
+import "common/text";
+import "./builtins/registry";
+import "./builtins/directory";
+import "./builtins/file";
+import "./builtins/hash";
+import "./builtins/io";
+import "./builtins/json";
+import "./builtins/list";
+import "./builtins/map";
+import "./builtins/number";
+import "./builtins/path";
+import "./builtins/process";
+import "./builtins/text";
+import "./builtins/time";
+import "./builtins/value";
 
 /// Return the builtin names.
 fn builtin_names() {

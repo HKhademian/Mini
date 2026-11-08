@@ -1,14 +1,15 @@
 import "common/map";
-include "common/io.mini";
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/project.mini";
-include "compiler/lexer.mini";
-include "compiler/parser.mini";
-include "compiler/emit-js.mini";
+import "common/io";
+import "common/text";
+import "common/list";
+import "common/path";
+import "common/process";
+import "common/json";
+import "common/project";
+import "compiler/lexer";
+import "compiler/parser";
+import "compiler/emit-js";
+
 /// Report a bootstrap failure.
 fn bootstrap_fail(message) {
     io_write_error(message + "\n");
@@ -19,7 +20,7 @@ fn bootstrap_fail(message) {
 /// Compile one source in-process and return generated text.
 fn bootstrap_compile_text(source) {
     tokens := lex_tokenize(file_read(source), path_basename(source), false);
-    expanded := lex_expand_includes(tokens, source, map_new());
+    expanded := lex_expand_imports(tokens, source, map_new());
     return emit_js_compile(expanded);
 }
 

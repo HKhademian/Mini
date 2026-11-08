@@ -1,0 +1,15 @@
+{
+  "id": "language.import-shebang",
+  "kind": "reject",
+  "source": "060-004-import-shebang.mini",
+  "features": ["import"],
+  "cases": [
+    {
+      "name": "shebang",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-004-import-shebang.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

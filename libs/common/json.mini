@@ -1,4 +1,4 @@
-include "./result.mini";
+import "./result";
 /// Read and parse a JSON file into a result map.
 fn json_parse_file(path) {
     if !path_is_exists(path) {

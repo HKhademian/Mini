@@ -2,6 +2,7 @@
 //
 
 /// Write every supplied value followed by one newline and return the write result.
+import "common/list";
 fn io_write_line() {
     values := fn_args();
     position := 0;

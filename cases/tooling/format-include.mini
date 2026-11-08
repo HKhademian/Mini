@@ -1,2 +1,0 @@
-include "./format-include-helper.mini";
-value:=1;

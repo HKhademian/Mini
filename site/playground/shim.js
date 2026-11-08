@@ -1,6 +1,6 @@
 /// Browser replacements for the Node file API used by the generated compiler.
 ///
-/// The compiler itself never reads files without an include; diagnostics go
+/// The compiler itself never reads files without an import; diagnostics go
 /// through writeSync(2), which the worker forwards to its diagnostic sink.
 export function readFileSync(path) {
   if (path === 0) return globalThis.__miniStdin ?? "";

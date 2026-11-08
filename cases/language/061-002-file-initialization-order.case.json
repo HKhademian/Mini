@@ -3,10 +3,10 @@
   "kind": "feature",
   "source": "061-002-file-initialization-order.mini",
   "features": [
-    "include",
-    "include.initialization",
-    "include.once",
-    "include.nested",
+    "import",
+    "import.initialization",
+    "import.once",
+    "import.nested",
     "text.output"
   ],
   "cases": [

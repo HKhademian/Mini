@@ -1,4 +1,4 @@
-include "common/io.mini";
+import "common/io";
 fn find(value, needle) {
     return text_find(value, needle);
 }

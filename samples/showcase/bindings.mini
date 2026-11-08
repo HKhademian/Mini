@@ -1,6 +1,6 @@
 /// Bind text and number values and write one line.
 
-include "common/io.mini";
+import "common/io";
 
 name := "Mini";
 version := 1;

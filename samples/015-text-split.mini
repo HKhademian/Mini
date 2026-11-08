@@ -1,6 +1,7 @@
 /// Read comma-separated text and print each field on its own line.
 
-include "common/io.mini";
+import "common/list";
+import "common/io";
 
 parts := text_split(io_read_all(), ",");
 position := 0;

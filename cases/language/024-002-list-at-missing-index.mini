@@ -1,1 +1,3 @@
+import "common/list";
+
 command := list_get(fn_args());

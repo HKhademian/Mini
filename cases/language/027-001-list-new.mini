@@ -1,3 +1,4 @@
+import "common/list";
 items := list_new();
 if list_length(items) == 0 && list_length(list_new()) == 0 {
     io_write("empty");

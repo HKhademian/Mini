@@ -1,2 +1,0 @@
-include "./006-005-add-include-helper.mini";
-io_write(shared, "|", combined, "\n");

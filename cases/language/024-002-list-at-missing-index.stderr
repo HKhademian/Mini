@@ -1,3 +1,3 @@
-024-002-list-at-missing-index.mini:1:12: expected 2 arguments
+024-002-list-at-missing-index.mini:3:12: expected 2 arguments
 command := list_get(fn_args());
            ^

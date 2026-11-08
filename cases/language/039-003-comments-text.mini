@@ -1,6 +1,6 @@
 /// Comment markers inside quoted text remain ordinary characters.
 
-include "common/io.mini";
+import "common/io";
 
 io_write_line("// and /// stay text"); // "Not an unterminated string.
 io_write_line("escaped quote: \"//\""); /// fn ignored() { return 0; }

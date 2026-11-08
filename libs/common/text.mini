@@ -1,3 +1,4 @@
+import "common/list";
 import "common/number";
 
 /// Return lines split on LF or CRLF, retaining a final empty line.

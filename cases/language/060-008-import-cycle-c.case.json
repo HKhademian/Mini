@@ -1,8 +1,9 @@
 {
-  "id": "language.include-cycle-root-p",
+  "id": "language.import-cycle-c",
   "kind": "feature",
-  "source": "060-003-include-cycle.mini",
-  "features": ["include", "include.cycle", "include.postorder", "function", "text.output"],
+  "target": "c",
+  "source": "060-003-import-cycle.mini",
+  "features": ["import", "import.cycle", "import.postorder", "function", "text.output", "target.c"],
   "cases": [
     {
       "name": "root-p",

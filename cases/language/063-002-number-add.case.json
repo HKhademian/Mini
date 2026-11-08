@@ -2,7 +2,7 @@
   "id": "language.number-add",
   "kind": "feature",
   "source": "063-002-number-add.mini",
-  "features": ["library.include", "emitter.host-override", "number.add"],
+  "features": ["library.import", "emitter.host-override", "number.add"],
   "cases": [
     {
       "name": "host-override-contract",

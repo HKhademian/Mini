@@ -1,3 +1,3 @@
 io_write("second-before:", 6, "\n");
-include "./003-001-file-initialization-order-leaf.mini";
+import "./003-001-file-initialization-order-leaf";
 io_write("second-after:", 7, "\n");

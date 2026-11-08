@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-include "tools/ci.mini";
+
+import "common/list";
+import "tools/ci";
 
 /// Read the task file and run the selected CI task.
 fn main(args) {

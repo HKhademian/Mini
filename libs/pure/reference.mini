@@ -1,7 +1,6 @@
 /// Reference implementations for replaceable performance builtins.
 
-include "./text.mini";
-include "./list.mini";
-include "./number.mini";
-include "./bytes.mini";
-include "./json.mini";
+import "./text";
+import "./number";
+import "./bytes";
+import "./json";

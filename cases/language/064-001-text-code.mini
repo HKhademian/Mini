@@ -1,6 +1,6 @@
 /// Exercise code-point access and construction.
 
-include "common/io.mini";
+import "common/io";
 
 accent := text_code("é");
 io_write_line(number_to_text(accent));

@@ -1,8 +1,9 @@
 /// Tokenize mini source using named token maps and explicit lexer state, following T0's scanner.
-//
+
+import "common/list";
+import "common/map";
 
 /// Return whether a single character is in choices; empty text is never a member.
-import "common/map";
 fn lex_contains(choices, character) {
     index := 0;
     while index < text_length(choices) {

@@ -1,3 +1,4 @@
+import "common/list";
 items := list_new();
 r := text_length(io_read_all()) - 1;
 list_set(items, r - 1, 0);

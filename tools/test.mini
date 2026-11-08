@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-include "tools/test.mini";
+
+import "common/list";
+import "tools/test";
 
 /// Parse arguments and run selected case scenarios.
 fn main(args) {

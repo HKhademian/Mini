@@ -1,8 +1,9 @@
 /// Build a dependency graph from whitespace-delimited edge pairs and traverse from root.
-//
+
+import "common/list";
+import "common/map";
 
 /// Return whitespace-delimited words, preserving their source order.
-import "common/map";
 fn graph_words(source) {
     words := list_new();
     word := "";

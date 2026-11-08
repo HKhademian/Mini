@@ -3,12 +3,12 @@
 /// Standard output carries only protocol frames; logs go to standard error.
 
 import "common/map";
-include "common/value.mini";
-include "common/list.mini";
-include "common/text.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/project.mini";
+import "common/value";
+import "common/list";
+import "common/text";
+import "common/path";
+import "common/process";
+import "common/project";
 
 /// Write one server log line.
 fn lsp_log(message) {
@@ -447,7 +447,7 @@ fn lsp_completions(tokens, text, offset) {
         }
         position = position + 1;
     }
-    keywords := list_of("include", "fn", "return", "if", "else", "while", "true", "false");
+    keywords := list_of("import", "fn", "return", "if", "else", "while", "true", "false");
     position = 0;
     while position < list_length(keywords) {
         keyword := list_get(keywords, position);

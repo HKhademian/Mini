@@ -1,10 +1,11 @@
 import "common/map";
-include "common/text.mini";
-include "common/list.mini";
-include "common/path.mini";
-include "common/process.mini";
-include "common/json.mini";
-include "common/project.mini";
+import "common/text";
+import "common/list";
+import "common/path";
+import "common/process";
+import "common/json";
+import "common/project";
+
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
     workspace := process_env("GITHUB_WORKSPACE");

@@ -1,5 +1,6 @@
+import "common/list";
 import "common/map";
-include "common/io.mini";
+import "common/io";
 original := list_new();
 list_set(original, 0, "first");
 list_set(original, 1, "second");

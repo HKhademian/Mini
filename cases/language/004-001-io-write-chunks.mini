@@ -1,4 +1,4 @@
-include "common/io.mini";
+import "common/io";
 io_write("");
 io_write("mi");
 io_write("ni");

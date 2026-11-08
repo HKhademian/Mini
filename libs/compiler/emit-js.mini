@@ -2,9 +2,10 @@
 /// AST traversal, builtin mapping, and generated source assembly live here;
 /// parsing and shared syntax checks remain in parser.mini.
 
+import "common/list";
 import "common/map";
-include "./parser.mini";
-include "./emit-js/overrides.mini";
+import "./parser";
+import "./emit-js/overrides";
 
 /// Format one target-specific JavaScript operator.
 fn emit_js_operator(operator) {

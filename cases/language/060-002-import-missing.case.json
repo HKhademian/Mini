@@ -1,0 +1,15 @@
+{
+  "id": "language.import-missing",
+  "kind": "reject",
+  "source": "060-002-import-missing.mini",
+  "features": ["import"],
+  "cases": [
+    {
+      "name": "missing-file",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"file": "060-002-import-missing.stderr"},
+      "exitCode": 1
+    }
+  ]
+}

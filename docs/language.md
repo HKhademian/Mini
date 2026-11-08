@@ -50,10 +50,10 @@ fn mine(a, b) {
   Source offsets, line/column positions, and diagnostic context remain accurate.
 - `///` documents the next declaration by default, including a `:=` binding.
   At the start of a file, a leading `///` block is file documentation only when
-  a header `//` comment or a following `include` closes the file-doc section
+  a header `//` comment or a following `import` closes the file-doc section
   before the first declaration. A `//` before the `///` block means there are no
-  file docs. Put file documentation before includes; use `//` as the boundary
-  when no include follows. Blank lines do not separate doc sections.
+  file docs. Put file documentation before imports; use `//` as the boundary
+  when no import follows. Blank lines do not separate doc sections.
 - There are no block comments or comment-continuation escapes.
 
 Keep mini source well documented. Use `///` for file purpose and immediately
@@ -65,17 +65,17 @@ implemented, and no documentation tags or extraction format are selected.
 
 The [comment sample](../samples/012-comments.mini) demonstrates both forms.
 
-An include can separate file docs from declaration docs:
+An import can separate file docs from declaration docs:
 
 ```mini
 /// File purpose.
-include "common/io.mini";
+import "common/io";
 
 /// Documents the next declaration.
 message := "hello";
 ```
 
-Without an include, use an ordinary comment as the boundary:
+Without an import, use an ordinary comment as the boundary:
 
 ```mini
 /// File purpose.
@@ -119,46 +119,46 @@ io_write("ok\n");
 
 ## Accepted form: source imports
 
-A top-level import resolves a library from `libs/`; a top-level include accepts
-an explicit path. Both add another Mini source to the current compilation.
+A top-level import adds another Mini source to the current compilation.
 
 ```mini
 import "common/text";
-include "./local.mini";
+import "./local";
 ```
 
-- `import "common/text"` resolves to `libs/common/text.mini`; the `.mini`
-  extension may also be written. Import the module that declares each source API;
+- `import "common/text"` resolves to `libs/common/text.mini`. Import paths in
+  Mini source are extensionless.
+  Import the module that declares each source API;
   for example, map operations such as `map_new` and `map_get` require
   `import "common/map"`. A source API is unknown until its module is imported.
-- Paths beginning `./` or `../` are resolved relative to the including file;
-  `/path/to/file.mini` is an absolute filesystem path. Paths are canonicalized
-  before use.
+- Paths beginning `./` or `../` are resolved relative to the importing file.
+  Prefer these forms for sibling and child modules.
+  Absolute paths such as `/path/to/file.mini` are canonicalized before use.
 - In project sources under `libs/`, resolve library paths from the `libs/` root,
   regardless of the importing file's folder. Use `./` for a neighbor or a path
   into a child folder. Do not use `../` there.
-- Each canonical file is imported or included at most once per compilation. A
+- Each canonical file is imported at most once per compilation. A
   repeated path, including a path back to a file already being opened, is a
-  no-op. Imports and includes may nest and may form cycles.
+  no-op. Imports may nest and may form cycles.
 - Files are traversed depth-first. Their declarations and top-level operations
-  are ordered in postorder: included files first, then the including file.
-  Each file's own declarations and operations retain source order; import and
-  include directives do not execute inline. A target-generated entry point runs each
+  are ordered in postorder: imported files first, then the importing file.
+  Each file's own declarations and operations retain source order; import
+  directives do not execute inline. A target-generated entry point runs each
   file's top-level operations once in that same order.
-- A missing file, a shebang in an imported file, or an import/include inside a
+- A missing file, a shebang in an imported file, or an import inside a
   block is a compilation error. The entry file may keep a shebang.
 - Imported tokens keep their written import path as their source name, so
-  diagnostics name the included file.
+  diagnostics name the imported file.
 - Operations outside named functions belong to an implicit file function.
-  Top-level binding names and named functions across the complete include graph
+  Top-level binding names and named functions across the complete import graph
   are available before file operations begin. An earlier initializer can call
   a function declared in a later file. File functions add no namespace or
   binding isolation. Runtime dependencies between top-level initializers follow
   the deterministic postorder; programs that depend on a later initializer
   running first are responsible for that dependency.
 - Empty files have no operations to execute; their no-op initializer may be omitted.
-- `tokens` reports directives unexpanded; `compile` expands them before parsing.
-  Formatting keeps directives and does not inline files.
+- `tokens` reports imports unexpanded; `compile` expands them before parsing.
+  Formatting keeps imports and does not inline files.
 
 ## Accepted form: bindings and assignment
 
@@ -780,7 +780,7 @@ value := map_get(parsed, "value");
 Run one child process and inspect its result:
 
 ```mini
-include "common/process-run.mini";
+import "common/process-run";
 arguments := list_new();
 list_set(arguments, 0, "--version");
 result := process_run("node", arguments, "capture");
@@ -808,7 +808,7 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```mini
-include "common/path.mini";
+import "common/path";
 
 node := process_exec_path();
 directory := path_temp_directory();
@@ -822,7 +822,7 @@ directory_remove(directory);
 - `path_temp_directory()` creates and returns a fresh empty directory under the host
   temporary directory. It takes no arguments.
 - `file_remove(path)` and `directory_remove(path)` are helpers from
-  `libs/common/path.mini`; include that file when using them. They call
+  `libs/common/path.mini`; import that module when using them. They call
   `path_remove(path)` only after checking the path kind and, for directories,
   that the directory is empty.
 - `directory_remove(path)` leaves non-empty directories untouched.
