@@ -1,7 +1,6 @@
 /// Time builtin descriptors.
-import "./registry";
 
-//
+import "./registry";
 
 builtin_add(
     "time_millis",

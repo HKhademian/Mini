@@ -1,7 +1,6 @@
 /// Process builtin descriptors.
-import "./registry";
 
-//
+import "./registry";
 
 builtin_add(
     "process_env",

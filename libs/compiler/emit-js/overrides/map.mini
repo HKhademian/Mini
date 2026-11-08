@@ -1,5 +1,5 @@
 /// JavaScript host replacements for common map operations.
-
+//
 
 emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");
 emit_js_host_function_add(

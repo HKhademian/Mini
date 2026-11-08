@@ -1,7 +1,6 @@
 /// Hash builtin descriptors.
-import "./registry";
 
-//
+import "./registry";
 
 builtin_add(
     "hash_sha256",

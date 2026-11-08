@@ -1,7 +1,6 @@
 /// Path builtin descriptors.
-import "./registry";
 
-//
+import "./registry";
 
 builtin_add(
     "path_copy",
