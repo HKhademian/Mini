@@ -1,0 +1,17 @@
+import "common/file";
+import "common/io";
+import "common/list";
+import "common/path";
+
+root := path_temp_directory();
+source := root + "/source";
+target := root + "/copy";
+directory_create(source);
+file_write(source + "/note.txt", "ok");
+entries := directory_list(source);
+io_write(list_get(entries, 0));
+path_copy(source, target);
+if path_is_exists(target) && path_is_directory(target) && path_is_file(target + "/note.txt") {
+    io_write("true");
+}
+path_remove(root);

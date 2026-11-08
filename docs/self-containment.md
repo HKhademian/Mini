@@ -33,7 +33,7 @@ the operating system or host runtime:
 | `io_write`, `io_write_error`, `io_read_all`, `io_read_line`, `io_read_bytes` | Standard streams |
 | `file_read`, `file_write`, `file_read_bytes`, `file_write_bytes` | File contents; same-name panic fallbacks in `libs/common/file.mini` and JavaScript/C host overrides |
 | `path_temp_directory` | Filesystem mutation |
-| `directory_list`, `directory_create`, `path_is_exists`, `path_is_directory`, `path_copy`, `path_remove` | Filesystem queries and mutation |
+| `directory_list`, `directory_create`, `path_is_exists`, `path_is_directory`, `path_copy`, `path_remove` | Filesystem queries and mutation; same-name panic fallbacks in `common/path` and JS/C host overrides |
 | `process_exit` | Process interface |
 | `process_spawn`, `process_exec_path`, `process_script_path`, `process_env` | Child processes and host environment |
 | `time_millis` | Host clock |

@@ -37,7 +37,7 @@ as byte lists.
 Directory and path functions are declared in
 [libs/common/path.mini](../libs/common/path.mini) and require
 `import "common/path"`. Their Mini implementations panic when a target has no
-filesystem host; JavaScript registers same-name host overrides.
+filesystem host; JavaScript and C register same-name host overrides.
 `path_is_exists(path)`, `path_is_file(path)`, and `path_is_directory(path)`
 report whether a path exists, names a regular file, or names a directory. `directory_list(path)` returns sorted entry names, or an
 empty list when the path is missing or not a directory.

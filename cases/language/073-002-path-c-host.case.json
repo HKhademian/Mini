@@ -1,0 +1,16 @@
+{
+  "id": "language.path-c-host",
+  "kind": "feature",
+  "target": "c",
+  "source": "073-002-path-c-host.mini",
+  "features": ["import", "directory", "path.copy", "path.remove", "target.c"],
+  "cases": [
+    {
+      "name": "directory-list-copy-and-remove",
+      "stdin": {"text": ""},
+      "stdout": {"text": "note.txttrue"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
