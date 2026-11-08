@@ -1,3 +1,4 @@
+import "common/io";
 a := true;
 b := false;
 io_write(!a || b && a, "|", !(a || b) && a, "|", a && (b || !b), "|", !!a, "\n");

@@ -1,3 +1,4 @@
+import "common/io";
 ready := true;
 other := false;
 io_write(ready, "|", other, "|");

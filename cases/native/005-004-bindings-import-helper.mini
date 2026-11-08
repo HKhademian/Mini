@@ -1,3 +1,4 @@
+import "common/io";
 shared := "earlier";
 longer := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 io_write("dependency|");

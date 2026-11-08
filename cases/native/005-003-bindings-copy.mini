@@ -1,3 +1,4 @@
+import "common/io";
 source := "original";
 copy := source;
 source = "replacement";

@@ -1,3 +1,4 @@
+import "common/io";
 value := 1;
 io_write(value, "|");
 value = 2;

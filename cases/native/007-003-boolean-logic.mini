@@ -1,1 +1,2 @@
+import "common/io";
 io_write(true && false, "|", true && true, "|", false || true, "|", false || false, "\n");
