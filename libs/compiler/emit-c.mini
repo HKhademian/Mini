@@ -9,6 +9,7 @@ import "common/list";
 import "common/map";
 import "./parser";
 import "./emit-c/overrides/panic";
+import "./emit-c/overrides/io";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {

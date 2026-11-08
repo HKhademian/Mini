@@ -1,0 +1,12 @@
+/// Register native C I/O call lowering for the imported Mini API.
+
+import "./registry";
+
+// io_write calls the runtime writer directly, so suppress its Mini wrapper.
+emit_c_host_function_add("io_write", "");
+// C programs cannot read stdin through the current target subset.
+emit_c_host_function_add("io_read_all", "");
+emit_c_host_function_add("io_read_bytes", "");
+emit_c_host_function_add("io_read_line", "");
+emit_c_host_function_add("io_write_error", "");
+emit_c_host_function_add("io_write_line", "");

@@ -42,7 +42,7 @@ builtin_add(
     "essential",
     "writeSync",
     "io_write",
-    "function $mini_io_write() {\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else text += to_text(value);\n    }\n    writeSync(1, text);\n    return 0;\n}\n",
+    "function $mini_io_write() {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    const values = Array.prototype.slice.call(arguments);\n    let text = \"\";\n    for (const value of values) {\n        if (typeof value === \"string\") text += value;\n        else if (typeof value === \"number\") text += Number.isSafeInteger(value) ? String(value) : \"\";\n        else if (typeof value === \"boolean\") text += value ? \"true\" : \"false\";\n        else if (Array.isArray(value) || (value !== null && typeof value === \"object\")) text += JSON.stringify(normalize(value));\n    }\n    writeSync(1, text);\n    return 0;\n}\n",
     "",
     "$mini_io_write({...})"
 );
