@@ -1,10 +1,11 @@
 include "./value.mini";
+
 /// Total numeric addition: non-number operands return 0.
 fn number_add(a, b) {
     if !value_is_number(a) || !value_is_number(b) {
         return 0;
     }
-    return a + b;
+    return a - (0 - b);
 }
 
 /// Total numeric subtraction: non-number operands return 0.

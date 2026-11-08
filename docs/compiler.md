@@ -137,6 +137,12 @@ the generated entry, so an initializer can call a function from a file later in
 postorder. Runtime dependencies among top-level initializers follow that order
 and are the program author's responsibility.
 
+The JavaScript emitter may replace an included library function with a host
+implementation under the same function name. `number_add` demonstrates this:
+the Mini definition is the reference behavior, and the default JavaScript
+function uses guarded native addition while preserving its return value for
+invalid operands. Reference mode emits the Mini definition.
+
 C uses `MINI_ID(file_0)`, `MINI_ID(file_1)`, and so on, called by `main`.
 JavaScript uses compiler-reserved names for file functions and its generated
 entry; shared top-level bindings are declared outside the wrappers and assigned

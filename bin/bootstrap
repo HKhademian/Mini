@@ -1829,6 +1829,10 @@ function emit_js_function_body(node) {
 }
 function emit_js_function(node) {
 
+    let name = $mini_map_get(node, "name");
+    if (((!reference_mode) && (name === "number_add"))) {
+        return "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n";
+    }
     let parameters = [];
     let nodes = $mini_map_get(node, "parameters");
     let position = 0;

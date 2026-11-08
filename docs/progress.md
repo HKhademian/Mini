@@ -13,8 +13,8 @@ The current assigned versions are in
 mini      mini-v0.6.0-v0.3.0-alpha.36
 lang      lang-v0.6.0-v0.5.0-alpha.7
 ast       ast-v0.6.0-v0.1.0-alpha.1
-compiler  compiler-v0.6.0-v0.5.0-alpha.36
-bootstrap bootstrap-v0.6.0-v0.3.0-alpha.38
+compiler  compiler-v0.6.0-v0.5.0-alpha.37
+bootstrap bootstrap-v0.6.0-v0.3.0-alpha.39
 builtins  builtins-v0.6.0-v0.4.0-alpha.6
 cli       cli-v0.6.0-v0.1.0-alpha.20
 check     check-v0.6.0-v0.1.0-alpha.13

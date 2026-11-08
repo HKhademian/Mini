@@ -1,0 +1,15 @@
+{
+  "id": "language.number-add",
+  "kind": "feature",
+  "source": "063-002-number-add.mini",
+  "features": ["library.include", "emitter.host-override", "number.add"],
+  "cases": [
+    {
+      "name": "host-override-contract",
+      "stdin": {"text": ""},
+      "stdout": {"text": "5|6|0|0\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

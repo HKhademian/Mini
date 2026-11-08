@@ -98,10 +98,11 @@ integer JSON numbers only.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
 are total library functions in [libs/common/number.mini](../libs/common/number.mini), not
-builtins. They use the core operators and return 0 when either operand is not a
-number. The operators themselves reject mixed text/number operands at compile
-time, so `+` and `number_add` have different contracts even though both generate
-`a + b` for two valid numbers.
+builtins, and require that include. They return 0 when either operand is not a
+number. `number_add` has a pure Mini implementation derived from subtraction;
+the JavaScript emitter replaces that same function with guarded `a + b` for the
+default fast path. The host and Mini implementations are checked for equivalent
+results. The `+` operator remains separately type-checked syntax.
 
 The accepted built-ins `text_length(text)`, `text_get(text, index)`,
 `text_find(text, needle)`, `text_slice(text, start, end)`, and

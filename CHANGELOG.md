@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- compiler 0.5.0-alpha.37 / bootstrap 0.3.0-alpha.39: establish an emitter
+  override for the imported `number_add` function while retaining its pure Mini
+  definition as the reference behavior.
+
 - language 0.5.0-alpha.7 / compiler 0.5.0-alpha.36 / bootstrap 0.3.0-alpha.38:
   allow cyclic includes by visiting each file once; emit declarations and run
   top-level operations in depth-first postorder, with a target entry point.
