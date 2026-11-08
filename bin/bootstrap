@@ -1024,6 +1024,38 @@ function json_to_text(value) {
     }
     try { return encode(value); } catch { return ""; }
 }
+function directory_create(path) {
+
+    return panic("directory_create requires a host implementation");
+}
+function directory_list(path) {
+
+    return panic("directory_list requires a host implementation");
+}
+function path_copy(from, to) {
+
+    return panic("path_copy requires a host implementation");
+}
+function path_is_directory(path) {
+
+    return panic("path_is_directory requires a host implementation");
+}
+function path_is_exists(path) {
+
+    return panic("path_is_exists requires a host implementation");
+}
+function path_is_file(path) {
+
+    return panic("path_is_file requires a host implementation");
+}
+function path_remove(path) {
+
+    return panic("path_remove requires a host implementation");
+}
+function path_temp_directory() {
+
+    return panic("path_temp_directory requires a host implementation");
+}
 function path_join(left, right) {
 
     if ((left === "")) {
