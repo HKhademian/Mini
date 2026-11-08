@@ -13,6 +13,7 @@ import "./emit-c/overrides/io";
 import "./emit-c/overrides/file";
 import "./emit-c/overrides/path";
 import "./emit-c/overrides/list";
+import "./emit-c/overrides/value";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {

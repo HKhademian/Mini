@@ -1,0 +1,16 @@
+{
+  "id": "language.number-c-pure",
+  "kind": "feature",
+  "target": "c",
+  "source": "073-004-number-c-pure.mini",
+  "features": ["import", "number", "value", "target.c"],
+  "cases": [
+    {
+      "name": "pure-number-algorithms-on-c-values",
+      "stdin": {"text": ""},
+      "stdout": {"text": "texttruetruefalse9427283"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

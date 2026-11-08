@@ -1,0 +1,51 @@
+/// Native C replacements for values supported by the C runtime.
+
+import "./registry";
+
+emit_c_host_function_add(
+    "value_kind",
+    "int MINI_ID(fn_value_kind)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const char *name = \"unknown\";\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_text)) name = \"text\";\n"
+    + "    else if (params.args[0].kind == MINI_ID(kind_number)) name = \"number\";\n"
+    + "    else if (params.args[0].kind == MINI_ID(kind_boolean)) name = \"boolean\";\n"
+    + "    else if (params.args[0].kind == MINI_ID(kind_list)) name = \"list\";\n"
+    + "    size_t length = strlen(name), offset = context->buffer.count;\n"
+    + "    if (MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)name, length) != 0) return 1;\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, offset, length); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "value_is_text",
+    "int MINI_ID(fn_value_is_text)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_text)); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "value_is_number",
+    "int MINI_ID(fn_value_is_number)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_number)); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "value_is_boolean",
+    "int MINI_ID(fn_value_is_boolean)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_boolean)); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "value_is_list",
+    "int MINI_ID(fn_value_is_list)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_list)); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "value_is_map",
+    "int MINI_ID(fn_value_is_map)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(0); return 0;\n}\n"
+);

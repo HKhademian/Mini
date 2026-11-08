@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.44 / compiler 0.5.0-alpha.55 / bootstrap
+  0.3.0-alpha.57: add C value-kind overrides so imported pure numeric
+  algorithms can run against native C values.
+
 - mini 0.3.0-alpha.43 / compiler 0.5.0-alpha.54 / bootstrap
   0.3.0-alpha.56: move native C list operations from emitter branches to the
   imported host override registry.

@@ -1,0 +1,15 @@
+import "common/io";
+import "common/list";
+import "common/number";
+import "common/value";
+
+io_write(value_kind("x"));
+io_write(value_is_number(1));
+io_write(value_is_list(list_new()));
+io_write(value_is_map(0));
+io_write(number_add(4, 5));
+io_write(number_mul(6, 7));
+io_write(number_div(42, 6));
+io_write(number_mod(17, 5));
+io_write(number_pow(2, 3));
+io_write(number_floor(3));
