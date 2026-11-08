@@ -90,7 +90,9 @@ an FFI API.
 
 The C target also supports tagged list values with `list_new()`, `list_of(...)`,
 front/back push and pop, `list_truncate`, `list_length`, `list_get`, and `list_set`.
-`io_write` serializes lists as JSON, including nested lists and text escaping.
+It also supports shallow `list_copy` and `list_join`, which inserts separators
+between positions and contributes text values. `io_write` serializes lists as
+JSON, including nested lists and text escaping.
 JSON output rejects nesting deeper than 128. Generated execution owns these lists
 through cleanup at program exit. `fn_args()` remains pending for C.
 

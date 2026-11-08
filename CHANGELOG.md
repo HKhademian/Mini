@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.31 / compiler 0.4.0-alpha.30 / bootstrap 0.2.0-alpha.32:
+  add C target support for shallow `list_copy` and text-only `list_join`.
+
 - mini 0.2.0-alpha.30 / compiler 0.4.0-alpha.29 / bootstrap 0.2.0-alpha.31:
   support `list_length`, `list_get`, and `list_set` in the C target, including
   negative indices and zero-filled gaps when a list grows.

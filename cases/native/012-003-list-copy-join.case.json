@@ -1,0 +1,23 @@
+{
+  "id": "native.c-list-copy-join",
+  "kind": "feature",
+  "target": "c",
+  "source": "012-003-list-copy-join.mini",
+  "features": [
+    "target.c",
+    "list.value",
+    "list.copy",
+    "list.join",
+    "list.set",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "shallow-copy-and-text-join",
+      "stdin": { "text": "" },
+      "stdout": { "text": "changed||b||c\na||b||c\na,,B,,c\n0:\n[[\"shared\"]]\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+include "common/list.mini";
+
+items := list_of("a", 0, "b", false, "c");
+copy := list_copy(items);
+list_set(items, 0, "changed");
+io_write(list_join(items, "|"), "\n", list_join(copy, "|"), "\n");
+list_set(copy, 2, "B");
+io_write(list_join(copy, ","), "\n");
+empty := list_copy(list_new());
+io_write(list_length(empty), ":", list_join(empty, "|"), "\n");
+nested := list_of(list_of("x"));
+nested_copy := list_copy(nested);
+list_set(list_get(nested_copy, 0), 0, "shared");
+io_write(nested, "\n");

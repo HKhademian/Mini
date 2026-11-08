@@ -13,7 +13,8 @@ fn emit_c_fail(token) {
 fn emit_c_native_list_call(name) {
     return name == "list_new" || name == "list_of" || name == "list_push_back"
         || name == "list_push_front" || name == "list_pop_back" || name == "list_pop_front"
-        || name == "list_truncate" || name == "list_length" || name == "list_get" || name == "list_set";
+        || name == "list_truncate" || name == "list_length" || name == "list_get" || name == "list_set"
+        || name == "list_copy" || name == "list_join";
 }
 
 /// Return whether a Mini common-list definition is supplied by the C runtime.
@@ -187,6 +188,11 @@ fn emit_c_list_runtime() {
         + "    if (!context->lists.item_size) MINI_ID(vec_init)(&context->lists, sizeof(list));\n"
         + "    MINI_ID(vec_append)(&context->lists, &list, 1);\n"
         + "    return (MINI_ID(value)) MINI_VALUE_LIST(list);\n}\n\n"
+        + "static MINI_ID(value) MINI_ID(list_copy)(MINI_ID(context) *context, MINI_ID(value) value) {\n"
+        + "    MINI_ID(value) copy = MINI_ID(list_new)(context);\n"
+        + "    if (value.kind == MINI_ID(kind_list) && value.list)\n"
+        + "        MINI_ID(vec_append)(&copy.list->values, value.list->values.items, value.list->values.count);\n"
+        + "    return copy;\n}\n\n"
         + "static void MINI_ID(list_push)(MINI_ID(list) *list, MINI_ID(value) value, int front) {\n"
         + "    if (!list) return;\n"
         + "    size_t count = list->values.count;\n"
@@ -226,6 +232,21 @@ fn emit_c_list_runtime() {
         + "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;\n"
         + "    for (size_t fill = count; fill <= offset; ++fill) items[fill] = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
         + "    if (offset >= count) value.list->values.count = offset + 1;\n    items[offset] = item;\n}\n\n"
+        + "static int MINI_ID(text_buffer_append_view)(MINI_ID(text_buffer) *buffer, MINI_ID(text) text) {\n"
+        + "    if (!text.buffer || text.offset > text.buffer->count || text.length > text.buffer->count - text.offset) return 1;\n"
+        + "    const unsigned char *data = text.buffer->items;\n    if (text.length) data += text.offset;\n"
+        + "    return MINI_ID(text_buffer_append)(buffer, data, text.length);\n}\n\n"
+        + "static int MINI_ID(list_join)(MINI_ID(context) *context, MINI_ID(value) value, MINI_ID(value) separator, MINI_ID(value) *result) {\n"
+        + "    size_t offset = context->buffer.count;\n"
+        + "    if (value.kind != MINI_ID(kind_list) || !value.list || separator.kind != MINI_ID(kind_text)) {\n"
+        + "        *result = (MINI_ID(value)) MINI_VALUE_TEXT(&context->buffer, offset, 0);\n        return 0;\n    }\n"
+        + "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;\n"
+        + "    for (size_t index = 0; index < value.list->values.count; ++index) {\n"
+        + "        if (index && MINI_ID(text_buffer_append_view)(&context->buffer, separator.text) != 0) return 1;\n"
+        + "        if (items[index].kind == MINI_ID(kind_text)\n"
+        + "            && MINI_ID(text_buffer_append_view)(&context->buffer, items[index].text) != 0) return 1;\n"
+        + "    }\n    *result = (MINI_ID(value)) MINI_VALUE_TEXT(&context->buffer, offset, context->buffer.count - offset);\n"
+        + "    return 0;\n}\n\n"
         + "static void MINI_ID(list_cleanup)(MINI_ID(context) *context) {\n"
         + "    MINI_ID(list) **lists = (MINI_ID(list) **)context->lists.items;\n"
         + "    for (size_t index = 0; index < context->lists.count; ++index) {\n"
@@ -440,6 +461,12 @@ fn emit_c_call(parser, bindings, binding_orders, destination) {
     if name == "list_set" {
         return body + "    MINI_ID(list_set)(" + array + "[0], " + array + "[1], " + array + "[2]);\n"
             + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n";
+    }
+    if name == "list_copy" {
+        return body + "    " + destination + " = MINI_ID(list_copy)(context, " + array + "[0]);\n";
+    }
+    if name == "list_join" {
+        return body + "    if (MINI_ID(list_join)(context, " + array + "[0], " + array + "[1], &" + destination + ") != 0) return 1;\n";
     }
     if text_starts_with(name, "list_") || text_starts_with(name, "value_is_") { emit_c_fail(token); }
     return body + "    if (MINI_ID(fn_" + name + ")(context, " + params + ", &" + destination + ") != 0) return 1;\n";
@@ -878,7 +905,8 @@ fn emit_c_compile(tokens, header_name) {
         + "typedef struct MINI_ID(context) MINI_ID(context);\nstruct MINI_ID(context) {\n    MINI_ID(text_buffer) buffer;\n    MINI_ID(vec) lists;\n" + map_get(parser, "c_declarations") + "};\n\n"
         + emit_c_list_runtime() + map_get(parser, "c_prototypes") + "\n" + map_get(parser, "c_functions") + map_get(parser, "c_conditions") + files + "int main(void) {\n    MINI_ID(context) context = {0};\n    int status = 0;\n"
         + "    (void)MINI_ID(list_new); (void)MINI_ID(list_push); (void)MINI_ID(list_pop); (void)MINI_ID(list_truncate);\n"
-        + "    (void)MINI_ID(list_length); (void)MINI_ID(list_get); (void)MINI_ID(list_set);\n" + calls
+        + "    (void)MINI_ID(list_length); (void)MINI_ID(list_get); (void)MINI_ID(list_set);\n"
+        + "    (void)MINI_ID(list_copy); (void)MINI_ID(list_join); (void)MINI_ID(text_buffer_append_view);\n" + calls
         + "    if (fflush(stdout) != 0) status = 1;\n    goto cleanup;\ncleanup:\n"
         + "    MINI_ID(list_cleanup)(&context);\n    MINI_ID(text_buffer_free)(&context.buffer);\n    return status;\n}\n";
 }
