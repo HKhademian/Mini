@@ -57,6 +57,10 @@ fn emit_js_expression(node) {
     if kind == AST_CALL {
         argument_codes := emit_js_arguments(map_get(node, "arguments"));
         callee := map_get(node, "callee");
+        host_lowering := emit_js_host_lowering(callee);
+        if host_lowering != "" {
+            return builtin_apply(host_lowering, argument_codes);
+        }
         if map_get(node, "is_builtin") {
             return builtin_emit(callee, argument_codes);
         }

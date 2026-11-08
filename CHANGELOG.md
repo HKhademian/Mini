@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- compiler 0.5.0-alpha.43 / bootstrap 0.3.0-alpha.45: let each JavaScript
+  host override register an optional call-site lowering in the same registry
+  entry; restore the `list_length` property lowering without emitter hardcoding.
+
+
 - language 0.5.0-alpha.9 / builtins 0.4.0-alpha.9 / compiler
   0.5.0-alpha.42 / bootstrap 0.3.0-alpha.44: require explicit
   `import "common/list"`, register JS host implementations separately from Mini

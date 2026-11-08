@@ -108,7 +108,7 @@ function list_join(items, separator) {
 function list_has_text(items, value) {
 
     let position = 0;
-    while ((position < list_length(items))) {
+    while ((position < (items).length)) {
         if ((list_get(items, position) === value)) {
             return true;
         }
@@ -120,8 +120,8 @@ function list_join_from(items, start, separator) {
 
     let parts = list_new();
     let position = start;
-    while ((position < list_length(items))) {
-        list_set(parts, list_length(parts), list_get(items, position));
+    while ((position < (items).length)) {
+        list_set(parts, (parts).length, list_get(items, position));
         position = (position + 1);
     }
     return list_join(parts, separator);
@@ -129,9 +129,9 @@ function list_join_from(items, start, separator) {
 function list_reverse(items) {
 
     let result = list_new();
-    let position = (list_length(items) - 1);
+    let position = ((items).length - 1);
     while ((position >= 0)) {
-        list_set(result, list_length(result), list_get(items, position));
+        list_set(result, (result).length, list_get(items, position));
         position = (position - 1);
     }
     return result;
@@ -140,9 +140,9 @@ function list_sorted(items) {
 
     let result = list_copy(items);
     let position = 0;
-    while ((position < list_length(result))) {
+    while ((position < (result).length)) {
         let cursor = (position + 1);
-        while ((cursor < list_length(result))) {
+        while ((cursor < (result).length)) {
             if ((list_get(result, cursor) < list_get(result, position))) {
                 let hold = list_get(result, position);
                 list_set(result, position, list_get(result, cursor));
@@ -157,7 +157,7 @@ function list_sorted(items) {
 function list_contains(items, value) {
 
     let position = 0;
-    while ((position < list_length(items))) {
+    while ((position < (items).length)) {
         if ((list_get(items, position) === value)) {
             return true;
         }
@@ -171,7 +171,7 @@ function list_is_text(value) {
         return false;
     }
     let position = 0;
-    while ((position < list_length(value))) {
+    while ((position < (value).length)) {
         if (($mini_value_kind(list_get(value, position)) !== "text")) {
             return false;
         }
@@ -182,7 +182,7 @@ function list_is_text(value) {
 function list_push_back(items, value) {
 
     if (value_is_list(items)) {
-        list_set(items, list_length(items), value);
+        list_set(items, (items).length, value);
     }
     return 0;
 }
@@ -191,7 +191,7 @@ function list_push_front(items, value) {
     if ((!value_is_list(items))) {
         return 0;
     }
-    let position = list_length(items);
+    let position = (items).length;
     while ((position > 0)) {
         list_set(items, position, list_get(items, (position - 1)));
         position = (position - 1);
@@ -201,20 +201,20 @@ function list_push_front(items, value) {
 }
 function list_pop_back(items) {
 
-    if (((!value_is_list(items)) || (list_length(items) === 0))) {
+    if (((!value_is_list(items)) || ((items).length === 0))) {
         return 0;
     }
-    let length = list_length(items);
+    let length = (items).length;
     let value = list_get(items, (length - 1));
     list_truncate(items, (length - 1));
     return value;
 }
 function list_pop_front(items) {
 
-    if (((!value_is_list(items)) || (list_length(items) === 0))) {
+    if (((!value_is_list(items)) || ((items).length === 0))) {
         return 0;
     }
-    let length = list_length(items);
+    let length = (items).length;
     let value = list_get(items, 0);
     let position = 0;
     while ((position < (length - 1))) {
@@ -233,8 +233,8 @@ function list_rest(items, count) {
 
     let result = list_new();
     let position = count;
-    while ((position < list_length(items))) {
-        list_set(result, list_length(result), list_get(items, position));
+    while ((position < (items).length)) {
+        list_set(result, (result).length, list_get(items, position));
         position = (position + 1);
     }
     return result;
@@ -244,7 +244,7 @@ function io_write_line() {
 
     let values = $mini_fn_args;
     let position = 0;
-    while ((position < list_length(values))) {
+    while ((position < (values).length)) {
         $mini_io_write(list_get(values, position));
         position = (position + 1);
     }
@@ -267,7 +267,7 @@ function $mini_file_3() {
 
 }
 function $mini_file_4() {
-    io_write_line($mini_number_to_text(list_length(join("a", 0))));
+    io_write_line($mini_number_to_text((join("a", 0)).length));
 }
 function $mini_main() {
     $mini_file_0();

@@ -2,34 +2,40 @@
 
 import "./registry";
 
-emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true);
+emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");
 emit_js_host_function_add(
     "list_get",
     "function list_get(items, index) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    return index >= 0 && index < items.length && index in items ? items[index] : 0;\n}\n",
-    true
+    true,
+    ""
 );
 emit_js_host_function_add(
     "list_length",
     "function list_length(items) { return Array.isArray(items) ? items.length : 0; }\n",
-    true
+    true,
+    "({0}).length"
 );
 emit_js_host_function_add(
     "list_set",
     "function list_set(items, index, value) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n    return 0;\n}\n",
-    true
+    true,
+    ""
 );
 emit_js_host_function_add(
     "list_truncate",
     "function list_truncate(items, length) {\n    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n    return 0;\n}\n",
-    true
+    true,
+    ""
 );
 emit_js_host_function_add(
     "list_copy",
     "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n",
-    false
+    false,
+    ""
 );
 emit_js_host_function_add(
     "list_join",
     "function list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
-    false
+    false,
+    ""
 );

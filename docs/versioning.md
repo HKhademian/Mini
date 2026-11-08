@@ -59,8 +59,8 @@ increments:
 mini-v0.6.0-v0.3.0-alpha.36
 lang-v0.6.0-v0.5.0-alpha.9
 ast-v0.6.0-v0.1.0-alpha.1
-compiler-v0.6.0-v0.5.0-alpha.42
-bootstrap-v0.6.0-v0.3.0-alpha.44
+compiler-v0.6.0-v0.5.0-alpha.43
+bootstrap-v0.6.0-v0.3.0-alpha.45
 builtins-v0.6.0-v0.4.0-alpha.9
 cli-v0.6.0-v0.1.0-alpha.20
 check-v0.6.0-v0.1.0-alpha.13

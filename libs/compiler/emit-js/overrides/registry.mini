@@ -4,11 +4,24 @@ import "common/map";
 
 js_host_functions := map_new();
 
-/// Register emitted JavaScript for one public Mini function.
-fn emit_js_host_function_add(name, definition, keep_reference) {
+/// Register one public Mini function's host body and optional call lowering.
+fn emit_js_host_function_add(name, definition, keep_reference, lowering) {
     entry := map_new();
     map_set(entry, "definition", definition);
     map_set(entry, "keep_reference", keep_reference);
+    map_set(entry, "lowering", lowering);
     map_set(js_host_functions, name, entry);
     return 0;
+}
+
+/// Return the registered call lowering unless reference mode keeps the Mini body.
+fn emit_js_host_lowering(name) {
+    if !map_has(js_host_functions, name) {
+        return "";
+    }
+    entry := map_get(js_host_functions, name);
+    if reference_mode && !map_get(entry, "keep_reference") {
+        return "";
+    }
+    return map_get(entry, "lowering");
 }
