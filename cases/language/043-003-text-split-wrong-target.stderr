@@ -1,3 +1,3 @@
-043-003-text-split-wrong-target.mini:2:10: expected text argument
+043-003-text-split-wrong-target.mini:4:10: expected text argument
 io_write(text_split(1, ","));
          ^

@@ -1,3 +1,3 @@
-046-003-list-join-wrong-separator.mini:1:10: expected text argument
+046-003-list-join-wrong-separator.mini:4:10: expected text argument
 io_write(list_join(list_new(), 1));
          ^

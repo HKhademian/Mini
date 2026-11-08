@@ -1,2 +1,4 @@
+import "common/io";
+
 io_write("x");
 # not a shebang

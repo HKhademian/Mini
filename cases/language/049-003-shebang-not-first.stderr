@@ -1,3 +1,3 @@
-049-003-shebang-not-first.mini:2:1: unexpected character "#"
+049-003-shebang-not-first.mini:4:1: unexpected character "#"
 # not a shebang
 ^

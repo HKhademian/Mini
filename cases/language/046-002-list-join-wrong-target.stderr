@@ -1,3 +1,3 @@
-046-002-list-join-wrong-target.mini:1:10: expected list argument
+046-002-list-join-wrong-target.mini:4:10: expected list argument
 io_write(list_join(1, ","));
          ^

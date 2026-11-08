@@ -1,3 +1,4 @@
+import "common/io";
 import "common/text";
 
 io_write(text_slice("abc", "0", 1));

@@ -1,3 +1,4 @@
-io_write(list_join(1, ","));
-
+import "common/io";
 import "common/list";
+
+io_write(list_join(1, ","));
