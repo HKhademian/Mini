@@ -1,5 +1,6 @@
 /// Tokenize mini source using named token maps and explicit lexer state, following T0's scanner.
 
+import "common/text";
 import "common/list";
 import "common/map";
 

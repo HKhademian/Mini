@@ -1,6 +1,7 @@
 /// Compile declarations, assignments, arithmetic, equality, if/else, and write using a T0-shaped emitter.
 /// This is a benchmark application using the accompanying lexer, not the complete M1 compiler.
 
+import "common/text";
 import "common/list";
 import "common/map";
 

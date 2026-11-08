@@ -1,1 +1,2 @@
+import "common/text";
 io_write(text_split(1, ","));

@@ -1,5 +1,6 @@
 /// Read text and report whether it contains the two sample words.
 
+import "common/text";
 import "common/io";
 
 source := io_read_all();

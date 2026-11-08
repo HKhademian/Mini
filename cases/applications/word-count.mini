@@ -2,6 +2,7 @@
 //
 
 /// Return a membership map for letters, digits, and underscore.
+import "common/text";
 import "common/map";
 fn word_letters() {
     letters := map_new();

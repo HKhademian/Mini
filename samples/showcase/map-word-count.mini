@@ -1,5 +1,6 @@
 /// Count repeated words with a map.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/io";

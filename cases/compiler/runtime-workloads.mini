@@ -1,5 +1,6 @@
 /// Synthetic compiler operations measured by tools/runtime-performance.ts; no standalone side effects.
 
+import "common/text";
 import "common/list";
 import "common/map";
 

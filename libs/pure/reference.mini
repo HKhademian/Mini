@@ -1,5 +1,3 @@
 /// Reference implementations for replaceable performance builtins.
 
-import "./text";
-import "./bytes";
 import "./json";

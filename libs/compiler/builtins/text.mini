@@ -1,105 +1,21 @@
-/// Text builtin descriptors.
+/// Text API contracts; implementations live in common/text and emitter registries.
 import "./registry";
 
-//
-
-builtin_add(
-    "text_code", 
-    "text", 
-    "number", 
-    "representation", 
-    "", 
-    "text_code", 
-    "function $mini_text_code(text) {\n    if (typeof text !== \"string\" || text.length === 0) return 0;\n    return text.codePointAt(0);\n}\n", 
-    "", 
-    "$mini_text_code({0})"
-);
-builtin_add(
-    "text_find", 
-    "text,text", 
-    "number", 
-    "performance", 
-    "", 
-    "text_find", 
-    "function $mini_text_find(text, needle) {\n    if (typeof text !== \"string\" || typeof needle !== \"string\") return -1;\n    return text.indexOf(needle);\n}\n", 
-    "pure_text_find", 
-    "$mini_text_find({0}, {1})"
-);
-builtin_add(
-    "text_from_bytes", 
-    "list", 
-    "text", 
-    "performance", 
-    "", 
-    "text_from_bytes", 
-    "function $mini_text_from_bytes(bytes) {\n    if (!Array.isArray(bytes)) return \"\";\n    return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\");\n}\n", 
-    "pure_text_from_bytes", 
-    "$mini_text_from_bytes({0})"
-);
-builtin_add(
-    "text_from_code", 
-    "number", 
-    "text", 
-    "representation", 
-    "", 
-    "text_from_code", 
-    "function $mini_text_from_code(code) {\n    if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\";\n    return String.fromCodePoint(code);\n}\n", 
-    "", 
-    "$mini_text_from_code({0})"
-);
-builtin_add(
-    "text_get", 
-    "unknown,number", 
-    "text", 
-    "representation", 
-    "", 
-    "text_get", 
-    "function $mini_text_get(text, index) {\n    if (typeof text === \"string\" && index >= 0 && index < text.length) return text[index];\n    return \"\";\n}\n", 
-    "", 
-    "$mini_text_get({0}, {1})"
-);
-builtin_add(
-    "text_length", 
-    "text", 
-    "number", 
-    "representation", 
-    "", 
-    "", 
-    "", 
-    "", 
-    "({0}).length"
-);
-builtin_add(
-    "text_split", 
-    "text,text", 
-    "list", 
-    "performance", 
-    "", 
-    "text_split", 
-    "function $mini_text_split(text, divider) {\n    if (typeof text !== \"string\" || typeof divider !== \"string\") return [];\n    if (divider === \"\") return [text];\n    return text.split(divider);\n}\n", 
-    "pure_text_split", 
-    "$mini_text_split({0}, {1})"
-);
-builtin_add(
-    "text_slice",
-    "text,number,number",
-    "text",
-    "performance",
-    "",
-    "",
-    "",
-    "",
-    ""
-);
+builtin_add("text_code", "text", "number", "representation", "", "", "", "", "");
+builtin_source_api("text_code");
+builtin_add("text_find", "text,text", "number", "performance", "", "", "", "", "");
+builtin_source_api("text_find");
+builtin_add("text_from_bytes", "list", "text", "performance", "", "", "", "", "");
+builtin_source_api("text_from_bytes");
+builtin_add("text_from_code", "number", "text", "representation", "", "", "", "", "");
+builtin_source_api("text_from_code");
+builtin_add("text_get", "unknown,number", "text", "representation", "", "", "", "", "");
+builtin_source_api("text_get");
+builtin_add("text_length", "text", "number", "representation", "", "", "", "", "");
+builtin_source_api("text_length");
+builtin_add("text_slice", "text,number,number", "text", "performance", "", "", "", "", "");
 builtin_source_api("text_slice");
-builtin_add(
-    "text_to_bytes", 
-    "text", 
-    "list", 
-    "performance", 
-    "", 
-    "text_to_bytes", 
-    "function $mini_text_to_bytes(text) {\n    if (typeof text !== \"string\") return [];\n    return Array.from(Buffer.from(text, \"utf8\"));\n}\n", 
-    "pure_text_to_bytes", 
-    "$mini_text_to_bytes({0})"
-);
+builtin_add("text_split", "text,text", "list", "performance", "", "", "", "", "");
+builtin_source_api("text_split");
+builtin_add("text_to_bytes", "text", "list", "performance", "", "", "", "", "");
+builtin_source_api("text_to_bytes");

@@ -1,5 +1,6 @@
 /// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/io";

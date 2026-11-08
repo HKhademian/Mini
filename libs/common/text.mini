@@ -1,5 +1,27 @@
 import "common/list";
 import "common/number";
+import "common/panic";
+import "common/value";
+
+/// Return UTF-16 code-unit length; targets without a host implementation panic.
+fn text_length(source) {
+    return panic("text_length requires a host implementation");
+}
+
+/// Return one UTF-16 code unit; targets without a host implementation panic.
+fn text_get(source, index) {
+    return panic("text_get requires a host implementation");
+}
+
+/// Return the first Unicode code point; targets without a host implementation panic.
+fn text_code(source) {
+    return panic("text_code requires a host implementation");
+}
+
+/// Construct one Unicode code point; targets without a host implementation panic.
+fn text_from_code(code) {
+    return panic("text_from_code requires a host implementation");
+}
 
 /// Return lines split on LF or CRLF, retaining a final empty line.
 fn split_lines(source) {
@@ -141,4 +163,198 @@ fn text_trim(text) {
         end = end - 1;
     }
     return text_slice(text, start, end);
+}
+
+/// Search for a match starting at a code-unit offset; return -1 when absent.
+fn text_find_from(text, needle, start) {
+    text_size := text_length(text);
+    needle_size := text_length(needle);
+    if needle_size == 0 {
+        if start <= text_size {
+            return start;
+        }
+        return -1;
+    }
+    position := start;
+    while position + needle_size <= text_size {
+        offset := 0;
+        matched := true;
+        while offset < needle_size {
+            if text_get(text, position + offset) != text_get(needle, offset) {
+                matched = false;
+                offset = needle_size;
+            } else {
+                offset = offset + 1;
+            }
+        }
+        if matched {
+            return position;
+        }
+        position = position + 1;
+    }
+    return -1;
+}
+
+/// Return the first code-unit index of a match, or -1.
+fn text_find(text, needle) {
+    if !value_is_text(text) || !value_is_text(needle) {
+        return -1;
+    }
+    return text_find_from(text, needle, 0);
+}
+
+/// Split text around each divider, preserving empty fields.
+fn text_split(text, divider) {
+    if !value_is_text(text) || !value_is_text(divider) {
+        return list_new();
+    }
+    if divider == "" {
+        whole := list_new();
+        list_set(whole, 0, text);
+        return whole;
+    }
+    result := list_new();
+    start := 0;
+    position := text_find_from(text, divider, start);
+    while position >= 0 {
+        list_set(result, list_length(result), text_slice(text, start, position));
+        start = position + text_length(divider);
+        position = text_find_from(text, divider, start);
+    }
+    list_set(result, list_length(result), text_slice(text, start, text_length(text)));
+    return result;
+}
+
+/// Normalize one byte value for UTF-8 conversion.
+fn text_byte_at(bytes, index) {
+    if !value_is_list(bytes) || index < 0 || index >= list_length(bytes) {
+        return 0;
+    }
+    value := list_get(bytes, index);
+    if !value_is_number(value) || number_floor(value) != value {
+        return 0;
+    }
+    byte := number_mod(value, 256);
+    if byte < 0 {
+        byte = byte + 256;
+    }
+    return byte;
+}
+
+/// Append one byte value to the result.
+fn text_byte_push(bytes, value) {
+    list_set(bytes, list_length(bytes), value);
+    return 0;
+}
+
+/// Encode text as UTF-8 bytes.
+fn text_to_bytes(text) {
+    bytes := list_new();
+    if !value_is_text(text) {
+        return bytes;
+    }
+    position := 0;
+    while position < text_length(text) {
+        code := text_code(text_slice(text, position, text_length(text)));
+        width := 1;
+        if code < 0 {
+            code = 65533;
+        }
+        if code <= 127 {
+            text_byte_push(bytes, code);
+        } else {
+            if code <= 2047 {
+                text_byte_push(bytes, 192 + number_div(code, 64));
+                text_byte_push(bytes, 128 + number_mod(code, 64));
+            } else {
+                if code <= 65535 {
+                    if code >= 55296 && code <= 57343 {
+                        text_byte_push(bytes, 239);
+                        text_byte_push(bytes, 191);
+                        text_byte_push(bytes, 189);
+                    } else {
+                        text_byte_push(bytes, 224 + number_div(code, 4096));
+                        text_byte_push(bytes, 128 + number_mod(number_div(code, 64), 64));
+                        text_byte_push(bytes, 128 + number_mod(code, 64));
+                    }
+                } else {
+                    text_byte_push(bytes, 240 + number_div(code, 262144));
+                    text_byte_push(bytes, 128 + number_mod(number_div(code, 4096), 64));
+                    text_byte_push(bytes, 128 + number_mod(number_div(code, 64), 64));
+                    text_byte_push(bytes, 128 + number_mod(code, 64));
+                    width = 2;
+                }
+            }
+        }
+        position = position + width;
+    }
+    return bytes;
+}
+
+/// Decode UTF-8 bytes, replacing invalid sequences.
+fn text_from_bytes(bytes) {
+    if !value_is_list(bytes) {
+        return "";
+    }
+    parts := list_new();
+    position := 0;
+    while position < list_length(bytes) {
+        first := text_byte_at(bytes, position);
+        if first < 128 {
+            list_set(parts, list_length(parts), text_from_code(first));
+            position = position + 1;
+        } else {
+            if first >= 194 && first <= 223 && position + 1 < list_length(bytes) {
+                second := text_byte_at(bytes, position + 1);
+                if second >= 128 && second <= 191 {
+                    list_set(parts, list_length(parts), text_from_code(number_mul(first - 192, 64) + (second - 128)));
+                    position = position + 2;
+                } else {
+                    list_set(parts, list_length(parts), text_from_code(65533));
+                    position = position + 1;
+                }
+            } else {
+                if first >= 224 && first <= 239 && position + 2 < list_length(bytes) {
+                    second := text_byte_at(bytes, position + 1);
+                    third := text_byte_at(bytes, position + 2);
+                    if second >= 128 && second <= 191 && third >= 128 && third <= 191 {
+                        list_set(
+                            parts,
+                            list_length(parts),
+                            text_from_code(number_mul(first - 224, 4096) + number_mul(second - 128, 64) + (third - 128))
+                        );
+                        position = position + 3;
+                    } else {
+                        list_set(parts, list_length(parts), text_from_code(65533));
+                        position = position + 1;
+                    }
+                } else {
+                    if first >= 240 && first <= 244 && position + 3 < list_length(bytes) {
+                        second := text_byte_at(bytes, position + 1);
+                        third := text_byte_at(bytes, position + 2);
+                        fourth := text_byte_at(bytes, position + 3);
+                        if second >= 128 && second <= 191 && third >= 128 && third <= 191
+                            && fourth >= 128 && fourth <= 191 {
+                            list_set(
+                                parts,
+                                list_length(parts),
+                                text_from_code(
+                                    number_mul(first - 240, 262144) + number_mul(second - 128, 4096)
+                                + number_mul(third - 128, 64) + (fourth - 128)
+                                )
+                            );
+                            position = position + 4;
+                        } else {
+                            list_set(parts, list_length(parts), text_from_code(65533));
+                            position = position + 1;
+                        }
+                    } else {
+                        list_set(parts, list_length(parts), text_from_code(65533));
+                        position = position + 1;
+                    }
+                }
+            }
+        }
+    }
+    return list_join(parts, "");
 }

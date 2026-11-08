@@ -1,5 +1,6 @@
 /// Text-stream process helper built on the general process primitive.
 
+import "common/text";
 import "common/map";
 import "./process";
 import "./text";

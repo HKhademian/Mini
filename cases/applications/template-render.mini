@@ -2,6 +2,7 @@
 //
 
 /// Return source with each {{key}} replaced from the header; unknown keys become <missing>.
+import "common/text";
 import "common/map";
 fn app_run(source) {
     values := map_new();

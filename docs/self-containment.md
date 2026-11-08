@@ -8,10 +8,12 @@ that distinction.
 
 ## Builtins are host code
 
-A builtin is a name the compiler recognizes and replaces with generated
-JavaScript or an adapter helper. It is not written in mini. The registry lives in
-[libs/compiler/builtins.mini](../libs/compiler/builtins.mini); adapter text and
-lowering live next to each namespace under `libs/compiler/builtins/`.
+A builtin contract is a name the compiler recognizes and type-checks. Its public
+Mini implementation lives under `libs/common/` and provides the canonical
+fallback, including a panic when the target needs a representation primitive.
+Emitters may register a same-name host implementation or call-site lowering.
+The contract registry lives in [libs/compiler/builtins.mini](../libs/compiler/builtins.mini);
+JavaScript overrides live under `libs/compiler/emit-js/overrides/`.
 
 Builtins fall into three practical layers:
 
@@ -120,43 +122,26 @@ before it is considered stable.
 The idea of an "inactive implementation" is better described as a **reference
 implementation** or **pure backend**.
 
-Implemented layout:
-
-```text
-libs/pure/text.mini      pure_text_find, pure_text_split
-libs/pure/list.mini      pure_list_copy
-libs/pure/map.mini       pure_map_copy
-libs/pure/reference.mini import aggregator
-```
-
-Compiler modes:
-
-```text
-compiler source.mini output.js               host fast paths (default)
-compiler --reference source.mini output.js   pure reference implementations
-```
-
-In reference mode, a replaceable performance builtin lowers to its `pure_*`
-helper and the compiler appends the pure library to the compilation unit. The
-default build keeps the host fast paths.
+Library implementations use the public API name in `libs/common/`. A target
+may replace that implementation implicitly through its emitter registry; source
+programs call one name and import one API. The `libs/pure/` tree is being retired
+as these APIs migrate.
 
 Current reference coverage:
 
 | Builtin | Reference status |
 | --- | --- |
-| `text_slice` | Implemented as `text_slice` in `libs/common/text.mini`; JS host override registered under `libs/compiler/emit-js/overrides` |
-| `text_find`, `text_split` | Implemented in `libs/pure/text.mini` |
-| `list_copy` | Implemented in `libs/pure/list.mini` |
-| `map_copy` | Implemented in `libs/pure/map.mini` |
+| `text_slice`, `text_find`, `text_split` | Same-name Mini implementations in `libs/common/text.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
+| `list_copy` | In migration |
+| `map_copy` | In migration |
 | `json_parse`, `json_to_text` | Implemented in `libs/pure/json.mini`; pure parsing currently accepts integer numbers only |
-| `text_to_bytes`, `text_from_bytes` | Implemented in `libs/pure/bytes.mini` |
+| `text_to_bytes`, `text_from_bytes` | Same-name Mini implementations in `libs/common/text.mini`; JS host overrides registered under `libs/compiler/emit-js/overrides` |
 | `number_to_text` | Implemented in `libs/pure/number.mini` |
 | `list_join` | Implemented in `libs/pure/list.mini` |
 | `hash_sha256` | Pending: needs bitwise/shift operations and an integer model |
 
-`compiler metadata` reports each builtin's `class` (`essential`,
-`representation`, `performance`, or `library`) and its `reference` target, if
-any. `test/reference.test.mini` compiles and runs the implemented reference
+The registry records operation classes. Target overrides are implicit and do
+not add a second public dependency or function name. `test/reference.test.mini` compiles and runs the implemented reference
 paths against the host paths and compares streams and statuses.
 
 Reference mode is not dead code. It is a second semantic implementation used to:

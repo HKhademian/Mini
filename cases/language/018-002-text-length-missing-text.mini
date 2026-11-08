@@ -1,1 +1,2 @@
+import "common/text";
 count := text_length();

@@ -36,19 +36,6 @@ function $mini_number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
-function $mini_text_find(text, needle) {
-    if (typeof text !== "string" || typeof needle !== "string") return -1;
-    return text.indexOf(needle);
-}
-function $mini_text_get(text, index) {
-    if (typeof text === "string" && index >= 0 && index < text.length) return text[index];
-    return "";
-}
-function $mini_text_split(text, divider) {
-    if (typeof text !== "string" || typeof divider !== "string") return [];
-    if (divider === "") return [text];
-    return text.split(divider);
-}
 function $mini_to_text(value) {
     if (typeof value === "string") return value;
     if (typeof value === "number") return $mini_number_to_text(value);
@@ -252,14 +239,18 @@ function list_rest(items, count) {
     }
     return result;
 }
+function text_length(source) { return typeof source === "string" ? source.length : 0; }
+function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
+function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
+function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function split_lines(source) {
 
-    let lines = $mini_text_split(source, "\n");
+    let lines = text_split(source, "\n");
     let position = 0;
     while ((position < ((lines).length - 1))) {
         let line = list_get(lines, position);
-        if ((((line).length > 0) && ($mini_text_get(line, ((line).length - 1)) === "\r"))) {
-            list_set(lines, position, text_slice(line, 0, ((line).length - 1)));
+        if (((text_length(line) > 0) && (text_get(line, (text_length(line) - 1)) === "\r"))) {
+            list_set(lines, position, text_slice(line, 0, (text_length(line) - 1)));
         }
         position = (position + 1);
     }
@@ -283,7 +274,7 @@ function indent_output(output) {
     let position = 0;
     while ((position < (lines).length)) {
         let line = list_get(lines, position);
-        if (((line).length > 0)) {
+        if ((text_length(line) > 0)) {
             list_set(result, (result).length, ("    " + line));
         }
         position = (position + 1);
@@ -292,8 +283,8 @@ function indent_output(output) {
 }
 function text_ends_with(source, suffix) {
 
-    let size = (suffix).length;
-    let length = (source).length;
+    let size = text_length(suffix);
+    let length = text_length(source);
     if ((size > length)) {
         return false;
     }
@@ -301,11 +292,11 @@ function text_ends_with(source, suffix) {
 }
 function is_letter(character) {
 
-    return ($mini_text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
+    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
 }
 function is_digit(character) {
 
-    return ($mini_text_find("0123456789", character) >= 0);
+    return (text_find("0123456789", character) >= 0);
 }
 function is_identifier_part(character) {
 
@@ -317,25 +308,25 @@ function is_two_character_symbol(value) {
 }
 function text_starts_with(source, prefix) {
 
-    let size = (prefix).length;
-    if ((size > (source).length)) {
+    let size = text_length(prefix);
+    if ((size > text_length(source))) {
         return false;
     }
     return (text_slice(source, 0, size) === prefix);
 }
 function text_chomp(text) {
 
-    let length = (text).length;
-    while (((length > 0) && (($mini_text_get(text, (length - 1)) === "\n") || ($mini_text_get(text, (length - 1)) === "\r")))) {
+    let length = text_length(text);
+    while (((length > 0) && ((text_get(text, (length - 1)) === "\n") || (text_get(text, (length - 1)) === "\r")))) {
         length = (length - 1);
     }
     return text_slice(text, 0, length);
 }
 function text_trim_end(text) {
 
-    let length = (text).length;
+    let length = text_length(text);
     while ((length > 0)) {
-        let character = $mini_text_get(text, (length - 1));
+        let character = text_get(text, (length - 1));
         if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
             length = (length - 1);
         } else {
@@ -347,15 +338,68 @@ function text_trim_end(text) {
 function text_trim(text) {
 
     let start = 0;
-    let end = (text).length;
-    while (((start < end) && ($mini_text_find(" \t\r\n", $mini_text_get(text, start)) >= 0))) {
+    let end = text_length(text);
+    while (((start < end) && (text_find(" \t\r\n", text_get(text, start)) >= 0))) {
         start = (start + 1);
     }
-    while (((end > start) && ($mini_text_find(" \t\r\n", $mini_text_get(text, (end - 1))) >= 0))) {
+    while (((end > start) && (text_find(" \t\r\n", text_get(text, (end - 1))) >= 0))) {
         end = (end - 1);
     }
     return text_slice(text, start, end);
 }
+function text_find_from(text, needle, start) {
+
+    let text_size = text_length(text);
+    let needle_size = text_length(needle);
+    if ((needle_size === 0)) {
+        if ((start <= text_size)) {
+            return start;
+        }
+        return (-1);
+    }
+    let position = start;
+    while (((position + needle_size) <= text_size)) {
+        let offset = 0;
+        let matched = true;
+        while ((offset < needle_size)) {
+            if ((text_get(text, (position + offset)) !== text_get(needle, offset))) {
+                matched = false;
+                offset = needle_size;
+            } else {
+                offset = (offset + 1);
+            }
+        }
+        if (matched) {
+            return position;
+        }
+        position = (position + 1);
+    }
+    return (-1);
+}
+function text_find(source, needle) { return typeof source === "string" && typeof needle === "string" ? source.indexOf(needle) : -1; }
+function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
+function text_byte_at(bytes, index) {
+
+    if ((((!value_is_list(bytes)) || (index < 0)) || (index >= (bytes).length))) {
+        return 0;
+    }
+    let value = list_get(bytes, index);
+    if (((!value_is_number(value)) || (number_floor(value) !== value))) {
+        return 0;
+    }
+    let byte = number_mod(value, 256);
+    if ((byte < 0)) {
+        byte = (byte + 256);
+    }
+    return byte;
+}
+function text_byte_push(bytes, value) {
+
+    list_set(bytes, (bytes).length, value);
+    return 0;
+}
+function text_to_bytes(source) { return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : []; }
+function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return ""; return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8"); }
 function number_add(a, b) {
     if (typeof a !== "number" || typeof b !== "number") return 0;
     return a + b;

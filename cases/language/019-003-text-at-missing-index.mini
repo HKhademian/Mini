@@ -1,1 +1,2 @@
+import "common/text";
 token := text_get("mini");

@@ -1,5 +1,6 @@
 /// Run one child process with options for arguments, directory, input, and mode.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/io";

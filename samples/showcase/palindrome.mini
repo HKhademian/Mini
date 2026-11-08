@@ -1,3 +1,4 @@
+import "common/text";
 import "common/io";
 
 /// Reverse text and compare.

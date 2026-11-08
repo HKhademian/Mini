@@ -1,5 +1,6 @@
 /// Walk backwards and build a new string.
 
+import "common/text";
 import "common/io";
 
 source := "mini";

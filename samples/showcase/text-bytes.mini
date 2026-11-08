@@ -1,5 +1,6 @@
 /// Turn text into its byte values.
 
+import "common/text";
 import "common/list";
 import "common/io";
 

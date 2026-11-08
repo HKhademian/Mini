@@ -1,5 +1,6 @@
 /// Filter three-column CSV rows whose third field is yes, returning name and city as tab-separated text.
 
+import "common/text";
 import "common/list";
 
 /// Return a selected row as text; headers and other rows contribute empty text.

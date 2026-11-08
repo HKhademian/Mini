@@ -1,5 +1,6 @@
 /// Exercise the executable path, temporary directory, and removal primitives.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/path";

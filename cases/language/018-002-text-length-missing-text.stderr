@@ -1,3 +1,3 @@
-018-002-text-length-missing-text.mini:1:10: expected 1 argument
+018-002-text-length-missing-text.mini:2:10: expected 1 argument
 count := text_length();
          ^

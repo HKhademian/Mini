@@ -1,5 +1,6 @@
 /// Aggregate whitespace-delimited LEVEL ROUTE USER log lines for a request summary.
 
+import "common/text";
 import "common/list";
 import "common/map";
 

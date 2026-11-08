@@ -1,3 +1,4 @@
+import "common/text";
 import "common/list";
 import "common/io";
 parts := text_split("a,b,,c,", ",");

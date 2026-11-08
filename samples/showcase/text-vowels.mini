@@ -1,5 +1,6 @@
 /// Combine a loop with character comparisons.
 
+import "common/text";
 import "common/io";
 
 text := "self hosting";

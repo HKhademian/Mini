@@ -1,5 +1,6 @@
 /// Parse numbers from CSV text and add them.
 
+import "common/text";
 import "common/number";
 import "common/list";
 import "common/io";

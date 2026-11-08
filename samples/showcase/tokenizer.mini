@@ -1,5 +1,6 @@
 /// Split source text into words and symbols.
 
+import "common/text";
 import "common/io";
 
 source := "x:=1;";

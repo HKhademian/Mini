@@ -1,3 +1,4 @@
+import "common/text";
 if text_get("", 0) != "" || text_get("hello", -1) != "" || text_get("hello", 5) != "" || text_get("hello", 2000) != "" {
     process_exit(1);
 }

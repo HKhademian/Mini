@@ -1,5 +1,6 @@
 /// Count characters.
 
+import "common/text";
 import "common/io";
 
 text := "playground";

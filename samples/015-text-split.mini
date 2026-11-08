@@ -1,5 +1,6 @@
 /// Read comma-separated text and print each field on its own line.
 
+import "common/text";
 import "common/list";
 import "common/io";
 

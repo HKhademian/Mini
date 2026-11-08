@@ -2,6 +2,7 @@
 //
 
 /// Return normalized text without changing source; ordinary characters are retained.
+import "common/text";
 fn normalize(source) {
     output := "";
     position := 0;

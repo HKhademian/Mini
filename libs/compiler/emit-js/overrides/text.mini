@@ -3,8 +3,56 @@
 import "./registry";
 
 emit_js_host_function_add(
+    "text_code",
+    "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "text_find",
+    "function text_find(source, needle) { return typeof source === \"string\" && typeof needle === \"string\" ? source.indexOf(needle) : -1; }\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "text_from_bytes",
+    "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "text_from_code",
+    "function text_from_code(code) { if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\"; return String.fromCodePoint(code); }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "text_get",
+    "function text_get(source, index) { if (typeof source === \"string\" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return \"\"; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "text_length",
+    "function text_length(source) { return typeof source === \"string\" ? source.length : 0; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
     "text_slice",
     "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "text_split",
+    "function text_split(source, divider) { if (typeof source !== \"string\" || typeof divider !== \"string\") return []; if (divider === \"\") return [source]; return source.split(divider); }\n",
+    false,
+    ""
+);
+emit_js_host_function_add(
+    "text_to_bytes",
+    "function text_to_bytes(source) { return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : []; }\n",
     false,
     ""
 );

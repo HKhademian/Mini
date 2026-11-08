@@ -1,1 +1,2 @@
+import "common/text";
 text_get("hello", "1");

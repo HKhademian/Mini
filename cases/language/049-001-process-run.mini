@@ -1,5 +1,6 @@
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/io";

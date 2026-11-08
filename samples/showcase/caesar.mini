@@ -1,5 +1,6 @@
 /// Shift character codes by one.
 
+import "common/text";
 import "common/io";
 
 source := "MINI";

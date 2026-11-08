@@ -2,6 +2,7 @@
 //
 
 /// Return value times ten using the same arithmetic available to mini.
+import "common/text";
 import "common/map";
 fn expr_ten(value) {
     twice := value + value;

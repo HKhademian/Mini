@@ -1,5 +1,6 @@
 /// Build a dependency graph from whitespace-delimited edge pairs and traverse from root.
 
+import "common/text";
 import "common/list";
 import "common/map";
 

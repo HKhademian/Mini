@@ -8,7 +8,7 @@ representation are not.
 See [Builtins, purity, and self-containment](self-containment.md) for the
 trusted host boundary, removable performance fast paths, pure reference
 implementations, and the numeric requirements for a pure `hash_sha256`.
-`compiler metadata` reports each builtin's layer and pure reference target.
+The compiler registry records operation classes and function contracts.
 
 `text_code(text)` returns the Unicode code point of the first character as a
 number, or 0 for empty/non-text input. Pass that number directly to `io_write`
@@ -16,10 +16,13 @@ or `io_write_line`; both use `to_text` for display. `number_to_text` is useful
 when number text must be stored or concatenated. `text_from_code(code)` returns
 one character for a valid Unicode scalar value and empty text otherwise.
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
-`text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte operations treat
-non-integer or out-of-range elements as zero. `text_to_bytes` and
-`text_from_bytes` have pure reference implementations in
-[libs/pure/bytes.mini](../libs/pure/bytes.mini).
+`text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte conversion treats
+non-integer elements as zero and normalizes integer elements modulo 256. The
+text and UTF-8 functions are
+declared in
+[libs/common/text.mini](../libs/common/text.mini) and require
+`import "common/text"`. Their Mini implementations are the fallback; JavaScript
+registers same-name host overrides for the representation and performance paths.
 `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace
 whole files as byte lists.
 
@@ -110,13 +113,12 @@ integer JSON numbers only.
 are imported functions in [libs/common/number.mini](../libs/common/number.mini)
 and require `import "common/number"`. They return 0 when either operand is not
 a number. The JavaScript emitter replaces each same-name Mini implementation
-with its registered host function. The `+` operator remains separately
-type-checked syntax. The `+` operator remains separately type-checked syntax.
+with its registered host function. The `+` operator remains separately type-checked syntax.
 
-The built-ins `text_length(text)`, `text_get(text, index)`, `text_find(text, needle)`,
-and `text_split(text, divider)` scan ASCII source. `text_slice` is an imported
-Mini function in [libs/common/text.mini](../libs/common/text.mini); use
-`import "common/text"`. `text_get` uses zero-based
+The text functions are imported Mini APIs in
+[libs/common/text.mini](../libs/common/text.mini); use `import "common/text"`.
+Their Mini implementations are the fallback, with same-name JavaScript host
+replacements registered by the JS emitter. `text_get` uses zero-based
 integer indices and returns empty text for a non-text target or an out-of-range
 position, including negative indices. `text_find` returns the first zero-based
 occurrence or `-1`; an empty needle returns `0`, and non-text inputs return

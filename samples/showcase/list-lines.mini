@@ -1,5 +1,6 @@
 /// Split text into lines and join them again.
 
+import "common/text";
 import "common/list";
 import "common/io";
 

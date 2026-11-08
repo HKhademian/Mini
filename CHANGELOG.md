@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.11 / builtins 0.4.0-alpha.11 / compiler
+  0.5.0-alpha.45 / bootstrap 0.3.0-alpha.47: move text and UTF-8 helpers
+  into same-name `common/text` APIs, register JavaScript host overrides, and
+  require explicit text imports.
+
 - language 0.5.0-alpha.10 / builtins 0.4.0-alpha.10 / compiler
   0.5.0-alpha.44 / bootstrap 0.3.0-alpha.46: move `number_*` Mini
   implementations into `common/number`, require its import, and register

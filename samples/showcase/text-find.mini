@@ -1,5 +1,6 @@
 /// Locate a word inside text.
 
+import "common/text";
 import "common/io";
 
 haystack := "a small compiler";

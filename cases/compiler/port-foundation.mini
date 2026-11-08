@@ -1,5 +1,6 @@
 /// Exercise the existing subset needed by M1 and write a checked TS program to the supplied path.
 
+import "common/text";
 import "common/list";
 import "common/map";
 import "common/io";

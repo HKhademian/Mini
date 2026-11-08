@@ -1,5 +1,6 @@
 /// Round-trip text and bytes through the byte primitives.
 
+import "common/text";
 import "common/list";
 import "common/path";
 import "common/io";
