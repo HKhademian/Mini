@@ -39,8 +39,8 @@ are supported. Initial named functions support parameters, returns, output calls
 nested calls, recursion, conditional branching (`if`/`else`), and stack-local
 bindings. List values support construction (`list_new`, `list_of`), front/back
 push and pop, truncation, length, indexed reads and writes, shallow copying,
-text joining, and JSON output through `io_write`. Sparse assignment fills
-skipped positions with numeric zero.
+text joining, `list_contains` from its Mini helper, and JSON output through
+`io_write`. Sparse assignment fills skipped positions with numeric zero.
 C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main

@@ -17,13 +17,27 @@ fn emit_c_native_list_call(name) {
         || name == "list_copy" || name == "list_join";
 }
 
-/// Return whether a Mini common-list definition is supplied by the C runtime.
-fn emit_c_native_list_definition(name) {
+/// Return whether an included list helper definition should be skipped in C.
+fn emit_c_skip_list_definition(name) {
     return emit_c_native_list_call(name) || name == "list_has_text" || name == "list_join_from"
-        || name == "list_reverse" || name == "list_sorted" || name == "list_contains"
+        || name == "list_reverse" || name == "list_sorted"
         || name == "list_is_text" || name == "list_rest" || name == "value_is_text"
         || name == "value_is_number" || name == "value_is_boolean" || name == "value_is_list"
         || name == "value_is_map";
+}
+
+/// Prefix nonempty generated-code lines by one nested C indentation level.
+fn emit_c_indent(source) {
+    lines := text_split(source, "\n");
+    result := "";
+    position := 0;
+    while position < list_length(lines) {
+        if position > 0 { result = result + "\n"; }
+        line := list_get(lines, position);
+        if text_length(line) > 0 { result = result + "    " + line; }
+        position = position + 1;
+    }
+    return result;
 }
 
 /// Consume a Mini function definition provided by the native C runtime.
@@ -468,7 +482,8 @@ fn emit_c_call(parser, bindings, binding_orders, destination) {
     if name == "list_join" {
         return body + "    if (MINI_ID(list_join)(context, " + array + "[0], " + array + "[1], &" + destination + ") != 0) return 1;\n";
     }
-    if text_starts_with(name, "list_") || text_starts_with(name, "value_is_") { emit_c_fail(token); }
+    if (text_starts_with(name, "list_") && emit_c_skip_list_definition(name))
+        || text_starts_with(name, "value_is_") { emit_c_fail(token); }
     return body + "    if (MINI_ID(fn_" + name + ")(context, " + params + ", &" + destination + ") != 0) return 1;\n";
 }
 
@@ -606,6 +621,19 @@ fn emit_c_file_function(index, body) {
 /// Lower one statement inside a function body.
 fn emit_c_function_statement(parser, bindings, binding_orders) {
     token := parser_token(parser);
+    if map_get(token, "text") == "while" {
+        parser_take(parser);
+        temp := "tmp" + number_to_text(map_get(parser, "c_temp"));
+        map_set(parser, "c_temp", map_get(parser, "c_temp") + 1);
+        condition_code := emit_c_disjunction(parser, bindings, binding_orders, temp);
+        body := "    while (1) {\n        MINI_ID(value) " + temp + ";\n"
+            + emit_c_indent(condition_code)
+            + "        if (" + temp + ".kind != MINI_ID(kind_boolean)) return 1;\n"
+            + "        if (!" + temp + ".boolean) break;\n"
+            + emit_c_indent(emit_c_function_block(parser, bindings, binding_orders))
+            + "    }\n";
+        return body;
+    }
     if map_get(token, "text") == "return" {
         parser_take(parser);
         temp := "tmp" + number_to_text(map_get(parser, "c_temp"));
@@ -876,7 +904,7 @@ fn emit_c_compile(tokens, header_name) {
     while map_get(parser_token(parser), "kind") != "eof" {
         token := parser_token(parser);
         if map_get(token, "text") == "fn" {
-            if emit_c_native_list_definition(map_get(parser_peek(parser, 1), "text")) {
+            if emit_c_skip_list_definition(map_get(parser_peek(parser, 1), "text")) {
                 emit_c_skip_native_definition(parser);
             } else {
                 emit_c_function(parser, bindings, binding_orders);

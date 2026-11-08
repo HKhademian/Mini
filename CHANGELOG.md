@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.32 / compiler 0.4.0-alpha.31 / bootstrap 0.2.0-alpha.33:
+  lower `while` loops in function bodies and compile the Mini `list_contains`
+  helper for C, including its early returns.
+
 - mini 0.2.0-alpha.31 / compiler 0.4.0-alpha.30 / bootstrap 0.2.0-alpha.32:
   add C target support for shallow `list_copy` and text-only `list_join`.
 

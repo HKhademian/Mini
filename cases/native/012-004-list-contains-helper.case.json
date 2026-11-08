@@ -1,0 +1,23 @@
+{
+  "id": "native.c-list-contains-helper",
+  "kind": "feature",
+  "target": "c",
+  "source": "012-004-list-contains-helper.mini",
+  "features": [
+    "target.c",
+    "function.while",
+    "function.return",
+    "list.contains",
+    "list.value",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "compiled-mini-helper-with-early-return",
+      "stdin": { "text": "" },
+      "stdout": { "text": "true,false\nfalse\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

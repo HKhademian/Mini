@@ -1,0 +1,5 @@
+include "common/list.mini";
+
+items := list_of(1, 2, 3);
+io_write(list_contains(items, 2), ",", list_contains(items, 8), "\n");
+io_write(list_contains(list_new(), 0), "\n");

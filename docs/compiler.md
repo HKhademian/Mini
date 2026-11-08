@@ -93,6 +93,8 @@ front/back push and pop, `list_truncate`, `list_length`, `list_get`, and `list_s
 It also supports shallow `list_copy` and `list_join`, which inserts separators
 between positions and contributes text values. `io_write` serializes lists as
 JSON, including nested lists and text escaping.
+`list_contains` is compiled from its Mini library definition. Other common list
+algorithms remain unavailable to C for now.
 JSON output rejects nesting deeper than 128. Generated execution owns these lists
 through cleanup at program exit. `fn_args()` remains pending for C.
 
