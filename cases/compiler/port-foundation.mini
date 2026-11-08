@@ -16,7 +16,7 @@ fn decimal(value) {
     sign := "";
     if remaining < 0 {
         sign = "-";
-        remaining = -remaining;
+        remaining = 0 - remaining;
     }
     if remaining == 0 {
         return "0";

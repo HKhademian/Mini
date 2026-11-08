@@ -13,7 +13,7 @@ bootstrap-v0.5.0-v0.2.0-alpha.7
 vscode-v0.5.0-v0.3.6
 ```
 
-The shared group is `0.5.0`. Each product keeps its own version.
+The shared group is `0.6.0`. Each product keeps its own version.
 The group identifies mini's compatibility baseline, not a product counter.
 Change it when that baseline changes; changing groups does not reset products.
 A product-only fix advances only that product's version.
@@ -48,26 +48,26 @@ version does not make an alpha product stable.
 
 ## Current inventory
 
-Current group: `0.5.0`. These are assigned release identities, not claims of
+Current group: `0.6.0`. These are assigned release identities, not claims of
 publication. Bootstrap promotion is recorded separately in
 [config/bootstrap.json](../config/bootstrap.json). Check the registry for later
 increments:
 
 ```text
-mini-v0.5.0-v0.2.0-alpha.33
-lang-v0.5.0-v0.4.0-alpha.5
-compiler-v0.5.0-v0.4.0-alpha.32
-bootstrap-v0.5.0-v0.2.0-alpha.34
-builtins-v0.5.0-v0.4.0-alpha.6
-cli-v0.5.0-v0.1.0-alpha.20
-check-v0.5.0-v0.1.0-alpha.12
-format-v0.5.0-v0.1.0-alpha.8
-lsp-v0.5.0-v0.1.0-alpha.11
-test-v0.5.0-v0.1.0-alpha.8
-verify-v0.5.0-v0.1.0-alpha.10
-bench-v0.5.0-v0.1.0-alpha.7
-release-v0.5.0-v0.1.0-alpha.7
-vscode-v0.5.0-v0.3.8
+mini-v0.6.0-v0.3.0-alpha.34
+lang-v0.6.0-v0.5.0-alpha.6
+compiler-v0.6.0-v0.5.0-alpha.33
+bootstrap-v0.6.0-v0.3.0-alpha.35
+builtins-v0.6.0-v0.4.0-alpha.6
+cli-v0.6.0-v0.1.0-alpha.20
+check-v0.6.0-v0.1.0-alpha.12
+format-v0.6.0-v0.1.0-alpha.8
+lsp-v0.6.0-v0.1.0-alpha.11
+test-v0.6.0-v0.1.0-alpha.8
+verify-v0.6.0-v0.1.0-alpha.10
+bench-v0.6.0-v0.1.0-alpha.7
+release-v0.6.0-v0.1.0-alpha.7
+vscode-v0.6.0-v0.3.8
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.

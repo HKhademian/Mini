@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.34 / language 0.5.0-alpha.6 / compiler 0.5.0-alpha.33 /
+  bootstrap 0.3.0-alpha.35: remove unary numeric negation. Negative number
+  literals remain supported; use `0 - value` for expressions. Migration SHA-256
+  identities: prior seed `afee4ff274671364ddd173582e3a8e954955b769242b175bc4edecff2fc538c7`,
+  parser source `e62cd253d0cb9f8ca356ceff85623e948195a81e87dc50fb03b09cf24a4b629e`,
+  promoted compiler `b50fb98cde6e79173c8476ef81463a66406989ca84c30f9925a38c4569091846`,
+  and promoted seed `1010d40bb49ad800e40d7a0b029426e110b5bd5ee2a1a017ef88941441035939`.
+
 - mini 0.2.0-alpha.33 / compiler 0.4.0-alpha.32 / bootstrap 0.2.0-alpha.34:
   lower binary numeric subtraction and compile the Mini `list_reverse` helper for C.
 

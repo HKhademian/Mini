@@ -30,7 +30,7 @@ literal spellings are only initialization inputs. Runner model, general
 memory strategy, Unicode indexing, and a complete embedding API do not block it.
 
 The first accepted native slice is top-level io_write calls with zero or more
-ASCII text literals and safe-integer literals (including one unary minus).
+ASCII text literals and safe-integer literals (including negative literals).
 Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
 number addition and subtraction, text joining, boolean values and logic are supported;

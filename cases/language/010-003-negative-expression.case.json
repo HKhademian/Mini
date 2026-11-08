@@ -1,0 +1,7 @@
+{
+  "id": "language.negative-expression-rejected",
+  "kind": "reject",
+  "source": "010-003-negative-expression.mini",
+  "features": ["expressions.arithmetic"],
+  "cases": [{"name": "reject", "stdin": {"text": ""}, "stdout": {"text": ""}, "stderr": {"file": "010-003-negative-expression.stderr"}, "exitCode": 1}]
+}

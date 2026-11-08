@@ -10,7 +10,7 @@ handwritten implementation was retired; only accepted [language](language.md) an
 JavaScript is the default target. An initial C11 target supports top-level
 `io_write` calls and top-level bindings with ASCII text, safe integers, and
 boolean values, comments,
-an entry shebang, and empty programs. Numbers allow one unary minus and the
+an entry shebang, and empty programs. Negative number literals are supported in the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
 normalized; negative zero prints `0`. Bindings support declarations, reassignment,
 copies, output, number addition and subtraction, and text joining. Addition and
@@ -19,7 +19,7 @@ booleans as applicable. Boolean `!`, `&&`, and `||` honor precedence and
 short-circuiting. Braced `if`, `else if`, and `else` blocks support
 nesting, local shadowing, and assignments. Braced `while` loops reevaluate
 their condition before each iteration.
-Unary minus applies only to number literals. Mixed-kind addition
+Negating a variable or expression is unsupported; use binary subtraction from zero. Mixed-kind addition
 is unsupported at runtime; other arithmetic remains unsupported.
 A binding read that the C target cannot establish as initialized rejects at compile time.
 Other forms reject explicitly. The

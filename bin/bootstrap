@@ -1129,13 +1129,19 @@ function parser_additive(parser) {
 }
 function parser_unary(parser) {
 
-    if ((($mini_map_get(parser_token(parser), "text") === "-") || ($mini_map_get(parser_token(parser), "text") === "!"))) {
+    if (($mini_map_get(parser_token(parser), "text") === "-")) {
+        let operator = parser_take(parser);
+        let number = parser_token(parser);
+        if (($mini_map_get(number, "kind") !== "number")) {
+            parser_fail(operator, "- must precede a number literal");
+        }
+        parser_take(parser);
+        return parser_expression_new((("(-" + lex_normalize_number($mini_map_get(number, "text"))) + ")"), "number");
+    }
+    if (($mini_map_get(parser_token(parser), "text") === "!")) {
         let operator = parser_take(parser);
         let value = parser_unary(parser);
         let kind = "boolean";
-        if (($mini_map_get(operator, "text") === "-")) {
-            kind = "number";
-        }
         if ((($mini_map_get(value, "kind") !== kind) && ($mini_map_get(value, "kind") !== "unknown"))) {
             parser_fail(operator, (($mini_map_get(operator, "text") + " needs a ") + kind));
         }

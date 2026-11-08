@@ -79,8 +79,8 @@ fn main(args) {
     format_expect("comments", format_source(root, work, "comments.mini", "/// only"), "/// only\n");
     format_expect("comment-lines", format_source(root, work, "comment-lines.mini", "// a\n\n// b\n"), "// a\n\n// b\n");
     format_expect("crlf", format_source(root, work, "crlf.mini", "value:=1;// keep\r\nif(value==1){io_write(\"ok\");}else{io_write(\"no\");}\r\n"), canonical);
-    format_expect("operators", format_source(root, work, "operators.mini", "a:=-1;b:=1+-2;c:=!true;d:=-(1+2);\n"),
-        "a := -1;\nb := 1 + -2;\nc := !true;\nd := -(1 + 2);\n");
+    format_expect("operators", format_source(root, work, "operators.mini", "a:=-1;b:=1+-2;c:=!true;d:=0-(1+2);\n"),
+        "a := -1;\nb := 1 + -2;\nc := !true;\nd := 0 - (1 + 2);\n");
     format_expect("parentheses", format_source(root, work, "paren.mini", "value:=(1+2)+3;\nif((value==6)&&(!false)){io_write(\"ok\");}\n"),
         "value := (1 + 2) + 3;\nif ((value == 6) && (!false)) {\n    io_write(\"ok\");\n}\n");
     format_expect("else-comment", format_source(root, work, "else.mini", "if (true) {\n} // why\nelse {\n}\n"), "if (true) {\n} else { // why\n}\n");

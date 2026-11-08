@@ -7,5 +7,5 @@ fn mark(value) {
 }
 io_write(mark(10 - 3 - 2 == 5));
 io_write(mark(10 - (3 - 2) == 9));
-io_write(mark(-(1 + 2) + 5 == 2));
+io_write(mark(0 - (1 + 2) + 5 == 2));
 io_write(mark(1 + 2 < 4));

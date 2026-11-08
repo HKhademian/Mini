@@ -1,0 +1,7 @@
+{
+  "id": "language.negative-binding-rejected",
+  "kind": "reject",
+  "source": "010-002-negative-binding.mini",
+  "features": ["expressions.arithmetic"],
+  "cases": [{"name": "reject", "stdin": {"text": ""}, "stdout": {"text": ""}, "stderr": {"file": "010-002-negative-binding.stderr"}, "exitCode": 1}]
+}

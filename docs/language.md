@@ -258,7 +258,7 @@ ready := token != "" && position < limit;
 output := "token: " + token + "\n";
 ```
 
-- Numeric `+` and `-`; unary `-` negates a number.
+- Numeric `+` and binary `-`; negative number literals such as `-1` are supported.
 - Text `+` concatenates text. No implicit text/number conversion.
 - `==` and `!=` compare values of the same kind without coercion.
 - `<`, `<=`, `>`, and `>=` compare numbers.
@@ -266,7 +266,7 @@ output := "token: " + token + "\n";
 - `&&` and `||` evaluate their right side only when needed.
 - Text escapes: `\"`, `\\`, `\n`, `\r`, and `\t`.
 
-Precedence, tightest first: calls/parentheses, unary `!` / `-`, binary `+` / `-`,
+Precedence, tightest first: calls/parentheses, unary `!`, binary `+` / `-`,
 numeric comparisons, equality, `&&`, then `||`. Binary operators at each level
 associate left to right. Operands and call arguments evaluate left to right.
 Parentheses override grouping. Assignment remains a statement.

@@ -41,7 +41,7 @@ fn expr_primary(state) {
     if character == "-" || character == "(" {
         map_set(state, "position", map_get(state, "position") + 1);
         if character == "-" {
-            return -expr_primary(state);
+            return 0 - expr_primary(state);
         }
         value := expr_sum(state);
         expr_space(state);

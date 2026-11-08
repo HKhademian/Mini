@@ -148,15 +148,21 @@ fn parser_additive(parser) {
     return left;
 }
 
-/// Parse unary negation.
+/// Parse boolean negation and negative number literals.
 fn parser_unary(parser) {
-    if map_get(parser_token(parser), "text") == "-" || map_get(parser_token(parser), "text") == "!" {
+    if map_get(parser_token(parser), "text") == "-" {
+        operator := parser_take(parser);
+        number := parser_token(parser);
+        if map_get(number, "kind") != "number" {
+            parser_fail(operator, "- must precede a number literal");
+        }
+        parser_take(parser);
+        return parser_expression_new("(-" + lex_normalize_number(map_get(number, "text")) + ")", "number");
+    }
+    if map_get(parser_token(parser), "text") == "!" {
         operator := parser_take(parser);
         value := parser_unary(parser);
         kind := "boolean";
-        if map_get(operator, "text") == "-" {
-            kind = "number";
-        }
         if map_get(value, "kind") != kind && map_get(value, "kind") != "unknown" {
             parser_fail(operator, map_get(operator, "text") + " needs a " + kind);
         }
