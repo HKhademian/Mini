@@ -1,7 +1,48 @@
 import "common/text";
 import "common/file";
 import "common/list";
+import "common/panic";
 import "./text";
+
+/// Create a directory and its missing parents using the target host.
+fn directory_create(path) {
+    return panic("directory_create requires a host implementation");
+}
+
+/// Return sorted directory entries, or panic when the target has no host.
+fn directory_list(path) {
+    return panic("directory_list requires a host implementation");
+}
+
+/// Copy a file or directory tree using the target host.
+fn path_copy(from, to) {
+    return panic("path_copy requires a host implementation");
+}
+
+/// Return whether a path names a directory.
+fn path_is_directory(path) {
+    return panic("path_is_directory requires a host implementation");
+}
+
+/// Return whether a path exists.
+fn path_is_exists(path) {
+    return panic("path_is_exists requires a host implementation");
+}
+
+/// Return whether a path names a regular file.
+fn path_is_file(path) {
+    return panic("path_is_file requires a host implementation");
+}
+
+/// Remove a file or directory tree using the target host.
+fn path_remove(path) {
+    return panic("path_remove requires a host implementation");
+}
+
+/// Create and return a fresh temporary directory.
+fn path_temp_directory() {
+    return panic("path_temp_directory requires a host implementation");
+}
 
 /// Join two path components.
 fn path_join(left, right) {

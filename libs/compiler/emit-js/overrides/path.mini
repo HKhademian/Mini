@@ -1,0 +1,52 @@
+/// JavaScript host replacements for common directory and path operations.
+
+import "./registry";
+
+emit_js_host_function_add(
+    "directory_create",
+    "function directory_create(path) { process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true }); return 0; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "directory_list",
+    "function directory_list(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.readdirSync(path).sort(); } catch { return []; } }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_copy",
+    "function path_copy(from, to) { process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_is_directory",
+    "function path_is_directory(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.statSync(path).isDirectory(); } catch { return false; } }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_is_exists",
+    "function path_is_exists(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.existsSync(path); } catch { return false; } }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_is_file",
+    "function path_is_file(path) { try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; } }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_remove",
+    "function path_remove(path) { process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true }); return 0; }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "path_temp_directory",
+    "function path_temp_directory() { const fs = process.getBuiltinModule(\"node:fs\"); const os = process.getBuiltinModule(\"node:os\"); return fs.mkdtempSync(os.tmpdir() + \"/mini-\"); }\n",
+    true,
+    ""
+);
