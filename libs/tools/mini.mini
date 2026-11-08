@@ -94,40 +94,14 @@ fn mini_command(root, command, args) {
         if list_length(args) == 0 || (list_length(args) == 1 && list_get(args, 0) == "--docs") {
             return mini_spawn(root, "dist/check.js", args);
         }
-        if list_length(args) != 1 {
-            return mini_usage("usage: mini-check [--docs | SOURCE.mini | -]");
-        }
-        path := list_get(args, 0);
-        if path != "-" && !path_is_exists(path) {
-            return mini_usage("cannot read " + path);
-        }
         return mini_spawn(root, "dist/check-source.js", args);
     }
     if command == "format" {
-        format_path := "";
-        position := 0;
-        while position < list_length(args) {
-            arg := list_get(args, position);
-            if arg != "--write" && arg != "--check" {
-                format_path = arg;
-            }
-            position = position + 1;
-        }
-        if format_path != "" && format_path != "-" && !path_is_exists(format_path) {
-            return mini_usage("cannot read " + format_path);
-        }
         return mini_spawn(root, "dist/format.js", args);
     }
     if command == "run" {
-        if list_length(args) < 1 {
-            return mini_usage("usage: mini-run SOURCE.mini [ARG]...");
-        }
-        source := list_get(args, 0);
-        if !text_ends_with(source, ".mini") {
-            return mini_usage("mini source must use .mini");
-        }
-        run_args := list_of(mini_compiler(root), source);
-        position := 1;
+        run_args := list_of(mini_compiler(root));
+        position := 0;
         while position < list_length(args) {
             list_set(run_args, list_length(run_args), list_get(args, position));
             position = position + 1;
@@ -138,43 +112,12 @@ fn mini_command(root, command, args) {
         return mini_spawn(root, "dist/test.js", args);
     }
     if command == "bench" {
-        if list_length(args) < 1 {
-            return mini_usage("usage: mini-bench OUTPUT [FILTER]");
-        }
         return mini_spawn(root, "dist/bench.js", args);
     }
     if command == "verify" {
-        if list_length(args) == 0 {
-            return mini_spawn(root, "dist/verify.js", list_new());
-        }
-        file := "";
-        verbose := false;
-        position := 0;
-        while position < list_length(args) {
-            arg := list_get(args, position);
-            if arg == "--verbose" || arg == "-v" {
-                verbose = true;
-            } else {
-                if file != "" {
-                    return mini_usage("usage: mini-verify [--verbose] [CASE.json]");
-                }
-                file = arg;
-            }
-            position = position + 1;
-        }
-        if file == "" {
-            return mini_spawn(root, "dist/verify.js", list_new());
-        }
-        file_args := list_of("--file", file);
-        if verbose {
-            list_set(file_args, list_length(file_args), "--verbose");
-        }
-        return mini_spawn(root, "dist/test.js", file_args);
+        return mini_spawn(root, "dist/verify.js", args);
     }
     if command == "release" {
-        if list_length(args) < 1 {
-            return mini_usage("usage: mini-release OUTPUT [TAG]");
-        }
         status := mini_spawn(root, "dist/release.js", args);
         if status == 0 {
             io_write("Release prepared.\n");
@@ -189,21 +132,29 @@ fn mini_command(root, command, args) {
         }
         target := "js";
         explicit_target := false;
-        if list_get(args, 0) == "--target" {
-            if list_length(args) < 3 {
-                return mini_usage("usage: mini-compile [--target js|c] SOURCE.mini [OUTPUT]");
+        rest := list_new();
+        position := 0;
+        while position < list_length(args) {
+            arg := list_get(args, position);
+            if arg == "--target" {
+                if explicit_target || position + 1 >= list_length(args) {
+                    return mini_usage("usage: mini-compile [--target js|c] SOURCE.mini [OUTPUT]");
+                }
+                target = list_get(args, position + 1);
+                if target != "js" && target != "c" {
+                    return mini_usage("unknown compilation target: " + target);
+                }
+                explicit_target = true;
+                position = position + 1;
+            } else {
+                list_set(rest, list_length(rest), arg);
             }
-            target = list_get(args, 1);
-            if target != "js" && target != "c" {
-                return mini_usage("unknown compilation target: " + target);
-            }
-            explicit_target = true;
-            args = mini_rest(args, 2);
+            position = position + 1;
         }
-        if list_length(args) < 1 || list_length(args) > 2 {
+        if list_length(rest) < 1 || list_length(rest) > 2 {
             return mini_usage("usage: mini-compile [--target js|c] SOURCE.mini [OUTPUT]");
         }
-        source := list_get(args, 0);
+        source := list_get(rest, 0);
         if !text_ends_with(source, ".mini") {
             return mini_usage("mini source must use .mini");
         }
@@ -211,8 +162,8 @@ fn mini_command(root, command, args) {
         if target == "c" {
             output = source + ".c";
         }
-        if list_length(args) > 1 {
-            output = list_get(args, 1);
+        if list_length(rest) > 1 {
+            output = list_get(rest, 1);
         }
         compile_args := list_of(source, output);
         if explicit_target {

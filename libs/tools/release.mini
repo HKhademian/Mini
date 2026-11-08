@@ -241,7 +241,7 @@ fn release_prepare(directory, output, tag) {
     release_check(path_join(source, "bin/mini-check"), source);
     bootstrap := 0;
     if available {
-        verify_args := list_of(path_join(source, "dist/verify.js"), source);
+        verify_args := list_of(path_join(source, "dist/verify.js"), "--root", source);
         verified := release_run(process_exec_path(), verify_args, source);
         parsed := json_parse(text_from_bytes(map_get(verified, "stdout")));
         if result_is_ok(parsed) {

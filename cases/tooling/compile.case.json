@@ -44,6 +44,21 @@
       "files": [
         "out.mini.js"
       ]
+    },
+    {
+      "name": "compile-target-after-source",
+      "args": [
+        "cases/language/001-001-bindings-initialize.mini",
+        "--target",
+        "js",
+        "out.mini.js"
+      ],
+      "stdin": { "text": "" },
+      "stdout": { "text": "" },
+      "stderr": { "text": "" },
+      "exitCode": 0,
+      "workspace": "clean",
+      "files": ["out.mini.js"]
     }
   ]
 }

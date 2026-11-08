@@ -20,6 +20,9 @@ fn main(args) {
         name = "<stdin>";
         source = io_read_all();
     } else {
+        if !path_is_exists(path) {
+            check_source_fail("cannot read " + path);
+        }
         if !text_ends_with(path, ".mini") {
             check_source_fail("mini source must use .mini");
         }

@@ -7,6 +7,10 @@ fn main(args) {
         io_write_error("usage: mini-run SOURCE.mini [ARG]...\n");
         process_exit(1);
     }
+    if !text_ends_with(list_get(args, 1), ".mini") {
+        io_write_error("mini source must use .mini\n");
+        process_exit(1);
+    }
     forwarded := list_new();
     position := 2;
     while position < list_length(args) {

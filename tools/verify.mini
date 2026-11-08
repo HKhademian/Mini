@@ -1,17 +1,36 @@
 #!/usr/bin/env node
 include "tools/verify.mini";
+include "tools/test.mini";
 
-/// Parse arguments and print the bootstrap identity record.
+/// Consume verify options, then check one case or the bootstrap.
 fn main(args) {
-    if list_length(args) > 1 {
-        io_write_error("usage: mini-verify\n");
-        process_exit(1);
+    verbose := false;
+    rest := list_new();
+    position := 0;
+    while position < list_length(args) {
+        arg := list_get(args, position);
+        if arg == "--verbose" || arg == "-v" {
+            verbose = true;
+        } else {
+            list_set(rest, list_length(rest), arg);
+        }
+        position = position + 1;
     }
     root := project_root();
-    if list_length(args) == 1 {
-        root = list_get(args, 0);
+    if list_length(rest) == 2 && list_get(rest, 0) == "--root" {
+        root = list_get(rest, 1);
+        io_write(verify_bootstrap(root));
+        return 0;
     }
-    io_write(verify_bootstrap(root));
+    if list_length(rest) == 0 {
+        io_write(verify_bootstrap(root));
+        return 0;
+    }
+    if list_length(rest) != 1 {
+        io_write_error("usage: mini-verify [--verbose] [CASE.json]\n");
+        process_exit(1);
+    }
+    process_exit(test_run(root, "", list_get(rest, 0), "", verbose));
     return 0;
 }
 

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.2.0-alpha.26 / CLI 0.1.0-alpha.20 / check 0.1.0-alpha.12 /
+  format 0.1.0-alpha.8 / verify 0.1.0-alpha.10 / release 0.1.0-alpha.7:
+  let commands consume their own options and forward remaining arguments;
+  the dispatcher keeps only routing and compile output adaptation.
+
 - mini 0.2.0-alpha.25 / CLI 0.1.0-alpha.19 / test 0.1.0-alpha.8 /
   verify 0.1.0-alpha.9: show test summaries by default and per-case results
   with `--verbose`; retain detailed CI test logs.

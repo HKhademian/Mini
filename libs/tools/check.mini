@@ -393,7 +393,7 @@ fn check_repository(root, docs_only) {
     if map_get(active, "entry") != map_get(bootstrap, "compiler") {
         check_fail("active compiler must be the generated bootstrap");
     }
-    verify := list_of(path_join(root, "dist/verify.js"), root);
+    verify := list_of(path_join(root, "dist/verify.js"), "--root", root);
     verified := process_capture(process_exec_path(), verify, root, list_new());
     if map_get(verified, "status") != 0 {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));

@@ -1,5 +1,5 @@
 /// Verify the promoted bootstrap fixed point and its example case.
-/// Usage: node dist/verify.js [PROJECT_ROOT]
+/// Usage: node dist/verify.js [--root PROJECT_ROOT] | [--verbose] CASE.json
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 

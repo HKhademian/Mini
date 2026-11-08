@@ -40,6 +40,9 @@ fn main(args) {
     if mode == "write" && path == "-" {
         format_fail("--write does not accept stdin");
     }
+    if path != "-" && !path_is_exists(path) {
+        format_fail("cannot read " + path);
+    }
     if path != "-" && !text_ends_with(path, ".mini") {
         format_fail("mini source must use .mini");
     }

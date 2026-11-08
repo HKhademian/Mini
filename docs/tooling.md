@@ -11,6 +11,10 @@ diagnostics and formatting, cases, bootstrap verification, benchmarks, and
 releases. See the [README](../README.md) for current commands. The CLI provides
 basic usage through `mini --help`; the editor has syntax highlighting and
 pairing, and can connect to the standalone language server.
+The `mini` dispatcher forwards command arguments to the owning tool. Each tool
+consumes its own options and passes remaining program arguments onward. The
+compile adapter also supplies a default output path and sets executable mode
+for generated scripts with a shebang.
 
 ## Command contracts
 
