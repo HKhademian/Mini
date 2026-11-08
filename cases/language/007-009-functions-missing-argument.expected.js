@@ -1,20 +1,25 @@
 "use strict";
-import { readFileSync, writeSync } from "node:fs";
+import { writeSync } from "node:fs";
 function $mini_io_write() {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
     const values = Array.prototype.slice.call(arguments);
     let text = "";
     for (const value of values) {
         if (typeof value === "string") text += value;
         else if (typeof value === "number") text += Number.isSafeInteger(value) ? String(value) : "";
         else if (typeof value === "boolean") text += value ? "true" : "false";
-        else text += to_text(value);
+        else if (Array.isArray(value) || (value !== null && typeof value === "object")) text += JSON.stringify(normalize(value));
     }
     writeSync(1, text);
     return 0;
-}
-function $mini_path_is_exists(path) {
-    const fs = process.getBuiltinModule("node:fs");
-    try { return fs.existsSync(path); } catch { return false; }
 }
 function panic(message) {
 
@@ -411,505 +416,26 @@ function number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
-function map_new() { return Object.create(null); }
-function map_get(items, key) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
-    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;
-}
-function map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") items[key] = value;
-    return 0;
-}
-function map_has(items, key) {
-    return items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string" && Object.prototype.hasOwnProperty.call(items, key);
-}
-function map_keys(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return [];
-    return Object.keys(items);
-}
-function map_delete(items, key) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") delete items[key];
-    return 0;
-}
-function map_copy(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
-    return Object.assign(Object.create(null), items);
-}
-function map_of() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
+function io_read_all() {
 
-    let entries = $mini_fn_args;
-    let result = map_new();
-    let position = 0;
-    while ((position < (entries).length)) {
-        let key = list_get(entries, position);
-        let value = 0;
-        if (((position + 1) < (entries).length)) {
-            value = list_get(entries, (position + 1));
-        }
-        map_set(result, key, value);
-        position = (position + 2);
-    }
-    return result;
+    return panic("io_read_all requires a host implementation");
 }
-function result_ok(value, message) {
+function io_read_bytes(count) {
 
-    let result = map_new();
-    map_set(result, "ok", true);
-    map_set(result, "value", value);
-    map_set(result, "message", message);
-    return result;
+    return panic("io_read_bytes requires a host implementation");
 }
-function result_fail(message) {
+function io_read_line() {
 
-    let result = map_new();
-    map_set(result, "ok", false);
-    map_set(result, "value", 0);
-    map_set(result, "message", message);
-    return result;
+    return panic("io_read_line requires a host implementation");
 }
-function result_is_ok(result) {
+function io_write() {
 
-    if ((!value_is_map(result))) {
-        return false;
-    }
-    return (map_get(result, "ok") === true);
+    return panic("io_write requires a host implementation");
 }
-function result_is_fail(result) {
+function io_write_error(message) {
 
-    return (!result_is_ok(result));
+    return panic("io_write_error requires a host implementation");
 }
-function result_get_message(result) {
-
-    if ((!value_is_map(result))) {
-        return "";
-    }
-    return map_get(result, "message");
-}
-function result_set_message(result, message) {
-
-    if (value_is_map(result)) {
-        map_set(result, "message", message);
-    }
-    return result;
-}
-function result_get_value(result) {
-
-    if ((!value_is_map(result))) {
-        return 0;
-    }
-    return map_get(result, "value");
-}
-function result_set_value(result, value) {
-
-    if (value_is_map(result)) {
-        map_set(result, "value", value);
-    }
-    return result;
-}
-function json_parse_file(path) {
-
-    if ((!$mini_path_is_exists(path))) {
-        return result_fail(("cannot read " + path));
-    }
-    let parsed = json_parse(readFileSync(path, "utf8"));
-    if (result_is_fail(parsed)) {
-        return result_fail(("invalid JSON: " + path));
-    }
-    return result_ok(result_get_value(parsed), 0);
-}
-function json_parse_result(ok, value) {
-
-    let result = map_new();
-    map_set(result, "ok", ok);
-    map_set(result, "value", value);
-    return result;
-}
-function json_space(character) {
-
-    return ((((character === " ") || (character === "\t")) || (character === "\n")) || (character === "\r"));
-}
-function json_skip(state) {
-
-    while (((map_get(state, "position") < text_length(map_get(state, "text"))) && json_space(text_get(map_get(state, "text"), map_get(state, "position"))))) {
-        map_set(state, "position", (map_get(state, "position") + 1));
-    }
-    return 0;
-}
-function json_fail(state) {
-
-    map_set(state, "ok", false);
-    return 0;
-}
-function json_peek(state) {
-
-    let position = map_get(state, "position");
-    if ((position >= text_length(map_get(state, "text")))) {
-        return "";
-    }
-    return text_get(map_get(state, "text"), position);
-}
-function json_take(state, expected) {
-
-    if ((json_peek(state) !== expected)) {
-        return json_fail(state);
-    }
-    map_set(state, "position", (map_get(state, "position") + 1));
-    return 0;
-}
-function json_hex_value(character) {
-
-    let digit = text_find("0123456789abcdef", character);
-    if ((digit >= 0)) {
-        return digit;
-    }
-    digit = text_find("0123456789ABCDEF", character);
-    return digit;
-}
-function json_hex4(state) {
-
-    let value = 0;
-    let count = 0;
-    while ((count < 4)) {
-        let digit = json_hex_value(json_peek(state));
-        if ((digit < 0)) {
-            json_fail(state);
-            return 0;
-        }
-        value = (number_mul(value, 16) + digit);
-        map_set(state, "position", (map_get(state, "position") + 1));
-        count = (count + 1);
-    }
-    return value;
-}
-function json_string(state) {
-
-    json_take(state, "\"");
-    let parts = list_new();
-    while ((map_get(state, "ok") && (map_get(state, "position") < text_length(map_get(state, "text"))))) {
-        let character = json_peek(state);
-        if ((character === "\"")) {
-            map_set(state, "position", (map_get(state, "position") + 1));
-            return list_join(parts, "");
-        }
-        if ((character === "\\")) {
-            map_set(state, "position", (map_get(state, "position") + 1));
-            let escaped = json_peek(state);
-            map_set(state, "position", (map_get(state, "position") + 1));
-            if ((escaped === "\"")) {
-                list_set(parts, (parts).length, "\"");
-            } else {
-                if ((escaped === "\\")) {
-                    list_set(parts, (parts).length, "\\");
-                } else {
-                    if ((escaped === "/")) {
-                        list_set(parts, (parts).length, "/");
-                    } else {
-                        if ((escaped === "b")) {
-                            list_set(parts, (parts).length, text_from_code(8));
-                        } else {
-                            if ((escaped === "f")) {
-                                list_set(parts, (parts).length, text_from_code(12));
-                            } else {
-                                if ((escaped === "n")) {
-                                    list_set(parts, (parts).length, "\n");
-                                } else {
-                                    if ((escaped === "r")) {
-                                        list_set(parts, (parts).length, "\r");
-                                    } else {
-                                        if ((escaped === "t")) {
-                                            list_set(parts, (parts).length, "\t");
-                                        } else {
-                                            if ((escaped === "u")) {
-                                                let code = json_hex4(state);
-                                                if (((((code >= 55296) && (code <= 56319)) && (json_peek(state) === "\\")) && (text_get(map_get(state, "text"), (map_get(state, "position") + 1)) === "u"))) {
-                                                    map_set(state, "position", (map_get(state, "position") + 2));
-                                                    let low = json_hex4(state);
-                                                    if (((low >= 56320) && (low <= 57343))) {
-                                                        code = ((65536 + number_mul((code - 55296), 1024)) + (low - 56320));
-                                                    } else {
-                                                        json_fail(state);
-                                                    }
-                                                }
-                                                list_set(parts, (parts).length, text_from_code(code));
-                                            } else {
-                                                json_fail(state);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            list_set(parts, (parts).length, character);
-            map_set(state, "position", (map_get(state, "position") + 1));
-        }
-    }
-    json_fail(state);
-    return "";
-}
-function json_number(state) {
-
-    let start = map_get(state, "position");
-    if ((json_peek(state) === "-")) {
-        map_set(state, "position", (map_get(state, "position") + 1));
-    }
-    if ((text_find("0123456789", json_peek(state)) < 0)) {
-        json_fail(state);
-        return 0;
-    }
-    while ((text_find("0123456789", json_peek(state)) >= 0)) {
-        map_set(state, "position", (map_get(state, "position") + 1));
-    }
-    if ((((json_peek(state) === ".") || (json_peek(state) === "e")) || (json_peek(state) === "E"))) {
-        json_fail(state);
-        return 0;
-    }
-    return number_from_text(text_slice(map_get(state, "text"), start, map_get(state, "position")));
-}
-function json_array(state) {
-
-    json_take(state, "[");
-    let result = list_new();
-    json_skip(state);
-    if ((json_peek(state) === "]")) {
-        map_set(state, "position", (map_get(state, "position") + 1));
-        return result;
-    }
-    while (map_get(state, "ok")) {
-        let value = json_value(state);
-        if ((!map_get(state, "ok"))) {
-            return result;
-        }
-        list_set(result, (result).length, value);
-        json_skip(state);
-        if ((json_peek(state) === "]")) {
-            map_set(state, "position", (map_get(state, "position") + 1));
-            return result;
-        }
-        json_take(state, ",");
-        json_skip(state);
-    }
-    return result;
-}
-function json_object(state) {
-
-    json_take(state, "{");
-    let result = map_new();
-    json_skip(state);
-    if ((json_peek(state) === "}")) {
-        map_set(state, "position", (map_get(state, "position") + 1));
-        return result;
-    }
-    while (map_get(state, "ok")) {
-        json_skip(state);
-        let key = json_string(state);
-        json_skip(state);
-        json_take(state, ":");
-        json_skip(state);
-        let value = json_value(state);
-        if ((!map_get(state, "ok"))) {
-            return result;
-        }
-        map_set(result, key, value);
-        json_skip(state);
-        if ((json_peek(state) === "}")) {
-            map_set(state, "position", (map_get(state, "position") + 1));
-            return result;
-        }
-        json_take(state, ",");
-    }
-    return result;
-}
-function json_value(state) {
-
-    json_skip(state);
-    let character = json_peek(state);
-    if ((character === "\"")) {
-        return json_string(state);
-    }
-    if ((character === "[")) {
-        return json_array(state);
-    }
-    if ((character === "{")) {
-        return json_object(state);
-    }
-    if (((character === "-") || (text_find("0123456789", character) >= 0))) {
-        return json_number(state);
-    }
-    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "true")) {
-        map_set(state, "position", (map_get(state, "position") + 4));
-        return true;
-    }
-    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "false")) {
-        map_set(state, "position", (map_get(state, "position") + 5));
-        return false;
-    }
-    if (text_starts_with(text_slice(map_get(state, "text"), map_get(state, "position"), text_length(map_get(state, "text"))), "null")) {
-        map_set(state, "position", (map_get(state, "position") + 4));
-        return 0;
-    }
-    json_fail(state);
-    return 0;
-}
-function json_parse(text) {
-    const result = Object.create(null);
-    result.ok = false;
-    result.value = 0;
-    if (typeof text !== "string") return result;
-    let parsed;
-    try { parsed = JSON.parse(text); } catch { return result; }
-    const clean = (item) => {
-        if (item === null) return 0;
-        if (typeof item === "number") { if (!Number.isSafeInteger(item)) throw 0; return item; }
-        if (Array.isArray(item)) return item.map(clean);
-        if (typeof item === "object") {
-            const out = Object.create(null);
-            for (const key of Object.keys(item)) out[key] = clean(item[key]);
-            return out;
-        }
-        return item;
-    };
-    try { result.value = clean(parsed); } catch { return result; }
-    result.ok = true;
-    return result;
-}
-function json_escape(text) {
-
-    let parts = list_of("\"");
-    let position = 0;
-    while ((position < text_length(text))) {
-        let character = text_get(text, position);
-        if ((character === "\"")) {
-            list_set(parts, (parts).length, "\\\"");
-        } else {
-            if ((character === "\\")) {
-                list_set(parts, (parts).length, "\\\\");
-            } else {
-                if ((text_code(character) === 8)) {
-                    list_set(parts, (parts).length, "\\b");
-                } else {
-                    if ((text_code(character) === 12)) {
-                        list_set(parts, (parts).length, "\\f");
-                    } else {
-                        if ((character === "\n")) {
-                            list_set(parts, (parts).length, "\\n");
-                        } else {
-                            if ((character === "\r")) {
-                                list_set(parts, (parts).length, "\\r");
-                            } else {
-                                if ((character === "\t")) {
-                                    list_set(parts, (parts).length, "\\t");
-                                } else {
-                                    if ((text_code(character) < 32)) {
-                                        let code = text_code(character);
-                                        let digits = "0123456789abcdef";
-                                        list_set(parts, (parts).length, (("\\u00" + text_get(digits, number_div(code, 16))) + text_get(digits, number_mod(code, 16))));
-                                    } else {
-                                        list_set(parts, (parts).length, character);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        position = (position + 1);
-    }
-    list_set(parts, (parts).length, "\"");
-    return list_join(parts, "");
-}
-function json_encode(value, seen, state) {
-
-    if (value_is_text(value)) {
-        return json_escape(value);
-    }
-    if (value_is_number(value)) {
-        if ((number_to_text(value) === "")) {
-            return "null";
-        }
-        return number_to_text(value);
-    }
-    if (value_is_boolean(value)) {
-        if (value) {
-            return "true";
-        }
-        return "false";
-    }
-    if ((value_is_list(value) || value_is_map(value))) {
-        if (list_contains(seen, value)) {
-            map_set(state, "ok", false);
-            return "";
-        }
-        list_push_back(seen, value);
-        let parts = list_new();
-        if (value_is_list(value)) {
-            list_set(parts, (parts).length, "[");
-            let position = 0;
-            while ((position < (value).length)) {
-                if ((position > 0)) {
-                    list_set(parts, (parts).length, ",");
-                }
-                list_set(parts, (parts).length, json_encode(list_get(value, position), seen, state));
-                if ((!map_get(state, "ok"))) {
-                    return "";
-                }
-                position = (position + 1);
-            }
-            list_set(parts, (parts).length, "]");
-        } else {
-            list_set(parts, (parts).length, "{");
-            let keys = list_sorted(map_keys(value));
-            let index = 0;
-            while ((index < (keys).length)) {
-                if ((index > 0)) {
-                    list_set(parts, (parts).length, ",");
-                }
-                let key = list_get(keys, index);
-                list_set(parts, (parts).length, (json_escape(key) + ":"));
-                list_set(parts, (parts).length, json_encode(map_get(value, key), seen, state));
-                if ((!map_get(state, "ok"))) {
-                    return "";
-                }
-                index = (index + 1);
-            }
-            list_set(parts, (parts).length, "}");
-        }
-        list_pop_back(seen);
-        return list_join(parts, "");
-    }
-    return "null";
-}
-function json_to_text(value) {
-    const seen = new Set();
-    function encode(item) {
-        if (typeof item === "string") return JSON.stringify(item);
-        if (typeof item === "number") { const text = number_to_text(item); return text === "" ? "null" : text; }
-        if (typeof item === "boolean") return item ? "true" : "false";
-        if (item === null || item === undefined) return "null";
-        if (typeof item !== "object") return "null";
-        if (seen.has(item)) throw 0;
-        seen.add(item);
-        let output;
-        if (Array.isArray(item)) {
-            const parts = [];
-            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
-            output = "[" + parts.join(",") + "]";
-        } else {
-            const parts = [];
-            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
-            output = "{" + parts.join(",") + "}";
-        }
-        seen.delete(item);
-        return output;
-    }
-    try { return encode(value); } catch { return ""; }
-}
-function to_text(value) { if (typeof value === "string") return value; if (typeof value === "number") return number_to_text(value); if (typeof value === "boolean") return value ? "true" : "false"; if (value !== null && typeof value === "object") return json_to_text(value); return "0"; }
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -944,18 +470,6 @@ function $mini_file_5() {
 
 }
 function $mini_file_6() {
-
-}
-function $mini_file_7() {
-
-}
-function $mini_file_8() {
-
-}
-function $mini_file_9() {
-
-}
-function $mini_file_10() {
     io_write_line(number_to_text((join("a", 0)).length));
 }
 function $mini_main() {
@@ -966,9 +480,5 @@ function $mini_main() {
     $mini_file_4();
     $mini_file_5();
     $mini_file_6();
-    $mini_file_7();
-    $mini_file_8();
-    $mini_file_9();
-    $mini_file_10();
 }
 $mini_main();

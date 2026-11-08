@@ -1,2 +1,4 @@
+import "common/io";
+
 x := 1;
 io_write(-x);

@@ -1,3 +1,3 @@
-010-003-negative-expression.mini:1:10: - must precede a number literal
+010-003-negative-expression.mini:3:10: - must precede a number literal
 io_write(-(1 + 2));
          ^

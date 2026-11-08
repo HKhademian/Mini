@@ -1,4 +1,6 @@
+import "common/io";
 import "common/text";
+
 source := io_read_all();
 io_write(text_get(source, 0));
 io_write(text_get(source, text_length(source) - 1));

@@ -1,3 +1,5 @@
+import "common/io";
+
 token := io_read_all();
 if token == ";" {
     io_write("semicolon");

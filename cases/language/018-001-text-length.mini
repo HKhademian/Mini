@@ -1,4 +1,6 @@
+import "common/io";
 import "common/text";
+
 source := io_read_all();
 if text_length(source) == 0 {
     io_write("empty");

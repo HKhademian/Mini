@@ -1,3 +1,5 @@
+import "common/io";
+
 fn visit() {
     io_write("visited");
     return true;

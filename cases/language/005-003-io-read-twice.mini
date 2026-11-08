@@ -1,3 +1,5 @@
+import "common/io";
+
 first := io_read_all();
 second := io_read_all();
 io_write(first + ":" + second);
