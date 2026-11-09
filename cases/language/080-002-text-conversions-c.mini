@@ -1,0 +1,19 @@
+import "common/io";
+import "common/display";
+import "common/list";
+import "common/number";
+
+values := list_of("a", 2);
+io_write_line(
+    text_to_text("plain"),
+    "|",
+    list_to_text(values),
+    "|",
+    value_to_text(values),
+    "|",
+    to_text(42),
+    "|",
+    number_to_text(42),
+    "|",
+    to_text(false)
+);

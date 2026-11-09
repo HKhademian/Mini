@@ -120,10 +120,13 @@ converted values followed by one newline.
 Text passes through, numbers use `number_to_text`, booleans become `true` or
 `false`, and lists/maps use `json_text`. JSON serialization remains distinct:
 it quotes text values.
+`to_text(value)` is an alias for `value_to_text(value)`. `text_to_text(value)`
+passes text through and returns empty text for other values; `list_to_text(value)`
+returns compact JSON for lists and empty text for other values.
 
-`fn_args()` is a compiler-provided language form: the generated function
-captures its own argument list, so it needs no adapter or import. It returns a list, empty
-when the function received nothing.
+Inside a function body, `fn_args()` captures that function's arguments as a list;
+at file scope it returns the program arguments. It is part of function argument
+capture syntax and needs no library import.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
 empty text for other values. It is implemented in `common/number` and uses the

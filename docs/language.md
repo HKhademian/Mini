@@ -397,6 +397,8 @@ text := value_to_text(any_value);
 - `value_to_text(any_value)` returns the display form used by `io_write`: text is
   unchanged, numbers use `number_to_text`, booleans use `true` or `false`, and
   lists/maps use compact `json_text` serialization.
+- `to_text(value)` is an alias for `value_to_text(value)`. `text_to_text(text)`
+  preserves text, and `list_to_text(list)` returns compact JSON text.
 - JSON text remains a separate serialization operation: `json_text("x")`
   returns a quoted JSON string, while `value_to_text("x")` returns `x`.
 

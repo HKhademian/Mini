@@ -46,6 +46,15 @@ fn emit_c_display_runtime() {
 emit_c_host_runtime_after_context_add("display", emit_c_display_runtime());
 
 emit_c_host_function_add(
+    "list_to_text",
+    "int MINI_ID(fn_list_to_text)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; size_t offset = context->buffer.count;\n"
+    + "    if (params.args[0].kind != MINI_ID(kind_list) || !params.args[0].list) { *result = MINI_ID(value_text)(&context->buffer, offset, 0); return 0; }\n"
+    + "    if (MINI_ID(display_json_value)(context, params.args[0], 0) != 0) return 1;\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
     "value_join",
     "int MINI_ID(fn_value_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
     + "    if (!context || !result || (params.count && !params.args)) return 1; size_t offset = context->buffer.count;\n"

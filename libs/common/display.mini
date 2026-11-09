@@ -3,11 +3,27 @@ import "common/list";
 import "common/number";
 import "common/value";
 
+/// Return text unchanged, or empty text for a non-text value.
+fn text_to_text(value) {
+    if value_is_text(value) {
+        return value;
+    }
+    return "";
+}
+
+/// Return compact JSON text for a list, or empty text for a non-list value.
+fn list_to_text(value) {
+    if value_is_list(value) {
+        return json_text(value);
+    }
+    return "";
+}
+
 /// Convert a value to its display text.
 fn value_to_text(value) {
     kind := value_kind(value);
     if kind == "text" {
-        return value;
+        return text_to_text(value);
     }
     if kind == "number" {
         return number_to_text(value);
@@ -18,10 +34,18 @@ fn value_to_text(value) {
         }
         return "false";
     }
-    if kind == "list" || kind == "map" {
+    if kind == "list" {
+        return list_to_text(value);
+    }
+    if kind == "map" {
         return json_text(value);
     }
     return "0";
+}
+
+/// Return the shared display text for any value.
+fn to_text(value) {
+    return value_to_text(value);
 }
 
 /// Join display-converted values using a text separator.

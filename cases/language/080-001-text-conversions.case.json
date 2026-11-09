@@ -1,0 +1,15 @@
+{
+  "id": "language.text-conversions",
+  "kind": "feature",
+  "source": "080-001-text-conversions.mini",
+  "features": ["text.conversion", "list.conversion", "value.display"],
+  "cases": [
+    {
+      "name": "typed-and-shared-text-conversions",
+      "stdin": {"text": ""},
+      "stdout": {"text": "plain|[\"a\",2]|[\"a\",2]|42|42|false\nok\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
