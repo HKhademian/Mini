@@ -1,4 +1,4 @@
-/// Print one compact Frogger board as a ten-by-ten text grid.
+/// Animate Frogger on a ten-by-ten pixel board and print its initial text frame.
 
 import "common/io";
 import "common/list";
@@ -180,5 +180,4 @@ fn frogger_render() {
 }
 
 mini_play(10, 10, "Frogger");
-mini_play_update();
 frogger_render();

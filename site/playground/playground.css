@@ -291,6 +291,10 @@
   cursor: not-allowed;
 }
 
+.tabs button[hidden] {
+  display: none;
+}
+
 .tab-panel {
   display: flex;
   flex: 1;
@@ -307,6 +311,41 @@
   min-height: 380px;
   white-space: pre;
   overflow-wrap: normal;
+}
+
+.canvas-panel {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+  background: var(--panel);
+}
+
+.canvas-panel h2,
+.canvas-panel p {
+  margin: 0;
+}
+
+.canvas-panel h2 {
+  font-size: 1rem;
+}
+
+#play-canvas {
+  width: min(100%, 560px);
+  height: auto;
+  image-rendering: pixelated;
+  background: #0a0d12;
+  outline: none;
+}
+
+#play-canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+#play-status {
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
 .limits {

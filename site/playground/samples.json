@@ -457,7 +457,7 @@
     "id": "breakout-board",
     "group": "Games",
     "label": "Breakout board",
-    "note": "Build and print a ten-by-ten game board with nested loops.",
+    "note": "Animate a Breakout ball and steer the paddle with arrows or WASD.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/breakout-board.mini"
@@ -466,7 +466,7 @@
     "id": "frogger-board",
     "group": "Games",
     "label": "Frogger board",
-    "note": "Build a compact road-and-river board from tile rules.",
+    "note": "Move Frogger through animated traffic with arrows or WASD.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/frogger-board.mini"

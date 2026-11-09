@@ -1,4 +1,4 @@
-/// Print one compact Breakout board as a ten-by-ten text grid.
+/// Animate Breakout on a ten-by-ten pixel board and print its initial text frame.
 
 import "common/io";
 import "common/list";
@@ -107,5 +107,4 @@ fn breakout_render() {
 }
 
 mini_play(10, 10, "Breakout");
-mini_play_update();
 breakout_render();

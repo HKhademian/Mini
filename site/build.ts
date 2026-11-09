@@ -570,6 +570,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         <div class="pane-head output-head">
           <div class="tabs" role="tablist" aria-label="Output">
             <button id="tab-output" type="button" role="tab" aria-selected="true" aria-controls="panel-output">Output</button>
+            <button id="tab-canvas" type="button" role="tab" aria-selected="false" aria-controls="panel-canvas" hidden>Canvas</button>
             <button id="tab-code" type="button" role="tab" aria-selected="false" aria-controls="panel-code" disabled>JavaScript</button>
           </div>
           <div class="pane-actions">
@@ -581,6 +582,11 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           <pre id="stdout">(no output)</pre>
           <pre id="stderr" hidden></pre>
           <pre id="diagnostic" hidden></pre>
+        </div>
+        <div id="panel-canvas" class="tab-panel canvas-panel" role="tabpanel" aria-labelledby="tab-canvas" hidden>
+          <h2 id="play-title"></h2>
+          <canvas id="play-canvas" tabindex="0" aria-label="Mini Play board"></canvas>
+          <p id="play-status" role="status">Ready</p>
         </div>
         <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
           <div class="code-modes" role="group" aria-label="Generated JavaScript">
@@ -618,21 +624,67 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     const stderr = document.getElementById("stderr");
     const diagnostic = document.getElementById("diagnostic");
     const tabOutput = document.getElementById("tab-output");
+    const tabCanvas = document.getElementById("tab-canvas");
     const tabCode = document.getElementById("tab-code");
     const panelOutput = document.getElementById("panel-output");
+    const panelCanvas = document.getElementById("panel-canvas");
     const panelCode = document.getElementById("panel-code");
+    const playTitle = document.getElementById("play-title");
+    const playCanvas = document.getElementById("play-canvas");
+    const playStatus = document.getElementById("play-status");
+    const playContext = playCanvas.getContext("2d");
     const code = document.getElementById("code");
     const meta = document.getElementById("sample-meta");
     const modeButtons = Array.prototype.slice.call(document.querySelectorAll(".code-modes button"));
     let mode = "program";
     let latestCode = null;
+    let activeWorker = null;
+    let activePlay = false;
+    let playFrame = 0;
+    let playInFlight = false;
 
-    function showTab(showCode) {
-      const active = showCode && !tabCode.disabled;
-      tabOutput.setAttribute("aria-selected", String(!active));
-      tabCode.setAttribute("aria-selected", String(active));
-      panelOutput.hidden = active;
-      panelCode.hidden = !active;
+    function showTab(name) {
+      const active = name === "code" && !tabCode.disabled ? "code" : name === "canvas" && !tabCanvas.hidden ? "canvas" : "output";
+      tabOutput.setAttribute("aria-selected", String(active === "output"));
+      tabCanvas.setAttribute("aria-selected", String(active === "canvas"));
+      tabCode.setAttribute("aria-selected", String(active === "code"));
+      panelOutput.hidden = active !== "output";
+      panelCanvas.hidden = active !== "canvas";
+      panelCode.hidden = active !== "code";
+    }
+
+    function stopPlay() {
+      if (playFrame) cancelAnimationFrame(playFrame);
+      playFrame = 0;
+      playInFlight = false;
+      activePlay = false;
+      if (activeWorker) {
+        activeWorker.postMessage({ action: "stop" });
+        activeWorker.terminate();
+        activeWorker = null;
+      }
+      tabCanvas.hidden = true;
+      if (!panelCanvas.hidden) showTab("output");
+    }
+
+    function drawPlayFrame(pixels) {
+      const image = playContext.createImageData(playCanvas.width, playCanvas.height);
+      const count = Math.min(pixels.length, playCanvas.width * playCanvas.height);
+      for (let index = 0; index < count; index += 1) {
+        const color = Number(pixels[index]) >>> 0;
+        const offset = index * 4;
+        image.data[offset] = (color >>> 16) & 255;
+        image.data[offset + 1] = (color >>> 8) & 255;
+        image.data[offset + 2] = color & 255;
+        image.data[offset + 3] = 255;
+      }
+      playContext.putImageData(image, 0, 0);
+    }
+
+    function requestPlayStep() {
+      if (!activePlay || !activeWorker || playInFlight) return;
+      playInFlight = true;
+      activeWorker.postMessage({ action: "update" });
     }
 
     function setStatus(text, kind) {
@@ -663,7 +715,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       diagnostic.hidden = false;
       setStatus("failed", "error");
       if (keepCodeTab) code.textContent = text;
-      else showTab(false);
+      else showTab("output");
     }
 
     function setMode(next) {
@@ -685,6 +737,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     function compile(compileOnly) {
+      stopPlay();
       const sample = samples[Number(select.value)];
       latestCode = null;
       code.textContent = "";
@@ -695,7 +748,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         stderr.hidden = true;
         diagnostic.textContent = "";
         diagnostic.hidden = true;
-        showTab(false);
+        showTab("output");
       }
       setStatus(compileOnly ? "compiling…" : "playing…");
       const started = performance.now();
@@ -708,11 +761,31 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         fail("The program did not finish within 5 seconds.");
       }, 5000);
       worker.onmessage = function (event) {
+        const data = event.data;
+        if (data.action === "step") {
+          playInFlight = false;
+          if (!activePlay) return;
+          drawPlayFrame(data.pixels);
+          if (data.status === 0) {
+            playFrame = requestAnimationFrame(requestPlayStep);
+          } else {
+            activePlay = false;
+            playStatus.textContent = "Stopped with status " + data.status;
+            setStatus("stopped", "ok");
+          }
+          return;
+        }
+        if (data.action === "failure") {
+          activePlay = false;
+          playStatus.textContent = data.diagnostic;
+          setStatus("failed", "error");
+          return;
+        }
+        if (data.action === "keydown") return;
         if (done) return;
         done = true;
         clearTimeout(timer);
-        worker.terminate();
-        const data = event.data;
+        if (!data.play) worker.terminate();
         if (!compileOnly && data.output) stdout.textContent = data.output;
         if (data.stderr) {
           stderr.textContent = data.stderr;
@@ -723,13 +796,38 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           renderCode();
           tabCode.disabled = false;
         }
+        if (!compileOnly && data.play) {
+          playCanvas.width = data.play.width;
+          playCanvas.height = data.play.height;
+          playCanvas.title = data.play.title;
+          playTitle.textContent = data.play.title;
+          playStatus.textContent = "Playing · arrows or WASD";
+          tabCanvas.hidden = false;
+          drawPlayFrame(data.play.pixels);
+          showTab("canvas");
+          playCanvas.focus({ preventScroll: true });
+          if (data.play.status === 0) {
+            activeWorker = worker;
+            activePlay = true;
+            playFrame = requestAnimationFrame(requestPlayStep);
+          } else {
+            worker.terminate();
+            playStatus.textContent = "Stopped with status " + data.play.status;
+          }
+        }
         if (data.diagnostic) {
           fail(data.diagnostic, compileOnly);
         } else {
-          setStatus((compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
+          setStatus(data.play ? data.play.status === 0 ? "playing" : "stopped" : (compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
         }
       };
       worker.onerror = function () {
+        if (activeWorker === worker) {
+          activePlay = false;
+          playStatus.textContent = "The game worker stopped unexpectedly.";
+          setStatus("failed", "error");
+          return;
+        }
         if (done) return;
         done = true;
         clearTimeout(timer);
@@ -745,7 +843,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
     function compileOnly() {
       tabCode.disabled = false;
-      showTab(true);
+      showTab("code");
       compile(true);
     }
 
@@ -759,22 +857,39 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     select.addEventListener("change", showSample);
-    source.addEventListener("input", updateSourceHighlight);
+    source.addEventListener("input", function () {
+      stopPlay();
+      updateSourceHighlight();
+    });
     source.addEventListener("scroll", syncSourceHighlightScroll);
     resetButton.addEventListener("click", showSample);
     runButton.addEventListener("click", run);
     document.getElementById("compile").addEventListener("click", compileOnly);
-    tabOutput.addEventListener("click", function () { showTab(false); });
-    tabCode.addEventListener("click", function () { showTab(true); });
+    tabOutput.addEventListener("click", function () { showTab("output"); });
+    tabCanvas.addEventListener("click", function () {
+      showTab("canvas");
+      playCanvas.focus({ preventScroll: true });
+    });
+    tabCode.addEventListener("click", function () { showTab("code"); });
+    playCanvas.addEventListener("keydown", function (event) {
+      if (!activePlay || !activeWorker) return;
+      if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(event.key)) event.preventDefault();
+      activeWorker.postMessage({ action: "keydown", key: event.key });
+    });
     function tabKey(event) {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();
-      if (event.key === "ArrowRight" && tabCode.disabled) return;
-      const next = event.key === "ArrowRight";
-      showTab(next);
-      (next ? tabCode : tabOutput).focus();
+      const tabs = [tabOutput, tabCanvas, tabCode].filter(function (tab) {
+        return !tab.hidden && !tab.disabled;
+      });
+      const current = tabs.findIndex(function (tab) { return tab.getAttribute("aria-selected") === "true"; });
+      const delta = event.key === "ArrowRight" ? 1 : -1;
+      const next = tabs[(current + delta + tabs.length) % tabs.length];
+      showTab(next === tabCanvas ? "canvas" : next === tabCode ? "code" : "output");
+      next.focus();
     }
     tabOutput.addEventListener("keydown", tabKey);
+    tabCanvas.addEventListener("keydown", tabKey);
     tabCode.addEventListener("keydown", tabKey);
     source.addEventListener("keydown", function (event) {
       if (event.key === "Tab") {
