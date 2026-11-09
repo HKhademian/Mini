@@ -2,6 +2,7 @@ import "common/list";
 import "common/map";
 import "common/io";
 import "common/process";
+import "util/process";
 args := list_new();
 list_set(args, 0, "-e");
 list_set(args, 1, "process.stdout.write('dynamic mode')");

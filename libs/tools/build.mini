@@ -5,6 +5,7 @@ import "common/text";
 import "common/list";
 import "common/path";
 import "common/process";
+import "util/process";
 import "common/json";
 import "common/project";
 import "common/file";

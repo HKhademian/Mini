@@ -9,6 +9,7 @@ import "common/map";
 import "common/path";
 import "common/list";
 import "common/process";
+import "util/process";
 import "common/text";
 import "common/file";
 

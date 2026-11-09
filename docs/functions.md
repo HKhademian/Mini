@@ -271,8 +271,8 @@ an integer status from 0 through 255, including from inside a function. Normal
 program completion gives status 0. This is a primitive host operation.
 
 `process_run(command, args, mode)` is a helper in
-[libs/common/process.mini](../libs/common/process.mini). Import that
-library to run one child process through `process_spawn` and receive captured
+[libs/util/process.mini](../libs/util/process.mini). Import
+`util/process` to run one child process through `process_spawn` and receive captured
 output as UTF-8 text. It provides the simple command/arguments/mode form; use
 `process_spawn(options)` when working-directory, byte-input, or timeout controls
 are needed.

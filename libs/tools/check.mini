@@ -13,6 +13,7 @@ import "common/file";
 import "common/path";
 import "./cases";
 import "common/process";
+import "util/process";
 
 /// Report a check failure and stop.
 fn check_fail(message) {

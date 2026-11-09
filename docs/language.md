@@ -849,7 +849,7 @@ value := map_get(parsed, "value");
 Run one child process and inspect its result:
 
 ```mini
-import "common/process";
+import "util/process";
 arguments := list_new();
 list_set(arguments, 0, "--version");
 result := process_run("node", arguments, "capture");

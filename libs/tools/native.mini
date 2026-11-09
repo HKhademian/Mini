@@ -5,6 +5,7 @@ import "common/map";
 import "common/path";
 import "common/native";
 import "common/process";
+import "util/process";
 
 /// Run the adjacent preprocessing/compilation stages and return process status.
 /// The stage and preprocessed path identify failures; source/header files are untouched.

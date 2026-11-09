@@ -1,5 +1,37 @@
 "use strict";
 function process_panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
+function process_env(name) { return process.env[name] ?? ""; }
+function process_exec_path() { return process.execPath; }
+function process_exit(status) { process.exit(status); return 0; }
+function process_script_path() { return process.argv[1] ?? ""; }
+function process_spawn(options) {
+    const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
+    const child = process.getBuiltinModule("node:child_process");
+    const settings = options !== null && typeof options === "object" ? options : {};
+    const command = typeof settings.command === "string" ? settings.command : "";
+    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];
+    const mode = settings.mode === "inherit" ? "inherit" : "capture";
+    const directory = typeof settings.directory === "string" && settings.directory !== "" ? settings.directory : undefined;
+    const timeout = typeof settings.timeout === "number" && settings.timeout > 0 ? settings.timeout : undefined;
+    const input = Array.isArray(settings.input)
+        ? Buffer.from(settings.input.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0))
+        : undefined;
+    const result = child.spawnSync(command, args, {
+        cwd: directory,
+        stdio: mode === "inherit" ? "inherit" : "pipe",
+        input: mode === "inherit" ? undefined : input,
+        timeout,
+        maxBuffer: 64 * 1024 * 1024,
+    });
+    if (result.error) output.error = String(result.error.message);
+    if (result.status !== null) output.status = result.status;
+    if (typeof result.signal === "string") output.signal = result.signal;
+    if (mode !== "inherit") {
+        output.stdout = result.stdout ? Array.from(result.stdout) : [];
+        output.stderr = result.stderr ? Array.from(result.stderr) : [];
+    }
+    return output;
+}
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
