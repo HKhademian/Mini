@@ -9,7 +9,7 @@
       "name": "read-line-bytes-rest-and-error-output",
       "stdin": {"text": "a\r\nbcd"},
       "stdout": {"text": "a|[98,99]|d!a\n"},
-      "stderr": {"text": "err"},
+      "stderr": {"text": "er42true"},
       "exitCode": 0
     }
   ]

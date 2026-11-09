@@ -2,7 +2,6 @@ import "common/io";
 import "common/process";
 
 io_write("out");
-io_write_error("er");
-io_write_error("r");
+io_write_error("e", "r", 42, true);
 process_exit(1);
 io_write_error("after");

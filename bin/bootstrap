@@ -228,7 +228,28 @@ function io_write(...values) {
     process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
     return 0;
 }
-function io_write_error(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(typeof message === "string" ? message : "", "utf8")); return 0; }
+function io_write_error(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
+    return 0;
+}
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -2651,7 +2672,7 @@ function $mini_file_26() {
     emit_js_host_function_add("io_read_bytes", "function io_read_bytes(count) { if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }\n", true, "");
     emit_js_host_function_add("io_read_line", "function io_read_line() { const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString(\"utf8\"); }\n", true, "");
     emit_js_host_function_add("io_write", "function io_write(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("io_write_error", "function io_write_error(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(typeof message === \"string\" ? message : \"\", \"utf8\")); return 0; }\n", true, "");
+    emit_js_host_function_add("io_write_error", "function io_write_error(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
 }
 function $mini_file_27() {
     emit_js_host_function_add("file_read", "function file_read(path) { return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\"); }\n", true, "");

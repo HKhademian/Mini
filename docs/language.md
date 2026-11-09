@@ -838,8 +838,9 @@ io_write_error("expected ;\n");
 process_exit(1);
 ```
 
-- `io_write_error(text)` writes UTF-8 text to standard error, exactly as supplied.
-- It adds no newline and returns 0. Empty text writes nothing.
+- `io_write_error(...values)` converts and concatenates values using the same
+  rules as `io_write`, then writes UTF-8 text to standard error. It adds no
+  newline and returns 0. An empty call writes nothing.
 - The write completes before the call returns, preserving the diagnostic when
   followed by `process_exit`.
 

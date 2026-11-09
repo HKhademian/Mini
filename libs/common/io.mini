@@ -23,8 +23,8 @@ fn io_write() {
     return panic("io_write requires a host implementation");
 }
 
-/// Write text to standard error and return zero.
-fn io_write_error(message) {
+/// Write converted values to standard error and return zero.
+fn io_write_error() {
     return panic("io_write_error requires a host implementation");
 }
 

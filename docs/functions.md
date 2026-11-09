@@ -259,9 +259,10 @@ recursively. These helpers support tool process setup and cleanup.
 `process_env(name)` covers the environment need; a bulk `process_envs()` map remains
 unnecessary until a concrete caller needs it.
 
-The compiler implements `io_write_error(text)`: exact UTF-8 output to stderr, without
-an added newline and returns 0. It completes before returning so a following
-`process_exit` preserves the diagnostic. This requires primitive host access.
+`io_write_error(...values)` converts and concatenates values using the same
+rules as `io_write`, writes UTF-8 to stderr without an added newline, and
+returns 0. It completes before returning so a following `process_exit` preserves
+the diagnostic. This requires primitive host access.
 
 Other candidates, added only when concrete compiler or tool code needs them:
 

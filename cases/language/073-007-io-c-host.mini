@@ -5,4 +5,4 @@ bytes := io_read_bytes(2);
 rest := io_read_all();
 io_write(line, "|", bytes, "|", rest);
 io_write_line("!", line);
-io_write_error("err");
+io_write_error("e", "r", 42, true);

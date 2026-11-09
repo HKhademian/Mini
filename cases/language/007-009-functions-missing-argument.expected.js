@@ -414,7 +414,28 @@ function io_write(...values) {
     process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
     return 0;
 }
-function io_write_error(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(typeof message === "string" ? message : "", "utf8")); return 0; }
+function io_write_error(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
+    return 0;
+}
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
