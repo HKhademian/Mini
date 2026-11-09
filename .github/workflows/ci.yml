@@ -11,12 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  check:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-24.04, macos-15]
-    runs-on: ${{ matrix.os }}
+  ubuntu:
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     defaults:
       run:
@@ -48,12 +44,55 @@ jobs:
       - name: Upload snapshot distribution
         uses: actions/upload-artifact@v7
         with:
-          name: distribution-${{ matrix.os }}-${{ steps.revision.outputs.short }}
+          name: distribution-ubuntu-${{ steps.revision.outputs.short }}
           path: dist/release/*
           if-no-files-found: error
       - uses: actions/upload-artifact@v7
         with:
-          name: benchmark-${{ matrix.os }}-${{ steps.revision.outputs.short }}
+          name: benchmark-ubuntu-${{ steps.revision.outputs.short }}
+          path: .cache/bench-*.json
+          if-no-files-found: error
+          include-hidden-files: true
+
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: node dist/ci.js {0}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - id: revision
+        shell: bash
+        run: echo "short=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Bootstrap generated tools
+        shell: bash
+        run: ./bin/bootstrap
+      - name: Install development dependencies
+        run: install
+      - name: Strict types, versions, docs, cases, and available bootstrap
+        run: check
+      - name: JSON verification scenarios
+        run: test
+      - name: Benchmark harness smoke test
+        run: bench
+      - name: Extracted distribution smoke test
+        run: package
+      - name: Upload snapshot distribution
+        uses: actions/upload-artifact@v7
+        with:
+          name: distribution-macos-${{ steps.revision.outputs.short }}
+          path: dist/release/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: benchmark-macos-${{ steps.revision.outputs.short }}
           path: .cache/bench-*.json
           if-no-files-found: error
           include-hidden-files: true
