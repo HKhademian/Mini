@@ -17,6 +17,19 @@
   padding: 7px 0;
 }
 
+.playground-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.playground-brand h1 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
 .playground-header nav {
   gap: 16px;
   font-size: 0.82rem;
@@ -28,12 +41,6 @@
   flex-direction: column;
   min-height: 0;
   padding: 4px 0 8px;
-}
-
-.playground h1 {
-  margin: 0 0 6px;
-  font-size: 1.05rem;
-  letter-spacing: 0;
 }
 
 .workbench {

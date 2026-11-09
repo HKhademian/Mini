@@ -533,7 +533,10 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="site-header playground-header">
-    ${renderBrand("../")}
+    <div class="playground-brand">
+      ${renderBrand("../")}
+      <h1>Playground</h1>
+    </div>
     <nav aria-label="Site">
       <a href="../">Home</a>
       <a href="../samples/">Graphical samples</a>
@@ -541,8 +544,6 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
   </header>
 
   <main id="main" class="playground">
-    <h1>Playground</h1>
-
     <div class="workbench">
       <section class="pane" aria-label="Editor">
         <div class="pane-head">
