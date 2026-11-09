@@ -41,7 +41,7 @@ fn reference_compare(root, name, source_text) {
         io_write_error(name + " Mini implementation was not emitted in reference mode\n");
         process_exit(1);
     }
-    if name == "text" && text_find(file_read(host), "return source.slice(start, end);") < 0 {
+    if name == "text" && text_find(file_read(host), "return characters.slice(start, end).join(\"\");") < 0 {
         path_remove(work);
         io_write_error(name + " JavaScript host override was not emitted\n");
         process_exit(1);
