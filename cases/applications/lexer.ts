@@ -67,7 +67,7 @@ export function lex_tokenize(source: string): Token[] {
       } else {
         const pair = lex_slice(source, state.get('position') as number, (state.get('position') as number) + 2);
         if (pair === '==' || pair === '!=' || pair === '<=' || pair === '>=' || pair === '&&' || pair === '||') { lex_advance(state); lex_advance(state); }
-        else { if (!lex_contains('=+-!<>(),;{}', character)) process.exit(1); lex_advance(state); }
+        else { if (!lex_contains(':=+-!<>(),;{}', character)) process.exit(1); lex_advance(state); }
       }
       token.set('text', lex_slice(source, token.get('start') as number, state.get('position') as number));
       token.set('end', state.get('position')!); tokens[tokens.length] = token;

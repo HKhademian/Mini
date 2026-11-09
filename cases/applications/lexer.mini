@@ -151,7 +151,7 @@ fn lex_tokenize(source) {
                             lex_advance(state);
                             lex_advance(state);
                         } else {
-                            if !lex_contains("=+-!<>(),;{}", character) {
+                            if !lex_contains(":=+-!<>(),;{}", character) {
                                 process_exit(1);
                             }
                             lex_advance(state);
