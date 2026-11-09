@@ -8,7 +8,7 @@
     {
       "name": "list-api-host-overrides",
       "stdin": {"text": ""},
-      "stdout": {"text": "first,middle,lastfirstlast1"},
+      "stdout": {"text": "first|middle|last|x||yfirstlast1"},
       "stderr": {"text": ""},
       "exitCode": 0
     }

@@ -59,13 +59,17 @@ function list_merge() {
     }
     return result;
 }
-function list_join(separator, items) {
-    if (!Array.isArray(items) || typeof separator !== "string") return "";
+function list_join(separator, ...sources) {
+    if (typeof separator !== "string") return "";
     let output = "";
-    for (let index = 0; index < items.length; index++) {
-        if (index > 0) output += separator;
-        const value = items[index];
-        if (typeof value === "string") output += value;
+    let hasItem = false;
+    for (const items of sources) {
+        if (!Array.isArray(items)) continue;
+        for (const value of items) {
+            if (hasItem) output += separator;
+            if (typeof value === "string") output += value;
+            hasItem = true;
+        }
     }
     return output;
 }

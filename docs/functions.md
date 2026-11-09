@@ -201,8 +201,9 @@ list and return 0 for pushes, or remove and return one value for pops. Empty or
 non-list pops return 0. `list_truncate(items, length)` is the representation
 primitive they use to shrink a list to an existing non-negative length; longer
 or invalid lengths are no-ops.
-`list_join(separator, items)` joins text elements with a text separator.
-Non-text elements contribute empty text; a non-list target or non-text separator
+`list_join(separator, ...lists)` joins text elements from the supplied lists in
+order. Non-text elements contribute empty text while retaining their separator
+positions; non-list arguments contribute no elements. A non-text separator
 returns empty text.
 
 [libs/common/result.mini](../libs/common/result.mini) holds the result API.

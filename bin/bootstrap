@@ -78,13 +78,17 @@ function list_merge() {
     }
     return result;
 }
-function list_join(separator, items) {
-    if (!Array.isArray(items) || typeof separator !== "string") return "";
+function list_join(separator, ...sources) {
+    if (typeof separator !== "string") return "";
     let output = "";
-    for (let index = 0; index < items.length; index++) {
-        if (index > 0) output += separator;
-        const value = items[index];
-        if (typeof value === "string") output += value;
+    let hasItem = false;
+    for (const items of sources) {
+        if (!Array.isArray(items)) continue;
+        for (const value of items) {
+            if (hasItem) output += separator;
+            if (typeof value === "string") output += value;
+            hasItem = true;
+        }
     }
     return output;
 }
@@ -2715,7 +2719,7 @@ function $mini_file_20() {
     emit_js_host_function_add("list_set", "function list_set(items, index, value) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("list_truncate", "function list_truncate(items, length) {\n    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("list_copy", "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n", false, "");
-    emit_js_host_function_add("list_join", "function list_join(separator, items) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", false, "");
+    emit_js_host_function_add("list_join", "function list_join(separator, ...sources) {\n    if (typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    let hasItem = false;\n    for (const items of sources) {\n        if (!Array.isArray(items)) continue;\n        for (const value of items) {\n            if (hasItem) output += separator;\n            if (typeof value === \"string\") output += value;\n            hasItem = true;\n        }\n    }\n    return output;\n}\n", false, "");
 }
 function $mini_file_21() {
     emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");

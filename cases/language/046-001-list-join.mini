@@ -18,6 +18,12 @@ if list_join("-", mixed) == "a--c" {
 } else {
     io_write_line("bad");
 }
+more := list_of("d", "e");
+if list_join("-", items, mixed, more) == "a-b-c-a--c-d-e" {
+    io_write_line("ok");
+} else {
+    io_write_line("bad");
+}
 fn join(value, separator) {
     return list_join(separator, value);
 }

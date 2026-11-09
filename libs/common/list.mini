@@ -61,22 +61,36 @@ fn list_merge() {
     return result;
 }
 
-/// Join text values with a separator; non-text values contribute empty text.
-fn list_join(separator, items) {
-    if !value_is_list(items) || !value_is_text(separator) {
+/// Join text values from variadic lists; non-text values contribute empty text.
+fn list_join() {
+    values := fn_args();
+    if list_length(values) < 2 {
+        return "";
+    }
+    separator := list_get(values, 0);
+    if !value_is_text(separator) {
         return "";
     }
     output := "";
-    position := 0;
-    while position < list_length(items) {
-        if position > 0 {
-            output = output + separator;
+    has_item := false;
+    source_index := 1;
+    while source_index < list_length(values) {
+        items := list_get(values, source_index);
+        if value_is_list(items) {
+            item_index := 0;
+            while item_index < list_length(items) {
+                if has_item {
+                    output = output + separator;
+                }
+                item := list_get(items, item_index);
+                if value_is_text(item) {
+                    output = output + item;
+                }
+                has_item = true;
+                item_index = item_index + 1;
+            }
         }
-        item := list_get(items, position);
-        if value_is_text(item) {
-            output = output + item;
-        }
-        position = position + 1;
+        source_index = source_index + 1;
     }
     return output;
 }

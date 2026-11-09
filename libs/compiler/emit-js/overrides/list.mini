@@ -35,7 +35,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "list_join",
-    "function list_join(separator, items) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n",
+    "function list_join(separator, ...sources) {\n    if (typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    let hasItem = false;\n    for (const items of sources) {\n        if (!Array.isArray(items)) continue;\n        for (const value of items) {\n            if (hasItem) output += separator;\n            if (typeof value === \"string\") output += value;\n            hasItem = true;\n        }\n    }\n    return output;\n}\n",
     false,
     ""
 );

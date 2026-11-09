@@ -87,17 +87,22 @@ fn emit_c_list_runtime() {
             "    return MINI_ID(text_buffer_append)(buffer, data, text.length);",
             "}",
             "",
-            "static int MINI_ID(list_join)(MINI_ID(context) *context, MINI_ID(value) value, MINI_ID(value) separator, MINI_ID(value) *result) {",
+            "static int MINI_ID(list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {",
             "    size_t offset = context->buffer.count;",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list || separator.kind != MINI_ID(kind_text)) {",
+            "    if (!params.count || !params.args || params.args[0].kind != MINI_ID(kind_text)) {",
             "        *result = (MINI_ID(value)) MINI_VALUE_TEXT(&context->buffer, offset, 0);",
             "        return 0;",
             "    }",
-            "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
-            "    for (size_t index = 0; index < value.list->values.count; ++index) {",
-            "        if (index && MINI_ID(text_buffer_append_view)(&context->buffer, separator.text) != 0) return 1;",
-            "        if (items[index].kind == MINI_ID(kind_text)",
-            "            && MINI_ID(text_buffer_append_view)(&context->buffer, items[index].text) != 0) return 1;",
+            "    MINI_ID(text) separator = params.args[0].text; int has_item = 0;",
+            "    for (size_t source = 1; source < params.count; ++source) { MINI_ID(value) value = params.args[source];",
+            "        if (value.kind != MINI_ID(kind_list) || !value.list) continue;",
+            "        MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
+            "        for (size_t index = 0; index < value.list->values.count; ++index) {",
+            "            if (has_item && MINI_ID(text_buffer_append_view)(&context->buffer, separator) != 0) return 1;",
+            "            if (items[index].kind == MINI_ID(kind_text)",
+            "                && MINI_ID(text_buffer_append_view)(&context->buffer, items[index].text) != 0) return 1;",
+            "            has_item = 1;",
+            "        }",
             "    }",
             "    *result = (MINI_ID(value)) MINI_VALUE_TEXT(&context->buffer, offset, context->buffer.count - offset);",
             "    return 0;",
@@ -178,8 +183,8 @@ emit_c_host_function_add(
 emit_c_host_function_add(
     "list_join",
     "int MINI_ID(fn_list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
-    + "    return MINI_ID(list_join)(context, params.args[1], params.args[0], result);\n}\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1;\n"
+    + "    return MINI_ID(list_join)(context, params, result);\n}\n"
 );
 
 emit_c_host_function_add(

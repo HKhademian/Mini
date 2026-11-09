@@ -543,13 +543,13 @@ text := value_join(" | ", "Mini", 42, true);
 ## Accepted operation: list text joining
 
 ```mini
-text := list_join(", ", items);
+text := list_join(", ", first_items, more_items);
 ```
 
-- `list_join(separator, items)` joins text elements with a text separator.
+- `list_join(separator, ...lists)` joins text elements from each list in order.
 - Non-text elements contribute empty text; separators are still placed between
-  positions.
-- A non-list target or non-text separator returns empty text.
+  positions. Non-list arguments contribute no elements.
+- A non-text separator returns empty text.
 
 ## Accepted operation: list assignment
 
