@@ -295,7 +295,7 @@ io_write("input: ", source, "\n");
 - `io_read_all()` consumes remaining standard input through EOF and returns text.
   At EOF it returns empty text.
 - `io_write(...values)` converts each supplied value using the same rules as
-  `to_text(value)`: text passes through, numbers use `number_to_text`, booleans
+  `value_to_text(value)`: text passes through, numbers use `number_to_text`, booleans
   use `true` or `false`, and lists/maps use `json_text`. It concatenates the
   results without separators and writes them to standard output with no added
   newline. It returns 0; an empty call writes nothing. Writing multiple values
@@ -391,14 +391,14 @@ text := number_to_text(42);
 ## Accepted operation: value text
 
 ```mini
-text := to_text(any_value);
+text := value_to_text(any_value);
 ```
 
-- `to_text(any_value)` returns the display form used by `io_write`: text is
+- `value_to_text(any_value)` returns the display form used by `io_write`: text is
   unchanged, numbers use `number_to_text`, booleans use `true` or `false`, and
   lists/maps use compact `json_text` serialization.
 - JSON text remains a separate serialization operation: `json_text("x")`
-  returns a quoted JSON string, while `to_text("x")` returns `x`.
+  returns a quoted JSON string, while `value_to_text("x")` returns `x`.
 
 ## Accepted operation: JSON text
 
@@ -535,7 +535,7 @@ merged := value_merge(first, second, third);
 text := value_join(" | ", "Mini", 42, true);
 ```
 
-- `value_join(separator, ...values)` converts each value with `to_text` and
+- `value_join(separator, ...values)` converts each value with `value_to_text` and
   joins the results with the separator.
 - A non-text separator or a call with no arguments returns empty text.
 - Import `common/display` to use it.

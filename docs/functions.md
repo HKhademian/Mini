@@ -11,7 +11,7 @@ implementation contract and host replacement rules.
 
 `text_code(text)` returns the Unicode code point of the first character as a
 number, or 0 for empty/non-text input. Pass that number directly to `io_write`
-or `io_write_line`; both use `to_text` for display. `number_to_text` is useful
+or `io_write_line`; both use `value_to_text` for display. `number_to_text` is useful
 when number text must be stored or concatenated. `text_from_code(code)` returns
 one character for a valid Unicode scalar value and empty text otherwise.
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
@@ -86,7 +86,7 @@ without a representation primitive use its panic fallback.
 texts concatenate, lists concatenate, and maps merge with later keys replacing
 earlier values. Values of other kinds are ignored; an unsupported first kind or
 an empty call returns 0.
-`value_join(separator, ...values)` converts values with `to_text` and joins them
+`value_join(separator, ...values)` converts values with `value_to_text` and joins them
 with the text separator.
 
 `io_read_line()` reads one line from standard input through LF, strips a trailing
@@ -104,7 +104,7 @@ registers a same-name host overrides.
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(...values)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
 without a newline. EOF yields empty text. Neither operation converts newlines.
-`io_write` applies `to_text` to each value, concatenates the results without
+`io_write` applies `value_to_text` to each value, concatenates the results without
 separators, writes the result, and returns 0. These same-name Mini APIs are
 declared in [libs/common/io.mini](../libs/common/io.mini) and require
 `import "common/io"`. Their fallback panics when a target has no I/O host
@@ -114,7 +114,7 @@ standard output, and standard error.
 `io_write_line(...values)` is a Mini helper in the same module and writes the
 converted values followed by one newline.
 
-`to_text(any_value)` is the shared display conversion in
+`value_to_text(any_value)` is the shared display conversion in
 [libs/common/display.mini](../libs/common/display.mini); import `common/display`.
 Text passes through, numbers use `number_to_text`, booleans become `true` or
 `false`, and lists/maps use `json_text`. JSON serialization remains distinct:

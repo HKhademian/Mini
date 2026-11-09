@@ -4,7 +4,7 @@ import "common/number";
 import "common/value";
 
 /// Convert a value to its display text.
-fn to_text(value) {
+fn value_to_text(value) {
     kind := value_kind(value);
     if kind == "text" {
         return value;
@@ -37,7 +37,7 @@ fn value_join() {
         if position > 1 {
             output = output + separator;
         }
-        output = output + to_text(list_get(values, position));
+        output = output + value_to_text(list_get(values, position));
         position = position + 1;
     }
     return output;
