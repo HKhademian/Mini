@@ -1,0 +1,174 @@
+/// Grow a snake by collecting food while avoiding walls and its own body.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+playback_fps := 60;
+movement_fps := 3;
+frames_per_step := number_div(playback_fps, movement_fps);
+wall_color := pixel_rgb(40, 66, 88);
+background := pixel_rgb(5, 14, 24);
+snake_head_color := pixel_rgb(130, 255, 148);
+snake_body_color := pixel_rgb(54, 190, 104);
+food_color := pixel_rgb(255, 92, 104);
+snake_x := list_of(3, 2, 1);
+snake_y := list_of(5, 5, 5);
+food_candidates := list_of(57, 18, 83, 42, 76, 25, 64, 31);
+food_cursor := 0;
+food_x := 7;
+food_y := 5;
+direction_x := 1;
+direction_y := 0;
+score := 0;
+update_ticks := 0;
+game_over := false;
+
+/// Report whether the snake currently occupies a board coordinate.
+fn snake_contains(column, row) {
+    segment := 0;
+    while segment < list_length(snake_x) {
+        if list_get(snake_x, segment) == column && list_get(snake_y, segment) == row {
+            return true;
+        }
+        segment = segment + 1;
+    }
+    return false;
+}
+
+/// Choose the next candidate food cell that is not under the snake.
+fn snake_place_food() {
+    checked := 0;
+    while checked < list_length(food_candidates) {
+        candidate := list_get(food_candidates, food_cursor);
+        candidate_x := number_mod(candidate, screen_size);
+        candidate_y := number_div(candidate, screen_size);
+        food_cursor = number_mod(food_cursor + 1, list_length(food_candidates));
+        if !snake_contains(candidate_x, candidate_y) {
+            food_x = candidate_x;
+            food_y = candidate_y;
+            return 0;
+        }
+        checked = checked + 1;
+    }
+    game_over = true;
+}
+
+/// Draw the board, snake, and food.
+fn snake_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    edge := 0;
+    while edge < screen_size {
+        pixel_board_set(board, screen_size, screen_size, edge, 0, wall_color);
+        pixel_board_set(board, screen_size, screen_size, edge, screen_edge, wall_color);
+        pixel_board_set(board, screen_size, screen_size, 0, edge, wall_color);
+        pixel_board_set(board, screen_size, screen_size, screen_edge, edge, wall_color);
+        edge = edge + 1;
+    }
+
+    pixel_board_set(board, screen_size, screen_size, food_x, food_y, food_color);
+    segment := list_length(snake_x) - 1;
+    while segment >= 0 {
+        color := snake_body_color;
+        if segment == 0 {
+            color = snake_head_color;
+        }
+        pixel_board_set(board, screen_size, screen_size, list_get(snake_x, segment), list_get(snake_y, segment), color);
+        segment = segment - 1;
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Move the snake once, grow on food, and stop on collision.
+fn snake_advance() {
+    next_x := list_get(snake_x, 0) + direction_x;
+    next_y := list_get(snake_y, 0) + direction_y;
+    if next_x <= 0 || next_x >= screen_edge || next_y <= 0 || next_y >= screen_edge {
+        game_over = true;
+        return 0;
+    }
+
+    eating := next_x == food_x && next_y == food_y;
+    if snake_contains(next_x, next_y) {
+        game_over = true;
+        return 0;
+    }
+
+    list_push_front(snake_x, next_x);
+    list_push_front(snake_y, next_y);
+    if eating {
+        score = score + 1;
+        snake_place_food();
+    } else {
+        list_pop_back(snake_x);
+        list_pop_back(snake_y);
+    }
+}
+
+/// Move the snake at three tiles per second.
+fn canvas_update() {
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        if !game_over {
+            snake_advance();
+        }
+    }
+    snake_render();
+    if game_over {
+        return 1;
+    }
+}
+
+/// Steer with arrows or WASD, preventing a direct reversal.
+fn canvas_on_key_down(key) {
+    if (key == "ArrowUp" || key == "w") && direction_y != 1 {
+        direction_x = 0;
+        direction_y = 0 - 1;
+    } else if (key == "ArrowDown" || key == "s") && direction_y != 0 - 1 {
+        direction_x = 0;
+        direction_y = 1;
+    } else if (key == "ArrowLeft" || key == "a") && direction_x != 1 {
+        direction_x = 0 - 1;
+        direction_y = 0;
+    } else if (key == "ArrowRight" || key == "d") && direction_x != 0 - 1 {
+        direction_x = 1;
+        direction_y = 0;
+    }
+}
+
+/// Print the initial snake and food for command-line runs.
+fn snake_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == 0 || row == screen_edge || column == 0 || column == screen_edge {
+                line = line + "#";
+            } else if column == food_x && row == food_y {
+                line = line + "*";
+            } else if snake_contains(column, row) {
+                if column == list_get(snake_x, 0) && row == list_get(snake_y, 0) {
+                    line = line + "@";
+                } else {
+                    line = line + "o";
+                }
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+snake_render();
+canvas_play(screen_size, screen_size, "Snake · Arrows or WASD");
+snake_print();

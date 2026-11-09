@@ -519,11 +519,11 @@
   {
     "id": "snake-board",
     "group": "Games",
-    "label": "Snake — planned",
-    "note": "Grow longer while avoiding walls and your own tail.",
+    "label": "Snake",
+    "note": "Steer with arrows or WASD, eat the red food, and avoid walls and your tail. Moves at three steps per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/snake-board.mini"
   },
   {
     "id": "space-invaders-board",
