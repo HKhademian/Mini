@@ -1,3 +1,4 @@
+import "common/io";
 import "common/map";
 
-map_merge();
+io_write(map_merge(), "\n");
