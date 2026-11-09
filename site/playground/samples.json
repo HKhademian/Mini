@@ -488,5 +488,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-heart.mini"
+  },
+  {
+    "id": "pixel-blink",
+    "group": "Animation",
+    "label": "Blinking pixel",
+    "note": "Toggle one colored pixel every twelve animation frames.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-blink.mini"
   }
 ]

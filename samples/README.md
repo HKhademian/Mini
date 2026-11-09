@@ -47,3 +47,4 @@ cannot drift from its verified output.
 - [frogger-board.mini](showcase/frogger-board.mini): Move Frogger between animated road and river lanes on a ten-by-ten pixel board. [Case](../cases/showcase/frogger-board.case.json).
 - [pixel-one.mini](showcase/pixel-one.mini): Render one white pixel on a ten-by-ten canvas. [Case](../cases/showcase/pixel-one.case.json).
 - [pixel-heart.mini](showcase/pixel-heart.mini): Build a red heart from a ten-by-ten text pattern. [Case](../cases/showcase/pixel-heart.case.json).
+- [pixel-blink.mini](showcase/pixel-blink.mini): Toggle one colored pixel every twelve animation frames. [Case](../cases/showcase/pixel-blink.case.json).

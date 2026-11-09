@@ -1,0 +1,41 @@
+/// Blink one colored pixel on a ten-by-ten canvas.
+
+import "common/io";
+import "common/pixel-board";
+import "common/play";
+
+black := pixel_rgb(0, 0, 0);
+yellow := pixel_rgb(255, 220, 40);
+pixel_visible := true;
+frame_count := 0;
+
+/// Render the current blink state and toggle it every twelve frames.
+fn mini_play_update() {
+    board := pixel_board_new(10, 10, black);
+    if pixel_visible {
+        pixel_board_set(board, 10, 10, 5, 5, yellow);
+    }
+    pixel_board_render(10, 10, board);
+
+    frame_count = frame_count + 1;
+    if frame_count >= 12 {
+        frame_count = 0;
+        pixel_visible = !pixel_visible;
+    }
+}
+
+/// Print the first frame for command-line runs.
+fn pixel_blink_print() {
+    row := 0;
+    while row < 10 {
+        if row == 5 {
+            io_write_line(".....*....");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "Blinking Pixel");
+pixel_blink_print();
