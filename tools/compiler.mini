@@ -29,14 +29,14 @@ fn token_json(tokens) {
         token := list_get(tokens, position);
         object_lines := list_of(
             "  {",
-            "    \"kind\": " + json_to_text(map_get(token, "kind")) + ",",
-            "    \"text\": " + json_to_text(map_get(token, "text")) + ",",
-            "    \"source\": " + json_to_text(map_get(token, "source")) + ",",
+            "    \"kind\": " + json_text(map_get(token, "kind")) + ",",
+            "    \"text\": " + json_text(map_get(token, "text")) + ",",
+            "    \"source\": " + json_text(map_get(token, "source")) + ",",
             "    \"start\": " + number_to_text(map_get(token, "start")) + ",",
             "    \"end\": " + number_to_text(map_get(token, "end")) + ",",
             "    \"line\": " + number_to_text(map_get(token, "line")) + ",",
             "    \"column\": " + number_to_text(map_get(token, "column")) + ",",
-            "    \"context\": " + json_to_text(map_get(token, "context")),
+            "    \"context\": " + json_text(map_get(token, "context")),
             "  }"
         );
         if position + 1 < list_length(tokens) {

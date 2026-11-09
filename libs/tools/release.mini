@@ -60,9 +60,12 @@ fn release_text_list1(value) {
 
 /// Read a JSON file or stop.
 fn release_json(path) {
-    parsed := json_parse_file(path);
+    if !path_is_exists(path) {
+        release_fail("cannot read " + path);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        release_fail(result_get_message(parsed));
+        release_fail("invalid JSON: " + path);
     }
     return result_get_value(parsed);
 }
@@ -271,7 +274,7 @@ fn release_prepare(directory, output, tag) {
     if available {
         verify_args := list_of(path_join(source, "dist/verify.js"), "--root", source);
         verified := release_run(process_exec_path(), verify_args, source);
-        parsed := json_parse(text_from_bytes(map_get(verified, "stdout")));
+        parsed := json_value(text_from_bytes(map_get(verified, "stdout")));
         if result_is_ok(parsed) {
             bootstrap = result_get_value(parsed);
         }
@@ -305,7 +308,7 @@ fn release_prepare(directory, output, tag) {
     if path_is_exists(path_join(source, "RELEASE.json")) {
         release_fail("RELEASE.json is reserved for packaged metadata");
     }
-    record := json_to_text(manifest) + "\n";
+    record := json_text(manifest) + "\n";
     file_write(path_join(source, "RELEASE.json"), record);
     archive := "minilang-" + label + ".tar.gz";
     pack_args := list_of("-czf", path_join(output, archive), "-C", source, ".");

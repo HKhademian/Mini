@@ -3,6 +3,7 @@ import "./path";
 import "./json";
 import "./result";
 import "common/process";
+import "common/file";
 
 /// Return the repository root from the running tool path.
 fn project_root() {
@@ -16,7 +17,11 @@ fn project_root() {
 
 /// Return the active compiler entry from configuration.
 fn project_compiler_entry(root) {
-    parsed := json_parse_file(path_join(root, "config/compiler.json"));
+    path := path_join(root, "config/compiler.json");
+    if !path_is_exists(path) {
+        return "";
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
         return "";
     }

@@ -4,7 +4,7 @@ import "common/json";
 import "common/map";
 import "common/io";
 
-parsed := json_parse("{\"name\":\"Mini\",\"count\":2}");
+parsed := json_value("{\"name\":\"Mini\",\"count\":2}");
 if map_get(parsed, "ok") {
     value := map_get(parsed, "value");
     io_write_line(map_get(value, "name"));

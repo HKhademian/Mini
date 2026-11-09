@@ -10,9 +10,14 @@ import "common/file";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {
-    parsed := json_parse_file(path_join(root, "config/compiler.json"));
+    path := path_join(root, "config/compiler.json");
+    if !path_is_exists(path) {
+        io_write_error("cannot read " + path + "\n");
+        process_exit(1);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        io_write_error(result_get_message(parsed) + "\n");
+        io_write_error("invalid JSON: " + path + "\n");
         process_exit(1);
     }
     return map_get(result_get_value(parsed), "entry");
@@ -20,9 +25,14 @@ fn mini_compiler(root) {
 
 /// Return the version registry.
 fn mini_versions(root) {
-    parsed := json_parse_file(path_join(root, "config/versions.json"));
+    path := path_join(root, "config/versions.json");
+    if !path_is_exists(path) {
+        io_write_error("cannot read " + path + "\n");
+        process_exit(1);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        io_write_error(result_get_message(parsed) + "\n");
+        io_write_error("invalid JSON: " + path + "\n");
         process_exit(1);
     }
     return result_get_value(parsed);

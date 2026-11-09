@@ -41,7 +41,7 @@ fn verify_bootstrap(root) {
     if !path_is_exists(bootstrap_path) {
         verify_fail("Self-hosted bootstrap unavailable: finish and promote the mini-written compiler first.");
     }
-    parsed := json_parse(file_read(bootstrap_path));
+    parsed := json_value(file_read(bootstrap_path));
     if result_is_fail(parsed) || value_kind(result_get_value(parsed)) != "map" {
         verify_fail("invalid config/bootstrap.json");
     }
@@ -52,7 +52,7 @@ fn verify_bootstrap(root) {
     if compiler == "" || source == "" || example == "" {
         verify_fail("bootstrap.json needs compiler, source, and example");
     }
-    versions_parsed := json_parse(file_read(path_join(root, "config/versions.json")));
+    versions_parsed := json_value(file_read(path_join(root, "config/versions.json")));
     if result_is_fail(versions_parsed) {
         verify_fail("invalid config/versions.json");
     }
@@ -124,5 +124,5 @@ fn verify_bootstrap(root) {
     map_set(record, "example", case_case_identity(fixture, root));
     map_set(record, "artifacts", artifacts);
     path_remove(work);
-    return json_to_text(record) + "\n";
+    return json_text(record) + "\n";
 }

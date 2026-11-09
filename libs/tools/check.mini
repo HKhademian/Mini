@@ -103,9 +103,12 @@ fn check_keys(value) {
 
 /// Read a JSON file and stop on failure.
 fn check_json(path) {
-    parsed := json_parse_file(path);
+    if !path_is_exists(path) {
+        check_fail("cannot read " + path);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        check_fail(result_get_message(parsed));
+        check_fail("invalid JSON: " + path);
     }
     return result_get_value(parsed);
 }

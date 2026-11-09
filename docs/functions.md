@@ -88,12 +88,12 @@ CR, and returns its UTF-8 text. End of input returns empty text.
 `io_read_bytes(count)` reads up to `count` bytes from standard input as a list of
 integers 0-255; end of input returns a shorter list or an empty list.
 
-`json_parse(text)` parses JSON into the existing value kinds. Objects become maps,
+`json_value(text)` parses JSON into the existing value kinds. Objects become maps,
 arrays become lists, booleans remain booleans, numbers remain safe integers, and
 JSON `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok`
 is true on success, and false with `value` 0 for invalid JSON or non-text input.
 Import `common/json`; its Mini implementation is the fallback and JavaScript
-registers a same-name host override.
+registers a same-name host overrides.
 
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(...values)`:
 consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdout
@@ -111,7 +111,7 @@ converted values followed by one newline.
 `to_text(any_value)` is the shared display conversion in
 [libs/common/display.mini](../libs/common/display.mini); import `common/display`.
 Text passes through, numbers use `number_to_text`, booleans become `true` or
-`false`, and lists/maps use `json_to_text`. JSON serialization remains distinct:
+`false`, and lists/maps use `json_text`. JSON serialization remains distinct:
 it quotes text values.
 
 `fn_args()` is a compiler-provided language form: the generated function

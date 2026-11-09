@@ -51,7 +51,7 @@ fn format_signature(root, file) {
     if map_get(result, "status") != 0 {
         format_fail(file, text_from_bytes(map_get(result, "stderr")));
     }
-    parsed := json_parse(text_from_bytes(map_get(result, "stdout")));
+    parsed := json_value(text_from_bytes(map_get(result, "stdout")));
     if !map_get(parsed, "ok") {
         format_fail(file, "invalid token JSON");
     }

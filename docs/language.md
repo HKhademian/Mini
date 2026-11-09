@@ -296,7 +296,7 @@ io_write("input: ", source, "\n");
   At EOF it returns empty text.
 - `io_write(...values)` converts each supplied value using the same rules as
   `to_text(value)`: text passes through, numbers use `number_to_text`, booleans
-  use `true` or `false`, and lists/maps use `json_to_text`. It concatenates the
+  use `true` or `false`, and lists/maps use `json_text`. It concatenates the
   results without separators and writes them to standard output with no added
   newline. It returns 0; an empty call writes nothing. Writing multiple values
   produces the same bytes as writing each value separately in order.
@@ -375,17 +375,17 @@ text := to_text(any_value);
 
 - `to_text(any_value)` returns the display form used by `io_write`: text is
   unchanged, numbers use `number_to_text`, booleans use `true` or `false`, and
-  lists/maps use compact `json_to_text` serialization.
-- JSON text remains a separate serialization operation: `json_to_text("x")`
+  lists/maps use compact `json_text` serialization.
+- JSON text remains a separate serialization operation: `json_text("x")`
   returns a quoted JSON string, while `to_text("x")` returns `x`.
 
 ## Accepted operation: JSON text
 
 ```mini
-text := json_to_text(value);
+text := json_text(value);
 ```
 
-- `json_to_text(value)` returns compact JSON text without added whitespace.
+- `json_text(value)` returns compact JSON text without added whitespace.
 - Text is quoted and escaped; safe integers use canonical decimal text; booleans
   use `true` and `false`.
 - Lists become arrays; gaps become `null`. Maps become objects with keys sorted
@@ -765,11 +765,11 @@ bytes := io_read_bytes(16);
 ## Accepted operation: JSON parsing
 
 ```mini
-parsed := json_parse("{\"name\":\"Mini\"}");
+parsed := json_value("{\"name\":\"Mini\"}");
 value := map_get(parsed, "value");
 ```
 
-- `json_parse(text)` parses JSON into existing value kinds. Objects become maps,
+- `json_value(text)` parses JSON into existing value kinds. Objects become maps,
   arrays become lists, booleans stay booleans, numbers stay numbers, and JSON
   `null` becomes numeric zero.
 - It returns a map with `ok` and `value`; invalid JSON or non-text input returns

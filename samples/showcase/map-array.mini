@@ -5,7 +5,7 @@ import "common/list";
 import "common/map";
 import "common/io";
 
-parsed := json_parse("[10,20,30]");
+parsed := json_value("[10,20,30]");
 if map_get(parsed, "ok") {
     values := map_get(parsed, "value");
     io_write_line(list_get(values, 1));

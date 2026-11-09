@@ -138,9 +138,12 @@ fn case_stream_text(stream, directory) {
 
 /// Load and validate one case manifest.
 fn case_load_case(path) {
-    parsed := json_parse_file(path);
+    if !path_is_exists(path) {
+        return result_fail("cannot read " + path);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        return parsed;
+        return result_fail("invalid JSON: " + path);
     }
     spec := result_get_value(parsed);
     id := map_get(spec, "id");

@@ -1,32 +1,16 @@
 import "common/list";
-import "common/file";
-import "common/path";
 import "common/map";
 import "common/number";
-import "common/result";
 import "common/text";
 import "common/value";
 
-/// Read and parse a JSON file into a result map.
-fn json_parse_file(path) {
-    if !path_is_exists(path) {
-        return result_fail("cannot read " + path);
-    }
-    parsed := json_parse(file_read(path));
-    if result_is_fail(parsed) {
-        return result_fail("invalid JSON: " + path);
-    }
-    return result_ok(result_get_value(parsed));
-}
-
 /// Build a JSON parse result with the public two-field contract.
-fn json_parse_result(ok, value) {
+fn json_result(ok, value) {
     result := map_new();
     map_set(result, "ok", ok);
     map_set(result, "value", value);
     return result;
 }
-
 
 /// Return whether a character is JSON whitespace.
 fn json_space(character) {
@@ -195,7 +179,7 @@ fn json_array(state) {
         return result;
     }
     while map_get(state, "ok") {
-        value := json_value(state);
+        value := json_parse_node(state);
         if !map_get(state, "ok") {
             return result;
         }
@@ -226,7 +210,7 @@ fn json_object(state) {
         json_skip(state);
         json_take(state, ":");
         json_skip(state);
-        value := json_value(state);
+        value := json_parse_node(state);
         if !map_get(state, "ok") {
             return result;
         }
@@ -242,7 +226,7 @@ fn json_object(state) {
 }
 
 /// Parse one JSON value.
-fn json_value(state) {
+fn json_parse_node(state) {
     json_skip(state);
     character := json_peek(state);
     if character == "\"" {
@@ -283,24 +267,24 @@ fn json_value(state) {
 }
 
 /// Parse JSON into a result map containing ok and value.
-fn json_parse(text) {
+fn json_value(text) {
     state := map_new();
     map_set(state, "text", text);
     map_set(state, "position", 0);
     map_set(state, "ok", true);
     if !value_is_text(text) {
         map_set(state, "ok", false);
-        return json_parse_result(false, 0);
+        return json_result(false, 0);
     }
-    value := json_value(state);
+    value := json_parse_node(state);
     json_skip(state);
     if map_get(state, "position") != text_length(text) {
         json_fail(state);
     }
     if !map_get(state, "ok") {
-        return json_parse_result(false, 0);
+        return json_result(false, 0);
     }
-    return json_parse_result(true, value);
+    return json_result(true, value);
 }
 
 /// Escape one JSON string.
@@ -420,7 +404,7 @@ fn json_encode(value, seen, state) {
 }
 
 /// Serialize one Mini value as compact deterministic JSON.
-fn json_to_text(value) {
+fn json_text(value) {
     state := map_new();
     map_set(state, "ok", true);
     output := json_encode(value, list_new(), state);
@@ -429,6 +413,5 @@ fn json_to_text(value) {
     }
     return output;
 }
-
 
 import "common/map";

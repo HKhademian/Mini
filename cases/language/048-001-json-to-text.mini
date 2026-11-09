@@ -2,7 +2,8 @@ import "common/json";
 import "common/list";
 import "common/map";
 import "common/io";
-if json_to_text("abc") == "\"abc\"" && json_to_text(42) == "42" && json_to_text(true) == "true" && json_to_text(false) == "false" && json_to_text("a\"b") == "\"a\\\"b\"" {
+if json_text("abc") == "\"abc\"" && json_text(42) == "42" && json_text(true) == "true" && json_text(false) == "false" && json_text("a\"b")
+    == "\"a\\\"b\"" {
     io_write_line("ok");
 } else {
     io_write_line("bad");
@@ -11,7 +12,7 @@ items := list_new();
 list_set(items, 0, 1);
 list_set(items, 1, "a");
 list_set(items, 2, true);
-if json_to_text(items) == "[1,\"a\",true]" {
+if json_text(items) == "[1,\"a\",true]" {
     io_write_line("ok");
 } else {
     io_write_line("bad");
@@ -19,12 +20,12 @@ if json_to_text(items) == "[1,\"a\",true]" {
 values := map_new();
 map_set(values, "b", 2);
 map_set(values, "a", 1);
-if json_to_text(values) == "{\"a\":1,\"b\":2}" {
+if json_text(values) == "{\"a\":1,\"b\":2}" {
     io_write_line("ok");
 } else {
     io_write_line("bad");
 }
-if json_to_text(list_new()) == "[]" && json_to_text(map_new()) == "{}" {
+if json_text(list_new()) == "[]" && json_text(map_new()) == "{}" {
     io_write_line("ok");
 } else {
     io_write_line("bad");

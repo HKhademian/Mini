@@ -18,18 +18,26 @@ fn build_fail(message) {
 
 /// Read the tool manifest and return it.
 fn build_manifest(root) {
-    parsed := json_parse_file(path_join(root, "tools/mini-tools.json"));
+    path := path_join(root, "tools/mini-tools.json");
+    if !path_is_exists(path) {
+        build_fail("cannot read " + path);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        build_fail(result_get_message(parsed));
+        build_fail("invalid JSON: " + path);
     }
     return result_get_value(parsed);
 }
 
 /// Return the active compiler entry.
 fn build_compiler(root) {
-    parsed := json_parse_file(path_join(root, "config/compiler.json"));
+    path := path_join(root, "config/compiler.json");
+    if !path_is_exists(path) {
+        build_fail("cannot read " + path);
+    }
+    parsed := json_value(file_read(path));
     if result_is_fail(parsed) {
-        build_fail(result_get_message(parsed));
+        build_fail("invalid JSON: " + path);
     }
     return map_get(result_get_value(parsed), "entry");
 }

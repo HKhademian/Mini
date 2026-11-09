@@ -18,7 +18,7 @@ fn to_text(value) {
         return "false";
     }
     if kind == "list" || kind == "map" {
-        return json_to_text(value);
+        return json_text(value);
     }
     return "0";
 }

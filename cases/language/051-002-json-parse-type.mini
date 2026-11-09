@@ -1,2 +1,2 @@
 import "common/json";
-json_parse(1);
+json_value(1);

@@ -6,6 +6,7 @@ import "common/path";
 import "common/process";
 import "common/json";
 import "common/project";
+import "common/file";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
@@ -91,9 +92,13 @@ fn ci_publish(root) {
         ci_fail("publish requires GITHUB_REF_NAME");
     }
     directory := path_join(root, "dist/release");
-    parsed := json_parse_file(path_join(directory, "manifest.json"));
+    manifest_path := path_join(directory, "manifest.json");
+    if !path_is_exists(manifest_path) {
+        ci_fail("cannot read " + manifest_path);
+    }
+    parsed := json_value(file_read(manifest_path));
     if result_is_fail(parsed) {
-        ci_fail(result_get_message(parsed));
+        ci_fail("invalid JSON: " + manifest_path);
     }
     manifest := result_get_value(parsed);
     if map_get(manifest, "tag") != tag {

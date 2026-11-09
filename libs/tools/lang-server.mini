@@ -208,7 +208,7 @@ fn lsp_analyze(text, name) {
         map_set(failed, "diagnostics", diagnostics);
         return failed;
     }
-    parsed := json_parse(text_from_bytes(map_get(tokenized, "stdout")));
+    parsed := json_value(text_from_bytes(map_get(tokenized, "stdout")));
     if result_is_ok(parsed) && value_kind(result_get_value(parsed)) == "list" {
         tokens = result_get_value(parsed);
     }
@@ -490,20 +490,20 @@ fn lsp_send(body) {
 
 /// Reply with raw result JSON text.
 fn lsp_reply(id, result) {
-    lsp_send("{\"jsonrpc\":\"2.0\",\"id\":" + json_to_text(id) + ",\"result\":" + result + "}");
+    lsp_send("{\"jsonrpc\":\"2.0\",\"id\":" + json_text(id) + ",\"result\":" + result + "}");
     return 0;
 }
 
 /// Reply with a protocol error.
 fn lsp_reply_error(id, code, message) {
-    lsp_send("{\"jsonrpc\":\"2.0\",\"id\":" + json_to_text(id) + ",\"error\":{\"code\":" + number_to_text(code)
-        + ",\"message\":" + json_to_text(message) + "}}");
+    lsp_send("{\"jsonrpc\":\"2.0\",\"id\":" + json_text(id) + ",\"error\":{\"code\":" + number_to_text(code)
+        + ",\"message\":" + json_text(message) + "}}");
     return 0;
 }
 
 /// Send a notification with raw params JSON text.
 fn lsp_notify(method, params) {
-    lsp_send("{\"jsonrpc\":\"2.0\",\"method\":" + json_to_text(method) + ",\"params\":" + params + "}");
+    lsp_send("{\"jsonrpc\":\"2.0\",\"method\":" + json_text(method) + ",\"params\":" + params + "}");
     return 0;
 }
 
@@ -515,7 +515,7 @@ fn lsp_publish(uri, version, diagnostics) {
         map_set(params, "version", version);
     }
     map_set(params, "diagnostics", diagnostics);
-    lsp_notify("textDocument/publishDiagnostics", json_to_text(params));
+    lsp_notify("textDocument/publishDiagnostics", json_text(params));
     return 0;
 }
 
@@ -584,7 +584,7 @@ fn lsp_formatting(documents, params) {
     map_set(edit, "newText", formatted);
     edits := list_new();
     list_set(edits, 0, edit);
-    return json_to_text(edits);
+    return json_text(edits);
 }
 
 /// Handle a hover request.
@@ -604,7 +604,7 @@ fn lsp_hover_reply(documents, params) {
     if hover == 0 {
         return "null";
     }
-    return json_to_text(hover);
+    return json_text(hover);
 }
 
 /// Handle a completion request.
@@ -623,7 +623,7 @@ fn lsp_completion_reply(documents, params) {
     reply := map_new();
     map_set(reply, "isIncomplete", false);
     map_set(reply, "items", lsp_completions(map_get(outcome, "tokens"), text, lsp_offset_at(text, position)));
-    return json_to_text(reply);
+    return json_text(reply);
 }
 
 /// Handle a definition request.
@@ -646,7 +646,7 @@ fn lsp_definition_reply(documents, params) {
     reply := map_new();
     map_set(reply, "uri", map_get(text_document, "uri"));
     map_set(reply, "range", lsp_range_of(map_get(declaration, "token")));
-    return json_to_text(reply);
+    return json_text(reply);
 }
 
 /// Handle a notification.
@@ -712,14 +712,14 @@ fn lsp_request(documents, shutting_down, id, method, params) {
         map_set(completion, "resolveProvider", false);
         map_set(capabilities, "completionProvider", completion);
         map_set(capabilities, "definitionProvider", true);
-        versions := map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
+        versions := map_get(json_value(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
         server_info := map_new();
         map_set(server_info, "name", "mini-lang-server");
         map_set(server_info, "version", "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp"));
         result := map_new();
         map_set(result, "capabilities", capabilities);
         map_set(result, "serverInfo", server_info);
-        lsp_reply(id, json_to_text(result));
+        lsp_reply(id, json_text(result));
         return 0;
     }
     if method == "shutdown" {
@@ -764,7 +764,7 @@ fn lsp_read_message() {
         return 0;
     }
     body := text_from_bytes(io_read_bytes(length));
-    parsed := json_parse(body);
+    parsed := json_value(body);
     if result_is_fail(parsed) {
         lsp_log("invalid JSON message");
         return map_new();
@@ -774,7 +774,7 @@ fn lsp_read_message() {
 
 /// Return the language-server version label.
 fn lsp_version() {
-    versions := map_get(json_parse(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
+    versions := map_get(json_value(file_read(path_join(lsp_root(), "config/versions.json"))), "value");
     return "lsp-v" + map_get(versions, "group") + "-v" + map_get(versions, "lsp");
 }
 

@@ -5,7 +5,7 @@ import "common/list";
 import "common/map";
 import "common/io";
 
-object := json_parse("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
+object := json_value("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
 if map_get(object, "ok") {
     value := map_get(object, "value");
     items := map_get(value, "items");
@@ -18,14 +18,14 @@ if map_get(object, "ok") {
 } else {
     io_write_line("object bad");
 }
-list_value := json_parse("[1,\"two\",false,null]");
+list_value := json_value("[1,\"two\",false,null]");
 values := map_get(list_value, "value");
 if map_get(list_value, "ok") && list_length(values) == 4 && list_get(values, 3) == 0 {
     io_write_line("list ok");
 } else {
     io_write_line("list bad");
 }
-broken := json_parse("{bad");
+broken := json_value("{bad");
 if !map_get(broken, "ok") {
     io_write_line("invalid ok");
 } else {

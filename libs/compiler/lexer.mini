@@ -228,7 +228,7 @@ fn lex_tokenize(source, source_name, include_comments) {
             } else if text_find("=+-!<>(),;{}", character) >= 0 {
                 lex_advance(state);
             } else {
-                lex_fail(token, "unexpected character " + json_to_text(character));
+                lex_fail(token, "unexpected character " + json_text(character));
             }
             map_set(token, "text", text_slice(source, map_get(token, "start"), map_get(state, "position")));
             map_set(token, "end", map_get(state, "position"));

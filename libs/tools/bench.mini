@@ -36,7 +36,7 @@ fn bench_half(value) {
 
 /// Return the compiler source hash from configuration.
 fn bench_compiler_hash(root) {
-    parsed := json_parse(file_read(path_join(root, "config/compiler.json")));
+    parsed := json_value(file_read(path_join(root, "config/compiler.json")));
     if result_is_fail(parsed) {
         bench_fail("invalid config/compiler.json");
     }
@@ -124,16 +124,20 @@ fn bench_run(root, output, filter) {
     if list_length(results) == 0 {
         bench_fail("no benchmark cases selected");
     }
-    versions_parsed := json_parse(file_read(path_join(root, "config/versions.json")));
+    versions_parsed := json_value(file_read(path_join(root, "config/versions.json")));
     report := map_new();
     map_set(report, "commit", bench_commit(root));
     if result_is_ok(versions_parsed) {
         map_set(report, "versions", result_get_value(versions_parsed));
     }
     map_set(report, "compiler", bench_compiler_hash(root));
-    map_set(report, "scope", "fresh-process wall time including startup, IO, verification, and compilation for program cases");
+    map_set(
+        report,
+        "scope",
+        "fresh-process wall time including startup, IO, verification, and compilation for program cases"
+    );
     map_set(report, "results", results);
     directory_create(path_parent(output));
-    file_write(output, json_to_text(report) + "\n");
+    file_write(output, json_text(report) + "\n");
     return list_length(results);
 }

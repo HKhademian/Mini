@@ -93,9 +93,13 @@ fn bootstrap_clean_all(root) {
     bootstrap_step(root, "VS Code TypeScript check", "npm", list_of("run", "check"), editor);
     bootstrap_step(root, "VS Code build", "npm", list_of("run", "build"), editor);
     bootstrap_step(root, "VS Code grammar tests", node, list_of("--test", "test/grammar.test.ts"), editor);
-    versions_result := json_parse_file(path_join(root, "config/versions.json"));
+    versions_path := path_join(root, "config/versions.json");
+    if !path_is_exists(versions_path) {
+        bootstrap_fail("cannot read " + versions_path);
+    }
+    versions_result := json_value(file_read(versions_path));
     if result_is_fail(versions_result) {
-        bootstrap_fail(result_get_message(versions_result));
+        bootstrap_fail("invalid JSON: " + versions_path);
     }
     versions := result_get_value(versions_result);
     package_name := "mini-" + map_get(versions, "group") + "-v" + map_get(versions, "vscode") + ".vsix";

@@ -4,6 +4,6 @@ import "common/json";
 import "common/map";
 import "common/io";
 
-parsed := json_parse(io_read_all());
+parsed := json_value(io_read_all());
 value := map_get(parsed, "value");
 io_write_line(map_get(value, "name"));

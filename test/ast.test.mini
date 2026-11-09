@@ -65,7 +65,7 @@ fn main() {
     ) <= map_get(binding, "start") {
         ast_test_fail("source span");
     }
-    if text_length(json_to_text(program)) == 0 {
+    if text_length(json_text(program)) == 0 {
         ast_test_fail("AST should be serializable for inspection");
     }
     io_write("compiler AST ok\n");
