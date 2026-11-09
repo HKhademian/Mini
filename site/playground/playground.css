@@ -330,6 +330,61 @@
   font-size: 1rem;
 }
 
+.graphical-samples {
+  margin: 0 0 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+}
+
+.graphical-samples h2,
+.graphical-samples p {
+  margin: 0;
+}
+
+.graphical-samples h2 {
+  font-size: 1rem;
+}
+
+.graphical-samples p {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.graphical-samples ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px 20px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.graphical-samples li {
+  display: grid;
+  gap: 2px;
+}
+
+.graphical-samples li span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.graphical-group + .graphical-group {
+  margin-top: 14px;
+}
+
+.graphical-group h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.graphical-group a {
+  color: var(--accent);
+}
+
 #play-canvas {
   width: min(100%, 560px);
   height: auto;

@@ -13,6 +13,7 @@ type PlaygroundEntry = {
     readonly note: string;
     readonly args: readonly string[];
     readonly stdin: string;
+    readonly status?: "planned";
     readonly file?: string;
     readonly source?: string;
 };
@@ -468,7 +469,7 @@ function verifyPlaygroundSample(sample: PlaygroundSample): void {
 
 /// Load and verify every playground entry.
 function loadPlaygroundSamples(): readonly PlaygroundSample[] {
-    return playgroundSamples.map((entry) => {
+    return playgroundSamples.filter((entry) => entry.status !== "planned").map((entry) => {
         if ((entry.file === undefined) === (entry.source === undefined)) {
             throw new Error(`${entry.id} needs exactly one of file or source`);
         }
@@ -497,7 +498,7 @@ function readVersions(): { compiler: string; language: string; play: string } {
 }
 
 /// Render the playground page.
-function renderPlayground(data: readonly PlaygroundSample[]): string {
+function renderPlayground(data: readonly PlaygroundSample[], planned: readonly PlaygroundEntry[]): string {
     let options = "";
     let currentGroup = "";
     data.forEach((sample, index) => {
@@ -515,6 +516,19 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
     const serialized = JSON.stringify(data).replaceAll("<", "\\u003c");
     const versions = readVersions();
+    const graphicalSamples = data.filter((sample) => ["Games", "Pixel Art", "Animation", "Interactive"].includes(sample.group));
+    const graphicalGroups = Array.from(new Set(graphicalSamples.map((sample) => sample.group).concat(planned.map((sample) => sample.group))));
+    const graphicalSection = graphicalGroups.length === 0 ? "" : `<section class="graphical-samples" aria-labelledby="graphical-samples-title">
+      <h2 id="graphical-samples-title">Graphical samples</h2>
+      <p>Runnable samples open in the editor. Items marked planned are not runnable yet.</p>
+      ${graphicalGroups.map((group) => {
+          const runnable = graphicalSamples.filter((sample) => sample.group === group);
+          const upcoming = planned.filter((sample) => sample.group === group);
+          const runnableItems = runnable.map((sample) => `<li><a href="?sample=${encodeURIComponent(sample.id)}">${escapeHtml(sample.label)}</a><span>${escapeHtml(sample.note)}</span></li>`).join("");
+          const plannedItems = upcoming.map((sample) => `<li><strong>${escapeHtml(sample.label)}</strong><span>${escapeHtml(sample.note)}</span></li>`).join("");
+          return `<div class="graphical-group"><h3>${escapeHtml(group)}</h3><ul>${runnableItems}${plannedItems}</ul></div>`;
+      }).join("")}
+    </section>`;
     return `<!doctype html>
 <html lang="en">
 <head>
@@ -544,7 +558,8 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
   <main id="main" class="playground">
     <h1>Playground</h1>
-    <p class="lede">Choose from ${data.length} examples or write your own. The compiler and program run in your browser.</p>
+    <p class="lede">Choose from ${data.length} runnable examples or write your own. The compiler and program run in your browser.</p>
+    ${graphicalSection}
 
     <div class="workbench">
       <section class="pane" aria-label="Editor">
@@ -934,7 +949,13 @@ function main(): void {
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
     writeFileSync(join(playground, "imports.js"), buildBrowserImports());
-    writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
+    writeFileSync(
+        join(playground, "index.html"),
+        renderPlayground(
+            loadPlaygroundSamples(),
+            playgroundSamples.filter((sample) => sample.status === "planned"),
+        ),
+    );
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
     writeFileSync(join(playground, "worker.js"), buildBrowserWorker());
     cpSync(join(root, "site", "playground", "playground.css"), join(playground, "playground.css"));

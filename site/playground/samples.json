@@ -472,6 +472,96 @@
     "file": "samples/showcase/frogger-board.mini"
   },
   {
+    "id": "pong-board",
+    "group": "Games",
+    "label": "Pong — planned",
+    "note": "A two-paddle ball game for the small canvas.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pacman-board",
+    "group": "Games",
+    "label": "Pac-Man — planned",
+    "note": "Guide a character through a maze and collect dots.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "freeway-board",
+    "group": "Games",
+    "label": "Freeway — planned",
+    "note": "Guide a chicken across lanes of moving traffic.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "seaquest-board",
+    "group": "Games",
+    "label": "Seaquest — planned",
+    "note": "Dive, rescue divers, and manage your air supply.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "asterix-board",
+    "group": "Games",
+    "label": "Asterix — planned",
+    "note": "A compact action game with jumping and obstacles.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "snake-board",
+    "group": "Games",
+    "label": "Snake — planned",
+    "note": "Grow longer while avoiding walls and your own tail.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "space-invaders-board",
+    "group": "Games",
+    "label": "Space Invaders — planned",
+    "note": "Move a ship, fire at a descending formation, and track lives.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "tetris-board",
+    "group": "Games",
+    "label": "Tetris — planned",
+    "note": "Move and rotate falling pieces to clear rows.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "lunar-lander-board",
+    "group": "Games",
+    "label": "Lunar Lander — planned",
+    "note": "Use simple thrust and gravity to land safely.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "qbert-board",
+    "group": "Games",
+    "label": "Q*bert — planned",
+    "note": "Hop across a compact isometric-style tile board.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
     "id": "pixel-one",
     "group": "Pixel Art",
     "label": "One pixel",
@@ -488,6 +578,69 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-heart.mini"
+  },
+  {
+    "id": "pixel-shapes",
+    "group": "Pixel Art",
+    "label": "Lines and shapes — planned",
+    "note": "Draw a line, box, and diagonal on a small board.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-icons",
+    "group": "Pixel Art",
+    "label": "Tiny house and arrow icons — planned",
+    "note": "Build small icons from colored pixel patterns.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-checkerboard",
+    "group": "Pixel Art",
+    "label": "Checkerboard — planned",
+    "note": "Fill the board with alternating pixel colors.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-stripes",
+    "group": "Pixel Art",
+    "label": "Stripes — planned",
+    "note": "Draw a repeating stripe pattern.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-gradient",
+    "group": "Pixel Art",
+    "label": "Color gradient — planned",
+    "note": "Blend pixel colors across a tiny canvas.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-blinking-dot",
+    "group": "Animation",
+    "label": "Single-pixel color blink — planned",
+    "note": "Alternate one pixel gently between two colors.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-wraparound",
+    "group": "Animation",
+    "label": "Wrap-around moving pixel — planned",
+    "note": "Move a single pixel across the board and wrap at the edge.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
   },
   {
     "id": "pixel-blink",
@@ -517,6 +670,24 @@
     "file": "samples/showcase/pixel-beating-heart.mini"
   },
   {
+    "id": "pixel-rain",
+    "group": "Animation",
+    "label": "Falling rain — planned",
+    "note": "Animate falling pixels and respawn them at the top.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-walk-cycle",
+    "group": "Animation",
+    "label": "Tiny walk cycle — planned",
+    "note": "Switch between small character poses to suggest walking.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
     "id": "pixel-arrows",
     "group": "Interactive",
     "label": "Arrow keys",
@@ -524,6 +695,33 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-arrows.mini"
+  },
+  {
+    "id": "pixel-cursor-draw",
+    "group": "Interactive",
+    "label": "Draw with the cursor — planned",
+    "note": "Move the pointer to draw a trail of pixels.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-light-switch",
+    "group": "Interactive",
+    "label": "Light switch — planned",
+    "note": "Toggle a pixel pattern on and off with a key.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
+  },
+  {
+    "id": "pixel-maze",
+    "group": "Interactive",
+    "label": "Mini maze — planned",
+    "note": "Move a pixel through a maze to reach the goal.",
+    "args": [],
+    "stdin": "",
+    "status": "planned"
   },
   {
     "id": "pixel-dvd",

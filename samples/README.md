@@ -38,10 +38,10 @@ node samples/009-list-mutation.mini.ts
 
 ## Showcase samples
 
-The curated online-playground samples live in [showcase/](showcase/). Each one
-has a matching case under [cases/showcase/](../cases/showcase/) and runs in
-`mini test`; the site catalog is generated from the same files, so a sample
-cannot drift from its verified output.
+Runnable graphical samples live in [showcase/](showcase/). Each one has a
+matching case under [cases/showcase/](../cases/showcase/) and runs in
+`mini test`; the playground build also compiles and runs every runnable catalog
+entry. Planned ideas are listed separately below and on the playground page.
 
 - [breakout-board.mini](showcase/breakout-board.mini): Start and pause a small Breakout game with Space and P; a miss pauses in place, a win celebrates, and the top settings tune paddle width, brick columns, and ball speed. [Case](../cases/showcase/breakout-board.case.json).
 - [frogger-board.mini](showcase/frogger-board.mini): Move Frogger between animated road and river lanes on a ten-by-ten pixel board. [Case](../cases/showcase/frogger-board.case.json).
@@ -52,3 +52,16 @@ cannot drift from its verified output.
 - [pixel-beating-heart.mini](showcase/pixel-beating-heart.mini): Pulse a pixel heart between two sizes and shades of red. [Case](../cases/showcase/pixel-beating-heart.case.json).
 - [pixel-arrows.mini](showcase/pixel-arrows.mini): Move a pixel with arrow keys or WASD to reach a goal. [Case](../cases/showcase/pixel-arrows.case.json).
 - [pixel-dvd.mini](showcase/pixel-dvd.mini): Bounce one bright pixel over a blue screen like a DVD screensaver. [Case](../cases/showcase/pixel-dvd.case.json).
+
+### Planned graphical samples
+
+These ideas are listed in the playground roadmap; they do not have runnable Mini
+source yet.
+
+- Games: Pong, Pac-Man, Freeway, Seaquest, Asterix, Snake, Space Invaders,
+  Tetris, Lunar Lander, and Q*bert.
+- Pixel art: lines and shapes, tiny house and arrow icons, checkerboard,
+  stripes, and a color gradient.
+- Animation: a single-pixel color blink, a wrap-around moving pixel, falling
+  rain, and a tiny walk cycle.
+- Interaction: draw with the cursor, a light switch, and a mini maze.
