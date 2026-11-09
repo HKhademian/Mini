@@ -2,7 +2,7 @@
 
 const buildRevision = "";
 
-globalThis.__miniSink = () => {};
+globalThis.__miniSink = null;
 
 /// Minimal UTF-8 Buffer for text_to_bytes and text_from_bytes.
 class MiniBuffer extends Uint8Array {
@@ -28,6 +28,12 @@ function processStub() {
     throw new Error("file access is not available in the playground");
   };
   const browserFileSystem = {
+    readFileSync(path) {
+      if (path === 0) return globalThis.__miniStdin ?? "";
+      const files = globalThis.__miniFiles ?? {};
+      if (Object.prototype.hasOwnProperty.call(files, path)) return files[path];
+      throw new Error("file access is not available in the playground: " + path);
+    },
     existsSync(path) {
       return Object.prototype.hasOwnProperty.call(globalThis.__miniFiles ?? {}, path);
     },
@@ -39,6 +45,16 @@ function processStub() {
     rmSync: fileAccessUnavailable,
     cpSync: fileAccessUnavailable,
     writeFileSync: fileAccessUnavailable,
+    writeSync(fd, text) {
+      const sink = globalThis.__miniSink;
+      if (typeof sink === "function") {
+        sink(fd, String(text));
+      } else if (fd === 2) {
+        globalThis.__miniRuntimeError += String(text);
+      } else {
+        globalThis.__miniOutput += String(text);
+      }
+    },
   };
   return {
     argv: ["node", "mini"],
@@ -97,7 +113,7 @@ async function compileSource(source, portable) {
   } finally {
     const compiler = await loadCompiler();
     compiler.emit_js_set_reference_mode(false);
-    globalThis.__miniSink = () => {};
+    globalThis.__miniSink = null;
   }
 }
 
