@@ -1,0 +1,35 @@
+/// Native C runtime helpers for Mini's scalar operators.
+
+import "./registry";
+
+emit_c_host_runtime_add(
+    "operators",
+    "static int MINI_ID(add)(MINI_ID(text_buffer) *buffer, MINI_ID(value) *left, MINI_ID(value) right) {\n"
+    + "    if (left->kind == MINI_ID(kind_number) && right.kind == MINI_ID(kind_number)) {\n"
+    + "        left->number += right.number;\n"
+    + "        return 0;\n"
+    + "    }\n"
+    + "    if (left->kind != MINI_ID(kind_text) || right.kind != MINI_ID(kind_text)) return 1;\n"
+    + "    MINI_ID(text) a = left->text, b = right.text;\n"
+    + "    if (a.buffer != buffer || b.buffer != buffer || a.offset > buffer->count || b.offset > buffer->count\n"
+    + "        || a.length > buffer->count - a.offset || b.length > buffer->count - b.offset) return 1;\n"
+    + "    size_t start = buffer->count;\n"
+    + "    if (a.length && MINI_ID(text_buffer_append)(buffer, buffer->items + a.offset, a.length)) return 1;\n"
+    + "    if (b.length && MINI_ID(text_buffer_append)(buffer, buffer->items + b.offset, b.length)) return 1;\n"
+    + "    *left = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, start, buffer->count - start);\n"
+    + "    return 0;\n"
+    + "}\n"
+    + "\n"
+    + "static int MINI_ID(equal)(MINI_ID(value) left, MINI_ID(value) right) {\n"
+    + "    if (left.kind != right.kind) return 0;\n"
+    + "    if (left.kind == MINI_ID(kind_number)) return left.number == right.number;\n"
+    + "    if (left.kind == MINI_ID(kind_boolean)) return !!left.boolean == !!right.boolean;\n"
+    + "    if (left.kind != MINI_ID(kind_text)) return 0;\n"
+    + "    MINI_ID(text) a = left.text, b = right.text;\n"
+    + "    if (!a.buffer || !b.buffer || a.offset > a.buffer->count || b.offset > b.buffer->count\n"
+    + "        || a.length > a.buffer->count - a.offset || b.length > b.buffer->count - b.offset) return 0;\n"
+    + "    if (a.length != b.length) return 0;\n"
+    + "    if (!a.length) return 1;\n"
+    + "    return memcmp(a.buffer->items + a.offset, b.buffer->items + b.offset, a.length) == 0;\n"
+    + "}\n"
+);

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.55 / compiler 0.5.0-alpha.66 / bootstrap
+  0.3.0-alpha.68: move C addition and equality runtime definitions into the
+  emitter override registry.
+
 - mini 0.3.0-alpha.54 / compiler 0.5.0-alpha.65 / bootstrap
   0.3.0-alpha.67: require imported Mini function definitions for every
   contracted operation and remove the stale AST builtin-call flag.

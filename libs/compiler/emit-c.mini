@@ -16,6 +16,7 @@ import "./emit-c/overrides/list";
 import "./emit-c/overrides/value";
 import "./emit-c/overrides/text";
 import "./emit-c/overrides/process";
+import "./emit-c/overrides/operators";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {
@@ -351,53 +352,6 @@ fn emit_c_number_literal(token, negative, location) {
     return digits + ".0";
 }
 
-/// Return scalar equality without text encoding or NUL-termination assumptions.
-fn emit_c_equal_runtime() {
-    return emit_c_join_lines(
-        list_of(
-            "static int MINI_ID(equal)(MINI_ID(value) left, MINI_ID(value) right) {",
-            "    if (left.kind != right.kind) return 0;",
-            "    if (left.kind == MINI_ID(kind_number)) return left.number == right.number;",
-            "    if (left.kind == MINI_ID(kind_boolean)) return !!left.boolean == !!right.boolean;",
-            "    if (left.kind != MINI_ID(kind_text)) return 0;",
-            "    MINI_ID(text) a = left.text, b = right.text;",
-            "    if (!a.buffer || !b.buffer || a.offset > a.buffer->count || b.offset > b.buffer->count",
-            "        || a.length > a.buffer->count - a.offset || b.length > b.buffer->count - b.offset) return 0;",
-            "    if (a.length != b.length) return 0;",
-            "    if (!a.length) return 1;",
-            "    return memcmp(a.buffer->items + a.offset, b.buffer->items + b.offset, a.length) == 0;",
-            "}",
-            ""
-        ),
-        1
-    );
-}
-
-/// Return number addition and text joining over invocation-owned storage.
-fn emit_c_add_runtime() {
-    return emit_c_join_lines(
-        list_of(
-            "static int MINI_ID(add)(MINI_ID(text_buffer) *buffer, MINI_ID(value) *left, MINI_ID(value) right) {",
-            "    if (left->kind == MINI_ID(kind_number) && right.kind == MINI_ID(kind_number)) {",
-            "        left->number += right.number;",
-            "        return 0;",
-            "    }",
-            "    if (left->kind != MINI_ID(kind_text) || right.kind != MINI_ID(kind_text)) return 1;",
-            "    MINI_ID(text) a = left->text, b = right.text;",
-            "    if (a.buffer != buffer || b.buffer != buffer || a.offset > buffer->count || b.offset > buffer->count",
-            "        || a.length > buffer->count - a.offset || b.length > buffer->count - b.offset) return 1;",
-            "    size_t start = buffer->count;",
-            "    if (a.length && MINI_ID(text_buffer_append)(buffer, buffer->items + a.offset, a.length)) return 1;",
-            "    if (b.length && MINI_ID(text_buffer_append)(buffer, buffer->items + b.offset, b.length)) return 1;",
-            "    *left = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, start, buffer->count - start);",
-            "    return 0;",
-            "}",
-            ""
-        ),
-        1
-    );
-}
-
 /// Wrap one file's operations using invocation-owned storage.
 fn emit_c_file_function(index, body) {
     lines := list_new();
@@ -526,7 +480,6 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
         body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function) + "    MINI_ID(value) "
             + right + ";\n" + emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function);
         if operator == "+" {
-            map_set(state, "c_add_used", true);
             return body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) return 1;\n";
         }
         if operator == "-" {
@@ -534,7 +487,6 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
                 + "    " + destination + ".number -= " + right + ".number;\n";
         }
         if operator == "==" || operator == "!=" {
-            map_set(state, "c_equal_used", true);
             expression := "MINI_ID(equal)(" + destination + ", " + right + ")";
             if operator == "!=" {
                 expression = "!" + expression;
@@ -927,8 +879,6 @@ fn emit_c_program(program, header_name) {
     state := map_new();
     map_set(state, "c_temp", 0);
     map_set(state, "c_arg_count", 0);
-    map_set(state, "c_add_used", false);
-    map_set(state, "c_equal_used", false);
     map_set(state, "c_binding_count", 0);
     map_set(state, "c_declarations", list_new());
     map_set(state, "c_conditions", list_new());
@@ -1020,18 +970,7 @@ fn emit_c_program(program, header_name) {
         );
         file_index = file_index + 1;
     }
-    runtime_parts := list_new();
-    host_runtimes := emit_c_host_runtime_definitions();
-    if host_runtimes != "" {
-        list_set(runtime_parts, list_length(runtime_parts), host_runtimes);
-    }
-    if map_get(state, "c_add_used") {
-        list_set(runtime_parts, list_length(runtime_parts), emit_c_add_runtime());
-    }
-    if map_get(state, "c_equal_used") {
-        list_set(runtime_parts, list_length(runtime_parts), emit_c_equal_runtime());
-    }
-    runtime := list_join(runtime_parts, "");
+    runtime := emit_c_host_runtime_definitions();
     lines := list_new();
     emit_c_collect_lines(lines, "// Generated by the mini C target.");
     emit_c_collect_lines(lines, emit_c_host_preambles());
@@ -1066,6 +1005,7 @@ fn emit_c_program(program, header_name) {
         lines,
         "    (void)MINI_ID(list_new); (void)MINI_ID(list_push); (void)MINI_ID(list_pop); (void)MINI_ID(list_truncate);"
     );
+    emit_c_collect_lines(lines, "    (void)MINI_ID(add); (void)MINI_ID(equal);");
     emit_c_collect_lines(lines, "    (void)MINI_ID(list_length); (void)MINI_ID(list_get); (void)MINI_ID(list_set);");
     emit_c_collect_lines(
         lines,
