@@ -20,314 +20,6 @@ let AST_GROUP;
 let js_host_functions;
 let reference_mode;
 function panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
-function map_new() { return Object.create(null); }
-function map_get(items, key) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
-    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;
-}
-function map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") items[key] = value;
-    return 0;
-}
-function map_has(items, key) {
-    return items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string" && Object.prototype.hasOwnProperty.call(items, key);
-}
-function map_keys(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return [];
-    return Object.keys(items);
-}
-function map_delete(items, key) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") delete items[key];
-    return 0;
-}
-function map_copy(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
-    return Object.assign(Object.create(null), items);
-}
-function map_merge() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let sources = $mini_fn_args;
-    let result = map_new();
-    let source_index = 0;
-    while ((source_index < (sources).length)) {
-        let source = list_get(sources, source_index);
-        if (value_is_map(source)) {
-            let keys = map_keys(source);
-            let key_index = 0;
-            while ((key_index < (keys).length)) {
-                let key = list_get(keys, key_index);
-                map_set(result, key, map_get(source, key));
-                key_index = (key_index + 1);
-            }
-        }
-        source_index = (source_index + 1);
-    }
-    return result;
-}
-function map_of() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let entries = $mini_fn_args;
-    let result = map_new();
-    let position = 0;
-    while ((position < (entries).length)) {
-        let key = list_get(entries, position);
-        let value = 0;
-        if (((position + 1) < (entries).length)) {
-            value = list_get(entries, (position + 1));
-        }
-        map_set(result, key, value);
-        position = (position + 2);
-    }
-    return result;
-}
-function text_merge() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let values = $mini_fn_args;
-    let output = "";
-    let position = 0;
-    while ((position < (values).length)) {
-        let value = list_get(values, position);
-        if (value_is_text(value)) {
-            output = (output + value);
-        }
-        position = (position + 1);
-    }
-    return output;
-}
-function text_join() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let values = $mini_fn_args;
-    if (((values).length === 0)) {
-        return "";
-    }
-    let separator = list_get(values, 0);
-    if ((!value_is_text(separator))) {
-        return "";
-    }
-    let output = "";
-    let position = 1;
-    while ((position < (values).length)) {
-        if ((position > 1)) {
-            output = (output + separator);
-        }
-        let value = list_get(values, position);
-        if (value_is_text(value)) {
-            output = (output + value);
-        }
-        position = (position + 1);
-    }
-    return output;
-}
-function text_length(source) { return typeof source === "string" ? source.length : 0; }
-function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
-function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
-function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
-function split_lines(source) {
-
-    let lines = text_split(source, "\n");
-    let position = 0;
-    while ((position < ((lines).length - 1))) {
-        let line = list_get(lines, position);
-        if (((text_length(line) > 0) && (text_get(line, (text_length(line) - 1)) === "\r"))) {
-            list_set(lines, position, text_slice(line, 0, (text_length(line) - 1)));
-        }
-        position = (position + 1);
-    }
-    return lines;
-}
-function text_slice(source, start, end) {
-    if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
-    if (start < 0) start = source.length + start;
-    if (end < 0) end = source.length + end;
-    if (start < 0) start = 0;
-    if (end < 0) end = 0;
-    if (start > source.length) start = source.length;
-    if (end > source.length) end = source.length;
-    if (end <= start) return "";
-    return source.slice(start, end);
-}
-function indent_output(output) {
-
-    let lines = split_lines(output);
-    let result = list_new();
-    let position = 0;
-    while ((position < (lines).length)) {
-        let line = list_get(lines, position);
-        if ((text_length(line) > 0)) {
-            list_set(result, (result).length, ("    " + line));
-        }
-        position = (position + 1);
-    }
-    return list_join("\n", result);
-}
-function text_ends_with(source, suffix) {
-
-    let size = text_length(suffix);
-    let length = text_length(source);
-    if ((size > length)) {
-        return false;
-    }
-    return (text_slice(source, (length - size), length) === suffix);
-}
-function is_letter(character) {
-
-    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
-}
-function is_digit(character) {
-
-    return (text_find("0123456789", character) >= 0);
-}
-function is_identifier_part(character) {
-
-    return (is_letter(character) || is_digit(character));
-}
-function is_two_character_symbol(value) {
-
-    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
-}
-function text_starts_with(source, prefix) {
-
-    let size = text_length(prefix);
-    if ((size > text_length(source))) {
-        return false;
-    }
-    return (text_slice(source, 0, size) === prefix);
-}
-function text_chomp(text) {
-
-    let length = text_length(text);
-    while (((length > 0) && ((text_get(text, (length - 1)) === "\n") || (text_get(text, (length - 1)) === "\r")))) {
-        length = (length - 1);
-    }
-    return text_slice(text, 0, length);
-}
-function text_trim_end(text) {
-
-    let length = text_length(text);
-    while ((length > 0)) {
-        let character = text_get(text, (length - 1));
-        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
-            length = (length - 1);
-        } else {
-            return text_slice(text, 0, length);
-        }
-    }
-    return "";
-}
-function text_trim(text) {
-
-    let start = 0;
-    let end = text_length(text);
-    while (((start < end) && (text_find(" \t\r\n", text_get(text, start)) >= 0))) {
-        start = (start + 1);
-    }
-    while (((end > start) && (text_find(" \t\r\n", text_get(text, (end - 1))) >= 0))) {
-        end = (end - 1);
-    }
-    return text_slice(text, start, end);
-}
-function text_find_from(text, needle, start) {
-
-    let text_size = text_length(text);
-    let needle_size = text_length(needle);
-    if ((needle_size === 0)) {
-        if ((start <= text_size)) {
-            return start;
-        }
-        return (-1);
-    }
-    let position = start;
-    while (((position + needle_size) <= text_size)) {
-        let offset = 0;
-        let matched = true;
-        while ((offset < needle_size)) {
-            if ((text_get(text, (position + offset)) !== text_get(needle, offset))) {
-                matched = false;
-                offset = needle_size;
-            } else {
-                offset = (offset + 1);
-            }
-        }
-        if (matched) {
-            return position;
-        }
-        position = (position + 1);
-    }
-    return (-1);
-}
-function text_find(source, needle) { return typeof source === "string" && typeof needle === "string" ? source.indexOf(needle) : -1; }
-function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
-function text_byte_at(bytes, index) {
-
-    if ((((!value_is_list(bytes)) || (index < 0)) || (index >= (bytes).length))) {
-        return 0;
-    }
-    let value = list_get(bytes, index);
-    if (((!value_is_number(value)) || (number_floor(value) !== value))) {
-        return 0;
-    }
-    let byte = number_mod(value, 256);
-    if ((byte < 0)) {
-        byte = (byte + 256);
-    }
-    return byte;
-}
-function text_byte_push(bytes, value) {
-
-    list_set(bytes, (bytes).length, value);
-    return 0;
-}
-function text_to_bytes(source) { return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : []; }
-function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return ""; return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8"); }
-function number_add(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a + b;
-}
-function number_sub(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a - b;
-}
-function number_min(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return Math.min(a, b);
-}
-function number_max(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return Math.max(a, b);
-}
-function number_mul(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a * b;
-}
-function number_div(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
-    return Math.trunc(a / b);
-}
-function number_mod(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
-    return a % b;
-}
-function number_floor(value) {
-    if (typeof value !== "number") return 0;
-    return Math.floor(value);
-}
-function number_pow(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) return 0;
-    return Math.pow(a, b);
-}
-function number_from_text(text) {
-    if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) return 0;
-    const value = Number(text);
-    return Number.isSafeInteger(value) ? value : 0;
-}
-function number_to_text(value) {
-    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
-    return String(value);
-}
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
@@ -348,74 +40,6 @@ function value_is_list(value) {
 function value_is_map(value) {
 
     return (value_kind(value) === "map");
-}
-function value_merge() {
-    const $mini_fn_args = Array.prototype.slice.call(arguments);
-
-    let values = $mini_fn_args;
-    if (((values).length === 0)) {
-        return 0;
-    }
-    let kind = value_kind(list_get(values, 0));
-    if ((kind === "number")) {
-        let result = 0;
-        let position = 0;
-        while ((position < (values).length)) {
-            let value = list_get(values, position);
-            if (value_is_number(value)) {
-                result = number_add(result, value);
-            }
-            position = (position + 1);
-        }
-        return result;
-    }
-    if ((kind === "text")) {
-        let result = "";
-        let position = 0;
-        while ((position < (values).length)) {
-            let value = list_get(values, position);
-            if (value_is_text(value)) {
-                result = (result + value);
-            }
-            position = (position + 1);
-        }
-        return result;
-    }
-    if ((kind === "list")) {
-        let result = list_new();
-        let position = 0;
-        while ((position < (values).length)) {
-            let source = list_get(values, position);
-            if (value_is_list(source)) {
-                let index = 0;
-                while ((index < (source).length)) {
-                    list_set(result, (result).length, list_get(source, index));
-                    index = (index + 1);
-                }
-            }
-            position = (position + 1);
-        }
-        return result;
-    }
-    if ((kind === "map")) {
-        let result = map_new();
-        let position = 0;
-        while ((position < (values).length)) {
-            let source = list_get(values, position);
-            if (value_is_map(source)) {
-                let keys = map_keys(source);
-                let index = 0;
-                while ((index < (keys).length)) {
-                    let key = list_get(keys, index);
-                    map_set(result, key, map_get(source, key));
-                    index = (index + 1);
-                }
-            }
-            position = (position + 1);
-        }
-        return result;
-    }
-    return 0;
 }
 function list_new() { return []; }
 function list_get(items, index) {
@@ -655,6 +279,314 @@ function io_write_line() {
         position = (position + 1);
     }
     return io_write("\n");
+}
+function number_add(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a + b;
+}
+function number_sub(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a - b;
+}
+function number_min(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.min(a, b);
+}
+function number_max(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return Math.max(a, b);
+}
+function number_mul(a, b) {
+    if (typeof a !== "number" || typeof b !== "number") return 0;
+    return a * b;
+}
+function number_div(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return Math.trunc(a / b);
+}
+function number_mod(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
+    return a % b;
+}
+function number_floor(value) {
+    if (typeof value !== "number") return 0;
+    return Math.floor(value);
+}
+function number_pow(a, b) {
+    if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) return 0;
+    return Math.pow(a, b);
+}
+function number_from_text(text) {
+    if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) return 0;
+    const value = Number(text);
+    return Number.isSafeInteger(value) ? value : 0;
+}
+function number_to_text(value) {
+    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
+    return String(value);
+}
+function text_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    let output = "";
+    let position = 0;
+    while ((position < (values).length)) {
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
+function text_join() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    if (((values).length === 0)) {
+        return "";
+    }
+    let separator = list_get(values, 0);
+    if ((!value_is_text(separator))) {
+        return "";
+    }
+    let output = "";
+    let position = 1;
+    while ((position < (values).length)) {
+        if ((position > 1)) {
+            output = (output + separator);
+        }
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
+function text_length(source) { return typeof source === "string" ? source.length : 0; }
+function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
+function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
+function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
+function split_lines(source) {
+
+    let lines = text_split(source, "\n");
+    let position = 0;
+    while ((position < ((lines).length - 1))) {
+        let line = list_get(lines, position);
+        if (((text_length(line) > 0) && (text_get(line, (text_length(line) - 1)) === "\r"))) {
+            list_set(lines, position, text_slice(line, 0, (text_length(line) - 1)));
+        }
+        position = (position + 1);
+    }
+    return lines;
+}
+function text_slice(source, start, end) {
+    if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
+    if (start < 0) start = source.length + start;
+    if (end < 0) end = source.length + end;
+    if (start < 0) start = 0;
+    if (end < 0) end = 0;
+    if (start > source.length) start = source.length;
+    if (end > source.length) end = source.length;
+    if (end <= start) return "";
+    return source.slice(start, end);
+}
+function indent_output(output) {
+
+    let lines = split_lines(output);
+    let result = list_new();
+    let position = 0;
+    while ((position < (lines).length)) {
+        let line = list_get(lines, position);
+        if ((text_length(line) > 0)) {
+            list_set(result, (result).length, ("    " + line));
+        }
+        position = (position + 1);
+    }
+    return list_join("\n", result);
+}
+function text_ends_with(source, suffix) {
+
+    let size = text_length(suffix);
+    let length = text_length(source);
+    if ((size > length)) {
+        return false;
+    }
+    return (text_slice(source, (length - size), length) === suffix);
+}
+function is_letter(character) {
+
+    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
+}
+function is_digit(character) {
+
+    return (text_find("0123456789", character) >= 0);
+}
+function is_identifier_part(character) {
+
+    return (is_letter(character) || is_digit(character));
+}
+function is_two_character_symbol(value) {
+
+    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
+}
+function text_starts_with(source, prefix) {
+
+    let size = text_length(prefix);
+    if ((size > text_length(source))) {
+        return false;
+    }
+    return (text_slice(source, 0, size) === prefix);
+}
+function text_chomp(text) {
+
+    let length = text_length(text);
+    while (((length > 0) && ((text_get(text, (length - 1)) === "\n") || (text_get(text, (length - 1)) === "\r")))) {
+        length = (length - 1);
+    }
+    return text_slice(text, 0, length);
+}
+function text_trim_end(text) {
+
+    let length = text_length(text);
+    while ((length > 0)) {
+        let character = text_get(text, (length - 1));
+        if ((((character === " ") || (character === "\t")) || (character === "\r"))) {
+            length = (length - 1);
+        } else {
+            return text_slice(text, 0, length);
+        }
+    }
+    return "";
+}
+function text_trim(text) {
+
+    let start = 0;
+    let end = text_length(text);
+    while (((start < end) && (text_find(" \t\r\n", text_get(text, start)) >= 0))) {
+        start = (start + 1);
+    }
+    while (((end > start) && (text_find(" \t\r\n", text_get(text, (end - 1))) >= 0))) {
+        end = (end - 1);
+    }
+    return text_slice(text, start, end);
+}
+function text_find_from(text, needle, start) {
+
+    let text_size = text_length(text);
+    let needle_size = text_length(needle);
+    if ((needle_size === 0)) {
+        if ((start <= text_size)) {
+            return start;
+        }
+        return (-1);
+    }
+    let position = start;
+    while (((position + needle_size) <= text_size)) {
+        let offset = 0;
+        let matched = true;
+        while ((offset < needle_size)) {
+            if ((text_get(text, (position + offset)) !== text_get(needle, offset))) {
+                matched = false;
+                offset = needle_size;
+            } else {
+                offset = (offset + 1);
+            }
+        }
+        if (matched) {
+            return position;
+        }
+        position = (position + 1);
+    }
+    return (-1);
+}
+function text_find(source, needle) { return typeof source === "string" && typeof needle === "string" ? source.indexOf(needle) : -1; }
+function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
+function text_byte_at(bytes, index) {
+
+    if ((((!value_is_list(bytes)) || (index < 0)) || (index >= (bytes).length))) {
+        return 0;
+    }
+    let value = list_get(bytes, index);
+    if (((!value_is_number(value)) || (number_floor(value) !== value))) {
+        return 0;
+    }
+    let byte = number_mod(value, 256);
+    if ((byte < 0)) {
+        byte = (byte + 256);
+    }
+    return byte;
+}
+function text_byte_push(bytes, value) {
+
+    list_set(bytes, (bytes).length, value);
+    return 0;
+}
+function text_to_bytes(source) { return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : []; }
+function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return ""; return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8"); }
+function map_new() { return Object.create(null); }
+function map_get(items, key) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
+    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;
+}
+function map_set(items, key, value) {
+    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") items[key] = value;
+    return 0;
+}
+function map_has(items, key) {
+    return items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string" && Object.prototype.hasOwnProperty.call(items, key);
+}
+function map_keys(items) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return [];
+    return Object.keys(items);
+}
+function map_delete(items, key) {
+    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") delete items[key];
+    return 0;
+}
+function map_copy(items) {
+    if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
+    return Object.assign(Object.create(null), items);
+}
+function map_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let sources = $mini_fn_args;
+    let result = map_new();
+    let source_index = 0;
+    while ((source_index < (sources).length)) {
+        let source = list_get(sources, source_index);
+        if (value_is_map(source)) {
+            let keys = map_keys(source);
+            let key_index = 0;
+            while ((key_index < (keys).length)) {
+                let key = list_get(keys, key_index);
+                map_set(result, key, map_get(source, key));
+                key_index = (key_index + 1);
+            }
+        }
+        source_index = (source_index + 1);
+    }
+    return result;
+}
+function map_of() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let entries = $mini_fn_args;
+    let result = map_new();
+    let position = 0;
+    while ((position < (entries).length)) {
+        let key = list_get(entries, position);
+        let value = 0;
+        if (((position + 1) < (entries).length)) {
+            value = list_get(entries, (position + 1));
+        }
+        map_set(result, key, value);
+        position = (position + 2);
+    }
+    return result;
 }
 function file_read(path) { return process.getBuiltinModule("node:fs").readFileSync(path, "utf8"); }
 function file_read_bytes(path) { return Array.from(process.getBuiltinModule("node:fs").readFileSync(path)); }

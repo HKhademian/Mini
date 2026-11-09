@@ -527,7 +527,7 @@ merged := value_merge(first, second, third);
 - Later values of other kinds are ignored. An empty call or unsupported first
   kind returns 0.
 - Text, list, and map results are fresh values; lists and maps merge shallowly.
-- Import `common/value` to use it.
+- Import `common/merge` to use it.
 
 ## Accepted operation: value joining
 

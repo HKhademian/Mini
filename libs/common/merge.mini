@@ -1,0 +1,72 @@
+import "common/list";
+import "common/map";
+import "common/number";
+import "common/value";
+
+/// Merge variadic values using the first value's kind.
+fn value_merge() {
+    values := fn_args();
+    if list_length(values) == 0 {
+        return 0;
+    }
+    kind := value_kind(list_get(values, 0));
+    if kind == "number" {
+        result := 0;
+        position := 0;
+        while position < list_length(values) {
+            value := list_get(values, position);
+            if value_is_number(value) {
+                result = number_add(result, value);
+            }
+            position = position + 1;
+        }
+        return result;
+    }
+    if kind == "text" {
+        result := "";
+        position := 0;
+        while position < list_length(values) {
+            value := list_get(values, position);
+            if value_is_text(value) {
+                result = result + value;
+            }
+            position = position + 1;
+        }
+        return result;
+    }
+    if kind == "list" {
+        result := list_new();
+        position := 0;
+        while position < list_length(values) {
+            source := list_get(values, position);
+            if value_is_list(source) {
+                index := 0;
+                while index < list_length(source) {
+                    list_set(result, list_length(result), list_get(source, index));
+                    index = index + 1;
+                }
+            }
+            position = position + 1;
+        }
+        return result;
+    }
+    if kind == "map" {
+        result := map_new();
+        position := 0;
+        while position < list_length(values) {
+            source := list_get(values, position);
+            if value_is_map(source) {
+                keys := map_keys(source);
+                index := 0;
+                while index < list_length(keys) {
+                    key := list_get(keys, index);
+                    map_set(result, key, map_get(source, key));
+                    index = index + 1;
+                }
+            }
+            position = position + 1;
+        }
+        return result;
+    }
+    return 0;
+}

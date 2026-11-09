@@ -1,7 +1,7 @@
 import "common/io";
 import "common/list";
 import "common/map";
-import "common/value";
+import "common/merge";
 
 numbers := value_merge(2, "x", 3);
 text := value_merge("a", 2, "b");
