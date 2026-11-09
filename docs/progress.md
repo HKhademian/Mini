@@ -10,20 +10,20 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.6.0-v0.3.0-alpha.57
-lang      lang-v0.6.0-v0.5.0-alpha.15
-ast       ast-v0.6.0-v0.1.0-alpha.3
-compiler  compiler-v0.6.0-v0.5.0-alpha.84
-bootstrap bootstrap-v0.6.0-v0.3.0-alpha.70
-cli       cli-v0.6.0-v0.1.0-alpha.20
-check     check-v0.6.0-v0.1.0-alpha.13
-format    format-v0.6.0-v0.1.0-alpha.9
-lsp       lsp-v0.6.0-v0.1.0-alpha.11
-test      test-v0.6.0-v0.1.0-alpha.8
-verify    verify-v0.6.0-v0.1.0-alpha.10
-bench     bench-v0.6.0-v0.1.0-alpha.7
-release   release-v0.6.0-v0.1.0-alpha.8
-vscode    vscode-v0.6.0-v0.3.9
+mini      mini-v0.6.1-v0.3.0-alpha.57
+lang      lang-v0.6.1-v0.5.0-alpha.15
+ast       ast-v0.6.1-v0.1.0-alpha.3
+compiler  compiler-v0.6.1-v0.5.0-alpha.84
+bootstrap bootstrap-v0.6.1-v0.3.0-alpha.70
+cli       cli-v0.6.1-v0.1.0-alpha.20
+check     check-v0.6.1-v0.1.0-alpha.13
+format    format-v0.6.1-v0.1.0-alpha.9
+lsp       lsp-v0.6.1-v0.1.0-alpha.11
+test      test-v0.6.1-v0.1.0-alpha.8
+verify    verify-v0.6.1-v0.1.0-alpha.10
+bench     bench-v0.6.1-v0.1.0-alpha.7
+release   release-v0.6.1-v0.1.0-alpha.8
+vscode    vscode-v0.6.1-v0.3.9
 ```
 
 ## Groups
@@ -35,6 +35,8 @@ vscode    vscode-v0.6.0-v0.3.9
 | `0.3` | 2026-11-03 to 2026-11-04 | Self-hosting, include, generated tooling, bootstrap-only distribution |
 | `0.4` | 2026-11-04 to 2026-11-06 | JavaScript output, bootstrap-only seed, browser playground and showcase |
 | `0.5` | 2026-11-06 | `:=` declarations, zero-return calls, `io_write_line`, `else if` |
+| `0.6.0` | 2026-11-07 to 2026-11-09 | C target, shared AST, compiler host APIs |
+| `0.6.1` | 2026-11-09 to 2026-11-10 | C target release, parallel test runner, manual release dispatch |
 
 ## Milestones
 
@@ -49,6 +51,9 @@ vscode    vscode-v0.6.0-v0.3.9
   tool.
 - **JavaScript output.** The compiler emits plain Node JavaScript. Generated
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
+- **C11 target.** mini emits and runs native C for its documented supported
+  subset. The compiler remains self-hosted through JavaScript; compiling the
+  compiler itself to C is still outside the current target subset.
 - **Zero-value model.** `:=` declares bindings. Calls always produce a value;
   no-result operations and functions that fall through return 0.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;

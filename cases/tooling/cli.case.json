@@ -14,7 +14,7 @@
       },
       "stdout": {
         "file": "cli-version.stdout",
-        "hash": "sha256:7e09016e46ef253fefec3fceb17a5d352e86d138a23049f6b59037eb1ce5180a"
+        "hash": "sha256:afe59d2dd3a874027abc5aece4fd60381fcd6624fa54988e174671ab233d61c6"
       },
       "stderr": {
         "text": ""
@@ -115,7 +115,7 @@
         "text": ""
       },
       "stdout": {
-        "text": "format-v0.6.0-v0.1.0-alpha.9\n"
+        "text": "format-v0.6.1-v0.1.0-alpha.9\n"
       },
       "stderr": {
         "text": ""

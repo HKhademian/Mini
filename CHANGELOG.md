@@ -1,13 +1,19 @@
 # Changes
 
-## Unreleased
+## mini 0.3.0-alpha.57 / group 0.6.1
 
+- Release the documented C11 target subset with readable multiline C and
+  JavaScript emitter output and braced control flow.
 - Run independent case scenarios and Mini unit tests concurrently through a
   bounded worker pool; Node's available CPU count is the default, and
   `mini test --jobs N` controls the concurrency. Default output shows periodic
   progress and the applied worker count, and reports failures and pending cases
   without individual passes; `--verbose` lists each result and `--mute`
   suppresses progress.
+- Let release automation package and publish from a selected tag without
+  repeating CI; manual release dispatch uses the same verified tag path.
+
+## Unreleased
 
 - mini 0.3.0-alpha.55 / compiler 0.5.0-alpha.66 / bootstrap
   0.3.0-alpha.68: move C addition and equality runtime definitions into the

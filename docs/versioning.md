@@ -13,7 +13,7 @@ bootstrap-v0.5.0-v0.2.0-alpha.7
 vscode-v0.5.0-v0.3.6
 ```
 
-The shared group is `0.6.0`. Each product keeps its own version.
+The shared group is `0.6.1`. Each product keeps its own version.
 The group identifies mini's compatibility baseline, not a product counter.
 Change it when that baseline changes; changing groups does not reset products.
 A product-only fix advances only that product's version.
@@ -49,26 +49,26 @@ version does not make an alpha product stable.
 
 ## Current inventory
 
-Current group: `0.6.0`. These are assigned release identities, not claims of
+Current group: `0.6.1`. These are assigned release identities, not claims of
 publication. Bootstrap promotion is recorded separately in
 [config/bootstrap.json](../config/bootstrap.json). Check the registry for later
 increments:
 
 ```text
-mini-v0.6.0-v0.3.0-alpha.57
-lang-v0.6.0-v0.5.0-alpha.15
-ast-v0.6.0-v0.1.0-alpha.3
-compiler-v0.6.0-v0.5.0-alpha.84
-bootstrap-v0.6.0-v0.3.0-alpha.70
-cli-v0.6.0-v0.1.0-alpha.20
-check-v0.6.0-v0.1.0-alpha.13
-format-v0.6.0-v0.1.0-alpha.9
-lsp-v0.6.0-v0.1.0-alpha.11
-test-v0.6.0-v0.1.0-alpha.8
-verify-v0.6.0-v0.1.0-alpha.10
-bench-v0.6.0-v0.1.0-alpha.7
-release-v0.6.0-v0.1.0-alpha.8
-vscode-v0.6.0-v0.3.9
+mini-v0.6.1-v0.3.0-alpha.57
+lang-v0.6.1-v0.5.0-alpha.15
+ast-v0.6.1-v0.1.0-alpha.3
+compiler-v0.6.1-v0.5.0-alpha.84
+bootstrap-v0.6.1-v0.3.0-alpha.70
+cli-v0.6.1-v0.1.0-alpha.20
+check-v0.6.1-v0.1.0-alpha.13
+format-v0.6.1-v0.1.0-alpha.9
+lsp-v0.6.1-v0.1.0-alpha.11
+test-v0.6.1-v0.1.0-alpha.8
+verify-v0.6.1-v0.1.0-alpha.10
+bench-v0.6.1-v0.1.0-alpha.7
+release-v0.6.1-v0.1.0-alpha.8
+vscode-v0.6.1-v0.3.9
 ```
 
 `mini` versions the complete distribution; `cli` versions its dispatcher.
@@ -83,10 +83,10 @@ Std remains unassigned/unavailable. Future first-release examples under the
 current group, to use only after implementation and verification:
 
 ```text
-std-v0.5.0-v0.1.0-alpha.1
-document-v0.5.0-v0.1.0-alpha.1
-help-v0.5.0-v0.1.0-alpha.1
-play-v0.5.0-v0.1.0-alpha.1
+std-v0.6.1-v0.1.0-alpha.1
+document-v0.6.1-v0.1.0-alpha.1
+help-v0.6.1-v0.1.0-alpha.1
+play-v0.6.1-v0.1.0-alpha.1
 ```
 
 Only std is already registered as an unassigned stream. Register other
