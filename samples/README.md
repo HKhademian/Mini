@@ -49,3 +49,4 @@ cannot drift from its verified output.
 - [pixel-heart.mini](showcase/pixel-heart.mini): Build a red heart from a ten-by-ten text pattern. [Case](../cases/showcase/pixel-heart.case.json).
 - [pixel-blink.mini](showcase/pixel-blink.mini): Toggle one colored pixel every twelve animation frames. [Case](../cases/showcase/pixel-blink.case.json).
 - [pixel-moving.mini](showcase/pixel-moving.mini): Move a pixel horizontally and bounce it at the edges. [Case](../cases/showcase/pixel-moving.case.json).
+- [pixel-beating-heart.mini](showcase/pixel-beating-heart.mini): Pulse a pixel heart between two sizes and shades of red. [Case](../cases/showcase/pixel-beating-heart.case.json).

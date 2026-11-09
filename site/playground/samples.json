@@ -506,5 +506,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-moving.mini"
+  },
+  {
+    "id": "pixel-beating-heart",
+    "group": "Animation",
+    "label": "Beating heart",
+    "note": "Pulse a pixel heart between two sizes and shades of red.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-beating-heart.mini"
   }
 ]

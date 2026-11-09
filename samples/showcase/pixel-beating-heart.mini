@@ -1,0 +1,78 @@
+/// Pulse a ten-by-ten heart between two sizes and shades of red.
+
+import "common/io";
+import "common/list";
+import "common/pixel-board";
+import "common/play";
+
+black := pixel_rgb(0, 0, 0);
+bright_red := pixel_rgb(255, 48, 72);
+soft_red := pixel_rgb(170, 36, 64);
+heart_big := list_of(
+    "..........",
+    "..##..##..",
+    ".########.",
+    "##########",
+    "##########",
+    ".########.",
+    "..######..",
+    "...####...",
+    "....##....",
+    ".........."
+);
+heart_small := list_of(
+    "..........",
+    "..........",
+    "...####...",
+    "..######..",
+    "..######..",
+    "...####...",
+    "....##....",
+    "..........",
+    "..........",
+    ".........."
+);
+heart_is_big := true;
+beat_frames := 0;
+
+/// Render one pulse phase and change size every eight frames.
+fn mini_play_update() {
+    rows := heart_big;
+    color := bright_red;
+    if !heart_is_big {
+        rows = heart_small;
+        color = soft_red;
+    }
+
+    board := pixel_board_new(10, 10, black);
+    row := 0;
+    while row < 10 {
+        column := 0;
+        while column < 10 {
+            if text_get(list_get(rows, row), column) == "#" {
+                pixel_board_set(board, 10, 10, column, row, color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_render(10, 10, board);
+
+    beat_frames = beat_frames + 1;
+    if beat_frames >= 8 {
+        beat_frames = 0;
+        heart_is_big = !heart_is_big;
+    }
+}
+
+/// Print the large first pulse for command-line runs.
+fn pixel_beating_heart_print() {
+    row := 0;
+    while row < 10 {
+        io_write_line(list_get(heart_big, row));
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "Beating Heart");
+pixel_beating_heart_print();
