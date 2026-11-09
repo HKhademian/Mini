@@ -361,6 +361,7 @@
   justify-content: center;
   gap: 12px;
   padding: 18px;
+  overflow: auto;
   background: var(--panel);
 }
 
@@ -391,6 +392,7 @@
 
 #play-canvas {
   width: min(100%, calc(100svh - 270px), 960px);
+  max-width: 100%;
   max-height: calc(100svh - 270px);
   height: auto;
   image-rendering: pixelated;
