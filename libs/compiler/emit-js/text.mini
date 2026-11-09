@@ -10,7 +10,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_find",
-    "function text_find(source, needle) { return typeof source === \"string\" && typeof needle === \"string\" ? source.indexOf(needle) : -1; }\n",
+    "function text_find(source, needle) { if (typeof source !== \"string\" || typeof needle !== \"string\") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }\n",
     false,
     ""
 );
@@ -28,19 +28,19 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_get",
-    "function text_get(source, index) { if (typeof source === \"string\" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return \"\"; }\n",
+    "function text_get(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return \"\"; text_length(source); return text_length.cache.get(source)[index] ?? \"\"; }\n",
     true,
     ""
 );
 emit_js_host_function_add(
     "text_length",
-    "function text_length(source) { return typeof source === \"string\" ? source.length : 0; }\n",
+    "function text_length(source) {\n    if (typeof source !== \"string\") return 0;\n    const cache = text_length.cache ?? (text_length.cache = new Map());\n    let characters = cache.get(source);\n    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }\n    return characters.length;\n}\n",
     true,
     ""
 );
 emit_js_host_function_add(
     "text_slice",
-    "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n",
+    "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    text_length(source); const characters = text_length.cache.get(source);\n    if (start < 0) start = characters.length + start;\n    if (end < 0) end = characters.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > characters.length) start = characters.length;\n    if (end > characters.length) end = characters.length;\n    if (end <= start) return \"\";\n    return characters.slice(start, end).join(\"\");\n}\n",
     false,
     ""
 );

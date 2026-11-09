@@ -22,9 +22,10 @@ declared in
 [libs/common/text.mini](../libs/common/text.mini) and require
 `import "common/text"`. Their Mini implementations are the fallback; JavaScript
 registers same-name host overrides for the representation and performance paths.
-The C target implements UTF-8 storage with the shared UTF-16 code-unit behavior
-for `text_length`, `text_get`, `text_code`, and `text_slice`. It also encodes
-valid Unicode scalar values in `text_from_code`.
+Text length, indexing, and slicing count Unicode scalar values rather than
+UTF-8 bytes or UTF-16 code units. `text_code` returns the first scalar value,
+and `text_from_code` encodes one valid Unicode scalar. C stores text as UTF-8;
+JavaScript adapts its UTF-16 strings to these shared operations.
 The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
 and require `import "common/file"`. Their Mini implementations panic when a
 target has no file host; the JavaScript and C emitters register same-name host

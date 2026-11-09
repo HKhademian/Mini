@@ -292,7 +292,7 @@ renderer adds those fields so terminal output remains byte-identical. Source
 failures include lexing, parsing, and the existing kind/arity checks. Internal
 failures are not diagnostics.
 
-Source positions are zero-based, half-open UTF-16 code-unit ranges `[start, end)`
+Source positions are zero-based, half-open Unicode scalar ranges `[start, end)`
 into the original source. `line` and `column` are one-based; tabs count as one
 column. The EOF token has `start === end === source.length`. Lexer failures finalize
 the reported range before failing: an unexpected character covers that character,

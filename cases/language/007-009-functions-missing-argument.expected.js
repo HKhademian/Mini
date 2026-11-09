@@ -246,8 +246,14 @@ function text_join() {
     }
     return output;
 }
-function text_length(source) { return typeof source === "string" ? source.length : 0; }
-function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
+function text_length(source) {
+    if (typeof source !== "string") return 0;
+    const cache = text_length.cache ?? (text_length.cache = new Map());
+    let characters = cache.get(source);
+    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
+    return characters.length;
+}
+function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
 function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_split_lines(source) {
@@ -265,14 +271,15 @@ function text_split_lines(source) {
 }
 function text_slice(source, start, end) {
     if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
-    if (start < 0) start = source.length + start;
-    if (end < 0) end = source.length + end;
+    text_length(source); const characters = text_length.cache.get(source);
+    if (start < 0) start = characters.length + start;
+    if (end < 0) end = characters.length + end;
     if (start < 0) start = 0;
     if (end < 0) end = 0;
-    if (start > source.length) start = source.length;
-    if (end > source.length) end = source.length;
+    if (start > characters.length) start = characters.length;
+    if (end > characters.length) end = characters.length;
     if (end <= start) return "";
-    return source.slice(start, end);
+    return characters.slice(start, end).join("");
 }
 function text_indent_output(output) {
 
@@ -383,7 +390,7 @@ function text_find_from(text, needle, start) {
     }
     return (-1);
 }
-function text_find(source, needle) { return typeof source === "string" && typeof needle === "string" ? source.indexOf(needle) : -1; }
+function text_find(source, needle) { if (typeof source !== "string" || typeof needle !== "string") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }
 function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
 function text_byte_at(bytes, index) {
 

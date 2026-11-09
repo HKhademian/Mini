@@ -74,7 +74,7 @@ fn emit_c_indent(source) {
     return list_join("\n", result);
 }
 
-/// Decode one lexer-validated ASCII literal to decimal byte initializer texts.
+/// Decode one lexer-validated literal to decimal UTF-8 byte initializer texts.
 /// The decoded bytes are escaped into readable C string input later.
 fn emit_c_literal_bytes(token) {
     spelling := map_get(token, "text");
@@ -95,10 +95,25 @@ fn emit_c_literal_bytes(token) {
                 code = 9;
             }
         }
-        if code > 127 {
-            diagnostic_fail(token, "C target supports only ASCII text literals");
+        if code <= 127 {
+            list_set(bytes, list_length(bytes), number_to_text(code));
+        } else {
+            if code <= 2047 {
+                list_set(bytes, list_length(bytes), number_to_text(192 + number_div(code, 64)));
+                list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(code, 64)));
+            } else {
+                if code <= 65535 {
+                    list_set(bytes, list_length(bytes), number_to_text(224 + number_div(code, 4096)));
+                    list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(number_div(code, 64), 64)));
+                    list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(code, 64)));
+                } else {
+                    list_set(bytes, list_length(bytes), number_to_text(240 + number_div(code, 262144)));
+                    list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(number_div(code, 4096), 64)));
+                    list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(number_div(code, 64), 64)));
+                    list_set(bytes, list_length(bytes), number_to_text(128 + number_mod(code, 64)));
+                }
+            }
         }
-        list_set(bytes, list_length(bytes), number_to_text(code));
         position = position + 1;
     }
     return bytes;

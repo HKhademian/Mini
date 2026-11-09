@@ -1,0 +1,15 @@
+import "common/io";
+import "common/list";
+import "common/text";
+
+text := "چطوری David";
+io_write_line(text_length(text));
+io_write_line(text_code(text_get(text, 0)));
+io_write_line(text_get(text, 5) == " ");
+io_write_line(text_to_bytes(text));
+emoji := "😀";
+io_write_line(text_length(emoji));
+io_write_line(text_code(text_get(emoji, 0)));
+io_write_line(text_slice(emoji, 0, 1) == emoji);
+io_write_line(text_to_bytes(emoji));
+io_write_line(text_from_bytes(text_to_bytes(emoji)));

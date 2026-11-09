@@ -29,10 +29,21 @@ fn bootstrap_compile_text(source) {
 
 /// Compile one source with a generated compiler.
 fn bootstrap_compile_with(root, compiler, source, output) {
-    args := list_of(source, output);
-    result := process_capture(compiler, args, root, list_new());
+    command := compiler;
+    args := list_new();
+    if text_ends_with(compiler, ".js") {
+        command = "node";
+        args = list_of(compiler, source, output);
+    } else {
+        args = list_of(source, output);
+    }
+    result := process_capture(command, args, root, list_new());
     if map_get(result, "status") != 0 {
-        bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
+        bootstrap_fail(
+            "compile failed with " + command + " (" + number_to_text(map_get(result, "status")) + "): "
+            + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr"))
+            + text_from_bytes(map_get(result, "error"))
+        );
     }
     return 0;
 }

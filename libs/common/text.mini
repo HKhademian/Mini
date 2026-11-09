@@ -43,12 +43,12 @@ fn text_join() {
     return output;
 }
 
-/// Return UTF-16 code-unit length; targets without a host implementation panic.
+/// Return the number of Unicode scalar values; targets without a host implementation panic.
 fn text_length(source) {
     return process_panic("text_length requires a host implementation");
 }
 
-/// Return one UTF-16 code unit; targets without a host implementation panic.
+/// Return one Unicode scalar value as text; targets without a host implementation panic.
 fn text_get(source, index) {
     return process_panic("text_get requires a host implementation");
 }
@@ -77,7 +77,7 @@ fn text_split_lines(source) {
     return lines;
 }
 
-/// Slice text by zero-based end-exclusive bounds; negative bounds count from the end.
+/// Slice text by Unicode scalar indexes and zero-based end-exclusive bounds; negative bounds count from the end.
 fn text_slice(source, start, end) {
     if value_kind(source) != "text" || value_kind(start) != "number" || value_kind(end) != "number"
         || number_floor(start) != start || number_floor(end) != end {
@@ -205,7 +205,7 @@ fn text_trim(text) {
     return text_slice(text, start, end);
 }
 
-/// Search for a match starting at a code-unit offset; return -1 when absent.
+/// Search for a match starting at a Unicode scalar offset; return -1 when absent.
 fn text_find_from(text, needle, start) {
     text_size := text_length(text);
     needle_size := text_length(needle);
@@ -235,7 +235,7 @@ fn text_find_from(text, needle, start) {
     return -1;
 }
 
-/// Return the first code-unit index of a match, or -1.
+/// Return the first Unicode scalar index of a match, or -1.
 fn text_find(text, needle) {
     if !value_is_text(text) || !value_is_text(needle) {
         return -1;
@@ -296,7 +296,6 @@ fn text_to_bytes(text) {
     position := 0;
     while position < text_length(text) {
         code := text_code(text_slice(text, position, text_length(text)));
-        width := 1;
         if code < 0 {
             code = 65533;
         }
@@ -322,11 +321,10 @@ fn text_to_bytes(text) {
                     text_byte_push(bytes, 128 + number_mod(number_div(code, 4096), 64));
                     text_byte_push(bytes, 128 + number_mod(number_div(code, 64), 64));
                     text_byte_push(bytes, 128 + number_mod(code, 64));
-                    width = 2;
                 }
             }
         }
-        position = position + width;
+        position = position + 1;
     }
     return bytes;
 }

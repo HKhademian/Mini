@@ -61,28 +61,47 @@ fn lsp_offset_at(text, position) {
         offset = offset + newline + 1;
         line = line + 1;
     }
-    character := offset + map_get(position, "character");
-    if character > text_length(text) {
-        return text_length(text);
+    target_character := map_get(position, "character");
+    character := 0;
+    while offset < text_length(text) && character < target_character {
+        value := text_get(text, offset);
+        if value == "\n" {
+            return offset;
+        }
+        width := 1;
+        if text_code(value) > 65535 {
+            width = 2;
+        }
+        if character + width > target_character {
+            return offset;
+        }
+        character = character + width;
+        offset = offset + 1;
     }
-    return character;
+    return offset;
 }
 
 /// Convert a UTF-16 offset to an LSP position.
 fn lsp_position_at(text, offset) {
     line := 0;
-    start := 0;
     position := 0;
+    character := 0;
     while position < offset && position < text_length(text) {
-        if text_get(text, position) == "\n" {
+        value := text_get(text, position);
+        if value == "\n" {
             line = line + 1;
-            start = position + 1;
+            character = 0;
+        } else {
+            character = character + 1;
+            if text_code(value) > 65535 {
+                character = character + 1;
+            }
         }
         position = position + 1;
     }
     result := map_new();
     map_set(result, "line", line);
-    map_set(result, "character", offset - start);
+    map_set(result, "character", character);
     return result;
 }
 

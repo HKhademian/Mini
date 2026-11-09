@@ -93,6 +93,14 @@ compiler.
   `tools/compiler.mini`. Successive C generations compile and run; generated C
   matches from generation 2 onward after normalizing the output-specific header
   include. This is a local milestone, not yet a repeatable repository gate.
+- 2026-11-09: text length, indexing, and slicing now count Unicode scalar
+  values consistently in JS and C. C emits UTF-8 source literals; the LSP
+  converts Mini scalar offsets to and from its UTF-16 positions. Unicode C
+  cases and the full 534-scenario JS and C-built suites pass.
+- 2026-11-09: the four compiler directions agree on compiler output, and
+  `dist/bootstrap.c` compiled under strict C11 and ran `bootstrap_all` to
+  completion. A repeatable repository command for the full matrix and C
+  bootstrap remains the next tooling increment.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
   storage/views are implementation responsibilities.
 - Native text now uses an owned growable byte buffer with offset/length views.

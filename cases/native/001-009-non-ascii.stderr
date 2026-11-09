@@ -1,3 +1,0 @@
-001-009-non-ascii.mini:3:10: C target supports only ASCII text literals
-io_write("é");
-         ^

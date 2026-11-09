@@ -369,8 +369,14 @@ function text_join() {
     }
     return output;
 }
-function text_length(source) { return typeof source === "string" ? source.length : 0; }
-function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
+function text_length(source) {
+    if (typeof source !== "string") return 0;
+    const cache = text_length.cache ?? (text_length.cache = new Map());
+    let characters = cache.get(source);
+    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
+    return characters.length;
+}
+function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
 function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_split_lines(source) {
@@ -388,14 +394,15 @@ function text_split_lines(source) {
 }
 function text_slice(source, start, end) {
     if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
-    if (start < 0) start = source.length + start;
-    if (end < 0) end = source.length + end;
+    text_length(source); const characters = text_length.cache.get(source);
+    if (start < 0) start = characters.length + start;
+    if (end < 0) end = characters.length + end;
     if (start < 0) start = 0;
     if (end < 0) end = 0;
-    if (start > source.length) start = source.length;
-    if (end > source.length) end = source.length;
+    if (start > characters.length) start = characters.length;
+    if (end > characters.length) end = characters.length;
     if (end <= start) return "";
-    return source.slice(start, end);
+    return characters.slice(start, end).join("");
 }
 function text_indent_output(output) {
 
@@ -506,7 +513,7 @@ function text_find_from(text, needle, start) {
     }
     return (-1);
 }
-function text_find(source, needle) { return typeof source === "string" && typeof needle === "string" ? source.indexOf(needle) : -1; }
+function text_find(source, needle) { if (typeof source !== "string" || typeof needle !== "string") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }
 function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
 function text_byte_at(bytes, index) {
 
@@ -2514,10 +2521,17 @@ function bootstrap_compile_text(source) {
 }
 function bootstrap_compile_with(root, compiler, source, output) {
 
-    let args = list_of(source, output);
-    let result = process_capture(compiler, args, root, list_new());
+    let command = compiler;
+    let args = list_new();
+    if (text_ends_with(compiler, ".js")) {
+        command = "node";
+        args = list_of(compiler, source, output);
+    } else {
+        args = list_of(source, output);
+    }
+    let result = process_capture(command, args, root, list_new());
     if ((map_get(result, "status") !== 0)) {
-        bootstrap_fail(("compile failed: " + text_from_bytes(map_get(result, "stderr"))));
+        bootstrap_fail(((((((("compile failed with " + command) + " (") + number_to_text(map_get(result, "status"))) + "): ") + text_from_bytes(map_get(result, "stdout"))) + text_from_bytes(map_get(result, "stderr"))) + text_from_bytes(map_get(result, "error"))));
     }
     return 0;
 }
@@ -2732,12 +2746,12 @@ function $mini_file_21() {
 }
 function $mini_file_22() {
     emit_js_host_function_add("text_code", "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n", true, "");
-    emit_js_host_function_add("text_find", "function text_find(source, needle) { return typeof source === \"string\" && typeof needle === \"string\" ? source.indexOf(needle) : -1; }\n", false, "");
+    emit_js_host_function_add("text_find", "function text_find(source, needle) { if (typeof source !== \"string\" || typeof needle !== \"string\") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }\n", false, "");
     emit_js_host_function_add("text_from_bytes", "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n", false, "");
     emit_js_host_function_add("text_from_code", "function text_from_code(code) { if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\"; return String.fromCodePoint(code); }\n", true, "");
-    emit_js_host_function_add("text_get", "function text_get(source, index) { if (typeof source === \"string\" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return \"\"; }\n", true, "");
-    emit_js_host_function_add("text_length", "function text_length(source) { return typeof source === \"string\" ? source.length : 0; }\n", true, "");
-    emit_js_host_function_add("text_slice", "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    if (start < 0) start = source.length + start;\n    if (end < 0) end = source.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > source.length) start = source.length;\n    if (end > source.length) end = source.length;\n    if (end <= start) return \"\";\n    return source.slice(start, end);\n}\n", false, "");
+    emit_js_host_function_add("text_get", "function text_get(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return \"\"; text_length(source); return text_length.cache.get(source)[index] ?? \"\"; }\n", true, "");
+    emit_js_host_function_add("text_length", "function text_length(source) {\n    if (typeof source !== \"string\") return 0;\n    const cache = text_length.cache ?? (text_length.cache = new Map());\n    let characters = cache.get(source);\n    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }\n    return characters.length;\n}\n", true, "");
+    emit_js_host_function_add("text_slice", "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    text_length(source); const characters = text_length.cache.get(source);\n    if (start < 0) start = characters.length + start;\n    if (end < 0) end = characters.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > characters.length) start = characters.length;\n    if (end > characters.length) end = characters.length;\n    if (end <= start) return \"\";\n    return characters.slice(start, end).join(\"\");\n}\n", false, "");
     emit_js_host_function_add("text_split", "function text_split(source, divider) { if (typeof source !== \"string\" || typeof divider !== \"string\") return []; if (divider === \"\") return [source]; return source.split(divider); }\n", false, "");
     emit_js_host_function_add("text_to_bytes", "function text_to_bytes(source) { return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : []; }\n", false, "");
 }

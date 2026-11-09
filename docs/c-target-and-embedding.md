@@ -30,7 +30,7 @@ literal spellings are only initialization inputs. Runner model, general
 memory strategy, Unicode indexing, and a complete embedding API do not block it.
 
 The first accepted native slice is top-level io_write calls with zero or more
-ASCII text literals and safe-integer literals (including negative literals).
+UTF-8 text literals and safe-integer literals (including negative literals).
 Common Mini text escapes, multiple calls, empty text/programs, comments, and an
 entry shebang are included. Top-level binding declarations, assignments, copies, and reads are supported;
 number addition and subtraction, text joining, boolean values and logic are supported;
@@ -143,9 +143,9 @@ Resolve these topics as implementation reaches them:
   boundaries with the numeric increment. JS uses numbers while some conversions
   require safe integers; broader limits remain open. Undefined C overflow is
   not a Mini rule.
-- Text: C stores UTF-8 and implements Mini's UTF-16 code-unit length, indexing,
-  first-code-point lookup, and slicing behavior, including surrogate views.
-  `text_from_code` encodes valid Unicode scalar values as UTF-8.
+- Text: C stores UTF-8 and implements scalar-value length, indexing, first-code-
+  point lookup, and slicing. `text_from_code` encodes valid Unicode scalar
+  values as UTF-8.
 - Collections: tagged lists cover construction, mutation, copies, indexing, and
   joins. Tagged maps use an initial pair-array representation with lookup,
   mutation, key snapshots, copying, merging, and nested JSON output. The

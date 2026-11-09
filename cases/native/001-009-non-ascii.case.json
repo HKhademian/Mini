@@ -1,6 +1,6 @@
 {
   "id": "native.c-non-ascii",
-  "kind": "reject",
+  "kind": "feature",
   "target": "c",
   "source": "001-009-non-ascii.mini",
   "features": [
@@ -14,13 +14,9 @@
       "stdin": {
         "text": ""
       },
-      "stdout": {
-        "text": ""
-      },
-      "stderr": {
-        "file": "001-009-non-ascii.stderr"
-      },
-      "exitCode": 1
+      "stdout": { "text": "é" },
+      "stderr": { "text": "" },
+      "exitCode": 0
     }
   ]
 }
