@@ -995,6 +995,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "struct MINI_ID(context) {");
     emit_c_collect_lines(lines, "    MINI_ID(text_buffer) buffer;");
     emit_c_collect_lines(lines, "    MINI_ID(value) arguments;");
+    emit_c_collect_lines(lines, "    MINI_ID(value) script_path;");
     emit_c_collect_lines(lines, "    MINI_ID(vec) lists;");
     emit_c_collect_lines(lines, "    MINI_ID(vec) maps;");
     emit_c_collect_fragments(lines, map_get(state, "c_declarations"));
@@ -1010,6 +1011,10 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "int main(int argc, char **argv) {");
     emit_c_collect_lines(lines, "    MINI_ID(context) context = {0};");
     emit_c_collect_lines(lines, "    int status = 0;");
+    emit_c_collect_lines(lines, "    const char *script = argc > 0 && argv && argv[0] ? argv[0] : \"\";");
+    emit_c_collect_lines(lines, "    size_t script_offset = context.buffer.count, script_length = strlen(script);");
+    emit_c_collect_lines(lines, "    if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)script, script_length) != 0) { status = 1; goto cleanup; }");
+    emit_c_collect_lines(lines, "    context.script_path = MINI_ID(value_text)(&context.buffer, script_offset, script_length);");
     emit_c_collect_lines(lines, "    context.arguments = MINI_ID(list_new)(&context);");
     emit_c_collect_lines(lines, "    for (int argument = 1; argument < argc; ++argument) {");
     emit_c_collect_lines(lines, "        size_t offset = context.buffer.count, length = strlen(argv[argument]);");

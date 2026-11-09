@@ -130,6 +130,27 @@ fn native_program_arguments(root, work) {
     return 0;
 }
 
+/// Check that C process_script_path() returns the executable path from argv[0].
+fn native_script_path(root, work) {
+    source := path_join(work, "script-path.mini");
+    output := path_join(work, "script-path.c");
+    binary := path_join(work, "script-path");
+    file_write(source, "import \"common/io\";\nimport \"common/process\";\nio_write_line(process_script_path());\n");
+    native_compile(root, work, "script path source", list_of("--target", "c", source, output), output);
+    built := native_build(output, binary, root);
+    if map_get(built, "status") != 0 {
+        native_fail(work, "script path build", text_from_bytes(map_get(built, "stderr")));
+    }
+    ran := process_capture("./" + path_basename(binary), list_new(), work, list_new());
+    script_path := text_from_bytes(map_get(ran, "stdout"));
+    if map_get(ran, "status") != 0 || !path_is_absolute(text_slice(script_path, 0, text_length(script_path) - 1))
+        || !text_ends_with(script_path, "/script-path\n")
+        || text_from_bytes(map_get(ran, "stderr")) != "" {
+        native_fail(work, "script path output", "process_script_path() differs from argv[0]");
+    }
+    return 0;
+}
+
 /// Verify target selection through the public CLI rather than emitter internals.
 fn main(args) {
     root := list_get(args, 0);
@@ -193,6 +214,7 @@ fn main(args) {
     native_macro_host(root, work, true);
     native_debug_artifacts(root, work);
     native_program_arguments(root, work);
+    native_script_path(root, work);
     explicit_js := path_join(work, "explicit.mjs");
     default_js := source + ".js";
     native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);

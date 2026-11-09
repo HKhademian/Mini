@@ -22,7 +22,7 @@ static int sample_text(MINI_ID(value) value) {
         && value.text.buffer->items[value.text.offset + 1] == 'k';
 }
 
-int main(void) {
+int main(int argc, char **argv) {
     MINI_ID(vec) numbers = {0};
     MINI_ID(vec_init)(&numbers, sizeof(int));
     for (int index = 0; index < 100; ++index) MINI_ID(vec_append)(&numbers, &index, 1);
@@ -82,6 +82,5 @@ int main(void) {
     MINI_ID(text_buffer_free)(&sample_buffer);
     if (sample_buffer.items || sample_buffer.count || sample_buffer.capacity) return 11;
     MINI_ID(text_buffer_free)(&sample_buffer);
-    char *arguments[] = { "generated", NULL };
-    return MINI_ID(generated_main)(1, arguments);
+    return MINI_ID(generated_main)(argc, argv);
 }
