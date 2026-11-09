@@ -609,11 +609,11 @@
   {
     "id": "pixel-stripes",
     "group": "Pixel Art",
-    "label": "Stripes — planned",
-    "note": "Draw a repeating stripe pattern.",
+    "label": "Color stripes",
+    "note": "Render alternating vertical colors once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-stripes.mini"
   },
   {
     "id": "pixel-gradient",
