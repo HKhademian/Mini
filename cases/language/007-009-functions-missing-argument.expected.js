@@ -216,6 +216,49 @@ function text_length(source) {
 function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
 function text_to_code(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }
 function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
+function text_to_codes(source) {
+
+    let codes = list_new();
+    if ((!value_is_text(source))) {
+        return codes;
+    }
+    let position = 0;
+    while ((position < text_length(source))) {
+        list_set(codes, (codes).length, text_to_code(source, position));
+        position = (position + 1);
+    }
+    return codes;
+}
+function text_to_chars(source) {
+
+    let characters = list_new();
+    if ((!value_is_text(source))) {
+        return characters;
+    }
+    let position = 0;
+    while ((position < text_length(source))) {
+        list_set(characters, (characters).length, text_get(source, position));
+        position = (position + 1);
+    }
+    return characters;
+}
+function text_from_codes(codes) {
+
+    if ((!value_is_list(codes))) {
+        return "";
+    }
+    let characters = list_new();
+    let position = 0;
+    while ((position < (codes).length)) {
+        list_set(characters, (characters).length, text_from_code(list_get(codes, position)));
+        position = (position + 1);
+    }
+    return list_join("", characters);
+}
+function text_from_chars(characters) {
+
+    return list_join("", characters);
+}
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
