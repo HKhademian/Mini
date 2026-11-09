@@ -226,7 +226,7 @@ fn test_unit_one(root, name) {
 fn test_run_tasks(tasks, root, jobs) {
     request := map_new();
     map_set(request, "jobs", jobs);
-    map_set(request, "script", process_script_path());
+    map_set(request, "script", path_join(root, "dist/test.js"));
     map_set(request, "tasks", tasks);
     options := map_new();
     map_set(options, "command", "node");
