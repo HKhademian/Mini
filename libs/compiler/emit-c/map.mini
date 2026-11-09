@@ -8,14 +8,10 @@ fn emit_c_map_runtime() {
         list_of(
             "typedef struct { MINI_ID(text) key; MINI_ID(value) value; } MINI_ID(map_entry);",
             "struct MINI_ID(map) { MINI_ID(vec) entries; };",
+            "static int MINI_ID(text_unit_compare)(MINI_ID(text) left, MINI_ID(text) right);",
             "",
             "static int MINI_ID(map_text_compare)(MINI_ID(text) left, MINI_ID(text) right) {",
-            "    if (!left.buffer || left.offset > left.buffer->count || left.length > left.buffer->count - left.offset) return -1;",
-            "    if (!right.buffer || right.offset > right.buffer->count || right.length > right.buffer->count - right.offset) return 1;",
-            "    size_t common = left.length < right.length ? left.length : right.length;",
-            "    int order = common ? memcmp(left.buffer->items + left.offset, right.buffer->items + right.offset, common) : 0;",
-            "    if (order) return order;",
-            "    return left.length < right.length ? -1 : left.length > right.length ? 1 : 0;",
+            "    return MINI_ID(text_unit_compare)(left, right);",
             "}",
             "",
             "static int MINI_ID(map_entry_compare)(const void *left_pointer, const void *right_pointer) {",
@@ -81,7 +77,7 @@ fn emit_c_map_runtime() {
             "    if (value.kind == MINI_ID(kind_map) && value.map) {",
             "        MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
             "        for (size_t index = 0; index < value.map->entries.count; ++index)",
-            "            MINI_ID(list_push)(keys.list, (MINI_ID(value)) MINI_VALUE_TEXT(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length), 0);",
+            "            MINI_ID(list_push)(keys.list, MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length), 0);",
             "    }",
             "    return keys;",
             "}",
@@ -167,6 +163,6 @@ emit_c_host_function_add(
     + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(map_new)(context);\n"
     + "    for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) value = params.args[source];\n"
     + "        if (value.kind != MINI_ID(kind_map) || !value.map) continue; MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;\n"
-    + "        for (size_t index = 0; index < value.map->entries.count; ++index) { MINI_ID(value) key = (MINI_ID(value)) MINI_VALUE_TEXT(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length);\n"
+    + "        for (size_t index = 0; index < value.map->entries.count; ++index) { MINI_ID(value) key = MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length);\n"
     + "            MINI_ID(map_set_value)(result->map, key, entries[index].value); } } return 0;\n}\n"
 );

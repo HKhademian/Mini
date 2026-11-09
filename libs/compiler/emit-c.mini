@@ -215,6 +215,10 @@ fn emit_c_header(name) {
             "    MINI_ID(text_buffer) *buffer;",
             "    size_t offset;",
             "    size_t length;",
+            "    size_t units;",
+            "    int units_known;",
+            "    int ascii;",
+            "    int ascii_known;",
             "} MINI_ID(text);",
             "typedef struct {",
             "    MINI_ID(value_kind) kind;",
@@ -230,7 +234,7 @@ fn emit_c_header(name) {
             "#define MINI_PARAMS(count_arg, args_arg) { .count = (count_arg), .args = (args_arg) }",
             "",
             "MINI_ID(params) MINI_ID(params_make)(size_t count, const MINI_ID(value) *args);",
-            "#define MINI_VALUE_TEXT(buffer_arg, offset_arg, length_arg) { .kind = MINI_ID(kind_text), .text = { (buffer_arg), (offset_arg), (length_arg) } }",
+            "#define MINI_VALUE_TEXT(buffer_arg, offset_arg, length_arg) { .kind = MINI_ID(kind_text), .text = { .buffer = (buffer_arg), .offset = (offset_arg), .length = (length_arg), .units = 0, .units_known = 0, .ascii = 0, .ascii_known = 0 } }",
             "",
             "#define MINI_VALUE_NUMBER(number_arg) { .kind = MINI_ID(kind_number), .number = (number_arg) }",
             "",
@@ -249,6 +253,7 @@ fn emit_c_header(name) {
             "int MINI_ID(text_buffer_append)(MINI_ID(text_buffer) *buffer, const unsigned char *data, size_t length);",
             "void MINI_ID(text_buffer_free)(MINI_ID(text_buffer) *buffer);",
             "MINI_ID(value) MINI_ID(value_text)(MINI_ID(text_buffer) *buffer, size_t offset, size_t length);",
+            "static int MINI_ID(text_units_length)(MINI_ID(text) text, size_t *units);",
             "",
             "#endif"
         ),
@@ -285,7 +290,13 @@ fn emit_c_value_constructor() {
             "}",
             "",
             "MINI_ID(value) MINI_ID(value_text)(MINI_ID(text_buffer) *buffer, size_t offset, size_t length) {",
-            "    return (MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length);",
+            "    MINI_ID(value) value = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length);",
+            "    size_t units = 0; if (MINI_ID(text_units_length)(value.text, &units)) { value.text.units = units; value.text.units_known = 1; }",
+            "    if (buffer && offset <= buffer->count && length <= buffer->count - offset) {",
+            "        value.text.ascii = 1; value.text.ascii_known = 1;",
+            "        for (size_t index = 0; index < length; ++index) if (buffer->items[offset + index] > 127) { value.text.ascii = 0; break; }",
+            "    }",
+            "    return value;",
             "}",
             ""
         ),
@@ -416,7 +427,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
             bytes := emit_c_literal_bytes(token);
             count := number_to_text(list_length(bytes));
             return "    if (MINI_ID(text_buffer_append)(buffer, (const unsigned char *) " + emit_c_literal_input(bytes)
-                + ", " + count + ") != 0) return 1;\n" + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, buffer->count - "
+                + ", " + count + ") != 0) return 1;\n" + "    " + destination + " = MINI_ID(value_text)(buffer, buffer->count - "
                 + count + ", " + count + ");\n";
         }
         raw := map_get(node, "raw");
@@ -1019,7 +1030,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "    for (int argument = 1; argument < argc; ++argument) {");
     emit_c_collect_lines(lines, "        size_t offset = context.buffer.count, length = strlen(argv[argument]);");
     emit_c_collect_lines(lines, "        if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)argv[argument], length) != 0) { status = 1; goto cleanup; }");
-    emit_c_collect_lines(lines, "        MINI_ID(list_push)(context.arguments.list, (MINI_ID(value)) MINI_VALUE_TEXT(&context.buffer, offset, length), 0);");
+    emit_c_collect_lines(lines, "        MINI_ID(list_push)(context.arguments.list, MINI_ID(value_text)(&context.buffer, offset, length), 0);");
     emit_c_collect_lines(lines, "    }");
     emit_c_collect_lines(
         lines,

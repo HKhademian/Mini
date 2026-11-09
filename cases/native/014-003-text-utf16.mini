@@ -1,0 +1,15 @@
+import "common/io";
+import "common/list";
+import "common/text";
+
+text := text_from_code(128512);
+first := text_get(text, 0);
+second := text_get(text, 1);
+io_write_line(text_length(text));
+io_write_line(text_code(first));
+io_write_line(text_code(second));
+io_write_line(text_code(first + second));
+io_write_line(text_slice(text, 0, 1) == first);
+io_write_line(text_slice(text, 1, 2) == second);
+io_write_line(text_to_bytes(text));
+io_write_line(text_from_bytes(text_to_bytes(text)));

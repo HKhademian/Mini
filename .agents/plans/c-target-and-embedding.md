@@ -81,8 +81,9 @@ compiler.
   UTF-8, allowing the emitted compiler to run a C compile on a sample program.
 - 2026-11-09: C `process_script_path()` resolves native `argv[0]` to an
   absolute executable path. Compiling the full test driver to strict C11 works,
-  but running it still fails while loading Unicode case JSON: C text indexing
-  remains ASCII-only, and C `process_spawn()` has no host implementation.
+  and C text hosts now preserve UTF-16 code-unit length/get/slice semantics over
+  UTF-8 backing, including surrogate views. The C test driver still needs a
+  `process_spawn()` host implementation before it can run the full suite.
 - 2026-11-09: a manual parallel-bootstrap run now compiles the Mini compiler
   to C, builds it with strict C11 flags, and runs the resulting compiler on
   `tools/compiler.mini`. Successive C generations compile and run; generated C

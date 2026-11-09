@@ -1,0 +1,21 @@
+{
+  "id": "native.c-text-utf16",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-003-text-utf16.mini",
+  "features": [
+    "target.c",
+    "text.utf16",
+    "text.utf8-bytes",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "supplementary-code-point-surrogate-views",
+      "stdin": { "text": "" },
+      "stdout": { "text": "2\n55357\n56832\n128512\ntrue\ntrue\n[240,159,152,128]\n😀\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

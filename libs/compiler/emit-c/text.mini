@@ -2,6 +2,77 @@
 
 import "./registry";
 
+emit_c_host_runtime_add(
+    "text_units",
+    "static int MINI_ID(text_decode)(const unsigned char *bytes, size_t length, uint32_t *code, size_t *width) {\n"
+    + "    if (!bytes || !length || !code || !width) return 0; unsigned char first = bytes[0];\n"
+    + "    if (first <= 127) { *code = first; *width = 1; return 1; }\n"
+    + "    if (first >= 194 && first <= 223 && length >= 2 && (bytes[1] & 192) == 128) {\n"
+    + "        *code = ((uint32_t)(first & 31) << 6) | (uint32_t)(bytes[1] & 63); *width = 2; return 1; }\n"
+    + "    if (first >= 224 && first <= 239 && length >= 3 && (bytes[1] & 192) == 128 && (bytes[2] & 192) == 128\n"
+    + "        && !(first == 224 && bytes[1] < 160)) { *code = ((uint32_t)(first & 15) << 12) | ((uint32_t)(bytes[1] & 63) << 6) | (uint32_t)(bytes[2] & 63);\n"
+    + "        *width = 3; return 1; }\n"
+    + "    if (first >= 240 && first <= 244 && length >= 4 && (bytes[1] & 192) == 128 && (bytes[2] & 192) == 128\n"
+    + "        && (bytes[3] & 192) == 128 && !(first == 240 && bytes[1] < 144) && !(first == 244 && bytes[1] > 143)) {\n"
+    + "        *code = ((uint32_t)(first & 7) << 18) | ((uint32_t)(bytes[1] & 63) << 12) | ((uint32_t)(bytes[2] & 63) << 6) | (uint32_t)(bytes[3] & 63);\n"
+    + "        *width = 4; return 1; } return 0;\n}\n"
+    + "static int MINI_ID(text_view)(MINI_ID(text) text, const unsigned char **data) {\n"
+    + "    if (!text.buffer || text.offset > text.buffer->count || text.length > text.buffer->count - text.offset) return 0;\n"
+    + "    *data = text.buffer->items; if (text.length) *data += text.offset; return 1;\n}\n"
+    + "static int MINI_ID(text_units_length)(MINI_ID(text) text, size_t *units) {\n"
+    + "    if (!units) return 0; if (text.units_known) { *units = text.units; return 1; }\n"
+    + "    const unsigned char *data = NULL; if (!MINI_ID(text_view)(text, &data)) return 0; size_t count = 0, offset = 0;\n"
+    + "    while (offset < text.length) { uint32_t code = 0; size_t width = 0; if (!MINI_ID(text_decode)(data + offset, text.length - offset, &code, &width)) return 0;\n"
+    + "        size_t add = code > 65535 ? 2 : 1; if (count > SIZE_MAX - add) return 0; count += add; offset += width; } *units = count; return 1;\n}\n"
+    + "static int MINI_ID(text_unit_offset)(MINI_ID(text) text, size_t position, size_t *byte_offset, int *boundary) {\n"
+    + "    const unsigned char *data = NULL; if (!byte_offset || !boundary || !MINI_ID(text_view)(text, &data)) return 0;\n"
+    + "    if (text.ascii_known && text.ascii) { if (position > text.length) return 0; *byte_offset = position; *boundary = 1; return 1; }\n"
+    + "    size_t offset = 0, unit = 0; if (!position) { *byte_offset = 0; *boundary = 1; return 1; }\n"
+    + "    while (offset < text.length) { uint32_t code = 0; size_t width = 0; if (!MINI_ID(text_decode)(data + offset, text.length - offset, &code, &width)) return 0;\n"
+    + "        size_t count = code > 65535 ? 2 : 1; if (position == unit) { *byte_offset = offset; *boundary = 1; return 1; }\n"
+    + "        if (position > unit && position < unit + count) { *byte_offset = offset + width; *boundary = 0; return 1; }\n"
+    + "        unit += count; offset += width; if (position == unit) { *byte_offset = offset; *boundary = 1; return 1; }\n"
+    + "    }\n"
+    + "    if (position != unit) return 0; *byte_offset = offset; *boundary = 1; return 1;\n}\n"
+    + "typedef struct { const unsigned char *data; size_t length, offset; uint16_t pending; int has_pending; } MINI_ID(text_cursor);\n"
+    + "static int MINI_ID(text_next_unit)(MINI_ID(text_cursor) *cursor, uint16_t *unit) {\n"
+    + "    if (cursor->has_pending) { *unit = cursor->pending; cursor->has_pending = 0; return 1; }\n"
+    + "    if (cursor->offset >= cursor->length) return 0; uint32_t code = 0; size_t width = 0;\n"
+    + "    if (!MINI_ID(text_decode)(cursor->data + cursor->offset, cursor->length - cursor->offset, &code, &width)) return -1; cursor->offset += width;\n"
+    + "    if (code > 65535) { code -= 65536; *unit = (uint16_t)(55296 + (code >> 10)); cursor->pending = (uint16_t)(56320 + (code & 1023)); cursor->has_pending = 1; }\n"
+    + "    else *unit = (uint16_t)code; return 1;\n}\n"
+    + "static int MINI_ID(text_unit_compare)(MINI_ID(text) left, MINI_ID(text) right) {\n"
+    + "    const unsigned char *a = NULL, *b = NULL; if (!MINI_ID(text_view)(left, &a)) return -1; if (!MINI_ID(text_view)(right, &b)) return 1;\n"
+    + "    MINI_ID(text_cursor) x = {a, left.length, 0, 0, 0}, y = {b, right.length, 0, 0, 0};\n"
+    + "    for (;;) { uint16_t u = 0, v = 0; int has_u = MINI_ID(text_next_unit)(&x, &u), has_v = MINI_ID(text_next_unit)(&y, &v);\n"
+    + "        if (has_u < 0 || has_v < 0) return has_u < has_v ? -1 : 1; if (!has_u || !has_v) return has_u - has_v;\n"
+    + "        if (u != v) return u < v ? -1 : 1; }\n}\n"
+);
+
+emit_c_host_runtime_after_context_add(
+    "text_utf16_extract",
+    "static int MINI_ID(text_utf16_extract)(MINI_ID(context) *context, MINI_ID(text) source, size_t start, size_t end, MINI_ID(value) *result) {\n"
+    + "    size_t total = 0; if (!context || !result || !source.buffer || source.offset > source.buffer->count\n"
+    + "        || source.length > source.buffer->count - source.offset\n"
+    + "        || !MINI_ID(text_units_length)(source, &total) || start > end || end > total) return 1;\n"
+    + "    size_t byte_start = 0, byte_end = 0; int start_boundary = 0, end_boundary = 0;\n"
+    + "    if (!MINI_ID(text_unit_offset)(source, start, &byte_start, &start_boundary)\n"
+    + "        || !MINI_ID(text_unit_offset)(source, end, &byte_end, &end_boundary)) return 1;\n"
+    + "    if (start_boundary && end_boundary) { *result = (MINI_ID(value)) MINI_VALUE_TEXT(source.buffer, source.offset + byte_start, byte_end - byte_start);\n"
+    + "        result->text.units = end - start; result->text.units_known = 1; result->text.ascii_known = source.ascii_known; result->text.ascii = source.ascii; return 0; }\n"
+    + "    size_t output = context->buffer.count, offset = 0, unit = 0;\n"
+    + "    while (offset < source.length && unit < end) { uint32_t code = 0; size_t width = 0;\n"
+    + "        const unsigned char *data = source.buffer->items + source.offset;\n"
+    + "        if (!MINI_ID(text_decode)(data + offset, source.length - offset, &code, &width)) return 1; size_t count = code > 65535 ? 2 : 1;\n"
+    + "        size_t first = start > unit ? start : unit, last = end < unit + count ? end : unit + count;\n"
+    + "        if (last > first) { if (count == 2 && last - first == 1) {\n"
+    + "                uint32_t scalar = code - 65536, surrogate = first == unit ? 55296 + (scalar >> 10) : 56320 + (scalar & 1023);\n"
+    + "                unsigned char encoded[3] = {(unsigned char)(224 | (surrogate >> 12)), (unsigned char)(128 | ((surrogate >> 6) & 63)), (unsigned char)(128 | (surrogate & 63))};\n"
+    + "                if (MINI_ID(text_buffer_append)(&context->buffer, encoded, 3) != 0) return 1;\n"
+    + "            } else if (MINI_ID(text_buffer_append)(&context->buffer, data + offset, width) != 0) return 1; }\n"
+    + "        unit += count; offset += width; } *result = MINI_ID(value_text)(&context->buffer, output, context->buffer.count - output); return 0;\n}\n"
+);
+
 emit_c_host_function_add(
     "text_merge",
     "int MINI_ID(fn_text_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
@@ -31,36 +102,35 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_length",
-    "static int MINI_ID(text_ascii)(MINI_ID(value) value, const unsigned char **data, size_t *length) {\n"
-    + "    if (value.kind != MINI_ID(kind_text) || !value.text.buffer || value.text.offset > value.text.buffer->count\n"
-    + "        || value.text.length > value.text.buffer->count - value.text.offset) return 0;\n"
-    + "    const unsigned char *bytes = (const unsigned char *)\"\"; if (value.text.length) bytes = value.text.buffer->items + value.text.offset;\n"
-    + "    for (size_t index = 0; index < value.text.length; ++index) if (bytes[index] > 127) return 0;\n"
-    + "    *data = bytes; *length = value.text.length; return 1;\n}\n"
-    + "int MINI_ID(fn_text_length)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_text) && !MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1;\n"
+    "int MINI_ID(fn_text_length)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; size_t length = 0;\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_text) && !MINI_ID(text_units_length)(params.args[0].text, &length)) return 1;\n"
     + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER((double)length); return 0;\n}\n"
 );
 
 emit_c_host_function_add(
     "text_get",
     "int MINI_ID(fn_text_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1; size_t length = 0;\n"
     + "    if (params.args[0].kind != MINI_ID(kind_text)) { *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); return 0; }\n"
-    + "    if (!MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1; MINI_ID(value) index = params.args[1];\n"
-    + "    if (index.kind != MINI_ID(kind_number) || index.number < 0 || index.number >= (double)length\n"
+    + "    if (!MINI_ID(text_units_length)(params.args[0].text, &length)) return 1; MINI_ID(value) index = params.args[1];\n"
+    + "    if (index.kind != MINI_ID(kind_number) || index.number != index.number || index.number < 0 || index.number >= (double)length\n"
     + "        || index.number != (double)(size_t)index.number) { *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); return 0; }\n"
-    + "    size_t offset = params.args[0].text.offset + (size_t)index.number; *result = MINI_ID(value_text)(params.args[0].text.buffer, offset, 1); return 0;\n}\n"
+    + "    return MINI_ID(text_utf16_extract)(context, params.args[0].text, (size_t)index.number, (size_t)index.number + 1, result);\n}\n"
 );
 
 emit_c_host_function_add(
     "text_code",
     "int MINI_ID(fn_text_code)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
     + "    if (params.args[0].kind != MINI_ID(kind_text)) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
-    + "    if (!MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(length ? data[0] : 0); return 0;\n}\n"
+    + "    const unsigned char *data = NULL; if (!MINI_ID(text_view)(params.args[0].text, &data)) return 1;\n"
+    + "    if (!params.args[0].text.length) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
+    + "    uint32_t code = 0; size_t width = 0; if (!MINI_ID(text_decode)(data, params.args[0].text.length, &code, &width)) return 1;\n"
+    + "    if (code >= 55296 && code <= 56319 && width < params.args[0].text.length) { uint32_t low = 0; size_t low_width = 0;\n"
+    + "        if (MINI_ID(text_decode)(data + width, params.args[0].text.length - width, &low, &low_width) && low >= 56320 && low <= 57343)\n"
+    + "            code = 65536 + ((code - 55296) << 10) + (low - 56320); }\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER((double)code); return 0;\n}\n"
 );
 
 emit_c_host_function_add(
@@ -86,7 +156,7 @@ emit_c_host_function_add(
     "int MINI_ID(fn_text_slice)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
     + "    if (!context || !result || params.count != 3 || !params.args) return 1; MINI_ID(value) source = params.args[0];\n"
     + "    *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); if (source.kind != MINI_ID(kind_text)) return 0;\n"
-    + "    const unsigned char *data = NULL; size_t length = 0; if (!MINI_ID(text_ascii)(source, &data, &length)) return 1;\n"
+    + "    size_t length = 0; if (!MINI_ID(text_units_length)(source.text, &length)) return 1;\n"
     + "    MINI_ID(value) first = params.args[1], last = params.args[2];\n"
     + "    if (first.kind != MINI_ID(kind_number) || last.kind != MINI_ID(kind_number)\n"
     + "        || first.number < -9007199254740991.0 || first.number > 9007199254740991.0\n"
@@ -95,5 +165,5 @@ emit_c_host_function_add(
     + "    int64_t start = (int64_t)first.number, end = (int64_t)last.number, size = (int64_t)length;\n"
     + "    if (start < 0) start += size; if (end < 0) end += size; if (start < 0) start = 0; if (end < 0) end = 0;\n"
     + "    if (start > size) start = size; if (end > size) end = size; if (end <= start) return 0;\n"
-    + "    *result = MINI_ID(value_text)(source.text.buffer, source.text.offset + (size_t)start, (size_t)(end - start)); return 0;\n}\n"
+    + "    return MINI_ID(text_utf16_extract)(context, source.text, (size_t)start, (size_t)end, result);\n}\n"
 );
