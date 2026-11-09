@@ -1,0 +1,22 @@
+import "common/io";
+import "common/list";
+import "common/map";
+import "common/merge";
+import "common/value";
+
+base := map_of("n", 1, "flag", false, "empty", "");
+nested := map_of("ok", true);
+override := map_of("n", 7, "nested", nested);
+merged := map_merge(base, override);
+io_write(map_has(merged, "n"), ":", map_get(merged, "n"), ":", map_has(merged, "missing"), "\n");
+io_write(merged, "\n");
+copy := map_copy(merged);
+keys := map_keys(copy);
+map_delete(merged, "flag");
+map_set(merged, "n", 9);
+map_set(copy, 1, "ignored");
+map_set(copy, "later", 1);
+map_set(nested, "ok", false);
+io_write(map_get(copy, "n"), ":", list_length(map_keys(copy)), ":", map_has(copy, "flag"), ":", value_kind(map_get(copy, "nested")), "\n");
+io_write(list_length(keys), ":", list_length(map_keys(copy)), ":", map_has(copy, 1), ":", map_get(copy, 1), ":", map_get(map_get(copy, "nested"), "ok"), "\n");
+io_write(value_merge(base, override), "\n");

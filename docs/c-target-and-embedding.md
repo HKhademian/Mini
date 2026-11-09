@@ -146,9 +146,10 @@ Resolve these topics as implementation reaches them:
 - Text: C implements ASCII length, indexing, first-code-point lookup, and slicing.
 Non-ASCII text indexing and conversion remain unsupported; JS indexes UTF-16
 units and converts bytes as UTF-8, so UTF-8 byte indexing is not equivalent.
-- Collections: add heterogeneous values, missing-zero defaults, mutation, copies,
-  sparse/negative indexing, and map behavior as distinct increments.
-  The [passing proposal](parameter-passing.md) remains separate from accepted rules.
+- Collections: tagged lists cover construction, mutation, copies, indexing, and
+  joins. Tagged maps use an initial pair-array representation with lookup,
+  mutation, key snapshots, copying, merging, and nested JSON output. The
+  [passing proposal](parameter-passing.md) remains separate from accepted rules.
 - Calls: add default returns, argument defaults/extras, fn_args(), recursion,
   scope, and globals when cases require them; resolve ambiguities at that point.
 - Effects: preserve left-to-right, exactly-once evaluation and lazy logical
@@ -245,9 +246,11 @@ records concrete paths and gates. The first compiler slice works; later language
 features, native storage, and the script runner remain pending.
 
 Portable C11 is the proposed baseline. Verify macOS/Linux first; test Windows
-exports/calling convention before claiming DLL support. Full native compiler
-self-hosting is later work, not a runner prerequisite. Compare successive emitted
-C sources, not native binaries, when attempted; preserve the separate JS gate.
+exports/calling convention before claiming DLL support. A parallel C compiler
+bootstrap is an explicit goal after target parity; it is not a prerequisite for
+the first runner milestone. Keep the JS bootstrap active until successive C
+compiler generations reach a fixed point. Compare emitted C source, not native
+binary bytes, and preserve the separate JS gate.
 
 This creates no release version, published artifact, new syntax, or sandbox
 claim. Keep verified implementation increments in atomic commits.

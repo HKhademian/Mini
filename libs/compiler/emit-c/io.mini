@@ -8,6 +8,7 @@ fn emit_c_io_runtime() {
     return emit_c_join_lines(
         list_of(
             "static int MINI_ID(io_write_json_value)(MINI_ID(value) value, size_t depth, FILE *stream);",
+            "static int MINI_ID(io_write_json_map)(MINI_ID(value) value, size_t depth, FILE *stream);",
             "static int MINI_ID(io_write_json_text)(MINI_ID(text) text, FILE *stream) {",
             "    MINI_ID(text_buffer) *buffer = text.buffer;",
             "    if (!buffer || text.offset > buffer->count || text.length > buffer->count - text.offset) return 1;",
@@ -27,6 +28,7 @@ fn emit_c_io_runtime() {
             "static int MINI_ID(io_write_json_value)(MINI_ID(value) value, size_t depth, FILE *stream) {",
             "    if (depth > 128) return 1;",
             "    if (value.kind == MINI_ID(kind_text)) return MINI_ID(io_write_json_text)(value.text, stream);",
+            "    if (value.kind == MINI_ID(kind_map)) return MINI_ID(io_write_json_map)(value, depth, stream);",
             "    if (value.kind == MINI_ID(kind_boolean)) return fputs(value.boolean ? \"true\" : \"false\", stream) == EOF ? 1 : 0;",
             "    if (value.kind == MINI_ID(kind_number)) {",
             "        if (!(value.number == value.number) || value.number > DBL_MAX || value.number < -DBL_MAX) return fputs(\"null\", stream) == EOF ? 1 : 0;",
@@ -44,7 +46,7 @@ fn emit_c_io_runtime() {
             "}",
             "",
             "static int MINI_ID(io_write_value)(MINI_ID(value) value, FILE *stream) {",
-            "    if (value.kind == MINI_ID(kind_list)) return MINI_ID(io_write_json_value)(value, 0, stream);",
+            "    if (value.kind == MINI_ID(kind_list) || value.kind == MINI_ID(kind_map)) return MINI_ID(io_write_json_value)(value, 0, stream);",
             "    if (value.kind == MINI_ID(kind_boolean))",
             "        return fputs(value.boolean ? \"true\" : \"false\", stream) == EOF ? 1 : 0;",
             "    if (value.kind == MINI_ID(kind_number)) {",

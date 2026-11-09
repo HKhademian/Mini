@@ -206,10 +206,11 @@ fn emit_c_header(name) {
             "typedef double MINI_ID(number);",
             "_Static_assert(FLT_RADIX == 2 && DBL_MANT_DIG >= 53, \"mini requires binary numbers with at least 53 bits of precision\");",
             "",
-            "typedef enum { MINI_ID(kind_text), MINI_ID(kind_number), MINI_ID(kind_boolean), MINI_ID(kind_list) } MINI_ID(value_kind);",
+            "typedef enum { MINI_ID(kind_text), MINI_ID(kind_number), MINI_ID(kind_boolean), MINI_ID(kind_list), MINI_ID(kind_map) } MINI_ID(value_kind);",
             "typedef struct { unsigned char *items; size_t count; size_t capacity; size_t item_size; } MINI_ID(vec);",
             "typedef MINI_ID(vec) MINI_ID(text_buffer);",
             "typedef struct MINI_ID(list) MINI_ID(list);",
+            "typedef struct MINI_ID(map) MINI_ID(map);",
             "typedef struct {",
             "    MINI_ID(text_buffer) *buffer;",
             "    size_t offset;",
@@ -217,7 +218,7 @@ fn emit_c_header(name) {
             "} MINI_ID(text);",
             "typedef struct {",
             "    MINI_ID(value_kind) kind;",
-            "    union { MINI_ID(text) text; MINI_ID(number) number; int boolean; MINI_ID(list) *list; };",
+            "    union { MINI_ID(text) text; MINI_ID(number) number; int boolean; MINI_ID(list) *list; MINI_ID(map) *map; };",
             "} MINI_ID(value);",
             "struct MINI_ID(list) { MINI_ID(vec) values; };",
             "",
@@ -236,6 +237,8 @@ fn emit_c_header(name) {
             "#define MINI_VALUE_BOOLEAN(boolean_arg) { .kind = MINI_ID(kind_boolean), .boolean = !!(boolean_arg) }",
             "",
             "#define MINI_VALUE_LIST(list_arg) { .kind = MINI_ID(kind_list), .list = (list_arg) }",
+            "",
+            "#define MINI_VALUE_MAP(map_arg) { .kind = MINI_ID(kind_map), .map = (map_arg) }",
             "",
             "MINI_ID(value) MINI_ID(value_boolean)(int boolean);",
             "MINI_ID(value) MINI_ID(value_number)(MINI_ID(number) number);",
@@ -989,6 +992,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "struct MINI_ID(context) {");
     emit_c_collect_lines(lines, "    MINI_ID(text_buffer) buffer;");
     emit_c_collect_lines(lines, "    MINI_ID(vec) lists;");
+    emit_c_collect_lines(lines, "    MINI_ID(vec) maps;");
     emit_c_collect_fragments(lines, map_get(state, "c_declarations"));
     emit_c_collect_lines(lines, "};");
     list_set(lines, list_length(lines), "");
@@ -1016,6 +1020,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "    if (fflush(stdout) != 0) status = 1;");
     emit_c_collect_lines(lines, "    goto cleanup;");
     emit_c_collect_lines(lines, "cleanup:");
+    emit_c_collect_lines(lines, "    MINI_ID(map_cleanup)(&context);");
     emit_c_collect_lines(lines, "    MINI_ID(list_cleanup)(&context);");
     emit_c_collect_lines(lines, "    MINI_ID(text_buffer_free)(&context.buffer);");
     emit_c_collect_lines(lines, "    return status;");

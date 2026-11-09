@@ -1,0 +1,30 @@
+{
+  "id": "native.c-map-values",
+  "kind": "feature",
+  "target": "c",
+  "source": "013-001-map-values.mini",
+  "features": [
+    "target.c",
+    "map.new",
+    "map.set",
+    "map.get",
+    "map.has",
+    "map.keys",
+    "map.delete",
+    "map.copy",
+    "map.merge",
+    "map.of",
+    "map.value",
+    "map.json",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "pair-array-map-values-and-nested-json",
+      "stdin": { "text": "" },
+      "stdout": { "text": "true:7:false\n{\"empty\":\"\",\"flag\":false,\"n\":7,\"nested\":{\"ok\":true}}\n7:5:true:map\n4:5:false:0:false\n{\"empty\":\"\",\"flag\":false,\"n\":7,\"nested\":{\"ok\":false}}\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}
