@@ -1,0 +1,23 @@
+import "common/io";
+import "common/list";
+import "common/map";
+import "common/value";
+
+numbers := value_merge(2, "x", 3);
+text := value_merge("a", 2, "b");
+items := value_merge(list_of(1), list_of(2, "x"));
+base := map_of("key", 1);
+merged := value_merge(base, map_of("key", 2, "ready", true));
+io_write(
+    numbers,
+    "|",
+    text,
+    "|",
+    list_length(items),
+    ":",
+    list_get(items, 2),
+    "|",
+    map_get(merged, "key"),
+    ":",
+    map_get(merged, "ready")
+);

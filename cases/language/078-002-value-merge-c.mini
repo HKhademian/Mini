@@ -1,0 +1,11 @@
+import "common/io";
+import "common/list";
+import "common/value";
+
+io_write(
+    value_merge(2, "x", 3),
+    "|",
+    value_merge("a", 2, "b"),
+    "|",
+    list_length(value_merge(list_of(1), list_of(2)))
+);

@@ -516,6 +516,19 @@ merged := map_merge(defaults, overrides);
 - Non-map arguments are ignored, and the source maps are unchanged.
 - Import `common/map` to use it.
 
+## Accepted operation: value merging
+
+```mini
+merged := value_merge(first, second, third);
+```
+
+- The first value selects number addition, text concatenation, list
+  concatenation, or map merging.
+- Later values of other kinds are ignored. An empty call or unsupported first
+  kind returns 0.
+- Text, list, and map results are fresh values; lists and maps merge shallowly.
+- Import `common/value` to use it.
+
 ## Accepted operation: list text joining
 
 ```mini

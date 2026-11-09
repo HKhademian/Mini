@@ -1,0 +1,15 @@
+{
+  "id": "language.value-merge",
+  "kind": "feature",
+  "source": "078-001-value-merge.mini",
+  "features": ["import", "value.merge", "functions.args"],
+  "cases": [
+    {
+      "name": "type-dispatch-and-kind-filtering",
+      "stdin": {"text": ""},
+      "stdout": {"text": "5|ab|3:x|2:true"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

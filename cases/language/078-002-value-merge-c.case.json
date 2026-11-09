@@ -1,0 +1,16 @@
+{
+  "id": "language.value-merge-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "078-002-value-merge-c.mini",
+  "features": ["import", "value.merge", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "number-text-list-dispatch",
+      "stdin": {"text": ""},
+      "stdout": {"text": "5|ab|2"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
