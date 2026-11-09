@@ -2,6 +2,12 @@
 
 import "./registry";
 
+emit_c_host_preamble_add("#define _POSIX_C_SOURCE 200809L");
+emit_c_host_include_add("dirent.h");
+emit_c_host_include_add("errno.h");
+emit_c_host_include_add("sys/stat.h");
+emit_c_host_include_add("unistd.h");
+
 emit_c_host_function_add(
     "directory_create",
     "static char *MINI_ID(path_string)(MINI_ID(value) value) {\n"

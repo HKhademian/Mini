@@ -7,6 +7,9 @@ c_host_function_names := list_new();
 c_host_function_definitions := map_new();
 c_host_runtime_names := list_new();
 c_host_runtime_definitions := map_new();
+c_host_include_names := list_new();
+c_host_include_set := map_new();
+c_host_preamble_lines := list_new();
 
 /// Register one C implementation under its public Mini function name.
 fn emit_c_host_function_add(name, definition) {
@@ -38,6 +41,39 @@ fn emit_c_host_runtime_definitions() {
     while position < list_length(c_host_runtime_names) {
         name := list_get(c_host_runtime_names, position);
         list_set(output, list_length(output), map_get(c_host_runtime_definitions, name));
+        position = position + 1;
+    }
+    return list_join(output, "\n");
+}
+
+/// Register a system header required by C host replacements.
+fn emit_c_host_include_add(name) {
+    if !map_has(c_host_include_set, name) {
+        list_set(c_host_include_names, list_length(c_host_include_names), name);
+        map_set(c_host_include_set, name, true);
+    }
+    return 0;
+}
+
+/// Register a C directive that must precede generated header includes.
+fn emit_c_host_preamble_add(line) {
+    if !list_contains(c_host_preamble_lines, line) {
+        list_set(c_host_preamble_lines, list_length(c_host_preamble_lines), line);
+    }
+    return 0;
+}
+
+/// Return registered directives in insertion order.
+fn emit_c_host_preambles() {
+    return list_join(c_host_preamble_lines, "\n");
+}
+
+/// Return registered system includes in insertion order.
+fn emit_c_host_includes() {
+    output := list_new();
+    position := 0;
+    while position < list_length(c_host_include_names) {
+        list_set(output, list_length(output), "#include <" + list_get(c_host_include_names, position) + ">");
         position = position + 1;
     }
     return list_join(output, "\n");

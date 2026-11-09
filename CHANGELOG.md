@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.47 / compiler 0.5.0-alpha.58 / bootstrap
+  0.3.0-alpha.60: move POSIX declarations and headers for C path overrides
+  into the host include registry.
+
 - mini 0.3.0-alpha.46 / compiler 0.5.0-alpha.57 / bootstrap
   0.3.0-alpha.59: include registered C host runtimes with their host function
   wrappers, including for empty programs.
