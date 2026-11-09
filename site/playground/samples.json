@@ -681,11 +681,11 @@
   {
     "id": "pixel-walk-cycle",
     "group": "Animation",
-    "label": "Tiny walk cycle — planned",
+    "label": "Tiny walk cycle",
     "note": "Switch between small character poses to suggest walking.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-walk-cycle.mini"
   },
   {
     "id": "pixel-arrows",

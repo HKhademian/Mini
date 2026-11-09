@@ -1,0 +1,85 @@
+/// Alternate two tiny walking poses on a ten-by-ten board.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+playback_fps := 60;
+pose_fps := 2;
+frames_per_pose := number_div(playback_fps, pose_fps);
+background := pixel_rgb(16, 30, 58);
+character_color := pixel_rgb(255, 207, 88);
+walk_pose_a := list_of(
+    "..........",
+    "....#.....",
+    "...###....",
+    "....#.....",
+    "..####....",
+    "...#.#....",
+    "..#...#...",
+    "..........",
+    "..........",
+    ".........."
+);
+walk_pose_b := list_of(
+    "..........",
+    "....#.....",
+    "...###....",
+    "....#.....",
+    "..####....",
+    "..#.#.....",
+    "...#...#..",
+    "..........",
+    "..........",
+    ".........."
+);
+pose_is_a := true;
+pose_ticks := 0;
+
+/// Render the current pixel pose.
+fn pixel_walk_cycle_render() {
+    rows := walk_pose_a;
+    if !pose_is_a {
+        rows = walk_pose_b;
+    }
+    board := pixel_board_new(screen_size, screen_size, background);
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            if text_get(list_get(rows, row), column) == "#" {
+                pixel_board_set(board, screen_size, screen_size, column, row, character_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Switch between the two poses twice per second.
+fn canvas_update() {
+    pixel_walk_cycle_render();
+    pose_ticks = pose_ticks + 1;
+    if pose_ticks >= frames_per_pose {
+        pose_ticks = 0;
+        pose_is_a = !pose_is_a;
+    }
+}
+
+/// Print the first pose for command-line runs.
+fn pixel_walk_cycle_print() {
+    row := 0;
+    while row < screen_size {
+        io_write_line(list_get(walk_pose_a, row));
+        row = row + 1;
+    }
+}
+
+pixel_walk_cycle_render();
+canvas_play(screen_size, screen_size, "Tiny Walk Cycle");
+pixel_walk_cycle_print();
