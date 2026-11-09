@@ -358,17 +358,28 @@ without Node at script runtime; claims match evidence.
   retaining same-name Mini fallbacks and target host replacements.
 - Compile `tools/compiler.mini` to C, build it with strict C11, and run it as a
   compiler. Keep the active JS bootstrap pinned and passing throughout.
-- Have the C-built compiler emit the compiler again. Compare generated C source
-  across successive generations and record a separate C bootstrap identity only
-  after the fixed point passes.
+- Verify the complete compiler cross-target matrix, using fixed output paths so
+  generated C header-name normalization is deterministic:
+  1. `JS_COMPILER` compiles `tools/compiler.mini` to `C_COMPILER`.
+  2. `JS_COMPILER` compiles the source to `JS_COMPILER`.
+  3. `C_COMPILER` compiles the source to `JS_COMPILER`.
+  4. `C_COMPILER` compiles the source to `C_COMPILER`.
+- Require all four outputs to run. Compare JS outputs byte-for-byte and C
+  outputs after normalizing only the output-specific companion-header name.
+- Compile and run the complete test-suite driver through both JS and C, and
+  require both runs to pass the same scenarios, statuses, and output checks.
+- Finally emit `bootstrap.c`, compile it with strict C11 flags, run it, and
+  require it to rebuild/verify the compiler and tools successfully. This is the
+  final C-bootstrap acceptance stage, beyond a compiler-only fixed point.
 - Add a repository command that repeats this bootstrap check and reports the
   normalized generated-source identity; keep parity coverage as an explicit
   gate for the C bootstrap milestone.
 
-**Acceptance:** C builds and runs the Mini compiler, then reaches a verified
-fixed point without replacing or weakening the JS bootstrap gate.
-**Verify:** target parity cases, repository checks, strict C11 builds, and
-successive generated-C source comparison.
+**Acceptance:** the four-way compiler matrix agrees; the JS- and C-compiled
+test-suite drivers both pass; and a compiled `bootstrap.c` runs to completion.
+The JS bootstrap gate remains active throughout.
+**Verify:** matrix comparison, full tests from both compiled drivers, strict
+C11 builds, bootstrap output checks, and the existing JS bootstrap verifier.
 
 ## Constraints and key facts
 
