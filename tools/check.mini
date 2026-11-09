@@ -3,7 +3,7 @@ import "core/io";
 import "core/list";
 import "tools/check";
 import "core/process";
-import "core/project";
+import "util/project";
 
 /// Parse arguments and run repository checks.
 fn main(args) {

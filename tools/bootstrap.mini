@@ -4,7 +4,7 @@
 import "core/io";
 import "core/list";
 import "core/text";
-import "core/project";
+import "util/project";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";

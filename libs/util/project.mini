@@ -1,7 +1,9 @@
+/// Repository and active compiler paths used by project tooling.
+
 import "core/map";
-import "./path";
-import "./json";
-import "./result";
+import "core/path";
+import "core/json";
+import "core/result";
 import "core/process";
 import "core/file";
 

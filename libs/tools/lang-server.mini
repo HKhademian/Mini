@@ -11,7 +11,7 @@ import "core/list";
 import "core/text";
 import "core/path";
 import "core/process";
-import "core/project";
+import "util/project";
 import "core/file";
 import "util/process";
 import "compiler/lexer";

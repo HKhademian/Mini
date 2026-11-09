@@ -5,7 +5,7 @@ import "core/list";
 import "core/path";
 import "core/process";
 import "core/json";
-import "core/project";
+import "util/project";
 import "core/file";
 import "util/process";
 import "util/io";

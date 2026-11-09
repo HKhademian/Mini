@@ -2,7 +2,7 @@
 import "core/io";
 import "core/list";
 import "core/process";
-import "core/project";
+import "util/project";
 import "tools/test";
 import "tools/verify";
 

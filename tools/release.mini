@@ -4,7 +4,7 @@ import "core/list";
 import "core/path";
 import "tools/release";
 import "core/process";
-import "core/project";
+import "util/project";
 
 /// Parse arguments and package a release.
 fn main(args) {

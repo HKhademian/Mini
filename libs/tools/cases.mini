@@ -11,7 +11,7 @@ import "core/path";
 import "core/process";
 import "core/json";
 import "core/result";
-import "core/project";
+import "util/project";
 import "core/file";
 import "core/hash";
 import "util/process";

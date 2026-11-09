@@ -2,7 +2,7 @@
 import "core/path";
 import "tools/mini";
 import "core/process";
-import "core/project";
+import "util/project";
 
 /// Dispatch the invoked command.
 fn main(args) {

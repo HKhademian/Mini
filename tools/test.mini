@@ -3,7 +3,7 @@ import "core/io";
 import "core/list";
 import "tools/test";
 import "core/process";
-import "core/project";
+import "util/project";
 
 /// Parse arguments and run selected case scenarios.
 fn main(args) {
