@@ -5,6 +5,7 @@ import "common/list";
 import "common/pixel-board";
 import "common/play";
 
+screen_size := 10;
 black := pixel_rgb(0, 0, 0);
 red := pixel_rgb(255, 48, 72);
 heart_rows := list_of(
@@ -22,30 +23,30 @@ heart_rows := list_of(
 
 /// Draw the heart once and stop the canvas session.
 fn mini_play_update() {
-    board := pixel_board_new(10, 10, black);
+    board := pixel_board_new(screen_size, screen_size, black);
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         column := 0;
-        while column < 10 {
+        while column < screen_size {
             if text_get(list_get(heart_rows, row), column) == "#" {
-                pixel_board_set(board, 10, 10, column, row, red);
+                pixel_board_set(board, screen_size, screen_size, column, row, red);
             }
             column = column + 1;
         }
         row = row + 1;
     }
-    pixel_board_render(10, 10, board);
+    pixel_board_render(screen_size, screen_size, board);
     return 1;
 }
 
 /// Print the heart pattern for command-line runs.
 fn pixel_heart_print() {
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         io_write_line(list_get(heart_rows, row));
         row = row + 1;
     }
 }
 
-mini_play(10, 10, "Pixel Heart");
+mini_play(screen_size, screen_size, "Pixel Heart");
 pixel_heart_print();

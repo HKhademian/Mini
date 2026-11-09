@@ -1,28 +1,31 @@
 /// Show one white pixel on a ten-by-ten black canvas.
 
 import "common/io";
+import "common/number";
 import "common/pixel-board";
 import "common/play";
 
+screen_size := 10;
+screen_center := number_div(screen_size, 2);
 black := pixel_rgb(0, 0, 0);
 white := pixel_rgb(255, 255, 255);
 
 /// Draw one frame containing only the center pixel, then stop.
 fn mini_play_update() {
-    board := pixel_board_new(10, 10, black);
-    pixel_board_set(board, 10, 10, 5, 5, white);
-    pixel_board_render(10, 10, board);
+    board := pixel_board_new(screen_size, screen_size, black);
+    pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, white);
+    pixel_board_render(screen_size, screen_size, board);
     return 1;
 }
 
 /// Print the initial frame as a text fallback for the command line.
 fn pixel_one_print() {
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         column := 0;
         line := "";
-        while column < 10 {
-            if column == 5 && row == 5 {
+        while column < screen_size {
+            if column == screen_center && row == screen_center {
                 line = line + "*";
             } else {
                 line = line + ".";
@@ -34,5 +37,5 @@ fn pixel_one_print() {
     }
 }
 
-mini_play(10, 10, "One Pixel");
+mini_play(screen_size, screen_size, "One Pixel");
 pixel_one_print();

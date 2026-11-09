@@ -5,6 +5,7 @@ import "common/list";
 import "common/pixel-board";
 import "common/play";
 
+screen_size := 10;
 black := pixel_rgb(0, 0, 0);
 bright_red := pixel_rgb(255, 48, 72);
 soft_red := pixel_rgb(170, 36, 64);
@@ -44,19 +45,19 @@ fn mini_play_update() {
         color = soft_red;
     }
 
-    board := pixel_board_new(10, 10, black);
+    board := pixel_board_new(screen_size, screen_size, black);
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         column := 0;
-        while column < 10 {
+        while column < screen_size {
             if text_get(list_get(rows, row), column) == "#" {
-                pixel_board_set(board, 10, 10, column, row, color);
+                pixel_board_set(board, screen_size, screen_size, column, row, color);
             }
             column = column + 1;
         }
         row = row + 1;
     }
-    pixel_board_render(10, 10, board);
+    pixel_board_render(screen_size, screen_size, board);
 
     beat_frames = beat_frames + 1;
     if beat_frames >= 8 {
@@ -68,11 +69,11 @@ fn mini_play_update() {
 /// Print the large first pulse for command-line runs.
 fn pixel_beating_heart_print() {
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         io_write_line(list_get(heart_big, row));
         row = row + 1;
     }
 }
 
-mini_play(10, 10, "Beating Heart");
+mini_play(screen_size, screen_size, "Beating Heart");
 pixel_beating_heart_print();

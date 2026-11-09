@@ -4,6 +4,8 @@ import "common/io";
 import "common/pixel-board";
 import "common/play";
 
+screen_size := 10;
+screen_edge := screen_size - 1;
 blue := pixel_rgb(8, 32, 112);
 white := pixel_rgb(255, 245, 220);
 pixel_x := 1;
@@ -13,14 +15,14 @@ pixel_dy := 1;
 
 /// Draw the pixel, then bounce its next position off each screen edge.
 fn mini_play_update() {
-    board := pixel_board_new(10, 10, blue);
-    pixel_board_set(board, 10, 10, pixel_x, pixel_y, white);
-    pixel_board_render(10, 10, board);
+    board := pixel_board_new(screen_size, screen_size, blue);
+    pixel_board_set(board, screen_size, screen_size, pixel_x, pixel_y, white);
+    pixel_board_render(screen_size, screen_size, board);
 
-    if pixel_x + pixel_dx < 0 || pixel_x + pixel_dx > 9 {
+    if pixel_x + pixel_dx < 0 || pixel_x + pixel_dx > screen_edge {
         pixel_dx = 0 - pixel_dx;
     }
-    if pixel_y + pixel_dy < 0 || pixel_y + pixel_dy > 9 {
+    if pixel_y + pixel_dy < 0 || pixel_y + pixel_dy > screen_edge {
         pixel_dy = 0 - pixel_dy;
     }
     pixel_x = pixel_x + pixel_dx;
@@ -30,7 +32,7 @@ fn mini_play_update() {
 /// Print the first frame for command-line runs.
 fn pixel_dvd_print() {
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         if row == 1 {
             io_write_line(".*........");
         } else {
@@ -40,5 +42,5 @@ fn pixel_dvd_print() {
     }
 }
 
-mini_play(10, 10, "DVD Pixel");
+mini_play(screen_size, screen_size, "DVD Pixel");
 pixel_dvd_print();

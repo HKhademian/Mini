@@ -4,6 +4,8 @@ import "common/io";
 import "common/pixel-board";
 import "common/play";
 
+screen_size := 10;
+screen_edge := screen_size - 1;
 ball_x := 4;
 ball_y := 6;
 ball_dx := 1;
@@ -17,7 +19,7 @@ ball_color := pixel_rgb(255, 255, 255);
 
 /// Return the tile at one board position.
 fn breakout_tile(column, row) {
-    if column == 0 || column == 9 || row == 0 || row == 9 {
+    if column == 0 || column == screen_edge || row == 0 || row == screen_edge {
         return "#";
     }
     if row < 3 {
@@ -26,7 +28,7 @@ fn breakout_tile(column, row) {
     if column == ball_x && row == ball_y {
         return "o";
     }
-    if row == 8 && column >= paddle_x && column <= paddle_x + 2 {
+    if row == screen_edge - 1 && column >= paddle_x && column <= paddle_x + 2 {
         return "=";
     }
     return ".";
@@ -34,31 +36,31 @@ fn breakout_tile(column, row) {
 
 /// Build a row-major pixel board from the current Breakout state.
 fn breakout_render_pixels() {
-    board := pixel_board_new(10, 10, 0);
+    board := pixel_board_new(screen_size, screen_size, 0);
 
     position := 0;
-    while position < 10 {
-        pixel_board_set(board, 10, 10, position, 0, wall_color);
-        pixel_board_set(board, 10, 10, position, 9, wall_color);
-        pixel_board_set(board, 10, 10, 0, position, wall_color);
-        pixel_board_set(board, 10, 10, 9, position, wall_color);
+    while position < screen_size {
+        pixel_board_set(board, screen_size, screen_size, position, 0, wall_color);
+        pixel_board_set(board, screen_size, screen_size, position, screen_edge, wall_color);
+        pixel_board_set(board, screen_size, screen_size, 0, position, wall_color);
+        pixel_board_set(board, screen_size, screen_size, screen_edge, position, wall_color);
         position = position + 1;
     }
 
     row := 1;
     while row < 3 {
         column := 1;
-        while column < 9 {
-            pixel_board_set(board, 10, 10, column, row, brick_color);
+        while column < screen_edge {
+            pixel_board_set(board, screen_size, screen_size, column, row, brick_color);
             column = column + 1;
         }
         row = row + 1;
     }
-    pixel_board_set(board, 10, 10, ball_x, ball_y, ball_color);
-    pixel_board_set(board, 10, 10, paddle_x, 8, paddle_color);
-    pixel_board_set(board, 10, 10, paddle_x + 1, 8, paddle_color);
-    pixel_board_set(board, 10, 10, paddle_x + 2, 8, paddle_color);
-    pixel_board_render(10, 10, board);
+    pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
+    pixel_board_set(board, screen_size, screen_size, paddle_x, screen_edge - 1, paddle_color);
+    pixel_board_set(board, screen_size, screen_size, paddle_x + 1, screen_edge - 1, paddle_color);
+    pixel_board_set(board, screen_size, screen_size, paddle_x + 2, screen_edge - 1, paddle_color);
+    pixel_board_render(screen_size, screen_size, board);
 }
 
 /// Advance the ball and emit one ten-by-ten frame; return zero to continue.
@@ -68,15 +70,15 @@ fn mini_play_update() {
         update_ticks = 0;
         ball_x = ball_x + ball_dx;
         ball_y = ball_y + ball_dy;
-        if ball_x <= 1 || ball_x >= 8 {
+        if ball_x <= 1 || ball_x >= screen_edge - 1 {
             ball_dx = 0 - ball_dx;
         }
         if ball_y <= 1 {
             ball_dy = 1;
         }
-        if ball_y >= 7 {
+        if ball_y >= screen_edge - 2 {
             if ball_x >= paddle_x && ball_x <= paddle_x + 2 {
-                ball_y = 6;
+                ball_y = screen_edge - 3;
                 ball_dy = 0 - 1;
             } else {
                 return 1;
@@ -92,7 +94,7 @@ fn mini_play_onKeyDown(key) {
     if (key == "ArrowLeft" || key == "a") && paddle_x > 1 {
         paddle_x = paddle_x - 1;
     }
-    if (key == "ArrowRight" || key == "d") && paddle_x < 6 {
+    if (key == "ArrowRight" || key == "d") && paddle_x < screen_edge - 3 {
         paddle_x = paddle_x + 1;
     }
 }
@@ -100,10 +102,10 @@ fn mini_play_onKeyDown(key) {
 /// Build and print each row of the board.
 fn breakout_render() {
     row := 0;
-    while row < 10 {
+    while row < screen_size {
         line := "";
         column := 0;
-        while column < 10 {
+        while column < screen_size {
             line = line + breakout_tile(column, row);
             column = column + 1;
         }
@@ -112,5 +114,5 @@ fn breakout_render() {
     }
 }
 
-mini_play(10, 10, "Breakout");
+mini_play(screen_size, screen_size, "Breakout");
 breakout_render();
