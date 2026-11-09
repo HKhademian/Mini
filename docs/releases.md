@@ -27,18 +27,22 @@ commits; a release adds built artifacts, notes, and checksums.
 
    Tag names use `product-vGROUP-vPRODUCT`. The language product is `lang`, not
    `language`.
-6. Push the branch, then the tag:
+6. Push the branch and wait for CI to pass. Then push the annotated tag:
 
    ```text
    git push github main
    git push github mini-v0.5.0-v0.2.0-alpha.4
    ```
 
-The tag push starts:
+Pushing a release tag automatically packages and publishes it, without running
+CI again. To start packaging and publishing manually, use **Actions → Release →
+Run workflow**, enter the annotated tag, and start it only after CI passes for
+that tag's commit. Both routes use the same package and publish jobs.
+
+An automatic tag push starts:
 
 ```text
-CI
- → package
+package
  → upload draft assets
  → publish
 ```
@@ -82,8 +86,8 @@ workflow artifact. A local snapshot can be built with:
 
 Snapshots are never published as GitHub releases.
 
-The Release workflow also supports manual `workflow_dispatch` runs. Those build
-and upload artifacts without publishing.
+Manual Release workflow runs also publish. They check out the supplied release
+tag and package it without repeating the CI jobs.
 
 ## VS Code
 

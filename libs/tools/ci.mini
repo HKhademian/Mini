@@ -72,8 +72,8 @@ fn ci_task_name(text) {
 
 /// Package committed sources, optionally for a tag.
 fn ci_package(root) {
-    tag := "";
-    if process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
+    tag := process_env("MINI_RELEASE_TAG");
+    if tag == "" && process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
         tag = process_env("GITHUB_REF_NAME");
     }
     args := list_of("release", path_join(root, "dist/release"));
@@ -85,12 +85,12 @@ fn ci_package(root) {
 
 /// Publish the prepared draft release with gh.
 fn ci_publish(root) {
-    if process_env("GITHUB_EVENT_NAME") != "push" || process_env("GITHUB_REF_TYPE") != "tag" {
-        ci_fail("publish requires a pushed tag");
+    tag := process_env("MINI_RELEASE_TAG");
+    if tag == "" && process_env("GITHUB_EVENT_NAME") == "push" && process_env("GITHUB_REF_TYPE") == "tag" {
+        tag = process_env("GITHUB_REF_NAME");
     }
-    tag := process_env("GITHUB_REF_NAME");
     if tag == "" {
-        ci_fail("publish requires GITHUB_REF_NAME");
+        ci_fail("publish requires a release tag");
     }
     directory := path_join(root, "dist/release");
     manifest_path := path_join(directory, "manifest.json");
