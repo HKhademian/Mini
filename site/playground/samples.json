@@ -515,5 +515,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-beating-heart.mini"
+  },
+  {
+    "id": "pixel-arrows",
+    "group": "Interactive",
+    "label": "Arrow keys",
+    "note": "Move the yellow pixel around the green goal with arrows or WASD.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-arrows.mini"
   }
 ]

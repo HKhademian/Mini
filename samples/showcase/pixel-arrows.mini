@@ -1,0 +1,53 @@
+/// Move a pixel around a ten-by-ten canvas with arrows or WASD.
+
+import "common/io";
+import "common/pixel-board";
+import "common/play";
+
+black := pixel_rgb(0, 0, 0);
+player_color := pixel_rgb(255, 220, 40);
+goal_color := pixel_rgb(70, 240, 130);
+player_x := 1;
+player_y := 8;
+
+/// Render the player and a fixed goal; falling through keeps the session open.
+fn mini_play_update() {
+    board := pixel_board_new(10, 10, black);
+    pixel_board_set(board, 10, 10, 8, 1, goal_color);
+    pixel_board_set(board, 10, 10, player_x, player_y, player_color);
+    pixel_board_render(10, 10, board);
+}
+
+/// Move one cell for an arrow or WASD key while staying inside the board.
+fn mini_play_onKeyDown(key) {
+    if (key == "ArrowLeft" || key == "a") && player_x > 0 {
+        player_x = player_x - 1;
+    }
+    if (key == "ArrowRight" || key == "d") && player_x < 9 {
+        player_x = player_x + 1;
+    }
+    if (key == "ArrowUp" || key == "w") && player_y > 0 {
+        player_y = player_y - 1;
+    }
+    if (key == "ArrowDown" || key == "s") && player_y < 9 {
+        player_y = player_y + 1;
+    }
+}
+
+/// Print the initial player and goal positions for command-line runs.
+fn pixel_arrows_print() {
+    row := 0;
+    while row < 10 {
+        if row == 1 {
+            io_write_line("........G.");
+        } else if row == 8 {
+            io_write_line(".@........");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "Arrow Keys");
+pixel_arrows_print();

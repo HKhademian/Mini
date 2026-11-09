@@ -1,0 +1,25 @@
+{
+  "id": "showcase.pixel-arrows",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-arrows.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "common.play",
+    "common.pixel-board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "..........\n........G.\n..........\n..........\n..........\n..........\n..........\n..........\n.@........\n..........\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}
