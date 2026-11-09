@@ -65,6 +65,11 @@ fn text_from_codes(codes) {
     return list_join("", characters);
 }
 
+/// Merge a list of character texts into one text value.
+fn text_from_chars(characters) {
+    return list_join("", characters);
+}
+
 /// Merge text arguments into one text value, ignoring non-text arguments.
 fn text_merge() {
     values := fn_args();

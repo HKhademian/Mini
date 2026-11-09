@@ -378,6 +378,10 @@ function text_from_codes(codes) {
     }
     return list_join("", characters);
 }
+function text_from_chars(characters) {
+
+    return list_join("", characters);
+}
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 

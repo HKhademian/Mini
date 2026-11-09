@@ -1,0 +1,16 @@
+{
+  "id": "native.c-text-from-chars",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-008-text-from-chars.mini",
+  "features": ["target.c", "text.from-chars", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "character-list-join",
+      "stdin": {"text": ""},
+      "stdout": {"text": "چطوری 😀\n\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

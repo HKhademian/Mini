@@ -1,0 +1,8 @@
+/// Merge a list of character texts into one UTF-8 text value.
+
+import "common/io";
+import "common/text";
+
+characters := text_to_chars("چطوری 😀");
+io_write_line(text_from_chars(characters));
+io_write_line(text_from_chars(42));
