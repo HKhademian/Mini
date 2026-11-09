@@ -16,7 +16,7 @@ fn reference_compare(root, name, source_text) {
     file_write(source, source_text);
     compiler := path_join(root, "dist/compile.js");
     host := path_join(work, name + "-host.js");
-    pure := path_join(work, name + "-pure.js");
+    reference := path_join(work, name + "-reference.js");
     host_args := list_of(compiler, source, host);
     host_compile := process_capture(process_exec_path(), host_args, root, list_new());
     if map_get(host_compile, "status") != 0 {
@@ -24,7 +24,7 @@ fn reference_compare(root, name, source_text) {
         io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
         process_exit(1);
     }
-    pure_args := list_of(compiler, "--reference", source, pure);
+    pure_args := list_of(compiler, "--reference", source, reference);
     pure_compile := process_capture(process_exec_path(), pure_args, root, list_new());
     if map_get(pure_compile, "status") != 0 {
         path_remove(work);
@@ -36,7 +36,7 @@ fn reference_compare(root, name, source_text) {
         io_write_error(name + " JavaScript host override was not emitted\n");
         process_exit(1);
     }
-    if name == "number-add" && text_find(file_read(pure), "return (a - (0 - b));") < 0 {
+    if name == "number-add" && text_find(file_read(reference), "return (a - (0 - b));") < 0 {
         path_remove(work);
         io_write_error(name + " Mini implementation was not emitted in reference mode\n");
         process_exit(1);
@@ -46,7 +46,7 @@ fn reference_compare(root, name, source_text) {
         io_write_error(name + " JavaScript host override was not emitted\n");
         process_exit(1);
     }
-    if name == "text" && text_find(file_read(pure), "return source.slice(start, end);") >= 0 {
+    if name == "text" && text_find(file_read(reference), "return source.slice(start, end);") >= 0 {
         path_remove(work);
         io_write_error(name + " Mini implementation was not emitted in reference mode\n");
         process_exit(1);
@@ -55,7 +55,7 @@ fn reference_compare(root, name, source_text) {
     list_set(host_run_args, 0, host);
     host_run := process_capture(process_exec_path(), host_run_args, work, list_new());
     pure_run_args := list_new();
-    list_set(pure_run_args, 0, pure);
+    list_set(pure_run_args, 0, reference);
     pure_run := process_capture(process_exec_path(), pure_run_args, work, list_new());
     if map_get(host_run, "status") != map_get(pure_run, "status") || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(pure_run, "stdout")) || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr")) {
         path_remove(work);

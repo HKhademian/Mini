@@ -1,12 +1,12 @@
 {
-  "id": "language.number-c-pure",
+  "id": "language.number-c-reference",
   "kind": "feature",
   "target": "c",
-  "source": "073-004-number-c-pure.mini",
+  "source": "073-004-number-c-reference.mini",
   "features": ["import", "number", "value", "target.c"],
   "cases": [
     {
-      "name": "pure-number-algorithms-on-c-values",
+      "name": "reference-number-algorithms-on-c-values",
       "stdin": {"text": ""},
       "stdout": {"text": "texttruetruefalse9427283"},
       "stderr": {"text": ""},
