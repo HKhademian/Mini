@@ -1,0 +1,11 @@
+/// Convenience file and path helpers built on core path operations.
+
+import "core/file";
+import "core/path";
+
+/// Create an empty file in a fresh temporary directory and return its path.
+fn path_temp_file() {
+    path := path_join(path_temp_directory(), "file");
+    file_write(path, "");
+    return path;
+}

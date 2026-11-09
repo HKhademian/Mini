@@ -2,6 +2,7 @@
 
 import "core/io";
 import "core/path";
+import "util/path";
 import "core/file";
 import "core/process";
 import "util/io";

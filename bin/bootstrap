@@ -688,12 +688,6 @@ function path_join(left, right) {
     }
     return ((left + "/") + right);
 }
-function path_temp_file() {
-
-    let path = path_join(path_temp_directory(), "file");
-    file_write(path, "");
-    return path;
-}
 function file_remove(path) {
 
     if ((((path !== "") && path_is_exists(path)) && (!path_is_directory(path)))) {

@@ -58,13 +58,6 @@ fn path_join(left, right) {
     return left + "/" + right;
 }
 
-/// Create an empty file in a fresh temporary directory and return its path.
-fn path_temp_file() {
-    path := path_join(path_temp_directory(), "file");
-    file_write(path, "");
-    return path;
-}
-
 /// Remove a file when present; leave directories unchanged.
 fn file_remove(path) {
     if path != "" && path_is_exists(path) && !path_is_directory(path) {
