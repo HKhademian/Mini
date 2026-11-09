@@ -4,6 +4,7 @@ import "common/io";
 import "common/list";
 import "common/path";
 import "tools/release";
+import "common/process";
 
 /// Parse arguments and package a release.
 fn main(args) {

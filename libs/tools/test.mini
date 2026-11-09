@@ -12,6 +12,7 @@ import "common/text";
 import "common/list";
 import "common/path";
 import "./cases";
+import "common/process";
 
 /// Report usage and stop.
 fn test_usage() {

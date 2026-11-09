@@ -7,6 +7,7 @@ import "common/text";
 import "common/list";
 import "common/hash";
 import "tools/cases";
+import "common/process";
 
 /// Verify the generated compiler reproduces itself from its mini source.
 fn main(args) {

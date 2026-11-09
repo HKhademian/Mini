@@ -3,6 +3,7 @@
 import "common/io";
 import "common/list";
 import "tools/run";
+import "common/process";
 
 /// Parse internal arguments and run the selected program.
 fn main(args) {

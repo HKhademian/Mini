@@ -16,6 +16,7 @@ import "compiler/parser";
 import "compiler/builtins";
 import "compiler/emit-js";
 import "compiler/emit-c";
+import "common/process";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {

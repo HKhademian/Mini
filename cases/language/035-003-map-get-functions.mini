@@ -1,5 +1,6 @@
 import "common/io";
 import "common/map";
+import "common/process";
 
 fn target() {
     io_write("m");

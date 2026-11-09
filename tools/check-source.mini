@@ -6,6 +6,7 @@ import "common/map";
 import "common/file";
 import "common/path";
 import "tools/check-source";
+import "common/process";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {

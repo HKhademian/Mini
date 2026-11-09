@@ -3,6 +3,7 @@
 import "common/io";
 import "common/text";
 import "common/number";
+import "common/process";
 
 /// Check total numeric helpers against valid and invalid operands.
 fn main() {

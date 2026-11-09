@@ -2,6 +2,7 @@ import "common/io";
 import "common/text";
 import "common/list";
 import "common/map";
+import "common/process";
 
 if text_get(0, 1) != "" || text_get(true, 0) != "" || text_get(list_new(), 0) != "" || text_get(map_new(), 0) != "" {
     process_exit(1);

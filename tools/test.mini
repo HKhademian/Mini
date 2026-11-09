@@ -3,6 +3,7 @@
 import "common/io";
 import "common/list";
 import "tools/test";
+import "common/process";
 
 /// Parse arguments and run selected case scenarios.
 fn main(args) {

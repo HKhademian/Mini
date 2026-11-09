@@ -1,4 +1,5 @@
 import "common/io";
+import "common/process";
 
 fn replace(left, right) {
     left = 9;

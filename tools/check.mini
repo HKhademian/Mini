@@ -3,6 +3,7 @@
 import "common/io";
 import "common/list";
 import "tools/check";
+import "common/process";
 
 /// Parse arguments and run repository checks.
 fn main(args) {

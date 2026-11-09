@@ -1,6 +1,7 @@
 import "common/io";
 import "common/list";
 import "common/map";
+import "common/process";
 
 fn make_map() {
     io_write("m");

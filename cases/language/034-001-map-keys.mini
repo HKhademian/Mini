@@ -1,6 +1,7 @@
 import "common/io";
 import "common/list";
 import "common/map";
+import "common/process";
 
 expected := io_read_all();
 items := map_new();

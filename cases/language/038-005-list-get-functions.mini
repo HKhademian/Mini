@@ -1,5 +1,6 @@
 import "common/io";
 import "common/list";
+import "common/process";
 
 fn items() {
     io_write("l");

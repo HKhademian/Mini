@@ -67,6 +67,9 @@ zero waits indefinitely). The result map holds `status`, `signal`, `stdout`,
 `stderr`, and `error`. Captured streams are byte lists; inherited streams are
 connected to the parent and stay empty. `status` is 1 when the command cannot
 start or ends by a signal.
+Import `common/process` for these APIs. Their Mini fallbacks panic when a target
+has no process host; JavaScript registers same-name host overrides, and C
+implements `process_exit` while the other process APIs panic.
 
 ## Map operations
 

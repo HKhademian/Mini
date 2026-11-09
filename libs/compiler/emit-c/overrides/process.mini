@@ -1,0 +1,10 @@
+/// Native C process exit replacement.
+
+import "./registry";
+
+emit_c_host_function_add(
+    "process_exit",
+    "int MINI_ID(fn_process_exit)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!result || params.count != 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) return 1;\n"
+    + "    (void)context; exit((int)params.args[0].number); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);

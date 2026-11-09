@@ -1,10 +1,10 @@
 {
   "group": "0.6.0",
-  "mini": "0.3.0-alpha.51",
+  "mini": "0.3.0-alpha.52",
   "language": "0.5.0-alpha.14",
   "ast": "0.1.0-alpha.1",
-  "compiler": "0.5.0-alpha.62",
-  "bootstrap": "0.3.0-alpha.64",
+  "compiler": "0.5.0-alpha.63",
+  "bootstrap": "0.3.0-alpha.65",
   "std": null,
   "check": "0.1.0-alpha.13",
   "verify": "0.1.0-alpha.10",
@@ -13,7 +13,7 @@
   "bench": "0.1.0-alpha.7",
   "cli": "0.1.0-alpha.20",
   "vscode": "0.3.9",
-  "builtins": "0.4.0-alpha.18",
+  "builtins": "0.4.0-alpha.19",
   "format": "0.1.0-alpha.9",
   "lsp": "0.1.0-alpha.11"
 }

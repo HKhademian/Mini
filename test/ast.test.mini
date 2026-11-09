@@ -6,6 +6,7 @@ import "common/io";
 import "common/list";
 import "common/text";
 import "compiler/parser";
+import "common/process";
 
 /// Fail an AST shape assertion with its location in the test.
 fn ast_test_fail(message) {

@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/list";
+import "common/process";
 
 args := fn_args();
 if list_length(args) == 0 {

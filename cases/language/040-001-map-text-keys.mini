@@ -3,6 +3,7 @@
 import "common/list";
 import "common/map";
 import "common/io";
+import "common/process";
 
 /// Record receiver evaluation and return the nested map without copying it.
 fn receiver(state) {

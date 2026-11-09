@@ -12,6 +12,7 @@ import "common/path";
 import "common/hash";
 import "common/time";
 import "./cases";
+import "common/process";
 
 /// Report a benchmark error and stop.
 fn bench_fail(message) {

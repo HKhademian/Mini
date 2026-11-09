@@ -5,6 +5,7 @@ import "common/list";
 import "common/file";
 import "common/path";
 import "tools/format";
+import "common/process";
 
 /// Report a command error and stop.
 fn format_fail(message) {

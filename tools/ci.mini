@@ -4,6 +4,7 @@ import "common/io";
 import "common/list";
 import "common/file";
 import "tools/ci";
+import "common/process";
 
 /// Read the task file and run the selected CI task.
 fn main(args) {

@@ -1,4 +1,5 @@
 import "common/io";
+import "common/process";
 
 io_write("out");
 io_write_error("er");

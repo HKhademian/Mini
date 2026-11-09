@@ -34,7 +34,7 @@ the operating system or host runtime:
 | `file_read`, `file_write`, `file_read_bytes`, `file_write_bytes` | File contents; same-name panic fallbacks in `libs/common/file.mini` and JavaScript/C host overrides |
 | `path_temp_directory` | Filesystem mutation |
 | `directory_list`, `directory_create`, `path_is_exists`, `path_is_directory`, `path_copy`, `path_remove` | Filesystem queries and mutation; same-name panic fallbacks in `common/path` and JS/C host overrides |
-| `process_exit` | Process interface |
+| `process_exit` | Process interface; same-name panic fallback in `common/process` and JS/C host overrides |
 | `process_spawn`, `process_exec_path`, `process_script_path`, `process_env` | Child processes and host environment |
 | `time_millis` | Host clock |
 | `value_kind` | Runtime representation introspection; same-name Mini panic fallback in `libs/common/value.mini` |

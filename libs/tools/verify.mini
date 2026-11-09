@@ -14,6 +14,7 @@ import "common/file";
 import "common/path";
 import "common/hash";
 import "./cases";
+import "common/process";
 
 /// Report a verification failure and stop.
 fn verify_fail(message) {

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.52 / builtins 0.4.0-alpha.19 / compiler
+  0.5.0-alpha.63 / bootstrap 0.3.0-alpha.65: move process APIs to imported
+  Mini panic fallbacks and same-name emitter registries.
+
 - mini 0.3.0-alpha.51 / builtins 0.4.0-alpha.18 / compiler
   0.5.0-alpha.62 / bootstrap 0.3.0-alpha.64: move hash and clock APIs to
   imported Mini fallbacks and same-name JavaScript host registries.

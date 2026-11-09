@@ -6,6 +6,7 @@ import "common/number";
 import "common/map";
 import "common/list";
 import "common/path";
+import "common/process";
 
 /// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {

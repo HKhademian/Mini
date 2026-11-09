@@ -4,6 +4,7 @@
 import "common/io";
 import "common/list";
 import "common/map";
+import "common/process";
 
 items := map_new();
 key := io_read_all();

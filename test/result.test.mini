@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/result";
+import "common/process";
 
 /// Verify result predicates for success, failure, and non-maps.
 fn main() {

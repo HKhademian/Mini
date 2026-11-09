@@ -3,6 +3,7 @@
 import "common/io";
 import "common/list";
 import "tools/build";
+import "common/process";
 
 /// Parse arguments and build or check generated artifacts.
 fn main(args) {

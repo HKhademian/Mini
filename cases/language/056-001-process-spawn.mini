@@ -6,6 +6,7 @@ import "common/map";
 import "common/io";
 import "common/file";
 import "common/path";
+import "common/process";
 
 dir := path_temp_directory();
 args := list_new();

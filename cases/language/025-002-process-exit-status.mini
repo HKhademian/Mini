@@ -1,4 +1,5 @@
 import "common/io";
+import "common/process";
 
 io_write("before");
 process_exit(7);

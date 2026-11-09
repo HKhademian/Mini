@@ -4,6 +4,7 @@ import "common/io";
 import "common/text";
 import "common/list";
 import "tools/cases";
+import "common/process";
 
 /// Compile and run one source in host and reference modes, then compare results.
 fn reference_compare(root, name, source_text) {

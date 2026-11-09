@@ -3,6 +3,7 @@
 import "common/text";
 import "common/list";
 import "common/map";
+import "common/process";
 
 /// Return whether a single character is in choices; empty text is never a member.
 fn lex_contains(choices, character) {

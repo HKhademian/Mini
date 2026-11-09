@@ -4,6 +4,7 @@ import "common/io";
 import "common/list";
 import "tools/verify";
 import "tools/test";
+import "common/process";
 
 /// Consume verify options, then check one case or the bootstrap.
 fn main(args) {

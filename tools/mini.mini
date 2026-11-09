@@ -2,6 +2,7 @@
 
 import "common/path";
 import "tools/mini";
+import "common/process";
 
 /// Dispatch the invoked command.
 fn main(args) {

@@ -5,6 +5,7 @@ import "common/list";
 import "common/map";
 import "common/io";
 import "common/file";
+import "common/process";
 
 /// Return ten times value using only addition; used by decimal formatting.
 fn times_ten(value) {

@@ -4,6 +4,7 @@ import "common/text";
 import "common/map";
 import "./process";
 import "./text";
+import "common/process";
 
 /// Run command with arguments and return a result map with text output streams.
 /// The child inherits the parent environment; mode selects capture or inherit.

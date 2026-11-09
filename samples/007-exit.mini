@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/list";
+import "common/process";
 
 /// Return the first text item without changing items; an empty list terminates the process.
 fn first(items) {
