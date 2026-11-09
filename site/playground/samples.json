@@ -717,11 +717,11 @@
   {
     "id": "pixel-maze",
     "group": "Interactive",
-    "label": "Mini maze — planned",
-    "note": "Move a pixel through a maze to reach the goal.",
+    "label": "Mini maze",
+    "note": "Use arrows or WASD to reach the green goal without crossing walls.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-maze.mini"
   },
   {
     "id": "pixel-dvd",

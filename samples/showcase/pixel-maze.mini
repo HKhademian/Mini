@@ -1,0 +1,113 @@
+/// Guide a pixel through three connected corridors to the green goal.
+
+import "core/io";
+import "core/list";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+maze_rows := list_of(
+    "##########",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#........#",
+    "##########"
+);
+player_x := 1;
+player_y := 8;
+goal_x := 8;
+goal_y := 1;
+wall_color := pixel_rgb(42, 72, 104);
+path_color := pixel_rgb(7, 14, 28);
+player_color := pixel_rgb(255, 215, 74);
+goal_color := pixel_rgb(82, 235, 142);
+
+/// Report whether one coordinate is blocked by a maze wall.
+fn pixel_maze_is_wall(column, row) {
+    return text_get(list_get(maze_rows, row), column) == "#";
+}
+
+/// Draw the corridors, goal, and player.
+fn pixel_maze_render() {
+    board := pixel_board_new(screen_size, screen_size, path_color);
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            if pixel_maze_is_wall(column, row) {
+                pixel_board_set(board, screen_size, screen_size, column, row, wall_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_set(board, screen_size, screen_size, goal_x, goal_y, goal_color);
+    pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Move one cell with arrow keys or WASD without crossing walls.
+fn canvas_on_key_down(key) {
+    next_x := player_x;
+    next_y := player_y;
+    if key == "ArrowLeft" || key == "a" {
+        next_x = player_x - 1;
+    } else if key == "ArrowRight" || key == "d" {
+        next_x = player_x + 1;
+    } else if key == "ArrowUp" || key == "w" {
+        next_y = player_y - 1;
+    } else if key == "ArrowDown" || key == "s" {
+        next_y = player_y + 1;
+    }
+    if !pixel_maze_is_wall(next_x, next_y) {
+        player_x = next_x;
+        player_y = next_y;
+    }
+}
+
+/// Keep the current maze frame visible and stop when the goal is reached.
+fn canvas_update() {
+    pixel_maze_render();
+    if player_x == goal_x && player_y == goal_y {
+        return 1;
+    }
+}
+
+/// Return the text character for one maze cell.
+fn pixel_maze_character(column, row) {
+    if column == player_x && row == player_y {
+        return "@";
+    }
+    if column == goal_x && row == goal_y {
+        return "G";
+    }
+    if pixel_maze_is_wall(column, row) {
+        return "#";
+    }
+    return ".";
+}
+
+/// Print the initial maze for command-line runs.
+fn pixel_maze_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            line = line + pixel_maze_character(column, row);
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_maze_render();
+canvas_play(screen_size, screen_size, "Mini Maze · Arrows or WASD");
+pixel_maze_print();
