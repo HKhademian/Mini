@@ -1,0 +1,62 @@
+/// Toggle a small lamp on and off with Space or Enter.
+
+import "core/io";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+light_is_on := true;
+background := pixel_rgb(12, 20, 36);
+light_color := pixel_rgb(255, 222, 112);
+lamp_color := pixel_rgb(128, 155, 188);
+
+/// Draw the lamp and illuminate its center when switched on.
+fn pixel_light_switch_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    pixel_board_set(board, screen_size, screen_size, 4, 3, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 5, 3, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 3, 4, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 6, 4, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 3, 5, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 6, 5, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 4, 6, lamp_color);
+    pixel_board_set(board, screen_size, screen_size, 5, 6, lamp_color);
+    if light_is_on {
+        pixel_board_set(board, screen_size, screen_size, 4, 4, light_color);
+        pixel_board_set(board, screen_size, screen_size, 5, 4, light_color);
+        pixel_board_set(board, screen_size, screen_size, 4, 5, light_color);
+        pixel_board_set(board, screen_size, screen_size, 5, 5, light_color);
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Keep drawing the current state between key presses.
+fn canvas_update() {
+    pixel_light_switch_render();
+}
+
+/// Toggle the lamp with Space or Enter.
+fn canvas_on_key_down(key) {
+    if key == " " || key == "Enter" {
+        light_is_on = !light_is_on;
+    }
+}
+
+/// Print the initial lit lamp for command-line runs.
+fn pixel_light_switch_print() {
+    io_write_line("..........");
+    io_write_line("..........");
+    io_write_line("..........");
+    io_write_line("....##....");
+    io_write_line("...####...");
+    io_write_line("...####...");
+    io_write_line("....##....");
+    io_write_line("..........");
+    io_write_line("..........");
+    io_write_line("..........");
+}
+
+pixel_light_switch_render();
+canvas_play(screen_size, screen_size, "Light Switch · Space to toggle");
+pixel_light_switch_print();

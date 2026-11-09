@@ -708,11 +708,11 @@
   {
     "id": "pixel-light-switch",
     "group": "Interactive",
-    "label": "Light switch — planned",
-    "note": "Toggle a pixel pattern on and off with a key.",
+    "label": "Light switch",
+    "note": "Press Space or Enter to switch a small lamp on and off.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-light-switch.mini"
   },
   {
     "id": "pixel-maze",
