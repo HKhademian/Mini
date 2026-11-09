@@ -131,7 +131,7 @@ fn check_same_list(left, right) {
 /// Count code fence markers and verify links in one document.
 fn check_document(path) {
     text := file_read(path);
-    lines := split_lines(text);
+    lines := text_split_lines(text);
     in_fence := false;
     directory := path_parent(path);
     position := 0;

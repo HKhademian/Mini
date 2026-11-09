@@ -64,7 +64,7 @@ fn text_from_code(code) {
 }
 
 /// Return lines split on LF or CRLF, retaining a final empty line.
-fn split_lines(source) {
+fn text_split_lines(source) {
     lines := text_split(source, "\n");
     position := 0;
     while position < list_length(lines) - 1 {
@@ -115,8 +115,8 @@ fn text_slice(source, start, end) {
 }
 
 /// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
-fn indent_output(output) {
-    lines := split_lines(output);
+fn text_indent_output(output) {
+    lines := text_split_lines(output);
     result := list_new();
     position := 0;
     while position < list_length(lines) {
@@ -140,22 +140,22 @@ fn text_ends_with(source, suffix) {
 }
 
 /// Return whether character is an ASCII identifier start.
-fn is_letter(character) {
+fn text_is_letter(character) {
     return text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0;
 }
 
 /// Return whether character is a decimal digit.
-fn is_digit(character) {
+fn text_is_digit(character) {
     return text_find("0123456789", character) >= 0;
 }
 
 /// Return whether character continues an identifier.
-fn is_identifier_part(character) {
-    return is_letter(character) || is_digit(character);
+fn text_is_identifier_part(character) {
+    return text_is_letter(character) || text_is_digit(character);
 }
 
 /// Return whether value is one of the accepted two-character symbols.
-fn is_two_character_symbol(value) {
+fn text_is_two_character_symbol(value) {
     return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||"
         || value == ":=";
 }

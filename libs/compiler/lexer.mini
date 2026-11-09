@@ -126,7 +126,7 @@ fn lex_comment(state, source, include_comments) {
 fn lex_word(state, source, token) {
     map_set(token, "kind", "identifier");
     while map_get(state, "position") < text_length(source)
-        && is_identifier_part(text_get(source, map_get(state, "position"))) {
+        && text_is_identifier_part(text_get(source, map_get(state, "position"))) {
         lex_advance(state);
     }
     spelling := text_slice(source, map_get(token, "start"), map_get(state, "position"));
@@ -141,7 +141,7 @@ fn lex_word(state, source, token) {
 fn lex_digits(state, source, token) {
     map_set(token, "kind", "number");
     while map_get(state, "position") < text_length(source)
-        && is_digit(text_get(source, map_get(state, "position"))) {
+        && text_is_digit(text_get(source, map_get(state, "position"))) {
         lex_advance(state);
     }
     return 0;
@@ -180,7 +180,7 @@ fn lex_tokenize(source, source_name, include_comments) {
     map_set(state, "text", source);
     map_set(state, "source", source_name);
     map_set(state, "tokens", list_new());
-    map_set(state, "lines", split_lines(source));
+    map_set(state, "lines", text_split_lines(source));
     map_set(state, "position", 0);
     map_set(state, "line", 1);
     map_set(state, "column", 1);
@@ -209,13 +209,13 @@ fn lex_tokenize(source, source_name, include_comments) {
             lex_comment(state, source, include_comments);
         } else {
             token := lex_start(state);
-            if is_letter(character) {
+            if text_is_letter(character) {
                 lex_word(state, source, token);
-            } else if is_digit(character) {
+            } else if text_is_digit(character) {
                 lex_digits(state, source, token);
             } else if character == "\"" {
                 lex_text(state, source, token);
-            } else if is_two_character_symbol(
+            } else if text_is_two_character_symbol(
                 text_slice(
                     source,
                     map_get(state, "position"),

@@ -369,7 +369,7 @@ function text_length(source) { return typeof source === "string" ? source.length
 function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
 function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
-function split_lines(source) {
+function text_split_lines(source) {
 
     let lines = text_split(source, "\n");
     let position = 0;
@@ -393,9 +393,9 @@ function text_slice(source, start, end) {
     if (end <= start) return "";
     return source.slice(start, end);
 }
-function indent_output(output) {
+function text_indent_output(output) {
 
-    let lines = split_lines(output);
+    let lines = text_split_lines(output);
     let result = list_new();
     let position = 0;
     while ((position < (lines).length)) {
@@ -416,19 +416,19 @@ function text_ends_with(source, suffix) {
     }
     return (text_slice(source, (length - size), length) === suffix);
 }
-function is_letter(character) {
+function text_is_letter(character) {
 
     return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
 }
-function is_digit(character) {
+function text_is_digit(character) {
 
     return (text_find("0123456789", character) >= 0);
 }
-function is_identifier_part(character) {
+function text_is_identifier_part(character) {
 
-    return (is_letter(character) || is_digit(character));
+    return (text_is_letter(character) || text_is_digit(character));
 }
-function is_two_character_symbol(value) {
+function text_is_two_character_symbol(value) {
 
     return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
 }
@@ -1307,7 +1307,7 @@ function lex_comment(state, source, include_comments) {
 function lex_word(state, source, token) {
 
     map_set(token, "kind", "identifier");
-    while (((map_get(state, "position") < text_length(source)) && is_identifier_part(text_get(source, map_get(state, "position"))))) {
+    while (((map_get(state, "position") < text_length(source)) && text_is_identifier_part(text_get(source, map_get(state, "position"))))) {
         lex_advance(state);
     }
     let spelling = text_slice(source, map_get(token, "start"), map_get(state, "position"));
@@ -1319,7 +1319,7 @@ function lex_word(state, source, token) {
 function lex_digits(state, source, token) {
 
     map_set(token, "kind", "number");
-    while (((map_get(state, "position") < text_length(source)) && is_digit(text_get(source, map_get(state, "position"))))) {
+    while (((map_get(state, "position") < text_length(source)) && text_is_digit(text_get(source, map_get(state, "position"))))) {
         lex_advance(state);
     }
     return 0;
@@ -1354,7 +1354,7 @@ function lex_tokenize(source, source_name, include_comments) {
     map_set(state, "text", source);
     map_set(state, "source", source_name);
     map_set(state, "tokens", list_new());
-    map_set(state, "lines", split_lines(source));
+    map_set(state, "lines", text_split_lines(source));
     map_set(state, "position", 0);
     map_set(state, "line", 1);
     map_set(state, "column", 1);
@@ -1377,13 +1377,13 @@ function lex_tokenize(source, source_name, include_comments) {
             lex_comment(state, source, include_comments);
         } else {
             let token = lex_start(state);
-            if (is_letter(character)) {
+            if (text_is_letter(character)) {
                 lex_word(state, source, token);
-            } else if (is_digit(character)) {
+            } else if (text_is_digit(character)) {
                 lex_digits(state, source, token);
             } else if ((character === "\"")) {
                 lex_text(state, source, token);
-            } else if (is_two_character_symbol(text_slice(source, map_get(state, "position"), (map_get(state, "position") + 2)))) {
+            } else if (text_is_two_character_symbol(text_slice(source, map_get(state, "position"), (map_get(state, "position") + 2)))) {
                 lex_advance(state);
                 lex_advance(state);
             } else if ((text_find("=+-!<>(),;{}", character) >= 0)) {
@@ -2313,7 +2313,7 @@ function emit_js_arguments(nodes) {
 function emit_js_block(node) {
 
     let body = emit_js_statements(map_get(node, "statements"));
-    let indented = indent_output(body);
+    let indented = text_indent_output(body);
     if ((indented === "")) {
         return list_join("\n", list_of("{", "}"));
     }
@@ -2421,7 +2421,7 @@ function emit_js_file_initializers(program) {
     while ((index < (files).length)) {
         let name = ("$mini_file_" + number_to_text(index));
         let code = emit_js_file_body(body, list_get(files, index));
-        let wrapper_lines = list_of((("function " + name) + "() {"), indent_output(code), "}", "");
+        let wrapper_lines = list_of((("function " + name) + "() {"), text_indent_output(code), "}", "");
         list_set(wrappers, (wrappers).length, list_join("\n", wrapper_lines));
         list_set(calls, (calls).length, (("    " + name) + "();"));
         index = (index + 1);

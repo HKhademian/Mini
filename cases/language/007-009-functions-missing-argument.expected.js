@@ -246,7 +246,7 @@ function text_length(source) { return typeof source === "string" ? source.length
 function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
 function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
-function split_lines(source) {
+function text_split_lines(source) {
 
     let lines = text_split(source, "\n");
     let position = 0;
@@ -270,9 +270,9 @@ function text_slice(source, start, end) {
     if (end <= start) return "";
     return source.slice(start, end);
 }
-function indent_output(output) {
+function text_indent_output(output) {
 
-    let lines = split_lines(output);
+    let lines = text_split_lines(output);
     let result = list_new();
     let position = 0;
     while ((position < (lines).length)) {
@@ -293,19 +293,19 @@ function text_ends_with(source, suffix) {
     }
     return (text_slice(source, (length - size), length) === suffix);
 }
-function is_letter(character) {
+function text_is_letter(character) {
 
     return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
 }
-function is_digit(character) {
+function text_is_digit(character) {
 
     return (text_find("0123456789", character) >= 0);
 }
-function is_identifier_part(character) {
+function text_is_identifier_part(character) {
 
-    return (is_letter(character) || is_digit(character));
+    return (text_is_letter(character) || text_is_digit(character));
 }
-function is_two_character_symbol(value) {
+function text_is_two_character_symbol(value) {
 
     return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
 }

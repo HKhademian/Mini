@@ -115,7 +115,7 @@ fn emit_js_arguments(nodes) {
 /// Emit one block while preserving the compiler's four-space layout.
 fn emit_js_block(node) {
     body := emit_js_statements(map_get(node, "statements"));
-    indented := indent_output(body);
+    indented := text_indent_output(body);
     if indented == "" {
         return list_join("\n", list_of("{", "}"));
     }
@@ -236,7 +236,7 @@ fn emit_js_file_initializers(program) {
     while index < list_length(files) {
         name := "$mini_file_" + number_to_text(index);
         code := emit_js_file_body(body, list_get(files, index));
-        wrapper_lines := list_of("function " + name + "() {", indent_output(code), "}", "");
+        wrapper_lines := list_of("function " + name + "() {", text_indent_output(code), "}", "");
         list_set(wrappers, list_length(wrappers), list_join("\n", wrapper_lines));
         list_set(calls, list_length(calls), "    " + name + "();");
         index = index + 1;

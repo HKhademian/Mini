@@ -108,7 +108,7 @@ fn emit_c_header_guard(name) {
     position := 0;
     while position < text_length(name) {
         character := text_get(name, position);
-        if is_identifier_part(character) {
+        if text_is_identifier_part(character) {
             guard = guard + character;
         } else {
             guard = guard + "_";
