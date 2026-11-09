@@ -1,41 +1,89 @@
-/// Blink one colored pixel on a ten-by-ten canvas.
+/// Blink a friendly, warm-colored face on a soft blue canvas.
 
 import "common/io";
+import "common/list";
 import "common/pixel-board";
 import "common/play";
 
-black := pixel_rgb(0, 0, 0);
-yellow := pixel_rgb(255, 220, 40);
-pixel_visible := true;
-frame_count := 0;
+screen_size := 10;
+background := pixel_rgb(18, 34, 70);
+face_color := pixel_rgb(255, 204, 72);
+detail_color := pixel_rgb(100, 50, 40);
+cheek_color := pixel_rgb(245, 112, 104);
+face_rows := list_of(
+    "..........",
+    "...####...",
+    "..######..",
+    ".########.",
+    "##########",
+    "##########",
+    ".########.",
+    "..######..",
+    "...####...",
+    ".........."
+);
+eyes_open := true;
+blink_frames := 0;
 
-/// Render the current blink state and toggle it every twelve frames.
-fn mini_play_update() {
-    board := pixel_board_new(10, 10, black);
-    if pixel_visible {
-        pixel_board_set(board, 10, 10, 5, 5, yellow);
-    }
-    pixel_board_render(10, 10, board);
-
-    frame_count = frame_count + 1;
-    if frame_count >= 12 {
-        frame_count = 0;
-        pixel_visible = !pixel_visible;
-    }
-}
-
-/// Print the first frame for command-line runs.
-fn pixel_blink_print() {
+/// Draw the face and blink its eyes occasionally.
+fn pixel_blink_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
     row := 0;
-    while row < 10 {
-        if row == 5 {
-            io_write_line(".....*....");
-        } else {
-            io_write_line("..........");
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            if text_get(list_get(face_rows, row), column) == "#" {
+                pixel_board_set(board, screen_size, screen_size, column, row, face_color);
+            }
+            column = column + 1;
         }
         row = row + 1;
     }
+
+    if eyes_open {
+        pixel_board_set(board, screen_size, screen_size, 3, 3, detail_color);
+        pixel_board_set(board, screen_size, screen_size, 6, 3, detail_color);
+    } else {
+        pixel_board_set(board, screen_size, screen_size, 2, 3, detail_color);
+        pixel_board_set(board, screen_size, screen_size, 3, 3, detail_color);
+        pixel_board_set(board, screen_size, screen_size, 6, 3, detail_color);
+        pixel_board_set(board, screen_size, screen_size, 7, 3, detail_color);
+    }
+    pixel_board_set(board, screen_size, screen_size, 2, 5, cheek_color);
+    pixel_board_set(board, screen_size, screen_size, 7, 5, cheek_color);
+    pixel_board_set(board, screen_size, screen_size, 3, 6, detail_color);
+    pixel_board_set(board, screen_size, screen_size, 4, 7, detail_color);
+    pixel_board_set(board, screen_size, screen_size, 5, 7, detail_color);
+    pixel_board_set(board, screen_size, screen_size, 6, 6, detail_color);
+    pixel_board_render(screen_size, screen_size, board);
 }
 
-mini_play(10, 10, "Blinking Pixel");
+/// Keep the eyes open for a while, then blink briefly.
+fn mini_play_update() {
+    pixel_blink_render();
+    blink_frames = blink_frames + 1;
+    if eyes_open && blink_frames >= 75 {
+        eyes_open = false;
+        blink_frames = 0;
+    } else if !eyes_open && blink_frames >= 6 {
+        eyes_open = true;
+        blink_frames = 0;
+    }
+}
+
+/// Print the welcoming first frame for command-line runs.
+fn pixel_blink_print() {
+    io_write_line("..........");
+    io_write_line("...####...");
+    io_write_line("..######..");
+    io_write_line(".##o##o##.");
+    io_write_line("##########");
+    io_write_line("##*####*##");
+    io_write_line(".##o##o##.");
+    io_write_line("..##oo##..");
+    io_write_line("...####...");
+    io_write_line("..........");
+}
+
+mini_play(screen_size, screen_size, "Friendly Blink");
 pixel_blink_print();

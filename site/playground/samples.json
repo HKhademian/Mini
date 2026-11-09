@@ -492,8 +492,8 @@
   {
     "id": "pixel-blink",
     "group": "Animation",
-    "label": "Blinking pixel",
-    "note": "Toggle one colored pixel every twelve animation frames.",
+    "label": "Friendly blink",
+    "note": "A warm smiling face blinks slowly on a soft blue background.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-blink.mini"
