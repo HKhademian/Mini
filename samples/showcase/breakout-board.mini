@@ -1,7 +1,7 @@
 /// Animate Breakout on a ten-by-ten pixel board and print its initial text frame.
 
 import "common/io";
-import "common/list";
+import "common/pixel-board";
 import "common/play";
 
 ball_x := 4;
@@ -10,6 +10,10 @@ ball_dx := 1;
 ball_dy := -1;
 paddle_x := 4;
 update_ticks := 0;
+wall_color := pixel_rgb(51, 51, 51);
+brick_color := pixel_rgb(255, 99, 89);
+paddle_color := pixel_rgb(0, 255, 255);
+ball_color := pixel_rgb(255, 255, 255);
 
 /// Return the tile at one board position.
 fn breakout_tile(column, row) {
@@ -28,21 +32,33 @@ fn breakout_tile(column, row) {
     return ".";
 }
 
-/// Return the packed RGB color for one tile.
-fn breakout_color(column, row) {
-    if column == 0 || column == 9 || row == 0 || row == 9 {
-        return 3355443;
+/// Build a row-major pixel board from the current Breakout state.
+fn breakout_render_pixels() {
+    board := pixel_board_new(10, 10, 0);
+
+    position := 0;
+    while position < 10 {
+        pixel_board_set(board, 10, 10, position, 0, wall_color);
+        pixel_board_set(board, 10, 10, position, 9, wall_color);
+        pixel_board_set(board, 10, 10, 0, position, wall_color);
+        pixel_board_set(board, 10, 10, 9, position, wall_color);
+        position = position + 1;
     }
-    if row < 3 {
-        return 16733525;
+
+    row := 1;
+    while row < 3 {
+        column := 1;
+        while column < 9 {
+            pixel_board_set(board, 10, 10, column, row, brick_color);
+            column = column + 1;
+        }
+        row = row + 1;
     }
-    if column == ball_x && row == ball_y {
-        return 16777215;
-    }
-    if row == 8 && column >= paddle_x && column <= paddle_x + 2 {
-        return 65535;
-    }
-    return 0;
+    pixel_board_set(board, 10, 10, ball_x, ball_y, ball_color);
+    pixel_board_set(board, 10, 10, paddle_x, 8, paddle_color);
+    pixel_board_set(board, 10, 10, paddle_x + 1, 8, paddle_color);
+    pixel_board_set(board, 10, 10, paddle_x + 2, 8, paddle_color);
+    pixel_board_render(10, 10, board);
 }
 
 /// Advance the ball and emit one ten-by-ten frame; return zero to continue.
@@ -68,17 +84,7 @@ fn mini_play_update() {
         }
     }
 
-    pixels := list_new();
-    row := 0;
-    while row < 10 {
-        column := 0;
-        while column < 10 {
-            list_set(pixels, list_length(pixels), breakout_color(column, row));
-            column = column + 1;
-        }
-        row = row + 1;
-    }
-    mini_render(10, 10, pixels);
+    breakout_render_pixels();
 }
 
 /// Move the paddle one cell for a left or right key press.

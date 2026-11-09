@@ -30,16 +30,19 @@ linked to its commit. `build.json` records the full commit and short revision.
 
 ## Mini Play
 
-Import `common/play` to declare a small pixel board and send frames to the
-playground:
+Import `common/play` to declare the board and `common/pixel-board` to build
+row-major RGB frames:
 
 ```mini
 import "common/play";
+import "common/pixel-board";
 
 mini_play(10, 10, "Example");
 
 fn mini_play_update() {
-    mini_render(10, 10, pixels);
+    board := pixel_board_new(10, 10, pixel_rgb(0, 0, 0));
+    pixel_board_set(board, 10, 10, 5, 5, pixel_rgb(255, 255, 255));
+    pixel_board_render(10, 10, board);
 }
 ```
 
@@ -50,7 +53,8 @@ one row-major frame with exactly `width * height` packed RGB integers from
 `0x000000` to `0xffffff`. The optional `mini_play_onKeyDown(key)` hook receives
 arrow-key or character key names. The same Mini calls can be hosted by other
 renderers, such as Raylib; this first adapter uses browser Canvas, and each host
-owns its frame loop and drawing.
+owns its frame loop and drawing. `pixel_board_new`, `pixel_board_set`,
+`pixel_board_get`, and `pixel_rgb` are small helpers for constructing boards.
 
 Opening `dist/site/index.html` from `file://` shows the landing page, but the
 playground needs an HTTP origin because it uses a module worker.

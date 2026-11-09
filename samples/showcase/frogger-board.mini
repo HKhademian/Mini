@@ -1,7 +1,7 @@
 /// Animate Frogger on a ten-by-ten pixel board and print its initial text frame.
 
 import "common/io";
-import "common/list";
+import "common/pixel-board";
 import "common/play";
 
 frog_x := 4;
@@ -11,6 +11,13 @@ car_b_x := 7;
 car_c_x := 3;
 car_d_x := 4;
 update_ticks := 0;
+grass_color := pixel_rgb(0, 128, 0);
+water_color := pixel_rgb(0, 80, 200);
+log_color := pixel_rgb(153, 90, 40);
+road_color := pixel_rgb(51, 51, 51);
+car_color := pixel_rgb(255, 0, 0);
+goal_color := pixel_rgb(255, 255, 0);
+frog_color := pixel_rgb(0, 255, 0);
 
 /// Return the tile at one board position.
 fn frogger_tile(column, row) {
@@ -62,51 +69,55 @@ fn frogger_tile(column, row) {
     return " ";
 }
 
-/// Return the packed RGB color for one tile.
-fn frogger_color(column, row) {
-    if column == frog_x && row == frog_y {
-        return 65280;
+/// Fill one full board row with a color.
+fn frogger_fill_row(board, row, color) {
+    column := 0;
+    while column < 10 {
+        pixel_board_set(board, 10, 10, column, row, color);
+        column = column + 1;
     }
-    if row == 0 && column >= 4 && column <= 5 {
-        return 16776960;
+}
+
+/// Build a row-major pixel board from the current Frogger state.
+fn frogger_render_pixels() {
+    board := pixel_board_new(10, 10, grass_color);
+
+    pixel_board_set(board, 10, 10, 4, 0, goal_color);
+    pixel_board_set(board, 10, 10, 5, 0, goal_color);
+    frogger_fill_row(board, 1, water_color);
+    frogger_fill_row(board, 2, water_color);
+    column := 2;
+    while column < 6 {
+        pixel_board_set(board, 10, 10, column, 1, log_color);
+        column = column + 1;
     }
-    if row == 1 {
-        if column >= 2 && column <= 5 {
-            return 10053120;
-        }
-        return 255;
+    column = 5;
+    while column < 9 {
+        pixel_board_set(board, 10, 10, column, 2, log_color);
+        column = column + 1;
     }
-    if row == 2 {
-        if column >= 5 && column <= 8 {
-            return 10053120;
-        }
-        return 255;
+
+    frogger_fill_row(board, 4, road_color);
+    frogger_fill_row(board, 5, road_color);
+    frogger_fill_row(board, 7, road_color);
+    frogger_fill_row(board, 8, road_color);
+    pixel_board_set(board, 10, 10, car_a_x, 4, car_color);
+    pixel_board_set(board, 10, 10, car_a_x + 1, 4, car_color);
+    pixel_board_set(board, 10, 10, car_b_x, 4, car_color);
+    column = car_c_x;
+    while column <= car_c_x + 2 {
+        pixel_board_set(board, 10, 10, column, 5, car_color);
+        column = column + 1;
     }
-    if row == 4 {
-        if column == car_a_x || column == car_a_x + 1 || column == car_b_x {
-            return 16711680;
-        }
-        return 3355443;
+    pixel_board_set(board, 10, 10, car_d_x, 7, car_color);
+    pixel_board_set(board, 10, 10, car_d_x + 1, 7, car_color);
+    column = car_d_x;
+    while column <= car_d_x + 2 {
+        pixel_board_set(board, 10, 10, column, 8, car_color);
+        column = column + 1;
     }
-    if row == 5 {
-        if column >= car_c_x && column <= car_c_x + 2 {
-            return 16711680;
-        }
-        return 3355443;
-    }
-    if row == 7 {
-        if column == car_d_x || column == car_d_x + 1 {
-            return 16711680;
-        }
-        return 3355443;
-    }
-    if row == 8 {
-        if column >= car_d_x && column <= car_d_x + 2 {
-            return 16711680;
-        }
-        return 3355443;
-    }
-    return 32768;
+    pixel_board_set(board, 10, 10, frog_x, frog_y, frog_color);
+    pixel_board_render(10, 10, board);
 }
 
 /// Move traffic and emit one ten-by-ten frame; return zero to continue.
@@ -132,17 +143,7 @@ fn mini_play_update() {
         }
     }
 
-    pixels := list_new();
-    row := 0;
-    while row < 10 {
-        column := 0;
-        while column < 10 {
-            list_set(pixels, list_length(pixels), frogger_color(column, row));
-            column = column + 1;
-        }
-        row = row + 1;
-    }
-    mini_render(10, 10, pixels);
+    frogger_render_pixels();
     if frog_y == 0 {
         return 1;
     }

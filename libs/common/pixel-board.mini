@@ -1,0 +1,46 @@
+/// Build small row-major color boards for Mini Play hosts.
+
+import "common/list";
+import "common/number";
+import "common/play";
+
+/// Create a board filled with one packed RGB color.
+fn pixel_board_new(width, height, color) {
+    board := list_new();
+    row := 0;
+    while row < height {
+        column := 0;
+        while column < width {
+            list_set(board, list_length(board), color);
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    return board;
+}
+
+/// Replace one in-bounds board cell and return zero.
+fn pixel_board_set(board, width, height, column, row, color) {
+    if column >= 0 && column < width && row >= 0 && row < height {
+        list_set(board, number_mul(row, width) + column, color);
+    }
+    return 0;
+}
+
+/// Read one board cell, returning zero when it is outside the board.
+fn pixel_board_get(board, width, height, column, row) {
+    if column < 0 || column >= width || row < 0 || row >= height {
+        return 0;
+    }
+    return list_get(board, number_mul(row, width) + column, 0);
+}
+
+/// Submit one row-major board to the current Mini Play host.
+fn pixel_board_render(width, height, board) {
+    return mini_render(width, height, board);
+}
+
+/// Pack red, green, and blue channels into one RGB integer.
+fn pixel_rgb(red, green, blue) {
+    return number_mul(65536, red) + number_mul(256, green) + blue;
+}
