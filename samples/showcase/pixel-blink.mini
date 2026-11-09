@@ -3,7 +3,7 @@
 import "core/io";
 import "core/list";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -60,7 +60,7 @@ fn pixel_blink_render() {
 }
 
 /// Keep the eyes open for a while, then blink briefly.
-fn mini_play_update() {
+fn canvas_update() {
     pixel_blink_render();
     blink_frames = blink_frames + 1;
     if eyes_open && blink_frames >= 75 {
@@ -86,5 +86,5 @@ fn pixel_blink_print() {
     io_write_line("..........");
 }
 
-mini_play(screen_size, screen_size, "Friendly Blink");
+canvas_play(screen_size, screen_size, "Friendly Blink");
 pixel_blink_print();

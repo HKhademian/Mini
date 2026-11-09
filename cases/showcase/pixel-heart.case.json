@@ -7,7 +7,7 @@
     "control.if",
     "control.while",
     "core.list",
-    "core.play",
+    "util.canvas",
     "util.board",
     "text.output"
   ],

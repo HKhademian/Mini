@@ -2,7 +2,7 @@
 
 import "core/io";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -15,7 +15,7 @@ pixel_dx := 1;
 pixel_dy := 1;
 
 /// Draw the pixel, then bounce its next position off each screen edge.
-fn mini_play_update() {
+fn canvas_update() {
     board := pixel_board_new(screen_size, screen_size, blue);
     pixel_board_set(board, screen_size, screen_size, pixel_x, pixel_y, white);
     pixel_board_render(screen_size, screen_size, board);
@@ -43,5 +43,5 @@ fn pixel_dvd_print() {
     }
 }
 
-mini_play(screen_size, screen_size, "DVD Pixel");
+canvas_play(screen_size, screen_size, "DVD Pixel");
 pixel_dvd_print();

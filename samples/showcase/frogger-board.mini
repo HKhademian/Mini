@@ -2,7 +2,7 @@
 
 import "core/io";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -124,7 +124,7 @@ fn frogger_render_pixels() {
 }
 
 /// Move traffic and emit one ten-by-ten frame; return zero to continue.
-fn mini_play_update() {
+fn canvas_update() {
     update_ticks = update_ticks + 1;
     if update_ticks >= 8 {
         update_ticks = 0;
@@ -153,7 +153,7 @@ fn mini_play_update() {
 }
 
 /// Move Frogger one cell in response to a directional key press.
-fn mini_play_onKeyDown(key) {
+fn canvas_on_key_down(key) {
     if (key == "ArrowLeft" || key == "a") && frog_x > 0 {
         frog_x = frog_x - 1;
     }
@@ -183,5 +183,5 @@ fn frogger_render() {
     }
 }
 
-mini_play(screen_size, screen_size, "Frogger");
+canvas_play(screen_size, screen_size, "Frogger");
 frogger_render();

@@ -103,9 +103,9 @@ async function compileSource(source, portable) {
   try {
     emit_js_set_reference_mode(portable);
     const prepared = buildTokens(lex_tokenize, lex_expand_imports, source);
-    const play = source.includes('import "core/play";')
-      && /\bmini_play\s*\(/.test(source)
-      && /\bfn\s+mini_play_update\s*\(/.test(source);
+    const play = source.includes('import "util/canvas";')
+      && /\bcanvas_play\s*\(/.test(source)
+      && /\bfn\s+canvas_update\s*\(/.test(source);
     return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), play, diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
@@ -126,12 +126,12 @@ function prepare(code, play) {
   ].join("\n");
   const playBridge = play ? [
     "globalThis.__miniPlay = {",
-    "  width: mini_play_width(),",
-    "  height: mini_play_height(),",
-    "  title: mini_play_title(),",
-    "  pixels: mini_play_pixels,",
-    "  update: mini_play_update,",
-    '  keyDown: typeof mini_play_onKeyDown === "function" ? mini_play_onKeyDown : null,',
+    "  width: canvas_width(),",
+    "  height: canvas_height(),",
+    "  title: canvas_title(),",
+    "  pixels: canvas_pixels,",
+    "  update: canvas_update,",
+    '  keyDown: typeof canvas_on_key_down === "function" ? canvas_on_key_down : null,',
     "};",
     "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update();",
   ].join("\n") : "";

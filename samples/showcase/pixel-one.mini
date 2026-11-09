@@ -3,7 +3,7 @@
 import "core/io";
 import "core/number";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -12,7 +12,7 @@ black := pixel_rgb(0, 0, 0);
 white := pixel_rgb(255, 255, 255);
 
 /// Draw one frame containing only the center pixel, then stop.
-fn mini_play_update() {
+fn canvas_update() {
     board := pixel_board_new(screen_size, screen_size, black);
     pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, white);
     pixel_board_render(screen_size, screen_size, board);
@@ -38,5 +38,5 @@ fn pixel_one_print() {
     }
 }
 
-mini_play(screen_size, screen_size, "One Pixel");
+canvas_play(screen_size, screen_size, "One Pixel");
 pixel_one_print();

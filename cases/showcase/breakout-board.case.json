@@ -8,7 +8,7 @@
     "control.while",
     "core.list",
     "core.number",
-    "core.play",
+    "util.canvas",
     "util.board",
     "text.output"
   ],

@@ -2,7 +2,7 @@
 
 import "core/io";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -16,7 +16,7 @@ goal_x := screen_edge - 1;
 goal_y := 1;
 
 /// Render the player and a fixed goal; falling through keeps the session open.
-fn mini_play_update() {
+fn canvas_update() {
     board := pixel_board_new(screen_size, screen_size, black);
     pixel_board_set(board, screen_size, screen_size, goal_x, goal_y, goal_color);
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
@@ -24,7 +24,7 @@ fn mini_play_update() {
 }
 
 /// Move one cell for an arrow or WASD key while staying inside the board.
-fn mini_play_onKeyDown(key) {
+fn canvas_on_key_down(key) {
     if (key == "ArrowLeft" || key == "a") && player_x > 0 {
         player_x = player_x - 1;
     }
@@ -60,5 +60,5 @@ fn pixel_arrows_print() {
     }
 }
 
-mini_play(screen_size, screen_size, "Arrow Keys");
+canvas_play(screen_size, screen_size, "Arrow Keys");
 pixel_arrows_print();

@@ -3,7 +3,7 @@
 import "core/io";
 import "core/list";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -38,7 +38,7 @@ heart_is_big := true;
 beat_frames := 0;
 
 /// Render one pulse phase and change size every eight frames.
-fn mini_play_update() {
+fn canvas_update() {
     rows := heart_big;
     color := bright_red;
     if !heart_is_big {
@@ -76,5 +76,5 @@ fn pixel_beating_heart_print() {
     }
 }
 
-mini_play(screen_size, screen_size, "Beating Heart");
+canvas_play(screen_size, screen_size, "Beating Heart");
 pixel_beating_heart_print();

@@ -30,27 +30,27 @@ linked to its commit. `build.json` records the full commit and short revision.
 
 ## Mini Play
 
-Import `core/play` to declare the board and `util/board` to build
+Import `util/canvas` to declare the board and `util/board` to build
 row-major RGB frames:
 
 ```mini
-import "core/play";
+import "util/canvas";
 import "util/board";
 
-mini_play(10, 10, "Example");
+canvas_play(10, 10, "Example");
 
-fn mini_play_update() {
+fn canvas_update() {
     board := pixel_board_new(10, 10, pixel_rgb(0, 0, 0));
     pixel_board_set(board, 10, 10, 5, 5, pixel_rgb(255, 255, 255));
     pixel_board_render(10, 10, board);
 }
 ```
 
-The playground calls `mini_play_update()` once per animation frame. Returning
+The playground calls `canvas_update()` once per animation frame. Returning
 zero, including by falling through, continues play; a nonzero result stops the
-game and is shown as its exit status. `mini_render(width, height, pixels)` stores
+game and is shown as its exit status. `canvas_render(width, height, pixels)` stores
 one row-major frame with exactly `width * height` packed RGB integers from
-`0x000000` to `0xffffff`. The optional `mini_play_onKeyDown(key)` hook receives
+`0x000000` to `0xffffff`. The optional `canvas_on_key_down(key)` hook receives
 arrow-key or character key names. The same Mini calls can be hosted by other
 renderers, such as Raylib; this first adapter uses browser Canvas, and each host
 owns its frame loop and drawing. `pixel_board_new`, `pixel_board_set`,

@@ -1,0 +1,44 @@
+/// Store a small play session's metadata and most recently rendered frame.
+
+import "core/list";
+
+canvas_width_value := 0;
+canvas_height_value := 0;
+canvas_title_value := "";
+canvas_pixels_value := list_new();
+
+/// Declare the board dimensions and title for a host play session.
+fn canvas_play(width, height, title) {
+    canvas_width_value = width;
+    canvas_height_value = height;
+    canvas_title_value = title;
+    return 0;
+}
+
+/// Store one row-major frame of packed RGB color values.
+fn canvas_render(width, height, pixels) {
+    canvas_width_value = width;
+    canvas_height_value = height;
+    canvas_pixels_value = list_copy(pixels);
+    return 0;
+}
+
+/// Return the declared play width.
+fn canvas_width() {
+    return canvas_width_value;
+}
+
+/// Return the declared play height.
+fn canvas_height() {
+    return canvas_height_value;
+}
+
+/// Return the play title.
+fn canvas_title() {
+    return canvas_title_value;
+}
+
+/// Return a copy of the most recently rendered row-major frame.
+fn canvas_pixels() {
+    return list_copy(canvas_pixels_value);
+}

@@ -4,7 +4,7 @@ import "core/io";
 import "core/list";
 import "core/number";
 import "util/board";
-import "core/play";
+import "util/canvas";
 import "util/io";
 
 screen_size := 10;
@@ -208,7 +208,7 @@ fn breakout_advance_ball() {
 }
 
 /// Animate the paused ball, game, or rainbow win celebration.
-fn mini_play_update() {
+fn canvas_update() {
     if game_state == "paused" {
         pause_ticks = pause_ticks + 1;
         if pause_ticks >= pause_color_step_frames {
@@ -243,7 +243,7 @@ fn mini_play_update() {
 }
 
 /// Start or pause the game and move the paddle with arrows or A/D.
-fn mini_play_onKeyDown(key) {
+fn canvas_on_key_down(key) {
     if key == "p" {
         if game_state == "playing" {
             game_state = "paused";
@@ -282,5 +282,5 @@ fn breakout_render() {
 }
 
 breakout_reset();
-mini_play(screen_size, screen_size, "Breakout");
+canvas_play(screen_size, screen_size, "Breakout");
 breakout_render();
