@@ -82,11 +82,11 @@ fn emit_c_literal_bytes(token) {
     position := 1;
     while position < text_length(spelling) - 1 {
         character := text_get(spelling, position);
-        code := text_code(character);
+        code := text_to_code(character, 0);
         if character == "\\" {
             position = position + 1;
             character = text_get(spelling, position);
-            code = text_code(character);
+            code = text_to_code(character, 0);
             if character == "n" {
                 code = 10;
             } else if character == "r" {
@@ -367,8 +367,8 @@ fn emit_c_number_literal(token, negative, location) {
         position := 0;
         comparing := true;
         while position < text_length(digits) && comparing {
-            digit := text_code(text_get(digits, position));
-            limit := text_code(text_get(maximum, position));
+            digit := text_to_code(text_get(digits, position), 0);
+            limit := text_to_code(text_get(maximum, position), 0);
             if digit != limit {
                 exceeds = digit > limit;
                 comparing = false;

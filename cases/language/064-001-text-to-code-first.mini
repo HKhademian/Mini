@@ -4,9 +4,9 @@ import "common/text";
 import "common/number";
 import "common/io";
 
-accent := text_code("é");
+accent := text_to_code("é", 0);
 io_write_line(number_to_text(accent));
 io_write_line(text_from_code(accent));
-emoji := text_code("😀");
+emoji := text_to_code("😀", 0);
 io_write_line(number_to_text(emoji));
 io_write_line(text_from_code(emoji));

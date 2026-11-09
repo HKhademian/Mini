@@ -299,10 +299,10 @@ fn json_escape(text) {
             if character == "\\" {
                 list_set(parts, list_length(parts), "\\\\");
             } else {
-                if text_code(character) == 8 {
+                if text_to_code(character, 0) == 8 {
                     list_set(parts, list_length(parts), "\\b");
                 } else {
-                    if text_code(character) == 12 {
+                    if text_to_code(character, 0) == 12 {
                         list_set(parts, list_length(parts), "\\f");
                     } else {
                         if character == "\n" {
@@ -314,8 +314,8 @@ fn json_escape(text) {
                                 if character == "\t" {
                                     list_set(parts, list_length(parts), "\\t");
                                 } else {
-                                    if text_code(character) < 32 {
-                                        code := text_code(character);
+                                    if text_to_code(character, 0) < 32 {
+                                        code := text_to_code(character, 0);
                                         digits := "0123456789abcdef";
                                         list_set(
                                             parts,

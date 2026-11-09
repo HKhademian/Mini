@@ -1,8 +1,8 @@
 {
-  "id": "language.text-code",
+  "id": "language.text-to-code-first",
   "kind": "feature",
-  "source": "064-001-text-code.mini",
-  "features": ["text.code", "text.from-code"],
+  "source": "064-001-text-to-code-first.mini",
+  "features": ["text.to-code", "text.from-code"],
   "cases": [
     {
       "name": "ascii-and-astral",

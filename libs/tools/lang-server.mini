@@ -69,7 +69,7 @@ fn lsp_offset_at(text, position) {
             return offset;
         }
         width := 1;
-        if text_code(value) > 65535 {
+        if text_to_code(value, 0) > 65535 {
             width = 2;
         }
         if character + width > target_character {
@@ -93,7 +93,7 @@ fn lsp_position_at(text, offset) {
             character = 0;
         } else {
             character = character + 1;
-            if text_code(value) > 65535 {
+            if text_to_code(value, 0) > 65535 {
                 character = character + 1;
             }
         }

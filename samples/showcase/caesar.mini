@@ -7,7 +7,7 @@ source := "MINI";
 output := "";
 index := 0;
 while index < text_length(source) {
-    code := text_code(text_get(source, index));
+    code := text_to_code(text_get(source, index), 0);
     output = output + text_from_code(code + 1);
     index = index + 1;
 }

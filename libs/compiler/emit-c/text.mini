@@ -120,17 +120,15 @@ emit_c_host_function_add(
 );
 
 emit_c_host_function_add(
-    "text_code",
-    "int MINI_ID(fn_text_code)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    if (params.args[0].kind != MINI_ID(kind_text)) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
-    + "    const unsigned char *data = NULL; if (!MINI_ID(text_view)(params.args[0].text, &data)) return 1;\n"
-    + "    if (!params.args[0].text.length) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
-    + "    uint32_t code = 0; size_t width = 0; if (!MINI_ID(text_decode)(data, params.args[0].text.length, &code, &width)) return 1;\n"
-    + "    if (code >= 55296 && code <= 56319 && width < params.args[0].text.length) { uint32_t low = 0; size_t low_width = 0;\n"
-    + "        if (MINI_ID(text_decode)(data + width, params.args[0].text.length - width, &low, &low_width) && low >= 56320 && low <= 57343)\n"
-    + "            code = 65536 + ((code - 55296) << 10) + (low - 56320); }\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER((double)code); return 0;\n}\n"
+    "text_to_code",
+    "int MINI_ID(fn_text_to_code)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1; MINI_ID(value) source = params.args[0], index = params.args[1];\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); if (source.kind != MINI_ID(kind_text) || index.kind != MINI_ID(kind_number)\n"
+    + "        || index.number != index.number || index.number < 0 || index.number != (double)(size_t)index.number) return 0;\n"
+    + "    size_t length = 0, offset = 0; int boundary = 0; if (!MINI_ID(text_units_length)(source.text, &length)) return 1;\n"
+    + "    if (index.number >= (double)length) return 0; if (!MINI_ID(text_unit_offset)(source.text, (size_t)index.number, &offset, &boundary) || !boundary) return 1;\n"
+    + "    const unsigned char *data = NULL; if (!MINI_ID(text_view)(source.text, &data)) return 1; uint32_t code = 0; size_t width = 0;\n"
+    + "    if (!MINI_ID(text_decode)(data + offset, source.text.length - offset, &code, &width)) return 1; *result = (MINI_ID(value)) MINI_VALUE_NUMBER((double)code); return 0;\n}\n"
 );
 
 emit_c_host_function_add(

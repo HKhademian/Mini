@@ -8,6 +8,6 @@ import "common/io";
 
 text := "A!";
 character := text_get(text, 0);
-code := text_code(character);
+code := text_to_code(character, 0);
 io_write_line(character, " -> ", code, " -> ", text_from_code(code));
 io_write_line("number text: ", number_to_text(code), " | display text: ", value_to_text(code));

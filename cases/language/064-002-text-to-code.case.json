@@ -1,0 +1,15 @@
+{
+  "id": "language.text-to-code",
+  "kind": "feature",
+  "source": "064-002-text-to-code.mini",
+  "features": ["text.to-code", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "scalar-indexes",
+      "stdin": {"text": ""},
+      "stdout": {"text": "1670\n128512\n0\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

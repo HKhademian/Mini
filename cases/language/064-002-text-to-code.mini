@@ -1,0 +1,9 @@
+/// Return Unicode scalar values from character indexes.
+
+import "common/io";
+import "common/text";
+
+text := "چطوری 😀";
+io_write_line(text_to_code(text, 0));
+io_write_line(text_to_code(text, 6));
+io_write_line(text_to_code(text, 7));

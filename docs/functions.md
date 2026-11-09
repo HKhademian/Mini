@@ -9,8 +9,8 @@ an implementation suited to the target.
 See [function and emitter behavior](self-containment.md) for the shared
 implementation contract and host replacement rules.
 
-`text_code(text)` returns the Unicode code point of the first character as a
-number, or 0 for empty/non-text input. Pass that number directly to `io_write`
+`text_to_code(text, index)` returns the Unicode scalar at a character index;
+unavailable values return zero. Pass that number directly to `io_write`
 or `io_write_line`; both use `value_to_text` for display. `number_to_text` is useful
 when number text must be stored or concatenated. `text_from_code(code)` returns
 one character for a valid Unicode scalar value and empty text otherwise.
@@ -23,8 +23,8 @@ declared in
 `import "common/text"`. Their Mini implementations are the fallback; JavaScript
 registers same-name host overrides for the representation and performance paths.
 Text length, indexing, and slicing count Unicode scalar values rather than
-UTF-8 bytes or UTF-16 code units. `text_code` returns the first scalar value,
-and `text_from_code` encodes one valid Unicode scalar. C stores text as UTF-8;
+UTF-8 bytes or UTF-16 code units. `text_to_code(text, index)` returns a scalar
+value, and `text_from_code` encodes one valid Unicode scalar. C stores text as UTF-8;
 JavaScript adapts its UTF-16 strings to these shared operations.
 The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
 and require `import "common/file"`. Their Mini implementations panic when a

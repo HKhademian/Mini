@@ -3,6 +3,26 @@ import "common/number";
 import "common/process-panic";
 import "common/value";
 
+/// Return the number of Unicode scalar values; targets without a host implementation panic.
+fn text_length(source) {
+    return process_panic("text_length requires a host implementation");
+}
+
+/// Return one Unicode scalar value as text; targets without a host implementation panic.
+fn text_get(source, index) {
+    return process_panic("text_get requires a host implementation");
+}
+
+/// Return the Unicode scalar at a character index, or zero when unavailable.
+fn text_to_code(source, index) {
+    return process_panic("text_to_code requires a host implementation");
+}
+
+/// Construct one Unicode code point; targets without a host implementation panic.
+fn text_from_code(code) {
+    return process_panic("text_from_code requires a host implementation");
+}
+
 /// Merge text arguments into one text value, ignoring non-text arguments.
 fn text_merge() {
     values := fn_args();
@@ -41,26 +61,6 @@ fn text_join() {
         position = position + 1;
     }
     return output;
-}
-
-/// Return the number of Unicode scalar values; targets without a host implementation panic.
-fn text_length(source) {
-    return process_panic("text_length requires a host implementation");
-}
-
-/// Return one Unicode scalar value as text; targets without a host implementation panic.
-fn text_get(source, index) {
-    return process_panic("text_get requires a host implementation");
-}
-
-/// Return the first Unicode code point; targets without a host implementation panic.
-fn text_code(source) {
-    return process_panic("text_code requires a host implementation");
-}
-
-/// Construct one Unicode code point; targets without a host implementation panic.
-fn text_from_code(code) {
-    return process_panic("text_from_code requires a host implementation");
 }
 
 /// Return lines split on LF or CRLF, retaining a final empty line.
@@ -295,7 +295,7 @@ fn text_to_bytes(text) {
     }
     position := 0;
     while position < text_length(text) {
-        code := text_code(text_slice(text, position, text_length(text)));
+        code := text_to_code(text, position);
         if code < 0 {
             code = 65533;
         }

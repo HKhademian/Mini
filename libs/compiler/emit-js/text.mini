@@ -3,12 +3,6 @@
 import "./registry";
 
 emit_js_host_function_add(
-    "text_code",
-    "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n",
-    true,
-    ""
-);
-emit_js_host_function_add(
     "text_find",
     "function text_find(source, needle) { if (typeof source !== \"string\" || typeof needle !== \"string\") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }\n",
     false,
@@ -23,6 +17,12 @@ emit_js_host_function_add(
 emit_js_host_function_add(
     "text_from_code",
     "function text_from_code(code) { if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\"; return String.fromCodePoint(code); }\n",
+    true,
+    ""
+);
+emit_js_host_function_add(
+    "text_to_code",
+    "function text_to_code(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }\n",
     true,
     ""
 );

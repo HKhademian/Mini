@@ -206,6 +206,16 @@ function list_rest(items, count) {
     }
     return result;
 }
+function text_length(source) {
+    if (typeof source !== "string") return 0;
+    const cache = text_length.cache ?? (text_length.cache = new Map());
+    let characters = cache.get(source);
+    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
+    return characters.length;
+}
+function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
+function text_to_code(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }
+function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -246,16 +256,6 @@ function text_join() {
     }
     return output;
 }
-function text_length(source) {
-    if (typeof source !== "string") return 0;
-    const cache = text_length.cache ?? (text_length.cache = new Map());
-    let characters = cache.get(source);
-    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
-    return characters.length;
-}
-function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
-function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
-function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_split_lines(source) {
 
     let lines = text_split(source, "\n");

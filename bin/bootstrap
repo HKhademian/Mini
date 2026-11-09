@@ -329,6 +329,16 @@ function number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
+function text_length(source) {
+    if (typeof source !== "string") return 0;
+    const cache = text_length.cache ?? (text_length.cache = new Map());
+    let characters = cache.get(source);
+    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
+    return characters.length;
+}
+function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
+function text_to_code(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }
+function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -369,16 +379,6 @@ function text_join() {
     }
     return output;
 }
-function text_length(source) {
-    if (typeof source !== "string") return 0;
-    const cache = text_length.cache ?? (text_length.cache = new Map());
-    let characters = cache.get(source);
-    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
-    return characters.length;
-}
-function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
-function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
-function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
 function text_split_lines(source) {
 
     let lines = text_split(source, "\n");
@@ -993,10 +993,10 @@ function json_escape(text) {
             if ((character === "\\")) {
                 list_set(parts, (parts).length, "\\\\");
             } else {
-                if ((text_code(character) === 8)) {
+                if ((text_to_code(character, 0) === 8)) {
                     list_set(parts, (parts).length, "\\b");
                 } else {
-                    if ((text_code(character) === 12)) {
+                    if ((text_to_code(character, 0) === 12)) {
                         list_set(parts, (parts).length, "\\f");
                     } else {
                         if ((character === "\n")) {
@@ -1008,8 +1008,8 @@ function json_escape(text) {
                                 if ((character === "\t")) {
                                     list_set(parts, (parts).length, "\\t");
                                 } else {
-                                    if ((text_code(character) < 32)) {
-                                        let code = text_code(character);
+                                    if ((text_to_code(character, 0) < 32)) {
+                                        let code = text_to_code(character, 0);
                                         let digits = "0123456789abcdef";
                                         list_set(parts, (parts).length, (("\\u00" + text_get(digits, number_div(code, 16))) + text_get(digits, number_mod(code, 16))));
                                     } else {
@@ -2745,10 +2745,10 @@ function $mini_file_21() {
     emit_js_host_function_add("map_copy", "function map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", false, "");
 }
 function $mini_file_22() {
-    emit_js_host_function_add("text_code", "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n", true, "");
     emit_js_host_function_add("text_find", "function text_find(source, needle) { if (typeof source !== \"string\" || typeof needle !== \"string\") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }\n", false, "");
     emit_js_host_function_add("text_from_bytes", "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n", false, "");
     emit_js_host_function_add("text_from_code", "function text_from_code(code) { if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\"; return String.fromCodePoint(code); }\n", true, "");
+    emit_js_host_function_add("text_to_code", "function text_to_code(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }\n", true, "");
     emit_js_host_function_add("text_get", "function text_get(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return \"\"; text_length(source); return text_length.cache.get(source)[index] ?? \"\"; }\n", true, "");
     emit_js_host_function_add("text_length", "function text_length(source) {\n    if (typeof source !== \"string\") return 0;\n    const cache = text_length.cache ?? (text_length.cache = new Map());\n    let characters = cache.get(source);\n    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }\n    return characters.length;\n}\n", true, "");
     emit_js_host_function_add("text_slice", "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    text_length(source); const characters = text_length.cache.get(source);\n    if (start < 0) start = characters.length + start;\n    if (end < 0) end = characters.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > characters.length) start = characters.length;\n    if (end > characters.length) end = characters.length;\n    if (end <= start) return \"\";\n    return characters.slice(start, end).join(\"\");\n}\n", false, "");
