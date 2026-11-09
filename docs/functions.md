@@ -86,6 +86,8 @@ without a representation primitive use its panic fallback.
 texts concatenate, lists concatenate, and maps merge with later keys replacing
 earlier values. Values of other kinds are ignored; an unsupported first kind or
 an empty call returns 0.
+`value_join(separator, ...values)` converts values with `to_text` and joins them
+with the text separator.
 
 `io_read_line()` reads one line from standard input through LF, strips a trailing
 CR, and returns its UTF-8 text. End of input returns empty text.

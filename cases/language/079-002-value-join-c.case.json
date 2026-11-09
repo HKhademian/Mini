@@ -1,0 +1,16 @@
+{
+  "id": "language.value-join-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "079-002-value-join-c.mini",
+  "features": ["import", "value.join", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "separator-first-display-join",
+      "stdin": {"text": ""},
+      "stdout": {"text": "x|42|true|[\"a\",2]"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

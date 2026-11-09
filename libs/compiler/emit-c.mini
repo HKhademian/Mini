@@ -15,6 +15,7 @@ import "./emit-c/overrides/path";
 import "./emit-c/overrides/list";
 import "./emit-c/overrides/map";
 import "./emit-c/overrides/value";
+import "./emit-c/overrides/display";
 import "./emit-c/overrides/text";
 import "./emit-c/overrides/process";
 import "./emit-c/overrides/operators";

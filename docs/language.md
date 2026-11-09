@@ -529,6 +529,17 @@ merged := value_merge(first, second, third);
 - Text, list, and map results are fresh values; lists and maps merge shallowly.
 - Import `common/value` to use it.
 
+## Accepted operation: value joining
+
+```mini
+text := value_join(" | ", "Mini", 42, true);
+```
+
+- `value_join(separator, ...values)` converts each value with `to_text` and
+  joins the results with the separator.
+- A non-text separator or a call with no arguments returns empty text.
+- Import `common/display` to use it.
+
 ## Accepted operation: list text joining
 
 ```mini

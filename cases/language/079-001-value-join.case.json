@@ -1,0 +1,15 @@
+{
+  "id": "language.value-join",
+  "kind": "feature",
+  "source": "079-001-value-join.mini",
+  "features": ["import", "value.join", "functions.args"],
+  "cases": [
+    {
+      "name": "separator-first-display-join",
+      "stdin": {"text": ""},
+      "stdout": {"text": "x|42|true|[\"a\",2]|"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
