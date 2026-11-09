@@ -1,0 +1,59 @@
+/// Native C replacement for variadic display joining.
+
+import "./registry";
+
+/// Append a display value or list as compact JSON to the invocation buffer.
+fn emit_c_display_runtime() {
+    return emit_c_join_lines(
+        list_of(
+            "static int MINI_ID(display_json_value)(MINI_ID(context) *context, MINI_ID(value) value, size_t depth);",
+            "static int MINI_ID(display_json_text)(MINI_ID(context) *context, MINI_ID(text) text) {",
+            "    MINI_ID(text_buffer) *buffer = text.buffer; if (!buffer || text.offset > buffer->count || text.length > buffer->count - text.offset) return 1;",
+            "    unsigned char quote = 34, slash = 92; if (MINI_ID(text_buffer_append)(&context->buffer, &quote, 1) != 0) return 1;",
+            "    const unsigned char digits[] = \"0123456789abcdef\";",
+            "    for (size_t index = 0; index < text.length; ++index) { unsigned char byte = buffer->items[text.offset + index];",
+            "        if (byte == 34 || byte == 92) { if (MINI_ID(text_buffer_append)(&context->buffer, &slash, 1) != 0 || MINI_ID(text_buffer_append)(&context->buffer, &byte, 1) != 0) return 1; }",
+            "        else if (byte == 10 || byte == 13 || byte == 9) { unsigned char escaped[2] = {92, byte == 10 ? 'n' : byte == 13 ? 'r' : 't'}; if (MINI_ID(text_buffer_append)(&context->buffer, escaped, 2) != 0) return 1; }",
+            "        else if (byte < 32) { unsigned char escaped[6] = {92, 'u', '0', '0', digits[byte >> 4], digits[byte & 15]}; if (MINI_ID(text_buffer_append)(&context->buffer, escaped, 6) != 0) return 1; }",
+            "        else if (MINI_ID(text_buffer_append)(&context->buffer, &byte, 1) != 0) return 1;",
+            "    }",
+            "    return MINI_ID(text_buffer_append)(&context->buffer, &quote, 1);",
+            "}",
+            "static int MINI_ID(display_json_value)(MINI_ID(context) *context, MINI_ID(value) value, size_t depth) {",
+            "    if (depth > 128) return 1;",
+            "    if (value.kind == MINI_ID(kind_text)) return MINI_ID(display_json_text)(context, value.text);",
+            "    if (value.kind == MINI_ID(kind_boolean)) { const char *text = value.boolean ? \"true\" : \"false\"; return MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)text, strlen(text)); }",
+            "    if (value.kind == MINI_ID(kind_number)) { char text[64]; int count = snprintf(text, sizeof(text), \"%.0f\", value.number); return count < 0 || (size_t)count >= sizeof(text) ? 1 : MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)text, (size_t)count); }",
+            "    if (value.kind != MINI_ID(kind_list) || !value.list) return MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)\"null\", 4);",
+            "    unsigned char open = '[', close = ']'; if (MINI_ID(text_buffer_append)(&context->buffer, &open, 1) != 0) return 1;",
+            "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
+            "    for (size_t index = 0; index < value.list->values.count; ++index) { unsigned char comma = ','; if (index && MINI_ID(text_buffer_append)(&context->buffer, &comma, 1) != 0) return 1; if (MINI_ID(display_json_value)(context, items[index], depth + 1) != 0) return 1; }",
+            "    if (MINI_ID(text_buffer_append)(&context->buffer, &close, 1) != 0) return 1; return 0;",
+            "}",
+            "static int MINI_ID(display_value)(MINI_ID(context) *context, MINI_ID(value) value) {",
+            "    if (value.kind == MINI_ID(kind_list)) return MINI_ID(display_json_value)(context, value, 0);",
+            "    if (value.kind == MINI_ID(kind_text)) { MINI_ID(text_buffer) *buffer = value.text.buffer; if (!buffer || value.text.offset > buffer->count || value.text.length > buffer->count - value.text.offset) return 1; return value.text.length ? MINI_ID(text_buffer_append)(&context->buffer, buffer->items + value.text.offset, value.text.length) : 0; }",
+            "    if (value.kind == MINI_ID(kind_boolean)) { const char *text = value.boolean ? \"true\" : \"false\"; return MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)text, strlen(text)); }",
+            "    if (value.kind == MINI_ID(kind_number)) { if (!(value.number >= -9007199254740991.0 && value.number <= 9007199254740991.0)) return 0; char text[64]; int count = snprintf(text, sizeof(text), \"%.0f\", value.number); return count < 0 || (size_t)count >= sizeof(text) ? 1 : MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)text, (size_t)count); }",
+            "    return MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)\"0\", 1);",
+            "}",
+            ""
+        ),
+        2
+    );
+}
+
+emit_c_host_runtime_after_context_add("display", emit_c_display_runtime());
+
+emit_c_host_function_add(
+    "value_join",
+    "int MINI_ID(fn_value_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1; size_t offset = context->buffer.count;\n"
+    + "    if (!params.count || params.args[0].kind != MINI_ID(kind_text)) { *result = MINI_ID(value_text)(&context->buffer, offset, 0); return 0; }\n"
+    + "    MINI_ID(text) separator = params.args[0].text; MINI_ID(text_buffer) *buffer = separator.buffer;\n"
+    + "    if (!buffer || separator.offset > buffer->count || separator.length > buffer->count - separator.offset) return 1;\n"
+    + "    for (size_t index = 1; index < params.count; ++index) { if (index > 1 && separator.length\n"
+    + "        && MINI_ID(text_buffer_append)(&context->buffer, buffer->items + separator.offset, separator.length) != 0) return 1;\n"
+    + "        if (MINI_ID(display_value)(context, params.args[index]) != 0) return 1; }\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0;\n}\n"
+);
