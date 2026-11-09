@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 export const root = fileURLToPath(new URL('../', import.meta.url));
 export const streams = {
   mini: 'mini', lang: 'language', ast: 'ast', compiler: 'compiler', bootstrap: 'bootstrap',
-  std: 'std', builtins: 'builtins', vscode: 'vscode',
+  std: 'std', vscode: 'vscode',
   check: 'check', format: 'format', verify: 'verify', release: 'release', test: 'test', bench: 'bench', cli: 'cli', lsp: 'lsp',
 } as const;
 export type Component = typeof streams[keyof typeof streams];
@@ -32,7 +32,7 @@ export function releaseTag(component: Component, current: Versions): string {
 }
 
 export function selectRelease(tag: string, current: Versions): { component: Component; group: string; version: string } {
-  const match = /^(mini|lang|ast|compiler|bootstrap|builtins|std|check|format|verify|release|test|bench|cli|lsp|vscode)-v([0-9]+\.[0-9]+\.[0-9]+)-v(.+)$/.exec(tag);
+  const match = /^(mini|lang|ast|compiler|bootstrap|std|check|format|verify|release|test|bench|cli|lsp|vscode)-v([0-9]+\.[0-9]+\.[0-9]+)-v(.+)$/.exec(tag);
   assert(match, `invalid component tag: ${tag}`);
   const component = streams[match[1] as keyof typeof streams];
   const group = match[2]!;
