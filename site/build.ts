@@ -386,8 +386,7 @@ function browserCompilerSource(): string {
         throw new Error("dist/compile.js is missing; run ./bin/bootstrap first");
     }
     const source = readFileSync(path, "utf8");
-    const importLine = 'import { readFileSync, writeFileSync, writeSync } from "node:fs";';
-    if (!source.includes(importLine) || !source.includes("    main(process.argv.slice(2));\n")) {
+    if (!source.includes("    main(process.argv.slice(2));\n")) {
         throw new Error("compiler entry shape changed; update the playground build");
     }
     for (const name of ["function lex_tokenize(", "function lex_expand_imports(", "function emit_js_compile(", "function emit_js_compile_program_only(", "function emit_js_set_reference_mode("]) {
