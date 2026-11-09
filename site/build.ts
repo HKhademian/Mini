@@ -882,6 +882,15 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(event.key)) event.preventDefault();
       activeWorker.postMessage({ action: "keydown", key: event.key });
     });
+    playCanvas.addEventListener("pointermove", function (event) {
+      if (!activePlay || !activeWorker) return;
+      const bounds = playCanvas.getBoundingClientRect();
+      const x = Math.floor((event.clientX - bounds.left) * playCanvas.width / bounds.width);
+      const y = Math.floor((event.clientY - bounds.top) * playCanvas.height / bounds.height);
+      if (x >= 0 && x < playCanvas.width && y >= 0 && y < playCanvas.height) {
+        activeWorker.postMessage({ action: "pointermove", x: x, y: y });
+      }
+    });
     function tabKey(event) {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();

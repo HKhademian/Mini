@@ -135,6 +135,7 @@ function prepare(code, play, still, title) {
     "  pixels: canvas_pixels,",
     "  update: canvas_update,",
     '  keyDown: typeof canvas_on_key_down === "function" ? canvas_on_key_down : null,',
+    '  pointerMove: typeof canvas_on_pointer_move === "function" ? canvas_on_pointer_move : null,',
     "};",
     "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update();",
   ].join("\n") : "";
@@ -197,6 +198,11 @@ self.onmessage = async (event) => {
     if (data && data.action === "keydown" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyDown) globalThis.__miniPlay.keyDown(data.key);
       self.postMessage({ action: "keydown" });
+      return;
+    }
+    if (data && data.action === "pointermove" && globalThis.__miniPlay) {
+      if (globalThis.__miniPlay.pointerMove) globalThis.__miniPlay.pointerMove(data.x, data.y);
+      self.postMessage({ action: "pointermove" });
       return;
     }
     if (data && data.action === "stop") {

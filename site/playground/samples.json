@@ -699,11 +699,11 @@
   {
     "id": "pixel-cursor-draw",
     "group": "Interactive",
-    "label": "Draw with the cursor — planned",
-    "note": "Move the pointer to draw a trail of pixels.",
+    "label": "Draw with the pointer",
+    "note": "Move the pointer across the canvas to paint a lasting trail of pixels.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-cursor-draw.mini"
   },
   {
     "id": "pixel-light-switch",
