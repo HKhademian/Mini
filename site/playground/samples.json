@@ -618,11 +618,11 @@
   {
     "id": "pixel-gradient",
     "group": "Pixel Art",
-    "label": "Color gradient — planned",
-    "note": "Blend pixel colors across a tiny canvas.",
+    "label": "Color gradient",
+    "note": "Render a horizontal blue-to-lavender color gradient once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-gradient.mini"
   },
   {
     "id": "pixel-blinking-dot",

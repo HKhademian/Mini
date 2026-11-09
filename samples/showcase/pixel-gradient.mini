@@ -1,0 +1,60 @@
+/// Render a smooth horizontal color gradient on a ten-by-ten canvas.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+board := pixel_board_new(screen_size, screen_size, pixel_rgb(0, 0, 0));
+
+row := 0;
+while row < screen_size {
+    column := 0;
+    while column < screen_size {
+        red := 30 + number_div(number_mul(180, column), screen_edge);
+        green := 50 + number_div(number_mul(70, column), screen_edge);
+        blue := 130 + number_div(number_mul(110, column), screen_edge);
+        pixel_board_set(board, screen_size, screen_size, column, row, pixel_rgb(red, green, blue));
+        column = column + 1;
+    }
+    row = row + 1;
+}
+
+canvas_render(screen_size, screen_size, board);
+
+/// Return a character ramp approximating the gradient for command-line runs.
+fn pixel_gradient_character(column) {
+    if column < 2 {
+        return ".";
+    }
+    if column < 4 {
+        return ":";
+    }
+    if column < 6 {
+        return "-";
+    }
+    if column < 8 {
+        return "+";
+    }
+    return "#";
+}
+
+/// Print the gradient ramp for command-line runs.
+fn pixel_gradient_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            line = line + pixel_gradient_character(column);
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_gradient_print();
