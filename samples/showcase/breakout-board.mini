@@ -13,9 +13,11 @@ paddle_width := 3;
 brick_columns := screen_size - 2;
 brick_rows := 2;
 paddle_row := screen_edge - 1;
-ball_speed := 12;
-pause_color_step_frames := 12;
-celebration_frames_per_color := 6;
+playback_fps := 60;
+ball_fps := 5;
+ball_frames_per_step := number_div(playback_fps, ball_fps);
+pause_color_step_frames := number_div(playback_fps, 5);
+celebration_frames_per_color := number_div(playback_fps, 4);
 celebration_color_changes := 18;
 serve_x := screen_edge - 2;
 serve_y := screen_edge - 3;
@@ -234,7 +236,7 @@ fn canvas_update() {
     }
 
     update_ticks = update_ticks + 1;
-    if update_ticks >= ball_speed {
+    if update_ticks >= ball_frames_per_step {
         update_ticks = 0;
         breakout_advance_ball();
     }

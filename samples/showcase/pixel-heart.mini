@@ -22,23 +22,20 @@ heart_rows := list_of(
     ".........."
 );
 
-/// Draw the heart once and stop the canvas session.
-fn canvas_update() {
-    board := pixel_board_new(screen_size, screen_size, black);
-    row := 0;
-    while row < screen_size {
-        column := 0;
-        while column < screen_size {
-            if text_get(list_get(heart_rows, row), column) == "#" {
-                pixel_board_set(board, screen_size, screen_size, column, row, red);
-            }
-            column = column + 1;
+board := pixel_board_new(screen_size, screen_size, black);
+
+row := 0;
+while row < screen_size {
+    column := 0;
+    while column < screen_size {
+        if text_get(list_get(heart_rows, row), column) == "#" {
+            pixel_board_set(board, screen_size, screen_size, column, row, red);
         }
-        row = row + 1;
+        column = column + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
-    return 1;
+    row = row + 1;
 }
+canvas_render(screen_size, screen_size, board);
 
 /// Print the heart pattern for command-line runs.
 fn pixel_heart_print() {
@@ -48,6 +45,4 @@ fn pixel_heart_print() {
         row = row + 1;
     }
 }
-
-canvas_play(screen_size, screen_size, "Pixel Heart");
 pixel_heart_print();

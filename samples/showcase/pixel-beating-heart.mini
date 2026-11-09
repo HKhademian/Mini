@@ -2,11 +2,15 @@
 
 import "core/io";
 import "core/list";
+import "core/number";
 import "util/board";
 import "util/canvas";
 import "util/io";
 
 screen_size := 10;
+playback_fps := 60;
+phase_change_fps := 2;
+frames_per_phase := number_div(playback_fps, phase_change_fps);
 black := pixel_rgb(0, 0, 0);
 bright_red := pixel_rgb(255, 48, 72);
 soft_red := pixel_rgb(170, 36, 64);
@@ -37,7 +41,7 @@ heart_small := list_of(
 heart_is_big := true;
 beat_frames := 0;
 
-/// Render one pulse phase and change size every eight frames.
+/// Render one pulse phase and change size at the configured pace.
 fn canvas_update() {
     rows := heart_big;
     color := bright_red;
@@ -61,7 +65,7 @@ fn canvas_update() {
     pixel_board_render(screen_size, screen_size, board);
 
     beat_frames = beat_frames + 1;
-    if beat_frames >= 8 {
+    if beat_frames >= frames_per_phase {
         beat_frames = 0;
         heart_is_big = !heart_is_big;
     }

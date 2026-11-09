@@ -106,7 +106,10 @@ async function compileSource(source, portable) {
     const play = source.includes('import "util/canvas";')
       && /\bcanvas_play\s*\(/.test(source)
       && /\bfn\s+canvas_update\s*\(/.test(source);
-    return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), play, diagnostic: "" };
+    const still = !play
+      && source.includes('import "util/canvas";')
+      && /^canvas_render\s*\(/m.test(source);
+    return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), play, still, diagnostic: "" };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };
@@ -118,7 +121,7 @@ async function compileSource(source, portable) {
 }
 
 /// Replace Node-only imports with the playground runtime.
-function prepare(code, play) {
+function prepare(code, play, still, title) {
   const prelude = [
     'const readFileSync = (path) => { if (path === 0) return globalThis.__miniStdin ?? ""; throw new Error("file access is not available in the playground: " + path); };',
     'const writeFileSync = () => { throw new Error("file access is not available in the playground"); };',
@@ -135,18 +138,26 @@ function prepare(code, play) {
     "};",
     "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update();",
   ].join("\n") : "";
-  return (code + "\n" + playBridge)
+  const stillBridge = still ? [
+    "globalThis.__miniCanvas = {",
+    "  width: canvas_width(),",
+    "  height: canvas_height(),",
+    `  title: ${JSON.stringify(title)},`,
+    "  pixels: canvas_pixels(),",
+    "};",
+  ].join("\n") : "";
+  return (code + "\n" + playBridge + "\n" + stillBridge)
     .replace(/^#![^\n]*\n/, "")
     .replace(/import \{[^}]*\} from "node:fs";\n/, prelude + "\n");
 }
 
 /// Execute one compiled program and return its streams or runtime error.
-async function runCode(code, stdin, args, play) {
+async function runCode(code, stdin, args, play, still, title) {
   globalThis.__miniOutput = "";
   globalThis.__miniRuntimeError = "";
   globalThis.__miniStdin = typeof stdin === "string" ? stdin : "";
   globalThis.process.argv = ["node", "mini"].concat(Array.isArray(args) ? args : []);
-  const url = URL.createObjectURL(new Blob([prepare(code, play)], { type: "text/javascript" }));
+  const url = URL.createObjectURL(new Blob([prepare(code, play, still, title)], { type: "text/javascript" }));
   try {
     await import(url);
     const session = globalThis.__miniPlay;
@@ -154,6 +165,7 @@ async function runCode(code, stdin, args, play) {
       ok: true,
       output: globalThis.__miniOutput,
       stderr: globalThis.__miniRuntimeError,
+      canvas: globalThis.__miniCanvas ?? null,
       play: session ? {
         width: session.width,
         height: session.height,
@@ -201,7 +213,7 @@ self.onmessage = async (event) => {
       self.postMessage({ ok: true, output: "", stderr: "", diagnostic: "", code: compiled.code, program: compiled.program });
       return;
     }
-    const result = await runCode(compiled.code, data.stdin, data.args, compiled.play);
+    const result = await runCode(compiled.code, data.stdin, data.args, compiled.play, compiled.still, data.title);
     self.postMessage({
       ok: result.ok,
       output: result.output,
@@ -209,6 +221,7 @@ self.onmessage = async (event) => {
       diagnostic: result.ok ? "" : result.error,
       code: compiled.code,
       program: compiled.program,
+      canvas: result.canvas,
       play: result.play,
     });
   } catch (error) {

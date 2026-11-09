@@ -56,6 +56,10 @@ renderers, such as Raylib; this first adapter uses browser Canvas, and each host
 owns its frame loop and drawing. `pixel_board_new`, `pixel_board_set`,
 `pixel_board_get`, and `pixel_rgb` are small helpers for constructing boards.
 
+For a still image, build the pixel list and call `canvas_render(...)` once at
+top level. Do not declare `canvas_play` or `canvas_update`; the playground
+shows the rendered frame without starting an animation loop.
+
 Opening `dist/site/index.html` from `file://` shows the landing page, but the
 playground needs an HTTP origin because it uses a module worker.
 

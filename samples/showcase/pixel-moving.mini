@@ -7,22 +7,30 @@ import "util/canvas";
 import "util/io";
 
 screen_size := 10;
+playback_fps := 60;
+animation_fps := 5;
+frames_per_step := number_div(playback_fps, animation_fps);
 black := pixel_rgb(0, 0, 0);
 cyan := pixel_rgb(60, 230, 255);
 pixel_x := 1;
 pixel_y := number_div(screen_size, 2);
 pixel_direction := 1;
+update_ticks := 0;
 
-/// Render the pixel, then advance its horizontal position.
+/// Advance one tile at the configured animation speed, then render it.
 fn canvas_update() {
     board := pixel_board_new(screen_size, screen_size, black);
     pixel_board_set(board, screen_size, screen_size, pixel_x, pixel_y, cyan);
     pixel_board_render(screen_size, screen_size, board);
 
-    if pixel_x + pixel_direction < 0 || pixel_x + pixel_direction >= screen_size {
-        pixel_direction = 0 - pixel_direction;
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        if pixel_x + pixel_direction < 0 || pixel_x + pixel_direction >= screen_size {
+            pixel_direction = 0 - pixel_direction;
+        }
+        pixel_x = pixel_x + pixel_direction;
     }
-    pixel_x = pixel_x + pixel_direction;
 }
 
 /// Print the first frame for command-line runs.

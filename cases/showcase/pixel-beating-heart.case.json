@@ -6,6 +6,7 @@
     "functions",
     "control.if",
     "control.while",
+    "core.number",
     "core.list",
     "util.canvas",
     "util.board",

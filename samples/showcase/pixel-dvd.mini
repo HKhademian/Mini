@@ -1,33 +1,42 @@
 /// Bounce one bright pixel over a blue screen like a tiny DVD screensaver.
 
 import "core/io";
+import "core/number";
 import "util/board";
 import "util/canvas";
 import "util/io";
 
 screen_size := 10;
 screen_edge := screen_size - 1;
+playback_fps := 60;
+animation_fps := 3;
+frames_per_step := number_div(playback_fps, animation_fps);
 blue := pixel_rgb(8, 32, 112);
 white := pixel_rgb(255, 245, 220);
 pixel_x := 1;
 pixel_y := 1;
 pixel_dx := 1;
 pixel_dy := 1;
+update_ticks := 0;
 
-/// Draw the pixel, then bounce its next position off each screen edge.
+/// Advance one tile at the configured animation speed, then draw it.
 fn canvas_update() {
     board := pixel_board_new(screen_size, screen_size, blue);
     pixel_board_set(board, screen_size, screen_size, pixel_x, pixel_y, white);
     pixel_board_render(screen_size, screen_size, board);
 
-    if pixel_x + pixel_dx < 0 || pixel_x + pixel_dx > screen_edge {
-        pixel_dx = 0 - pixel_dx;
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        if pixel_x + pixel_dx < 0 || pixel_x + pixel_dx > screen_edge {
+            pixel_dx = 0 - pixel_dx;
+        }
+        if pixel_y + pixel_dy < 0 || pixel_y + pixel_dy > screen_edge {
+            pixel_dy = 0 - pixel_dy;
+        }
+        pixel_x = pixel_x + pixel_dx;
+        pixel_y = pixel_y + pixel_dy;
     }
-    if pixel_y + pixel_dy < 0 || pixel_y + pixel_dy > screen_edge {
-        pixel_dy = 0 - pixel_dy;
-    }
-    pixel_x = pixel_x + pixel_dx;
-    pixel_y = pixel_y + pixel_dy;
 }
 
 /// Print the first frame for command-line runs.

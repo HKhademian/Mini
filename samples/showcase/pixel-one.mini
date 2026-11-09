@@ -11,13 +11,9 @@ screen_center := number_div(screen_size, 2);
 black := pixel_rgb(0, 0, 0);
 white := pixel_rgb(255, 255, 255);
 
-/// Draw one frame containing only the center pixel, then stop.
-fn canvas_update() {
-    board := pixel_board_new(screen_size, screen_size, black);
-    pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, white);
-    pixel_board_render(screen_size, screen_size, board);
-    return 1;
-}
+board := pixel_board_new(screen_size, screen_size, black);
+pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, white);
+canvas_render(screen_size, screen_size, board);
 
 /// Print the initial frame as a text fallback for the command line.
 fn pixel_one_print() {
@@ -38,5 +34,4 @@ fn pixel_one_print() {
     }
 }
 
-canvas_play(screen_size, screen_size, "One Pixel");
 pixel_one_print();

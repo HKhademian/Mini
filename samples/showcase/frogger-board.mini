@@ -1,12 +1,16 @@
 /// Animate Frogger on a ten-by-ten pixel board and print its initial text frame.
 
 import "core/io";
+import "core/number";
 import "util/board";
 import "util/canvas";
 import "util/io";
 
 screen_size := 10;
 screen_edge := screen_size - 1;
+playback_fps := 60;
+traffic_fps := 3;
+frames_per_step := number_div(playback_fps, traffic_fps);
 frog_x := 4;
 frog_y := screen_edge;
 car_a_x := 1;
@@ -126,7 +130,7 @@ fn frogger_render_pixels() {
 /// Move traffic and emit one ten-by-ten frame; return zero to continue.
 fn canvas_update() {
     update_ticks = update_ticks + 1;
-    if update_ticks >= 8 {
+    if update_ticks >= frames_per_step {
         update_ticks = 0;
         car_a_x = car_a_x + 1;
         if car_a_x > 7 {

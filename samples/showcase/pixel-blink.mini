@@ -2,11 +2,15 @@
 
 import "core/io";
 import "core/list";
+import "core/number";
 import "util/board";
 import "util/canvas";
 import "util/io";
 
 screen_size := 10;
+playback_fps := 60;
+eyes_open_frames := number_mul(playback_fps, 3);
+eyes_closed_frames := number_div(playback_fps, 10);
 background := pixel_rgb(18, 34, 70);
 face_color := pixel_rgb(255, 204, 72);
 detail_color := pixel_rgb(100, 50, 40);
@@ -63,10 +67,10 @@ fn pixel_blink_render() {
 fn canvas_update() {
     pixel_blink_render();
     blink_frames = blink_frames + 1;
-    if eyes_open && blink_frames >= 75 {
+    if eyes_open && blink_frames >= eyes_open_frames {
         eyes_open = false;
         blink_frames = 0;
-    } else if !eyes_open && blink_frames >= 6 {
+    } else if !eyes_open && blink_frames >= eyes_closed_frames {
         eyes_open = true;
         blink_frames = 0;
     }

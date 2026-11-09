@@ -636,6 +636,9 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     let activePlay = false;
     let playFrame = 0;
     let playInFlight = false;
+    let lastPlayStepAt = 0;
+    const maxPlayFramesPerSecond = 60;
+    const minPlayFrameMs = 1000 / maxPlayFramesPerSecond;
 
     function showTab(name) {
       const active = name === "code" && !tabCode.disabled ? "code" : name === "canvas" && !tabCanvas.hidden ? "canvas" : "output";
@@ -651,6 +654,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       if (playFrame) cancelAnimationFrame(playFrame);
       playFrame = 0;
       playInFlight = false;
+      lastPlayStepAt = 0;
       activePlay = false;
       if (activeWorker) {
         activeWorker.postMessage({ action: "stop" });
@@ -675,8 +679,13 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       playContext.putImageData(image, 0, 0);
     }
 
-    function requestPlayStep() {
+    function requestPlayStep(timestamp) {
       if (!activePlay || !activeWorker || playInFlight) return;
+      if (lastPlayStepAt !== 0 && timestamp - lastPlayStepAt < minPlayFrameMs) {
+        playFrame = requestAnimationFrame(requestPlayStep);
+        return;
+      }
+      lastPlayStepAt = timestamp;
       playInFlight = true;
       activeWorker.postMessage({ action: "update" });
     }
@@ -790,21 +799,23 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           renderCode();
           tabCode.disabled = false;
         }
-        if (!compileOnly && data.play) {
-          playCanvas.width = data.play.width;
-          playCanvas.height = data.play.height;
-          playCanvas.title = data.play.title;
-          playTitle.textContent = data.play.title;
-          playStatus.textContent = "Playing · arrows or WASD";
+        const canvasFrame = data.play || data.canvas;
+        if (!compileOnly && canvasFrame) {
+          playCanvas.width = canvasFrame.width;
+          playCanvas.height = canvasFrame.height;
+          playCanvas.title = canvasFrame.title;
+          playTitle.textContent = canvasFrame.title;
+          playStatus.textContent = data.play ? "Playing · arrows or WASD" : "One-time render";
           tabCanvas.hidden = false;
-          drawPlayFrame(data.play.pixels);
+          drawPlayFrame(canvasFrame.pixels);
           showTab("canvas");
-          playCanvas.focus({ preventScroll: true });
-          if (data.play.status === 0) {
+          if (data.play) playCanvas.focus({ preventScroll: true });
+          if (data.play && data.play.status === 0) {
             activeWorker = worker;
             activePlay = true;
+            lastPlayStepAt = 0;
             playFrame = requestAnimationFrame(requestPlayStep);
-          } else {
+          } else if (data.play) {
             worker.terminate();
             playStatus.textContent = "Stopped with status " + data.play.status;
           }
@@ -812,7 +823,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         if (data.diagnostic) {
           fail(data.diagnostic, compileOnly);
         } else {
-          setStatus(data.play ? data.play.status === 0 ? "playing" : "stopped" : (compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
+          setStatus(data.play ? data.play.status === 0 ? "playing" : "stopped" : (data.canvas ? "rendered in " : compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
         }
       };
       worker.onerror = function () {
@@ -828,7 +839,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         worker.terminate();
         fail("The playground worker failed to start.");
       };
-      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, portable: mode === "portable", compileOnly: compileOnly });
+      worker.postMessage({ source: source.value, stdin: sample.stdin, args: sample.args, title: sample.label, portable: mode === "portable", compileOnly: compileOnly });
     }
 
     function run() {
