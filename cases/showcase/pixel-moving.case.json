@@ -1,0 +1,25 @@
+{
+  "id": "showcase.pixel-moving",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-moving.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "common.play",
+    "common.pixel-board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n..........\n..........\n..........\n.*........\n..........\n..........\n..........\n..........\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

@@ -497,5 +497,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-blink.mini"
+  },
+  {
+    "id": "pixel-moving",
+    "group": "Animation",
+    "label": "Moving pixel",
+    "note": "Move a pixel horizontally and bounce it at the edges.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-moving.mini"
   }
 ]

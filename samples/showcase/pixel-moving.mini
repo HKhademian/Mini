@@ -1,0 +1,39 @@
+/// Move one pixel across a ten-by-ten canvas and bounce at its edges.
+
+import "common/io";
+import "common/pixel-board";
+import "common/play";
+
+black := pixel_rgb(0, 0, 0);
+cyan := pixel_rgb(60, 230, 255);
+pixel_x := 1;
+pixel_y := 5;
+pixel_direction := 1;
+
+/// Render the pixel, then advance its horizontal position.
+fn mini_play_update() {
+    board := pixel_board_new(10, 10, black);
+    pixel_board_set(board, 10, 10, pixel_x, pixel_y, cyan);
+    pixel_board_render(10, 10, board);
+
+    if pixel_x + pixel_direction < 0 || pixel_x + pixel_direction > 9 {
+        pixel_direction = 0 - pixel_direction;
+    }
+    pixel_x = pixel_x + pixel_direction;
+}
+
+/// Print the first frame for command-line runs.
+fn pixel_moving_print() {
+    row := 0;
+    while row < 10 {
+        if row == 5 {
+            io_write_line(".*........");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "Moving Pixel");
+pixel_moving_print();
