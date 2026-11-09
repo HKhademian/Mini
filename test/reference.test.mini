@@ -24,11 +24,11 @@ fn reference_compare(root, name, source_text) {
         io_write_error(name + " host compile failed: " + text_from_bytes(map_get(host_compile, "stderr")));
         process_exit(1);
     }
-    pure_args := list_of(compiler, "--reference", source, reference);
-    pure_compile := process_capture(process_exec_path(), pure_args, root, list_new());
-    if map_get(pure_compile, "status") != 0 {
+    reference_args := list_of(compiler, "--reference", source, reference);
+    reference_compile := process_capture(process_exec_path(), reference_args, root, list_new());
+    if map_get(reference_compile, "status") != 0 {
         path_remove(work);
-        io_write_error(name + " reference compile failed: " + text_from_bytes(map_get(pure_compile, "stderr")));
+        io_write_error(name + " reference compile failed: " + text_from_bytes(map_get(reference_compile, "stderr")));
         process_exit(1);
     }
     if name == "number-add" && text_find(file_read(host), "return a + b;") < 0 {
@@ -54,10 +54,10 @@ fn reference_compare(root, name, source_text) {
     host_run_args := list_new();
     list_set(host_run_args, 0, host);
     host_run := process_capture(process_exec_path(), host_run_args, work, list_new());
-    pure_run_args := list_new();
-    list_set(pure_run_args, 0, reference);
-    pure_run := process_capture(process_exec_path(), pure_run_args, work, list_new());
-    if map_get(host_run, "status") != map_get(pure_run, "status") || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(pure_run, "stdout")) || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(pure_run, "stderr")) {
+    reference_run_args := list_new();
+    list_set(reference_run_args, 0, reference);
+    reference_run := process_capture(process_exec_path(), reference_run_args, work, list_new());
+    if map_get(host_run, "status") != map_get(reference_run, "status") || text_from_bytes(map_get(host_run, "stdout")) != text_from_bytes(map_get(reference_run, "stdout")) || text_from_bytes(map_get(host_run, "stderr")) != text_from_bytes(map_get(reference_run, "stderr")) {
         path_remove(work);
         io_write_error(name + " differs between host and reference modes\n");
         process_exit(1);
