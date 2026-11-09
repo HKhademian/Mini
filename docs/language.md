@@ -494,6 +494,17 @@ merged := list_merge(left, right);
 - The merge is shallow; contained values are shared with the source lists.
 - Import `common/list` to use it.
 
+## Accepted operation: map merging
+
+```mini
+merged := map_merge(defaults, overrides);
+```
+
+- `map_merge(...maps)` returns a fresh map with entries from each map argument
+  applied in order. Later maps replace earlier values for matching keys.
+- Non-map arguments are ignored, and the source maps are unchanged.
+- Import `common/map` to use it.
+
 ## Accepted operation: list text joining
 
 ```mini

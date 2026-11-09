@@ -1,0 +1,15 @@
+import "common/io";
+import "common/map";
+
+base := map_of("name", "Mini", "count", 1);
+extra := map_of("count", 2, "ready", true);
+merged := map_merge(base, extra, 0);
+io_write(
+    map_get(merged, "name"),
+    ":",
+    map_get(merged, "count"),
+    ":",
+    map_get(merged, "ready"),
+    "|",
+    map_has(base, "ready")
+);

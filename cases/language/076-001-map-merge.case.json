@@ -1,0 +1,15 @@
+{
+  "id": "language.map-merge",
+  "kind": "feature",
+  "source": "076-001-map-merge.mini",
+  "features": ["import", "map.merge", "functions.args"],
+  "cases": [
+    {
+      "name": "ordered-merge-and-source-preservation",
+      "stdin": {"text": ""},
+      "stdout": {"text": "Mini:2:true|false"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

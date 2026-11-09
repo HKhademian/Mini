@@ -50,6 +50,27 @@ fn map_copy(items) {
     return result;
 }
 
+/// Merge map arguments into a fresh map; later maps replace earlier values.
+fn map_merge() {
+    sources := fn_args();
+    result := map_new();
+    source_index := 0;
+    while source_index < list_length(sources) {
+        source := list_get(sources, source_index);
+        if value_is_map(source) {
+            keys := map_keys(source);
+            key_index := 0;
+            while key_index < list_length(keys) {
+                key := list_get(keys, key_index);
+                map_set(result, key, map_get(source, key));
+                key_index = key_index + 1;
+            }
+        }
+        source_index = source_index + 1;
+    }
+    return result;
+}
+
 /// Build a map from alternating key and value arguments.
 ///
 /// A repeated key takes the last supplied value, matching map_set. A key

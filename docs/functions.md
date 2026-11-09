@@ -218,6 +218,8 @@ shared, so nested lists and maps remain aliases. A non-map target returns an
 empty map. `map_has(items, key)` checks a text key and returns a boolean without
 changing the map. Empty maps return false; membership does not decide a
 missing-key value.
+`map_merge(...maps)` returns a fresh map. Later map arguments replace earlier
+values for matching keys; non-map arguments are ignored.
 
 `map_set(items, key, value)` inserts or replaces a text-keyed value without a
 result. Non-map targets are no-ops. Values retain their kind, including shared

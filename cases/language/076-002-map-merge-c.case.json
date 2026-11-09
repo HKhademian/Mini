@@ -1,0 +1,16 @@
+{
+  "id": "language.map-merge-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "076-002-map-merge-c.mini",
+  "features": ["import", "map.merge", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "map-merge-requires-map-host",
+      "stdin": {"text": ""},
+      "stdout": {"text": ""},
+      "stderr": {"text": "map_merge requires a map host\n"},
+      "exitCode": 1
+    }
+  ]
+}

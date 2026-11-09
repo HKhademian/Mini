@@ -525,6 +525,27 @@ function map_copy(items) {
     if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
     return Object.assign(Object.create(null), items);
 }
+function map_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let sources = $mini_fn_args;
+    let result = map_new();
+    let source_index = 0;
+    while ((source_index < (sources).length)) {
+        let source = list_get(sources, source_index);
+        if (value_is_map(source)) {
+            let keys = map_keys(source);
+            let key_index = 0;
+            while ((key_index < (keys).length)) {
+                let key = list_get(keys, key_index);
+                map_set(result, key, map_get(source, key));
+                key_index = (key_index + 1);
+            }
+        }
+        source_index = (source_index + 1);
+    }
+    return result;
+}
 function map_of() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
