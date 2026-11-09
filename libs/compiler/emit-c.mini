@@ -694,10 +694,6 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
     if map_get(node, "is_builtin") && !emit_c_host_function_exists(name) {
         emit_c_fail(node);
     }
-    runtime_name := emit_c_host_function_runtime(name);
-    if runtime_name != "" {
-        map_set(map_get(state, "c_required_host_runtimes"), runtime_name, true);
-    }
     params := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
     if count > 0 {
         params = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(count) + ", " + array + ")";
@@ -1053,7 +1049,6 @@ fn emit_c_program(program, header_name) {
     map_set(state, "c_conditions", list_new());
     map_set(state, "c_functions", list_new());
     map_set(state, "c_prototypes", list_new());
-    map_set(state, "c_required_host_runtimes", map_new());
     files := list_new();
     calls := list_new();
     bodies := map_new();
@@ -1141,7 +1136,7 @@ fn emit_c_program(program, header_name) {
         file_index = file_index + 1;
     }
     runtime_parts := list_new();
-    host_runtimes := emit_c_host_runtime_definitions(map_get(state, "c_required_host_runtimes"));
+    host_runtimes := emit_c_host_runtime_definitions();
     if host_runtimes != "" {
         list_set(runtime_parts, list_length(runtime_parts), host_runtimes);
     }

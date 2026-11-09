@@ -78,7 +78,6 @@ fn emit_c_io_runtime() {
 }
 
 emit_c_host_runtime_add("io_write", emit_c_io_runtime());
-emit_c_host_function_require_runtime("io_write", "io_write");
 
 
 // io_write uses the runtime writer; io_write_line has no native variadic lowering.

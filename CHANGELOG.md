@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.46 / compiler 0.5.0-alpha.57 / bootstrap
+  0.3.0-alpha.59: include registered C host runtimes with their host function
+  wrappers, including for empty programs.
+
 - mini 0.3.0-alpha.45 / compiler 0.5.0-alpha.56 / bootstrap
   0.3.0-alpha.58: move C output runtime and `io_write` implementation into the
   imported host override registry.

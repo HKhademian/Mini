@@ -7,7 +7,6 @@ c_host_function_names := list_new();
 c_host_function_definitions := map_new();
 c_host_runtime_names := list_new();
 c_host_runtime_definitions := map_new();
-c_host_function_runtimes := map_new();
 
 /// Register one C implementation under its public Mini function name.
 fn emit_c_host_function_add(name, definition) {
@@ -32,29 +31,13 @@ fn emit_c_host_runtime_add(name, definition) {
     return 0;
 }
 
-/// Associate a public host function with one required runtime fragment.
-fn emit_c_host_function_require_runtime(function_name, runtime_name) {
-    map_set(c_host_function_runtimes, function_name, runtime_name);
-    return 0;
-}
-
-/// Return the runtime fragment required by one public host function.
-fn emit_c_host_function_runtime(name) {
-    if !map_has(c_host_function_runtimes, name) {
-        return "";
-    }
-    return map_get(c_host_function_runtimes, name);
-}
-
-/// Return registered runtime fragments required by reachable host calls.
-fn emit_c_host_runtime_definitions(required) {
+/// Return registered runtime fragments that support the host replacements.
+fn emit_c_host_runtime_definitions() {
     output := list_new();
     position := 0;
     while position < list_length(c_host_runtime_names) {
         name := list_get(c_host_runtime_names, position);
-        if map_has(required, name) {
-            list_set(output, list_length(output), map_get(c_host_runtime_definitions, name));
-        }
+        list_set(output, list_length(output), map_get(c_host_runtime_definitions, name));
         position = position + 1;
     }
     return list_join(output, "\n");
