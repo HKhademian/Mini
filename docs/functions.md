@@ -40,9 +40,10 @@ same-name host implementations.
 Import `common/time`; its Mini fallback panics, and JavaScript registers the
 same-name host implementation.
 
-`process_script_path()` returns the current script or executable path. The C
-target resolves its native `argv[0]` to an absolute path; process spawning
-remains a separate host capability.
+`process_script_path()` returns the current script or executable path, and
+`process_exec_path()` returns the executable path. The C target resolves its
+native `argv[0]` to an absolute path; process spawning remains a separate host
+capability.
 
 Directory and path functions are declared in
 [libs/common/path.mini](../libs/common/path.mini) and require
