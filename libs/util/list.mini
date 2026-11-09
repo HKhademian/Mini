@@ -1,0 +1,14 @@
+/// Higher-level list operations built on the core list API.
+
+import "core/list";
+
+/// Join list items from an index with a separator.
+fn list_join_from(items, start, separator) {
+    parts := list_new();
+    position := start;
+    while position < list_length(items) {
+        list_set(parts, list_length(parts), list_get(items, position));
+        position = position + 1;
+    }
+    return list_join(separator, parts);
+}
