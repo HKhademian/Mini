@@ -8,7 +8,7 @@ string properties or `__proto__` setter. The prototype is created once per
 generated program. Map values have no wrapper, brand, size field, or other
 per-map metadata.
 
-The JavaScript override in `libs/compiler/emit-js/overrides/map.mini` provides
+The JavaScript override in `libs/compiler/emit-js/map.mini` provides
 map get, has, and set. It is emitted once when needed. Text keys such as `__proto__`,
 `constructor`, `toString`, empty text, and numeric-looking text remain ordinary
 keys. Reads preserve zero, false, empty text, and collection references; missing

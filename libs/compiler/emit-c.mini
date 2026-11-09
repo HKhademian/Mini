@@ -8,16 +8,16 @@ import "common/number";
 import "common/list";
 import "common/map";
 import "./parser";
-import "./emit-c/overrides/io";
-import "./emit-c/overrides/file";
-import "./emit-c/overrides/path";
-import "./emit-c/overrides/list";
-import "./emit-c/overrides/map";
-import "./emit-c/overrides/value";
-import "./emit-c/overrides/display";
-import "./emit-c/overrides/text";
-import "./emit-c/overrides/process";
-import "./emit-c/overrides/operators";
+import "./emit-c/io";
+import "./emit-c/file";
+import "./emit-c/path";
+import "./emit-c/list";
+import "./emit-c/map";
+import "./emit-c/value";
+import "./emit-c/display";
+import "./emit-c/text";
+import "./emit-c/process";
+import "./emit-c/operators";
 
 /// Reject a valid language form that the C target cannot lower yet.
 fn emit_c_fail(token) {

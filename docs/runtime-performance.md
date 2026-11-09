@@ -16,7 +16,7 @@ runs this audit against the candidate and records compiler and self-build costs.
 ## What emission adds
 
 Inspecting `libs/compiler/parser.mini` and
-`libs/compiler/emit-js/overrides` shows target-specific host replacements:
+`libs/compiler/emit-js` shows target-specific host replacements:
 
 - mini functions become ordinary functions; calls pass ordinary JS arguments.
 - Bindings, arithmetic, conditions, and loops become native TS statements.

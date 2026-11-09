@@ -7,8 +7,8 @@ import "common/number";
 import "common/list";
 import "common/map";
 import "./parser";
-import "./emit-js/overrides";
-import "./emit-js/overrides/registry";
+import "./emit-js/host";
+import "./emit-js/registry";
 
 /// Replace one target lowering token with its generated expression.
 fn emit_js_replace_lowering(source, needle, replacement) {

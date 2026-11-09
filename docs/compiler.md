@@ -140,7 +140,7 @@ implementation under the same function name. `number_add` demonstrates this:
 the Mini definition is the reference behavior, and the default JavaScript
 function uses guarded native addition while preserving its return value for
 invalid operands. Reference mode emits the Mini definition. Overrides are
-registered in [libs/compiler/emit-js/overrides](../libs/compiler/emit-js/overrides),
+registered in [libs/compiler/emit-js](../libs/compiler/emit-js),
 grouped by operation namespace; AST emission asks the registry rather than
 branching on individual function names.
 

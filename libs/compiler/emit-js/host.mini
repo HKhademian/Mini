@@ -1,20 +1,20 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
 import "common/map";
-import "./overrides/registry";
-import "./overrides/number";
-import "./overrides/hash";
-import "./overrides/time";
-import "./overrides/list";
-import "./overrides/map";
-import "./overrides/text";
-import "./overrides/json";
-import "./overrides/value";
-import "./overrides/display";
-import "./overrides/io";
-import "./overrides/file";
-import "./overrides/path";
-import "./overrides/process";
+import "./registry";
+import "./number";
+import "./hash";
+import "./time";
+import "./list";
+import "./map";
+import "./text";
+import "./json";
+import "./value";
+import "./display";
+import "./io";
+import "./file";
+import "./path";
+import "./process";
 
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {
