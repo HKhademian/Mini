@@ -159,43 +159,68 @@ fn emit_c_vec_runtime() {
     return emit_c_join_lines(
         list_of(
             "void MINI_ID(vec_init)(MINI_ID(vec) *vec, size_t item_size) {",
-            "    if (!vec || !item_size || (vec->item_size && vec->item_size != item_size)) abort();",
+            "    if (!vec || !item_size || (vec->item_size && vec->item_size != item_size)) {",
+            "        abort();",
+            "    }",
             "    vec->item_size = item_size;",
             "}",
             "",
             "void MINI_ID(vec_reserve)(MINI_ID(vec) *vec, size_t expected_count) {",
-            "    if (!vec || !vec->item_size) abort();",
+            "    if (!vec || !vec->item_size) {",
+            "        abort();",
+            "    }",
             "    size_t maximum = SIZE_MAX / vec->item_size;",
-            "    if (expected_count > maximum) abort();",
-            "    if (expected_count <= vec->capacity) return;",
+            "    if (expected_count > maximum) {",
+            "        abort();",
+            "    }",
+            "    if (expected_count <= vec->capacity) {",
+            "        return;",
+            "    }",
             "    size_t capacity = vec->capacity ? vec->capacity : 8;",
             "    while (capacity < expected_count) {",
-            "        if (capacity > maximum / 2) { capacity = expected_count; break; }",
+            "        if (capacity > maximum / 2) {",
+            "            capacity = expected_count;",
+            "            break;",
+            "        }",
             "        capacity *= 2;",
             "    }",
             "    unsigned char *grown = realloc(vec->items, capacity * vec->item_size);",
-            "    if (!grown) abort();",
+            "    if (!grown) {",
+            "        abort();",
+            "    }",
             "    vec->items = grown;",
             "    vec->capacity = capacity;",
             "}",
             "",
             "void MINI_ID(vec_append)(MINI_ID(vec) *vec, const void *items, size_t count) {",
-            "    if (!vec || !vec->item_size || (count && !items) || count > SIZE_MAX - vec->count) abort();",
-            "    if (count > SIZE_MAX / vec->item_size) abort();",
+            "    if (!vec || !vec->item_size || (count && !items) || count > SIZE_MAX - vec->count) {",
+            "        abort();",
+            "    }",
+            "    if (count > SIZE_MAX / vec->item_size) {",
+            "        abort();",
+            "    }",
             "    size_t bytes = count * vec->item_size;",
             "    uintptr_t source = (uintptr_t)items, base = (uintptr_t)vec->items;",
             "    int aliases = bytes && vec->items && source >= base && source - base < vec->count * vec->item_size;",
             "    size_t source_offset = aliases ? (size_t)(source - base) : 0;",
-            "    if (aliases && bytes > vec->count * vec->item_size - source_offset) abort();",
+            "    if (aliases && bytes > vec->count * vec->item_size - source_offset) {",
+            "        abort();",
+            "    }",
             "    size_t old_count = vec->count;",
             "    MINI_ID(vec_reserve)(vec, old_count + count);",
-            "    if (aliases) items = vec->items + source_offset;",
-            "    if (bytes) memmove(vec->items + old_count * vec->item_size, items, bytes);",
+            "    if (aliases) {",
+            "        items = vec->items + source_offset;",
+            "    }",
+            "    if (bytes) {",
+            "        memmove(vec->items + old_count * vec->item_size, items, bytes);",
+            "    }",
             "    vec->count = old_count + count;",
             "}",
             "",
             "void MINI_ID(vec_free)(MINI_ID(vec) *vec) {",
-            "    if (!vec) return;",
+            "    if (!vec) {",
+            "        return;",
+            "    }",
             "    free(vec->items);",
             "    *vec = (MINI_ID(vec)){0};",
             "}"
@@ -296,9 +321,15 @@ fn emit_c_value_constructor() {
             "}",
             "",
             "int MINI_ID(text_buffer_append)(MINI_ID(text_buffer) *buffer, const unsigned char *data, size_t length) {",
-            "    if (!buffer || (length && !data) || length > SIZE_MAX - buffer->count) return 1;",
-            "    if (!buffer->item_size) MINI_ID(vec_init)(buffer, sizeof(unsigned char));",
-            "    if (buffer->item_size != sizeof(unsigned char)) return 1;",
+            "    if (!buffer || (length && !data) || length > SIZE_MAX - buffer->count) {",
+            "        return 1;",
+            "    }",
+            "    if (!buffer->item_size) {",
+            "        MINI_ID(vec_init)(buffer, sizeof(unsigned char));",
+            "    }",
+            "    if (buffer->item_size != sizeof(unsigned char)) {",
+            "        return 1;",
+            "    }",
             "    MINI_ID(vec_append)(buffer, data, length);",
             "    return 0;",
             "}",
@@ -309,10 +340,20 @@ fn emit_c_value_constructor() {
             "",
             "MINI_ID(value) MINI_ID(value_text)(MINI_ID(text_buffer) *buffer, size_t offset, size_t length) {",
             "    MINI_ID(value) value = (MINI_ID(value)) MINI_VALUE_TEXT(buffer, offset, length);",
-            "    size_t units = 0; if (MINI_ID(text_units_length)(value.text, &units)) { value.text.units = units; value.text.units_known = 1; }",
+            "    size_t units = 0;",
+            "    if (MINI_ID(text_units_length)(value.text, &units)) {",
+            "        value.text.units = units;",
+            "        value.text.units_known = 1;",
+            "    }",
             "    if (buffer && offset <= buffer->count && length <= buffer->count - offset) {",
-            "        value.text.ascii = 1; value.text.ascii_known = 1;",
-            "        for (size_t index = 0; index < length; ++index) if (buffer->items[offset + index] > 127) { value.text.ascii = 0; break; }",
+            "        value.text.ascii = 1;",
+            "        value.text.ascii_known = 1;",
+            "        for (size_t index = 0; index < length; ++index) {",
+            "            if (buffer->items[offset + index] > 127) {",
+            "                value.text.ascii = 0;",
+            "                break;",
+            "            }",
+            "        }",
             "    }",
             "    return value;",
             "}",
@@ -445,7 +486,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
             bytes := emit_c_literal_bytes(token);
             count := number_to_text(list_length(bytes));
             return "    if (MINI_ID(text_buffer_append)(buffer, (const unsigned char *) " + emit_c_literal_input(bytes)
-                + ", " + count + ") != 0) return 1;\n" + "    " + destination + " = MINI_ID(value_text)(buffer, buffer->count - "
+                + ", " + count + ") != 0) {\n        return 1;\n    }\n" + "    " + destination + " = MINI_ID(value_text)(buffer, buffer->count - "
                 + count + ", " + count + ");\n";
         }
         raw := map_get(node, "raw");
@@ -473,11 +514,18 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
         if text_starts_with(binding, "p") || text_starts_with(binding, "local_") {
             return "    " + destination + " = " + binding + ";\n";
         }
-        return "    if (!context->initialized_" + binding + ") return 1;\n" + "    " + destination + " = context->binding_"
+        return "    if (!context->initialized_" + binding + ") {\n        return 1;\n    }\n" + "    " + destination + " = context->binding_"
             + binding + ";\n";
     }
     if kind == AST_GROUP {
-        return emit_c_ast_expression(map_get(node, "expression"), state, bindings, binding_orders, destination, in_function);
+        return emit_c_ast_expression(
+            map_get(node, "expression"),
+            state,
+            bindings,
+            binding_orders,
+            destination,
+            in_function
+        );
     }
     if kind == AST_FN_ARGS {
         if map_get(node, "captures") {
@@ -489,14 +537,29 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
         return emit_c_ast_call(node, state, bindings, binding_orders, destination, in_function);
     }
     if kind == AST_UNARY {
-        body := emit_c_ast_expression(map_get(node, "operand"), state, bindings, binding_orders, destination, in_function);
-        return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) return 1;\n" + "    " + destination + ".boolean = !"
+        body := emit_c_ast_expression(
+            map_get(node, "operand"),
+            state,
+            bindings,
+            binding_orders,
+            destination,
+            in_function
+        );
+        return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) {\n        return 1;\n    }\n" + "    "
+            + destination + ".boolean = !"
             + destination + ".boolean;\n";
     }
     if kind == AST_BINARY {
         operator := map_get(node, "operator");
         if operator == "&&" || operator == "||" {
-            body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function);
+            body := emit_c_ast_expression(
+                map_get(node, "left"),
+                state,
+                bindings,
+                binding_orders,
+                destination,
+                in_function
+            );
             index := map_get(state, "c_temp");
             map_set(state, "c_temp", index + 1);
             right := "tmp" + number_to_text(index);
@@ -504,22 +567,32 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
             if operator == "||" {
                 condition = "!" + condition;
             }
-            return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) return 1;\n"
+            return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) {\n        return 1;\n    }\n"
                 + "    if (" + condition + ") {\n        MINI_ID(value) " + right + ";\n"
-                + emit_c_indent(emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function))
-                + "        if (" + right + ".kind != MINI_ID(kind_boolean)) return 1;\n"
+                + emit_c_indent(
+                emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function)
+            )
+                + "        if (" + right + ".kind != MINI_ID(kind_boolean)) {\n            return 1;\n        }\n"
                 + "        " + destination + " = " + right + ";\n    }\n";
         }
         index := map_get(state, "c_temp");
         map_set(state, "c_temp", index + 1);
         right := "tmp" + number_to_text(index);
-        body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function) + "    MINI_ID(value) "
-            + right + ";\n" + emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function);
+        body := emit_c_ast_expression(map_get(node, "left"), state, bindings, binding_orders, destination, in_function)
+            + "    MINI_ID(value) "
+            + right + ";\n" + emit_c_ast_expression(
+            map_get(node, "right"),
+            state,
+            bindings,
+            binding_orders,
+            right,
+            in_function
+        );
         if operator == "+" {
-            return body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) return 1;\n";
+            return body + "    if (MINI_ID(add)(buffer, &" + destination + ", " + right + ") != 0) {\n        return 1;\n    }\n";
         }
         if operator == "-" {
-            return body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) return 1;\n"
+            return body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) {\n        return 1;\n    }\n"
                 + "    " + destination + ".number -= " + right + ".number;\n";
         }
         if operator == "==" || operator == "!=" {
@@ -530,7 +603,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
             return body + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_BOOLEAN(" + expression + ");\n";
         }
         if operator == "<" || operator == "<=" || operator == ">" || operator == ">=" {
-            return body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) return 1;\n"
+            return body + "    if (" + destination + ".kind != MINI_ID(kind_number) || " + right + ".kind != MINI_ID(kind_number)) {\n        return 1;\n    }\n"
                 + "    " + destination + " = (MINI_ID(value)) MINI_VALUE_BOOLEAN(" + destination + ".number " + operator
                 + " " + right + ".number);\n";
         }
@@ -574,7 +647,7 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
     list_set(
         body,
         list_length(body),
-        "    if (MINI_ID(fn_" + name + ")(context, " + params + ", &" + destination + ") != 0) return 1;\n"
+        "    if (MINI_ID(fn_" + name + ")(context, " + params + ", &" + destination + ") != 0) {\n        return 1;\n    }\n"
     );
     return list_join("", body);
 }
@@ -685,7 +758,14 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
         map_set(state, "c_temp", index + 1);
         number := number_to_text(index);
         condition := "tmp" + number;
-        expression := emit_c_ast_expression(map_get(node, "condition"), state, bindings, binding_orders, condition, in_function);
+        expression := emit_c_ast_expression(
+            map_get(node, "condition"),
+            state,
+            bindings,
+            binding_orders,
+            condition,
+            in_function
+        );
         if in_function {
             if kind == AST_WHILE {
                 return list_join(
@@ -693,8 +773,8 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
                     list_of(
                         "    while (1) {\n        MINI_ID(value) " + condition + ";\n",
                         emit_c_indent(expression),
-                        "        if (" + condition + ".kind != MINI_ID(kind_boolean)) return 1;\n",
-                        "        if (!" + condition + ".boolean) break;\n",
+                        "        if (" + condition + ".kind != MINI_ID(kind_boolean)) {\n            return 1;\n        }\n",
+                        "        if (!" + condition + ".boolean) {\n            break;\n        }\n",
                         emit_c_indent(
                             emit_c_ast_statement(consequent, state, map_copy(bindings), map_copy(binding_orders), true)
                         ),
@@ -705,7 +785,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             output := list_of(
                 "    MINI_ID(value) " + condition + ";\n",
                 expression,
-                "    if (" + condition + ".kind != MINI_ID(kind_boolean)) return 1;\n",
+                "    if (" + condition + ".kind != MINI_ID(kind_boolean)) {\n        return 1;\n    }\n",
                 "    if (" + condition + ".boolean) {\n",
                 emit_c_indent(
                     emit_c_ast_statement(consequent, state, map_copy(bindings), map_copy(binding_orders), true)
@@ -746,7 +826,9 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
         emit_c_collect_lines(helper_lines, "    (void)buffer;");
         emit_c_collect_lines(helper_lines, "    MINI_ID(value) " + condition + ";");
         emit_c_collect_lines(helper_lines, expression);
-        emit_c_collect_lines(helper_lines, "    if (" + condition + ".kind != MINI_ID(kind_boolean)) return 1;");
+        emit_c_collect_lines(helper_lines, "    if (" + condition + ".kind != MINI_ID(kind_boolean)) {");
+        emit_c_collect_lines(helper_lines, "        return 1;");
+        emit_c_collect_lines(helper_lines, "    }");
         emit_c_collect_lines(helper_lines, "    *result = " + condition + ".boolean;");
         emit_c_collect_lines(helper_lines, "    return 0;");
         emit_c_collect_lines(helper_lines, "}");
@@ -759,7 +841,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
         output := list_of(
             keyword + " ((context->condition_status_" + number + " = MINI_ID(condition_" + number + ")(context, &context->condition_value_"
             + number + ")) != 0 || context->condition_value_" + number + ") {\n",
-            "    if (context->condition_status_" + number + " != 0) return 1;\n",
+            "    if (context->condition_status_" + number + " != 0) {\n        return 1;\n    }\n",
             emit_c_ast_statement(
                 consequent,
                 state,
@@ -830,7 +912,9 @@ fn emit_c_ast_function(node, state, bindings, binding_orders) {
     map_set(state, "c_arg_count", outer_arg_count);
     function_lines := list_new();
     emit_c_collect_lines(function_lines, signature + " {");
-    emit_c_collect_lines(function_lines, "    if (params.count && !params.args) return 1;");
+    emit_c_collect_lines(function_lines, "    if (params.count && !params.args) {");
+    emit_c_collect_lines(function_lines, "        return 1;");
+    emit_c_collect_lines(function_lines, "    }");
     emit_c_collect_lines(function_lines, "    MINI_ID(text_buffer) *buffer = &context->buffer;");
     emit_c_collect_lines(function_lines, "    (void)buffer;");
     emit_c_collect_fragments(function_lines, declarations);
@@ -1002,8 +1086,11 @@ fn emit_c_program(program, header_name) {
         list_set(
             calls,
             list_length(calls),
-            "    if (MINI_ID(file_" + number_to_text(file_index) + ")(&context) != 0) { status = 1; goto cleanup; }"
+            "    if (MINI_ID(file_" + number_to_text(file_index) + ")(&context) != 0) {"
         );
+        list_set(calls, list_length(calls), "        status = 1;");
+        list_set(calls, list_length(calls), "        goto cleanup;");
+        list_set(calls, list_length(calls), "    }");
         file_index = file_index + 1;
     }
     runtime := emit_c_host_runtime_definitions();
@@ -1042,13 +1129,31 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "    int status = 0;");
     emit_c_collect_lines(lines, "    const char *script = argc > 0 && argv && argv[0] ? argv[0] : \"\";");
     emit_c_collect_lines(lines, "    size_t script_offset = context.buffer.count, script_length = strlen(script);");
-    emit_c_collect_lines(lines, "    if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)script, script_length) != 0) { status = 1; goto cleanup; }");
-    emit_c_collect_lines(lines, "    context.script_path = MINI_ID(value_text)(&context.buffer, script_offset, script_length);");
+    emit_c_collect_lines(
+        lines,
+        "    if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)script, script_length) != 0) {"
+    );
+    emit_c_collect_lines(lines, "        status = 1;");
+    emit_c_collect_lines(lines, "        goto cleanup;");
+    emit_c_collect_lines(lines, "    }");
+    emit_c_collect_lines(
+        lines,
+        "    context.script_path = MINI_ID(value_text)(&context.buffer, script_offset, script_length);"
+    );
     emit_c_collect_lines(lines, "    context.arguments = MINI_ID(list_new)(&context);");
     emit_c_collect_lines(lines, "    for (int argument = 1; argument < argc; ++argument) {");
     emit_c_collect_lines(lines, "        size_t offset = context.buffer.count, length = strlen(argv[argument]);");
-    emit_c_collect_lines(lines, "        if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)argv[argument], length) != 0) { status = 1; goto cleanup; }");
-    emit_c_collect_lines(lines, "        MINI_ID(list_push)(context.arguments.list, MINI_ID(value_text)(&context.buffer, offset, length), 0);");
+    emit_c_collect_lines(
+        lines,
+        "        if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)argv[argument], length) != 0) {"
+    );
+    emit_c_collect_lines(lines, "            status = 1;");
+    emit_c_collect_lines(lines, "            goto cleanup;");
+    emit_c_collect_lines(lines, "        }");
+    emit_c_collect_lines(
+        lines,
+        "        MINI_ID(list_push)(context.arguments.list, MINI_ID(value_text)(&context.buffer, offset, length), 0);"
+    );
     emit_c_collect_lines(lines, "    }");
     emit_c_collect_lines(
         lines,
@@ -1062,7 +1167,9 @@ fn emit_c_program(program, header_name) {
         "    (void)MINI_ID(list_copy); (void)MINI_ID(list_join); (void)MINI_ID(text_buffer_append_view);"
     );
     emit_c_collect_fragments(lines, calls);
-    emit_c_collect_lines(lines, "    if (fflush(stdout) != 0) status = 1;");
+    emit_c_collect_lines(lines, "    if (fflush(stdout) != 0) {");
+    emit_c_collect_lines(lines, "        status = 1;");
+    emit_c_collect_lines(lines, "    }");
     emit_c_collect_lines(lines, "    goto cleanup;");
     emit_c_collect_lines(lines, "cleanup:");
     emit_c_collect_lines(lines, "    MINI_ID(map_cleanup)(&context);");
