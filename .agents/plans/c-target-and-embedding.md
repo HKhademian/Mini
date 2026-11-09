@@ -79,6 +79,11 @@ compiler.
   The native argument fixture verifies both contexts.
 - 2026-11-09: C `text_from_code` now encodes valid Unicode scalar values as
   UTF-8, allowing the emitted compiler to run a C compile on a sample program.
+- 2026-11-09: a manual parallel-bootstrap run now compiles the Mini compiler
+  to C, builds it with strict C11 flags, and runs the resulting compiler on
+  `tools/compiler.mini`. Successive C generations compile and run; generated C
+  matches from generation 2 onward after normalizing the output-specific header
+  include. This is a local milestone, not yet a repeatable repository gate.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
   storage/views are implementation responsibilities.
 - Native text now uses an owned growable byte buffer with offset/length views.
@@ -356,6 +361,9 @@ without Node at script runtime; claims match evidence.
 - Have the C-built compiler emit the compiler again. Compare generated C source
   across successive generations and record a separate C bootstrap identity only
   after the fixed point passes.
+- Add a repository command that repeats this bootstrap check and reports the
+  normalized generated-source identity; keep parity coverage as an explicit
+  gate for the C bootstrap milestone.
 
 **Acceptance:** C builds and runs the Mini compiler, then reaches a verified
 fixed point without replacing or weakening the JS bootstrap gate.
