@@ -48,7 +48,7 @@ function build(application: Application, assets: string, selected: string) {
   const input = join(assets, `${application}.mini`);
   const output = join(assets, `${application}.generated.js`);
   writeFileSync(input, source);
-  const result = child([selected, 'compile', input, output]);
+  const result = child([selected, input, output]);
   assert.equal(result.stdout, ''); assert.equal(result.stderr, '');
   const emitted = readFileSync(output, 'utf8');
   writeFileSync(output, emitted + '\nexport { app_run };\n');
