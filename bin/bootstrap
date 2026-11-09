@@ -1,12 +1,5 @@
 #!/usr/bin/env node
 "use strict";
-function $mini_hash_sha256(value) {
-    const crypto = process.getBuiltinModule("node:crypto");
-    const bytes = Array.isArray(value)
-        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
-        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
-    return crypto.createHash("sha256").update(bytes).digest("hex");
-}
 function $mini_process_spawn(options) {
     const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
     const child = process.getBuiltinModule("node:child_process");
@@ -2670,6 +2663,13 @@ function project_compiler_entry(root) {
     }
     return map_get(result_get_value(parsed), "entry");
 }
+function hash_sha256(value) {
+    const crypto = process.getBuiltinModule("node:crypto");
+    const bytes = Array.isArray(value)
+        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
+        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
+    return crypto.createHash("sha256").update(bytes).digest("hex");
+}
 function bootstrap_fail(message) {
 
     io_write_error((message + "\n"));
@@ -2766,7 +2766,7 @@ function bootstrap_all(root) {
     file_write(first, bootstrap_compile_text(source));
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
-    if (($mini_hash_sha256(file_read_bytes(first)) !== $mini_hash_sha256(file_read_bytes(second)))) {
+    if ((hash_sha256(file_read_bytes(first)) !== hash_sha256(file_read_bytes(second)))) {
         bootstrap_fail("compiler fixed point mismatch");
     }
     let seed = path_join(root, "dist/compile.js");
@@ -2877,7 +2877,8 @@ function $mini_file_15() {
     builtin_source_api("file_write_bytes");
 }
 function $mini_file_16() {
-    builtin_add("hash_sha256", "unknown", "text", "performance", "", "hash_sha256", "function $mini_hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", "", "$mini_hash_sha256({0})");
+    builtin_add("hash_sha256", "unknown", "text", "performance", "", "", "", "", "");
+    builtin_source_api("hash_sha256");
 }
 function $mini_file_17() {
     builtin_add("io_read_all", "", "text", "essential", "", "", "", "", "");
@@ -2995,7 +2996,8 @@ function $mini_file_24() {
     builtin_source_api("text_to_bytes");
 }
 function $mini_file_25() {
-    builtin_add("time_millis", "", "number", "essential", "", "", "", "", "Date.now()");
+    builtin_add("time_millis", "", "number", "essential", "", "", "", "", "");
+    builtin_source_api("time_millis");
 }
 function $mini_file_26() {
     builtin_add("to_text", "any_value", "text", "library", "", "", "", "", "");
@@ -3026,6 +3028,12 @@ function $mini_file_30() {
     emit_js_host_function_add("number_to_text", "function number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", false, "");
 }
 function $mini_file_31() {
+    emit_js_host_function_add("hash_sha256", "function hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", true, "");
+}
+function $mini_file_32() {
+    emit_js_host_function_add("time_millis", "function time_millis() { return Date.now(); }\n", true, "");
+}
+function $mini_file_33() {
     emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");
     emit_js_host_function_add("list_get", "function list_get(items, index) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    return index >= 0 && index < items.length && index in items ? items[index] : 0;\n}\n", true, "");
     emit_js_host_function_add("list_length", "function list_length(items) { return Array.isArray(items) ? items.length : 0; }\n", true, "({0}).length");
@@ -3034,7 +3042,7 @@ function $mini_file_31() {
     emit_js_host_function_add("list_copy", "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n", false, "");
     emit_js_host_function_add("list_join", "function list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", false, "");
 }
-function $mini_file_32() {
+function $mini_file_34() {
     emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");
     emit_js_host_function_add("map_get", "function map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;\n}\n", true, "");
     emit_js_host_function_add("map_set", "function map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") items[key] = value;\n    return 0;\n}\n", true, "");
@@ -3043,7 +3051,7 @@ function $mini_file_32() {
     emit_js_host_function_add("map_delete", "function map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") delete items[key];\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("map_copy", "function map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", false, "");
 }
-function $mini_file_33() {
+function $mini_file_35() {
     emit_js_host_function_add("text_code", "function text_code(source) { return typeof source === \"string\" && source.length > 0 ? source.codePointAt(0) : 0; }\n", true, "");
     emit_js_host_function_add("text_find", "function text_find(source, needle) { return typeof source === \"string\" && typeof needle === \"string\" ? source.indexOf(needle) : -1; }\n", false, "");
     emit_js_host_function_add("text_from_bytes", "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n", false, "");
@@ -3054,30 +3062,30 @@ function $mini_file_33() {
     emit_js_host_function_add("text_split", "function text_split(source, divider) { if (typeof source !== \"string\" || typeof divider !== \"string\") return []; if (divider === \"\") return [source]; return source.split(divider); }\n", false, "");
     emit_js_host_function_add("text_to_bytes", "function text_to_bytes(source) { return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : []; }\n", false, "");
 }
-function $mini_file_34() {
+function $mini_file_36() {
     emit_js_host_function_add("json_parse", "function json_parse(text) {\n    const result = Object.create(null);\n    result.ok = false;\n    result.value = 0;\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (typeof item === \"number\") { if (!Number.isSafeInteger(item)) throw 0; return item; }\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = Object.create(null);\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    try { result.value = clean(parsed); } catch { return result; }\n    result.ok = true;\n    return result;\n}\n", false, "");
     emit_js_host_function_add("json_to_text", "function json_to_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", false, "");
 }
-function $mini_file_35() {
+function $mini_file_37() {
     emit_js_host_function_add("value_kind", "function value_kind(value) { if (typeof value === \"string\") return \"text\"; if (typeof value === \"number\") return \"number\"; if (typeof value === \"boolean\") return \"boolean\"; if (Array.isArray(value)) return \"list\"; if (value !== null && typeof value === \"object\") return \"map\"; return \"other\"; }\n", true, "");
 }
-function $mini_file_36() {
+function $mini_file_38() {
     emit_js_host_function_add("to_text", "function to_text(value) { if (typeof value === \"string\") return value; if (typeof value === \"number\") return number_to_text(value); if (typeof value === \"boolean\") return value ? \"true\" : \"false\"; if (value !== null && typeof value === \"object\") return json_to_text(value); return \"0\"; }\n", false, "");
 }
-function $mini_file_37() {
+function $mini_file_39() {
     emit_js_host_function_add("io_read_all", "function io_read_all() { return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\"); }\n", true, "");
     emit_js_host_function_add("io_read_bytes", "function io_read_bytes(count) { if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }\n", true, "");
     emit_js_host_function_add("io_read_line", "function io_read_line() { const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString(\"utf8\"); }\n", true, "");
     emit_js_host_function_add("io_write", "function io_write(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("io_write_error", "function io_write_error(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(typeof message === \"string\" ? message : \"\", \"utf8\")); return 0; }\n", true, "");
 }
-function $mini_file_38() {
+function $mini_file_40() {
     emit_js_host_function_add("file_read", "function file_read(path) { return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\"); }\n", true, "");
     emit_js_host_function_add("file_read_bytes", "function file_read_bytes(path) { return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path)); }\n", true, "");
     emit_js_host_function_add("file_write", "function file_write(path, text) { process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\"); return 0; }\n", true, "");
     emit_js_host_function_add("file_write_bytes", "function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values)); return 0; }\n", true, "");
 }
-function $mini_file_39() {
+function $mini_file_41() {
     emit_js_host_function_add("directory_create", "function directory_create(path) { process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true }); return 0; }\n", true, "");
     emit_js_host_function_add("directory_list", "function directory_list(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.readdirSync(path).sort(); } catch { return []; } }\n", true, "");
     emit_js_host_function_add("path_copy", "function path_copy(from, to) { process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }\n", true, "");
@@ -3087,14 +3095,8 @@ function $mini_file_39() {
     emit_js_host_function_add("path_remove", "function path_remove(path) { process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true }); return 0; }\n", true, "");
     emit_js_host_function_add("path_temp_directory", "function path_temp_directory() { const fs = process.getBuiltinModule(\"node:fs\"); const os = process.getBuiltinModule(\"node:os\"); return fs.mkdtempSync(os.tmpdir() + \"/mini-\"); }\n", true, "");
 }
-function $mini_file_40() {
-    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
-}
-function $mini_file_41() {
-
-}
 function $mini_file_42() {
-
+    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
 }
 function $mini_file_43() {
 
@@ -3106,6 +3108,15 @@ function $mini_file_45() {
 
 }
 function $mini_file_46() {
+
+}
+function $mini_file_47() {
+
+}
+function $mini_file_48() {
+
+}
+function $mini_file_49() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -3156,5 +3167,8 @@ function $mini_main() {
     $mini_file_44();
     $mini_file_45();
     $mini_file_46();
+    $mini_file_47();
+    $mini_file_48();
+    $mini_file_49();
 }
 $mini_main();

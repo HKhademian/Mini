@@ -2,6 +2,8 @@
 
 import "common/map";
 import "./overrides/number";
+import "./overrides/hash";
+import "./overrides/time";
 import "./overrides/list";
 import "./overrides/map";
 import "./overrides/text";

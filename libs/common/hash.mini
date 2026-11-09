@@ -1,0 +1,8 @@
+/// SHA-256 API with a panic fallback when the target has no hash host.
+
+import "common/panic";
+
+/// Hash text or byte-list values and return lowercase hexadecimal text.
+fn hash_sha256(value) {
+    return panic("hash_sha256 requires a host implementation");
+}

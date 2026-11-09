@@ -5,6 +5,7 @@ import "common/number";
 import "common/map";
 import "common/text";
 import "common/list";
+import "common/hash";
 import "tools/cases";
 
 /// Verify the generated compiler reproduces itself from its mini source.

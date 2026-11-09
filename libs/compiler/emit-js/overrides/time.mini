@@ -1,0 +1,5 @@
+/// JavaScript host replacement for the common millisecond clock API.
+
+import "./registry";
+
+emit_js_host_function_add("time_millis", "function time_millis() { return Date.now(); }\n", true, "");

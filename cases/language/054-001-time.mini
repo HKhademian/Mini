@@ -1,6 +1,7 @@
 /// Read the millisecond clock without moving backwards.
 
 import "common/io";
+import "common/time";
 
 first := time_millis();
 if first > 0 {

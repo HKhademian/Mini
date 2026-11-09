@@ -42,7 +42,8 @@ the operating system or host runtime:
 Every pure or reference mode still needs these operations. Removing them would
 require a different runtime, not a different mini program.
 
-`hash_sha256` is also host-only today, but for a different reason: see
+`hash_sha256` is declared in `common/hash` with a panic fallback and a JavaScript
+host override. A pure Mini SHA implementation remains open; see
 [Numeric core](#numeric-core-and-hash).
 
 ## Representation primitives
@@ -188,9 +189,8 @@ not the spelling but the semantics:
 - Are shifts arithmetic or logical, and what is the shift width?
 - How do these interact with existing `+`, `-`, and comparisons?
 
-Until those questions are answered, `hash_sha256` remains a host/crypto
-primitive. Renaming it to `crypto_sha256` would clarify the namespace but would
-not remove the arithmetic requirement.
+Until those questions are answered, the Mini implementation of `hash_sha256`
+must panic. A target may override it with a host crypto implementation.
 
 ### Large pure implementations
 

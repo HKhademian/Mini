@@ -9,6 +9,8 @@ import "common/text";
 import "common/list";
 import "common/file";
 import "common/path";
+import "common/hash";
+import "common/time";
 import "./cases";
 
 /// Report a benchmark error and stop.

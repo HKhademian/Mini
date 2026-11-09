@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.51 / builtins 0.4.0-alpha.18 / compiler
+  0.5.0-alpha.62 / bootstrap 0.3.0-alpha.64: move hash and clock APIs to
+  imported Mini fallbacks and same-name JavaScript host registries.
+
 - mini 0.3.0-alpha.50 / compiler 0.5.0-alpha.61 / bootstrap
   0.3.0-alpha.63: complete the native C standard-stream host API.
 

@@ -1,0 +1,8 @@
+/// Clock API with a panic fallback when the target has no clock host.
+
+import "common/panic";
+
+/// Return integer milliseconds since the Unix epoch.
+fn time_millis() {
+    return panic("time_millis requires a host implementation");
+}
