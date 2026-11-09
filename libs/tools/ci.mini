@@ -51,7 +51,7 @@ fn ci_mini(root, args) {
 
 /// Run Node with arguments.
 fn ci_node(root, args, directory) {
-    return ci_run(root, process_exec_path(), args, directory);
+    return ci_run(root, "node", args, directory);
 }
 
 /// Fail one CI task.

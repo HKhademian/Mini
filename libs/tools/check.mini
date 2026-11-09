@@ -379,7 +379,7 @@ fn check_versions(root) {
 fn check_node(root) {
     args := list_new();
     list_set(args, 0, "-v");
-    result := process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture("node", args, root, list_new());
     version := text_from_bytes(map_get(result, "stdout"));
     if !text_starts_with(version, "v") {
         check_fail("use Node 22.18.0 or newer");
@@ -400,13 +400,13 @@ fn check_node(root) {
 fn check_repository(root, docs_only) {
     if !docs_only {
         tsc := list_of(path_join(root, "node_modules/typescript/bin/tsc"), "--noEmit");
-        typed := check_inherit(process_exec_path(), tsc, root);
+        typed := check_inherit("node", tsc, root);
         if map_get(typed, "status") != 0 {
             process_exit(map_get(typed, "status"));
         }
     }
     tools := list_of(path_join(root, "dist/build.js"), "--check");
-    verified_tools := check_inherit(process_exec_path(), tools, root);
+    verified_tools := check_inherit("node", tools, root);
     if map_get(verified_tools, "status") != 0 {
         process_exit(map_get(verified_tools, "status"));
     }
@@ -433,7 +433,7 @@ fn check_repository(root, docs_only) {
         check_fail("active compiler must be the generated bootstrap");
     }
     verify := list_of(path_join(root, "dist/verify.js"), "--root", root);
-    verified := process_capture(process_exec_path(), verify, root, list_new());
+    verified := process_capture("node", verify, root, list_new());
     if map_get(verified, "status") != 0 {
         io_write_error(text_from_bytes(map_get(verified, "stderr")));
         process_exit(map_get(verified, "status"));

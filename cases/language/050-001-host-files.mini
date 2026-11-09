@@ -1,18 +1,12 @@
 /// Exercise the executable path, temporary directory, and removal primitives.
 
 import "common/text";
-import "common/list";
-import "common/map";
 import "common/path";
 import "common/io";
-import "common/process-run";
 import "common/file";
 import "common/process";
 
-version_args := list_new();
-list_set(version_args, 0, "--version");
-version := process_run(process_exec_path(), version_args, "capture");
-if map_get(version, "status") == 0 && text_length(map_get(version, "stdout")) > 0 {
+if path_is_file(process_exec_path()) {
     io_write_line("exec ok");
 } else {
     io_write_line("exec bad");

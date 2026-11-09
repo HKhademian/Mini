@@ -47,7 +47,7 @@ fn build_compile(root, compiler, source) {
     work := path_temp_directory();
     output := path_join(work, "tool.generated.js");
     args := list_of(compiler, path_join(root, source), output);
-    result := process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture("node", args, root, list_new());
     if map_get(result, "status") != 0 {
         path_remove(work);
         build_fail(source + " failed:\n" + text_from_bytes(map_get(result, "stderr")));

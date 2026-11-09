@@ -41,7 +41,7 @@ fn release_run(command, args, directory) {
 
 /// Run the extracted repository check and keep its output quiet on success.
 fn release_check(check, directory) {
-    result := process_capture(process_exec_path(), list_of(check, "--docs"), directory, list_new());
+    result := process_capture("node", list_of(check, "--docs"), directory, list_new());
     if map_get(result, "status") != 0 {
         release_fail(
             path_basename(check) + " failed:\n"
@@ -126,7 +126,7 @@ fn release_compiler_hash(active) {
 fn release_node_version(root) {
     args := list_new();
     list_set(args, 0, "-v");
-    result := process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture("node", args, root, list_new());
     return text_chomp(text_from_bytes(map_get(result, "stdout")));
 }
 
@@ -171,7 +171,7 @@ fn release_vscode(directory, output, tooling) {
         "--out",
         destination
     );
-    release_run(process_exec_path(), package_args, extension);
+    release_run("node", package_args, extension);
     asset := map_new();
     map_set(asset, "file", file);
     map_set(asset, "sha256", hash_sha256(file_read_bytes(destination)));
@@ -214,9 +214,7 @@ fn release_checksums(output) {
 
 /// Bootstrap generated tools in an extracted source tree.
 fn release_bootstrap(source) {
-    args := list_new();
-    list_set(args, 0, path_join(source, "bin/bootstrap"));
-    release_run(process_exec_path(), args, source);
+    release_run(path_join(source, "bin/bootstrap"), list_new(), source);
     return 0;
 }
 
@@ -273,7 +271,7 @@ fn release_prepare(directory, output, tag) {
     bootstrap := 0;
     if available {
         verify_args := list_of(path_join(source, "dist/verify.js"), "--root", source);
-        verified := release_run(process_exec_path(), verify_args, source);
+        verified := release_run("node", verify_args, source);
         parsed := json_value(text_from_bytes(map_get(verified, "stdout")));
         if result_is_ok(parsed) {
             bootstrap = result_get_value(parsed);

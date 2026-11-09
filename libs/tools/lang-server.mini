@@ -197,7 +197,7 @@ fn lsp_analyze(text, name) {
     output := path_join(work, "program.js");
     file_write(input, text);
     token_args := list_of(compiler, "tokens", "--comments", input);
-    tokenized := lsp_run(process_exec_path(), token_args, root, list_new());
+    tokenized := lsp_run("node", token_args, root, list_new());
     tokens := list_new();
     diagnostics := list_new();
     if map_get(tokenized, "status") != 0 {
@@ -213,7 +213,7 @@ fn lsp_analyze(text, name) {
         tokens = result_get_value(parsed);
     }
     compile_args := list_of(compiler, input, output);
-    compiled := lsp_run(process_exec_path(), compile_args, root, list_new());
+    compiled := lsp_run("node", compile_args, root, list_new());
     if map_get(compiled, "status") != 0 {
         list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(compiled, "stderr")), text, name, tokens));
     }
@@ -523,7 +523,7 @@ fn lsp_publish(uri, version, diagnostics) {
 fn lsp_format_text(text) {
     root := lsp_root();
     args := list_of(path_join(root, "dist/format.js"), "-");
-    result := lsp_run(process_exec_path(), args, root, text_to_bytes(text));
+    result := lsp_run("node", args, root, text_to_bytes(text));
     if map_get(result, "status") == 0 {
         return text_from_bytes(map_get(result, "stdout"));
     }

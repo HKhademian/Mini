@@ -78,7 +78,7 @@ fn verify_bootstrap(root) {
     while stage <= 3 {
         next := path_join(work, "compiler" + number_to_text(stage) + ".js");
         compile_args := list_of(previous, source_path, next);
-        result := process_capture(process_exec_path(), compile_args, work, list_new());
+        result := process_capture("node", compile_args, work, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);
             verify_fail("bootstrap generation " + number_to_text(stage) + " failed: " + text_from_bytes(map_get(result, "stderr")));

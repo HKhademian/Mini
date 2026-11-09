@@ -31,7 +31,7 @@ fn run_program(compiler, source, forwarded) {
     output := directory + "/program.js";
     file_write(directory + "/package.json", "{\"type\":\"module\"}\n");
     compile_args := list_of(compiler, source, output);
-    compiled := process_run(process_exec_path(), compile_args, "inherit");
+    compiled := process_run("node", compile_args, "inherit");
     if map_get(compiled, "status") != 0 {
         run_cleanup(directory);
         process_exit(map_get(compiled, "status"));
@@ -43,7 +43,7 @@ fn run_program(compiler, source, forwarded) {
         list_set(run_args, list_length(run_args), list_get(forwarded, position));
         position = position + 1;
     }
-    executed := process_run(process_exec_path(), run_args, "inherit");
+    executed := process_run("node", run_args, "inherit");
     run_cleanup(directory);
     return map_get(executed, "status");
 }

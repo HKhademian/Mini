@@ -2514,8 +2514,8 @@ function bootstrap_compile_text(source) {
 }
 function bootstrap_compile_with(root, compiler, source, output) {
 
-    let args = list_of(compiler, source, output);
-    let result = process_capture(process_exec_path(), args, root, list_new());
+    let args = list_of(source, output);
+    let result = process_capture(compiler, args, root, list_new());
     if ((map_get(result, "status") !== 0)) {
         bootstrap_fail(("compile failed: " + text_from_bytes(map_get(result, "stderr"))));
     }
@@ -2525,7 +2525,7 @@ function bootstrap_run(root, path) {
 
     let args = list_new();
     list_set(args, 0, path);
-    let result = process_capture(process_exec_path(), args, root, list_new());
+    let result = process_capture("node", args, root, list_new());
     if ((map_get(result, "status") !== 0)) {
         bootstrap_fail(("run failed: " + text_from_bytes(map_get(result, "stderr"))));
     }
@@ -2563,7 +2563,7 @@ function bootstrap_clean_all(root) {
     let editor = path_join(root, "editors/vscode");
     bootstrap_step(root, "VS Code npm ci", "npm", list_of("ci"), editor);
     bootstrap_all(root);
-    let node = process_exec_path();
+    let node = "node";
     let mini = path_join(root, "bin/mini");
     bootstrap_step(root, "repository check", node, list_of(mini, "check"), root);
     bootstrap_step(root, "case suite", node, list_of(mini, "test"), root);

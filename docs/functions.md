@@ -74,8 +74,8 @@ connected to the parent and stay empty. `status` is 1 when the command cannot
 start or ends by a signal.
 Import `common/process` for these APIs. Their Mini fallbacks call
 `process_panic(message)` when a target has no process host; JavaScript registers
-same-name host overrides, and C implements `process_exit` while the other
-process APIs use the panic host override.
+same-name host overrides. C supplies native process spawning, script/executable
+paths, panic, and exit hosts; environment and time remain unavailable in C.
 
 ## Map operations
 

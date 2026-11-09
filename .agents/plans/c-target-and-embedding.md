@@ -82,9 +82,12 @@ compiler.
 - 2026-11-09: C `process_script_path()` resolves native `argv[0]` to an
   absolute executable path. Compiling the full test driver to strict C11 works,
   and C text hosts now preserve UTF-16 code-unit length/get/slice semantics over
-  UTF-8 backing, including surrogate views. The C test driver still needs a
-  `process_exec_path()` now resolves the same native `argv[0]`; the C test
-  driver reaches `process_spawn()`, which is its remaining host blocker.
+  UTF-8 backing, including surrogate views. `process_exec_path()` resolves the
+  same native `argv[0]`. C process APIs now include POSIX spawning with captured
+  and inherited streams, input bytes, working directory, and timeout. The
+  C-built test driver passes all 534 scenarios; the C compiler candidate passes
+  461 source scenarios, with 4 proposal cases pending and tool cases outside
+  candidate mode.
 - 2026-11-09: a manual parallel-bootstrap run now compiles the Mini compiler
   to C, builds it with strict C11 flags, and runs the resulting compiler on
   `tools/compiler.mini`. Successive C generations compile and run; generated C

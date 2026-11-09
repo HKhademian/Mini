@@ -69,7 +69,7 @@ fn mini_spawn(root, tool, args) {
         position = position + 1;
     }
     options := map_new();
-    map_set(options, "command", process_exec_path());
+    map_set(options, "command", "node");
     map_set(options, "arguments", command_args);
     map_set(options, "directory", root);
     map_set(options, "mode", "inherit");

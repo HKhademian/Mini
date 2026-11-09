@@ -29,8 +29,8 @@ fn bootstrap_compile_text(source) {
 
 /// Compile one source with a generated compiler.
 fn bootstrap_compile_with(root, compiler, source, output) {
-    args := list_of(compiler, source, output);
-    result := process_capture(process_exec_path(), args, root, list_new());
+    args := list_of(source, output);
+    result := process_capture(compiler, args, root, list_new());
     if map_get(result, "status") != 0 {
         bootstrap_fail("compile failed: " + text_from_bytes(map_get(result, "stderr")));
     }
@@ -41,7 +41,7 @@ fn bootstrap_compile_with(root, compiler, source, output) {
 fn bootstrap_run(root, path) {
     args := list_new();
     list_set(args, 0, path);
-    result := process_capture(process_exec_path(), args, root, list_new());
+    result := process_capture("node", args, root, list_new());
     if map_get(result, "status") != 0 {
         bootstrap_fail("run failed: " + text_from_bytes(map_get(result, "stderr")));
     }
@@ -83,7 +83,7 @@ fn bootstrap_clean_all(root) {
     editor := path_join(root, "editors/vscode");
     bootstrap_step(root, "VS Code npm ci", "npm", list_of("ci"), editor);
     bootstrap_all(root);
-    node := process_exec_path();
+    node := "node";
     mini := path_join(root, "bin/mini");
     bootstrap_step(root, "repository check", node, list_of(mini, "check"), root);
     bootstrap_step(root, "case suite", node, list_of(mini, "test"), root);

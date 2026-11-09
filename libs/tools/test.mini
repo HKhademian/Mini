@@ -156,14 +156,21 @@ fn test_units(root, filter, verbose) {
             source := path_join(directory, name);
             work := path_temp_directory();
             output := path_join(work, "test.generated.js");
-            compile_args := list_of(compiler, source, output);
-            compiled := process_capture(process_exec_path(), compile_args, root, list_new());
+            compile_command := compiler;
+            compile_args := list_new();
+            if text_ends_with(compiler, ".js") {
+                compile_command = "node";
+                compile_args = list_of(compiler, source, output);
+            } else {
+                compile_args = list_of(source, output);
+            }
+            compiled := process_capture(compile_command, compile_args, root, list_new());
             if map_get(compiled, "status") != 0 {
                 failed = failed + 1;
                 io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(compiled, "stderr")));
             } else {
                 run_args := list_of(output, root);
-                result := process_capture(process_exec_path(), run_args, root, list_new());
+                result := process_capture("node", run_args, root, list_new());
                 if map_get(result, "status") != 0 {
                     failed = failed + 1;
                     io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));

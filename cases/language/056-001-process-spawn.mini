@@ -10,14 +10,14 @@ import "common/process";
 
 dir := path_temp_directory();
 args := list_new();
-list_set(args, 0, "-e");
-list_set(args, 1, "const fs = require('fs'); fs.writeFileSync('out.txt', 'x'); process.stdout.write(fs.readFileSync(0));");
+list_set(args, 0, "-c");
+list_set(args, 1, "cat > input.bin; printf x > out.txt; cat input.bin");
 input := list_new();
 list_set(input, 0, 0);
 list_set(input, 1, 255);
 list_set(input, 2, 10);
 options := map_new();
-map_set(options, "command", process_exec_path());
+map_set(options, "command", "/bin/sh");
 map_set(options, "arguments", args);
 map_set(options, "directory", dir);
 map_set(options, "input", input);
@@ -35,10 +35,10 @@ if file_read(dir + "/out.txt") == "x" {
     io_write_line("directory bad");
 }
 inherited := map_new();
-map_set(inherited, "command", process_exec_path());
+map_set(inherited, "command", "/bin/sh");
 inherit_args := list_new();
-list_set(inherit_args, 0, "-e");
-list_set(inherit_args, 1, "process.stdout.write('inherited')");
+list_set(inherit_args, 0, "-c");
+list_set(inherit_args, 1, "printf inherited");
 map_set(inherited, "arguments", inherit_args);
 map_set(inherited, "mode", "inherit");
 shown := process_spawn(inherited);

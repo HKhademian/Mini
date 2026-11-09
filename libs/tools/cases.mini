@@ -473,7 +473,14 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             list_set(command_args, list_length(command_args), list_get(args, position));
             position = position + 1;
         }
-        result = process_capture(process_exec_path(), command_args, workspace, map_get(input, "bytes"));
+        command := list_get(command_args, 0);
+        run_args := list_new();
+        command_position := 1;
+        while command_position < list_length(command_args) {
+            list_set(run_args, list_length(run_args), list_get(command_args, command_position));
+            command_position = command_position + 1;
+        }
+        result = process_capture(command, run_args, workspace, map_get(input, "bytes"));
     } else {
         source := path_resolve(directory, map_get(definition, "source"));
         compiler := compiler_override;
@@ -485,12 +492,23 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             target = map_get(definition, "target");
         }
         output := path_join(work, "program.mini.js");
-        compile_args := list_of(compiler, source, output);
+        compile_command := compiler;
+        compile_args := list_new();
+        if text_ends_with(compiler, ".js") {
+            compile_command = "node";
+            compile_args = list_of(compiler, source, output);
+        } else {
+            compile_args = list_of(source, output);
+        }
         if target == "c" {
             output = path_join(work, "program.mini.c");
-            compile_args = list_of(compiler, "--target", "c", source, output);
+            if text_ends_with(compiler, ".js") {
+                compile_args = list_of(compiler, "--target", "c", source, output);
+            } else {
+                compile_args = list_of("--target", "c", source, output);
+            }
         }
-        result = process_capture(process_exec_path(), compile_args, project_root, list_new());
+        result = process_capture(compile_command, compile_args, project_root, list_new());
         if target == "c" && map_get(result, "status") == 0
             && (!path_is_exists(output) || !path_is_exists(native_artifact_path(output, ".h"))) {
             return result_fail(prefix + "compilation did not create its C source/header pair");
@@ -521,7 +539,7 @@ fn case_verify_in_work(fixture, scenario, project_root, compiler_override, work,
             if result_is_fail(prepared_files) {
                 return prepared_files;
             }
-            executable := process_exec_path();
+            executable := "node";
             run_args := list_new();
             if target == "c" {
                 executable = path_join(work, "program");
