@@ -3,6 +3,21 @@ import "common/number";
 import "common/panic";
 import "common/value";
 
+/// Merge text arguments into one text value, ignoring non-text arguments.
+fn text_merge() {
+    values := fn_args();
+    output := "";
+    position := 0;
+    while position < list_length(values) {
+        value := list_get(values, position);
+        if value_is_text(value) {
+            output = output + value;
+        }
+        position = position + 1;
+    }
+    return output;
+}
+
 /// Return UTF-16 code-unit length; targets without a host implementation panic.
 fn text_length(source) {
     return panic("text_length requires a host implementation");

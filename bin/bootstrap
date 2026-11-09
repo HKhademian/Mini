@@ -325,6 +325,21 @@ function number_to_text(value) {
     if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
     return String(value);
 }
+function text_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    let output = "";
+    let position = 0;
+    while ((position < (values).length)) {
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
 function text_length(source) { return typeof source === "string" ? source.length : 0; }
 function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }

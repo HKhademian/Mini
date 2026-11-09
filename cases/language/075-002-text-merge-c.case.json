@@ -1,0 +1,16 @@
+{
+  "id": "language.text-merge-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "075-002-text-merge-c.mini",
+  "features": ["import", "text.merge", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "variadic-text-merge",
+      "stdin": {"text": ""},
+      "stdout": {"text": "minilang"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

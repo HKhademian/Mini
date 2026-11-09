@@ -156,6 +156,8 @@ divider and preserves empty fields; an empty divider returns a one-element list
 containing the source. The text family uses `group_operation` names, with
 lowercase words separated by underscores. This naming convention needs no
 namespace mechanism.
+`text_merge(...texts)` concatenates text arguments in order; non-text arguments
+are ignored.
 
 The operations require primitive host access. Prefixes do not decide whether an
 operation is built-in or library code; both use ordinary call syntax.

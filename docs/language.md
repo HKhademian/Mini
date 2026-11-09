@@ -354,6 +354,16 @@ loops, conditions, and text concatenation. They add no syntax.
 The [read-defaults sample](../samples/011-read-defaults.mini) shows ordinary empty
 text and numeric-zero fallbacks without an absence value.
 
+## Accepted operation: text merging
+
+```mini
+text := text_merge("mini", "lang");
+```
+
+- `text_merge(...texts)` concatenates text arguments in order.
+- Non-text arguments are ignored; no arguments return empty text.
+- Import `common/text` to use it.
+
 ## Accepted operation: number text
 
 ```mini
