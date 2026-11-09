@@ -474,11 +474,11 @@
   {
     "id": "pong-board",
     "group": "Games",
-    "label": "Pong — planned",
-    "note": "A two-paddle ball game for the small canvas.",
+    "label": "Pong",
+    "note": "Move the left paddle with W/S and the right paddle with the arrow keys. The ball moves at three steps per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pong-board.mini"
   },
   {
     "id": "pacman-board",

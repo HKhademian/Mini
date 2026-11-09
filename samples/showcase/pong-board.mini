@@ -1,0 +1,157 @@
+/// Play a tiny two-paddle Pong game with a three-step-per-second ball.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+paddle_length := 3;
+playback_fps := 60;
+ball_fps := 3;
+frames_per_step := number_div(playback_fps, ball_fps);
+left_paddle_x := 1;
+right_paddle_x := screen_edge - 1;
+left_paddle_y := number_div(screen_size - paddle_length, 2);
+right_paddle_y := left_paddle_y;
+ball_x := number_div(screen_size, 2);
+ball_y := number_div(screen_size, 2);
+ball_dx := 1;
+ball_dy := 1;
+left_score := 0;
+right_score := 0;
+update_ticks := 0;
+background := pixel_rgb(4, 14, 24);
+wall_color := pixel_rgb(82, 108, 128);
+left_color := pixel_rgb(88, 210, 255);
+right_color := pixel_rgb(255, 126, 104);
+ball_color := pixel_rgb(255, 244, 192);
+
+/// Start the next point from the center toward the player who conceded.
+fn pong_serve(direction) {
+    ball_x = number_div(screen_size, 2);
+    ball_y = number_div(screen_size, 2);
+    ball_dx = direction;
+    ball_dy = 1;
+}
+
+/// Render the court, score lights, paddles, and ball.
+fn pong_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    column := 0;
+    while column < screen_size {
+        pixel_board_set(board, screen_size, screen_size, column, 0, wall_color);
+        pixel_board_set(board, screen_size, screen_size, column, screen_edge, wall_color);
+        column = column + 1;
+    }
+
+    score_index := 0;
+    while score_index < left_score && score_index < screen_size - 2 {
+        pixel_board_set(board, screen_size, screen_size, score_index + 1, 0, left_color);
+        score_index = score_index + 1;
+    }
+    score_index = 0;
+    while score_index < right_score && score_index < screen_size - 2 {
+        pixel_board_set(board, screen_size, screen_size, screen_edge - score_index - 1, 0, right_color);
+        score_index = score_index + 1;
+    }
+
+    paddle_row := 0;
+    while paddle_row < paddle_length {
+        pixel_board_set(board, screen_size, screen_size, left_paddle_x, left_paddle_y + paddle_row, left_color);
+        pixel_board_set(board, screen_size, screen_size, right_paddle_x, right_paddle_y + paddle_row, right_color);
+        paddle_row = paddle_row + 1;
+    }
+    pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Advance the ball and award a point when it passes a paddle.
+fn pong_advance_ball() {
+    next_y := ball_y + ball_dy;
+    if next_y <= 1 || next_y >= screen_edge {
+        ball_dy = 0 - ball_dy;
+        next_y = ball_y + ball_dy;
+    }
+
+    next_x := ball_x + ball_dx;
+    if ball_dx < 0 && next_x <= left_paddle_x {
+        if next_y >= left_paddle_y && next_y < left_paddle_y + paddle_length {
+            ball_dx = 1;
+            ball_x = left_paddle_x + 1;
+        } else {
+            right_score = right_score + 1;
+            pong_serve(0 - 1);
+            return 0;
+        }
+    } else if ball_dx > 0 && next_x >= right_paddle_x {
+        if next_y >= right_paddle_y && next_y < right_paddle_y + paddle_length {
+            ball_dx = 0 - 1;
+            ball_x = right_paddle_x - 1;
+        } else {
+            left_score = left_score + 1;
+            pong_serve(1);
+            return 0;
+        }
+    } else {
+        ball_x = next_x;
+    }
+    ball_y = next_y;
+}
+
+/// Update the court at the configured ball speed.
+fn canvas_update() {
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        pong_advance_ball();
+    }
+    pong_render();
+}
+
+/// Move the left paddle with W/S and the right paddle with arrow keys.
+fn canvas_on_key_down(key) {
+    if key == "w" && left_paddle_y > 1 {
+        left_paddle_y = left_paddle_y - 1;
+    }
+    if key == "s" && left_paddle_y + paddle_length < screen_edge {
+        left_paddle_y = left_paddle_y + 1;
+    }
+    if key == "ArrowUp" && right_paddle_y > 1 {
+        right_paddle_y = right_paddle_y - 1;
+    }
+    if key == "ArrowDown" && right_paddle_y + paddle_length < screen_edge {
+        right_paddle_y = right_paddle_y + 1;
+    }
+}
+
+/// Print the initial court for command-line runs.
+fn pong_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == 0 || row == screen_edge {
+                line = line + "-";
+            } else if column == left_paddle_x && row >= left_paddle_y && row < left_paddle_y + paddle_length {
+                line = line + "|";
+            } else if column == right_paddle_x && row >= right_paddle_y && row < right_paddle_y + paddle_length {
+                line = line + "|";
+            } else if column == ball_x && row == ball_y {
+                line = line + "o";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pong_render();
+canvas_play(screen_size, screen_size, "Pong · W/S and Arrows");
+pong_print();
