@@ -25,8 +25,8 @@ function isCall(tokens, index) {
     return next !== undefined && next.kind === "symbol" && next.text === "(";
 }
 
-/// Return builtin-looking names by their trailing underscore convention.
-function isBuiltinName(text) {
+/// Return whether a function name carries the common API's domain prefix.
+function hasDomainPrefix(text) {
     return text.includes("_");
 }
 
@@ -132,7 +132,7 @@ export function highlight(source, tokenize) {
         html += escapeHtml(source.slice(cursor, token.start));
         let name = tokenClass(token.kind);
         if (token.kind === "identifier") {
-            if (isCall(tokens, index)) name = isBuiltinName(token.text) ? "fn" : "call";
+            if (isCall(tokens, index)) name = hasDomainPrefix(token.text) ? "fn" : "call";
             else name = "id";
         }
         html += `<span class="tk-${name}">${escapeHtml(source.slice(token.start, token.end))}</span>`;

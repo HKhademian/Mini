@@ -147,7 +147,7 @@ const docs: readonly (readonly [string, string, string])[] = [
     ],
     [
         "Language draft",
-        "Accepted syntax and builtin contracts, with open rules marked.",
+        "Accepted syntax and function contracts, with open rules marked.",
         `${repo}/blob/main/docs/language.md`,
     ],
     [

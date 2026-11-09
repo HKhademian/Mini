@@ -276,15 +276,15 @@ test('blank lines do not split declaration docs and header docs stay file scoped
   });
 });
 
-test('hovers builtins and returns null for unknown identifiers', async () => {
+test('hovers common functions and returns null for unknown identifiers', async () => {
   await session(async client => {
-    const uri = 'file:///builtin.mini';
+    const uri = 'file:///common-functions.mini';
     const text = 'io_write("ok");\nvalue_to_text("ok");\nvalue := missing;\n';
     await openDocument(client, uri, text);
 
     client.send({ jsonrpc: '2.0', id: 2, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'io_write') } });
-    const builtin = await client.next();
-    assert.match(builtin.result.contents.value, /fn io_write\(\)/);
+    const commonFunction = await client.next();
+    assert.match(commonFunction.result.contents.value, /fn io_write\(\)/);
 
     client.send({ jsonrpc: '2.0', id: 3, method: 'textDocument/hover', params: { textDocument: { uri }, position: positionOf(text, 'value_to_text') } });
     const toText = await client.next();
@@ -295,7 +295,7 @@ test('hovers builtins and returns null for unknown identifiers', async () => {
   });
 });
 
-test('completes declarations, builtins, and keywords by prefix', async () => {
+test('completes declarations, common functions, and keywords by prefix', async () => {
   await session(async client => {
     const uri = 'file:///complete.mini';
     const text = documented + 'io\n';
@@ -351,7 +351,7 @@ test('jumps to function and variable declarations', async () => {
   });
 });
 
-test('returns no definition for builtins or unknown identifiers', async () => {
+test('returns no definition for common functions or unknown identifiers', async () => {
   await session(async client => {
     const uri = 'file:///no-definition.mini';
     const text = 'io_write("ok");\nvalue := missing;\n';
