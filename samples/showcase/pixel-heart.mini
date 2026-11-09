@@ -1,0 +1,51 @@
+/// Render a small red heart from a ten-by-ten text pattern.
+
+import "common/io";
+import "common/list";
+import "common/pixel-board";
+import "common/play";
+
+black := pixel_rgb(0, 0, 0);
+red := pixel_rgb(255, 48, 72);
+heart_rows := list_of(
+    "..........",
+    "..##..##..",
+    ".########.",
+    "##########",
+    "##########",
+    ".########.",
+    "..######..",
+    "...####...",
+    "....##....",
+    ".........."
+);
+
+/// Draw the heart once and stop the canvas session.
+fn mini_play_update() {
+    board := pixel_board_new(10, 10, black);
+    row := 0;
+    while row < 10 {
+        column := 0;
+        while column < 10 {
+            if text_get(list_get(heart_rows, row), column) == "#" {
+                pixel_board_set(board, 10, 10, column, row, red);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_render(10, 10, board);
+    return 1;
+}
+
+/// Print the heart pattern for command-line runs.
+fn pixel_heart_print() {
+    row := 0;
+    while row < 10 {
+        io_write_line(list_get(heart_rows, row));
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "Pixel Heart");
+pixel_heart_print();

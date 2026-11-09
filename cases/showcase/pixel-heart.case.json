@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-heart",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-heart.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "common.list",
+    "common.play",
+    "common.pixel-board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..##..##..\n.########.\n##########\n##########\n.########.\n..######..\n...####...\n....##....\n..........\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

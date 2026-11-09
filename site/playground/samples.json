@@ -479,5 +479,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-one.mini"
+  },
+  {
+    "id": "pixel-heart",
+    "group": "Pixel Art",
+    "label": "Pixel heart",
+    "note": "Build a red heart from a ten-by-ten text pattern.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-heart.mini"
   }
 ]
