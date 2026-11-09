@@ -21,14 +21,7 @@ let builtin_names_list;
 let builtin_name_set;
 let builtin_parameter_kinds;
 let builtin_result_kinds;
-let builtin_import_names;
-let builtin_helper_keys;
 let builtin_classes;
-let builtin_helpers;
-let builtin_helper_order;
-let builtin_reference_targets;
-let builtin_emit_forms;
-let builtin_source_functions;
 let reference_mode;
 let js_host_functions;
 function panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
@@ -1470,30 +1463,13 @@ function ast_expression(kind, token, value_kind) {
     map_set(node, "value_kind", value_kind);
     return node;
 }
-function builtin_add(name, parameters, result, layer, import_name, helper_key, helper, reference, emit_form) {
+function builtin_add(name, parameters, result, layer) {
 
     list_set(builtin_names_list, (builtin_names_list).length, name);
     map_set(builtin_name_set, name, true);
     map_set(builtin_parameter_kinds, name, parameters);
     map_set(builtin_result_kinds, name, result);
-    map_set(builtin_import_names, name, import_name);
-    map_set(builtin_helper_keys, name, helper_key);
     map_set(builtin_classes, name, layer);
-    map_set(builtin_emit_forms, name, emit_form);
-    if ((helper_key !== "")) {
-        map_set(builtin_helpers, helper_key, helper);
-        if ((!list_contains(builtin_helper_order, helper_key))) {
-            list_set(builtin_helper_order, (builtin_helper_order).length, helper_key);
-        }
-    }
-    if ((reference !== "")) {
-        map_set(builtin_reference_targets, name, reference);
-    }
-    return 0;
-}
-function builtin_source_api(name) {
-
-    map_set(builtin_source_functions, name, true);
     return 0;
 }
 function builtin_names() {
@@ -1503,10 +1479,6 @@ function builtin_names() {
 function builtin_exists(name) {
 
     return map_has(builtin_name_set, name);
-}
-function builtin_source_required(name) {
-
-    return map_has(builtin_source_functions, name);
 }
 function builtin_parameters(name) {
 
@@ -1526,103 +1498,12 @@ function builtin_result(name) {
     }
     return "unknown";
 }
-function builtin_imports(name) {
-
-    if ((!map_has(builtin_import_names, name))) {
-        return list_new();
-    }
-    let imports = map_get(builtin_import_names, name);
-    if ((imports === "")) {
-        return list_new();
-    }
-    return text_split(imports, ",");
-}
 function builtin_class(name) {
 
     if (map_has(builtin_classes, name)) {
         return map_get(builtin_classes, name);
     }
     return "library";
-}
-function builtin_reference_target(name) {
-
-    if (map_has(builtin_reference_targets, name)) {
-        return map_get(builtin_reference_targets, name);
-    }
-    return "";
-}
-function builtin_helper_key(name) {
-
-    if (map_has(builtin_helper_keys, name)) {
-        return map_get(builtin_helper_keys, name);
-    }
-    return "";
-}
-function builtin_helper_order_keys() {
-
-    return list_copy(builtin_helper_order);
-}
-function builtin_used_helper_blocks(helpers) {
-
-    let order = builtin_helper_order;
-    let parts = list_new();
-    let position = 0;
-    while ((position < (order).length)) {
-        let key = list_get(order, position);
-        if (map_has(helpers, key)) {
-            list_set(parts, (parts).length, builtin_helper_text(key));
-        }
-        position = (position + 1);
-    }
-    return list_join(parts, "");
-}
-function builtin_helper_text(key) {
-
-    if (map_has(builtin_helpers, key)) {
-        return map_get(builtin_helpers, key);
-    }
-    return "";
-}
-function builtin_replace(source, needle, replacement) {
-
-    let parts = list_new();
-    let position = 0;
-    while ((position < text_length(source))) {
-        let rest = text_slice(source, position, text_length(source));
-        let found = text_find(rest, needle);
-        if ((found < 0)) {
-            list_set(parts, (parts).length, text_slice(source, position, text_length(source)));
-            return list_join(parts, "");
-        }
-        list_set(parts, (parts).length, text_slice(source, position, (position + found)));
-        list_set(parts, (parts).length, replacement);
-        position = ((position + found) + text_length(needle));
-    }
-    return list_join(parts, "");
-}
-function builtin_apply(form, args) {
-
-    let output = form;
-    if ((text_find(output, "{...}") >= 0)) {
-        output = builtin_replace(output, "{...}", list_join(args, ", "));
-    }
-    let position = 0;
-    while ((position < (args).length)) {
-        output = builtin_replace(output, (("{" + number_to_text(position)) + "}"), list_get(args, position));
-        position = (position + 1);
-    }
-    return output;
-}
-function builtin_emit(name, args) {
-
-    let reference_target = builtin_reference_target(name);
-    if ((reference_mode && (reference_target !== ""))) {
-        return (((reference_target + "(") + list_join(args, ", ")) + ")");
-    }
-    if ((!map_has(builtin_emit_forms, name))) {
-        return "";
-    }
-    return builtin_apply(map_get(builtin_emit_forms, name), args);
 }
 function parser_fail(token, message) {
 
@@ -1862,11 +1743,10 @@ function parser_fn_args(parser, token) {
     ast_finish(node, close);
     return node;
 }
-function parser_call_node(name, args, result_kind, is_builtin, close) {
+function parser_call_node(name, args, result_kind, close) {
 
     let node = ast_node(AST_CALL, name);
     map_set(node, "callee", map_get(name, "text"));
-    map_set(node, "is_builtin", is_builtin);
     map_set(node, "value_kind", result_kind);
     let argument_nodes = list_new();
     let position = 0;
@@ -1882,11 +1762,9 @@ function parser_call(parser, name) {
 
     let name_text = map_get(name, "text");
     let has_builtin_contract = builtin_exists(name_text);
-    let source_required = builtin_source_required(name_text);
-    let is_builtin = (has_builtin_contract && (!source_required));
     let functions = map_get(parser, "functions");
     let has_user = map_has(functions, name_text);
-    if ((((!is_builtin) && (!has_user)) || (source_required && (!has_user)))) {
+    if ((!has_user)) {
         parser_fail(name, ("unknown function " + name_text));
     }
     parser_expect(parser, "(");
@@ -1918,7 +1796,7 @@ function parser_call(parser, name) {
             }
             parser_fail(name, message);
         }
-    } else if ((!has_builtin_contract)) {
+    } else {
         let arity = map_get(map_get(functions, name_text), "arity");
         while (((args).length < arity)) {
             let zero = ast_expression(AST_LITERAL, name, "number");
@@ -1941,15 +1819,11 @@ function parser_call(parser, name) {
         }
         position = (position + 1);
     }
-    if (source_required) {
-        return parser_call_node(name, args, builtin_result(name_text), false, close);
+    let result_kind = map_get(map_get(functions, name_text), "result");
+    if (has_builtin_contract) {
+        result_kind = builtin_result(name_text);
     }
-    if ((!is_builtin)) {
-        let result_kind = map_get(map_get(functions, name_text), "result");
-        return parser_call_node(name, args, result_kind, false, close);
-    }
-    let result_kind = builtin_result(name_text);
-    return parser_call_node(name, args, result_kind, is_builtin, close);
+    return parser_call_node(name, args, result_kind, close);
 }
 function parser_statement(parser) {
 
@@ -2311,6 +2185,36 @@ function emit_js_host_function(name) {
     }
     return map_get(entry, "definition");
 }
+function emit_js_replace_lowering(source, needle, replacement) {
+
+    let parts = list_new();
+    let position = 0;
+    while ((position < text_length(source))) {
+        let rest = text_slice(source, position, text_length(source));
+        let found = text_find(rest, needle);
+        if ((found < 0)) {
+            list_set(parts, (parts).length, text_slice(source, position, text_length(source)));
+            return list_join(parts, "");
+        }
+        list_set(parts, (parts).length, text_slice(source, position, (position + found)));
+        list_set(parts, (parts).length, replacement);
+        position = ((position + found) + text_length(needle));
+    }
+    return list_join(parts, "");
+}
+function emit_js_apply_host_lowering(form, args) {
+
+    let output = form;
+    if ((text_find(output, "{...}") >= 0)) {
+        output = emit_js_replace_lowering(output, "{...}", list_join(args, ", "));
+    }
+    let position = 0;
+    while ((position < (args).length)) {
+        output = emit_js_replace_lowering(output, (("{" + number_to_text(position)) + "}"), list_get(args, position));
+        position = (position + 1);
+    }
+    return output;
+}
 function emit_js_operator(operator) {
 
     if ((operator === "==")) {
@@ -2361,10 +2265,7 @@ function emit_js_expression(node) {
         let callee = map_get(node, "callee");
         let host_lowering = emit_js_host_lowering(callee);
         if ((host_lowering !== "")) {
-            return builtin_apply(host_lowering, argument_codes);
-        }
-        if (map_get(node, "is_builtin")) {
-            return builtin_emit(callee, argument_codes);
+            return emit_js_apply_host_lowering(host_lowering, argument_codes);
         }
         return (((callee + "(") + list_join(argument_codes, ", ")) + ")");
     }
@@ -2468,89 +2369,6 @@ function emit_js_statements(nodes) {
     }
     return list_join(parts, "");
 }
-function emit_js_collect_helpers(node, imports, helpers) {
-
-    let kind = map_get(node, "node_kind");
-    if (((kind === AST_CALL) && map_get(node, "is_builtin"))) {
-        let name = map_get(node, "callee");
-        let required_imports = builtin_imports(name);
-        let position = 0;
-        while ((position < (required_imports).length)) {
-            map_set(imports, list_get(required_imports, position), true);
-            position = (position + 1);
-        }
-        let helper = builtin_helper_key(name);
-        if ((helper !== "")) {
-            map_set(helpers, helper, true);
-        }
-    }
-    if (((kind === AST_PROGRAM) || (kind === AST_BLOCK))) {
-        let nodes = map_get(node, "body");
-        if ((kind === AST_BLOCK)) {
-            nodes = map_get(node, "statements");
-        }
-        let position = 0;
-        while ((position < (nodes).length)) {
-            emit_js_collect_helpers(list_get(nodes, position), imports, helpers);
-            position = (position + 1);
-        }
-    } else if ((kind === AST_FUNCTION)) {
-        emit_js_collect_helpers(map_get(node, "body"), imports, helpers);
-    } else if ((kind === AST_IF)) {
-        emit_js_collect_helpers(map_get(node, "condition"), imports, helpers);
-        emit_js_collect_helpers(map_get(node, "consequent"), imports, helpers);
-        let alternate = map_get(node, "alternate");
-        if ((alternate !== 0)) {
-            emit_js_collect_helpers(alternate, imports, helpers);
-        }
-    } else if ((kind === AST_WHILE)) {
-        emit_js_collect_helpers(map_get(node, "condition"), imports, helpers);
-        emit_js_collect_helpers(map_get(node, "body"), imports, helpers);
-    } else if ((kind === AST_RETURN)) {
-        emit_js_collect_helpers(map_get(node, "value"), imports, helpers);
-    } else if ((kind === AST_CALL_STATEMENT)) {
-        emit_js_collect_helpers(map_get(node, "expression"), imports, helpers);
-    } else if ((kind === AST_BINDING)) {
-        emit_js_collect_helpers(map_get(node, "initializer"), imports, helpers);
-    } else if ((kind === AST_ASSIGNMENT)) {
-        emit_js_collect_helpers(map_get(node, "value"), imports, helpers);
-    } else if ((kind === AST_CALL)) {
-        let argument_nodes = map_get(node, "arguments");
-        let position = 0;
-        while ((position < (argument_nodes).length)) {
-            emit_js_collect_helpers(list_get(argument_nodes, position), imports, helpers);
-            position = (position + 1);
-        }
-    } else if ((kind === AST_BINARY)) {
-        emit_js_collect_helpers(map_get(node, "left"), imports, helpers);
-        emit_js_collect_helpers(map_get(node, "right"), imports, helpers);
-    } else if ((kind === AST_UNARY)) {
-        emit_js_collect_helpers(map_get(node, "operand"), imports, helpers);
-    } else if ((kind === AST_GROUP)) {
-        emit_js_collect_helpers(map_get(node, "expression"), imports, helpers);
-    }
-    return 0;
-}
-function emit_js_import_names(imports) {
-
-    let output = "";
-    if (map_has(imports, "readFileSync")) {
-        output = (output + "readFileSync");
-    }
-    if (map_has(imports, "writeFileSync")) {
-        if ((output !== "")) {
-            output = (output + ", ");
-        }
-        output = (output + "writeFileSync");
-    }
-    if (map_has(imports, "writeSync")) {
-        if ((output !== "")) {
-            output = (output + ", ");
-        }
-        output = (output + "writeSync");
-    }
-    return output;
-}
 function emit_js_file_body(nodes, file) {
 
     let parts = list_new();
@@ -2606,15 +2424,12 @@ function emit_js_program_only(program) {
 }
 function emit_js_program(program) {
 
-    let imports = map_new();
-    let helpers = map_new();
     let body = map_get(program, "body");
     let position = 0;
     let globals = list_new();
     let declarations = list_new();
     while ((position < (body).length)) {
         let node = list_get(body, position);
-        emit_js_collect_helpers(node, imports, helpers);
         if ((map_get(node, "node_kind") === AST_FUNCTION)) {
             list_set(declarations, (declarations).length, emit_js_function(node));
         } else if (((map_get(node, "node_kind") === AST_BINDING) && map_get(node, "top_level"))) {
@@ -2622,16 +2437,11 @@ function emit_js_program(program) {
         }
         position = (position + 1);
     }
-    let import_text = "";
-    if (((map_keys(imports)).length > 0)) {
-        import_text = (("import { " + emit_js_import_names(imports)) + " } from \"node:fs\";\n");
-    }
-    let helper_text = builtin_used_helper_blocks(helpers);
     let shebang = "";
     if (map_get(program, "has_shebang")) {
         shebang = "#!/usr/bin/env node\n";
     }
-    return list_join(list_of(shebang, "\"use strict\";\n", import_text, helper_text, list_join(globals, ""), list_join(declarations, ""), emit_js_file_initializers(program)), "");
+    return list_join(list_of(shebang, "\"use strict\";\n", list_join(globals, ""), list_join(declarations, ""), emit_js_file_initializers(program)), "");
 }
 function emit_js_set_reference_mode(enabled) {
 
@@ -2835,7 +2645,7 @@ function $mini_file_12() {
 
 }
 function $mini_file_13() {
-    AST_SCHEMA_VERSION = "0.1.0-alpha.1";
+    AST_SCHEMA_VERSION = "0.1.0-alpha.2";
     AST_PROGRAM = "Program";
     AST_BLOCK = "Block";
     AST_FUNCTION = "Function";
@@ -2858,164 +2668,95 @@ function $mini_file_14() {
     builtin_name_set = map_new();
     builtin_parameter_kinds = map_new();
     builtin_result_kinds = map_new();
-    builtin_import_names = map_new();
-    builtin_helper_keys = map_new();
     builtin_classes = map_new();
-    builtin_helpers = map_new();
-    builtin_helper_order = list_new();
-    builtin_reference_targets = map_new();
-    builtin_emit_forms = map_new();
-    builtin_source_functions = map_new();
 }
 function $mini_file_15() {
-    builtin_add("directory_create", "text", "number", "essential", "", "", "", "", "");
-    builtin_source_api("directory_create");
-    builtin_add("directory_list", "text", "list", "essential", "", "", "", "", "");
-    builtin_source_api("directory_list");
+    builtin_add("directory_create", "text", "number", "essential");
+    builtin_add("directory_list", "text", "list", "essential");
 }
 function $mini_file_16() {
-    builtin_add("file_read", "text", "text", "essential", "", "", "", "", "");
-    builtin_source_api("file_read");
-    builtin_add("file_read_bytes", "text", "list", "essential", "", "", "", "", "");
-    builtin_source_api("file_read_bytes");
-    builtin_add("file_write", "text,text", "number", "essential", "", "", "", "", "");
-    builtin_source_api("file_write");
-    builtin_add("file_write_bytes", "text,list", "number", "essential", "", "", "", "", "");
-    builtin_source_api("file_write_bytes");
+    builtin_add("file_read", "text", "text", "essential");
+    builtin_add("file_read_bytes", "text", "list", "essential");
+    builtin_add("file_write", "text,text", "number", "essential");
+    builtin_add("file_write_bytes", "text,list", "number", "essential");
 }
 function $mini_file_17() {
-    builtin_add("hash_sha256", "unknown", "text", "performance", "", "", "", "", "");
-    builtin_source_api("hash_sha256");
+    builtin_add("hash_sha256", "unknown", "text", "performance");
 }
 function $mini_file_18() {
-    builtin_add("io_read_all", "", "text", "essential", "", "", "", "", "");
-    builtin_source_api("io_read_all");
-    builtin_add("io_read_bytes", "number", "list", "essential", "", "", "", "", "");
-    builtin_source_api("io_read_bytes");
-    builtin_add("io_read_line", "", "text", "essential", "", "", "", "", "");
-    builtin_source_api("io_read_line");
-    builtin_add("io_write", "...values", "number", "essential", "", "", "", "", "");
-    builtin_source_api("io_write");
-    builtin_add("io_write_error", "text", "number", "essential", "", "", "", "", "");
-    builtin_source_api("io_write_error");
+    builtin_add("io_read_all", "", "text", "essential");
+    builtin_add("io_read_bytes", "number", "list", "essential");
+    builtin_add("io_read_line", "", "text", "essential");
+    builtin_add("io_write", "...values", "number", "essential");
+    builtin_add("io_write_error", "text", "number", "essential");
 }
 function $mini_file_19() {
-    builtin_add("json_parse", "text", "map", "performance", "", "", "", "", "");
-    builtin_source_api("json_parse");
-    builtin_add("json_to_text", "unknown", "text", "performance", "", "", "", "", "");
-    builtin_source_api("json_to_text");
+    builtin_add("json_parse", "text", "map", "performance");
+    builtin_add("json_to_text", "unknown", "text", "performance");
 }
 function $mini_file_20() {
-    builtin_add("list_copy", "list", "list", "performance", "", "", "", "", "");
-    builtin_source_api("list_copy");
-    builtin_add("list_get", "unknown,number", "unknown", "representation", "", "", "", "", "");
-    builtin_source_api("list_get");
-    builtin_add("list_length", "list", "number", "representation", "", "", "", "", "");
-    builtin_source_api("list_length");
-    builtin_add("list_new", "", "list", "representation", "", "", "", "", "");
-    builtin_source_api("list_new");
-    builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "", "", "", "");
-    builtin_source_api("list_set");
-    builtin_add("list_join", "list,text", "text", "performance", "", "", "", "", "");
-    builtin_source_api("list_join");
-    builtin_add("list_truncate", "list,number", "number", "representation", "", "", "", "", "");
-    builtin_source_api("list_truncate");
+    builtin_add("list_copy", "list", "list", "performance");
+    builtin_add("list_get", "unknown,number", "unknown", "representation");
+    builtin_add("list_length", "list", "number", "representation");
+    builtin_add("list_new", "", "list", "representation");
+    builtin_add("list_set", "unknown,number,unknown", "number", "representation");
+    builtin_add("list_join", "list,text", "text", "performance");
+    builtin_add("list_truncate", "list,number", "number", "representation");
 }
 function $mini_file_21() {
-    builtin_add("map_copy", "map", "map", "performance", "", "", "", "", "");
-    builtin_source_api("map_copy");
-    builtin_add("map_get", "unknown,text", "unknown", "representation", "", "", "", "", "");
-    builtin_source_api("map_get");
-    builtin_add("map_has", "map,text", "boolean", "representation", "", "", "", "", "");
-    builtin_source_api("map_has");
-    builtin_add("map_keys", "map", "list", "representation", "", "", "", "", "");
-    builtin_source_api("map_keys");
-    builtin_add("map_new", "", "map", "representation", "", "", "", "", "");
-    builtin_source_api("map_new");
-    builtin_add("map_delete", "unknown,text", "number", "representation", "", "", "", "", "");
-    builtin_source_api("map_delete");
-    builtin_add("map_set", "unknown,text,unknown", "number", "representation", "", "", "", "", 0);
-    builtin_source_api("map_set");
+    builtin_add("map_copy", "map", "map", "performance");
+    builtin_add("map_get", "unknown,text", "unknown", "representation");
+    builtin_add("map_has", "map,text", "boolean", "representation");
+    builtin_add("map_keys", "map", "list", "representation");
+    builtin_add("map_new", "", "map", "representation");
+    builtin_add("map_delete", "unknown,text", "number", "representation");
+    builtin_add("map_set", "unknown,text,unknown", "number", "representation");
 }
 function $mini_file_22() {
-    builtin_add("number_add", "unknown,unknown", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_add");
-    builtin_add("number_sub", "unknown,unknown", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_sub");
-    builtin_add("number_min", "unknown,unknown", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_min");
-    builtin_add("number_max", "unknown,unknown", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_max");
-    builtin_add("number_div", "number,number", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_div");
-    builtin_add("number_floor", "number", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_floor");
-    builtin_add("number_from_text", "text", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_from_text");
-    builtin_add("number_mod", "number,number", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_mod");
-    builtin_add("number_mul", "number,number", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_mul");
-    builtin_add("number_pow", "number,number", "number", "performance", "", "", "", "", "");
-    builtin_source_api("number_pow");
-    builtin_add("number_to_text", "number", "text", "performance", "", "", "", "", "");
-    builtin_source_api("number_to_text");
+    builtin_add("number_add", "unknown,unknown", "number", "performance");
+    builtin_add("number_sub", "unknown,unknown", "number", "performance");
+    builtin_add("number_min", "unknown,unknown", "number", "performance");
+    builtin_add("number_max", "unknown,unknown", "number", "performance");
+    builtin_add("number_div", "number,number", "number", "performance");
+    builtin_add("number_floor", "number", "number", "performance");
+    builtin_add("number_from_text", "text", "number", "performance");
+    builtin_add("number_mod", "number,number", "number", "performance");
+    builtin_add("number_mul", "number,number", "number", "performance");
+    builtin_add("number_pow", "number,number", "number", "performance");
+    builtin_add("number_to_text", "number", "text", "performance");
 }
 function $mini_file_23() {
-    builtin_add("path_copy", "text,text", "number", "essential", "", "", "", "", "");
-    builtin_source_api("path_copy");
-    builtin_add("path_is_directory", "text", "boolean", "essential", "", "", "", "", "");
-    builtin_source_api("path_is_directory");
-    builtin_add("path_is_exists", "text", "boolean", "essential", "", "", "", "", "");
-    builtin_source_api("path_is_exists");
-    builtin_add("path_is_file", "text", "boolean", "essential", "", "", "", "", "");
-    builtin_source_api("path_is_file");
-    builtin_add("path_remove", "text", "number", "essential", "", "", "", "", "");
-    builtin_source_api("path_remove");
-    builtin_add("path_temp_directory", "", "text", "essential", "", "", "", "", "");
-    builtin_source_api("path_temp_directory");
+    builtin_add("path_copy", "text,text", "number", "essential");
+    builtin_add("path_is_directory", "text", "boolean", "essential");
+    builtin_add("path_is_exists", "text", "boolean", "essential");
+    builtin_add("path_is_file", "text", "boolean", "essential");
+    builtin_add("path_remove", "text", "number", "essential");
+    builtin_add("path_temp_directory", "", "text", "essential");
 }
 function $mini_file_24() {
-    builtin_add("process_env", "text", "text", "essential", "", "", "", "", "");
-    builtin_source_api("process_env");
-    builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "");
-    builtin_source_api("process_exec_path");
-    builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "");
-    builtin_source_api("process_exit");
-    builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "");
-    builtin_source_api("process_script_path");
-    builtin_add("process_spawn", "map", "map", "essential", "", "", "", "", "");
-    builtin_source_api("process_spawn");
+    builtin_add("process_env", "text", "text", "essential");
+    builtin_add("process_exec_path", "", "text", "essential");
+    builtin_add("process_exit", "number", "number", "essential");
+    builtin_add("process_script_path", "", "text", "essential");
+    builtin_add("process_spawn", "map", "map", "essential");
 }
 function $mini_file_25() {
-    builtin_add("text_code", "text", "number", "representation", "", "", "", "", "");
-    builtin_source_api("text_code");
-    builtin_add("text_find", "text,text", "number", "performance", "", "", "", "", "");
-    builtin_source_api("text_find");
-    builtin_add("text_from_bytes", "list", "text", "performance", "", "", "", "", "");
-    builtin_source_api("text_from_bytes");
-    builtin_add("text_from_code", "number", "text", "representation", "", "", "", "", "");
-    builtin_source_api("text_from_code");
-    builtin_add("text_get", "unknown,number", "text", "representation", "", "", "", "", "");
-    builtin_source_api("text_get");
-    builtin_add("text_length", "text", "number", "representation", "", "", "", "", "");
-    builtin_source_api("text_length");
-    builtin_add("text_slice", "text,number,number", "text", "performance", "", "", "", "", "");
-    builtin_source_api("text_slice");
-    builtin_add("text_split", "text,text", "list", "performance", "", "", "", "", "");
-    builtin_source_api("text_split");
-    builtin_add("text_to_bytes", "text", "list", "performance", "", "", "", "", "");
-    builtin_source_api("text_to_bytes");
+    builtin_add("text_code", "text", "number", "representation");
+    builtin_add("text_find", "text,text", "number", "performance");
+    builtin_add("text_from_bytes", "list", "text", "performance");
+    builtin_add("text_from_code", "number", "text", "representation");
+    builtin_add("text_get", "unknown,number", "text", "representation");
+    builtin_add("text_length", "text", "number", "representation");
+    builtin_add("text_slice", "text,number,number", "text", "performance");
+    builtin_add("text_split", "text,text", "list", "performance");
+    builtin_add("text_to_bytes", "text", "list", "performance");
 }
 function $mini_file_26() {
-    builtin_add("time_millis", "", "number", "essential", "", "", "", "", "");
-    builtin_source_api("time_millis");
+    builtin_add("time_millis", "", "number", "essential");
 }
 function $mini_file_27() {
-    builtin_add("to_text", "any_value", "text", "library", "", "", "", "", "");
-    builtin_source_api("to_text");
-    builtin_add("value_kind", "unknown", "text", "representation", "", "", "", "", "");
-    builtin_source_api("value_kind");
+    builtin_add("to_text", "any_value", "text", "library");
+    builtin_add("value_kind", "unknown", "text", "representation");
 }
 function $mini_file_28() {
     reference_mode = false;

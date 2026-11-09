@@ -2,5 +2,4 @@
 
 import "./registry";
 
-builtin_add("time_millis", "", "number", "essential", "", "", "", "", "");
-builtin_source_api("time_millis");
+builtin_add("time_millis", "", "number", "essential");

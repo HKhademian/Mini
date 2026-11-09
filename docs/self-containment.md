@@ -1,19 +1,20 @@
 # Builtins, purity, and self-containment
 
 mini is self-hosted, but it is not self-contained. The compiler is written in
-mini; it still runs on a host runtime and lowers a small set of builtins to host
-code. This page separates the operations that must remain host code from the
-ones that are only fast paths, and records how a pure reference mode can prove
-that distinction.
+mini; it still runs on a host runtime. Every registered operation has a
+same-name Mini implementation under `libs/common/`, and callers import the
+module that declares it. Emitters may replace that function body with a
+same-name host implementation.
 
-## Builtins are host code
+## Imported operation contracts
 
-A builtin contract is a name the compiler recognizes and type-checks. Its public
-Mini implementation lives under `libs/common/` and provides the canonical
-fallback, including a panic when the target needs a representation primitive.
-Emitters may register a same-name host implementation or call-site lowering.
-The contract registry lives in [libs/compiler/builtins.mini](../libs/compiler/builtins.mini);
-JavaScript overrides live under `libs/compiler/emit-js/overrides/`.
+A builtin contract records a name, signature, result kind, and operation class.
+The compiler accepts calls only when it finds the imported same-name Mini
+function. That function is the canonical behavior; an emitter may implicitly
+replace it with a same-name host implementation. Emitters do not define a
+second call form or dependency declaration. The contract registry lives in
+[libs/compiler/builtins.mini](../libs/compiler/builtins.mini); JavaScript and C
+overrides live under their respective `overrides/` directories.
 
 Builtins fall into three practical layers:
 
@@ -39,8 +40,9 @@ the operating system or host runtime:
 | `time_millis` | Host clock |
 | `value_kind` | Runtime representation introspection; same-name Mini panic fallback in `libs/common/value.mini` |
 
-Every pure or reference mode still needs these operations. Removing them would
-require a different runtime, not a different mini program.
+Their Mini implementations panic when the target lacks the required host
+operation. Removing that requirement would need a different runtime, not a
+different Mini program.
 
 `hash_sha256` is declared in `common/hash` with a panic fallback and a JavaScript
 host override. A pure Mini SHA implementation remains open; see
@@ -125,7 +127,8 @@ implementation** or **pure backend**.
 
 Library implementations use the public API name in `libs/common/`. A target
 may replace that implementation implicitly through its emitter registry; source
-programs call one name and import one API. Library APIs are being moved into `libs/common/` under their public names.
+programs call one name and import one API. Library APIs use their public names
+in `libs/common/`.
 
 Current reference coverage:
 
@@ -204,7 +207,7 @@ JSON parsing, serialization, and UTF-8 conversion use Mini fallbacks under
 | Self-hosted | The compiler source is mini and rebuilds itself | Yes; `tools/compiler.mini` builds `dist/compile.js` |
 | Hosted | The compiler runs on a host runtime | Yes; generated JavaScript on Node |
 | Self-contained | No host beyond the language runtime | No |
-| Mini fallback available | Imported APIs provide Mini implementations selected when host overrides are disabled | Partial |
+| Mini fallback available | Every registered API has a Mini implementation; host-only operations panic without a host | Complete |
 
 Self-hosting is about the language in which the compiler is written.
 Self-containment is about the runtime surface the compiled program needs. mini
@@ -224,13 +227,10 @@ clock
 Everything else should be a mini library or a performance builtin with a pure
 reference implementation.
 
-## Next steps
+## Remaining work
 
-1. Add `essential`, `representation`, `performance`, and `library` metadata to
-   the builtin registry.
-2. Add same-name Mini fallbacks under `libs/common/` for replaceable operations.
-3. Add a `--reference` compiler mode that selects them.
-4. Add equivalence cases that run both modes.
-5. Decide the numeric model before attempting a pure `hash_sha256`.
-6. Document the trusted core and keep new builtins out of it unless they meet
-   the host-boundary or hot-path rule.
+The operation contract and override structure is in place. Remaining target
+work is to complete parity for APIs whose Mini fallback depends on native value
+representations, then verify runnable examples through both JavaScript and C
+outputs. A Mini `hash_sha256` still depends on settling numeric width, overflow,
+and bitwise operation semantics.

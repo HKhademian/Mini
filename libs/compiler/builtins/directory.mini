@@ -2,7 +2,5 @@
 
 import "./registry";
 
-builtin_add("directory_create", "text", "number", "essential", "", "", "", "", "");
-builtin_source_api("directory_create");
-builtin_add("directory_list", "text", "list", "essential", "", "", "", "", "");
-builtin_source_api("directory_list");
+builtin_add("directory_create", "text", "number", "essential");
+builtin_add("directory_list", "text", "list", "essential");

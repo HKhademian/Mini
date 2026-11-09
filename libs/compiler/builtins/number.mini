@@ -2,25 +2,14 @@
 
 import "./registry";
 
-builtin_add("number_add", "unknown,unknown", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_add");
-builtin_add("number_sub", "unknown,unknown", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_sub");
-builtin_add("number_min", "unknown,unknown", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_min");
-builtin_add("number_max", "unknown,unknown", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_max");
-builtin_add("number_div", "number,number", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_div");
-builtin_add("number_floor", "number", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_floor");
-builtin_add("number_from_text", "text", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_from_text");
-builtin_add("number_mod", "number,number", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_mod");
-builtin_add("number_mul", "number,number", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_mul");
-builtin_add("number_pow", "number,number", "number", "performance", "", "", "", "", "");
-builtin_source_api("number_pow");
-builtin_add("number_to_text", "number", "text", "performance", "", "", "", "", "");
-builtin_source_api("number_to_text");
+builtin_add("number_add", "unknown,unknown", "number", "performance");
+builtin_add("number_sub", "unknown,unknown", "number", "performance");
+builtin_add("number_min", "unknown,unknown", "number", "performance");
+builtin_add("number_max", "unknown,unknown", "number", "performance");
+builtin_add("number_div", "number,number", "number", "performance");
+builtin_add("number_floor", "number", "number", "performance");
+builtin_add("number_from_text", "text", "number", "performance");
+builtin_add("number_mod", "number,number", "number", "performance");
+builtin_add("number_mul", "number,number", "number", "performance");
+builtin_add("number_pow", "number,number", "number", "performance");
+builtin_add("number_to_text", "number", "text", "performance");

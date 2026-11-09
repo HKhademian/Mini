@@ -2,7 +2,5 @@
 
 import "./registry";
 
-builtin_add("json_parse", "text", "map", "performance", "", "", "", "", "");
-builtin_source_api("json_parse");
-builtin_add("json_to_text", "unknown", "text", "performance", "", "", "", "", "");
-builtin_source_api("json_to_text");
+builtin_add("json_parse", "text", "map", "performance");
+builtin_add("json_to_text", "unknown", "text", "performance");

@@ -125,7 +125,6 @@ fn main(args) {
             map_set(entry, "parameters", builtin_parameters(name));
             map_set(entry, "result", builtin_result(name));
             map_set(entry, "class", builtin_class(name));
-            map_set(entry, "reference", builtin_reference_target(name));
             list_set(entries, list_length(entries), entry);
             index = index + 1;
         }

@@ -2,5 +2,4 @@
 
 import "./registry";
 
-builtin_add("hash_sha256", "unknown", "text", "performance", "", "", "", "", "");
-builtin_source_api("hash_sha256");
+builtin_add("hash_sha256", "unknown", "text", "performance");

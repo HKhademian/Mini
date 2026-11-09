@@ -2,15 +2,9 @@
 
 import "./registry";
 
-builtin_add("path_copy", "text,text", "number", "essential", "", "", "", "", "");
-builtin_source_api("path_copy");
-builtin_add("path_is_directory", "text", "boolean", "essential", "", "", "", "", "");
-builtin_source_api("path_is_directory");
-builtin_add("path_is_exists", "text", "boolean", "essential", "", "", "", "", "");
-builtin_source_api("path_is_exists");
-builtin_add("path_is_file", "text", "boolean", "essential", "", "", "", "", "");
-builtin_source_api("path_is_file");
-builtin_add("path_remove", "text", "number", "essential", "", "", "", "", "");
-builtin_source_api("path_remove");
-builtin_add("path_temp_directory", "", "text", "essential", "", "", "", "", "");
-builtin_source_api("path_temp_directory");
+builtin_add("path_copy", "text,text", "number", "essential");
+builtin_add("path_is_directory", "text", "boolean", "essential");
+builtin_add("path_is_exists", "text", "boolean", "essential");
+builtin_add("path_is_file", "text", "boolean", "essential");
+builtin_add("path_remove", "text", "number", "essential");
+builtin_add("path_temp_directory", "", "text", "essential");

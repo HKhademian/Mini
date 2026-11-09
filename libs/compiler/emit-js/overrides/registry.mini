@@ -4,7 +4,7 @@ import "common/map";
 
 js_host_functions := map_new();
 
-/// Register one public Mini function's host body and optional call lowering.
+/// Register one public Mini function's host body and optional target lowering.
 fn emit_js_host_function_add(name, definition, keep_reference, lowering) {
     entry := map_new();
     map_set(entry, "definition", definition);
@@ -14,7 +14,7 @@ fn emit_js_host_function_add(name, definition, keep_reference, lowering) {
     return 0;
 }
 
-/// Return the registered call lowering unless reference mode keeps the Mini body.
+/// Return the registered lowering unless reference mode selects the Mini body.
 fn emit_js_host_lowering(name) {
     if !map_has(js_host_functions, name) {
         return "";

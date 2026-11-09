@@ -2,13 +2,8 @@
 
 import "./registry";
 
-builtin_add("process_env", "text", "text", "essential", "", "", "", "", "");
-builtin_source_api("process_env");
-builtin_add("process_exec_path", "", "text", "essential", "", "", "", "", "");
-builtin_source_api("process_exec_path");
-builtin_add("process_exit", "number", "number", "essential", "", "", "", "", "");
-builtin_source_api("process_exit");
-builtin_add("process_script_path", "", "text", "essential", "", "", "", "", "");
-builtin_source_api("process_script_path");
-builtin_add("process_spawn", "map", "map", "essential", "", "", "", "", "");
-builtin_source_api("process_spawn");
+builtin_add("process_env", "text", "text", "essential");
+builtin_add("process_exec_path", "", "text", "essential");
+builtin_add("process_exit", "number", "number", "essential");
+builtin_add("process_script_path", "", "text", "essential");
+builtin_add("process_spawn", "map", "map", "essential");

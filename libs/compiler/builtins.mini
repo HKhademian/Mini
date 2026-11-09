@@ -1,6 +1,5 @@
-/// Builtin registry and lowering.
+/// Builtin contracts and source import validation.
 
-import "common/number";
 import "common/map";
 import "common/list";
 import "common/text";
@@ -29,11 +28,6 @@ fn builtin_exists(name) {
     return map_has(builtin_name_set, name);
 }
 
-/// Return whether a builtin API must be imported as a Mini function.
-fn builtin_source_required(name) {
-    return map_has(builtin_source_functions, name);
-}
-
 /// Return parameter kinds for a builtin.
 fn builtin_parameters(name) {
     if !map_has(builtin_parameter_kinds, name) {
@@ -54,19 +48,7 @@ fn builtin_result(name) {
     return "unknown";
 }
 
-/// Return host imports for a builtin.
-fn builtin_imports(name) {
-    if !map_has(builtin_import_names, name) {
-        return list_new();
-    }
-    imports := map_get(builtin_import_names, name);
-    if imports == "" {
-        return list_new();
-    }
-    return text_split(imports, ",");
-}
-
-/// Reference mode lowers replaceable performance builtins to pure helpers.
+/// Reference mode selects Mini fallbacks instead of target host replacements.
 reference_mode := false;
 
 /// Return the builtin layer.
@@ -75,92 +57,4 @@ fn builtin_class(name) {
         return map_get(builtin_classes, name);
     }
     return "library";
-}
-
-/// Return the pure target for a builtin, or empty text.
-fn builtin_reference_target(name) {
-    if map_has(builtin_reference_targets, name) {
-        return map_get(builtin_reference_targets, name);
-    }
-    return "";
-}
-
-/// Return the builtin adapter key, or empty text.
-fn builtin_helper_key(name) {
-    if map_has(builtin_helper_keys, name) {
-        return map_get(builtin_helper_keys, name);
-    }
-    return "";
-}
-
-/// Return the helper keys in registration order.
-fn builtin_helper_order_keys() {
-    return list_copy(builtin_helper_order);
-}
-
-/// Return the used helper blocks, ordered by registration.
-fn builtin_used_helper_blocks(helpers) {
-    order := builtin_helper_order;
-    parts := list_new();
-    position := 0;
-    while position < list_length(order) {
-        key := list_get(order, position);
-        if map_has(helpers, key) {
-            list_set(parts, list_length(parts), builtin_helper_text(key));
-        }
-        position = position + 1;
-    }
-    return list_join(parts, "");
-}
-
-/// Return the adapter text for a helper key.
-fn builtin_helper_text(key) {
-    if map_has(builtin_helpers, key) {
-        return map_get(builtin_helpers, key);
-    }
-    return "";
-}
-
-/// Replace every occurrence of a template token.
-fn builtin_replace(source, needle, replacement) {
-    parts := list_new();
-    position := 0;
-    while position < text_length(source) {
-        rest := text_slice(source, position, text_length(source));
-        found := text_find(rest, needle);
-        if found < 0 {
-            list_set(parts, list_length(parts), text_slice(source, position, text_length(source)));
-            return list_join(parts, "");
-        }
-        list_set(parts, list_length(parts), text_slice(source, position, position + found));
-        list_set(parts, list_length(parts), replacement);
-        position = position + found + text_length(needle);
-    }
-    return list_join(parts, "");
-}
-
-/// Substitute positional arguments into an emit template.
-fn builtin_apply(form, args) {
-    output := form;
-    if text_find(output, "{...}") >= 0 {
-        output = builtin_replace(output, "{...}", list_join(args, ", "));
-    }
-    position := 0;
-    while position < list_length(args) {
-        output = builtin_replace(output, "{" + number_to_text(position) + "}", list_get(args, position));
-        position = position + 1;
-    }
-    return output;
-}
-
-/// Return the lowered TypeScript call text for a builtin.
-fn builtin_emit(name, args) {
-    reference_target := builtin_reference_target(name);
-    if reference_mode && reference_target != "" {
-        return reference_target + "(" + list_join(args, ", ") + ")";
-    }
-    if !map_has(builtin_emit_forms, name) {
-        return "";
-    }
-    return builtin_apply(map_get(builtin_emit_forms, name), args);
 }

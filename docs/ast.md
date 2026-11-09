@@ -1,7 +1,7 @@
 # Mini AST
 
 The Mini AST is a separately versioned compiler product. Its current schema is
-`0.1.0-alpha.1`, registered as `ast` in
+`0.1.0-alpha.2`, registered as `ast` in
 [`config/versions.json`](../config/versions.json) and returned as
 `Program.ast_schema_version` by `parser_ast(tokens)`. The schema implementation
 and node constructors are in [`libs/compiler/ast.mini`](../libs/compiler/ast.mini);
@@ -50,7 +50,7 @@ trivia are not stored in the AST.
   booleans. Text values currently retain their quoted token spelling rather
   than a separately decoded string.
 - `Name`: resolved `name` and its current `value_kind`.
-- `Call`: `callee`, checked `arguments`, `is_builtin`, and result `value_kind`.
+- `Call`: `callee`, checked `arguments`, and result `value_kind`.
 - `FnArgs`: `captures` and `value_kind: "list"`.
 - `Unary`: `operator`, `operand`, and result `value_kind`.
 - `Binary`: `operator`, `left`, `right`, and result `value_kind`.

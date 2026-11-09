@@ -2,17 +2,10 @@
 
 import "./registry";
 
-builtin_add("list_copy", "list", "list", "performance", "", "", "", "", "");
-builtin_source_api("list_copy");
-builtin_add("list_get", "unknown,number", "unknown", "representation", "", "", "", "", "");
-builtin_source_api("list_get");
-builtin_add("list_length", "list", "number", "representation", "", "", "", "", "");
-builtin_source_api("list_length");
-builtin_add("list_new", "", "list", "representation", "", "", "", "", "");
-builtin_source_api("list_new");
-builtin_add("list_set", "unknown,number,unknown", "number", "representation", "", "", "", "", "");
-builtin_source_api("list_set");
-builtin_add("list_join", "list,text", "text", "performance", "", "", "", "", "");
-builtin_source_api("list_join");
-builtin_add("list_truncate", "list,number", "number", "representation", "", "", "", "", "");
-builtin_source_api("list_truncate");
+builtin_add("list_copy", "list", "list", "performance");
+builtin_add("list_get", "unknown,number", "unknown", "representation");
+builtin_add("list_length", "list", "number", "representation");
+builtin_add("list_new", "", "list", "representation");
+builtin_add("list_set", "unknown,number,unknown", "number", "representation");
+builtin_add("list_join", "list,text", "text", "performance");
+builtin_add("list_truncate", "list,number", "number", "representation");

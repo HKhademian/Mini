@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.53 / ast 0.1.0-alpha.2 / builtins 0.4.0-alpha.20 /
+  compiler 0.5.0-alpha.64 / bootstrap 0.3.0-alpha.66: remove descriptor-based
+  call lowerings; builtin calls require imported Mini functions and emit through
+  same-name target overrides.
+
 - mini 0.3.0-alpha.52 / builtins 0.4.0-alpha.19 / compiler
   0.5.0-alpha.63 / bootstrap 0.3.0-alpha.65: move process APIs to imported
   Mini panic fallbacks and same-name emitter registries.

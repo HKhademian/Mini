@@ -1,14 +1,15 @@
 # Built-ins and library functions
 
 mini needs a small set of host operations for compiling files and writing tools.
-Whether an operation lowers inline or through an adapter is a target choice.
-The accepted operation contract is normative; adapter text, helper names, and
-representation are not.
+Every operation has a same-name Mini implementation in `libs/common/`, and
+callers must import that module. An emitter may replace the Mini function body
+or lower a call through a target implementation registered under the same name.
+Calls keep one public Mini function name and one import declaration.
 
 See [Builtins, purity, and self-containment](self-containment.md) for the
-trusted host boundary, removable performance fast paths, pure reference
-implementations, and the numeric requirements for a pure `hash_sha256`.
-The compiler registry records operation classes and function contracts.
+trusted host boundary, Mini fallbacks, and the numeric requirements for a Mini
+`hash_sha256`. The compiler registry records operation classes and function
+contracts; implementations belong to `libs/common/` and target override files.
 
 `text_code(text)` returns the Unicode code point of the first character as a
 number, or 0 for empty/non-text input. Pass that number directly to `io_write`

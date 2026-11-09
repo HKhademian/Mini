@@ -2,13 +2,8 @@
 
 import "./registry";
 
-builtin_add("io_read_all", "", "text", "essential", "", "", "", "", "");
-builtin_source_api("io_read_all");
-builtin_add("io_read_bytes", "number", "list", "essential", "", "", "", "", "");
-builtin_source_api("io_read_bytes");
-builtin_add("io_read_line", "", "text", "essential", "", "", "", "", "");
-builtin_source_api("io_read_line");
-builtin_add("io_write", "...values", "number", "essential", "", "", "", "", "");
-builtin_source_api("io_write");
-builtin_add("io_write_error", "text", "number", "essential", "", "", "", "", "");
-builtin_source_api("io_write_error");
+builtin_add("io_read_all", "", "text", "essential");
+builtin_add("io_read_bytes", "number", "list", "essential");
+builtin_add("io_read_line", "", "text", "essential");
+builtin_add("io_write", "...values", "number", "essential");
+builtin_add("io_write_error", "text", "number", "essential");

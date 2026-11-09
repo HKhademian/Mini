@@ -579,9 +579,6 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
         );
         position = position + 1;
     }
-    if map_get(node, "is_builtin") && !emit_c_host_function_exists(name) {
-        emit_c_fail(node);
-    }
     params := "(MINI_ID(params)) MINI_PARAMS(0, NULL)";
     if count > 0 {
         params = "(MINI_ID(params)) MINI_PARAMS(" + number_to_text(count) + ", " + array + ")";

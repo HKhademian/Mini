@@ -1,21 +1,12 @@
 /// Text API contracts; implementations live in common/text and emitter registries.
 import "./registry";
 
-builtin_add("text_code", "text", "number", "representation", "", "", "", "", "");
-builtin_source_api("text_code");
-builtin_add("text_find", "text,text", "number", "performance", "", "", "", "", "");
-builtin_source_api("text_find");
-builtin_add("text_from_bytes", "list", "text", "performance", "", "", "", "", "");
-builtin_source_api("text_from_bytes");
-builtin_add("text_from_code", "number", "text", "representation", "", "", "", "", "");
-builtin_source_api("text_from_code");
-builtin_add("text_get", "unknown,number", "text", "representation", "", "", "", "", "");
-builtin_source_api("text_get");
-builtin_add("text_length", "text", "number", "representation", "", "", "", "", "");
-builtin_source_api("text_length");
-builtin_add("text_slice", "text,number,number", "text", "performance", "", "", "", "", "");
-builtin_source_api("text_slice");
-builtin_add("text_split", "text,text", "list", "performance", "", "", "", "", "");
-builtin_source_api("text_split");
-builtin_add("text_to_bytes", "text", "list", "performance", "", "", "", "", "");
-builtin_source_api("text_to_bytes");
+builtin_add("text_code", "text", "number", "representation");
+builtin_add("text_find", "text,text", "number", "performance");
+builtin_add("text_from_bytes", "list", "text", "performance");
+builtin_add("text_from_code", "number", "text", "representation");
+builtin_add("text_get", "unknown,number", "text", "representation");
+builtin_add("text_length", "text", "number", "representation");
+builtin_add("text_slice", "text,number,number", "text", "performance");
+builtin_add("text_split", "text,text", "list", "performance");
+builtin_add("text_to_bytes", "text", "list", "performance");

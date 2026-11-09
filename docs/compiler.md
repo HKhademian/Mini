@@ -45,11 +45,13 @@ source text and trivia beside the AST. See the independent
 [AST definitions](../libs/compiler/ast.mini).
 
 The JavaScript emitter produces a complete Node source string and manages
-JavaScript builtin helpers, imports, file initializers, and target syntax. The C
-emitter produces a C source/header pair for its supported subset and owns C
-runtime fragments, target capability failures, and C syntax lowering. Neither
-emitter owns lexing or shared parsing/checking. Their Mini source files document
-the AST entry points and compile adapters.
+file initializers and target syntax. It emits calls under their Mini function
+names; its override registry may replace a same-name imported Mini function or
+lower that call through a target implementation.
+The C emitter produces a C source/header pair for its supported subset and owns
+registered host functions and runtime fragments, target capability failures,
+and C syntax lowering. Neither emitter owns lexing or shared parsing/checking.
+Their Mini source files document the AST entry points and compile adapters.
 
 Emitters and other source generators collect output fragments or lines in
 lists and join them at the output boundary. For line-oriented output, an empty
@@ -269,9 +271,9 @@ node COMPILER metadata
 `fn_args()` is a language form rather than a host builtin, so it does not appear
 in `metadata`. Each generated function binds its own argument list.
 
-`metadata` emits one JSON object listing every builtin name, parameter kind, and
-result kind. Tooling hover, completion, and signature text read this command
-instead of a separate builtin table.
+`metadata` emits one JSON object listing every builtin name, parameter kind,
+result kind, and operation class. Tooling hover, completion, and signature text
+read this command instead of a separate builtin table.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format

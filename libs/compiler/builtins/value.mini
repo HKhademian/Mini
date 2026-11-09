@@ -2,7 +2,5 @@
 
 import "./registry";
 
-builtin_add("to_text", "any_value", "text", "library", "", "", "", "", "");
-builtin_source_api("to_text");
-builtin_add("value_kind", "unknown", "text", "representation", "", "", "", "", "");
-builtin_source_api("value_kind");
+builtin_add("to_text", "any_value", "text", "library");
+builtin_add("value_kind", "unknown", "text", "representation");

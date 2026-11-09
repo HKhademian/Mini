@@ -2,11 +2,7 @@
 
 import "./registry";
 
-builtin_add("file_read", "text", "text", "essential", "", "", "", "", "");
-builtin_source_api("file_read");
-builtin_add("file_read_bytes", "text", "list", "essential", "", "", "", "", "");
-builtin_source_api("file_read_bytes");
-builtin_add("file_write", "text,text", "number", "essential", "", "", "", "", "");
-builtin_source_api("file_write");
-builtin_add("file_write_bytes", "text,list", "number", "essential", "", "", "", "", "");
-builtin_source_api("file_write_bytes");
+builtin_add("file_read", "text", "text", "essential");
+builtin_add("file_read_bytes", "text", "list", "essential");
+builtin_add("file_write", "text,text", "number", "essential");
+builtin_add("file_write_bytes", "text,list", "number", "essential");
