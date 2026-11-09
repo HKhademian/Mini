@@ -1,0 +1,172 @@
+/// Collect the dots in a tiny maze and avoid its slowly moving ghost.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+maze_rows := list_of(
+    "##########",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#.######.#",
+    "#........#",
+    "#........#",
+    "##########"
+);
+playback_fps := 60;
+ghost_fps := 1;
+frames_per_ghost_step := number_div(playback_fps, ghost_fps);
+wall_color := pixel_rgb(36, 76, 154);
+dot_color := pixel_rgb(255, 228, 172);
+player_color := pixel_rgb(255, 226, 64);
+ghost_color := pixel_rgb(255, 96, 132);
+dark_color := pixel_rgb(2, 6, 16);
+dots := list_new();
+total_dots := 0;
+score := 0;
+player_x := 1;
+player_y := 8;
+ghost_x := 8;
+ghost_y := 1;
+ghost_direction := 0 - 1;
+ghost_ticks := 0;
+game_over := false;
+game_won := false;
+
+/// Report whether one board cell is a maze wall.
+fn pacman_is_wall(column, row) {
+    return text_get(list_get(maze_rows, row), column) == "#";
+}
+
+/// Initialize a dot in every open cell except the two characters' starts.
+fn pacman_setup() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            dot := 0;
+            if !pacman_is_wall(column, row) && !(column == player_x && row == player_y) && !(column == ghost_x && row == ghost_y) {
+                dot = 1;
+                total_dots = total_dots + 1;
+            }
+            list_set(dots, list_length(dots), dot);
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+}
+
+/// Render walls, remaining dots, the player, and the ghost.
+fn pacman_render() {
+    board := pixel_board_new(screen_size, screen_size, dark_color);
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            if pacman_is_wall(column, row) {
+                pixel_board_set(board, screen_size, screen_size, column, row, wall_color);
+            } else if list_get(dots, number_mul(row, screen_size) + column) == 1 {
+                pixel_board_set(board, screen_size, screen_size, column, row, dot_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_set(board, screen_size, screen_size, ghost_x, ghost_y, ghost_color);
+    pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Collect a dot after a successful player move.
+fn pacman_collect_dot() {
+    dot_index := number_mul(player_y, screen_size) + player_x;
+    if list_get(dots, dot_index) == 1 {
+        list_set(dots, dot_index, 0);
+        score = score + 1;
+        if score >= total_dots {
+            game_won = true;
+        }
+    }
+}
+
+/// Move the player through open cells and collect dots.
+fn canvas_on_key_down(key) {
+    if game_over || game_won {
+        return 0;
+    }
+    next_x := player_x;
+    next_y := player_y;
+    if key == "ArrowLeft" || key == "a" {
+        next_x = player_x - 1;
+    } else if key == "ArrowRight" || key == "d" {
+        next_x = player_x + 1;
+    } else if key == "ArrowUp" || key == "w" {
+        next_y = player_y - 1;
+    } else if key == "ArrowDown" || key == "s" {
+        next_y = player_y + 1;
+    }
+    if !pacman_is_wall(next_x, next_y) {
+        player_x = next_x;
+        player_y = next_y;
+        pacman_collect_dot();
+        if player_x == ghost_x && player_y == ghost_y {
+            game_over = true;
+        }
+    }
+}
+
+/// Move the ghost along the top corridor and stop when the game ends.
+fn canvas_update() {
+    ghost_ticks = ghost_ticks + 1;
+    if ghost_ticks >= frames_per_ghost_step {
+        ghost_ticks = 0;
+        if ghost_x + ghost_direction <= 0 || ghost_x + ghost_direction >= screen_size - 1 {
+            ghost_direction = 0 - ghost_direction;
+        }
+        ghost_x = ghost_x + ghost_direction;
+        if player_x == ghost_x && player_y == ghost_y {
+            game_over = true;
+        }
+    }
+    pacman_render();
+    if game_over || game_won {
+        return 1;
+    }
+}
+
+/// Print the opening maze with the first player and ghost positions.
+fn pacman_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if column == player_x && row == player_y {
+                line = line + "C";
+            } else if column == ghost_x && row == ghost_y {
+                line = line + "G";
+            } else if pacman_is_wall(column, row) {
+                line = line + "#";
+            } else if list_get(dots, number_mul(row, screen_size) + column) == 1 {
+                line = line + ".";
+            } else {
+                line = line + " ";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pacman_setup();
+pacman_render();
+canvas_play(screen_size, screen_size, "Pac-Man · Arrows or WASD");
+pacman_print();

@@ -483,11 +483,11 @@
   {
     "id": "pacman-board",
     "group": "Games",
-    "label": "Pac-Man — planned",
-    "note": "Guide a character through a maze and collect dots.",
+    "label": "Pac-Man",
+    "note": "Collect corridor dots with arrows or WASD and avoid the ghost as it patrols at one step per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pacman-board.mini"
   },
   {
     "id": "freeway-board",
