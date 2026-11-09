@@ -1,0 +1,25 @@
+{
+  "id": "showcase.pixel-one",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-one.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "common.play",
+    "common.pixel-board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n..........\n..........\n..........\n.....*....\n..........\n..........\n..........\n..........\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

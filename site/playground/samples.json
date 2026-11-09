@@ -470,5 +470,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/frogger-board.mini"
+  },
+  {
+    "id": "pixel-one",
+    "group": "Pixel Art",
+    "label": "One pixel",
+    "note": "Render a single white pixel on a black ten-by-ten board.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-one.mini"
   }
 ]
