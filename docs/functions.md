@@ -66,22 +66,23 @@ zero waits indefinitely). The result map holds `status`, `signal`, `stdout`,
 `stderr`, and `error`. Captured streams are byte lists; inherited streams are
 connected to the parent and stay empty. `status` is 1 when the command cannot
 start or ends by a signal.
-Import `common/process` for these APIs. Their Mini fallbacks panic when a target
-has no process host; JavaScript registers same-name host overrides, and C
-implements `process_exit` while the other process APIs panic.
+Import `common/process` for these APIs. Their Mini fallbacks call
+`process_panic(message)` when a target has no process host; JavaScript registers
+same-name host overrides, and C implements `process_exit` while the other
+process APIs use the panic host override.
 
 ## Map operations
 
 Map APIs are declared in [libs/common/map.mini](../libs/common/map.mini) and
 require `import "common/map"`. Their Mini definitions provide the fallback
 contract; a target may replace the same function with a host implementation.
-A target that cannot implement a required map primitive uses the panic fallback.
+A target that cannot implement a required map primitive uses `process_panic`.
 `map_set` and `map_delete` return zero, so these operations never produce a
 void result.
 
 `value_kind(value)` is declared in `common/value` and returns `text`, `number`,
 `boolean`, `list`, `map`, or `other` for the runtime kind of a value. Targets
-without a representation primitive use its panic fallback.
+without a representation primitive use `process_panic`.
 `value_merge(...values)` from `common/merge` selects its behavior from the first value: numbers add,
 texts concatenate, lists concatenate, and maps merge with later keys replacing
 earlier values. Values of other kinds are ignored; an unsupported first kind or

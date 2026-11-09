@@ -1,8 +1,8 @@
-import "common/panic";
+import "common/process-panic";
 
 /// Return the runtime kind; targets without a representation host panic.
 fn value_kind(value) {
-    return runtime_panic("value_kind requires a host implementation");
+    return process_panic("value_kind requires a host implementation");
 }
 
 /// Return whether a value is text.

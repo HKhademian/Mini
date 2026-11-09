@@ -18,7 +18,8 @@ functions always produce a value; operations without a meaningful result use
 zero. A host implementation must return a Mini value as well, even when the
 underlying native operation is conventionally void.
 
-When a target cannot provide an operation, the function body may call `panic`.
+When a target cannot provide an operation, the function body may call
+`process_panic` from `common/process`.
 Other functions can provide a Mini implementation directly. Both remain regular
 functions in source and use the same call rules.
 

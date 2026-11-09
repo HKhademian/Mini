@@ -1,21 +1,21 @@
-import "common/panic";
+import "common/process-panic";
 
 /// Read a UTF-8 file using the target host.
 fn file_read(path) {
-    return runtime_panic("file_read requires a host implementation");
+    return process_panic("file_read requires a host implementation");
 }
 
 /// Read a file as a list of byte values using the target host.
 fn file_read_bytes(path) {
-    return runtime_panic("file_read_bytes requires a host implementation");
+    return process_panic("file_read_bytes requires a host implementation");
 }
 
 /// Write UTF-8 text to a file and return zero.
 fn file_write(path, text) {
-    return runtime_panic("file_write requires a host implementation");
+    return process_panic("file_write requires a host implementation");
 }
 
 /// Write byte values to a file and return zero.
 fn file_write_bytes(path, bytes) {
-    return runtime_panic("file_write_bytes requires a host implementation");
+    return process_panic("file_write_bytes requires a host implementation");
 }

@@ -1,0 +1,6 @@
+/// Process panic API with a recursive fallback when no host is available.
+
+/// Stop execution when an operation has no available process host.
+fn process_panic(message) {
+    return process_panic(message);
+}

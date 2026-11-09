@@ -1,37 +1,37 @@
 /// Map functions with Mini fallbacks and target-provided representation primitives.
 
 import "common/list";
-import "common/panic";
+import "common/process-panic";
 import "common/value";
 
 /// Create a fresh map; targets without a map host implementation panic.
 fn map_new() {
-    return runtime_panic("map_new requires a host implementation");
+    return process_panic("map_new requires a host implementation");
 }
 
 /// Read one map value, returning zero when the key is absent.
 fn map_get(items, key) {
-    return runtime_panic("map_get requires a host implementation");
+    return process_panic("map_get requires a host implementation");
 }
 
 /// Store one map value and return zero.
 fn map_set(items, key, value) {
-    return runtime_panic("map_set requires a host implementation");
+    return process_panic("map_set requires a host implementation");
 }
 
 /// Test whether a text key is present in a map.
 fn map_has(items, key) {
-    return runtime_panic("map_has requires a host implementation");
+    return process_panic("map_has requires a host implementation");
 }
 
 /// Return the map's keys as a fresh list.
 fn map_keys(items) {
-    return runtime_panic("map_keys requires a host implementation");
+    return process_panic("map_keys requires a host implementation");
 }
 
 /// Delete a key if present and return zero.
 fn map_delete(items, key) {
-    return runtime_panic("map_delete requires a host implementation");
+    return process_panic("map_delete requires a host implementation");
 }
 
 /// Return a shallow map copy.

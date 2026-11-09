@@ -1,7 +1,0 @@
-/// Panic when a Mini operation has no available host implementation.
-
-//
-/// Stop execution by recursing when a target has no panic host.
-fn runtime_panic(message) {
-    return runtime_panic(message);
-}

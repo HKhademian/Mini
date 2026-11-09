@@ -8,7 +8,6 @@ import "common/number";
 import "common/list";
 import "common/map";
 import "./parser";
-import "./emit-c/overrides/panic";
 import "./emit-c/overrides/io";
 import "./emit-c/overrides/file";
 import "./emit-c/overrides/path";

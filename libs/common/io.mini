@@ -1,31 +1,31 @@
 /// Standard input and output operations with target-independent contracts.
 
 import "common/list";
-import "common/panic";
+import "common/process-panic";
 
 /// Read all standard input as UTF-8 text.
 fn io_read_all() {
-    return runtime_panic("io_read_all requires a host implementation");
+    return process_panic("io_read_all requires a host implementation");
 }
 
 /// Read up to count bytes from standard input.
 fn io_read_bytes(count) {
-    return runtime_panic("io_read_bytes requires a host implementation");
+    return process_panic("io_read_bytes requires a host implementation");
 }
 
 /// Read one LF-terminated line from standard input.
 fn io_read_line() {
-    return runtime_panic("io_read_line requires a host implementation");
+    return process_panic("io_read_line requires a host implementation");
 }
 
 /// Write converted values to standard output and return zero.
 fn io_write() {
-    return runtime_panic("io_write requires a host implementation");
+    return process_panic("io_write requires a host implementation");
 }
 
 /// Write converted values to standard error and return zero.
 fn io_write_error() {
-    return runtime_panic("io_write_error requires a host implementation");
+    return process_panic("io_write_error requires a host implementation");
 }
 
 /// Write every supplied value followed by one newline and return the write result.
