@@ -14,6 +14,22 @@ emit_c_host_function_add(
 );
 
 emit_c_host_function_add(
+    "text_join",
+    "int MINI_ID(fn_text_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1; size_t offset = context->buffer.count;\n"
+    + "    if (!params.count || params.args[0].kind != MINI_ID(kind_text)) { *result = MINI_ID(value_text)(&context->buffer, offset, 0); return 0; }\n"
+    + "    MINI_ID(text) separator = params.args[0].text; MINI_ID(text_buffer) *separator_buffer = separator.buffer;\n"
+    + "    if (!separator_buffer || separator.offset > separator_buffer->count || separator.length > separator_buffer->count - separator.offset) return 1;\n"
+    + "    for (size_t index = 1; index < params.count; ++index) { if (index > 1 && separator.length\n"
+    + "        && MINI_ID(text_buffer_append)(&context->buffer, separator_buffer->items + separator.offset, separator.length) != 0) return 1;\n"
+    + "        MINI_ID(value) value = params.args[index]; if (value.kind != MINI_ID(kind_text)) continue;\n"
+    + "        MINI_ID(text_buffer) *buffer = value.text.buffer; if (!buffer || value.text.offset > buffer->count\n"
+    + "            || value.text.length > buffer->count - value.text.offset) return 1;\n"
+    + "        if (value.text.length && MINI_ID(text_buffer_append)(&context->buffer, buffer->items + value.text.offset, value.text.length) != 0) return 1; }\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
     "text_length",
     "static int MINI_ID(text_ascii)(MINI_ID(value) value, const unsigned char **data, size_t *length) {\n"
     + "    if (value.kind != MINI_ID(kind_text) || !value.text.buffer || value.text.offset > value.text.buffer->count\n"

@@ -1,0 +1,15 @@
+{
+  "id": "language.text-join",
+  "kind": "feature",
+  "source": "077-001-text-join.mini",
+  "features": ["import", "text.join", "functions.args"],
+  "cases": [
+    {
+      "name": "separator-first-variadic-join",
+      "stdin": {"text": ""},
+      "stdout": {"text": "a,,b|"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

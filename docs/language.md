@@ -364,6 +364,17 @@ text := text_merge("mini", "lang");
 - Non-text arguments are ignored; no arguments return empty text.
 - Import `common/text` to use it.
 
+## Accepted operation: text joining
+
+```mini
+text := text_join(", ", "Mini", "Lang");
+```
+
+- `text_join(separator, ...texts)` joins text arguments with the separator.
+- Non-text values contribute empty text, with separators retained between
+  argument positions. A non-text separator returns empty text.
+- Import `common/text` to use it.
+
 ## Accepted operation: number text
 
 ```mini

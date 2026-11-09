@@ -1,0 +1,4 @@
+import "common/io";
+import "common/text";
+
+io_write(text_join("|", "one", 0, "two"));

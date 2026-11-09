@@ -1,0 +1,16 @@
+{
+  "id": "language.text-join-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "077-002-text-join-c.mini",
+  "features": ["import", "text.join", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "separator-first-variadic-join",
+      "stdin": {"text": ""},
+      "stdout": {"text": "one||two"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

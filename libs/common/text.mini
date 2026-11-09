@@ -18,6 +18,31 @@ fn text_merge() {
     return output;
 }
 
+/// Join text arguments with a separator; non-text arguments contribute empty text.
+fn text_join() {
+    values := fn_args();
+    if list_length(values) == 0 {
+        return "";
+    }
+    separator := list_get(values, 0);
+    if !value_is_text(separator) {
+        return "";
+    }
+    output := "";
+    position := 1;
+    while position < list_length(values) {
+        if position > 1 {
+            output = output + separator;
+        }
+        value := list_get(values, position);
+        if value_is_text(value) {
+            output = output + value;
+        }
+        position = position + 1;
+    }
+    return output;
+}
+
 /// Return UTF-16 code-unit length; targets without a host implementation panic.
 fn text_length(source) {
     return panic("text_length requires a host implementation");

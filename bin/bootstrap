@@ -340,6 +340,31 @@ function text_merge() {
     }
     return output;
 }
+function text_join() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    if (((values).length === 0)) {
+        return "";
+    }
+    let separator = list_get(values, 0);
+    if ((!value_is_text(separator))) {
+        return "";
+    }
+    let output = "";
+    let position = 1;
+    while ((position < (values).length)) {
+        if ((position > 1)) {
+            output = (output + separator);
+        }
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
 function text_length(source) { return typeof source === "string" ? source.length : 0; }
 function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }

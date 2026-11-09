@@ -158,6 +158,8 @@ lowercase words separated by underscores. This naming convention needs no
 namespace mechanism.
 `text_merge(...texts)` concatenates text arguments in order; non-text arguments
 are ignored.
+`text_join(separator, ...texts)` concatenates text arguments with the separator
+between positions; non-text arguments contribute empty text.
 
 The operations require primitive host access. Prefixes do not decide whether an
 operation is built-in or library code; both use ordinary call syntax.
