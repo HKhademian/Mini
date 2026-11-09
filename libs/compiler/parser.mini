@@ -284,10 +284,9 @@ fn parser_fn_args(parser, token) {
 }
 
 /// Create one call node from a resolved callee and checked argument expressions.
-fn parser_call_node(name, args, result_kind, is_builtin, close) {
+fn parser_call_node(name, args, result_kind, close) {
     node := ast_node(AST_CALL, name);
     map_set(node, "callee", map_get(name, "text"));
-    map_set(node, "is_builtin", is_builtin);
     map_set(node, "value_kind", result_kind);
     argument_nodes := list_new();
     position := 0;
@@ -304,11 +303,9 @@ fn parser_call_node(name, args, result_kind, is_builtin, close) {
 fn parser_call(parser, name) {
     name_text := map_get(name, "text");
     has_builtin_contract := builtin_exists(name_text);
-    source_required := builtin_source_required(name_text);
-    is_builtin := has_builtin_contract && !source_required;
     functions := map_get(parser, "functions");
     has_user := map_has(functions, name_text);
-    if (!is_builtin && !has_user) || (source_required && !has_user) {
+    if !has_user {
         parser_fail(name, "unknown function " + name_text);
     }
     parser_expect(parser, "(");
@@ -341,7 +338,7 @@ fn parser_call(parser, name) {
             }
             parser_fail(name, message);
         }
-    } else if !has_builtin_contract {
+    } else {
         // User calls pad missing arguments with 0. Extra arguments reach the
         // callee, where declared parameters ignore them and fn_args() sees all.
         arity := map_get(map_get(functions, name_text), "arity");
@@ -366,15 +363,11 @@ fn parser_call(parser, name) {
         }
         position = position + 1;
     }
-    if source_required {
-        return parser_call_node(name, args, builtin_result(name_text), false, close);
+    result_kind := map_get(map_get(functions, name_text), "result");
+    if has_builtin_contract {
+        result_kind = builtin_result(name_text);
     }
-    if !is_builtin {
-        result_kind := map_get(map_get(functions, name_text), "result");
-        return parser_call_node(name, args, result_kind, false, close);
-    }
-    result_kind := builtin_result(name_text);
-    return parser_call_node(name, args, result_kind, is_builtin, close);
+    return parser_call_node(name, args, result_kind, close);
 }
 
 /// Parse and check one statement into the shared AST.

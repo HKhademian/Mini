@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.54 / compiler 0.5.0-alpha.65 / bootstrap
+  0.3.0-alpha.67: require imported Mini function definitions for every
+  contracted operation and remove the stale AST builtin-call flag.
+
 - mini 0.3.0-alpha.53 / ast 0.1.0-alpha.2 / builtins 0.4.0-alpha.20 /
   compiler 0.5.0-alpha.64 / bootstrap 0.3.0-alpha.66: remove descriptor-based
   call lowerings; builtin calls require imported Mini functions and emit through
