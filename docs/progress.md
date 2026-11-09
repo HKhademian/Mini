@@ -56,8 +56,9 @@ vscode    vscode-v0.6.0-v0.3.9
   declarations, and a parenthesized whole condition reports a warning.
 - **Browser playground.** The [showcase](../site/README.md) compiles tracked
   samples in a worker and shows the generated JavaScript beside each result.
-- **Pure reference mode.** Text, list, map, JSON, number, and UTF-8 operations
-  have pure implementations selected by `compiler --reference`.
+- **Reference mode.** JavaScript compilation can use the Mini library function
+  bodies instead of emitter host overrides with `--reference`, for comparisons
+  and portable playground output.
 - **Lowercase name.** The name is written as mini in prose, commands, editor
   UI, and diagnostics. The [wordmark and name decision](../brand/name.md) define
   the display form and the two-tone `m`.

@@ -6,5 +6,4 @@
   process capture.
 - `compiler/` — compiler implementation parts included by
   `tools/compiler.mini`.
-- `pure/` — reference implementations selected by `compiler --reference`.
 - `tools/` — behavior libraries for command entries under `tools/`.
