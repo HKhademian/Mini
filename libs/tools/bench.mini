@@ -14,8 +14,8 @@ import "core/time";
 import "core/process";
 import "util/process";
 import "util/project";
-import "./cases";
 import "util/result";
+import "./cases";
 
 /// Report a benchmark error and stop.
 fn bench_fail(message) {

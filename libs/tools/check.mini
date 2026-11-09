@@ -13,9 +13,9 @@ import "core/file";
 import "core/path";
 import "core/process";
 import "util/process";
-import "./cases";
 import "util/io";
 import "util/result";
+import "./cases";
 
 /// Report a check failure and stop.
 fn check_fail(message) {

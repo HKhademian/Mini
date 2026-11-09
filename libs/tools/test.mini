@@ -13,9 +13,9 @@ import "core/list";
 import "core/path";
 import "core/process";
 import "util/process";
-import "./cases";
 import "util/io";
 import "util/result";
+import "./cases";
 
 /// Report usage and stop.
 fn test_usage() {

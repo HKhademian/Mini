@@ -1,7 +1,7 @@
 import "core/number";
 import "core/io";
+import "util/io";
 import "./060-001-import-helper";
 import "./060-001-import-helper";
 import "./060-001-import-nested";
-import "util/io";
 io_write_line(number_to_text(add_one(1)) + "|" + nested_marker());

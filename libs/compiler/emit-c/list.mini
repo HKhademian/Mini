@@ -1,7 +1,7 @@
 /// Native C replacements for common list representation operations.
 
-import "./registry";
 import "core/list";
+import "./registry";
 
 /// Return list allocation and mutation helpers backed by the generic vector.
 fn emit_c_list_runtime() {
