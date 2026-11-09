@@ -1,0 +1,51 @@
+/// Move one pixel across the board and wrap it to the opposite edge.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_center := number_div(screen_size, 2);
+playback_fps := 60;
+movement_fps := 3;
+frames_per_step := number_div(playback_fps, movement_fps);
+background := pixel_rgb(10, 22, 48);
+pixel_color := pixel_rgb(100, 220, 255);
+pixel_x := 0;
+update_ticks := 0;
+
+/// Draw the pixel at its current horizontal position.
+fn pixel_wraparound_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    pixel_board_set(board, screen_size, screen_size, pixel_x, screen_center, pixel_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Advance the pixel at three tiles per second and wrap at the edge.
+fn canvas_update() {
+    pixel_wraparound_render();
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        pixel_x = number_mod(pixel_x + 1, screen_size);
+    }
+}
+
+/// Print the starting frame for command-line runs.
+fn pixel_wraparound_print() {
+    row := 0;
+    while row < screen_size {
+        if row == screen_center {
+            io_write_line("*.........");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+pixel_wraparound_render();
+canvas_play(screen_size, screen_size, "Wrap-Around Pixel");
+pixel_wraparound_print();

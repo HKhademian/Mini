@@ -636,11 +636,11 @@
   {
     "id": "pixel-wraparound",
     "group": "Animation",
-    "label": "Wrap-around moving pixel — planned",
-    "note": "Move a single pixel across the board and wrap at the edge.",
+    "label": "Wrap-around pixel",
+    "note": "Move a pixel across the board at three steps per second and wrap at the edge.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-wraparound.mini"
   },
   {
     "id": "pixel-blink",
