@@ -600,11 +600,11 @@
   {
     "id": "pixel-checkerboard",
     "group": "Pixel Art",
-    "label": "Checkerboard — planned",
-    "note": "Fill the board with alternating pixel colors.",
+    "label": "Checkerboard",
+    "note": "Render a two-color checkerboard once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-checkerboard.mini"
   },
   {
     "id": "pixel-stripes",

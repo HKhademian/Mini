@@ -1,0 +1,47 @@
+/// Render a two-color checkerboard on a ten-by-ten canvas.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+dark_color := pixel_rgb(30, 54, 86);
+light_color := pixel_rgb(116, 190, 255);
+board := pixel_board_new(screen_size, screen_size, dark_color);
+
+row := 0;
+while row < screen_size {
+    column := 0;
+    while column < screen_size {
+        if number_mod(row + column, 2) == 0 {
+            pixel_board_set(board, screen_size, screen_size, column, row, light_color);
+        }
+        column = column + 1;
+    }
+    row = row + 1;
+}
+
+canvas_render(screen_size, screen_size, board);
+
+/// Print the checkerboard as a text fallback for command-line runs.
+fn pixel_checkerboard_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if number_mod(row + column, 2) == 0 {
+                line = line + "#";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_checkerboard_print();
