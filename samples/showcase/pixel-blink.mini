@@ -2,7 +2,7 @@
 
 import "common/io";
 import "common/list";
-import "common/pixel-board";
+import "util/board";
 import "common/play";
 
 screen_size := 10;
