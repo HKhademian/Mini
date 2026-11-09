@@ -15,6 +15,7 @@ import "core/project";
 import "core/file";
 import "core/hash";
 import "util/process";
+import "util/native";
 import "./native";
 
 /// Return a successful result map.

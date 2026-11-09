@@ -11,6 +11,7 @@ import "core/file";
 import "core/process";
 import "tools/cases";
 import "util/process";
+import "util/native";
 
 /// Remove the workspace and report one integration failure.
 fn native_fail(work, name, message) {

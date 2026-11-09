@@ -1,5 +1,4 @@
-/// Artifact naming shared by C generation and native builds.
-//
+/// Helpers for naming artifacts produced by native builds.
 
 import "core/text";
 

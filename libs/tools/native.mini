@@ -3,9 +3,9 @@
 import "core/list";
 import "core/map";
 import "core/path";
-import "core/native";
 import "core/process";
 import "util/process";
+import "util/native";
 
 /// Run the adjacent preprocessing/compilation stages and return process status.
 /// The stage and preprocessed path identify failures; source/header files are untouched.

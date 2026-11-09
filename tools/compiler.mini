@@ -9,7 +9,7 @@ import "core/io";
 import "core/file";
 import "core/path";
 import "core/text";
-import "core/native";
+import "util/native";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";
