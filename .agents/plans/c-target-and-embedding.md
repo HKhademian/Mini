@@ -83,7 +83,8 @@ compiler.
   absolute executable path. Compiling the full test driver to strict C11 works,
   and C text hosts now preserve UTF-16 code-unit length/get/slice semantics over
   UTF-8 backing, including surrogate views. The C test driver still needs a
-  `process_spawn()` host implementation before it can run the full suite.
+  `process_exec_path()` now resolves the same native `argv[0]`; the C test
+  driver reaches `process_spawn()`, which is its remaining host blocker.
 - 2026-11-09: a manual parallel-bootstrap run now compiles the Mini compiler
   to C, builds it with strict C11 flags, and runs the resulting compiler on
   `tools/compiler.mini`. Successive C generations compile and run; generated C
