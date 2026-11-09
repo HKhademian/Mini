@@ -3,6 +3,8 @@
 import "common/io";
 import "common/text";
 import "common/list";
+import "common/path";
+import "common/file";
 import "tools/cases";
 import "common/process";
 

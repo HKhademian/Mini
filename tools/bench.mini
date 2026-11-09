@@ -6,6 +6,7 @@ import "common/io";
 import "common/path";
 import "tools/bench";
 import "common/process";
+import "common/project";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main(args) {

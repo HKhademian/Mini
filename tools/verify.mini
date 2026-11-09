@@ -5,6 +5,7 @@ import "common/list";
 import "tools/verify";
 import "tools/test";
 import "common/process";
+import "common/project";
 
 /// Consume verify options, then check one case or the bootstrap.
 fn main(args) {

@@ -305,6 +305,14 @@ fn parser_call(parser, name) {
     has_builtin_contract := builtin_exists(name_text);
     functions := map_get(parser, "functions");
     has_user := map_has(functions, name_text);
+    if has_user {
+        function_info := map_get(functions, name_text);
+        target_file := map_get(function_info, "file");
+        caller_file := parser_file_key(name);
+        if has_builtin_contract && target_file != caller_file {
+            has_user = lex_file_imports(caller_file, target_file);
+        }
+    }
     if !has_user {
         parser_fail(name, "unknown function " + name_text);
     }
@@ -703,6 +711,7 @@ fn parser_new(tokens) {
             map_set(info, "arity", arity);
             map_set(info, "result", "unknown");
             map_set(info, "captures", false);
+            map_set(info, "file", parser_file_key(token));
             map_set(map_get(parser, "functions"), map_get(list_get(tokens, index + 1), "text"), info);
         }
         index = index + 1;

@@ -2,6 +2,7 @@
 
 import "common/io";
 import "common/list";
+import "common/project";
 import "tools/build";
 import "common/process";
 

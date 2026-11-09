@@ -4,6 +4,7 @@
 import "common/io";
 import "common/list";
 import "common/text";
+import "common/project";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/builtins";

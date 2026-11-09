@@ -8,6 +8,8 @@ import "common/list";
 import "common/path";
 import "common/process";
 
+lex_direct_imports := map_new();
+
 /// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {
     token := map_new();
@@ -268,9 +270,15 @@ fn lex_expand_imports(tokens, base, seen) {
     if map_has(seen, base) {
         return list_new();
     }
+    if !map_has(seen, "$imports_initialized") {
+        lex_direct_imports = map_new();
+        map_set(seen, "$imports_initialized", true);
+    }
     map_set(seen, base, true);
     dependencies := list_new();
     own := list_new();
+    imports := map_new();
+    map_set(lex_direct_imports, base, imports);
     position := 0;
     depth := 0;
     while position < list_length(tokens) {
@@ -295,6 +303,7 @@ fn lex_expand_imports(tokens, base, seen) {
             quoted := map_get(list_get(tokens, position + 1), "text");
             path := text_slice(quoted, 1, text_length(quoted) - 1);
             resolved := lex_resolve_import(base, path);
+            map_set(imports, resolved, true);
             action := "import";
             if !map_has(seen, resolved) {
                 if !path_is_exists(resolved) {
@@ -352,4 +361,9 @@ fn lex_expand_imports(tokens, base, seen) {
         index = index + 1;
     }
     return output;
+}
+
+/// Return whether a file directly imports the file defining one function.
+fn lex_file_imports(caller, target) {
+    return map_has(lex_direct_imports, caller) && map_has(map_get(lex_direct_imports, caller), target);
 }

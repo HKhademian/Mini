@@ -3,10 +3,13 @@
 import "common/io";
 import "common/list";
 import "common/map";
+import "common/text";
 import "common/file";
 import "common/path";
 import "tools/check-source";
 import "common/process";
+import "compiler/lexer";
+import "compiler/parser";
 
 /// Report a command error and stop.
 fn check_source_fail(message) {

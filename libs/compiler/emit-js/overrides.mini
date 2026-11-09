@@ -1,6 +1,7 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
 import "common/map";
+import "./overrides/registry";
 import "./overrides/number";
 import "./overrides/hash";
 import "./overrides/time";

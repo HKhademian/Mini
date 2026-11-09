@@ -5,6 +5,8 @@ import "common/number";
 import "common/map";
 import "common/text";
 import "common/list";
+import "common/file";
+import "common/path";
 import "common/hash";
 import "tools/cases";
 import "common/process";
