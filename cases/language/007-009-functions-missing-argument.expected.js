@@ -115,16 +115,6 @@ function list_has_text(items, value) {
     }
     return false;
 }
-function list_join_from(items, start, separator) {
-
-    let parts = list_new();
-    let position = start;
-    while ((position < (items).length)) {
-        list_set(parts, (parts).length, list_get(items, position));
-        position = (position + 1);
-    }
-    return list_join(separator, parts);
-}
 function list_reverse(items) {
 
     let result = list_new();
@@ -355,20 +345,6 @@ function text_slice(source, start, end) {
     if (end > characters.length) end = characters.length;
     if (end <= start) return "";
     return characters.slice(start, end).join("");
-}
-function text_indent_output(output) {
-
-    let lines = text_split_lines(output);
-    let result = list_new();
-    let position = 0;
-    while ((position < (lines).length)) {
-        let line = list_get(lines, position);
-        if ((text_length(line) > 0)) {
-            list_set(result, (result).length, ("    " + line));
-        }
-        position = (position + 1);
-    }
-    return list_join("\n", result);
 }
 function text_ends_with(source, suffix) {
 
