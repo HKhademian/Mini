@@ -1,0 +1,65 @@
+/// Let three blue drops fall and wrap around a ten-by-ten board.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+playback_fps := 60;
+fall_fps := 3;
+frames_per_step := number_div(playback_fps, fall_fps);
+background := pixel_rgb(8, 18, 42);
+drop_color := pixel_rgb(80, 185, 255);
+drop_columns := list_of(2, 5, 8);
+drop_rows := list_of(0, 3, 6);
+update_ticks := 0;
+
+/// Draw each drop at its current board position.
+fn pixel_rain_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    drop_index := 0;
+    while drop_index < list_length(drop_rows) {
+        pixel_board_set(board, screen_size, screen_size, list_get(drop_columns, drop_index, 0), list_get(drop_rows, drop_index, 0), drop_color);
+        drop_index = drop_index + 1;
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Advance all drops at three tiles per second, wrapping them to the top.
+fn canvas_update() {
+    pixel_rain_render();
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_step {
+        update_ticks = 0;
+        drop_index := 0;
+        while drop_index < list_length(drop_rows) {
+            next_row := number_mod(list_get(drop_rows, drop_index, 0) + 1, screen_size);
+            list_set(drop_rows, drop_index, next_row);
+            drop_index = drop_index + 1;
+        }
+    }
+}
+
+/// Print the initial drop positions for command-line runs.
+fn pixel_rain_print() {
+    row := 0;
+    while row < screen_size {
+        if row == 0 {
+            io_write_line("..*.......");
+        } else if row == 3 {
+            io_write_line(".....*....");
+        } else if row == 6 {
+            io_write_line("........*.");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+pixel_rain_render();
+canvas_play(screen_size, screen_size, "Falling Rain");
+pixel_rain_print();

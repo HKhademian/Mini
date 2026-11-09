@@ -672,11 +672,11 @@
   {
     "id": "pixel-rain",
     "group": "Animation",
-    "label": "Falling rain — planned",
-    "note": "Animate falling pixels and respawn them at the top.",
+    "label": "Falling rain",
+    "note": "Move three drops at three steps per second and wrap them to the top.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-rain.mini"
   },
   {
     "id": "pixel-walk-cycle",
