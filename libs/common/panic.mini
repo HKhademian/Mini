@@ -2,6 +2,6 @@
 
 //
 /// Stop execution by recursing when a target has no panic host.
-fn panic(message) {
-    return panic(message);
+fn runtime_panic(message) {
+    return runtime_panic(message);
 }

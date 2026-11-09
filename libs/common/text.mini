@@ -45,22 +45,22 @@ fn text_join() {
 
 /// Return UTF-16 code-unit length; targets without a host implementation panic.
 fn text_length(source) {
-    return panic("text_length requires a host implementation");
+    return runtime_panic("text_length requires a host implementation");
 }
 
 /// Return one UTF-16 code unit; targets without a host implementation panic.
 fn text_get(source, index) {
-    return panic("text_get requires a host implementation");
+    return runtime_panic("text_get requires a host implementation");
 }
 
 /// Return the first Unicode code point; targets without a host implementation panic.
 fn text_code(source) {
-    return panic("text_code requires a host implementation");
+    return runtime_panic("text_code requires a host implementation");
 }
 
 /// Construct one Unicode code point; targets without a host implementation panic.
 fn text_from_code(code) {
-    return panic("text_from_code requires a host implementation");
+    return runtime_panic("text_from_code requires a host implementation");
 }
 
 /// Return lines split on LF or CRLF, retaining a final empty line.

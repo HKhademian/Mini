@@ -19,7 +19,7 @@ let AST_BINARY;
 let AST_GROUP;
 let js_host_functions;
 let reference_mode;
-function panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
+function runtime_panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
@@ -2778,7 +2778,7 @@ function $mini_file_29() {
     emit_js_host_function_add("process_spawn", "function process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", true, "");
 }
 function $mini_file_30() {
-    emit_js_host_function_add("panic", "function panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
+    emit_js_host_function_add("runtime_panic", "function runtime_panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
 }
 function $mini_file_31() {
 

@@ -1,10 +1,10 @@
-/// Native C replacement for the common panic function.
+/// Native C replacement for the common runtime_panic function.
 
 import "./registry";
 
 emit_c_host_function_add(
-    "panic",
-    "int MINI_ID(fn_panic)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    "runtime_panic",
+    "int MINI_ID(fn_runtime_panic)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
     + "    if (!result || (params.count && !params.args)) return 1;\n"
     + "    if (params.count && params.args[0].kind == MINI_ID(kind_text)) {\n"
     + "        MINI_ID(text) message = params.args[0].text;\n"

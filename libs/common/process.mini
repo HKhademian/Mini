@@ -6,27 +6,27 @@ import "common/panic";
 
 /// Return an environment variable or panic when the target has no process host.
 fn process_env(name) {
-    return panic("process_env requires a host implementation");
+    return runtime_panic("process_env requires a host implementation");
 }
 
 /// Return the current executable path or panic when the target has no host.
 fn process_exec_path() {
-    return panic("process_exec_path requires a host implementation");
+    return runtime_panic("process_exec_path requires a host implementation");
 }
 
 /// Exit with the supplied status or panic when the target has no host.
 fn process_exit(status) {
-    return panic("process_exit requires a host implementation");
+    return runtime_panic("process_exit requires a host implementation");
 }
 
 /// Return the running script path or panic when the target has no process host.
 fn process_script_path() {
-    return panic("process_script_path requires a host implementation");
+    return runtime_panic("process_script_path requires a host implementation");
 }
 
 /// Spawn a process from an options map or panic when the target has no host.
 fn process_spawn(options) {
-    return panic("process_spawn requires a host implementation");
+    return runtime_panic("process_spawn requires a host implementation");
 }
 
 /// Run one process and capture its result with a fixed timeout.

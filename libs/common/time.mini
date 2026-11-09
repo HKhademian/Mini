@@ -4,5 +4,5 @@ import "common/panic";
 
 /// Return integer milliseconds since the Unix epoch.
 fn time_millis() {
-    return panic("time_millis requires a host implementation");
+    return runtime_panic("time_millis requires a host implementation");
 }

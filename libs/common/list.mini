@@ -5,27 +5,27 @@ import "common/value";
 
 /// Create an empty list; targets without a host implementation panic.
 fn list_new() {
-    return panic("list_new requires a host implementation");
+    return runtime_panic("list_new requires a host implementation");
 }
 
 /// Read one list value, returning zero when the index is absent.
 fn list_get(items, index) {
-    return panic("list_get requires a host implementation");
+    return runtime_panic("list_get requires a host implementation");
 }
 
 /// Return the number of list values.
 fn list_length(items) {
-    return panic("list_length requires a host implementation");
+    return runtime_panic("list_length requires a host implementation");
 }
 
 /// Store one list value and return zero.
 fn list_set(items, index, value) {
-    return panic("list_set requires a host implementation");
+    return runtime_panic("list_set requires a host implementation");
 }
 
 /// Truncate a list and return zero.
 fn list_truncate(items, length) {
-    return panic("list_truncate requires a host implementation");
+    return runtime_panic("list_truncate requires a host implementation");
 }
 
 /// Return a shallow list copy, or an empty list for a non-list value.
