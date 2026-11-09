@@ -17,6 +17,7 @@ import "./emit-c/value";
 import "./emit-c/display";
 import "./emit-c/text";
 import "./emit-c/process";
+import "./emit-c/hash";
 import "./emit-c/operators";
 
 /// Reject a valid language form that the C target cannot lower yet.

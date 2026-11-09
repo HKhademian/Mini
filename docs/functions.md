@@ -33,8 +33,8 @@ UTF-8 text and returns zero, and the byte variants read or replace whole files
 as byte lists.
 
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
-Import `common/hash`; its Mini fallback panics, and JavaScript registers the
-same-name host implementation.
+Import `common/hash`; its Mini fallback panics, and JavaScript and C register
+same-name host implementations.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
 Import `common/time`; its Mini fallback panics, and JavaScript registers the
