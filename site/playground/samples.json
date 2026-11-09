@@ -524,5 +524,14 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-arrows.mini"
+  },
+  {
+    "id": "pixel-dvd",
+    "group": "Animation",
+    "label": "DVD pixel",
+    "note": "Bounce one bright pixel over a blue screen like a DVD screensaver.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-dvd.mini"
   }
 ]

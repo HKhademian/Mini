@@ -1,0 +1,44 @@
+/// Bounce one bright pixel over a blue screen like a tiny DVD screensaver.
+
+import "common/io";
+import "common/pixel-board";
+import "common/play";
+
+blue := pixel_rgb(8, 32, 112);
+white := pixel_rgb(255, 245, 220);
+pixel_x := 1;
+pixel_y := 1;
+pixel_dx := 1;
+pixel_dy := 1;
+
+/// Draw the pixel, then bounce its next position off each screen edge.
+fn mini_play_update() {
+    board := pixel_board_new(10, 10, blue);
+    pixel_board_set(board, 10, 10, pixel_x, pixel_y, white);
+    pixel_board_render(10, 10, board);
+
+    if pixel_x + pixel_dx < 0 || pixel_x + pixel_dx > 9 {
+        pixel_dx = 0 - pixel_dx;
+    }
+    if pixel_y + pixel_dy < 0 || pixel_y + pixel_dy > 9 {
+        pixel_dy = 0 - pixel_dy;
+    }
+    pixel_x = pixel_x + pixel_dx;
+    pixel_y = pixel_y + pixel_dy;
+}
+
+/// Print the first frame for command-line runs.
+fn pixel_dvd_print() {
+    row := 0;
+    while row < 10 {
+        if row == 1 {
+            io_write_line(".*........");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+mini_play(10, 10, "DVD Pixel");
+pixel_dvd_print();
