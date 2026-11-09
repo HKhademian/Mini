@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.49 / compiler 0.5.0-alpha.60 / bootstrap
+  0.3.0-alpha.62: add ASCII C text representation overrides and exercise pure
+  number parsing and formatting through them.
+
 - mini 0.3.0-alpha.48 / compiler 0.5.0-alpha.59 / bootstrap
   0.3.0-alpha.61: move C list representation runtime code into the imported
   list host override registry.

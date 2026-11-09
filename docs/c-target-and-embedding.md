@@ -144,9 +144,9 @@ Resolve these topics as implementation reaches them:
   boundaries with the numeric increment. JS uses numbers while some conversions
   require safe integers; broader limits remain open. Undefined C overflow is
   not a Mini rule.
-- Text: start with ASCII literal output. Define indexing/conversion when added.
-Current JS indexes UTF-16 units and converts bytes as UTF-8; UTF-8 byte indexing
-  is not automatically equivalent.
+- Text: C implements ASCII length, indexing, first-code-point lookup, and slicing.
+Non-ASCII text indexing and conversion remain unsupported; JS indexes UTF-16
+units and converts bytes as UTF-8, so UTF-8 byte indexing is not equivalent.
 - Collections: add heterogeneous values, missing-zero defaults, mutation, copies,
   sparse/negative indexing, and map behavior as distinct increments.
   The [passing proposal](parameter-passing.md) remains separate from accepted rules.

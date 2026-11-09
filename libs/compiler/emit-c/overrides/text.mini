@@ -1,0 +1,54 @@
+/// Native C replacements for the ASCII text representation operations.
+
+import "./registry";
+
+emit_c_host_function_add(
+    "text_length",
+    "static int MINI_ID(text_ascii)(MINI_ID(value) value, const unsigned char **data, size_t *length) {\n"
+    + "    if (value.kind != MINI_ID(kind_text) || !value.text.buffer || value.text.offset > value.text.buffer->count\n"
+    + "        || value.text.length > value.text.buffer->count - value.text.offset) return 0;\n"
+    + "    const unsigned char *bytes = (const unsigned char *)\"\"; if (value.text.length) bytes = value.text.buffer->items + value.text.offset;\n"
+    + "    for (size_t index = 0; index < value.text.length; ++index) if (bytes[index] > 127) return 0;\n"
+    + "    *data = bytes; *length = value.text.length; return 1;\n}\n"
+    + "int MINI_ID(fn_text_length)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
+    + "    if (params.args[0].kind == MINI_ID(kind_text) && !MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER((double)length); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "text_get",
+    "int MINI_ID(fn_text_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 2 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
+    + "    if (params.args[0].kind != MINI_ID(kind_text)) { *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); return 0; }\n"
+    + "    if (!MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1; MINI_ID(value) index = params.args[1];\n"
+    + "    if (index.kind != MINI_ID(kind_number) || index.number < 0 || index.number >= (double)length\n"
+    + "        || index.number != (double)(size_t)index.number) { *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); return 0; }\n"
+    + "    size_t offset = params.args[0].text.offset + (size_t)index.number; *result = MINI_ID(value_text)(params.args[0].text.buffer, offset, 1); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "text_code",
+    "int MINI_ID(fn_text_code)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const unsigned char *data = NULL; size_t length = 0;\n"
+    + "    if (params.args[0].kind != MINI_ID(kind_text)) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
+    + "    if (!MINI_ID(text_ascii)(params.args[0], &data, &length)) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(length ? data[0] : 0); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "text_slice",
+    "int MINI_ID(fn_text_slice)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 3 || !params.args) return 1; MINI_ID(value) source = params.args[0];\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); if (source.kind != MINI_ID(kind_text)) return 0;\n"
+    + "    const unsigned char *data = NULL; size_t length = 0; if (!MINI_ID(text_ascii)(source, &data, &length)) return 1;\n"
+    + "    MINI_ID(value) first = params.args[1], last = params.args[2];\n"
+    + "    if (first.kind != MINI_ID(kind_number) || last.kind != MINI_ID(kind_number)\n"
+    + "        || first.number < -9007199254740991.0 || first.number > 9007199254740991.0\n"
+    + "        || last.number < -9007199254740991.0 || last.number > 9007199254740991.0\n"
+    + "        || first.number != (double)(int64_t)first.number || last.number != (double)(int64_t)last.number) return 0;\n"
+    + "    int64_t start = (int64_t)first.number, end = (int64_t)last.number, size = (int64_t)length;\n"
+    + "    if (start < 0) start += size; if (end < 0) end += size; if (start < 0) start = 0; if (end < 0) end = 0;\n"
+    + "    if (start > size) start = size; if (end > size) end = size; if (end <= start) return 0;\n"
+    + "    *result = MINI_ID(value_text)(source.text.buffer, source.text.offset + (size_t)start, (size_t)(end - start)); return 0;\n}\n"
+);

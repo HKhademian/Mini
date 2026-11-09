@@ -1,0 +1,16 @@
+{
+  "id": "language.text-number-c-pure",
+  "kind": "feature",
+  "target": "c",
+  "source": "073-005-text-number-c-pure.mini",
+  "features": ["import", "number", "text", "target.c"],
+  "cases": [
+    {
+      "name": "ascii-text-host-and-pure-number-conversions",
+      "stdin": {"text": ""},
+      "stdout": {"text": "4i109in4217"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
