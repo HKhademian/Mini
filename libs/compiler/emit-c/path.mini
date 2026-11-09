@@ -10,127 +10,454 @@ emit_c_host_include_add("unistd.h");
 
 emit_c_host_function_add(
     "directory_create",
-    "static char *MINI_ID(path_string)(MINI_ID(value) value) {\n"
-    + "    if (value.kind != MINI_ID(kind_text) || !value.text.buffer || value.text.offset > value.text.buffer->count\n"
-    + "        || value.text.length > value.text.buffer->count - value.text.offset || value.text.length == SIZE_MAX) return NULL;\n"
-    + "    const unsigned char *data = value.text.length ? value.text.buffer->items + value.text.offset : (const unsigned char *)\"\";\n"
-    + "    if (memchr(data, 0, value.text.length)) return NULL;\n"
-    + "    char *path = malloc(value.text.length + 1); if (!path) return NULL;\n"
-    + "    memcpy(path, data, value.text.length); path[value.text.length] = 0; return path;\n"
-    + "}\n"
-    + "static int MINI_ID(directory_make)(const char *path) {\n"
-    + "    if (!path || !*path) return 1; char *copy = malloc(strlen(path) + 1); if (!copy) return 1; strcpy(copy, path);\n"
-    + "    for (char *cursor = copy + 1; *cursor; ++cursor) if (*cursor == '/') { *cursor = 0;\n"
-    + "        if (mkdir(copy, 0777) != 0 && errno != EEXIST) { free(copy); return 1; }\n"
-    + "        struct stat info; if (stat(copy, &info) != 0 || !S_ISDIR(info.st_mode)) { free(copy); return 1; } *cursor = '/';\n"
-    + "    }\n"
-    + "    int status = mkdir(copy, 0777); if (status != 0 && errno != EEXIST) { free(copy); return 1; }\n"
-    + "    struct stat info; status = stat(copy, &info) != 0 || !S_ISDIR(info.st_mode); free(copy); return status;\n"
-    + "}\n"
-    + "static int MINI_ID(path_join_host)(const char *left, const char *right, char **result) {\n"
-    + "    size_t a = strlen(left), b = strlen(right); int slash = a && left[a - 1] != '/';\n"
-    + "    if (a > SIZE_MAX - b - (size_t)slash - 1) return 1; char *joined = malloc(a + b + slash + 1); if (!joined) return 1;\n"
-    + "    memcpy(joined, left, a); if (slash) joined[a++] = '/'; memcpy(joined + a, right, b + 1); *result = joined; return 0;\n"
-    + "}\n"
-    + "static int MINI_ID(copy_tree)(const char *from, const char *to) {\n"
-    + "    struct stat info; if (stat(from, &info) != 0) return 1;\n"
-    + "    if (!S_ISDIR(info.st_mode)) { FILE *input = fopen(from, \"rb\"); if (!input) return 1; FILE *output = fopen(to, \"wb\");\n"
-    + "        if (!output) { fclose(input); return 1; } unsigned char bytes[8192]; int status = 0; size_t count;\n"
-    + "        while ((count = fread(bytes, 1, sizeof(bytes), input)) > 0) if (fwrite(bytes, 1, count, output) != count) { status = 1; break; }\n"
-    + "        if (ferror(input)) status = 1; if (fclose(input) != 0) status = 1; if (fclose(output) != 0) status = 1;\n"
-    + "        if (!status && chmod(to, info.st_mode & 07777) != 0) status = 1; return status; }\n"
-    + "    if (MINI_ID(directory_make)(to) != 0) return 1; DIR *directory = opendir(from); if (!directory) return 1;\n"
-    + "    struct dirent *entry; int status = 0; while (!status && (entry = readdir(directory)) != NULL) {\n"
-    + "        if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) continue; char *source = NULL, *target = NULL;\n"
-    + "        if (MINI_ID(path_join_host)(from, entry->d_name, &source) != 0 || MINI_ID(path_join_host)(to, entry->d_name, &target) != 0) status = 1;\n"
-    + "        if (!status) status = MINI_ID(copy_tree)(source, target); free(source); free(target);\n"
-    + "    }\n"
-    + "    if (closedir(directory) != 0) status = 1; if (!status && chmod(to, info.st_mode & 07777) != 0) status = 1; return status;\n"
-    + "}\n"
-    + "static int MINI_ID(remove_tree)(const char *path) {\n"
-    + "    struct stat info; if (lstat(path, &info) != 0) return errno == ENOENT ? 0 : 1;\n"
-    + "    if (!S_ISDIR(info.st_mode)) return unlink(path) == 0 || errno == ENOENT ? 0 : 1;\n"
-    + "    DIR *directory = opendir(path); if (!directory) return 1; struct dirent *entry; int status = 0;\n"
-    + "    while (!status && (entry = readdir(directory)) != NULL) { if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) continue;\n"
-    + "        char *child = NULL; if (MINI_ID(path_join_host)(path, entry->d_name, &child) != 0) status = 1;\n"
-    + "        if (!status) status = MINI_ID(remove_tree)(child); free(child); }\n"
-    + "    if (closedir(directory) != 0) status = 1; if (!status && rmdir(path) != 0 && errno != ENOENT) status = 1; return status;\n"
-    + "}\n"
-    + "int MINI_ID(fn_directory_create)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; char *path = MINI_ID(path_string)(params.args[0]);\n"
-    + "    if (!path) return 1; int status = MINI_ID(directory_make)(path); free(path); if (status) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "static char *MINI_ID(path_string)(MINI_ID(value) value) {",
+        "  if (value.kind != MINI_ID(kind_text) || !value.text.buffer ||",
+        "      value.text.offset > value.text.buffer->count ||",
+        "      value.text.length > value.text.buffer->count - value.text.offset ||",
+        "      value.text.length == SIZE_MAX) {",
+        "    return NULL;",
+        "  }",
+        "  const unsigned char *data =",
+        "      value.text.length ? value.text.buffer->items + value.text.offset : (const unsigned char *)\"\";",
+        "  if (memchr(data, 0, value.text.length)) {",
+        "    return NULL;",
+        "  }",
+        "  char *path = malloc(value.text.length + 1);",
+        "  if (!path) {",
+        "    return NULL;",
+        "  }",
+        "  memcpy(path, data, value.text.length);",
+        "  path[value.text.length] = 0;",
+        "  return path;",
+        "}",
+        "static int MINI_ID(directory_make)(const char *path) {",
+        "  if (!path || !*path) {",
+        "    return 1;",
+        "  }",
+        "  char *copy = malloc(strlen(path) + 1);",
+        "  if (!copy) {",
+        "    return 1;",
+        "  }",
+        "  strcpy(copy, path);",
+        "  for (char *cursor = copy + 1; *cursor; ++cursor) {",
+        "    if (*cursor == '/') {",
+        "      *cursor = 0;",
+        "      if (mkdir(copy, 0777) != 0 && errno != EEXIST) {",
+        "        free(copy);",
+        "        return 1;",
+        "      }",
+        "      struct stat info;",
+        "      if (stat(copy, &info) != 0 || !S_ISDIR(info.st_mode)) {",
+        "        free(copy);",
+        "        return 1;",
+        "      }",
+        "      *cursor = '/';",
+        "    }",
+        "  }",
+        "  int status = mkdir(copy, 0777);",
+        "  if (status != 0 && errno != EEXIST) {",
+        "    free(copy);",
+        "    return 1;",
+        "  }",
+        "  struct stat info;",
+        "  status = stat(copy, &info) != 0 || !S_ISDIR(info.st_mode);",
+        "  free(copy);",
+        "  return status;",
+        "}",
+        "static int MINI_ID(path_join_host)(const char *left, const char *right, char **result) {",
+        "  size_t a = strlen(left), b = strlen(right);",
+        "  int slash = a && left[a - 1] != '/';",
+        "  if (a > SIZE_MAX - b - (size_t)slash - 1) {",
+        "    return 1;",
+        "  }",
+        "  char *joined = malloc(a + b + slash + 1);",
+        "  if (!joined) {",
+        "    return 1;",
+        "  }",
+        "  memcpy(joined, left, a);",
+        "  if (slash) {",
+        "    joined[a++] = '/';",
+        "  }",
+        "  memcpy(joined + a, right, b + 1);",
+        "  *result = joined;",
+        "  return 0;",
+        "}",
+        "static int MINI_ID(copy_tree)(const char *from, const char *to) {",
+        "  struct stat info;",
+        "  if (stat(from, &info) != 0) {",
+        "    return 1;",
+        "  }",
+        "  if (!S_ISDIR(info.st_mode)) {",
+        "    FILE *input = fopen(from, \"rb\");",
+        "    if (!input) {",
+        "      return 1;",
+        "    }",
+        "    FILE *output = fopen(to, \"wb\");",
+        "    if (!output) {",
+        "      fclose(input);",
+        "      return 1;",
+        "    }",
+        "    unsigned char bytes[8192];",
+        "    int status = 0;",
+        "    size_t count;",
+        "    while ((count = fread(bytes, 1, sizeof(bytes), input)) > 0) {",
+        "      if (fwrite(bytes, 1, count, output) != count) {",
+        "        status = 1;",
+        "        break;",
+        "      }",
+        "    }",
+        "    if (ferror(input)) {",
+        "      status = 1;",
+        "    }",
+        "    if (fclose(input) != 0) {",
+        "      status = 1;",
+        "    }",
+        "    if (fclose(output) != 0) {",
+        "      status = 1;",
+        "    }",
+        "    if (!status && chmod(to, info.st_mode & 07777) != 0) {",
+        "      status = 1;",
+        "    }",
+        "    return status;",
+        "  }",
+        "  if (MINI_ID(directory_make)(to) != 0) {",
+        "    return 1;",
+        "  }",
+        "  DIR *directory = opendir(from);",
+        "  if (!directory) {",
+        "    return 1;",
+        "  }",
+        "  struct dirent *entry;",
+        "  int status = 0;",
+        "  while (!status && (entry = readdir(directory)) != NULL) {",
+        "    if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) {",
+        "      continue;",
+        "    }",
+        "    char *source = NULL, *target = NULL;",
+        "    if (MINI_ID(path_join_host)(from, entry->d_name, &source) != 0 ||",
+        "        MINI_ID(path_join_host)(to, entry->d_name, &target) != 0) {",
+        "      status = 1;",
+        "    }",
+        "    if (!status) {",
+        "      status = MINI_ID(copy_tree)(source, target);",
+        "    }",
+        "    free(source);",
+        "    free(target);",
+        "  }",
+        "  if (closedir(directory) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  if (!status && chmod(to, info.st_mode & 07777) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  return status;",
+        "}",
+        "static int MINI_ID(remove_tree)(const char *path) {",
+        "  struct stat info;",
+        "  if (lstat(path, &info) != 0) {",
+        "    return errno == ENOENT ? 0 : 1;",
+        "  }",
+        "  if (!S_ISDIR(info.st_mode)) {",
+        "    return unlink(path) == 0 || errno == ENOENT ? 0 : 1;",
+        "  }",
+        "  DIR *directory = opendir(path);",
+        "  if (!directory) {",
+        "    return 1;",
+        "  }",
+        "  struct dirent *entry;",
+        "  int status = 0;",
+        "  while (!status && (entry = readdir(directory)) != NULL) {",
+        "    if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) {",
+        "      continue;",
+        "    }",
+        "    char *child = NULL;",
+        "    if (MINI_ID(path_join_host)(path, entry->d_name, &child) != 0) {",
+        "      status = 1;",
+        "    }",
+        "    if (!status) {",
+        "      status = MINI_ID(remove_tree)(child);",
+        "    }",
+        "    free(child);",
+        "  }",
+        "  if (closedir(directory) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  if (!status && rmdir(path) != 0 && errno != ENOENT) {",
+        "    status = 1;",
+        "  }",
+        "  return status;",
+        "}",
+        "int MINI_ID(fn_directory_create)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                 MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  int status = MINI_ID(directory_make)(path);",
+        "  free(path);",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "directory_list",
-    "static int MINI_ID(name_compare)(const void *left, const void *right) { return strcmp(*(char *const *)left, *(char *const *)right); }\n"
-    + "int MINI_ID(fn_directory_list)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; MINI_ID(value) list = MINI_ID(list_new)(context);\n"
-    + "    char *path = MINI_ID(path_string)(params.args[0]); if (!path) { *result = list; return 0; } DIR *directory = opendir(path); free(path);\n"
-    + "    if (!directory) { *result = list; return 0; } char **names = NULL; size_t count = 0, capacity = 0; struct dirent *entry; int status = 0;\n"
-    + "    while ((entry = readdir(directory)) != NULL) { if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) continue;\n"
-    + "        if (count == capacity) { size_t next = capacity ? capacity * 2 : 8; char **grown = realloc(names, next * sizeof(*names)); if (!grown) { status = 1; break; } names = grown; capacity = next; }\n"
-    + "        size_t length = strlen(entry->d_name); names[count] = malloc(length + 1); if (!names[count]) { status = 1; break; } memcpy(names[count++], entry->d_name, length + 1);\n"
-    + "    }\n"
-    + "    if (closedir(directory) != 0) status = 1; if (status) { for (size_t i = 0; i < count; ++i) free(names[i]); free(names); return 1; }\n"
-    + "    qsort(names, count, sizeof(*names), MINI_ID(name_compare));\n"
-    + "    for (size_t i = 0; i < count; ++i) { size_t offset = context->buffer.count, length = strlen(names[i]);\n"
-    + "        if (MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)names[i], length) != 0) status = 1;\n"
-    + "        if (!status) MINI_ID(list_push)(list.list, MINI_ID(value_text)(&context->buffer, offset, length), 0); free(names[i]); }\n"
-    + "    free(names); if (status) return 1; *result = list; return 0;\n}\n"
+    text_join(
+        "\n",
+        "static int MINI_ID(name_compare)(const void *left, const void *right) {",
+        "  return strcmp(*(char *const *)left, *(char *const *)right);",
+        "}",
+        "int MINI_ID(fn_directory_list)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                               MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(value) list = MINI_ID(list_new)(context);",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  if (!path) {",
+        "    *result = list;",
+        "    return 0;",
+        "  }",
+        "  DIR *directory = opendir(path);",
+        "  free(path);",
+        "  if (!directory) {",
+        "    *result = list;",
+        "    return 0;",
+        "  }",
+        "  char **names = NULL;",
+        "  size_t count = 0, capacity = 0;",
+        "  struct dirent *entry;",
+        "  int status = 0;",
+        "  while ((entry = readdir(directory)) != NULL) {",
+        "    if (!strcmp(entry->d_name, \".\") || !strcmp(entry->d_name, \"..\")) {",
+        "      continue;",
+        "    }",
+        "    if (count == capacity) {",
+        "      size_t next = capacity ? capacity * 2 : 8;",
+        "      char **grown = realloc(names, next * sizeof(*names));",
+        "      if (!grown) {",
+        "        status = 1;",
+        "        break;",
+        "      }",
+        "      names = grown;",
+        "      capacity = next;",
+        "    }",
+        "    size_t length = strlen(entry->d_name);",
+        "    names[count] = malloc(length + 1);",
+        "    if (!names[count]) {",
+        "      status = 1;",
+        "      break;",
+        "    }",
+        "    memcpy(names[count++], entry->d_name, length + 1);",
+        "  }",
+        "  if (closedir(directory) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  if (status) {",
+        "    for (size_t i = 0; i < count; ++i) {",
+        "      free(names[i]);",
+        "    }",
+        "    free(names);",
+        "    return 1;",
+        "  }",
+        "  qsort(names, count, sizeof(*names), MINI_ID(name_compare));",
+        "  for (size_t i = 0; i < count; ++i) {",
+        "    size_t offset = context->buffer.count, length = strlen(names[i]);",
+        "    if (MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)names[i], length) !=",
+        "        0) {",
+        "      status = 1;",
+        "    }",
+        "    if (!status) {",
+        "      MINI_ID(list_push)(list.list, MINI_ID(value_text)(&context->buffer, offset, length), 0);",
+        "    }",
+        "    free(names[i]);",
+        "  }",
+        "  free(names);",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = list;",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_copy",
-    "int MINI_ID(fn_path_copy)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; char *from = MINI_ID(path_string)(params.args[0]);\n"
-    + "    char *to = MINI_ID(path_string)(params.args[1]); if (!from || !to) { free(from); free(to); return 1; }\n"
-    + "    int status = MINI_ID(copy_tree)(from, to); free(from); free(to); if (status) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_copy)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                          MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *from = MINI_ID(path_string)(params.args[0]);",
+        "  char *to = MINI_ID(path_string)(params.args[1]);",
+        "  if (!from || !to) {",
+        "    free(from);",
+        "    free(to);",
+        "    return 1;",
+        "  }",
+        "  int status = MINI_ID(copy_tree)(from, to);",
+        "  free(from);",
+        "  free(to);",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_is_directory",
-    "int MINI_ID(fn_path_is_directory)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; char *path = MINI_ID(path_string)(params.args[0]);\n"
-    + "    struct stat info; int value = path && stat(path, &info) == 0 && S_ISDIR(info.st_mode); free(path);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(value); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_is_directory)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                  MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  struct stat info;",
+        "  int value = path && stat(path, &info) == 0 && S_ISDIR(info.st_mode);",
+        "  free(path);",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(value);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_is_exists",
-    "int MINI_ID(fn_path_is_exists)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; char *path = MINI_ID(path_string)(params.args[0]);\n"
-    + "    struct stat info; int value = path && stat(path, &info) == 0; free(path);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(value); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_is_exists)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                               MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  struct stat info;",
+        "  int value = path && stat(path, &info) == 0;",
+        "  free(path);",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(value);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_is_file",
-    "int MINI_ID(fn_path_is_file)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; char *path = MINI_ID(path_string)(params.args[0]);\n"
-    + "    struct stat info; int value = path && stat(path, &info) == 0 && S_ISREG(info.st_mode); free(path);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(value); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_is_file)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                             MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  struct stat info;",
+        "  int value = path && stat(path, &info) == 0 && S_ISREG(info.st_mode);",
+        "  free(path);",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(value);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_remove",
-    "int MINI_ID(fn_path_remove)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; char *path = MINI_ID(path_string)(params.args[0]);\n"
-    + "    if (!path) return 1; int status = MINI_ID(remove_tree)(path); free(path); if (status) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_remove)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                            MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(path_string)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  int status = MINI_ID(remove_tree)(path);",
+        "  free(path);",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "path_temp_directory",
-    "int MINI_ID(fn_path_temp_directory)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 0) return 1; const char *base = getenv(\"TMPDIR\"); if (!base || !*base) base = \"/tmp\";\n"
-    + "    size_t length = strlen(base); if (length > SIZE_MAX - 16) return 1; char *pattern = malloc(length + 16); if (!pattern) return 1;\n"
-    + "    static unsigned long sequence; snprintf(pattern, length + 48, \"%s%smini-%ld-%lu\", base, base[length - 1] == '/' ? \"\" : \"/\", (long)getpid(), sequence++);\n"
-    + "    int created = 0; for (int attempt = 0; attempt < 128; ++attempt) { if (mkdir(pattern, 0700) == 0) { created = 1; break; }\n"
-    + "        if (errno != EEXIST) break; snprintf(pattern, length + 48, \"%s%smini-%ld-%lu\", base, base[length - 1] == '/' ? \"\" : \"/\", (long)getpid(), sequence++); }\n"
-    + "    if (!created) { free(pattern); return 1; } size_t offset = context->buffer.count; length = strlen(pattern);\n"
-    + "    int status = MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)pattern, length); free(pattern);\n"
-    + "    if (status) return 1; *result = MINI_ID(value_text)(&context->buffer, offset, length); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_path_temp_directory)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                    MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 0) {",
+        "    return 1;",
+        "  }",
+        "  const char *base = getenv(\"TMPDIR\");",
+        "  if (!base || !*base) {",
+        "    base = \"/tmp\";",
+        "  }",
+        "  size_t length = strlen(base);",
+        "  if (length > SIZE_MAX - 16) {",
+        "    return 1;",
+        "  }",
+        "  char *pattern = malloc(length + 16);",
+        "  if (!pattern) {",
+        "    return 1;",
+        "  }",
+        "  static unsigned long sequence;",
+        "  snprintf(pattern, length + 48, \"%s%smini-%ld-%lu\", base, base[length - 1] == '/' ? \"\" : \"/\",",
+        "           (long)getpid(), sequence++);",
+        "  int created = 0;",
+        "  for (int attempt = 0; attempt < 128; ++attempt) {",
+        "    if (mkdir(pattern, 0700) == 0) {",
+        "      created = 1;",
+        "      break;",
+        "    }",
+        "    if (errno != EEXIST) {",
+        "      break;",
+        "    }",
+        "    snprintf(pattern, length + 48, \"%s%smini-%ld-%lu\", base, base[length - 1] == '/' ? \"\" : \"/\",",
+        "             (long)getpid(), sequence++);",
+        "  }",
+        "  if (!created) {",
+        "    free(pattern);",
+        "    return 1;",
+        "  }",
+        "  size_t offset = context->buffer.count;",
+        "  length = strlen(pattern);",
+        "  int status =",
+        "      MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)pattern, length);",
+        "  free(pattern);",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(value_text)(&context->buffer, offset, length);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );

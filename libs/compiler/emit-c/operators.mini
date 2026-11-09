@@ -4,27 +4,49 @@ import "./registry";
 
 emit_c_host_runtime_add(
     "operators",
-    "static int MINI_ID(add)(MINI_ID(text_buffer) *buffer, MINI_ID(value) *left, MINI_ID(value) right) {\n"
-    + "    if (left->kind == MINI_ID(kind_number) && right.kind == MINI_ID(kind_number)) {\n"
-    + "        left->number += right.number;\n"
-    + "        return 0;\n"
-    + "    }\n"
-    + "    if (left->kind != MINI_ID(kind_text) || right.kind != MINI_ID(kind_text)) return 1;\n"
-    + "    MINI_ID(text) a = left->text, b = right.text;\n"
-    + "    if (a.buffer != buffer || b.buffer != buffer || a.offset > buffer->count || b.offset > buffer->count\n"
-    + "        || a.length > buffer->count - a.offset || b.length > buffer->count - b.offset) return 1;\n"
-    + "    size_t start = buffer->count;\n"
-    + "    if (a.length && MINI_ID(text_buffer_append)(buffer, buffer->items + a.offset, a.length)) return 1;\n"
-    + "    if (b.length && MINI_ID(text_buffer_append)(buffer, buffer->items + b.offset, b.length)) return 1;\n"
-    + "    *left = MINI_ID(value_text)(buffer, start, buffer->count - start);\n"
-    + "    return 0;\n"
-    + "}\n"
-    + "\n"
-    + "static int MINI_ID(equal)(MINI_ID(value) left, MINI_ID(value) right) {\n"
-    + "    if (left.kind != right.kind) return 0;\n"
-    + "    if (left.kind == MINI_ID(kind_number)) return left.number == right.number;\n"
-    + "    if (left.kind == MINI_ID(kind_boolean)) return !!left.boolean == !!right.boolean;\n"
-    + "    if (left.kind != MINI_ID(kind_text)) return 0;\n"
-    + "    return MINI_ID(text_unit_compare)(left.text, right.text) == 0;\n"
-    + "}\n"
+    text_join(
+        "\n",
+        "static int MINI_ID(add)(MINI_ID(text_buffer) * buffer, MINI_ID(value) * left,",
+        "                        MINI_ID(value) right) {",
+        "  if (left->kind == MINI_ID(kind_number) && right.kind == MINI_ID(kind_number)) {",
+        "    left->number += right.number;",
+        "    return 0;",
+        "  }",
+        "  if (left->kind != MINI_ID(kind_text) || right.kind != MINI_ID(kind_text)) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(text) a = left->text, b = right.text;",
+        "  if (a.buffer != buffer || b.buffer != buffer || a.offset > buffer->count ||",
+        "      b.offset > buffer->count || a.length > buffer->count - a.offset ||",
+        "      b.length > buffer->count - b.offset) {",
+        "    return 1;",
+        "  }",
+        "  size_t start = buffer->count;",
+        "  if (a.length && MINI_ID(text_buffer_append)(buffer, buffer->items + a.offset, a.length)) {",
+        "    return 1;",
+        "  }",
+        "  if (b.length && MINI_ID(text_buffer_append)(buffer, buffer->items + b.offset, b.length)) {",
+        "    return 1;",
+        "  }",
+        "  *left = MINI_ID(value_text)(buffer, start, buffer->count - start);",
+        "  return 0;",
+        "}",
+        "",
+        "static int MINI_ID(equal)(MINI_ID(value) left, MINI_ID(value) right) {",
+        "  if (left.kind != right.kind) {",
+        "    return 0;",
+        "  }",
+        "  if (left.kind == MINI_ID(kind_number)) {",
+        "    return left.number == right.number;",
+        "  }",
+        "  if (left.kind == MINI_ID(kind_boolean)) {",
+        "    return !!left.boolean == !!right.boolean;",
+        "  }",
+        "  if (left.kind != MINI_ID(kind_text)) {",
+        "    return 0;",
+        "  }",
+        "  return MINI_ID(text_unit_compare)(left.text, right.text) == 0;",
+        "}",
+        ""
+    )
 );

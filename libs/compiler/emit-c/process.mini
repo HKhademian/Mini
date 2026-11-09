@@ -5,42 +5,105 @@ import "./registry";
 emit_c_host_preamble_add("#define _XOPEN_SOURCE 700");
 emit_c_host_runtime_after_context_add(
     "process_script_path",
-    "static int MINI_ID(script_path_resolve)(MINI_ID(context) *context, MINI_ID(value) input, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || input.kind != MINI_ID(kind_text) || !input.text.buffer\n"
-    + "        || input.text.offset > input.text.buffer->count || input.text.length > input.text.buffer->count - input.text.offset\n"
-    + "        || input.text.length == SIZE_MAX) return 1;\n"
-    + "    if (!input.text.length) { *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0); return 0; }\n"
-    + "    const unsigned char *source = input.text.buffer->items + input.text.offset;\n"
-    + "    if (memchr(source, 0, input.text.length)) return 1; char *raw = malloc(input.text.length + 1); if (!raw) return 1;\n"
-    + "    memcpy(raw, source, input.text.length); raw[input.text.length] = 0; char *path = realpath(raw, NULL); free(raw); if (!path) return 1;\n"
-    + "    size_t offset = context->buffer.count, length = strlen(path); int status = MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)path, length);\n"
-    + "    free(path); if (status != 0) return 1; *result = MINI_ID(value_text)(&context->buffer, offset, length); return 0;\n}\n"
+    text_join(
+        "\n",
+        "static int MINI_ID(script_path_resolve)(MINI_ID(context) * context, MINI_ID(value) input,",
+        "                                        MINI_ID(value) * result) {",
+        "  if (!context || !result || input.kind != MINI_ID(kind_text) || !input.text.buffer ||",
+        "      input.text.offset > input.text.buffer->count ||",
+        "      input.text.length > input.text.buffer->count - input.text.offset ||",
+        "      input.text.length == SIZE_MAX) {",
+        "    return 1;",
+        "  }",
+        "  if (!input.text.length) {",
+        "    *result = MINI_ID(value_text)(&context->buffer, context->buffer.count, 0);",
+        "    return 0;",
+        "  }",
+        "  const unsigned char *source = input.text.buffer->items + input.text.offset;",
+        "  if (memchr(source, 0, input.text.length)) {",
+        "    return 1;",
+        "  }",
+        "  char *raw = malloc(input.text.length + 1);",
+        "  if (!raw) {",
+        "    return 1;",
+        "  }",
+        "  memcpy(raw, source, input.text.length);",
+        "  raw[input.text.length] = 0;",
+        "  char *path = realpath(raw, NULL);",
+        "  free(raw);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  size_t offset = context->buffer.count, length = strlen(path);",
+        "  int status = MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)path, length);",
+        "  free(path);",
+        "  if (status != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(value_text)(&context->buffer, offset, length);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "process_panic",
-    "int MINI_ID(fn_process_panic)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!result || (params.count && !params.args)) return 1;\n"
-    + "    if (params.count && params.args[0].kind == MINI_ID(kind_text)) {\n"
-    + "        MINI_ID(text) message = params.args[0].text;\n"
-    + "        MINI_ID(text_buffer) *buffer = message.buffer;\n"
-    + "        if (buffer && message.offset <= buffer->count && message.length <= buffer->count - message.offset)\n"
-    + "            (void)fwrite(buffer->items + message.offset, 1, message.length, stderr);\n"
-    + "    }\n"
-    + "    (void)fputc('\\n', stderr); (void)fflush(stderr); exit(1);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); (void)context; return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_process_panic)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                              MINI_ID(value) * result) {",
+        "  if (!result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  if (params.count && params.args[0].kind == MINI_ID(kind_text)) {",
+        "    MINI_ID(text) message = params.args[0].text;",
+        "    MINI_ID(text_buffer) *buffer = message.buffer;",
+        "    if (buffer && message.offset <= buffer->count &&",
+        "        message.length <= buffer->count - message.offset) {",
+        "      (void)fwrite(buffer->items + message.offset, 1, message.length, stderr);",
+        "    }",
+        "  }",
+        "  (void)fputc('\\n', stderr);",
+        "  (void)fflush(stderr);",
+        "  exit(1);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  (void)context;",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "process_exit",
-    "int MINI_ID(fn_process_exit)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!result || params.count != 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) return 1;\n"
-    + "    (void)context; exit((int)params.args[0].number); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_process_exit)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                             MINI_ID(value) * result) {",
+        "  if (!result || params.count != 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) {",
+        "    return 1;",
+        "  }",
+        "  (void)context;",
+        "  exit((int)params.args[0].number);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "process_script_path",
-    "int MINI_ID(fn_process_script_path)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 0) return 1;\n"
-    + "    return MINI_ID(script_path_resolve)(context, context->script_path, result);\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_process_script_path)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                    MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 0) {",
+        "    return 1;",
+        "  }",
+        "  return MINI_ID(script_path_resolve)(context, context->script_path, result);",
+        "}",
+        ""
+    )
 );

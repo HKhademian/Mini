@@ -4,25 +4,54 @@ import "./registry";
 
 emit_js_host_function_add(
     "file_read",
-    "function file_read(path) { return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\"); }\n",
+    text_join(
+        "\n",
+        "function file_read(path) {",
+        "  return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\");",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "file_read_bytes",
-    "function file_read_bytes(path) { return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path)); }\n",
+    text_join(
+        "\n",
+        "function file_read_bytes(path) {",
+        "  return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "file_write",
-    "function file_write(path, text) { process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\"); return 0; }\n",
+    text_join(
+        "\n",
+        "function file_write(path, text) {",
+        "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\");",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "file_write_bytes",
-    "function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values)); return 0; }\n",
+    text_join(
+        "\n",
+        "function file_write_bytes(path, bytes) {",
+        "  const values = Array.isArray(bytes) ?",
+        "      bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) :",
+        "      [];",
+        "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );

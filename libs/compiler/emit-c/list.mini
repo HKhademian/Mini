@@ -7,121 +7,178 @@ import "./registry";
 fn emit_c_list_runtime() {
     return emit_c_join_lines(
         list_of(
-            "static MINI_ID(value) MINI_ID(list_new)(MINI_ID(context) *context) {",
-            "    MINI_ID(list) *list = calloc(1, sizeof(*list));",
-            "    if (!list) abort();",
-            "    MINI_ID(vec_init)(&list->values, sizeof(MINI_ID(value)));",
-            "    if (!context->lists.item_size) MINI_ID(vec_init)(&context->lists, sizeof(list));",
-            "    MINI_ID(vec_append)(&context->lists, &list, 1);",
-            "    return (MINI_ID(value)) MINI_VALUE_LIST(list);",
+            "static MINI_ID(value) MINI_ID(list_new)(MINI_ID(context) * context) {",
+            "  MINI_ID(list) *list = calloc(1, sizeof(*list));",
+            "  if (!list) {",
+            "    abort();",
+            "  }",
+            "  MINI_ID(vec_init)(&list->values, sizeof(MINI_ID(value)));",
+            "  if (!context->lists.item_size) {",
+            "    MINI_ID(vec_init)(&context->lists, sizeof(list));",
+            "  }",
+            "  MINI_ID(vec_append)(&context->lists, &list, 1);",
+            "  return (MINI_ID(value))MINI_VALUE_LIST(list);",
             "}",
             "",
-            "static MINI_ID(value) MINI_ID(list_copy)(MINI_ID(context) *context, MINI_ID(value) value) {",
-            "    MINI_ID(value) copy = MINI_ID(list_new)(context);",
-            "    if (value.kind == MINI_ID(kind_list) && value.list)",
-            "        MINI_ID(vec_append)(&copy.list->values, value.list->values.items, value.list->values.count);",
-            "    return copy;",
+            "static MINI_ID(value) MINI_ID(list_copy)(MINI_ID(context) * context, MINI_ID(value) value) {",
+            "  MINI_ID(value) copy = MINI_ID(list_new)(context);",
+            "  if (value.kind == MINI_ID(kind_list) && value.list) {",
+            "    MINI_ID(vec_append)(&copy.list->values, value.list->values.items, value.list->values.count);",
+            "  }",
+            "  return copy;",
             "}",
             "",
-            "static void MINI_ID(list_push)(MINI_ID(list) *list, MINI_ID(value) value, int front) {",
-            "    if (!list) return;",
-            "    size_t count = list->values.count;",
-            "    MINI_ID(vec_reserve)(&list->values, count + 1);",
-            "    MINI_ID(value) *items = (MINI_ID(value) *)list->values.items;",
-            "    if (front && count) memmove(items + 1, items, count * sizeof(*items));",
-            "    items[front ? 0 : count] = value;",
-            "    list->values.count = count + 1;",
+            "static void MINI_ID(list_push)(MINI_ID(list) * list, MINI_ID(value) value, int front) {",
+            "  if (!list) {",
+            "    return;",
+            "  }",
+            "  size_t count = list->values.count;",
+            "  MINI_ID(vec_reserve)(&list->values, count + 1);",
+            "  MINI_ID(value) *items = (MINI_ID(value) *)list->values.items;",
+            "  if (front && count) {",
+            "    memmove(items + 1, items, count * sizeof(*items));",
+            "  }",
+            "  items[front ? 0 : count] = value;",
+            "  list->values.count = count + 1;",
             "}",
             "",
-            "static MINI_ID(value) MINI_ID(fn_args_value)(MINI_ID(context) *context, MINI_ID(params) params) {",
-            "    MINI_ID(value) arguments = MINI_ID(list_new)(context);",
-            "    if (params.count && !params.args) return arguments;",
-            "    for (size_t index = 0; index < params.count; ++index) MINI_ID(list_push)(arguments.list, params.args[index], 0);",
+            "static MINI_ID(value) MINI_ID(fn_args_value)(MINI_ID(context) * context, MINI_ID(params) params) {",
+            "  MINI_ID(value) arguments = MINI_ID(list_new)(context);",
+            "  if (params.count && !params.args) {",
             "    return arguments;",
+            "  }",
+            "  for (size_t index = 0; index < params.count; ++index) {",
+            "    MINI_ID(list_push)(arguments.list, params.args[index], 0);",
+            "  }",
+            "  return arguments;",
             "}",
             "",
-            "static MINI_ID(value) MINI_ID(list_pop)(MINI_ID(list) *list, int front) {",
-            "    if (!list || !list->values.count) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    MINI_ID(value) *items = (MINI_ID(value) *)list->values.items;",
-            "    MINI_ID(value) value = items[front ? 0 : list->values.count - 1];",
-            "    if (front && list->values.count > 1) memmove(items, items + 1, (list->values.count - 1) * sizeof(*items));",
-            "    list->values.count -= 1;",
-            "    return value;",
+            "static MINI_ID(value) MINI_ID(list_pop)(MINI_ID(list) * list, int front) {",
+            "  if (!list || !list->values.count) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  MINI_ID(value) *items = (MINI_ID(value) *)list->values.items;",
+            "  MINI_ID(value) value = items[front ? 0 : list->values.count - 1];",
+            "  if (front && list->values.count > 1) {",
+            "    memmove(items, items + 1, (list->values.count - 1) * sizeof(*items));",
+            "  }",
+            "  list->values.count -= 1;",
+            "  return value;",
             "}",
             "",
             "static void MINI_ID(list_truncate)(MINI_ID(value) value, MINI_ID(value) length) {",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list || length.kind != MINI_ID(kind_number)",
-            "        || !(length.number >= 0 && length.number <= value.list->values.count)) return;",
-            "    size_t count = (size_t)length.number;",
-            "    if ((MINI_ID(number))count == length.number && count < value.list->values.count) value.list->values.count = count;",
+            "  if (value.kind != MINI_ID(kind_list) || !value.list || length.kind != MINI_ID(kind_number) ||",
+            "      !(length.number >= 0 && length.number <= value.list->values.count)) {",
+            "    return;",
+            "  }",
+            "  size_t count = (size_t)length.number;",
+            "  if ((MINI_ID(number))count == length.number && count < value.list->values.count) {",
+            "    value.list->values.count = count;",
+            "  }",
             "}",
             "",
             "static MINI_ID(value) MINI_ID(list_length)(MINI_ID(value) value) {",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    return (MINI_ID(value)) MINI_VALUE_NUMBER((MINI_ID(number))value.list->values.count);",
+            "  if (value.kind != MINI_ID(kind_list) || !value.list) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  return (MINI_ID(value))MINI_VALUE_NUMBER((MINI_ID(number))value.list->values.count);",
             "}",
             "",
             "static MINI_ID(value) MINI_ID(list_get)(MINI_ID(value) value, MINI_ID(value) index) {",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list || index.kind != MINI_ID(kind_number)) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    double position = index.number;",
-            "    size_t count = value.list->values.count;",
-            "    if (position < 0) position += (double)count;",
-            "    if (!(position >= 0 && position < (double)count)) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    size_t offset = (size_t)position;",
-            "    if ((double)offset != position) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    return ((MINI_ID(value) *)value.list->values.items)[offset];",
+            "  if (value.kind != MINI_ID(kind_list) || !value.list || index.kind != MINI_ID(kind_number)) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  double position = index.number;",
+            "  size_t count = value.list->values.count;",
+            "  if (position < 0) {",
+            "    position += (double)count;",
+            "  }",
+            "  if (!(position >= 0 && position < (double)count)) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  size_t offset = (size_t)position;",
+            "  if ((double)offset != position) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  return ((MINI_ID(value) *)value.list->values.items)[offset];",
             "}",
             "",
             "static void MINI_ID(list_set)(MINI_ID(value) value, MINI_ID(value) index, MINI_ID(value) item) {",
-            "    if (value.kind != MINI_ID(kind_list) || !value.list || index.kind != MINI_ID(kind_number)) return;",
-            "    double position = index.number;",
-            "    size_t count = value.list->values.count;",
-            "    if (position < 0) position += (double)count;",
-            "    if (!(position >= 0 && position < (double)SIZE_MAX)) return;",
-            "    size_t offset = (size_t)position;",
-            "    if ((double)offset != position || offset == SIZE_MAX) return;",
-            "    MINI_ID(vec_reserve)(&value.list->values, offset + 1);",
-            "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
-            "    for (size_t fill = count; fill <= offset; ++fill) items[fill] = (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    if (offset >= count) value.list->values.count = offset + 1;",
-            "    items[offset] = item;",
+            "  if (value.kind != MINI_ID(kind_list) || !value.list || index.kind != MINI_ID(kind_number)) {",
+            "    return;",
+            "  }",
+            "  double position = index.number;",
+            "  size_t count = value.list->values.count;",
+            "  if (position < 0) {",
+            "    position += (double)count;",
+            "  }",
+            "  if (!(position >= 0 && position < (double)SIZE_MAX)) {",
+            "    return;",
+            "  }",
+            "  size_t offset = (size_t)position;",
+            "  if ((double)offset != position || offset == SIZE_MAX) {",
+            "    return;",
+            "  }",
+            "  MINI_ID(vec_reserve)(&value.list->values, offset + 1);",
+            "  MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
+            "  for (size_t fill = count; fill <= offset; ++fill) {",
+            "    items[fill] = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  if (offset >= count) {",
+            "    value.list->values.count = offset + 1;",
+            "  }",
+            "  items[offset] = item;",
             "}",
             "",
-            "static int MINI_ID(text_buffer_append_view)(MINI_ID(text_buffer) *buffer, MINI_ID(text) text) {",
-            "    if (!text.buffer || text.offset > text.buffer->count || text.length > text.buffer->count - text.offset) return 1;",
-            "    const unsigned char *data = text.buffer->items;",
-            "    if (text.length) data += text.offset;",
-            "    return MINI_ID(text_buffer_append)(buffer, data, text.length);",
+            "static int MINI_ID(text_buffer_append_view)(MINI_ID(text_buffer) * buffer, MINI_ID(text) text) {",
+            "  if (!text.buffer || text.offset > text.buffer->count ||",
+            "      text.length > text.buffer->count - text.offset) {",
+            "    return 1;",
+            "  }",
+            "  const unsigned char *data = text.buffer->items;",
+            "  if (text.length) {",
+            "    data += text.offset;",
+            "  }",
+            "  return MINI_ID(text_buffer_append)(buffer, data, text.length);",
             "}",
             "",
-            "static int MINI_ID(list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {",
-            "    size_t offset = context->buffer.count;",
-            "    if (!params.count || !params.args || params.args[0].kind != MINI_ID(kind_text)) {",
-            "        *result = MINI_ID(value_text)(&context->buffer, offset, 0);",
-            "        return 0;",
-            "    }",
-            "    MINI_ID(text) separator = params.args[0].text; int has_item = 0;",
-            "    for (size_t source = 1; source < params.count; ++source) { MINI_ID(value) value = params.args[source];",
-            "        if (value.kind != MINI_ID(kind_list) || !value.list) continue;",
-            "        MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
-            "        for (size_t index = 0; index < value.list->values.count; ++index) {",
-            "            if (has_item && MINI_ID(text_buffer_append_view)(&context->buffer, separator) != 0) return 1;",
-            "            if (items[index].kind == MINI_ID(kind_text)",
-            "                && MINI_ID(text_buffer_append_view)(&context->buffer, items[index].text) != 0) return 1;",
-            "            has_item = 1;",
-            "        }",
-            "    }",
-            "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset);",
+            "static int MINI_ID(list_join)(MINI_ID(context) * context, MINI_ID(params) params,",
+            "                              MINI_ID(value) * result) {",
+            "  size_t offset = context->buffer.count;",
+            "  if (!params.count || !params.args || params.args[0].kind != MINI_ID(kind_text)) {",
+            "    *result = MINI_ID(value_text)(&context->buffer, offset, 0);",
             "    return 0;",
+            "  }",
+            "  MINI_ID(text) separator = params.args[0].text;",
+            "  int has_item = 0;",
+            "  for (size_t source = 1; source < params.count; ++source) {",
+            "    MINI_ID(value) value = params.args[source];",
+            "    if (value.kind != MINI_ID(kind_list) || !value.list) {",
+            "      continue;",
+            "    }",
+            "    MINI_ID(value) *items = (MINI_ID(value) *)value.list->values.items;",
+            "    for (size_t index = 0; index < value.list->values.count; ++index) {",
+            "      if (has_item && MINI_ID(text_buffer_append_view)(&context->buffer, separator) != 0) {",
+            "        return 1;",
+            "      }",
+            "      if (items[index].kind == MINI_ID(kind_text) &&",
+            "          MINI_ID(text_buffer_append_view)(&context->buffer, items[index].text) != 0) {",
+            "        return 1;",
+            "      }",
+            "      has_item = 1;",
+            "    }",
+            "  }",
+            "  *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset);",
+            "  return 0;",
             "}",
             "",
-            "static void MINI_ID(list_cleanup)(MINI_ID(context) *context) {",
-            "    MINI_ID(list) **lists = (MINI_ID(list) **)context->lists.items;",
-            "    for (size_t index = 0; index < context->lists.count; ++index) {",
-            "        MINI_ID(vec_free)(&lists[index]->values);",
-            "        free(lists[index]);",
-            "    }",
-            "    MINI_ID(vec_free)(&context->lists);",
+            "static void MINI_ID(list_cleanup)(MINI_ID(context) * context) {",
+            "  MINI_ID(list) **lists = (MINI_ID(list) **)context->lists.items;",
+            "  for (size_t index = 0; index < context->lists.count; ++index) {",
+            "    MINI_ID(vec_free)(&lists[index]->values);",
+            "    free(lists[index]);",
+            "  }",
+            "  MINI_ID(vec_free)(&context->lists);",
             "}",
             ""
         ),
@@ -133,93 +190,234 @@ emit_c_host_runtime_after_context_add("list", emit_c_list_runtime());
 
 emit_c_host_function_add(
     "list_new",
-    "int MINI_ID(fn_list_new)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 0) return 1; *result = MINI_ID(list_new)(context); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_new)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                         MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_new)(context);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_of",
-    "int MINI_ID(fn_list_of)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(list_new)(context);\n"
-    + "    for (size_t index = 0; index < params.count; ++index) MINI_ID(list_push)(result->list, params.args[index], 0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_of)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                        MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_new)(context);",
+        "  for (size_t index = 0; index < params.count; ++index) {",
+        "    MINI_ID(list_push)(result->list, params.args[index], 0);",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_merge",
-    "int MINI_ID(fn_list_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(list_new)(context);\n"
-    + "    for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) list = params.args[source];\n"
-    + "        if (list.kind != MINI_ID(kind_list) || !list.list) continue;\n"
-    + "        MINI_ID(value) *items = (MINI_ID(value) *)list.list->values.items;\n"
-    + "        for (size_t index = 0; index < list.list->values.count; ++index) MINI_ID(list_push)(result->list, items[index], 0); }\n"
-    + "    return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                           MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_new)(context);",
+        "  for (size_t source = 0; source < params.count; ++source) {",
+        "    MINI_ID(value) list = params.args[source];",
+        "    if (list.kind != MINI_ID(kind_list) || !list.list) {",
+        "      continue;",
+        "    }",
+        "    MINI_ID(value) *items = (MINI_ID(value) *)list.list->values.items;",
+        "    for (size_t index = 0; index < list.list->values.count; ++index) {",
+        "      MINI_ID(list_push)(result->list, items[index], 0);",
+        "    }",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_get",
-    "int MINI_ID(fn_list_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; *result = MINI_ID(list_get)(params.args[0], params.args[1]); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_get)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                         MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_get)(params.args[0], params.args[1]);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_length",
-    "int MINI_ID(fn_list_length)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = MINI_ID(list_length)(params.args[0]); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_length)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                            MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_length)(params.args[0]);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_set",
-    "int MINI_ID(fn_list_set)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 3 || !params.args) return 1;\n"
-    + "    MINI_ID(list_set)(params.args[0], params.args[1], params.args[2]); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_set)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                         MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 3 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(list_set)(params.args[0], params.args[1], params.args[2]);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_truncate",
-    "int MINI_ID(fn_list_truncate)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
-    + "    MINI_ID(list_truncate)(params.args[0], params.args[1]); *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_truncate)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                              MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(list_truncate)(params.args[0], params.args[1]);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_copy",
-    "int MINI_ID(fn_list_copy)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = MINI_ID(list_copy)(context, params.args[0]); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_copy)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                          MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(list_copy)(context, params.args[0]);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_join",
-    "int MINI_ID(fn_list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1;\n"
-    + "    return MINI_ID(list_join)(context, params, result);\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_join)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                          MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  return MINI_ID(list_join)(context, params, result);",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_push_back",
-    "int MINI_ID(fn_list_push_back)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) MINI_ID(list_push)(params.args[0].list, params.args[1], 0);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_push_back)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                               MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
+        "    MINI_ID(list_push)(params.args[0].list, params.args[1], 0);",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_push_front",
-    "int MINI_ID(fn_list_push_front)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) MINI_ID(list_push)(params.args[0].list, params.args[1], 1);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_push_front)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
+        "    MINI_ID(list_push)(params.args[0].list, params.args[1], 1);",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_pop_back",
-    "int MINI_ID(fn_list_pop_back)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) *result = MINI_ID(list_pop)(params.args[0].list, 0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_pop_back)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                              MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
+        "    *result = MINI_ID(list_pop)(params.args[0].list, 0);",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "list_pop_front",
-    "int MINI_ID(fn_list_pop_front)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) *result = MINI_ID(list_pop)(params.args[0].list, 1); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_list_pop_front)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                               MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
+        "    *result = MINI_ID(list_pop)(params.args[0].list, 1);",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );

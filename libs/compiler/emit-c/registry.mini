@@ -2,6 +2,7 @@
 
 import "core/list";
 import "core/map";
+import "core/text";
 
 c_host_function_names := list_new();
 c_host_function_definitions := map_new();

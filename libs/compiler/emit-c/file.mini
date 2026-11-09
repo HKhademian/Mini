@@ -4,76 +4,208 @@ import "./registry";
 
 emit_c_host_function_add(
     "file_read",
-    "static char *MINI_ID(file_path)(MINI_ID(value) value) {\n"
-    + "    if (value.kind != MINI_ID(kind_text) || !value.text.buffer || value.text.offset > value.text.buffer->count\n"
-    + "        || value.text.length > value.text.buffer->count - value.text.offset || value.text.length == SIZE_MAX) return NULL;\n"
-    + "    const unsigned char *data = value.text.length ? value.text.buffer->items + value.text.offset : (const unsigned char *)\"\";\n"
-    + "    if (memchr(data, 0, value.text.length)) return NULL;\n"
-    + "    char *path = malloc(value.text.length + 1); if (!path) return NULL;\n"
-    + "    memcpy(path, data, value.text.length); path[value.text.length] = 0; return path;\n"
-    + "}\n"
-    + "int MINI_ID(fn_file_read)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    char *path = MINI_ID(file_path)(params.args[0]); if (!path) return 1;\n"
-    + "    FILE *file = fopen(path, \"rb\"); free(path); if (!file) return 1;\n"
-    + "    size_t offset = context->buffer.count; unsigned char chunk[4096];\n"
-    + "    for (;;) { size_t count = fread(chunk, 1, sizeof(chunk), file);\n"
-    + "        if (count && MINI_ID(text_buffer_append)(&context->buffer, chunk, count) != 0) { fclose(file); return 1; }\n"
-    + "        if (count < sizeof(chunk)) { if (ferror(file)) { fclose(file); return 1; } break; }\n"
-    + "    }\n"
-    + "    if (fclose(file) != 0) return 1;\n"
-    + "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0;\n"
-    + "}\n"
+    text_join(
+        "\n",
+        "static char *MINI_ID(file_path)(MINI_ID(value) value) {",
+        "  if (value.kind != MINI_ID(kind_text) || !value.text.buffer ||",
+        "      value.text.offset > value.text.buffer->count ||",
+        "      value.text.length > value.text.buffer->count - value.text.offset ||",
+        "      value.text.length == SIZE_MAX) {",
+        "    return NULL;",
+        "  }",
+        "  const unsigned char *data =",
+        "      value.text.length ? value.text.buffer->items + value.text.offset : (const unsigned char *)\"\";",
+        "  if (memchr(data, 0, value.text.length)) {",
+        "    return NULL;",
+        "  }",
+        "  char *path = malloc(value.text.length + 1);",
+        "  if (!path) {",
+        "    return NULL;",
+        "  }",
+        "  memcpy(path, data, value.text.length);",
+        "  path[value.text.length] = 0;",
+        "  return path;",
+        "}",
+        "int MINI_ID(fn_file_read)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                          MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(file_path)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  FILE *file = fopen(path, \"rb\");",
+        "  free(path);",
+        "  if (!file) {",
+        "    return 1;",
+        "  }",
+        "  size_t offset = context->buffer.count;",
+        "  unsigned char chunk[4096];",
+        "  for (;;) {",
+        "    size_t count = fread(chunk, 1, sizeof(chunk), file);",
+        "    if (count && MINI_ID(text_buffer_append)(&context->buffer, chunk, count) != 0) {",
+        "      fclose(file);",
+        "      return 1;",
+        "    }",
+        "    if (count < sizeof(chunk)) {",
+        "      if (ferror(file)) {",
+        "        fclose(file);",
+        "        return 1;",
+        "      }",
+        "      break;",
+        "    }",
+        "  }",
+        "  if (fclose(file) != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "file_read_bytes",
-    "int MINI_ID(fn_file_read_bytes)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    char *path = MINI_ID(file_path)(params.args[0]); if (!path) return 1;\n"
-    + "    FILE *file = fopen(path, \"rb\"); free(path); if (!file) return 1;\n"
-    + "    MINI_ID(value) bytes = MINI_ID(list_new)(context); unsigned char chunk[4096];\n"
-    + "    for (;;) { size_t count = fread(chunk, 1, sizeof(chunk), file);\n"
-    + "        for (size_t index = 0; index < count; ++index) MINI_ID(list_push)(bytes.list, (MINI_ID(value)) MINI_VALUE_NUMBER(chunk[index]), 0);\n"
-    + "        if (count < sizeof(chunk)) { if (ferror(file)) { fclose(file); return 1; } break; }\n"
-    + "    }\n"
-    + "    if (fclose(file) != 0) return 1; *result = bytes; return 0;\n"
-    + "}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_file_read_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(file_path)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  FILE *file = fopen(path, \"rb\");",
+        "  free(path);",
+        "  if (!file) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(value) bytes = MINI_ID(list_new)(context);",
+        "  unsigned char chunk[4096];",
+        "  for (;;) {",
+        "    size_t count = fread(chunk, 1, sizeof(chunk), file);",
+        "    for (size_t index = 0; index < count; ++index) {",
+        "      MINI_ID(list_push)(bytes.list, (MINI_ID(value))MINI_VALUE_NUMBER(chunk[index]), 0);",
+        "    }",
+        "    if (count < sizeof(chunk)) {",
+        "      if (ferror(file)) {",
+        "        fclose(file);",
+        "        return 1;",
+        "      }",
+        "      break;",
+        "    }",
+        "  }",
+        "  if (fclose(file) != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = bytes;",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "file_write",
-    "int MINI_ID(fn_file_write)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args || params.args[1].kind != MINI_ID(kind_text)) return 1;\n"
-    + "    char *path = MINI_ID(file_path)(params.args[0]); if (!path) return 1;\n"
-    + "    MINI_ID(text) text = params.args[1].text;\n"
-    + "    if (!text.buffer || text.offset > text.buffer->count || text.length > text.buffer->count - text.offset) { free(path); return 1; }\n"
-    + "    FILE *file = fopen(path, \"wb\"); free(path); if (!file) return 1;\n"
-    + "    static const unsigned char empty = 0; const unsigned char *data = &empty; if (text.length) data = text.buffer->items + text.offset;\n"
-    + "    int status = fwrite(data, 1, text.length, file) == text.length ? 0 : 1;\n"
-    + "    if (fclose(file) != 0) status = 1; if (status) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n"
-    + "}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_file_write)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                           MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args ||",
+        "      params.args[1].kind != MINI_ID(kind_text)) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(file_path)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(text) text = params.args[1].text;",
+        "  if (!text.buffer || text.offset > text.buffer->count ||",
+        "      text.length > text.buffer->count - text.offset) {",
+        "    free(path);",
+        "    return 1;",
+        "  }",
+        "  FILE *file = fopen(path, \"wb\");",
+        "  free(path);",
+        "  if (!file) {",
+        "    return 1;",
+        "  }",
+        "  static const unsigned char empty = 0;",
+        "  const unsigned char *data = &empty;",
+        "  if (text.length) {",
+        "    data = text.buffer->items + text.offset;",
+        "  }",
+        "  int status = fwrite(data, 1, text.length, file) == text.length ? 0 : 1;",
+        "  if (fclose(file) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "file_write_bytes",
-    "int MINI_ID(fn_file_write_bytes)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args || params.args[1].kind != MINI_ID(kind_list) || !params.args[1].list) return 1;\n"
-    + "    char *path = MINI_ID(file_path)(params.args[0]); if (!path) return 1;\n"
-    + "    FILE *file = fopen(path, \"wb\"); free(path); if (!file) return 1;\n"
-    + "    MINI_ID(value) *items = (MINI_ID(value) *)params.args[1].list->values.items;\n"
-    + "    size_t count = params.args[1].list->values.count; unsigned char chunk[4096]; int status = 0;\n"
-    + "    for (size_t start = 0; start < count && !status; start += sizeof(chunk)) {\n"
-    + "        size_t length = count - start; if (length > sizeof(chunk)) length = sizeof(chunk);\n"
-    + "        for (size_t index = 0; index < length; ++index) { MINI_ID(value) item = items[start + index];\n"
-    + "            double number = item.kind == MINI_ID(kind_number) ? item.number : 0; int64_t integer = 0;\n"
-    + "            if (number >= -9007199254740991.0 && number <= 9007199254740991.0) { integer = (int64_t)number; if ((double)integer != number) integer = 0; }\n"
-    + "            chunk[index] = (unsigned char)((uint64_t)integer & 255u);\n"
-    + "        }\n"
-    + "        if (fwrite(chunk, 1, length, file) != length) status = 1;\n"
-    + "    }\n"
-    + "    if (fclose(file) != 0) status = 1; if (status) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n"
-    + "}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_file_write_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                 MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args ||",
+        "      params.args[1].kind != MINI_ID(kind_list) || !params.args[1].list) {",
+        "    return 1;",
+        "  }",
+        "  char *path = MINI_ID(file_path)(params.args[0]);",
+        "  if (!path) {",
+        "    return 1;",
+        "  }",
+        "  FILE *file = fopen(path, \"wb\");",
+        "  free(path);",
+        "  if (!file) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(value) *items = (MINI_ID(value) *)params.args[1].list->values.items;",
+        "  size_t count = params.args[1].list->values.count;",
+        "  unsigned char chunk[4096];",
+        "  int status = 0;",
+        "  for (size_t start = 0; start < count && !status; start += sizeof(chunk)) {",
+        "    size_t length = count - start;",
+        "    if (length > sizeof(chunk)) {",
+        "      length = sizeof(chunk);",
+        "    }",
+        "    for (size_t index = 0; index < length; ++index) {",
+        "      MINI_ID(value) item = items[start + index];",
+        "      double number = item.kind == MINI_ID(kind_number) ? item.number : 0;",
+        "      int64_t integer = 0;",
+        "      if (number >= -9007199254740991.0 && number <= 9007199254740991.0) {",
+        "        integer = (int64_t)number;",
+        "        if ((double)integer != number) {",
+        "          integer = 0;",
+        "        }",
+        "      }",
+        "      chunk[index] = (unsigned char)((uint64_t)integer & 255u);",
+        "    }",
+        "    if (fwrite(chunk, 1, length, file) != length) {",
+        "      status = 1;",
+        "    }",
+        "  }",
+        "  if (fclose(file) != 0) {",
+        "    status = 1;",
+        "  }",
+        "  if (status) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );

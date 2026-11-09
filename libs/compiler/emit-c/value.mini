@@ -4,76 +4,194 @@ import "./registry";
 
 emit_c_host_function_add(
     "value_merge",
-    "int MINI_ID(fn_value_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1;\n"
-    + "    if (!params.count) { *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0; }\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_number)) { MINI_ID(number) total = 0;\n"
-    + "        for (size_t index = 0; index < params.count; ++index) if (params.args[index].kind == MINI_ID(kind_number)) total += params.args[index].number;\n"
-    + "        *result = (MINI_ID(value)) MINI_VALUE_NUMBER(total); return 0; }\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_text)) { size_t offset = context->buffer.count;\n"
-    + "        for (size_t index = 0; index < params.count; ++index) { MINI_ID(value) value = params.args[index];\n"
-    + "            if (value.kind != MINI_ID(kind_text)) continue; MINI_ID(text_buffer) *buffer = value.text.buffer;\n"
-    + "            if (!buffer || value.text.offset > buffer->count || value.text.length > buffer->count - value.text.offset) return 1;\n"
-    + "            if (value.text.length && MINI_ID(text_buffer_append)(&context->buffer, buffer->items + value.text.offset, value.text.length) != 0) return 1; }\n"
-    + "        *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0; }\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_list)) { *result = MINI_ID(list_new)(context);\n"
-    + "        for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) list = params.args[source];\n"
-    + "            if (list.kind != MINI_ID(kind_list) || !list.list) continue; MINI_ID(value) *items = (MINI_ID(value) *)list.list->values.items;\n"
-    + "            for (size_t index = 0; index < list.list->values.count; ++index) MINI_ID(list_push)(result->list, items[index], 0); }\n"
-    + "        return 0; }\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_map)) { *result = MINI_ID(map_new)(context);\n"
-    + "        for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) map = params.args[source];\n"
-    + "            if (map.kind != MINI_ID(kind_map) || !map.map) continue; MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map.map->entries.items;\n"
-    + "            for (size_t index = 0; index < map.map->entries.count; ++index) { MINI_ID(value) key = (MINI_ID(value)) MINI_VALUE_TEXT(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length); MINI_ID(map_set_value)(result->map, key, entries[index].value); } }\n"
-    + "        return 0; }\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                            MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  if (!params.count) {",
+        "    *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "    return 0;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_number)) {",
+        "    MINI_ID(number) total = 0;",
+        "    for (size_t index = 0; index < params.count; ++index) {",
+        "      if (params.args[index].kind == MINI_ID(kind_number)) {",
+        "        total += params.args[index].number;",
+        "      }",
+        "    }",
+        "    *result = (MINI_ID(value))MINI_VALUE_NUMBER(total);",
+        "    return 0;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_text)) {",
+        "    size_t offset = context->buffer.count;",
+        "    for (size_t index = 0; index < params.count; ++index) {",
+        "      MINI_ID(value) value = params.args[index];",
+        "      if (value.kind != MINI_ID(kind_text)) {",
+        "        continue;",
+        "      }",
+        "      MINI_ID(text_buffer) *buffer = value.text.buffer;",
+        "      if (!buffer || value.text.offset > buffer->count ||",
+        "          value.text.length > buffer->count - value.text.offset) {",
+        "        return 1;",
+        "      }",
+        "      if (value.text.length &&",
+        "          MINI_ID(text_buffer_append)(&context->buffer, buffer->items + value.text.offset,",
+        "                                      value.text.length) != 0) {",
+        "        return 1;",
+        "      }",
+        "    }",
+        "    *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset);",
+        "    return 0;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_list)) {",
+        "    *result = MINI_ID(list_new)(context);",
+        "    for (size_t source = 0; source < params.count; ++source) {",
+        "      MINI_ID(value) list = params.args[source];",
+        "      if (list.kind != MINI_ID(kind_list) || !list.list) {",
+        "        continue;",
+        "      }",
+        "      MINI_ID(value) *items = (MINI_ID(value) *)list.list->values.items;",
+        "      for (size_t index = 0; index < list.list->values.count; ++index) {",
+        "        MINI_ID(list_push)(result->list, items[index], 0);",
+        "      }",
+        "    }",
+        "    return 0;",
+        "  }",
+        "  if (params.args[0].kind == MINI_ID(kind_map)) {",
+        "    *result = MINI_ID(map_new)(context);",
+        "    for (size_t source = 0; source < params.count; ++source) {",
+        "      MINI_ID(value) map = params.args[source];",
+        "      if (map.kind != MINI_ID(kind_map) || !map.map) {",
+        "        continue;",
+        "      }",
+        "      MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map.map->entries.items;",
+        "      for (size_t index = 0; index < map.map->entries.count; ++index) {",
+        "        MINI_ID(value)",
+        "        key = (MINI_ID(value))MINI_VALUE_TEXT(entries[index].key.buffer, entries[index].key.offset,",
+        "                                              entries[index].key.length);",
+        "        MINI_ID(map_set_value)(result->map, key, entries[index].value);",
+        "      }",
+        "    }",
+        "    return 0;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_kind",
-    "int MINI_ID(fn_value_kind)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; const char *name = \"unknown\";\n"
-    + "    if (params.args[0].kind == MINI_ID(kind_text)) name = \"text\";\n"
-    + "    else if (params.args[0].kind == MINI_ID(kind_number)) name = \"number\";\n"
-    + "    else if (params.args[0].kind == MINI_ID(kind_boolean)) name = \"boolean\";\n"
-    + "    else if (params.args[0].kind == MINI_ID(kind_list)) name = \"list\";\n"
-    + "    else if (params.args[0].kind == MINI_ID(kind_map)) name = \"map\";\n"
-    + "    size_t length = strlen(name), offset = context->buffer.count;\n"
-    + "    if (MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)name, length) != 0) return 1;\n"
-    + "    *result = MINI_ID(value_text)(&context->buffer, offset, length); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_kind)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                           MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  const char *name = \"unknown\";",
+        "  if (params.args[0].kind == MINI_ID(kind_text)) {",
+        "    name = \"text\";",
+        "  } else if (params.args[0].kind == MINI_ID(kind_number)) {",
+        "    name = \"number\";",
+        "  } else if (params.args[0].kind == MINI_ID(kind_boolean)) {",
+        "    name = \"boolean\";",
+        "  } else if (params.args[0].kind == MINI_ID(kind_list)) {",
+        "    name = \"list\";",
+        "  } else if (params.args[0].kind == MINI_ID(kind_map)) {",
+        "    name = \"map\";",
+        "  }",
+        "  size_t length = strlen(name), offset = context->buffer.count;",
+        "  if (MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)name, length) != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(value_text)(&context->buffer, offset, length);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_is_text",
-    "int MINI_ID(fn_value_is_text)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_text)); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_is_text)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                              MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_text));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_is_number",
-    "int MINI_ID(fn_value_is_number)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_number)); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_is_number)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_number));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_is_boolean",
-    "int MINI_ID(fn_value_is_boolean)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_boolean)); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_is_boolean)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                                 MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_boolean));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_is_list",
-    "int MINI_ID(fn_value_is_list)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_list)); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_is_list)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                              MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_list));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "value_is_map",
-    "int MINI_ID(fn_value_is_map)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1;\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_map)); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_value_is_map)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                             MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = (MINI_ID(value))MINI_VALUE_BOOLEAN(params.args[0].kind == MINI_ID(kind_map));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );

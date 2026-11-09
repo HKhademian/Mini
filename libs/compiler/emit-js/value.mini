@@ -4,7 +4,28 @@ import "./registry";
 
 emit_js_host_function_add(
     "value_kind",
-    "function value_kind(value) { if (typeof value === \"string\") return \"text\"; if (typeof value === \"number\") return \"number\"; if (typeof value === \"boolean\") return \"boolean\"; if (Array.isArray(value)) return \"list\"; if (value !== null && typeof value === \"object\") return \"map\"; return \"other\"; }\n",
+    text_join(
+        "\n",
+        "function value_kind(value) {",
+        "  if (typeof value === \"string\") {",
+        "    return \"text\";",
+        "  }",
+        "  if (typeof value === \"number\") {",
+        "    return \"number\";",
+        "  }",
+        "  if (typeof value === \"boolean\") {",
+        "    return \"boolean\";",
+        "  }",
+        "  if (Array.isArray(value)) {",
+        "    return \"list\";",
+        "  }",
+        "  if (value !== null && typeof value === \"object\") {",
+        "    return \"map\";",
+        "  }",
+        "  return \"other\";",
+        "}",
+        ""
+    ),
     true,
     ""
 );

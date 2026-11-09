@@ -2,4 +2,9 @@
 
 import "./registry";
 
-emit_js_host_function_add("time_millis", "function time_millis() { return Date.now(); }\n", true, "");
+emit_js_host_function_add(
+    "time_millis",
+    text_join("\n", "function time_millis() {", "  return Date.now();", "}", ""),
+    true,
+    ""
+);

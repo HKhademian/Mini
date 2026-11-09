@@ -2,40 +2,106 @@
 
 import "./registry";
 
-emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");
+emit_js_host_function_add(
+    "list_new",
+    text_join("\n", "function list_new() {", "  return [];", "}", ""),
+    true,
+    ""
+);
 emit_js_host_function_add(
     "list_get",
-    "function list_get(items, index) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    return index >= 0 && index < items.length && index in items ? items[index] : 0;\n}\n",
+    text_join(
+        "\n",
+        "function list_get(items, index) {",
+        "  if (!Array.isArray(items) || !Number.isInteger(index)) {",
+        "    return 0;",
+        "  }",
+        "  if (index < 0) {",
+        "    index = items.length + index;",
+        "  }",
+        "  return index >= 0 && index < items.length && index in items ? items[index] : 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "list_length",
-    "function list_length(items) { return Array.isArray(items) ? items.length : 0; }\n",
+    text_join("\n", "function list_length(items) {", "  return Array.isArray(items) ? items.length : 0;", "}", ""),
     true,
     "({0}).length"
 );
 emit_js_host_function_add(
     "list_set",
-    "function list_set(items, index, value) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n    return 0;\n}\n",
+    text_join(
+        "\n",
+        "function list_set(items, index, value) {",
+        "  if (!Array.isArray(items) || !Number.isInteger(index)) {",
+        "    return 0;",
+        "  }",
+        "  if (index < 0) {",
+        "    index = items.length + index;",
+        "  }",
+        "  if (index >= 0) {",
+        "    items[index] = value;",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "list_truncate",
-    "function list_truncate(items, length) {\n    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n    return 0;\n}\n",
+    text_join(
+        "\n",
+        "function list_truncate(items, length) {",
+        "  if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) {",
+        "    items.length = length;",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "list_copy",
-    "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n",
+    text_join("\n", "function list_copy(items) {", "  return Array.isArray(items) ? items.slice() : [];", "}", ""),
     false,
     ""
 );
 emit_js_host_function_add(
     "list_join",
-    "function list_join(separator, ...sources) {\n    if (typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    let hasItem = false;\n    for (const items of sources) {\n        if (!Array.isArray(items)) continue;\n        for (const value of items) {\n            if (hasItem) output += separator;\n            if (typeof value === \"string\") output += value;\n            hasItem = true;\n        }\n    }\n    return output;\n}\n",
+    text_join(
+        "\n",
+        "function list_join(separator, ...sources) {",
+        "  if (typeof separator !== \"string\") {",
+        "    return \"\";",
+        "  }",
+        "  let output = \"\";",
+        "  let hasItem = false;",
+        "  for (const items of sources) {",
+        "    if (!Array.isArray(items)) {",
+        "      continue;",
+        "    }",
+        "    for (const value of items) {",
+        "      if (hasItem) {",
+        "        output += separator;",
+        "      }",
+        "      if (typeof value === \"string\") {",
+        "        output += value;",
+        "      }",
+        "      hasItem = true;",
+        "    }",
+        "  }",
+        "  return output;",
+        "}",
+        ""
+    ),
     false,
     ""
 );

@@ -3,40 +3,99 @@
 
 import "./registry";
 
-emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");
+emit_js_host_function_add(
+    "map_new",
+    text_join("\n", "function map_new() {", "  return Object.create(null);", "}", ""),
+    true,
+    ""
+);
 emit_js_host_function_add(
     "map_get",
-    "function map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;\n}\n",
+    text_join(
+        "\n",
+        "function map_get(items, key) {",
+        "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
+        "    return 0;",
+        "  }",
+        "  return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_set",
-    "function map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") items[key] = value;\n    return 0;\n}\n",
+    text_join(
+        "\n",
+        "function map_set(items, key, value) {",
+        "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
+        "      typeof key === \"string\") {",
+        "    items[key] = value;",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_has",
-    "function map_has(items, key) {\n    return items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\" && Object.prototype.hasOwnProperty.call(items, key);\n}\n",
+    text_join(
+        "\n",
+        "function map_has(items, key) {",
+        "  return items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
+        "      typeof key === \"string\" && Object.prototype.hasOwnProperty.call(items, key);",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_keys",
-    "function map_keys(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return [];\n    return Object.keys(items);\n}\n",
+    text_join(
+        "\n",
+        "function map_keys(items) {",
+        "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
+        "    return [];",
+        "  }",
+        "  return Object.keys(items);",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_delete",
-    "function map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") delete items[key];\n    return 0;\n}\n",
+    text_join(
+        "\n",
+        "function map_delete(items, key) {",
+        "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
+        "      typeof key === \"string\") {",
+        "    delete items[key];",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_copy",
-    "function map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n",
+    text_join(
+        "\n",
+        "function map_copy(items) {",
+        "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
+        "    return Object.create(null);",
+        "  }",
+        "  return Object.assign(Object.create(null), items);",
+        "}",
+        ""
+    ),
     false,
     ""
 );

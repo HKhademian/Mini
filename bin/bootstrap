@@ -19,87 +19,181 @@ let AST_BINARY;
 let AST_GROUP;
 let js_host_functions;
 let reference_mode;
-function process_panic(message) { process.getBuiltinModule("node:fs").writeSync(2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8")); process.exit(1); return 0; }
-function process_env(name) { return process.env[name] ?? ""; }
-function process_exec_path() { return process.execPath; }
-function process_exit(status) { process.exit(status); return 0; }
-function process_script_path() { return process.argv[1] ?? ""; }
-function process_spawn(options) {
-    const output = { __proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: "" };
-    const child = process.getBuiltinModule("node:child_process");
-    const settings = options !== null && typeof options === "object" ? options : {};
-    const command = typeof settings.command === "string" ? settings.command : "";
-    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];
-    const mode = settings.mode === "inherit" ? "inherit" : "capture";
-    const directory = typeof settings.directory === "string" && settings.directory !== "" ? settings.directory : undefined;
-    const timeout = typeof settings.timeout === "number" && settings.timeout > 0 ? settings.timeout : undefined;
-    const input = Array.isArray(settings.input)
-        ? Buffer.from(settings.input.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0))
-        : undefined;
-    const result = child.spawnSync(command, args, {
-        cwd: directory,
-        stdio: mode === "inherit" ? "inherit" : "pipe",
-        input: mode === "inherit" ? undefined : input,
-        timeout,
-        maxBuffer: 64 * 1024 * 1024,
-    });
-    if (result.error) output.error = String(result.error.message);
-    if (result.status !== null) output.status = result.status;
-    if (typeof result.signal === "string") output.signal = result.signal;
-    if (mode !== "inherit") {
-        output.stdout = result.stdout ? Array.from(result.stdout) : [];
-        output.stderr = result.stderr ? Array.from(result.stderr) : [];
-    }
-    return output;
+function process_panic(message) {
+  process.getBuiltinModule("node:fs").writeSync(
+      2, Buffer.from((typeof message === "string" ? message : "") + "\n", "utf8"));
+  process.exit(1);
+  return 0;
 }
-function io_read_all() { return process.getBuiltinModule("node:fs").readFileSync(0, "utf8"); }
-function io_read_bytes(count) { if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }
-function io_read_line() { const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString("utf8"); }
+function process_env(name) {
+  return process.env[name] ?? "";
+}
+function process_exec_path() {
+  return process.execPath;
+}
+function process_exit(status) {
+  process.exit(status);
+  return 0;
+}
+function process_script_path() {
+  return process.argv[1] ?? "";
+}
+function process_spawn(options) {
+  const output = {__proto__: null, status: 1, signal: "", stdout: [], stderr: [], error: ""};
+  const child = process.getBuiltinModule("node:child_process");
+  const settings = options !== null && typeof options === "object" ? options : {};
+  const command = typeof settings.command === "string" ? settings.command : "";
+  const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];
+  const mode = settings.mode === "inherit" ? "inherit" : "capture";
+  const directory = typeof settings.directory === "string" && settings.directory !== "" ?
+      settings.directory :
+      undefined;
+  const timeout =
+      typeof settings.timeout === "number" && settings.timeout > 0 ? settings.timeout : undefined;
+  const input = Array.isArray(settings.input) ?
+      Buffer.from(settings.input.map(
+          value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)) :
+      undefined;
+  const result = child.spawnSync(command, args, {
+    cwd: directory,
+    stdio: mode === "inherit" ? "inherit" : "pipe",
+    input: mode === "inherit" ? undefined : input,
+    timeout,
+    maxBuffer: 64 * 1024 * 1024,
+  });
+  if (result.error) {
+    output.error = String(result.error.message);
+  }
+  if (result.status !== null) {
+    output.status = result.status;
+  }
+  if (typeof result.signal === "string") {
+    output.signal = result.signal;
+  }
+  if (mode !== "inherit") {
+    output.stdout = result.stdout ? Array.from(result.stdout) : [];
+    output.stderr = result.stderr ? Array.from(result.stderr) : [];
+  }
+  return output;
+}
+function io_read_all() {
+  return process.getBuiltinModule("node:fs").readFileSync(0, "utf8");
+}
+function io_read_bytes(count) {
+  if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) {
+    return [];
+  }
+  const fs = process.getBuiltinModule("node:fs");
+  const buffer = Buffer.alloc(count);
+  const read = fs.readSync(0, buffer, 0, count, null);
+  return Array.from(buffer.subarray(0, read));
+}
+function io_read_line() {
+  const fs = process.getBuiltinModule("node:fs");
+  const buffer = Buffer.alloc(1);
+  const bytes = [];
+  while (true) {
+    const count = fs.readSync(0, buffer, 0, 1, null);
+    if (count === 0 || buffer[0] === 10) {
+      break;
+    }
+    bytes.push(buffer[0]);
+  }
+  if (bytes.length > 0 && bytes[bytes.length - 1] === 13) {
+    bytes.pop();
+  }
+  return Buffer.from(bytes).toString("utf8");
+}
 function io_write(...values) {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
+  function normalize(value) {
+    if (Array.isArray(value)) {
+      return value.map(normalize);
     }
-    function display(value) {
-        if (typeof value === "string") return value;
-        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
-        if (typeof value === "boolean") return value ? "true" : "false";
-        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
-        return "0";
+    if (value !== null && typeof value === "object") {
+      const result = Object.create(null);
+      for (const key of Object.keys(value).sort()) {
+        result[key] = normalize(value[key]);
+      }
+      return result;
     }
-    let text = "";
-    for (const value of values) text += display(value);
-    process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
-    return 0;
+    return value;
+  }
+  function display(value) {
+    if (typeof value === "string") {
+      return value;
+    }
+    if (typeof value === "number") {
+      return Number.isSafeInteger(value) ? String(value) : "";
+    }
+    if (typeof value === "boolean") {
+      return value ? "true" : "false";
+    }
+    if (Array.isArray(value) || (value !== null && typeof value === "object")) {
+      return JSON.stringify(normalize(value));
+    }
+    return "0";
+  }
+  let text = "";
+  for (const value of values) {
+    text += display(value);
+  }
+  process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
+  return 0;
 }
 function io_write_error(...values) {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
+  function normalize(value) {
+    if (Array.isArray(value)) {
+      return value.map(normalize);
     }
-    function display(value) {
-        if (typeof value === "string") return value;
-        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
-        if (typeof value === "boolean") return value ? "true" : "false";
-        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
-        return "0";
+    if (value !== null && typeof value === "object") {
+      const result = Object.create(null);
+      for (const key of Object.keys(value).sort()) {
+        result[key] = normalize(value[key]);
+      }
+      return result;
     }
-    let text = "";
-    for (const value of values) text += display(value);
-    process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
-    return 0;
+    return value;
+  }
+  function display(value) {
+    if (typeof value === "string") {
+      return value;
+    }
+    if (typeof value === "number") {
+      return Number.isSafeInteger(value) ? String(value) : "";
+    }
+    if (typeof value === "boolean") {
+      return value ? "true" : "false";
+    }
+    if (Array.isArray(value) || (value !== null && typeof value === "object")) {
+      return JSON.stringify(normalize(value));
+    }
+    return "0";
+  }
+  let text = "";
+  for (const value of values) {
+    text += display(value);
+  }
+  process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
+  return 0;
 }
-function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
+function value_kind(value) {
+  if (typeof value === "string") {
+    return "text";
+  }
+  if (typeof value === "number") {
+    return "number";
+  }
+  if (typeof value === "boolean") {
+    return "boolean";
+  }
+  if (Array.isArray(value)) {
+    return "list";
+  }
+  if (value !== null && typeof value === "object") {
+    return "map";
+  }
+  return "other";
+}
 function value_is_text(value) {
 
     return (value_kind(value) === "text");
@@ -120,24 +214,42 @@ function value_is_map(value) {
 
     return (value_kind(value) === "map");
 }
-function list_new() { return []; }
-function list_get(items, index) {
-    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;
-    if (index < 0) index = items.length + index;
-    return index >= 0 && index < items.length && index in items ? items[index] : 0;
+function list_new() {
+  return [];
 }
-function list_length(items) { return Array.isArray(items) ? items.length : 0; }
-function list_set(items, index, value) {
-    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;
-    if (index < 0) index = items.length + index;
-    if (index >= 0) items[index] = value;
+function list_get(items, index) {
+  if (!Array.isArray(items) || !Number.isInteger(index)) {
     return 0;
+  }
+  if (index < 0) {
+    index = items.length + index;
+  }
+  return index >= 0 && index < items.length && index in items ? items[index] : 0;
+}
+function list_length(items) {
+  return Array.isArray(items) ? items.length : 0;
+}
+function list_set(items, index, value) {
+  if (!Array.isArray(items) || !Number.isInteger(index)) {
+    return 0;
+  }
+  if (index < 0) {
+    index = items.length + index;
+  }
+  if (index >= 0) {
+    items[index] = value;
+  }
+  return 0;
 }
 function list_truncate(items, length) {
-    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;
-    return 0;
+  if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) {
+    items.length = length;
+  }
+  return 0;
 }
-function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }
+function list_copy(items) {
+  return Array.isArray(items) ? items.slice() : [];
+}
 function list_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -158,18 +270,26 @@ function list_merge() {
     return result;
 }
 function list_join(separator, ...sources) {
-    if (typeof separator !== "string") return "";
-    let output = "";
-    let hasItem = false;
-    for (const items of sources) {
-        if (!Array.isArray(items)) continue;
-        for (const value of items) {
-            if (hasItem) output += separator;
-            if (typeof value === "string") output += value;
-            hasItem = true;
-        }
+  if (typeof separator !== "string") {
+    return "";
+  }
+  let output = "";
+  let hasItem = false;
+  for (const items of sources) {
+    if (!Array.isArray(items)) {
+      continue;
     }
-    return output;
+    for (const value of items) {
+      if (hasItem) {
+        output += separator;
+      }
+      if (typeof value === "string") {
+        output += value;
+      }
+      hasItem = true;
+    }
+  }
+  return output;
 }
 function list_has_text(items, value) {
 
@@ -296,60 +416,109 @@ function list_rest(items, count) {
     return result;
 }
 function number_add(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a + b;
+  if (typeof a !== "number" || typeof b !== "number") {
+    return 0;
+  }
+  return a + b;
 }
 function number_sub(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a - b;
+  if (typeof a !== "number" || typeof b !== "number") {
+    return 0;
+  }
+  return a - b;
 }
 function number_min(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return Math.min(a, b);
+  if (typeof a !== "number" || typeof b !== "number") {
+    return 0;
+  }
+  return Math.min(a, b);
 }
 function number_max(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return Math.max(a, b);
+  if (typeof a !== "number" || typeof b !== "number") {
+    return 0;
+  }
+  return Math.max(a, b);
 }
 function number_mul(a, b) {
-    if (typeof a !== "number" || typeof b !== "number") return 0;
-    return a * b;
+  if (typeof a !== "number" || typeof b !== "number") {
+    return 0;
+  }
+  return a * b;
 }
 function number_div(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
-    return Math.trunc(a / b);
+  if (typeof a !== "number" || typeof b !== "number" || b === 0) {
+    return 0;
+  }
+  return Math.trunc(a / b);
 }
 function number_mod(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || b === 0) return 0;
-    return a % b;
+  if (typeof a !== "number" || typeof b !== "number" || b === 0) {
+    return 0;
+  }
+  return a % b;
 }
 function number_floor(value) {
-    if (typeof value !== "number") return 0;
-    return Math.floor(value);
+  if (typeof value !== "number") {
+    return 0;
+  }
+  return Math.floor(value);
 }
 function number_pow(a, b) {
-    if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) return 0;
-    return Math.pow(a, b);
+  if (typeof a !== "number" || typeof b !== "number" || !Number.isInteger(b) || b < 0) {
+    return 0;
+  }
+  return Math.pow(a, b);
 }
 function number_from_text(text) {
-    if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) return 0;
-    const value = Number(text);
-    return Number.isSafeInteger(value) ? value : 0;
+  if (typeof text !== "string" || !/^-?[0-9]+$/.test(text)) {
+    return 0;
+  }
+  const value = Number(text);
+  return Number.isSafeInteger(value) ? value : 0;
 }
 function number_to_text(value) {
-    if (typeof value !== "number" || !Number.isSafeInteger(value)) return "";
-    return String(value);
+  if (typeof value !== "number" || !Number.isSafeInteger(value)) {
+    return "";
+  }
+  return String(value);
 }
 function text_length(source) {
-    if (typeof source !== "string") return 0;
-    const cache = text_length.cache ?? (text_length.cache = new Map());
-    let characters = cache.get(source);
-    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }
-    return characters.length;
+  if (typeof source !== "string") {
+    return 0;
+  }
+  const cache = text_length.cache ?? (text_length.cache = new Map());
+  let characters = cache.get(source);
+  if (!characters) {
+    characters = Array.from(source);
+    if (cache.size >= 64) {
+      cache.clear();
+    }
+    cache.set(source, characters);
+  }
+  return characters.length;
 }
-function text_get(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return ""; text_length(source); return text_length.cache.get(source)[index] ?? ""; }
-function text_to_code(source, index) { if (typeof source !== "string" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }
-function text_from_code(code) { if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return ""; return String.fromCodePoint(code); }
+function text_get(source, index) {
+  if (typeof source !== "string" || !Number.isInteger(index) || index < 0) {
+    return "";
+  }
+  text_length(source);
+  return text_length.cache.get(source)[index] ?? "";
+}
+function text_to_code(source, index) {
+  if (typeof source !== "string" || !Number.isInteger(index) || index < 0) {
+    return 0;
+  }
+  text_length(source);
+  const character = text_length.cache.get(source)[index];
+  return character === undefined ? 0 : character.codePointAt(0);
+}
+function text_from_code(code) {
+  if (typeof code !== "number" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF ||
+      (code >= 0xD800 && code <= 0xDFFF)) {
+    return "";
+  }
+  return String.fromCodePoint(code);
+}
 function text_to_codes(source) {
 
     let codes = list_new();
@@ -447,16 +616,33 @@ function text_split_lines(source) {
     return lines;
 }
 function text_slice(source, start, end) {
-    if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) return "";
-    text_length(source); const characters = text_length.cache.get(source);
-    if (start < 0) start = characters.length + start;
-    if (end < 0) end = characters.length + end;
-    if (start < 0) start = 0;
-    if (end < 0) end = 0;
-    if (start > characters.length) start = characters.length;
-    if (end > characters.length) end = characters.length;
-    if (end <= start) return "";
-    return characters.slice(start, end).join("");
+  if (typeof source !== "string" || !Number.isInteger(start) || !Number.isInteger(end)) {
+    return "";
+  }
+  text_length(source);
+  const characters = text_length.cache.get(source);
+  if (start < 0) {
+    start = characters.length + start;
+  }
+  if (end < 0) {
+    end = characters.length + end;
+  }
+  if (start < 0) {
+    start = 0;
+  }
+  if (end < 0) {
+    end = 0;
+  }
+  if (start > characters.length) {
+    start = characters.length;
+  }
+  if (end > characters.length) {
+    end = characters.length;
+  }
+  if (end <= start) {
+    return "";
+  }
+  return characters.slice(start, end).join("");
 }
 function text_ends_with(source, suffix) {
 
@@ -553,8 +739,22 @@ function text_find_from(text, needle, start) {
     }
     return (-1);
 }
-function text_find(source, needle) { if (typeof source !== "string" || typeof needle !== "string") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }
-function text_split(source, divider) { if (typeof source !== "string" || typeof divider !== "string") return []; if (divider === "") return [source]; return source.split(divider); }
+function text_find(source, needle) {
+  if (typeof source !== "string" || typeof needle !== "string") {
+    return -1;
+  }
+  const found = source.indexOf(needle);
+  return found < 0 ? -1 : Array.from(source.slice(0, found)).length;
+}
+function text_split(source, divider) {
+  if (typeof source !== "string" || typeof divider !== "string") {
+    return [];
+  }
+  if (divider === "") {
+    return [source];
+  }
+  return source.split(divider);
+}
 function text_byte_at(bytes, index) {
 
     if ((((!value_is_list(bytes)) || (index < 0)) || (index >= (bytes).length))) {
@@ -575,31 +775,56 @@ function text_byte_push(bytes, value) {
     list_set(bytes, (bytes).length, value);
     return 0;
 }
-function text_to_bytes(source) { return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : []; }
-function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return ""; return Buffer.from(bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0)).toString("utf8"); }
-function map_new() { return Object.create(null); }
+function text_to_bytes(source) {
+  return typeof source === "string" ? Array.from(Buffer.from(source, "utf8")) : [];
+}
+function text_from_bytes(bytes) {
+  if (!Array.isArray(bytes)) {
+    return "";
+  }
+  return Buffer
+      .from(bytes.map(
+          value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0))
+      .toString("utf8");
+}
+function map_new() {
+  return Object.create(null);
+}
 function map_get(items, key) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return 0;
-    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;
+  if (items === null || typeof items !== "object" || Array.isArray(items)) {
+    return 0;
+  }
+  return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;
 }
 function map_set(items, key, value) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") items[key] = value;
-    return 0;
+  if (items !== null && typeof items === "object" && !Array.isArray(items) &&
+      typeof key === "string") {
+    items[key] = value;
+  }
+  return 0;
 }
 function map_has(items, key) {
-    return items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string" && Object.prototype.hasOwnProperty.call(items, key);
+  return items !== null && typeof items === "object" && !Array.isArray(items) &&
+      typeof key === "string" && Object.prototype.hasOwnProperty.call(items, key);
 }
 function map_keys(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return [];
-    return Object.keys(items);
+  if (items === null || typeof items !== "object" || Array.isArray(items)) {
+    return [];
+  }
+  return Object.keys(items);
 }
 function map_delete(items, key) {
-    if (items !== null && typeof items === "object" && !Array.isArray(items) && typeof key === "string") delete items[key];
-    return 0;
+  if (items !== null && typeof items === "object" && !Array.isArray(items) &&
+      typeof key === "string") {
+    delete items[key];
+  }
+  return 0;
 }
 function map_copy(items) {
-    if (items === null || typeof items !== "object" || Array.isArray(items)) return Object.create(null);
-    return Object.assign(Object.create(null), items);
+  if (items === null || typeof items !== "object" || Array.isArray(items)) {
+    return Object.create(null);
+  }
+  return Object.assign(Object.create(null), items);
 }
 function map_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
@@ -639,18 +864,72 @@ function map_of() {
     }
     return result;
 }
-function file_read(path) { return process.getBuiltinModule("node:fs").readFileSync(path, "utf8"); }
-function file_read_bytes(path) { return Array.from(process.getBuiltinModule("node:fs").readFileSync(path)); }
-function file_write(path, text) { process.getBuiltinModule("node:fs").writeFileSync(path, text, "utf8"); return 0; }
-function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule("node:fs").writeFileSync(path, Buffer.from(values)); return 0; }
-function directory_create(path) { process.getBuiltinModule("node:fs").mkdirSync(path, { recursive: true }); return 0; }
-function directory_list(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.readdirSync(path).sort(); } catch { return []; } }
-function path_copy(from, to) { process.getBuiltinModule("node:fs").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }
-function path_is_directory(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.statSync(path).isDirectory(); } catch { return false; } }
-function path_is_exists(path) { const fs = process.getBuiltinModule("node:fs"); try { return fs.existsSync(path); } catch { return false; } }
-function path_is_file(path) { try { return process.getBuiltinModule("node:fs").statSync(path).isFile(); } catch { return false; } }
-function path_remove(path) { process.getBuiltinModule("node:fs").rmSync(path, { recursive: true, force: true }); return 0; }
-function path_temp_directory() { const fs = process.getBuiltinModule("node:fs"); const os = process.getBuiltinModule("node:os"); return fs.mkdtempSync(os.tmpdir() + "/mini-"); }
+function file_read(path) {
+  return process.getBuiltinModule("node:fs").readFileSync(path, "utf8");
+}
+function file_read_bytes(path) {
+  return Array.from(process.getBuiltinModule("node:fs").readFileSync(path));
+}
+function file_write(path, text) {
+  process.getBuiltinModule("node:fs").writeFileSync(path, text, "utf8");
+  return 0;
+}
+function file_write_bytes(path, bytes) {
+  const values = Array.isArray(bytes) ?
+      bytes.map(value => typeof value === "number" && Number.isInteger(value) ? value & 255 : 0) :
+      [];
+  process.getBuiltinModule("node:fs").writeFileSync(path, Buffer.from(values));
+  return 0;
+}
+function directory_create(path) {
+  process.getBuiltinModule("node:fs").mkdirSync(path, {recursive: true});
+  return 0;
+}
+function directory_list(path) {
+  const fs = process.getBuiltinModule("node:fs");
+  try {
+    return fs.readdirSync(path).sort();
+  } catch {
+    return [];
+  }
+}
+function path_copy(from, to) {
+  process.getBuiltinModule("node:fs").cpSync(
+      from, to, {recursive: true, force: true, dereference: true});
+  return 0;
+}
+function path_is_directory(path) {
+  const fs = process.getBuiltinModule("node:fs");
+  try {
+    return fs.statSync(path).isDirectory();
+  } catch {
+    return false;
+  }
+}
+function path_is_exists(path) {
+  const fs = process.getBuiltinModule("node:fs");
+  try {
+    return fs.existsSync(path);
+  } catch {
+    return false;
+  }
+}
+function path_is_file(path) {
+  try {
+    return process.getBuiltinModule("node:fs").statSync(path).isFile();
+  } catch {
+    return false;
+  }
+}
+function path_remove(path) {
+  process.getBuiltinModule("node:fs").rmSync(path, {recursive: true, force: true});
+  return 0;
+}
+function path_temp_directory() {
+  const fs = process.getBuiltinModule("node:fs");
+  const os = process.getBuiltinModule("node:os");
+  return fs.mkdtempSync(os.tmpdir() + "/mini-");
+}
 function path_join(left, right) {
 
     if ((left === "")) {
@@ -994,26 +1273,47 @@ function json_parse_node(state) {
     return 0;
 }
 function json_value(text) {
-    const result = Object.create(null);
-    result.ok = false;
-    result.value = 0;
-    if (typeof text !== "string") return result;
-    let parsed;
-    try { parsed = JSON.parse(text); } catch { return result; }
-    const clean = (item) => {
-        if (item === null) return 0;
-        if (typeof item === "number") { if (!Number.isSafeInteger(item)) throw 0; return item; }
-        if (Array.isArray(item)) return item.map(clean);
-        if (typeof item === "object") {
-            const out = Object.create(null);
-            for (const key of Object.keys(item)) out[key] = clean(item[key]);
-            return out;
-        }
-        return item;
-    };
-    try { result.value = clean(parsed); } catch { return result; }
-    result.ok = true;
+  const result = Object.create(null);
+  result.ok = false;
+  result.value = 0;
+  if (typeof text !== "string") {
     return result;
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return result;
+  }
+  const clean = (item) => {
+    if (item === null) {
+      return 0;
+    }
+    if (typeof item === "number") {
+      if (!Number.isSafeInteger(item)) {
+        throw 0;
+      }
+      return item;
+    }
+    if (Array.isArray(item)) {
+      return item.map(clean);
+    }
+    if (typeof item === "object") {
+      const out = Object.create(null);
+      for (const key of Object.keys(item)) {
+        out[key] = clean(item[key]);
+      }
+      return out;
+    }
+    return item;
+  };
+  try {
+    result.value = clean(parsed);
+  } catch {
+    return result;
+  }
+  result.ok = true;
+  return result;
 }
 function json_escape(text) {
 
@@ -1123,29 +1423,50 @@ function json_encode(value, seen, state) {
     return "null";
 }
 function json_text(value) {
-    const seen = new Set();
-    function encode(item) {
-        if (typeof item === "string") return JSON.stringify(item);
-        if (typeof item === "number") { const text = number_to_text(item); return text === "" ? "null" : text; }
-        if (typeof item === "boolean") return item ? "true" : "false";
-        if (item === null || item === undefined) return "null";
-        if (typeof item !== "object") return "null";
-        if (seen.has(item)) throw 0;
-        seen.add(item);
-        let output;
-        if (Array.isArray(item)) {
-            const parts = [];
-            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : "null");
-            output = "[" + parts.join(",") + "]";
-        } else {
-            const parts = [];
-            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + ":" + encode(item[key]));
-            output = "{" + parts.join(",") + "}";
-        }
-        seen.delete(item);
-        return output;
+  const seen = new Set();
+  function encode(item) {
+    if (typeof item === "string") {
+      return JSON.stringify(item);
     }
-    try { return encode(value); } catch { return ""; }
+    if (typeof item === "number") {
+      const text = number_to_text(item);
+      return text === "" ? "null" : text;
+    }
+    if (typeof item === "boolean") {
+      return item ? "true" : "false";
+    }
+    if (item === null || item === undefined) {
+      return "null";
+    }
+    if (typeof item !== "object") {
+      return "null";
+    }
+    if (seen.has(item)) {
+      throw 0;
+    }
+    seen.add(item);
+    let output;
+    if (Array.isArray(item)) {
+      const parts = [];
+      for (let index = 0; index < item.length; index++) {
+        parts.push(index in item ? encode(item[index]) : "null");
+      }
+      output = "[" + parts.join(",") + "]";
+    } else {
+      const parts = [];
+      for (const key of Object.keys(item).sort()) {
+        parts.push(JSON.stringify(key) + ":" + encode(item[key]));
+      }
+      output = "{" + parts.join(",") + "}";
+    }
+    seen.delete(item);
+    return output;
+  }
+  try {
+    return encode(value);
+  } catch {
+    return "";
+  }
 }
 function result_ok(value, message) {
 
@@ -2507,11 +2828,12 @@ function emit_js_compile_quiet(tokens) {
     return emit_js_program(parser_ast_quiet(tokens));
 }
 function hash_sha256(value) {
-    const crypto = process.getBuiltinModule("node:crypto");
-    const bytes = Array.isArray(value)
-        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
-        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
-    return crypto.createHash("sha256").update(bytes).digest("hex");
+  const crypto = process.getBuiltinModule("node:crypto");
+  const bytes = Array.isArray(value) ?
+      Buffer.from(
+          value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0)) :
+      Buffer.from(typeof value === "string" ? value : String(value), "utf8");
+  return crypto.createHash("sha256").update(bytes).digest("hex");
 }
 function process_capture(command, args, directory, input) {
 
@@ -2746,93 +3068,93 @@ function $mini_file_16() {
     reference_mode = false;
 }
 function $mini_file_17() {
-    emit_js_host_function_add("number_add", "function number_add(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a + b;\n}\n", false, "");
-    emit_js_host_function_add("number_sub", "function number_sub(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a - b;\n}\n", false, "");
-    emit_js_host_function_add("number_min", "function number_min(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.min(a, b);\n}\n", false, "");
-    emit_js_host_function_add("number_max", "function number_max(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return Math.max(a, b);\n}\n", false, "");
-    emit_js_host_function_add("number_div", "function number_div(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return Math.trunc(a / b);\n}\n", false, "");
-    emit_js_host_function_add("number_floor", "function number_floor(value) {\n    if (typeof value !== \"number\") return 0;\n    return Math.floor(value);\n}\n", false, "");
-    emit_js_host_function_add("number_from_text", "function number_from_text(text) {\n    if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) return 0;\n    const value = Number(text);\n    return Number.isSafeInteger(value) ? value : 0;\n}\n", false, "");
-    emit_js_host_function_add("number_mod", "function number_mod(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) return 0;\n    return a % b;\n}\n", false, "");
-    emit_js_host_function_add("number_mul", "function number_mul(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\") return 0;\n    return a * b;\n}\n", false, "");
-    emit_js_host_function_add("number_pow", "function number_pow(a, b) {\n    if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) return 0;\n    return Math.pow(a, b);\n}\n", false, "");
-    emit_js_host_function_add("number_to_text", "function number_to_text(value) {\n    if (typeof value !== \"number\" || !Number.isSafeInteger(value)) return \"\";\n    return String(value);\n}\n", false, "");
+    emit_js_host_function_add("number_add", text_join("\n", "function number_add(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return a + b;", "}", ""), false, "");
+    emit_js_host_function_add("number_sub", text_join("\n", "function number_sub(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return a - b;", "}", ""), false, "");
+    emit_js_host_function_add("number_min", text_join("\n", "function number_min(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return Math.min(a, b);", "}", ""), false, "");
+    emit_js_host_function_add("number_max", text_join("\n", "function number_max(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return Math.max(a, b);", "}", ""), false, "");
+    emit_js_host_function_add("number_div", text_join("\n", "function number_div(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) {", "    return 0;", "  }", "  return Math.trunc(a / b);", "}", ""), false, "");
+    emit_js_host_function_add("number_floor", text_join("\n", "function number_floor(value) {", "  if (typeof value !== \"number\") {", "    return 0;", "  }", "  return Math.floor(value);", "}", ""), false, "");
+    emit_js_host_function_add("number_from_text", text_join("\n", "function number_from_text(text) {", "  if (typeof text !== \"string\" || !/^-?[0-9]+$/.test(text)) {", "    return 0;", "  }", "  const value = Number(text);", "  return Number.isSafeInteger(value) ? value : 0;", "}", ""), false, "");
+    emit_js_host_function_add("number_mod", text_join("\n", "function number_mod(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\" || b === 0) {", "    return 0;", "  }", "  return a % b;", "}", ""), false, "");
+    emit_js_host_function_add("number_mul", text_join("\n", "function number_mul(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return a * b;", "}", ""), false, "");
+    emit_js_host_function_add("number_pow", text_join("\n", "function number_pow(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) {", "    return 0;", "  }", "  return Math.pow(a, b);", "}", ""), false, "");
+    emit_js_host_function_add("number_to_text", text_join("\n", "function number_to_text(value) {", "  if (typeof value !== \"number\" || !Number.isSafeInteger(value)) {", "    return \"\";", "  }", "  return String(value);", "}", ""), false, "");
 }
 function $mini_file_18() {
-    emit_js_host_function_add("hash_sha256", "function hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n", true, "");
+    emit_js_host_function_add("hash_sha256", text_join("\n", "function hash_sha256(value) {", "  const crypto = process.getBuiltinModule(\"node:crypto\");", "  const bytes = Array.isArray(value) ?", "      Buffer.from(", "          value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0)) :", "      Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");", "  return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");", "}", ""), true, "");
 }
 function $mini_file_19() {
-    emit_js_host_function_add("time_millis", "function time_millis() { return Date.now(); }\n", true, "");
+    emit_js_host_function_add("time_millis", text_join("\n", "function time_millis() {", "  return Date.now();", "}", ""), true, "");
 }
 function $mini_file_20() {
-    emit_js_host_function_add("list_new", "function list_new() { return []; }\n", true, "");
-    emit_js_host_function_add("list_get", "function list_get(items, index) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    return index >= 0 && index < items.length && index in items ? items[index] : 0;\n}\n", true, "");
-    emit_js_host_function_add("list_length", "function list_length(items) { return Array.isArray(items) ? items.length : 0; }\n", true, "({0}).length");
-    emit_js_host_function_add("list_set", "function list_set(items, index, value) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("list_truncate", "function list_truncate(items, length) {\n    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("list_copy", "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n", false, "");
-    emit_js_host_function_add("list_join", "function list_join(separator, ...sources) {\n    if (typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    let hasItem = false;\n    for (const items of sources) {\n        if (!Array.isArray(items)) continue;\n        for (const value of items) {\n            if (hasItem) output += separator;\n            if (typeof value === \"string\") output += value;\n            hasItem = true;\n        }\n    }\n    return output;\n}\n", false, "");
+    emit_js_host_function_add("list_new", text_join("\n", "function list_new() {", "  return [];", "}", ""), true, "");
+    emit_js_host_function_add("list_get", text_join("\n", "function list_get(items, index) {", "  if (!Array.isArray(items) || !Number.isInteger(index)) {", "    return 0;", "  }", "  if (index < 0) {", "    index = items.length + index;", "  }", "  return index >= 0 && index < items.length && index in items ? items[index] : 0;", "}", ""), true, "");
+    emit_js_host_function_add("list_length", text_join("\n", "function list_length(items) {", "  return Array.isArray(items) ? items.length : 0;", "}", ""), true, "({0}).length");
+    emit_js_host_function_add("list_set", text_join("\n", "function list_set(items, index, value) {", "  if (!Array.isArray(items) || !Number.isInteger(index)) {", "    return 0;", "  }", "  if (index < 0) {", "    index = items.length + index;", "  }", "  if (index >= 0) {", "    items[index] = value;", "  }", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("list_truncate", text_join("\n", "function list_truncate(items, length) {", "  if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) {", "    items.length = length;", "  }", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("list_copy", text_join("\n", "function list_copy(items) {", "  return Array.isArray(items) ? items.slice() : [];", "}", ""), false, "");
+    emit_js_host_function_add("list_join", text_join("\n", "function list_join(separator, ...sources) {", "  if (typeof separator !== \"string\") {", "    return \"\";", "  }", "  let output = \"\";", "  let hasItem = false;", "  for (const items of sources) {", "    if (!Array.isArray(items)) {", "      continue;", "    }", "    for (const value of items) {", "      if (hasItem) {", "        output += separator;", "      }", "      if (typeof value === \"string\") {", "        output += value;", "      }", "      hasItem = true;", "    }", "  }", "  return output;", "}", ""), false, "");
 }
 function $mini_file_21() {
-    emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");
-    emit_js_host_function_add("map_get", "function map_get(items, key) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return 0;\n    return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;\n}\n", true, "");
-    emit_js_host_function_add("map_set", "function map_set(items, key, value) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") items[key] = value;\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("map_has", "function map_has(items, key) {\n    return items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\" && Object.prototype.hasOwnProperty.call(items, key);\n}\n", true, "");
-    emit_js_host_function_add("map_keys", "function map_keys(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return [];\n    return Object.keys(items);\n}\n", true, "");
-    emit_js_host_function_add("map_delete", "function map_delete(items, key) {\n    if (items !== null && typeof items === \"object\" && !Array.isArray(items) && typeof key === \"string\") delete items[key];\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("map_copy", "function map_copy(items) {\n    if (items === null || typeof items !== \"object\" || Array.isArray(items)) return Object.create(null);\n    return Object.assign(Object.create(null), items);\n}\n", false, "");
+    emit_js_host_function_add("map_new", text_join("\n", "function map_new() {", "  return Object.create(null);", "}", ""), true, "");
+    emit_js_host_function_add("map_get", text_join("\n", "function map_get(items, key) {", "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {", "    return 0;", "  }", "  return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;", "}", ""), true, "");
+    emit_js_host_function_add("map_set", text_join("\n", "function map_set(items, key, value) {", "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&", "      typeof key === \"string\") {", "    items[key] = value;", "  }", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("map_has", text_join("\n", "function map_has(items, key) {", "  return items !== null && typeof items === \"object\" && !Array.isArray(items) &&", "      typeof key === \"string\" && Object.prototype.hasOwnProperty.call(items, key);", "}", ""), true, "");
+    emit_js_host_function_add("map_keys", text_join("\n", "function map_keys(items) {", "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {", "    return [];", "  }", "  return Object.keys(items);", "}", ""), true, "");
+    emit_js_host_function_add("map_delete", text_join("\n", "function map_delete(items, key) {", "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&", "      typeof key === \"string\") {", "    delete items[key];", "  }", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("map_copy", text_join("\n", "function map_copy(items) {", "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {", "    return Object.create(null);", "  }", "  return Object.assign(Object.create(null), items);", "}", ""), false, "");
 }
 function $mini_file_22() {
-    emit_js_host_function_add("text_find", "function text_find(source, needle) { if (typeof source !== \"string\" || typeof needle !== \"string\") return -1; const found = source.indexOf(needle); return found < 0 ? -1 : Array.from(source.slice(0, found)).length; }\n", false, "");
-    emit_js_host_function_add("text_from_bytes", "function text_from_bytes(bytes) { if (!Array.isArray(bytes)) return \"\"; return Buffer.from(bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)).toString(\"utf8\"); }\n", false, "");
-    emit_js_host_function_add("text_from_code", "function text_from_code(code) { if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) return \"\"; return String.fromCodePoint(code); }\n", true, "");
-    emit_js_host_function_add("text_to_code", "function text_to_code(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return 0; text_length(source); const character = text_length.cache.get(source)[index]; return character === undefined ? 0 : character.codePointAt(0); }\n", true, "");
-    emit_js_host_function_add("text_get", "function text_get(source, index) { if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) return \"\"; text_length(source); return text_length.cache.get(source)[index] ?? \"\"; }\n", true, "");
-    emit_js_host_function_add("text_length", "function text_length(source) {\n    if (typeof source !== \"string\") return 0;\n    const cache = text_length.cache ?? (text_length.cache = new Map());\n    let characters = cache.get(source);\n    if (!characters) { characters = Array.from(source); if (cache.size >= 64) cache.clear(); cache.set(source, characters); }\n    return characters.length;\n}\n", true, "");
-    emit_js_host_function_add("text_slice", "function text_slice(source, start, end) {\n    if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) return \"\";\n    text_length(source); const characters = text_length.cache.get(source);\n    if (start < 0) start = characters.length + start;\n    if (end < 0) end = characters.length + end;\n    if (start < 0) start = 0;\n    if (end < 0) end = 0;\n    if (start > characters.length) start = characters.length;\n    if (end > characters.length) end = characters.length;\n    if (end <= start) return \"\";\n    return characters.slice(start, end).join(\"\");\n}\n", false, "");
-    emit_js_host_function_add("text_split", "function text_split(source, divider) { if (typeof source !== \"string\" || typeof divider !== \"string\") return []; if (divider === \"\") return [source]; return source.split(divider); }\n", false, "");
-    emit_js_host_function_add("text_to_bytes", "function text_to_bytes(source) { return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : []; }\n", false, "");
+    emit_js_host_function_add("text_find", text_join("\n", "function text_find(source, needle) {", "  if (typeof source !== \"string\" || typeof needle !== \"string\") {", "    return -1;", "  }", "  const found = source.indexOf(needle);", "  return found < 0 ? -1 : Array.from(source.slice(0, found)).length;", "}", ""), false, "");
+    emit_js_host_function_add("text_from_bytes", text_join("\n", "function text_from_bytes(bytes) {", "  if (!Array.isArray(bytes)) {", "    return \"\";", "  }", "  return Buffer", "      .from(bytes.map(", "          value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))", "      .toString(\"utf8\");", "}", ""), false, "");
+    emit_js_host_function_add("text_from_code", text_join("\n", "function text_from_code(code) {", "  if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF ||", "      (code >= 0xD800 && code <= 0xDFFF)) {", "    return \"\";", "  }", "  return String.fromCodePoint(code);", "}", ""), true, "");
+    emit_js_host_function_add("text_to_code", text_join("\n", "function text_to_code(source, index) {", "  if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) {", "    return 0;", "  }", "  text_length(source);", "  const character = text_length.cache.get(source)[index];", "  return character === undefined ? 0 : character.codePointAt(0);", "}", ""), true, "");
+    emit_js_host_function_add("text_get", text_join("\n", "function text_get(source, index) {", "  if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) {", "    return \"\";", "  }", "  text_length(source);", "  return text_length.cache.get(source)[index] ?? \"\";", "}", ""), true, "");
+    emit_js_host_function_add("text_length", text_join("\n", "function text_length(source) {", "  if (typeof source !== \"string\") {", "    return 0;", "  }", "  const cache = text_length.cache ?? (text_length.cache = new Map());", "  let characters = cache.get(source);", "  if (!characters) {", "    characters = Array.from(source);", "    if (cache.size >= 64) {", "      cache.clear();", "    }", "    cache.set(source, characters);", "  }", "  return characters.length;", "}", ""), true, "");
+    emit_js_host_function_add("text_slice", text_join("\n", "function text_slice(source, start, end) {", "  if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) {", "    return \"\";", "  }", "  text_length(source);", "  const characters = text_length.cache.get(source);", "  if (start < 0) {", "    start = characters.length + start;", "  }", "  if (end < 0) {", "    end = characters.length + end;", "  }", "  if (start < 0) {", "    start = 0;", "  }", "  if (end < 0) {", "    end = 0;", "  }", "  if (start > characters.length) {", "    start = characters.length;", "  }", "  if (end > characters.length) {", "    end = characters.length;", "  }", "  if (end <= start) {", "    return \"\";", "  }", "  return characters.slice(start, end).join(\"\");", "}", ""), false, "");
+    emit_js_host_function_add("text_split", text_join("\n", "function text_split(source, divider) {", "  if (typeof source !== \"string\" || typeof divider !== \"string\") {", "    return [];", "  }", "  if (divider === \"\") {", "    return [source];", "  }", "  return source.split(divider);", "}", ""), false, "");
+    emit_js_host_function_add("text_to_bytes", text_join("\n", "function text_to_bytes(source) {", "  return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : [];", "}", ""), false, "");
 }
 function $mini_file_23() {
-    emit_js_host_function_add("json_value", "function json_value(text) {\n    const result = Object.create(null);\n    result.ok = false;\n    result.value = 0;\n    if (typeof text !== \"string\") return result;\n    let parsed;\n    try { parsed = JSON.parse(text); } catch { return result; }\n    const clean = (item) => {\n        if (item === null) return 0;\n        if (typeof item === \"number\") { if (!Number.isSafeInteger(item)) throw 0; return item; }\n        if (Array.isArray(item)) return item.map(clean);\n        if (typeof item === \"object\") {\n            const out = Object.create(null);\n            for (const key of Object.keys(item)) out[key] = clean(item[key]);\n            return out;\n        }\n        return item;\n    };\n    try { result.value = clean(parsed); } catch { return result; }\n    result.ok = true;\n    return result;\n}\n", false, "");
-    emit_js_host_function_add("json_text", "function json_text(value) {\n    const seen = new Set();\n    function encode(item) {\n        if (typeof item === \"string\") return JSON.stringify(item);\n        if (typeof item === \"number\") { const text = number_to_text(item); return text === \"\" ? \"null\" : text; }\n        if (typeof item === \"boolean\") return item ? \"true\" : \"false\";\n        if (item === null || item === undefined) return \"null\";\n        if (typeof item !== \"object\") return \"null\";\n        if (seen.has(item)) throw 0;\n        seen.add(item);\n        let output;\n        if (Array.isArray(item)) {\n            const parts = [];\n            for (let index = 0; index < item.length; index++) parts.push(index in item ? encode(item[index]) : \"null\");\n            output = \"[\" + parts.join(\",\") + \"]\";\n        } else {\n            const parts = [];\n            for (const key of Object.keys(item).sort()) parts.push(JSON.stringify(key) + \":\" + encode(item[key]));\n            output = \"{\" + parts.join(\",\") + \"}\";\n        }\n        seen.delete(item);\n        return output;\n    }\n    try { return encode(value); } catch { return \"\"; }\n}\n", false, "");
+    emit_js_host_function_add("json_value", text_join("\n", "function json_value(text) {", "  const result = Object.create(null);", "  result.ok = false;", "  result.value = 0;", "  if (typeof text !== \"string\") {", "    return result;", "  }", "  let parsed;", "  try {", "    parsed = JSON.parse(text);", "  } catch {", "    return result;", "  }", "  const clean = (item) => {", "    if (item === null) {", "      return 0;", "    }", "    if (typeof item === \"number\") {", "      if (!Number.isSafeInteger(item)) {", "        throw 0;", "      }", "      return item;", "    }", "    if (Array.isArray(item)) {", "      return item.map(clean);", "    }", "    if (typeof item === \"object\") {", "      const out = Object.create(null);", "      for (const key of Object.keys(item)) {", "        out[key] = clean(item[key]);", "      }", "      return out;", "    }", "    return item;", "  };", "  try {", "    result.value = clean(parsed);", "  } catch {", "    return result;", "  }", "  result.ok = true;", "  return result;", "}", ""), false, "");
+    emit_js_host_function_add("json_text", text_join("\n", "function json_text(value) {", "  const seen = new Set();", "  function encode(item) {", "    if (typeof item === \"string\") {", "      return JSON.stringify(item);", "    }", "    if (typeof item === \"number\") {", "      const text = number_to_text(item);", "      return text === \"\" ? \"null\" : text;", "    }", "    if (typeof item === \"boolean\") {", "      return item ? \"true\" : \"false\";", "    }", "    if (item === null || item === undefined) {", "      return \"null\";", "    }", "    if (typeof item !== \"object\") {", "      return \"null\";", "    }", "    if (seen.has(item)) {", "      throw 0;", "    }", "    seen.add(item);", "    let output;", "    if (Array.isArray(item)) {", "      const parts = [];", "      for (let index = 0; index < item.length; index++) {", "        parts.push(index in item ? encode(item[index]) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      for (const key of Object.keys(item).sort()) {", "        parts.push(JSON.stringify(key) + \":\" + encode(item[key]));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(item);", "    return output;", "  }", "  try {", "    return encode(value);", "  } catch {", "    return \"\";", "  }", "}", ""), false, "");
 }
 function $mini_file_24() {
-    emit_js_host_function_add("value_kind", "function value_kind(value) { if (typeof value === \"string\") return \"text\"; if (typeof value === \"number\") return \"number\"; if (typeof value === \"boolean\") return \"boolean\"; if (Array.isArray(value)) return \"list\"; if (value !== null && typeof value === \"object\") return \"map\"; return \"other\"; }\n", true, "");
+    emit_js_host_function_add("value_kind", text_join("\n", "function value_kind(value) {", "  if (typeof value === \"string\") {", "    return \"text\";", "  }", "  if (typeof value === \"number\") {", "    return \"number\";", "  }", "  if (typeof value === \"boolean\") {", "    return \"boolean\";", "  }", "  if (Array.isArray(value)) {", "    return \"list\";", "  }", "  if (value !== null && typeof value === \"object\") {", "    return \"map\";", "  }", "  return \"other\";", "}", ""), true, "");
 }
 function $mini_file_25() {
-    emit_js_host_function_add("value_to_text", "function value_to_text(value) { if (typeof value === \"string\") return value; if (typeof value === \"number\") return number_to_text(value); if (typeof value === \"boolean\") return value ? \"true\" : \"false\"; if (value !== null && typeof value === \"object\") return json_text(value); return \"0\"; }\n", false, "");
+    emit_js_host_function_add("value_to_text", text_join("\n", "function value_to_text(value) {", "  if (typeof value === \"string\") {", "    return value;", "  }", "  if (typeof value === \"number\") {", "    return number_to_text(value);", "  }", "  if (typeof value === \"boolean\") {", "    return value ? \"true\" : \"false\";", "  }", "  if (value !== null && typeof value === \"object\") {", "    return json_text(value);", "  }", "  return \"0\";", "}", ""), false, "");
 }
 function $mini_file_26() {
-    emit_js_host_function_add("io_read_all", "function io_read_all() { return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\"); }\n", true, "");
-    emit_js_host_function_add("io_read_bytes", "function io_read_bytes(count) { if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }\n", true, "");
-    emit_js_host_function_add("io_read_line", "function io_read_line() { const fs = process.getBuiltinModule(\"node:fs\"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString(\"utf8\"); }\n", true, "");
-    emit_js_host_function_add("io_write", "function io_write(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
-    emit_js_host_function_add("io_write_error", "function io_write_error(...values) {\n    function normalize(value) {\n        if (Array.isArray(value)) return value.map(normalize);\n        if (value !== null && typeof value === \"object\") {\n            const result = Object.create(null);\n            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);\n            return result;\n        }\n        return value;\n    }\n    function display(value) {\n        if (typeof value === \"string\") return value;\n        if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"\";\n        if (typeof value === \"boolean\") return value ? \"true\" : \"false\";\n        if (Array.isArray(value) || (value !== null && typeof value === \"object\")) return JSON.stringify(normalize(value));\n        return \"0\";\n    }\n    let text = \"\";\n    for (const value of values) text += display(value);\n    process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));\n    return 0;\n}\n", true, "");
+    emit_js_host_function_add("io_read_all", text_join("\n", "function io_read_all() {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\");", "}", ""), true, "");
+    emit_js_host_function_add("io_read_bytes", text_join("\n", "function io_read_bytes(count) {", "  if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) {", "    return [];", "  }", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(count);", "  const read = fs.readSync(0, buffer, 0, count, null);", "  return Array.from(buffer.subarray(0, read));", "}", ""), true, "");
+    emit_js_host_function_add("io_read_line", text_join("\n", "function io_read_line() {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(1);", "  const bytes = [];", "  while (true) {", "    const count = fs.readSync(0, buffer, 0, 1, null);", "    if (count === 0 || buffer[0] === 10) {", "      break;", "    }", "    bytes.push(buffer[0]);", "  }", "  if (bytes.length > 0 && bytes[bytes.length - 1] === 13) {", "    bytes.pop();", "  }", "  return Buffer.from(bytes).toString(\"utf8\");", "}", ""), true, "");
+    emit_js_host_function_add("io_write", text_join("\n", "function io_write(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("io_write_error", text_join("\n", "function io_write_error(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
 }
 function $mini_file_27() {
-    emit_js_host_function_add("file_read", "function file_read(path) { return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\"); }\n", true, "");
-    emit_js_host_function_add("file_read_bytes", "function file_read_bytes(path) { return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path)); }\n", true, "");
-    emit_js_host_function_add("file_write", "function file_write(path, text) { process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\"); return 0; }\n", true, "");
-    emit_js_host_function_add("file_write_bytes", "function file_write_bytes(path, bytes) { const values = Array.isArray(bytes) ? bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) : []; process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values)); return 0; }\n", true, "");
+    emit_js_host_function_add("file_read", text_join("\n", "function file_read(path) {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\");", "}", ""), true, "");
+    emit_js_host_function_add("file_read_bytes", text_join("\n", "function file_read_bytes(path) {", "  return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));", "}", ""), true, "");
+    emit_js_host_function_add("file_write", text_join("\n", "function file_write(path, text) {", "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\");", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("file_write_bytes", text_join("\n", "function file_write_bytes(path, bytes) {", "  const values = Array.isArray(bytes) ?", "      bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) :", "      [];", "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));", "  return 0;", "}", ""), true, "");
 }
 function $mini_file_28() {
-    emit_js_host_function_add("directory_create", "function directory_create(path) { process.getBuiltinModule(\"node:fs\").mkdirSync(path, { recursive: true }); return 0; }\n", true, "");
-    emit_js_host_function_add("directory_list", "function directory_list(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.readdirSync(path).sort(); } catch { return []; } }\n", true, "");
-    emit_js_host_function_add("path_copy", "function path_copy(from, to) { process.getBuiltinModule(\"node:fs\").cpSync(from, to, { recursive: true, force: true, dereference: true }); return 0; }\n", true, "");
-    emit_js_host_function_add("path_is_directory", "function path_is_directory(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.statSync(path).isDirectory(); } catch { return false; } }\n", true, "");
-    emit_js_host_function_add("path_is_exists", "function path_is_exists(path) { const fs = process.getBuiltinModule(\"node:fs\"); try { return fs.existsSync(path); } catch { return false; } }\n", true, "");
-    emit_js_host_function_add("path_is_file", "function path_is_file(path) { try { return process.getBuiltinModule(\"node:fs\").statSync(path).isFile(); } catch { return false; } }\n", true, "");
-    emit_js_host_function_add("path_remove", "function path_remove(path) { process.getBuiltinModule(\"node:fs\").rmSync(path, { recursive: true, force: true }); return 0; }\n", true, "");
-    emit_js_host_function_add("path_temp_directory", "function path_temp_directory() { const fs = process.getBuiltinModule(\"node:fs\"); const os = process.getBuiltinModule(\"node:os\"); return fs.mkdtempSync(os.tmpdir() + \"/mini-\"); }\n", true, "");
+    emit_js_host_function_add("directory_create", text_join("\n", "function directory_create(path) {", "  process.getBuiltinModule(\"node:fs\").mkdirSync(path, {recursive: true});", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("directory_list", text_join("\n", "function directory_list(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.readdirSync(path).sort();", "  } catch {", "    return [];", "  }", "}", ""), true, "");
+    emit_js_host_function_add("path_copy", text_join("\n", "function path_copy(from, to) {", "  process.getBuiltinModule(\"node:fs\").cpSync(", "      from, to, {recursive: true, force: true, dereference: true});", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("path_is_directory", text_join("\n", "function path_is_directory(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.statSync(path).isDirectory();", "  } catch {", "    return false;", "  }", "}", ""), true, "");
+    emit_js_host_function_add("path_is_exists", text_join("\n", "function path_is_exists(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.existsSync(path);", "  } catch {", "    return false;", "  }", "}", ""), true, "");
+    emit_js_host_function_add("path_is_file", text_join("\n", "function path_is_file(path) {", "  try {", "    return process.getBuiltinModule(\"node:fs\").statSync(path).isFile();", "  } catch {", "    return false;", "  }", "}", ""), true, "");
+    emit_js_host_function_add("path_remove", text_join("\n", "function path_remove(path) {", "  process.getBuiltinModule(\"node:fs\").rmSync(path, {recursive: true, force: true});", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("path_temp_directory", text_join("\n", "function path_temp_directory() {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const os = process.getBuiltinModule(\"node:os\");", "  return fs.mkdtempSync(os.tmpdir() + \"/mini-\");", "}", ""), true, "");
 }
 function $mini_file_29() {
-    emit_js_host_function_add("process_env", "function process_env(name) { return process.env[name] ?? \"\"; }\n", true, "");
-    emit_js_host_function_add("process_exec_path", "function process_exec_path() { return process.execPath; }\n", true, "");
-    emit_js_host_function_add("process_exit", "function process_exit(status) { process.exit(status); return 0; }\n", true, "");
-    emit_js_host_function_add("process_panic", "function process_panic(message) { process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\")); process.exit(1); return 0; }\n", true, "");
-    emit_js_host_function_add("process_script_path", "function process_script_path() { return process.argv[1] ?? \"\"; }\n", true, "");
-    emit_js_host_function_add("process_spawn", "function process_spawn(options) {\n    const output = { __proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\" };\n    const child = process.getBuiltinModule(\"node:child_process\");\n    const settings = options !== null && typeof options === \"object\" ? options : {};\n    const command = typeof settings.command === \"string\" ? settings.command : \"\";\n    const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];\n    const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";\n    const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ? settings.directory : undefined;\n    const timeout = typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;\n    const input = Array.isArray(settings.input)\n        ? Buffer.from(settings.input.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))\n        : undefined;\n    const result = child.spawnSync(command, args, {\n        cwd: directory,\n        stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",\n        input: mode === \"inherit\" ? undefined : input,\n        timeout,\n        maxBuffer: 64 * 1024 * 1024,\n    });\n    if (result.error) output.error = String(result.error.message);\n    if (result.status !== null) output.status = result.status;\n    if (typeof result.signal === \"string\") output.signal = result.signal;\n    if (mode !== \"inherit\") {\n        output.stdout = result.stdout ? Array.from(result.stdout) : [];\n        output.stderr = result.stderr ? Array.from(result.stderr) : [];\n    }\n    return output;\n}\n", true, "");
+    emit_js_host_function_add("process_env", text_join("\n", "function process_env(name) {", "  return process.env[name] ?? \"\";", "}", ""), true, "");
+    emit_js_host_function_add("process_exec_path", text_join("\n", "function process_exec_path() {", "  return process.execPath;", "}", ""), true, "");
+    emit_js_host_function_add("process_exit", text_join("\n", "function process_exit(status) {", "  process.exit(status);", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("process_panic", text_join("\n", "function process_panic(message) {", "  process.getBuiltinModule(\"node:fs\").writeSync(", "      2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\"));", "  process.exit(1);", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("process_script_path", text_join("\n", "function process_script_path() {", "  return process.argv[1] ?? \"\";", "}", ""), true, "");
+    emit_js_host_function_add("process_spawn", text_join("\n", "function process_spawn(options) {", "  const output = {__proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\"};", "  const child = process.getBuiltinModule(\"node:child_process\");", "  const settings = options !== null && typeof options === \"object\" ? options : {};", "  const command = typeof settings.command === \"string\" ? settings.command : \"\";", "  const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];", "  const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";", "  const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ?", "      settings.directory :", "      undefined;", "  const timeout =", "      typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;", "  const input = Array.isArray(settings.input) ?", "      Buffer.from(settings.input.map(", "          value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)) :", "      undefined;", "  const result = child.spawnSync(command, args, {", "    cwd: directory,", "    stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",", "    input: mode === \"inherit\" ? undefined : input,", "    timeout,", "    maxBuffer: 64 * 1024 * 1024,", "  });", "  if (result.error) {", "    output.error = String(result.error.message);", "  }", "  if (result.status !== null) {", "    output.status = result.status;", "  }", "  if (typeof result.signal === \"string\") {", "    output.signal = result.signal;", "  }", "  if (mode !== \"inherit\") {", "    output.stdout = result.stdout ? Array.from(result.stdout) : [];", "    output.stderr = result.stderr ? Array.from(result.stderr) : [];", "  }", "  return output;", "}", ""), true, "");
 }
 function $mini_file_30() {
 

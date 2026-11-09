@@ -4,7 +4,18 @@ import "./registry";
 
 emit_js_host_function_add(
     "hash_sha256",
-    "function hash_sha256(value) {\n    const crypto = process.getBuiltinModule(\"node:crypto\");\n    const bytes = Array.isArray(value)\n        ? Buffer.from(value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0))\n        : Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");\n    return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");\n}\n",
+    text_join(
+        "\n",
+        "function hash_sha256(value) {",
+        "  const crypto = process.getBuiltinModule(\"node:crypto\");",
+        "  const bytes = Array.isArray(value) ?",
+        "      Buffer.from(",
+        "          value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0)) :",
+        "      Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");",
+        "  return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");",
+        "}",
+        ""
+    ),
     true,
     ""
 );

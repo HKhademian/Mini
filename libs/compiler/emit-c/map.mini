@@ -6,102 +6,150 @@ import "./registry";
 fn emit_c_map_runtime() {
     return emit_c_join_lines(
         list_of(
-            "typedef struct { MINI_ID(text) key; MINI_ID(value) value; } MINI_ID(map_entry);",
-            "struct MINI_ID(map) { MINI_ID(vec) entries; };",
+            "typedef struct {",
+            "  MINI_ID(text) key;",
+            "  MINI_ID(value) value;",
+            "} MINI_ID(map_entry);",
+            "struct MINI_ID(map) {",
+            "  MINI_ID(vec) entries;",
+            "};",
             "static int MINI_ID(text_unit_compare)(MINI_ID(text) left, MINI_ID(text) right);",
             "",
             "static int MINI_ID(map_text_compare)(MINI_ID(text) left, MINI_ID(text) right) {",
-            "    return MINI_ID(text_unit_compare)(left, right);",
+            "  return MINI_ID(text_unit_compare)(left, right);",
             "}",
             "",
             "static int MINI_ID(map_entry_compare)(const void *left_pointer, const void *right_pointer) {",
-            "    const MINI_ID(map_entry) *left = left_pointer, *right = right_pointer;",
-            "    return MINI_ID(map_text_compare)(left->key, right->key);",
+            "  const MINI_ID(map_entry) *left = left_pointer, *right = right_pointer;",
+            "  return MINI_ID(map_text_compare)(left->key, right->key);",
             "}",
             "",
-            "static void MINI_ID(map_sort)(MINI_ID(map) *map) {",
-            "    if (map && map->entries.count > 1) qsort(map->entries.items, map->entries.count, sizeof(MINI_ID(map_entry)), MINI_ID(map_entry_compare));",
+            "static void MINI_ID(map_sort)(MINI_ID(map) * map) {",
+            "  if (map && map->entries.count > 1) {",
+            "    qsort(map->entries.items, map->entries.count, sizeof(MINI_ID(map_entry)),",
+            "          MINI_ID(map_entry_compare));",
+            "  }",
             "}",
             "",
-            "static size_t MINI_ID(map_find)(MINI_ID(map) *map, MINI_ID(text) key) {",
-            "    if (!map || !key.buffer || key.offset > key.buffer->count || key.length > key.buffer->count - key.offset) return SIZE_MAX;",
-            "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map->entries.items;",
-            "    for (size_t index = 0; index < map->entries.count; ++index)",
-            "        if (MINI_ID(map_text_compare)(entries[index].key, key) == 0) return index;",
+            "static size_t MINI_ID(map_find)(MINI_ID(map) * map, MINI_ID(text) key) {",
+            "  if (!map || !key.buffer || key.offset > key.buffer->count ||",
+            "      key.length > key.buffer->count - key.offset) {",
             "    return SIZE_MAX;",
+            "  }",
+            "  MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map->entries.items;",
+            "  for (size_t index = 0; index < map->entries.count; ++index) {",
+            "    if (MINI_ID(map_text_compare)(entries[index].key, key) == 0) {",
+            "      return index;",
+            "    }",
+            "  }",
+            "  return SIZE_MAX;",
             "}",
             "",
-            "static MINI_ID(value) MINI_ID(map_new)(MINI_ID(context) *context) {",
-            "    MINI_ID(map) *map = calloc(1, sizeof(*map));",
-            "    if (!map) abort();",
-            "    MINI_ID(vec_init)(&map->entries, sizeof(MINI_ID(map_entry)));",
-            "    if (!context->maps.item_size) MINI_ID(vec_init)(&context->maps, sizeof(map));",
-            "    MINI_ID(vec_append)(&context->maps, &map, 1);",
-            "    return (MINI_ID(value)) MINI_VALUE_MAP(map);",
+            "static MINI_ID(value) MINI_ID(map_new)(MINI_ID(context) * context) {",
+            "  MINI_ID(map) *map = calloc(1, sizeof(*map));",
+            "  if (!map) {",
+            "    abort();",
+            "  }",
+            "  MINI_ID(vec_init)(&map->entries, sizeof(MINI_ID(map_entry)));",
+            "  if (!context->maps.item_size) {",
+            "    MINI_ID(vec_init)(&context->maps, sizeof(map));",
+            "  }",
+            "  MINI_ID(vec_append)(&context->maps, &map, 1);",
+            "  return (MINI_ID(value))MINI_VALUE_MAP(map);",
             "}",
             "",
-            "static void MINI_ID(map_set_value)(MINI_ID(map) *map, MINI_ID(value) key, MINI_ID(value) value) {",
-            "    if (!map || key.kind != MINI_ID(kind_text) || !key.text.buffer || key.text.offset > key.text.buffer->count",
-            "        || key.text.length > key.text.buffer->count - key.text.offset) return;",
-            "    size_t found = MINI_ID(map_find)(map, key.text);",
-            "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map->entries.items;",
-            "    if (found != SIZE_MAX) { entries[found].value = value; return; }",
-            "    MINI_ID(map_entry) entry = { .key = key.text, .value = value };",
-            "    MINI_ID(vec_append)(&map->entries, &entry, 1);",
+            "static void MINI_ID(map_set_value)(MINI_ID(map) * map, MINI_ID(value) key, MINI_ID(value) value) {",
+            "  if (!map || key.kind != MINI_ID(kind_text) || !key.text.buffer ||",
+            "      key.text.offset > key.text.buffer->count ||",
+            "      key.text.length > key.text.buffer->count - key.text.offset) {",
+            "    return;",
+            "  }",
+            "  size_t found = MINI_ID(map_find)(map, key.text);",
+            "  MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)map->entries.items;",
+            "  if (found != SIZE_MAX) {",
+            "    entries[found].value = value;",
+            "    return;",
+            "  }",
+            "  MINI_ID(map_entry) entry = {.key = key.text, .value = value};",
+            "  MINI_ID(vec_append)(&map->entries, &entry, 1);",
             "}",
             "",
             "static MINI_ID(value) MINI_ID(map_get_value)(MINI_ID(value) value, MINI_ID(value) key) {",
-            "    if (value.kind != MINI_ID(kind_map) || !value.map || key.kind != MINI_ID(kind_text)) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    size_t found = MINI_ID(map_find)(value.map, key.text);",
-            "    if (found == SIZE_MAX) return (MINI_ID(value)) MINI_VALUE_NUMBER(0);",
-            "    return ((MINI_ID(map_entry) *)value.map->entries.items)[found].value;",
+            "  if (value.kind != MINI_ID(kind_map) || !value.map || key.kind != MINI_ID(kind_text)) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  size_t found = MINI_ID(map_find)(value.map, key.text);",
+            "  if (found == SIZE_MAX) {",
+            "    return (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+            "  }",
+            "  return ((MINI_ID(map_entry) *)value.map->entries.items)[found].value;",
             "}",
             "",
             "static int MINI_ID(map_has_value)(MINI_ID(value) value, MINI_ID(value) key) {",
-            "    return value.kind == MINI_ID(kind_map) && value.map && key.kind == MINI_ID(kind_text)",
-            "        && MINI_ID(map_find)(value.map, key.text) != SIZE_MAX;",
+            "  return value.kind == MINI_ID(kind_map) && value.map && key.kind == MINI_ID(kind_text) &&",
+            "         MINI_ID(map_find)(value.map, key.text) != SIZE_MAX;",
             "}",
             "",
             "static void MINI_ID(map_delete_value)(MINI_ID(value) value, MINI_ID(value) key) {",
-            "    if (value.kind != MINI_ID(kind_map) || !value.map || key.kind != MINI_ID(kind_text)) return;",
-            "    size_t found = MINI_ID(map_find)(value.map, key.text);",
-            "    if (found == SIZE_MAX) return;",
-            "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
-            "    size_t remaining = value.map->entries.count - found - 1;",
-            "    if (remaining) memmove(entries + found, entries + found + 1, remaining * sizeof(*entries));",
-            "    value.map->entries.count -= 1;",
+            "  if (value.kind != MINI_ID(kind_map) || !value.map || key.kind != MINI_ID(kind_text)) {",
+            "    return;",
+            "  }",
+            "  size_t found = MINI_ID(map_find)(value.map, key.text);",
+            "  if (found == SIZE_MAX) {",
+            "    return;",
+            "  }",
+            "  MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
+            "  size_t remaining = value.map->entries.count - found - 1;",
+            "  if (remaining) {",
+            "    memmove(entries + found, entries + found + 1, remaining * sizeof(*entries));",
+            "  }",
+            "  value.map->entries.count -= 1;",
             "}",
             "",
-            "static MINI_ID(value) MINI_ID(map_keys_value)(MINI_ID(context) *context, MINI_ID(value) value) {",
-            "    MINI_ID(value) keys = MINI_ID(list_new)(context);",
-            "    if (value.kind == MINI_ID(kind_map) && value.map) {",
-            "        MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
-            "        for (size_t index = 0; index < value.map->entries.count; ++index)",
-            "            MINI_ID(list_push)(keys.list, MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length), 0);",
+            "static MINI_ID(value) MINI_ID(map_keys_value)(MINI_ID(context) * context, MINI_ID(value) value) {",
+            "  MINI_ID(value) keys = MINI_ID(list_new)(context);",
+            "  if (value.kind == MINI_ID(kind_map) && value.map) {",
+            "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
+            "    for (size_t index = 0; index < value.map->entries.count; ++index) {",
+            "      MINI_ID(list_push)(keys.list,",
+            "                         MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset,",
+            "                                             entries[index].key.length),",
+            "                         0);",
             "    }",
-            "    return keys;",
+            "  }",
+            "  return keys;",
             "}",
             "",
             "static int MINI_ID(io_write_json_map)(MINI_ID(value) value, size_t depth, FILE *stream) {",
-            "    if (value.kind != MINI_ID(kind_map) || !value.map) return fputs(\"null\", stream) == EOF ? 1 : 0;",
-            "    MINI_ID(map_sort)(value.map);",
-            "    if (fputc('{', stream) == EOF) return 1;",
-            "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
-            "    for (size_t index = 0; index < value.map->entries.count; ++index) {",
-            "        if (index && fputc(',', stream) == EOF) return 1;",
-            "        if (MINI_ID(io_write_json_text)(entries[index].key, stream) != 0 || fputc(':', stream) == EOF) return 1;",
-            "        if (MINI_ID(io_write_json_value)(entries[index].value, depth + 1, stream) != 0) return 1;",
+            "  if (value.kind != MINI_ID(kind_map) || !value.map) {",
+            "    return fputs(\"null\", stream) == EOF ? 1 : 0;",
+            "  }",
+            "  MINI_ID(map_sort)(value.map);",
+            "  if (fputc('{', stream) == EOF) {",
+            "    return 1;",
+            "  }",
+            "  MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
+            "  for (size_t index = 0; index < value.map->entries.count; ++index) {",
+            "    if (index && fputc(',', stream) == EOF) {",
+            "      return 1;",
             "    }",
-            "    return fputc('}', stream) == EOF ? 1 : 0;",
+            "    if (MINI_ID(io_write_json_text)(entries[index].key, stream) != 0 || fputc(':', stream) == EOF) {",
+            "      return 1;",
+            "    }",
+            "    if (MINI_ID(io_write_json_value)(entries[index].value, depth + 1, stream) != 0) {",
+            "      return 1;",
+            "    }",
+            "  }",
+            "  return fputc('}', stream) == EOF ? 1 : 0;",
             "}",
             "",
-            "static void MINI_ID(map_cleanup)(MINI_ID(context) *context) {",
-            "    MINI_ID(map) **maps = (MINI_ID(map) **)context->maps.items;",
-            "    for (size_t index = 0; index < context->maps.count; ++index) {",
-            "        MINI_ID(vec_free)(&maps[index]->entries);",
-            "        free(maps[index]);",
-            "    }",
-            "    MINI_ID(vec_free)(&context->maps);",
+            "static void MINI_ID(map_cleanup)(MINI_ID(context) * context) {",
+            "  MINI_ID(map) **maps = (MINI_ID(map) **)context->maps.items;",
+            "  for (size_t index = 0; index < context->maps.count; ++index) {",
+            "    MINI_ID(vec_free)(&maps[index]->entries);",
+            "    free(maps[index]);",
+            "  }",
+            "  MINI_ID(vec_free)(&context->maps);",
             "}",
             ""
         ),
@@ -113,56 +161,152 @@ emit_c_host_runtime_after_context_add("map", emit_c_map_runtime());
 
 emit_c_host_function_add(
     "map_new",
-    "int MINI_ID(fn_map_new)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 0) return 1; *result = MINI_ID(map_new)(context); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_new)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                        MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 0) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(map_new)(context);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_get",
-    "int MINI_ID(fn_map_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; *result = MINI_ID(map_get_value)(params.args[0], params.args[1]); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_get)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                        MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(map_get_value)(params.args[0], params.args[1]);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_set",
-    "int MINI_ID(fn_map_set)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 3 || !params.args) return 1; MINI_ID(map_set_value)(params.args[0].kind == MINI_ID(kind_map) ? params.args[0].map : NULL, params.args[1], params.args[2]);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_set)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                        MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 3 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(map_set_value)(params.args[0].kind == MINI_ID(kind_map) ? params.args[0].map : NULL,",
+        "                         params.args[1], params.args[2]);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_has",
-    "int MINI_ID(fn_map_has)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; *result = (MINI_ID(value)) MINI_VALUE_BOOLEAN(MINI_ID(map_has_value)(params.args[0], params.args[1])); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_has)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                        MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result =",
+        "      (MINI_ID(value))MINI_VALUE_BOOLEAN(MINI_ID(map_has_value)(params.args[0], params.args[1]));",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_keys",
-    "int MINI_ID(fn_map_keys)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 1 || !params.args) return 1; *result = MINI_ID(map_keys_value)(context, params.args[0]); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_keys)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                         MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(map_keys_value)(context, params.args[0]);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_delete",
-    "int MINI_ID(fn_map_delete)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || params.count != 2 || !params.args) return 1; MINI_ID(map_delete_value)(params.args[0], params.args[1]);\n"
-    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_delete)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                           MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(map_delete_value)(params.args[0], params.args[1]);",
+        "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_of",
-    "int MINI_ID(fn_map_of)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(map_new)(context);\n"
-    + "    for (size_t index = 0; index < params.count; index += 2) { MINI_ID(value) value = (MINI_ID(value)) MINI_VALUE_NUMBER(0);\n"
-    + "        if (index + 1 < params.count) value = params.args[index + 1]; MINI_ID(map_set_value)(result->map, params.args[index], value); } return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_of)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                       MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(map_new)(context);",
+        "  for (size_t index = 0; index < params.count; index += 2) {",
+        "    MINI_ID(value) value = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
+        "    if (index + 1 < params.count) {",
+        "      value = params.args[index + 1];",
+        "    }",
+        "    MINI_ID(map_set_value)(result->map, params.args[index], value);",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
 
 emit_c_host_function_add(
     "map_merge",
-    "int MINI_ID(fn_map_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(map_new)(context);\n"
-    + "    for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) value = params.args[source];\n"
-    + "        if (value.kind != MINI_ID(kind_map) || !value.map) continue; MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;\n"
-    + "        for (size_t index = 0; index < value.map->entries.count; ++index) { MINI_ID(value) key = MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset, entries[index].key.length);\n"
-    + "            MINI_ID(map_set_value)(result->map, key, entries[index].value); } } return 0;\n}\n"
+    text_join(
+        "\n",
+        "int MINI_ID(fn_map_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                          MINI_ID(value) * result) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(map_new)(context);",
+        "  for (size_t source = 0; source < params.count; ++source) {",
+        "    MINI_ID(value) value = params.args[source];",
+        "    if (value.kind != MINI_ID(kind_map) || !value.map) {",
+        "      continue;",
+        "    }",
+        "    MINI_ID(map_entry) *entries = (MINI_ID(map_entry) *)value.map->entries.items;",
+        "    for (size_t index = 0; index < value.map->entries.count; ++index) {",
+        "      MINI_ID(value)",
+        "      key = MINI_ID(value_text)(entries[index].key.buffer, entries[index].key.offset,",
+        "                                entries[index].key.length);",
+        "      MINI_ID(map_set_value)(result->map, key, entries[index].value);",
+        "    }",
+        "  }",
+        "  return 0;",
+        "}",
+        ""
+    )
 );
