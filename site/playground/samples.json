@@ -452,5 +452,23 @@
     "args": [],
     "stdin": "",
     "file": "samples/showcase/csv-sum.mini"
+  },
+  {
+    "id": "breakout-board",
+    "group": "Games",
+    "label": "Breakout board",
+    "note": "Build and print a ten-by-ten game board with nested loops.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/breakout-board.mini"
+  },
+  {
+    "id": "frogger-board",
+    "group": "Games",
+    "label": "Frogger board",
+    "note": "Build a compact road-and-river board from tile rules.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/frogger-board.mini"
   }
 ]

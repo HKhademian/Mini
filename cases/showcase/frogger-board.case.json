@@ -1,0 +1,27 @@
+{
+  "id": "showcase.frogger-board",
+  "kind": "sample",
+  "source": "../../samples/showcase/frogger-board.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "    HH    \n~~====~~~~\n~~~~~====~\n..........\n.>>....>..\n...<<<....\n..........\n.>......>.\n....<<<...\n....F.....\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

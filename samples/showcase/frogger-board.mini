@@ -1,0 +1,70 @@
+/// Print one compact Frogger board as a ten-by-ten text grid.
+
+import "common/io";
+
+/// Return the tile at one board position.
+fn frogger_tile(column, row) {
+    if column == 4 && row == 9 {
+        return "F";
+    }
+    if row == 0 && column >= 4 && column <= 5 {
+        return "H";
+    }
+    if row == 1 {
+        if column >= 2 && column <= 5 {
+            return "=";
+        }
+        return "~";
+    }
+    if row == 2 {
+        if column >= 5 && column <= 8 {
+            return "=";
+        }
+        return "~";
+    }
+    if row == 4 {
+        if column == 1 || column == 2 {
+            return ">";
+        }
+        if column == 7 {
+            return ">";
+        }
+    }
+    if row == 5 {
+        if column >= 3 && column <= 5 {
+            return "<";
+        }
+    }
+    if row == 7 {
+        if column == 1 || column == 8 {
+            return ">";
+        }
+    }
+    if row == 8 && column >= 4 && column <= 6 {
+        return "<";
+    }
+    if row == 3 || row == 6 || row == 9 {
+        return ".";
+    }
+    if row >= 4 {
+        return ".";
+    }
+    return " ";
+}
+
+/// Build and print each row of the board.
+fn frogger_render() {
+    row := 0;
+    while row < 10 {
+        line := "";
+        column := 0;
+        while column < 10 {
+            line = line + frogger_tile(column, row);
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+frogger_render();

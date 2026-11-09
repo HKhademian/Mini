@@ -42,3 +42,6 @@ The curated online-playground samples live in [showcase/](showcase/). Each one
 has a matching case under [cases/showcase/](../cases/showcase/) and runs in
 `mini test`; the site catalog is generated from the same files, so a sample
 cannot drift from its verified output.
+
+- [breakout-board.mini](showcase/breakout-board.mini): Build a ten-by-ten Breakout frame with tile selection and nested loops. [Case](../cases/showcase/breakout-board.case.json).
+- [frogger-board.mini](showcase/frogger-board.mini): Build a ten-by-ten Frogger frame from road, river, and player tiles. [Case](../cases/showcase/frogger-board.case.json).
