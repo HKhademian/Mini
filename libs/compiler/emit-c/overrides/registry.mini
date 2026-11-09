@@ -7,6 +7,8 @@ c_host_function_names := list_new();
 c_host_function_definitions := map_new();
 c_host_runtime_names := list_new();
 c_host_runtime_definitions := map_new();
+c_host_late_runtime_names := list_new();
+c_host_late_runtime_definitions := map_new();
 c_host_include_names := list_new();
 c_host_include_set := map_new();
 c_host_preamble_lines := list_new();
@@ -41,6 +43,27 @@ fn emit_c_host_runtime_definitions() {
     while position < list_length(c_host_runtime_names) {
         name := list_get(c_host_runtime_names, position);
         list_set(output, list_length(output), map_get(c_host_runtime_definitions, name));
+        position = position + 1;
+    }
+    return list_join(output, "\n");
+}
+
+/// Register a host runtime fragment that needs the generated invocation context.
+fn emit_c_host_runtime_after_context_add(name, definition) {
+    if !map_has(c_host_late_runtime_definitions, name) {
+        list_set(c_host_late_runtime_names, list_length(c_host_late_runtime_names), name);
+    }
+    map_set(c_host_late_runtime_definitions, name, definition);
+    return 0;
+}
+
+/// Return registered context-dependent host runtime fragments.
+fn emit_c_host_runtime_after_context_definitions() {
+    output := list_new();
+    position := 0;
+    while position < list_length(c_host_late_runtime_names) {
+        name := list_get(c_host_late_runtime_names, position);
+        list_set(output, list_length(output), map_get(c_host_late_runtime_definitions, name));
         position = position + 1;
     }
     return list_join(output, "\n");

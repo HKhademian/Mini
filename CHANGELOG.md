@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.48 / compiler 0.5.0-alpha.59 / bootstrap
+  0.3.0-alpha.61: move C list representation runtime code into the imported
+  list host override registry.
+
 - mini 0.3.0-alpha.47 / compiler 0.5.0-alpha.58 / bootstrap
   0.3.0-alpha.60: move POSIX declarations and headers for C path overrides
   into the host include registry.
