@@ -12,38 +12,46 @@ import "util/result";
 /// Parse arguments and run selected case scenarios.
 fn main(args) {
     verbose := false;
-    jobs := 4;
+    mute := process_env("MINI_TEST_MUTE") == "1";
+    jobs := 0;
     inherited_jobs := number_from_text(process_env("MINI_TEST_JOBS"));
     if inherited_jobs > 0 {
         jobs = inherited_jobs;
     }
+    report_workers := process_env("MINI_TEST_NESTED") != "1";
     clean_args := list_new();
     position := 0;
     while position < list_length(args) {
         arg := list_get(args, position);
         if arg == "--verbose" || arg == "-v" {
             verbose = true;
+            mute = false;
         } else {
-            if arg == "--jobs" {
-                position = position + 1;
-                if position >= list_length(args) {
-                    io_write_error("--jobs requires a positive number\n");
-                    process_exit(1);
-                }
-                jobs = number_from_text(list_get(args, position));
-                if jobs < 1 {
-                    io_write_error("--jobs requires a positive number\n");
-                    process_exit(1);
-                }
+            if arg == "--mute" {
+                mute = true;
+                verbose = false;
             } else {
-                if text_starts_with(arg, "--jobs=") {
-                    jobs = number_from_text(text_slice(arg, 7, text_length(arg)));
+                if arg == "--jobs" {
+                    position = position + 1;
+                    if position >= list_length(args) {
+                        io_write_error("--jobs requires a positive number\n");
+                        process_exit(1);
+                    }
+                    jobs = number_from_text(list_get(args, position));
                     if jobs < 1 {
                         io_write_error("--jobs requires a positive number\n");
                         process_exit(1);
                     }
                 } else {
-                    list_set(clean_args, list_length(clean_args), arg);
+                    if text_starts_with(arg, "--jobs=") {
+                        jobs = number_from_text(text_slice(arg, 7, text_length(arg)));
+                        if jobs < 1 {
+                            io_write_error("--jobs requires a positive number\n");
+                            process_exit(1);
+                        }
+                    } else {
+                        list_set(clean_args, list_length(clean_args), arg);
+                    }
                 }
             }
         }
@@ -62,14 +70,14 @@ fn main(args) {
     }
     if list_length(clean_args) >= 1 && list_get(clean_args, 0) == "--unit" {
         if list_length(clean_args) > 2 {
-            io_write_error("usage: mini-test [--jobs N] [--verbose] [FILTER] | --unit [--jobs N] [--verbose] [FILTER]\n");
+            io_write_error("usage: mini-test [--jobs N] [--verbose | --mute] [FILTER] | --unit [--jobs N] [--verbose | --mute] [FILTER]\n");
             process_exit(1);
         }
         filter := "";
         if list_length(clean_args) == 2 {
             filter = list_get(clean_args, 1);
         }
-        process_exit(test_units(project_root(), filter, verbose, jobs));
+        process_exit(test_units(project_root(), filter, verbose, mute, jobs, report_workers));
         return 0;
     }
     filter := "";
@@ -84,7 +92,7 @@ fn main(args) {
             if list_length(clean_args) >= 2 && list_get(clean_args, 0) == "--candidate" {
                 candidate = list_get(clean_args, 1);
                 if list_length(clean_args) > 3 {
-                    io_write_error("usage: mini-test [--jobs N] [--verbose] [FILTER]\n");
+                    io_write_error("usage: mini-test [--jobs N] [--verbose | --mute] [FILTER]\n");
                     process_exit(1);
                 }
                 if list_length(clean_args) == 3 {
@@ -92,13 +100,13 @@ fn main(args) {
                 }
             } else {
                 if list_length(clean_args) != 0 {
-                    io_write_error("usage: mini-test [--jobs N] [--verbose] [FILTER]\n");
+                    io_write_error("usage: mini-test [--jobs N] [--verbose | --mute] [FILTER]\n");
                     process_exit(1);
                 }
             }
         }
     }
-    process_exit(test_run(project_root(), filter, file, candidate, verbose, jobs));
+    process_exit(test_run(project_root(), filter, file, candidate, verbose, mute, jobs, report_workers));
     return 0;
 }
 

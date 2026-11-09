@@ -94,7 +94,7 @@ fn mini_usage(message) {
 fn mini_help() {
     io_write("mini: self-hosting foundation for building your own language\n");
     io_write(
-        "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [--verbose] [--unit] [FILTER] | bench OUTPUT [FILTER] | verify [--verbose] [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n"
+        "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [--jobs N] [--verbose | --mute] [--unit] [FILTER] | bench OUTPUT [FILTER] | verify [--verbose] [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n"
     );
     io_write(
         "Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n"

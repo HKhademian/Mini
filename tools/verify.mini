@@ -34,7 +34,7 @@ fn main(args) {
         io_write_error("usage: mini-verify [--verbose] [CASE.json]\n");
         process_exit(1);
     }
-    process_exit(test_run(root, "", list_get(rest, 0), "", verbose, 4));
+    process_exit(test_run(root, "", list_get(rest, 0), "", verbose, !verbose, 0, false));
     return 0;
 }
 

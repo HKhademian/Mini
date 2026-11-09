@@ -3,7 +3,11 @@
 ## Unreleased
 
 - Run independent case scenarios and Mini unit tests concurrently through a
-  bounded worker pool; `mini test --jobs N` controls the concurrency.
+  bounded worker pool; Node's available CPU count is the default, and
+  `mini test --jobs N` controls the concurrency. Default output shows periodic
+  progress and the applied worker count, and reports failures and pending cases
+  without individual passes; `--verbose` lists each result and `--mute`
+  suppresses progress.
 
 - mini 0.3.0-alpha.55 / compiler 0.5.0-alpha.66 / bootstrap
   0.3.0-alpha.68: move C addition and equality runtime definitions into the
