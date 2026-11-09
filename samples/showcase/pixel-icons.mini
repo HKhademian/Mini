@@ -1,0 +1,80 @@
+/// Draw a tiny house and right arrow as colored pixel icons.
+
+import "core/io";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+black := pixel_rgb(0, 0, 0);
+roof_color := pixel_rgb(255, 100, 82);
+wall_color := pixel_rgb(255, 198, 96);
+door_color := pixel_rgb(166, 112, 72);
+arrow_color := pixel_rgb(100, 205, 255);
+
+board := pixel_board_new(screen_size, screen_size, black);
+
+row := 2;
+while row <= 8 {
+    column := 1;
+    while column <= 5 {
+        if (row == 2 && column == 3) || (row == 3 && (column == 2 || column == 4)) || (row == 4 && (column == 1 || column == 5)) {
+            pixel_board_set(board, screen_size, screen_size, column, row, roof_color);
+        } else if row >= 5 && row <= 8 && (column == 1 || column == 5 || row == 8) {
+            pixel_board_set(board, screen_size, screen_size, column, row, wall_color);
+        }
+        column = column + 1;
+    }
+    row = row + 1;
+}
+
+row = 6;
+while row <= 8 {
+    pixel_board_set(board, screen_size, screen_size, 3, row, door_color);
+    row = row + 1;
+}
+
+arrow_column := 6;
+while arrow_column <= screen_edge {
+    pixel_board_set(board, screen_size, screen_size, arrow_column, 5, arrow_color);
+    arrow_column = arrow_column + 1;
+}
+pixel_board_set(board, screen_size, screen_size, 8, 4, arrow_color);
+pixel_board_set(board, screen_size, screen_size, 8, 6, arrow_color);
+
+canvas_render(screen_size, screen_size, board);
+
+/// Return a compact symbol for each icon pixel in the text fallback.
+fn pixel_icons_character(column, row) {
+    if (row == 2 && column == 3) || (row == 3 && (column == 2 || column == 4)) || (row == 4 && (column == 1 || column == 5)) {
+        return "H";
+    }
+    if row >= 5 && row <= 8 && column >= 1 && column <= 5 && (column == 1 || column == 5 || row == 8 || (column == 3 && row >= 6)) {
+        return "H";
+    }
+    if row == 5 && column >= 6 && column <= screen_edge {
+        return ">";
+    }
+    if column == 8 && (row == 4 || row == 6) {
+        return ">";
+    }
+    return ".";
+}
+
+/// Print the initial icons for command-line runs.
+fn pixel_icons_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            line = line + pixel_icons_character(column, row);
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_icons_print();

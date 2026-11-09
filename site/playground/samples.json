@@ -591,11 +591,11 @@
   {
     "id": "pixel-icons",
     "group": "Pixel Art",
-    "label": "Tiny house and arrow icons — planned",
-    "note": "Build small icons from colored pixel patterns.",
+    "label": "Tiny house and arrow icons",
+    "note": "Render a small house and a right arrow once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-icons.mini"
   },
   {
     "id": "pixel-checkerboard",
