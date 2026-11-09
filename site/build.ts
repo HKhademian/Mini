@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { highlight, type Token } from "./highlight.js";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { dirname, join, relative } from "node:path";
+import { dirname, join } from "node:path";
 
 type PlaygroundEntry = {
     readonly id: string;
