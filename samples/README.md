@@ -43,7 +43,7 @@ has a matching case under [cases/showcase/](../cases/showcase/) and runs in
 `mini test`; the site catalog is generated from the same files, so a sample
 cannot drift from its verified output.
 
-- [breakout-board.mini](showcase/breakout-board.mini): Animate a bouncing ball and move the paddle on a ten-by-ten pixel board. [Case](../cases/showcase/breakout-board.case.json).
+- [breakout-board.mini](showcase/breakout-board.mini): Start and pause a small Breakout game with Space and P; a miss pauses in place, a win celebrates, and the top settings tune paddle width, brick columns, and ball speed. [Case](../cases/showcase/breakout-board.case.json).
 - [frogger-board.mini](showcase/frogger-board.mini): Move Frogger between animated road and river lanes on a ten-by-ten pixel board. [Case](../cases/showcase/frogger-board.case.json).
 - [pixel-one.mini](showcase/pixel-one.mini): Render one white pixel on a ten-by-ten canvas. [Case](../cases/showcase/pixel-one.case.json).
 - [pixel-heart.mini](showcase/pixel-heart.mini): Build a red heart from a ten-by-ten text pattern. [Case](../cases/showcase/pixel-heart.case.json).

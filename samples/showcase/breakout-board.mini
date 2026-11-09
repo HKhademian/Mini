@@ -1,43 +1,125 @@
-/// Animate Breakout on a ten-by-ten pixel board and print its initial text frame.
+/// Play Breakout on a small board with a keyboard start, pause, and replay.
 
 import "common/io";
+import "common/list";
+import "common/number";
 import "common/pixel-board";
 import "common/play";
 
 screen_size := 10;
 screen_edge := screen_size - 1;
-ball_x := 4;
-ball_y := 6;
-ball_dx := 1;
-ball_dy := -1;
-paddle_x := 4;
-update_ticks := 0;
+paddle_width := 3;
+brick_columns := screen_size - 2;
+brick_rows := 2;
+paddle_row := screen_edge - 1;
+ball_speed := 12;
+pause_color_step_frames := 12;
+celebration_frames_per_color := 6;
+celebration_color_changes := 18;
+serve_x := screen_edge - 2;
+serve_y := screen_edge - 3;
+initial_paddle_x := number_div(screen_size - paddle_width, 2) + 1;
+
+background_color := pixel_rgb(0, 0, 0);
 wall_color := pixel_rgb(51, 51, 51);
 brick_color := pixel_rgb(255, 99, 89);
 paddle_color := pixel_rgb(0, 255, 255);
 ball_color := pixel_rgb(255, 255, 255);
+rainbow_colors := list_of(
+    pixel_rgb(255, 64, 64),
+    pixel_rgb(255, 180, 40),
+    pixel_rgb(255, 240, 64),
+    pixel_rgb(64, 230, 100),
+    pixel_rgb(64, 150, 255),
+    pixel_rgb(190, 90, 255)
+);
 
-/// Return the tile at one board position.
+bricks := list_new();
+bricks_remaining := 0;
+game_state := "paused";
+restart_required := false;
+ball_x := serve_x;
+ball_y := serve_y;
+ball_dx := 1;
+ball_dy := -1;
+paddle_x := initial_paddle_x;
+update_ticks := 0;
+pause_ticks := 0;
+pause_color_phase := 0;
+celebration_ticks := 0;
+celebration_color_index := 0;
+celebration_changes := 0;
+
+/// Reset bricks, ball, and paddle, then wait for a key to launch.
+fn breakout_reset() {
+    bricks = list_new();
+    brick_index := 0;
+    bricks_remaining = number_mul(brick_columns, brick_rows);
+    while brick_index < bricks_remaining {
+        list_set(bricks, brick_index, 1);
+        brick_index = brick_index + 1;
+    }
+    ball_x = serve_x;
+    ball_y = serve_y;
+    ball_dx = 1;
+    ball_dy = 0 - 1;
+    paddle_x = initial_paddle_x;
+    update_ticks = 0;
+    pause_ticks = 0;
+    pause_color_phase = 0;
+    celebration_ticks = 0;
+    celebration_color_index = 0;
+    celebration_changes = 0;
+    game_state = "paused";
+    restart_required = false;
+}
+
+/// Start the paused game or reset after a missed ball.
+fn breakout_start() {
+    if restart_required {
+        breakout_reset();
+    }
+    restart_required = false;
+    game_state = "playing";
+    update_ticks = 0;
+}
+
+/// Return whether a brick remains at one board coordinate.
+fn breakout_has_brick(column, row) {
+    if column < 1 || column > brick_columns || row < 1 || row > brick_rows {
+        return false;
+    }
+    index := number_mul(row - 1, brick_columns) + column - 1;
+    return list_get(bricks, index, 0) == 1;
+}
+
+/// Return the character at one board position for terminal output.
 fn breakout_tile(column, row) {
     if column == 0 || column == screen_edge || row == 0 || row == screen_edge {
         return "#";
     }
-    if row < 3 {
-        return "#";
-    }
-    if column == ball_x && row == ball_y {
+    if game_state != "celebrating" && column == ball_x && row == ball_y {
         return "o";
     }
-    if row == screen_edge - 1 && column >= paddle_x && column <= paddle_x + 2 {
+    if row == paddle_row && column >= paddle_x && column < paddle_x + paddle_width {
         return "=";
+    }
+    if breakout_has_brick(column, row) {
+        return "#";
     }
     return ".";
 }
 
-/// Build a row-major pixel board from the current Breakout state.
+/// Draw the current paused, playing, or celebration frame.
 fn breakout_render_pixels() {
-    board := pixel_board_new(screen_size, screen_size, 0);
+    if game_state == "celebrating" {
+        color := list_get(rainbow_colors, celebration_color_index, ball_color);
+        board := pixel_board_new(screen_size, screen_size, color);
+        pixel_board_render(screen_size, screen_size, board);
+        return 0;
+    }
 
+    board := pixel_board_new(screen_size, screen_size, background_color);
     position := 0;
     while position < screen_size {
         pixel_board_set(board, screen_size, screen_size, position, 0, wall_color);
@@ -48,58 +130,142 @@ fn breakout_render_pixels() {
     }
 
     row := 1;
-    while row < 3 {
+    while row <= brick_rows {
         column := 1;
-        while column < screen_edge {
-            pixel_board_set(board, screen_size, screen_size, column, row, brick_color);
+        while column <= brick_columns {
+            if breakout_has_brick(column, row) {
+                pixel_board_set(board, screen_size, screen_size, column, row, brick_color);
+            }
             column = column + 1;
         }
         row = row + 1;
     }
-    pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
-    pixel_board_set(board, screen_size, screen_size, paddle_x, screen_edge - 1, paddle_color);
-    pixel_board_set(board, screen_size, screen_size, paddle_x + 1, screen_edge - 1, paddle_color);
-    pixel_board_set(board, screen_size, screen_size, paddle_x + 2, screen_edge - 1, paddle_color);
+
+    paddle_column := 0;
+    while paddle_column < paddle_width {
+        pixel_board_set(board, screen_size, screen_size, paddle_x + paddle_column, paddle_row, paddle_color);
+        paddle_column = paddle_column + 1;
+    }
+
+    if game_state == "paused" {
+        ramp := pause_color_phase;
+        if ramp > 16 {
+            ramp = 32 - ramp;
+        }
+        red := 100 + number_div(number_mul(155, ramp), 16);
+        blue := 255 - number_div(number_mul(175, ramp), 16);
+        pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, pixel_rgb(red, 180, blue));
+    } else {
+        pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
+    }
     pixel_board_render(screen_size, screen_size, board);
 }
 
-/// Advance the ball and emit one ten-by-ten frame; return zero to continue.
-fn mini_play_update() {
-    update_ticks = update_ticks + 1;
-    if update_ticks >= 8 {
-        update_ticks = 0;
-        ball_x = ball_x + ball_dx;
-        ball_y = ball_y + ball_dy;
-        if ball_x <= 1 || ball_x >= screen_edge - 1 {
-            ball_dx = 0 - ball_dx;
-        }
-        if ball_y <= 1 {
-            ball_dy = 1;
-        }
-        if ball_y >= screen_edge - 2 {
-            if ball_x >= paddle_x && ball_x <= paddle_x + 2 {
-                ball_y = screen_edge - 3;
-                ball_dy = 0 - 1;
-            } else {
-                return 1;
-            }
-        }
+/// Move the ball and resolve wall, brick, and paddle collisions.
+fn breakout_advance_ball() {
+    next_x := ball_x + ball_dx;
+    if next_x < 1 || next_x > screen_edge - 1 {
+        ball_dx = 0 - ball_dx;
     }
+    ball_x = ball_x + ball_dx;
 
-    breakout_render_pixels();
+    next_y := ball_y + ball_dy;
+    if ball_dy < 0 {
+        if next_y < 1 {
+            ball_y = 1;
+            ball_dy = 1;
+        } else if breakout_has_brick(ball_x, next_y) {
+            index := number_mul(next_y - 1, brick_columns) + ball_x - 1;
+            list_set(bricks, index, 0);
+            bricks_remaining = bricks_remaining - 1;
+            ball_y = next_y + 1;
+            ball_dy = 1;
+            if bricks_remaining == 0 {
+                game_state = "celebrating";
+                celebration_ticks = 0;
+                celebration_color_index = 0;
+                celebration_changes = 0;
+            }
+        } else {
+            ball_y = next_y;
+        }
+    } else if next_y >= paddle_row {
+        if ball_y < paddle_row && next_y == paddle_row && ball_x >= paddle_x && ball_x < paddle_x + paddle_width {
+            // Resolve contact at the paddle's top edge, leaving the ball above it.
+            ball_y = paddle_row - 1;
+            ball_dy = 0 - 1;
+        } else {
+            ball_y = next_y;
+            game_state = "paused";
+            restart_required = true;
+            pause_ticks = 0;
+            pause_color_phase = 0;
+        }
+    } else {
+        ball_y = next_y;
+    }
 }
 
-/// Move the paddle one cell for a left or right key press.
+/// Animate the paused ball, game, or rainbow win celebration.
+fn mini_play_update() {
+    if game_state == "paused" {
+        pause_ticks = pause_ticks + 1;
+        if pause_ticks >= pause_color_step_frames {
+            pause_ticks = 0;
+            pause_color_phase = number_mod(pause_color_phase + 1, 33);
+        }
+        breakout_render_pixels();
+        return 0;
+    }
+
+    if game_state == "celebrating" {
+        celebration_ticks = celebration_ticks + 1;
+        if celebration_ticks >= celebration_frames_per_color {
+            celebration_ticks = 0;
+            celebration_color_index = number_mod(celebration_color_index + 1, list_length(rainbow_colors));
+            celebration_changes = celebration_changes + 1;
+        }
+        breakout_render_pixels();
+        if celebration_changes >= celebration_color_changes {
+            breakout_reset();
+        }
+        return 0;
+    }
+
+    update_ticks = update_ticks + 1;
+    if update_ticks >= ball_speed {
+        update_ticks = 0;
+        breakout_advance_ball();
+    }
+    breakout_render_pixels();
+    return 0;
+}
+
+/// Start or pause the game and move the paddle with arrows or A/D.
 fn mini_play_onKeyDown(key) {
-    if (key == "ArrowLeft" || key == "a") && paddle_x > 1 {
+    if key == "p" {
+        if game_state == "playing" {
+            game_state = "paused";
+            pause_color_phase = 0;
+            pause_ticks = 0;
+        } else if game_state == "paused" {
+            breakout_start();
+        }
+        return 0;
+    }
+
+    if game_state == "paused" && (key == " " || key == "Enter" || key == "ArrowLeft" || key == "ArrowRight" || key == "a" || key == "d") {
+        breakout_start();
+    }
+    if game_state == "playing" && (key == "ArrowLeft" || key == "a") && paddle_x > 1 {
         paddle_x = paddle_x - 1;
     }
-    if (key == "ArrowRight" || key == "d") && paddle_x < screen_edge - 3 {
+    if game_state == "playing" && (key == "ArrowRight" || key == "d") && paddle_x + paddle_width < screen_edge {
         paddle_x = paddle_x + 1;
     }
 }
 
-/// Build and print each row of the board.
+/// Print the initial paused board for command-line runs.
 fn breakout_render() {
     row := 0;
     while row < screen_size {
@@ -114,5 +280,6 @@ fn breakout_render() {
     }
 }
 
+breakout_reset();
 mini_play(screen_size, screen_size, "Breakout");
 breakout_render();

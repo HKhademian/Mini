@@ -457,7 +457,7 @@
     "id": "breakout-board",
     "group": "Games",
     "label": "Breakout board",
-    "note": "Animate a Breakout ball and steer the paddle with arrows or WASD.",
+    "note": "Space starts; arrows or A/D steer; P pauses. The paused ball shifts through a slow gradient; a miss pauses in place, and the next start resets.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/breakout-board.mini"

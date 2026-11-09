@@ -6,6 +6,8 @@
     "functions",
     "control.if",
     "control.while",
+    "common.list",
+    "common.number",
     "common.play",
     "common.pixel-board",
     "text.output"
@@ -18,7 +20,7 @@
       },
       "args": [],
       "stdout": {
-        "text": "##########\n##########\n##########\n#........#\n#........#\n#........#\n#...o....#\n#........#\n#...===..#\n##########\n"
+        "text": "##########\n##########\n##########\n#........#\n#........#\n#........#\n#......o.#\n#........#\n#...===..#\n##########\n"
       },
       "stderr": {
         "text": ""
