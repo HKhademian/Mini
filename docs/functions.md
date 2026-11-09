@@ -16,6 +16,8 @@ when number text must be stored or concatenated. `text_from_code(code)` returns
 one character for a valid Unicode scalar value and empty text otherwise.
 `text_to_codes(text)` returns a list of scalar codes in character order.
 `text_to_chars(text)` returns a list of one-scalar text values in the same order.
+`text_from_codes(codes)` encodes the valid scalar codes in a list, skipping invalid
+codes.
 `text_to_bytes(text)` returns the UTF-8 bytes as a list of integers 0-255.
 `text_from_bytes(bytes)` decodes a byte list as UTF-8. Byte conversion treats
 non-integer elements as zero and normalizes integer elements modulo 256. The

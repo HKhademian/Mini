@@ -365,6 +365,19 @@ function text_to_chars(source) {
     }
     return characters;
 }
+function text_from_codes(codes) {
+
+    if ((!value_is_list(codes))) {
+        return "";
+    }
+    let characters = list_new();
+    let position = 0;
+    while ((position < (codes).length)) {
+        list_set(characters, (characters).length, text_from_code(list_get(codes, position)));
+        position = (position + 1);
+    }
+    return list_join("", characters);
+}
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 

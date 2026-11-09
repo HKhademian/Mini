@@ -1,0 +1,16 @@
+{
+  "id": "native.c-text-from-codes",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-007-text-from-codes.mini",
+  "features": ["target.c", "text.from-codes", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "valid-scalars-and-invalid-values",
+      "stdin": {"text": ""},
+      "stdout": {"text": "Aé😀B\n\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "language.text-from-codes",
+  "kind": "feature",
+  "source": "064-005-text-from-codes.mini",
+  "features": ["text.from-codes", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "valid-scalars-and-invalid-values",
+      "stdin": {"text": ""},
+      "stdout": {"text": "Aé😀B\n\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

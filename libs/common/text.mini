@@ -51,6 +51,20 @@ fn text_to_chars(source) {
     return characters;
 }
 
+/// Build text by encoding each valid Unicode scalar code in a list.
+fn text_from_codes(codes) {
+    if !value_is_list(codes) {
+        return "";
+    }
+    characters := list_new();
+    position := 0;
+    while position < list_length(codes) {
+        list_set(characters, list_length(characters), text_from_code(list_get(codes, position)));
+        position = position + 1;
+    }
+    return list_join("", characters);
+}
+
 /// Merge text arguments into one text value, ignoring non-text arguments.
 fn text_merge() {
     values := fn_args();
