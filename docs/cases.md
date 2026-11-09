@@ -64,7 +64,11 @@ an explicitly verified pending manifest or a selection containing only pending
 scenarios exits unsuccessfully. Pending cases cannot benchmark or satisfy the
 bootstrap example gate. Unmarked cases with unavailable compilers still fail.
 
-Run `./bin/mini test` or `./bin/mini test FILTER`.
+Run `./bin/mini test` or `./bin/mini test FILTER`. The runner executes
+independent scenarios concurrently, with four workers by default. Set the limit
+with `--jobs N`; `--jobs 1` runs serially. The same option applies to unit and
+candidate-compiler runs. Tool scenarios run one at a time because some use the
+checkout. Results stay in fixture order so output is repeatable.
 Run one manifest with `./bin/mini verify cases/tooling/check.case.json`.
 Both commands print a short summary by default. Use `--verbose` (or `-v`) to
 show passing scenarios and pending cases; failures always show their details.

@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Run independent case scenarios and Mini unit tests concurrently through a
+  bounded worker pool; `mini test --jobs N` controls the concurrency.
+
 - mini 0.3.0-alpha.55 / compiler 0.5.0-alpha.66 / bootstrap
   0.3.0-alpha.68: move C addition and equality runtime definitions into the
   emitter override registry.

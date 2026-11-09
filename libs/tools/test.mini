@@ -1,17 +1,18 @@
 /// Run case scenarios through the shared case runner.
-/// Usage: node dist/test.js [--verbose] [FILTER]
-///        node dist/test.js --unit [--verbose] [FILTER]
-///        node dist/test.js --file CASE.json [--verbose]
-///        node dist/test.js --candidate COMPILER.js [--verbose] [FILTER]
+/// Usage: node dist/test.js [--jobs N] [--verbose] [FILTER]
+///        node dist/test.js --unit [--jobs N] [--verbose] [FILTER]
+///        node dist/test.js --file CASE.json [--jobs N] [--verbose]
+///        node dist/test.js --candidate COMPILER.js [--jobs N] [--verbose] [FILTER]
 /// Prints scenario summaries by default, showing PASS lines when --verbose is set.
 
-import "core/number";
-import "core/map";
 import "core/io";
-import "core/text";
+import "core/json";
 import "core/list";
+import "core/map";
+import "core/number";
 import "core/path";
 import "core/process";
+import "core/text";
 import "util/process";
 import "util/io";
 import "util/result";
@@ -25,7 +26,7 @@ fn test_usage() {
 }
 
 /// Run selected fixtures and return the process status.
-fn test_run(root, filter, file, candidate, verbose) {
+fn test_run(root, filter, file, candidate, verbose, jobs) {
     fixtures := list_new();
     if file != "" {
         loaded := case_load_case(file);
@@ -43,11 +44,11 @@ fn test_run(root, filter, file, candidate, verbose) {
         fixtures = map_get(selected, "fixtures");
     }
     if candidate != "" {
-        return test_candidate(fixtures, root, candidate, verbose);
+        return test_candidate(fixtures, root, candidate, verbose, jobs);
     }
-    failures := 0;
-    count := 0;
+    tasks := list_new();
     pending := 0;
+    count := 0;
     fixture_index := 0;
     while fixture_index < list_length(fixtures) {
         fixture := list_get(fixtures, fixture_index);
@@ -60,25 +61,30 @@ fn test_run(root, filter, file, candidate, verbose) {
             name := map_get(scenario, "name");
             if map_has(definition, "pending") {
                 pending = pending + 1;
-                if verbose {
-                    io_write_line("PENDING " + id + "/" + name + ": " + map_get(definition, "pending"));
-                }
+                task := map_new();
+                map_set(task, "kind", "pending");
+                map_set(task, "label", id + "/" + name);
+                map_set(task, "message", map_get(definition, "pending"));
+                list_set(tasks, list_length(tasks), task);
             } else {
                 count = count + 1;
-                result := case_verify_scenario(fixture, scenario, root, "");
-                if result_is_ok(result) {
-                    if verbose {
-                        io_write_line("PASS " + id + "/" + name);
-                    }
-                } else {
-                    failures = failures + 1;
-                    io_write_error("FAIL " + id + "/" + name + ": " + result_get_message(result) + "\n");
+                task := map_new();
+                map_set(task, "kind", "case");
+                map_set(task, "file", map_get(fixture, "path"));
+                map_set(task, "scenario", scenario_index);
+                map_set(task, "compiler", candidate);
+                map_set(task, "label", id + "/" + name);
+                if map_get(definition, "kind") == "tool" {
+                    map_set(task, "serial", true);
                 }
+                list_set(tasks, list_length(tasks), task);
             }
             scenario_index = scenario_index + 1;
         }
         fixture_index = fixture_index + 1;
     }
+    results := test_run_tasks(tasks, root, jobs);
+    failures := test_report_results(tasks, results, verbose);
     io_write(number_to_text(count - failures) + "/" + number_to_text(count) + " scenarios passed\n");
     if pending > 0 {
         io_write(number_to_text(pending) + " scenarios pending\n");
@@ -90,11 +96,11 @@ fn test_run(root, filter, file, candidate, verbose) {
 }
 
 /// Run non-tool cases through a candidate compiler and report the summary.
-fn test_candidate(fixtures, root, compiler, verbose) {
-    passed := 0;
-    failed := 0;
+fn test_candidate(fixtures, root, compiler, verbose, jobs) {
+    tasks := list_new();
     pending := 0;
     tools := 0;
+    count := 0;
     fixture_index := 0;
     while fixture_index < list_length(fixtures) {
         fixture := list_get(fixtures, fixture_index);
@@ -105,34 +111,34 @@ fn test_candidate(fixtures, root, compiler, verbose) {
         } else {
             if map_has(definition, "pending") {
                 pending = pending + 1;
-                if verbose {
-                    io_write_line("PENDING " + map_get(definition, "id") + ": " + map_get(definition, "pending"));
-                }
+                task := map_new();
+                map_set(task, "kind", "pending");
+                map_set(task, "label", map_get(definition, "id"));
+                map_set(task, "message", map_get(definition, "pending"));
+                list_set(tasks, list_length(tasks), task);
             } else {
                 scenarios := map_get(definition, "cases");
                 scenario_index := 0;
                 while scenario_index < list_length(scenarios) {
                     scenario := list_get(scenarios, scenario_index);
-                    result := case_verify_scenario(fixture, scenario, root, compiler);
-                    if result_is_ok(result) {
-                        passed = passed + 1;
-                        if verbose {
-                            io_write_line("PASS " + map_get(definition, "id") + "/" + map_get(scenario, "name"));
-                        }
-                    } else {
-                        failed = failed + 1;
-                        io_write_error(
-                            "FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
-                            + ": " + result_get_message(result) + "\n"
-                        );
-                    }
+                    task := map_new();
+                    map_set(task, "kind", "case");
+                    map_set(task, "file", map_get(fixture, "path"));
+                    map_set(task, "scenario", scenario_index);
+                    map_set(task, "compiler", compiler);
+                    map_set(task, "label", map_get(definition, "id") + "/" + map_get(scenario, "name"));
+                    list_set(tasks, list_length(tasks), task);
+                    count = count + 1;
                     scenario_index = scenario_index + 1;
                 }
             }
         }
         fixture_index = fixture_index + 1;
     }
-    io_write(number_to_text(passed) + "/" + number_to_text(passed + failed) + " mini-source scenarios passed\n");
+    results := test_run_tasks(tasks, root, jobs);
+    failed := test_report_results(tasks, results, verbose);
+    passed := count - failed;
+    io_write(number_to_text(passed) + "/" + number_to_text(count) + " mini-source scenarios passed\n");
     if pending > 0 {
         io_write(number_to_text(pending) + " cases pending\n");
     }
@@ -146,53 +152,154 @@ fn test_candidate(fixtures, root, compiler, verbose) {
 }
 
 /// Compile and run every matching test/*.test.mini program.
-fn test_units(root, filter, verbose) {
-    compiler := project_compiler_entry(root);
+fn test_units(root, filter, verbose, jobs) {
     directory := path_join(root, "test");
     entries := directory_list(directory);
-    passed := 0;
-    failed := 0;
-    count := 0;
+    tasks := list_new();
     position := 0;
     while position < list_length(entries) {
         name := list_get(entries, position);
         if text_ends_with(name, ".test.mini") && (filter == "" || text_find(name, filter) >= 0) {
-            count = count + 1;
-            source := path_join(directory, name);
-            work := path_temp_directory();
-            output := path_join(work, "test.generated.js");
-            compile_command := compiler;
-            compile_args := list_new();
-            if text_ends_with(compiler, ".js") {
-                compile_command = "node";
-                compile_args = list_of(compiler, source, output);
-            } else {
-                compile_args = list_of(source, output);
-            }
-            compiled := process_capture(compile_command, compile_args, root, list_new());
-            if map_get(compiled, "status") != 0 {
-                failed = failed + 1;
-                io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(compiled, "stderr")));
-            } else {
-                run_args := list_of(output, root);
-                result := process_capture("node", run_args, root, list_new());
-                if map_get(result, "status") != 0 {
-                    failed = failed + 1;
-                    io_write_error("FAIL " + name + ": " + text_from_bytes(map_get(result, "stderr")));
-                } else {
-                    passed = passed + 1;
-                    if verbose {
-                        io_write_line("PASS " + name);
-                    }
-                }
-            }
-            path_remove(work);
+            task := map_new();
+            map_set(task, "kind", "unit");
+            map_set(task, "name", name);
+            map_set(task, "label", name);
+            list_set(tasks, list_length(tasks), task);
         }
         position = position + 1;
     }
-    io_write(number_to_text(passed) + "/" + number_to_text(count) + " unit tests passed\n");
-    if failed > 0 || count == 0 {
+    results := test_run_tasks(tasks, root, jobs);
+    failed := test_report_results(tasks, results, verbose);
+    passed := list_length(tasks) - failed;
+    io_write(number_to_text(passed) + "/" + number_to_text(list_length(tasks)) + " unit tests passed\n");
+    if failed > 0 || list_length(tasks) == 0 {
         return 1;
     }
     return 0;
+}
+
+/// Run one queued worker, returning its structured result.
+fn test_worker(task, root) {
+    if map_get(task, "kind") == "case" {
+        loaded := case_load_case(map_get(task, "file"));
+        if result_is_fail(loaded) {
+            return loaded;
+        }
+        fixture := map_get(loaded, "fixture");
+        scenario := list_get(map_get(map_get(fixture, "definition"), "cases"), map_get(task, "scenario"));
+        return case_verify_scenario(fixture, scenario, root, map_get(task, "compiler"));
+    }
+    return test_unit_one(root, map_get(task, "name"));
+}
+
+/// Compile and run one unit-test file.
+fn test_unit_one(root, name) {
+    compiler := project_compiler_entry(root);
+    source := path_join(path_join(root, "test"), name);
+    work := path_temp_directory();
+    if work == "" {
+        return result_fail("cannot create a temporary directory");
+    }
+    output := path_join(work, "test.generated.js");
+    compile_command := compiler;
+    compile_args := list_new();
+    if text_ends_with(compiler, ".js") {
+        compile_command = "node";
+        compile_args = list_of(compiler, source, output);
+    } else {
+        compile_args = list_of(source, output);
+    }
+    compiled := process_capture(compile_command, compile_args, root, list_new());
+    if map_get(compiled, "status") != 0 {
+        path_remove(work);
+        return result_fail(text_from_bytes(map_get(compiled, "stderr")));
+    }
+    result := process_capture("node", list_of(output, root), root, list_new());
+    path_remove(work);
+    if map_get(result, "status") != 0 {
+        return result_fail(text_from_bytes(map_get(result, "stderr")));
+    }
+    return result_ok();
+}
+
+/// Run queued tests through the bounded Node worker pool.
+fn test_run_tasks(tasks, root, jobs) {
+    request := map_new();
+    map_set(request, "jobs", jobs);
+    map_set(request, "script", process_script_path());
+    map_set(request, "tasks", tasks);
+    options := map_new();
+    map_set(options, "command", "node");
+    map_set(options, "arguments", list_of(path_join(root, "tools/test-pool.ts")));
+    map_set(options, "input", text_to_bytes(json_text(request)));
+    result := process_spawn(options);
+    if map_get(result, "status") != 0 {
+        io_write_error("test worker pool failed: " + text_from_bytes(map_get(result, "stderr")) + "\n");
+        failed := list_new();
+        position := 0;
+        while position < list_length(tasks) {
+            outcome := map_new();
+            map_set(outcome, "status", 1);
+            map_set(outcome, "error", "worker pool failed");
+            list_set(failed, position, outcome);
+            position = position + 1;
+        }
+        return failed;
+    }
+    parsed := json_value(text_from_bytes(map_get(result, "stdout")));
+    if result_is_fail(parsed) {
+        io_write_error("test worker pool returned invalid results\n");
+        failed := list_new();
+        position := 0;
+        while position < list_length(tasks) {
+            outcome := map_new();
+            map_set(outcome, "status", 1);
+            map_set(outcome, "error", "worker pool returned invalid results");
+            list_set(failed, position, outcome);
+            position = position + 1;
+        }
+        return failed;
+    }
+    return result_get_value(parsed);
+}
+
+/// Print worker results in task order and return the failure count.
+fn test_report_results(tasks, results, verbose) {
+    failed := 0;
+    position := 0;
+    while position < list_length(tasks) {
+        task := list_get(tasks, position);
+        outcome := list_get(results, position);
+        if map_get(task, "kind") == "pending" {
+            if verbose {
+                io_write_line("PENDING " + map_get(task, "label") + ": " + map_get(task, "message"));
+            }
+        } else {
+            worker_result := result_fail("worker did not return a result");
+            if map_get(outcome, "status") == 0 {
+                parsed := json_value(map_get(outcome, "stdout"));
+                if result_is_ok(parsed) {
+                    worker_result = result_get_value(parsed);
+                }
+            }
+            label := map_get(task, "label");
+            if !result_is_ok(worker_result) {
+                failed = failed + 1;
+                message := map_get(outcome, "stderr");
+                if message == "" {
+                    message = map_get(outcome, "error");
+                }
+                if message == "" {
+                    message = result_get_message(worker_result);
+                }
+                io_write_error("FAIL " + label + ": " + message + "\n");
+            } else {
+                if verbose {
+                    io_write_line("PASS " + label);
+                }
+            }
+        }
+        position = position + 1;
+    }
+    return failed;
 }

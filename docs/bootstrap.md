@@ -28,10 +28,13 @@ Code extension to `dist/rebuild/mini-GROUP-vVERSION.vsix`.
 `dist/` and generated `bin/` entries are ignored by Git. CI bootstraps before
 running checks and publishes built tools and release artifacts.
 
-All tool implementations are mini. The dispatcher, verifier, release harness,
+Tool behavior is implemented in mini. The dispatcher, verifier, release harness,
 formatter, language server, test runner, benchmark tool, and CI task runner are
-generated from `tools/*.mini`. Host TypeScript remains only for editor clients,
-performance measurement, and host-specific integration tests.
+generated from `tools/*.mini`. The test runner uses a small Node TypeScript
+worker pool to launch independent Mini-selected jobs concurrently; fixture
+selection, execution checks, and reporting remain in Mini. Other host TypeScript
+supports editor clients, performance measurement, and host-specific integration
+tests.
 
 The mini compiler source lives in
 [tools/compiler.mini](../tools/compiler.mini); the compiler generated from it is
