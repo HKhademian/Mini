@@ -473,6 +473,17 @@ copy := list_copy(items);
 - A non-list target returns an empty list.
 - The source list is unchanged. Gaps remain readable as numeric zero.
 
+## Accepted operation: list merging
+
+```mini
+merged := list_merge(left, right);
+```
+
+- `list_merge(...lists)` returns a fresh list containing each list argument's
+  items in argument order. Non-list arguments are ignored.
+- The merge is shallow; contained values are shared with the source lists.
+- Import `common/list` to use it.
+
 ## Accepted operation: list text joining
 
 ```mini

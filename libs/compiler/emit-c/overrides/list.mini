@@ -133,6 +133,17 @@ emit_c_host_function_add(
 );
 
 emit_c_host_function_add(
+    "list_merge",
+    "int MINI_ID(fn_list_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1; *result = MINI_ID(list_new)(context);\n"
+    + "    for (size_t source = 0; source < params.count; ++source) { MINI_ID(value) list = params.args[source];\n"
+    + "        if (list.kind != MINI_ID(kind_list) || !list.list) continue;\n"
+    + "        MINI_ID(value) *items = (MINI_ID(value) *)list.list->values.items;\n"
+    + "        for (size_t index = 0; index < list.list->values.count; ++index) MINI_ID(list_push)(result->list, items[index], 0); }\n"
+    + "    return 0;\n}\n"
+);
+
+emit_c_host_function_add(
     "list_get",
     "int MINI_ID(fn_list_get)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
     + "    if (!context || !result || params.count != 2 || !params.args) return 1; *result = MINI_ID(list_get)(params.args[0], params.args[1]); return 0;\n}\n"

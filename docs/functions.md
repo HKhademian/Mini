@@ -182,6 +182,9 @@ contain, to avoid collisions with mini source names.
 
 `list_copy(items)` returns a shallow list copy. Values are shared, so nested
 lists and maps remain aliases. A non-list target returns an empty list.
+`list_merge(...lists)` returns a new list with the items from each list argument
+appended in order. Non-list arguments contribute no items; no arguments returns
+an empty list.
 `list_push_back`, `list_push_front`, `list_pop_back`, and `list_pop_front` are
 Mini helpers in [libs/common/list.mini](../libs/common/list.mini). They mutate a
 list and return 0 for pushes, or remove and return one value for pops. Empty or

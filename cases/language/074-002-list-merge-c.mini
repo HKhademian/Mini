@@ -1,0 +1,17 @@
+import "common/io";
+import "common/list";
+
+first := list_of("a", 1);
+second := list_of("b", true);
+merged := list_merge(first, second);
+io_write(
+    list_length(merged),
+    ":",
+    list_get(merged, 0),
+    ":",
+    list_get(merged, 1),
+    ":",
+    list_get(merged, 2),
+    ":",
+    list_get(merged, 3)
+);

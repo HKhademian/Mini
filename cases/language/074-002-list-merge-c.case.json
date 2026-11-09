@@ -1,0 +1,16 @@
+{
+  "id": "language.list-merge-c",
+  "kind": "feature",
+  "target": "c",
+  "source": "074-002-list-merge-c.mini",
+  "features": ["import", "list.merge", "functions.args", "target.c"],
+  "cases": [
+    {
+      "name": "variadic-list-merge",
+      "stdin": {"text": ""},
+      "stdout": {"text": "4:a:1:b:true"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

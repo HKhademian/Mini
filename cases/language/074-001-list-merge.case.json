@@ -1,0 +1,15 @@
+{
+  "id": "language.list-merge",
+  "kind": "feature",
+  "source": "074-001-list-merge.mini",
+  "features": ["import", "list.merge", "functions.args"],
+  "cases": [
+    {
+      "name": "ordered-variadic-merge",
+      "stdin": {"text": ""},
+      "stdout": {"text": "4:a:1:b:true|0"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
