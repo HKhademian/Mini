@@ -101,7 +101,7 @@ compiler.
   as the common generated C calling convention. Mini functions may receive any input count; declared parameters
   consume their positions with missing values supplied as numeric zero. Extra
   inputs remain available to the callee. Apply this convention to Mini-visible
-  helpers and builtins as their native lowering arrives. Existing JS builtin
+  helpers and builtins as their native lowering arrives. Existing JS function
   arity checks still need a separate implementation with safe missing/kind
   handling; this is selected direction, not a completed general arity change.
 - The current C io_write now takes a parameter view in one call per source call.
@@ -133,11 +133,11 @@ compiler.
 - [Architecture and scope](../../docs/c-target-and-embedding.md).
 - [Project instructions](../../AGENTS.md), [development](../rules/development.md),
   [atomic commits](../rules/atomic-commits.md), and [contributing](../../CONTRIBUTING.md).
-- [Language](../../docs/language.md), [builtins](../../docs/builtins.md),
+- [Language](../../docs/language.md), [functions](../../docs/functions.md),
   [passing proposal](../../docs/parameter-passing.md), and [cases](../../docs/cases.md).
 - [Bootstrap](../../docs/bootstrap.md) and [evolution](../../docs/evolving-language.md).
 - [Compiler](../../tools/compiler.mini), [parser](../../libs/compiler/parser.mini),
-  [lexer](../../libs/compiler/lexer.mini), and [builtins](../../libs/compiler/builtins.mini).
+  [lexer](../../libs/compiler/lexer.mini), and [common functions](../../libs/common).
 
 No child/prerequisite plans. Execute in order using small atomic commits.
 New paths below are proposed. Do not require completing all language features

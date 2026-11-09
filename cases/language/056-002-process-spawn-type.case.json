@@ -1,6 +1,6 @@
 {
   "id": "language.process-spawn-type",
-  "kind": "reject",
+  "kind": "compile",
   "source": "056-002-process-spawn-type.mini",
   "features": ["process.spawn"],
   "cases": [
@@ -8,8 +8,8 @@
       "name": "text-options",
       "stdin": {"text": ""},
       "stdout": {"text": ""},
-      "stderr": {"file": "056-002-process-spawn-type.stderr"},
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

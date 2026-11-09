@@ -51,10 +51,10 @@ node compiler.mini.js compile tools/compiler.mini
 Both write `compiler.mini.js` by default. An optional final argument selects another
 output path. `mini-compile` and `minic` are aliases for `mini compile`.
 The generated compiler implements the same `compile SOURCE.mini [OUTPUT.js]`
-interface and writes self-contained JavaScript. Node built-ins are available;
+interface and writes self-contained JavaScript. Node common functions are available;
 handwritten compiler helpers must not be required.
 
-Primitive host I/O is allowed through [built-ins](builtins.md). These adapters
+Primitive host I/O is expressed through [common functions](functions.md). These implementations
 must not contain mini parsing or compilation logic. Any library code used by
 the compiler must be included in its source/build and generated bootstrap;
 it must not introduce another prerequisite tool or package.

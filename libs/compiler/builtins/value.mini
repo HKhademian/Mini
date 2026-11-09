@@ -1,6 +1,0 @@
-/// Value API contracts; implementations live in common/value and emitter registries.
-
-import "./registry";
-
-builtin_add("to_text", "any_value", "text", "library");
-builtin_add("value_kind", "unknown", "text", "representation");

@@ -13,7 +13,6 @@ import "common/text";
 import "common/native";
 import "compiler/lexer";
 import "compiler/parser";
-import "compiler/builtins";
 import "compiler/emit-js";
 import "compiler/emit-c";
 import "common/process";
@@ -75,7 +74,7 @@ fn compiler_append_body(output, tokens) {
 
 /// Return the compiler command usage text.
 fn compiler_usage() {
-    return "usage: mini [--target js|c] [--reference | --program-only] SOURCE.mini [OUTPUT] | tokens [--comments] SOURCE.mini | metadata\n";
+    return "usage: mini [--target js|c] [--reference | --program-only] SOURCE.mini [OUTPUT] | tokens [--comments] SOURCE.mini\n";
 }
 
 /// Run the mini compiler command interface.
@@ -104,7 +103,7 @@ fn main(args) {
         process_exit(1);
     }
     command := list_get(args, 0);
-    if target_name == "c" && (command == "tokens" || command == "metadata") {
+    if target_name == "c" && command == "tokens" {
         io_write_error(compiler_usage());
         process_exit(1);
     }
@@ -113,25 +112,6 @@ fn main(args) {
     if command == "tokens" && list_get(args, 1) == "--comments" {
         include_comments = true;
         offset = 1;
-    }
-    if command == "metadata" && list_length(args) == 1 {
-        entries := list_new();
-        names := builtin_names();
-        index := 0;
-        while index < list_length(names) {
-            name := list_get(names, index);
-            entry := map_new();
-            map_set(entry, "name", name);
-            map_set(entry, "parameters", builtin_parameters(name));
-            map_set(entry, "result", builtin_result(name));
-            map_set(entry, "class", builtin_class(name));
-            list_set(entries, list_length(entries), entry);
-            index = index + 1;
-        }
-        metadata := map_new();
-        map_set(metadata, "builtins", entries);
-        io_write_line(json_to_text(metadata));
-        return 0;
     }
     if command == "tokens" {
         count := list_length(args) - offset;

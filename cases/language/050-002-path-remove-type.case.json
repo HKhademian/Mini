@@ -1,6 +1,6 @@
 {
   "id": "language.path-remove-type",
-  "kind": "reject",
+  "kind": "compile",
   "source": "050-002-path-remove-type.mini",
   "features": [
     "path.remove"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "050-002-path-remove-type.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

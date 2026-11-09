@@ -1,6 +1,6 @@
 {
   "id": "language.text-find-wrong-needle",
-  "kind": "reject",
+  "kind": "compile",
   "source": "042-004-text-find-wrong-needle.mini",
   "features": [
     "text.find"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "042-004-text-find-wrong-needle.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

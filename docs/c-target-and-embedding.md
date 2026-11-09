@@ -56,10 +56,9 @@ execution. Their target field selects C; future target gaps stay explicit.
   produces the checked AST; [`emit-js.mini`](../libs/compiler/emit-js.mini) and
   [`emit-c.mini`](../libs/compiler/emit-c.mini) lower it to their respective
   targets. Each backend has an AST entry point and a token-based compile adapter.
-- [Builtin registry](../libs/compiler/builtins.mini) combines metadata with
-  JavaScript helpers/call templates. Separate only what each C slice needs.
-- [Pure libraries](self-containment.md) supply algorithms, while native storage
-  remains a backend responsibility.
+- Mini functions in [`libs/common`](../libs/common) define shared call behavior.
+  Target emitters may replace same-name functions through their override
+  registries when a native implementation is available.
 - [mini run](../tools/run.mini) compiles and launches JavaScript; no source
   interpreter exists to port. Keep the [JS bootstrap](bootstrap.md) working.
 
@@ -134,7 +133,7 @@ the supported Mini list operations.
 
 ## Behavior grows with the supported slice
 
-Follow accepted [language](language.md) and [builtin](builtins.md) contracts.
+Follow accepted [language](language.md) and [function](functions.md) contracts.
 Small samples establish a small supported scope, not full parity. Explicitly
 guard/reject unsupported forms or ranges; do not silently fall back to Node.
 
@@ -194,7 +193,7 @@ managed heap or persistent handles before their lifetimes are implemented/tested
 ## No language error or recovery features
 
 Mini gains no exceptions, interrupts, error values, or script-level recovery.
-Guard unsafe native operations, preserve specified builtin defaults, and reject
+Guard unsafe native operations, preserve specified function defaults, and reject
 malformed/unsupported source before execution. Unavoidable implementation
 failures such as unavailable memory belong at the host boundary with valid
 cleanup, not in new Mini language features.

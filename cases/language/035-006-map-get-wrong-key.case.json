@@ -1,6 +1,6 @@
 {
   "id": "language.map-get-wrong-key",
-  "kind": "reject",
+  "kind": "compile",
   "source": "035-006-map-get-wrong-key.mini",
   "features": [
     "map.get",
@@ -16,10 +16,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "035-006-map-get-wrong-key.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "language.list-join-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "046-002-list-join-wrong-target.mini",
   "features": [
     "list.join"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "046-002-list-join-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "language.map-copy-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "044-003-map-copy-wrong-target.mini",
   "features": [
     "map.copy"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "044-003-map-copy-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

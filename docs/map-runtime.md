@@ -1,6 +1,6 @@
 # Object-backed maps
 
-Group 0.3.0, language/compiler/builtins 0.3.0-alpha.1.
+Group 0.3.0, language/compiler 0.3.0-alpha.1.
 
 mini maps use ordinary JS objects whose shared prototype is an empty object with
 a null prototype. Children retain ordinary object storage while inheriting no
@@ -8,8 +8,8 @@ string properties or `__proto__` setter. The prototype is created once per
 generated program. Map values have no wrapper, brand, size field, or other
 per-map metadata.
 
-The shared adapter block in `libs/compiler/builtins/map.mini` provides map
-get, has, and set. It is emitted once when needed. Text keys such as `__proto__`,
+The JavaScript override in `libs/compiler/emit-js/overrides/map.mini` provides
+map get, has, and set. It is emitted once when needed. Text keys such as `__proto__`,
 `constructor`, `toString`, empty text, and numeric-looking text remain ordinary
 keys. Reads preserve zero, false, empty text, and collection references; missing
 reads return zero. Arrays and primitives are rejected by the tolerant getter
@@ -23,7 +23,7 @@ ordinary list. Enumeration order remains unspecified.
 Count keys with `list_length(map_keys(items))`. The compiler workloads do not
 need a dedicated count operation. Counting allocates a snapshot when requested;
 writes do not pay bookkeeping costs. Group 0.3.0 removes the redundant count
-builtin and updates its samples/cases to use the composition.
+function and updates its samples/cases to use the composition.
 
 This changes runtime storage and primitive lowering, without reorganizing the
 mini applications or the compiler's own scanner/parser. Their named fields, call

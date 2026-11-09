@@ -1,6 +1,6 @@
 {
   "id": "language.list-new-extra-arguments",
-  "kind": "reject",
+  "kind": "compile",
   "source": "027-003-list-new-extra-arguments.mini",
   "features": ["list.new", "calls.arity"],
   "cases": [
@@ -8,8 +8,8 @@
       "name": "two-arguments",
       "stdin": { "file": "empty.stdin" },
       "stdout": { "file": "empty.stdout" },
-      "stderr": { "file": "027-003-list-new-extra-arguments.stderr" },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

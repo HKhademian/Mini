@@ -3,6 +3,7 @@
 import "common/map";
 
 js_host_functions := map_new();
+reference_mode := false;
 
 /// Register one public Mini function's host body and optional target lowering.
 fn emit_js_host_function_add(name, definition, keep_reference, lowering) {

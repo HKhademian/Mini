@@ -1,6 +1,6 @@
 {
   "id": "language.map-has-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "031-004-map-has-wrong-target.mini",
   "features": [
     "map.has",
@@ -15,10 +15,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "031-004-map-has-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -127,12 +127,10 @@ import "./local";
 ```
 
 - `import "common/text"` resolves to `libs/common/text.mini`. Import paths in
-  Mini source are extensionless.
-  Import the module that declares each source API;
-  for example, map operations such as `map_new` and `map_get` require
-  `import "common/map"`. Imports are not re-exports: a caller must import the
-  module that declares each API it calls. A source API is unknown until its
-  module is imported directly.
+  Mini source are extensionless. Functions declared anywhere in the expanded
+  import graph share one call namespace. Import the source that provides the
+  functions your program uses; for example, `common/map` provides `map_new` and
+  `map_get`.
 - Paths beginning `./` or `../` are resolved relative to the importing file.
   Prefer these forms for sibling and child modules.
   Absolute paths such as `/path/to/file.mini` are canonicalized before use.
@@ -222,9 +220,6 @@ mini does not typecheck. It tracks the kind of literals and of expressions it ca
 derive them for, so a few obviously wrong forms are rejected at compile time.
 Anything else, including a wrong argument count, is a runtime concern: mini has
 no absence value, so every value is a number, text, boolean, list, or map.
-
-Builtin calls keep exact arity because their parameters are part of the host
-contract.
 
 The [parameter-passing proposal](parameter-passing.md) evaluates local parameter
 bindings with shared collections and investigates omitted arguments.
@@ -433,7 +428,7 @@ while position < list_length(args) {
 
 - At program top-level, `fn_args()` returns a list initially containing text
   arguments, excluding Node and the script path. Inside a function, it returns
-  that function's supplied arguments. It is compiler-provided, not a builtin.
+  that function's supplied arguments. It is a compiler-provided language form.
 - `list_length(items)` returns the number of elements; an empty list has length 0.
 - `list_get(items, index)` returns one element, using a zero-based index.
   The caller supplies an integer index; negative indices count from the end.

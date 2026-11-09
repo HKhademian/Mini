@@ -1,6 +1,6 @@
 {
   "id": "language.map-new-extra-argument",
-  "kind": "reject",
+  "kind": "compile",
   "source": "030-003-map-new-extra-argument.mini",
   "features": [
     "map.new"
@@ -14,10 +14,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "030-003-map-new-extra-argument.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

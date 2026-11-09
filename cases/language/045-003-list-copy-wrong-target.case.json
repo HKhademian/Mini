@@ -1,6 +1,6 @@
 {
   "id": "language.list-copy-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "045-003-list-copy-wrong-target.mini",
   "features": [
     "list.copy"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "045-003-list-copy-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

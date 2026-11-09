@@ -1,6 +1,6 @@
 {
   "id": "language.map-new-not-scalar",
-  "kind": "reject",
+  "kind": "compile",
   "source": "030-005-map-new-not-scalar.mini",
   "features": [
     "map.new"
@@ -14,10 +14,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "030-005-map-new-not-scalar.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

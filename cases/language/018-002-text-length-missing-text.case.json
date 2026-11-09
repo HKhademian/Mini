@@ -1,6 +1,6 @@
 {
   "id": "language.text-length-missing-text",
-  "kind": "reject",
+  "kind": "compile",
   "source": "018-002-text-length-missing-text.mini",
   "features": [
     "text.length"
@@ -14,10 +14,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "018-002-text-length-missing-text.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

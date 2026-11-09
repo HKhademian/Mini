@@ -1,6 +1,6 @@
 {
   "id": "language.text-get-wrong-index",
-  "kind": "reject",
+  "kind": "compile",
   "source": "037-006-text-get-wrong-index.mini",
   "features": [
     "text.get",
@@ -15,10 +15,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "037-006-text-get-wrong-index.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -171,14 +171,14 @@ protocol error; unknown notifications are ignored.
 Hover on a function or variable shows its declaration and the immediately
 preceding `///` documentation comments. Blank lines do not break the comment
 sequence; an ordinary `//` comment, import, or other token does. Hover on a
-builtin shows its signature.
-Completion offers document functions and variables, builtins, and the current
+a common function shows its source signature and documentation.
+Completion offers document declarations, common functions, and the current
 keywords (`import`, `fn`, `return`, `if`, `else`, `while`, `true`, `false`),
 filtered by the identifier prefix at the cursor. Completion is suppressed inside
 comments and text literals. Go-to-definition returns the declaration of a
-document function or variable; builtins have no source location and return no
-definition. None of these features performs type inference or resolves scopes;
-declarations are collected from the current document.
+document function or variable; common functions do not return a definition in
+this implementation. None of these features performs type inference or resolves
+scopes; document declarations are collected from the current document.
 
 Documents are keyed by URI and retain the latest text and version. `didOpen`,
 `didChange`, and `didClose` update or remove that state; every change analyzes the
@@ -248,8 +248,8 @@ for example, need not be expressible in the first mini subset.
 After bootstrap replacement, authoritative parsing, checking, and emission
 behavior must live in mini. Tool integration reuses that behavior through the
 active compiler's `tokens --comments` and `compile` commands; the language server
-does not import handwritten compiler modules. Builtin signatures for hover/completion
-come from the active compiler's `metadata` command.
+does not import handwritten compiler modules. Common-function signatures for
+hover and completion come from declarations in `libs/common`.
 The compiler parser now returns a shared AST with source spans and semantic
 kinds; the JavaScript emitter consumes it. AST dumps and LSP analysis can use
 the same representation. A formatter also needs source text and token/trivia

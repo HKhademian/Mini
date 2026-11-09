@@ -7,7 +7,6 @@ import "common/text";
 import "common/project";
 import "compiler/lexer";
 import "compiler/parser";
-import "compiler/builtins";
 import "compiler/emit-js";
 import "tools/bootstrap";
 

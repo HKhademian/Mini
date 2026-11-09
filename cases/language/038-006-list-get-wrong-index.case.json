@@ -1,6 +1,6 @@
 {
   "id": "language.list-get-wrong-index",
-  "kind": "reject",
+  "kind": "compile",
   "source": "038-006-list-get-wrong-index.mini",
   "features": [
     "list.get",
@@ -15,10 +15,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "038-006-list-get-wrong-index.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

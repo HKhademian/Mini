@@ -7,7 +7,6 @@ import "common/list";
 import "common/map";
 import "./lexer";
 import "./ast";
-import "./builtins";
 
 /// Report a parser/checker diagnostic.
 fn parser_fail(token, message) {
@@ -299,20 +298,11 @@ fn parser_call_node(name, args, result_kind, close) {
     return node;
 }
 
-/// Parse a call and apply builtin metadata or a user signature.
+/// Parse a call to any function declared in the imported source graph.
 fn parser_call(parser, name) {
     name_text := map_get(name, "text");
-    has_builtin_contract := builtin_exists(name_text);
     functions := map_get(parser, "functions");
     has_user := map_has(functions, name_text);
-    if has_user {
-        function_info := map_get(functions, name_text);
-        target_file := map_get(function_info, "file");
-        caller_file := parser_file_key(name);
-        if has_builtin_contract && target_file != caller_file {
-            has_user = lex_file_imports(caller_file, target_file);
-        }
-    }
     if !has_user {
         parser_fail(name, "unknown function " + name_text);
     }
@@ -327,54 +317,18 @@ fn parser_call(parser, name) {
     }
     close := parser_token(parser);
     parser_expect(parser, ")");
-    if has_builtin_contract {
-        // Builtin arity is part of the host contract, so it stays exact.
-        arity := list_length(builtin_parameters(name_text));
-        variadic := arity > 0 && text_slice(list_get(builtin_parameters(name_text), arity - 1), 0, 3) == "...";
-        fixed_arity := arity;
-        if variadic {
-            fixed_arity = arity - 1;
-        }
-        if (!variadic && list_length(args) != arity) || (variadic && list_length(args) < fixed_arity) {
-            suffix := "s";
-            if (variadic && fixed_arity == 1) || (!variadic && arity == 1) {
-                suffix = "";
-            }
-            message := "expected " + number_to_text(arity) + " argument" + suffix;
-            if variadic {
-                message = "expected " + number_to_text(fixed_arity) + " or more argument" + suffix;
-            }
-            parser_fail(name, message);
-        }
-    } else {
-        // User calls pad missing arguments with 0. Extra arguments reach the
-        // callee, where declared parameters ignore them and fn_args() sees all.
-        arity := map_get(map_get(functions, name_text), "arity");
-        while list_length(args) < arity {
-            zero := ast_expression(AST_LITERAL, name, "number");
-            map_set(zero, "literal_kind", "number");
-            map_set(zero, "raw", "0");
-            map_set(zero, "value", "0");
-            map_set(zero, "synthetic", true);
-            list_set(args, list_length(args), zero);
-        }
-    }
-    parameters := builtin_parameters(name_text);
-    position := 0;
-    while position < list_length(parameters) && has_builtin_contract {
-        kind := list_get(parameters, position);
-        if text_slice(kind, 0, 3) != "..." {
-            actual := map_get(list_get(args, position), "value_kind");
-            if kind != "unknown" && kind != "any_value" && actual != "unknown" && actual != kind {
-                parser_fail(name, "expected " + kind + " argument");
-            }
-        }
-        position = position + 1;
+    // Every call uses the same argument convention: missing declared
+    // parameters receive 0, and extra arguments remain visible to fn_args().
+    arity := map_get(map_get(functions, name_text), "arity");
+    while list_length(args) < arity {
+        zero := ast_expression(AST_LITERAL, name, "number");
+        map_set(zero, "literal_kind", "number");
+        map_set(zero, "raw", "0");
+        map_set(zero, "value", "0");
+        map_set(zero, "synthetic", true);
+        list_set(args, list_length(args), zero);
     }
     result_kind := map_get(map_get(functions, name_text), "result");
-    if has_builtin_contract {
-        result_kind = builtin_result(name_text);
-    }
     return parser_call_node(name, args, result_kind, close);
 }
 

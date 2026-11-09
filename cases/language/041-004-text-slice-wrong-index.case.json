@@ -1,6 +1,6 @@
 {
   "id": "language.text-slice-wrong-index",
-  "kind": "reject",
+  "kind": "compile",
   "source": "041-004-text-slice-wrong-index.mini",
   "features": [
     "text.slice"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "041-004-text-slice-wrong-index.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

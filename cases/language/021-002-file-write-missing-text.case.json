@@ -1,6 +1,6 @@
 {
   "id": "language.file-write-missing-text",
-  "kind": "reject",
+  "kind": "compile",
   "source": "021-002-file-write-missing-text.mini",
   "features": [
     "file.write"
@@ -13,10 +13,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "021-002-file-write-missing-text.stderr"
-      },
-      "exitCode": 1,
+      "stderr": {"text": ""},
+      "exitCode": 0,
       "name": "default"
     }
   ]

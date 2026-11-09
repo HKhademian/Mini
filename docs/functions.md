@@ -1,15 +1,13 @@
-# Built-ins and library functions
+# Common functions
 
-mini needs a small set of host operations for compiling files and writing tools.
-Every operation has a same-name Mini implementation in `libs/common/`, and
-callers must import that module. An emitter may replace the Mini function body
-or lower a call through a target implementation registered under the same name.
-Calls keep one public Mini function name and one import declaration.
+Mini functions under `libs/common/` provide the shared APIs for text, numbers,
+collections, files, processes, and other host services. Calls use ordinary Mini
+function syntax. Importing source files makes their declarations available in
+one shared call namespace. Emitters may replace a same-name function body with
+an implementation suited to the target.
 
-See [Builtins, purity, and self-containment](self-containment.md) for the
-trusted host boundary, Mini fallbacks, and the numeric requirements for a Mini
-`hash_sha256`. The compiler registry records operation classes and function
-contracts; implementations belong to `libs/common/` and target override files.
+See [function and emitter behavior](self-containment.md) for the shared
+implementation contract and host replacement rules.
 
 `text_code(text)` returns the Unicode code point of the first character as a
 number, or 0 for empty/non-text input. Pass that number directly to `io_write`
@@ -116,8 +114,8 @@ Text passes through, numbers use `number_to_text`, booleans become `true` or
 `false`, and lists/maps use `json_to_text`. JSON serialization remains distinct:
 it quotes text values.
 
-`fn_args()` is not a host builtin: the generated function captures its own
-argument list, so it needs no adapter and no import. It returns a list, empty
+`fn_args()` is a compiler-provided language form: the generated function
+captures its own argument list, so it needs no adapter or import. It returns a list, empty
 when the function received nothing.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
@@ -168,8 +166,8 @@ See [the draft](language.md) for the initial success contract.
 
 `fn_args()` returns the current function's supplied arguments; at program
 top-level it returns the command-line arguments, excluding Node and the script
-path. It is compiler-provided, not a host builtin. Shared built-ins
-`list_length(items)` and `list_get(items, index)` expose the elements.
+path. It is compiler-provided. The common functions `list_length(items)` and
+`list_get(items, index)` expose the elements.
 `list_new()` now creates a fresh empty list of length 0. The compiler supports its
 zero-argument form only. `list_set(items, index, value)` replaces or grows a list,
 supports negative indices from the end, and ignores targets that are not lists.
@@ -202,7 +200,7 @@ it. `result_get_message`, `result_get_value`, `result_set_message`, and
 callers import the library rather than indexing keys.
 
 `list_of(...)` and `map_of(...)` build collections from their arguments. They are
-library helpers under [libs/common](../libs/common), not builtins, so callers import `common/list` or `common/map`. `list_of` returns its arguments as a list. `map_of` reads alternating
+functions under [libs/common](../libs/common), so programs import the source modules they use. `list_of` returns its arguments as a list. `map_of` reads alternating
 keys and values; a repeated key takes the last value, and a key without a value
 takes 0, so `map_of("k")` equals `map_of("k", 0)`.
 
@@ -254,7 +252,7 @@ temporary directory. `path_temp_file()` is a Mini helper in
 [libs/common/path.mini](../libs/common/path.mini); it creates one empty file in a
 fresh temporary directory and returns the file path. Include that file to use
 the helper. The same library defines `file_remove(path)` and
-`directory_remove(path)` on top of the `path_remove(path)` builtin. `file_remove`
+`directory_remove(path)` on top of the `path_remove(path)` function. `file_remove`
 skips directories; `directory_remove` removes only empty directories and leaves
 non-empty paths untouched. `path_remove` removes a file or directory tree
 recursively. These helpers support tool process setup and cleanup.

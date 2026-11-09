@@ -1,6 +1,0 @@
-/// Directory API contracts; implementations live in common/path and emitter registries.
-
-import "./registry";
-
-builtin_add("directory_create", "text", "number", "essential");
-builtin_add("directory_list", "text", "list", "essential");

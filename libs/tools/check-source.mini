@@ -3,7 +3,6 @@ import "common/text";
 import "common/list";
 import "compiler/lexer";
 import "compiler/parser";
-import "compiler/builtins";
 
 /// Validate one mini source text; diagnostics end the process on failure.
 fn check_source_text(source, name, base) {

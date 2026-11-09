@@ -1,6 +1,6 @@
 {
   "id": "language.text-split-wrong-divider",
-  "kind": "reject",
+  "kind": "compile",
   "source": "043-004-text-split-wrong-divider.mini",
   "features": [
     "text.split"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "043-004-text-split-wrong-divider.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "id": "language.path-exists-type",
-  "kind": "reject",
+  "kind": "compile",
   "source": "055-002-path-exists-type.mini",
   "features": ["path.exists"],
   "cases": [
@@ -8,8 +8,8 @@
       "name": "number-path",
       "stdin": {"text": ""},
       "stdout": {"text": ""},
-      "stderr": {"file": "055-002-path-exists-type.stderr"},
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -1,9 +1,0 @@
-/// I/O operation contracts; imported Mini APIs own their implementations.
-
-import "./registry";
-
-builtin_add("io_read_all", "", "text", "essential");
-builtin_add("io_read_bytes", "number", "list", "essential");
-builtin_add("io_read_line", "", "text", "essential");
-builtin_add("io_write", "...values", "number", "essential");
-builtin_add("io_write_error", "text", "number", "essential");

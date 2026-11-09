@@ -1,7 +1,7 @@
 /// Versioned schema for Mini's target-neutral checked syntax tree.
 /// Increment AST_SCHEMA_VERSION when the externally inspected node contract changes.
 import "common/map";
-AST_SCHEMA_VERSION := "0.1.0-alpha.2";
+AST_SCHEMA_VERSION := "0.1.0-alpha.3";
 
 /// Shared node tags for the target-neutral compiler syntax tree.
 AST_PROGRAM := "Program";

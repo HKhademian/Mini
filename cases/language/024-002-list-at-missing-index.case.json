@@ -1,6 +1,6 @@
 {
   "id": "language.list-at-missing-index",
-  "kind": "reject",
+  "kind": "compile",
   "source": "024-002-list-at-missing-index.mini",
   "features": [
     "list.get"
@@ -13,10 +13,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "024-002-list-at-missing-index.stderr"
-      },
-      "exitCode": 1,
+      "stderr": {"text": ""},
+      "exitCode": 0,
       "name": "default"
     }
   ]

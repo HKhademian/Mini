@@ -13,6 +13,7 @@ import "common/path";
 import "common/process";
 import "common/project";
 import "common/file";
+import "compiler/lexer";
 
 /// Write one server log line.
 fn lsp_log(message) {
@@ -301,39 +302,40 @@ fn lsp_declarations(tokens) {
     return result;
 }
 
-/// Cached builtin metadata map.
-lsp_builtin_cache := 0;
+/// Cache function declarations read from the ordinary common Mini sources.
+lsp_common_function_cache := 0;
 
-/// Load builtin metadata from the active compiler.
-fn lsp_builtins() {
-    if value_is_map(lsp_builtin_cache) {
-        return lsp_builtin_cache;
+/// Return functions from common sources for editor hover and completion.
+fn lsp_common_functions() {
+    if value_is_list(lsp_common_function_cache) {
+        return lsp_common_function_cache;
     }
+    functions := list_new();
+    seen := map_new();
     root := lsp_root();
-    args := list_of(project_compiler_entry(root), "metadata");
-    result := lsp_run(process_exec_path(), args, root, list_new());
-    parsed := json_parse(text_from_bytes(map_get(result, "stdout")));
-    cache := map_new();
-    if result_is_ok(parsed) {
-        entries := map_get(result_get_value(parsed), "builtins");
-        position := 0;
-        while position < list_length(entries) {
-            entry := list_get(entries, position);
-            info := map_new();
-            map_set(info, "parameters", map_get(entry, "parameters"));
-            map_set(info, "result", map_get(entry, "result"));
-            map_set(cache, map_get(entry, "name"), info);
-            position = position + 1;
+    paths := directory_list(path_join(root, "libs/common"));
+    position := 0;
+    while position < list_length(paths) {
+        path := path_join(path_join(root, "libs/common"), list_get(paths, position));
+        if text_ends_with(path, ".mini") {
+            source := file_read(path);
+            tokens := lex_tokenize(source, path_basename(path), true);
+            declarations := lsp_declarations(tokens);
+            declaration_position := 0;
+            while declaration_position < list_length(declarations) {
+                declaration := list_get(declarations, declaration_position);
+                name := map_get(declaration, "name");
+                if map_get(declaration, "kind") == "function" && !map_has(seen, name) {
+                    map_set(seen, name, true);
+                    list_set(functions, list_length(functions), declaration);
+                }
+                declaration_position = declaration_position + 1;
+            }
         }
+        position = position + 1;
     }
-    lsp_builtin_cache = cache;
-    return cache;
-}
-
-/// Return a builtin signature.
-fn lsp_builtin_signature(name) {
-    info := map_get(lsp_builtins(), name);
-    return name + "(" + list_join(map_get(info, "parameters"), ", ") + ") -> " + map_get(info, "result");
+    lsp_common_function_cache = functions;
+    return functions;
 }
 
 /// Format markdown hover content.
@@ -375,14 +377,20 @@ fn lsp_hover(tokens, offset) {
         map_set(hover, "range", lsp_range_of(token));
         return hover;
     }
-    if map_has(lsp_builtins(), map_get(token, "text")) {
-        builtin := map_new();
-        map_set(builtin, "kind", "markdown");
-        map_set(builtin, "value", lsp_markdown(lsp_builtin_signature(map_get(token, "text")), list_new()));
-        builtin_hover := map_new();
-        map_set(builtin_hover, "contents", builtin);
-        map_set(builtin_hover, "range", lsp_range_of(token));
-        return builtin_hover;
+    standard := lsp_common_functions();
+    position := 0;
+    while position < list_length(standard) {
+        declaration := list_get(standard, position);
+        if map_get(declaration, "name") == map_get(token, "text") {
+            content := map_new();
+            map_set(content, "kind", "markdown");
+            map_set(content, "value", lsp_markdown(map_get(declaration, "signature"), map_get(declaration, "doc")));
+            hover := map_new();
+            map_set(hover, "contents", content);
+            map_set(hover, "range", lsp_range_of(token));
+            return hover;
+        }
+        position = position + 1;
     }
     return 0;
 }
@@ -435,19 +443,25 @@ fn lsp_completions(tokens, text, offset) {
         }
         position = position + 1;
     }
-    builtins := lsp_builtins();
-    names := map_keys(builtins);
+    standard := lsp_common_functions();
     position = 0;
-    while position < list_length(names) {
-        builtin_name := list_get(names, position);
-        if !map_has(seen, builtin_name) && text_starts_with(builtin_name, prefix) {
-            map_set(seen, builtin_name, true);
-            builtin_item := map_new();
-            map_set(builtin_item, "label", builtin_name);
-            map_set(builtin_item, "kind", 3);
-            map_set(builtin_item, "detail", lsp_builtin_signature(builtin_name));
-            map_set(builtin_item, "insertText", builtin_name);
-            list_set(items, list_length(items), builtin_item);
+    while position < list_length(standard) {
+        declaration := list_get(standard, position);
+        name := map_get(declaration, "name");
+        if !map_has(seen, name) && text_starts_with(name, prefix) {
+            map_set(seen, name, true);
+            item := map_new();
+            map_set(item, "label", name);
+            map_set(item, "kind", 3);
+            map_set(item, "detail", map_get(declaration, "signature"));
+            map_set(item, "insertText", name);
+            if list_length(map_get(declaration, "doc")) > 0 {
+                documentation := map_new();
+                map_set(documentation, "kind", "markdown");
+                map_set(documentation, "value", list_join(map_get(declaration, "doc"), "\n"));
+                map_set(item, "documentation", documentation);
+            }
+            list_set(items, list_length(items), item);
         }
         position = position + 1;
     }

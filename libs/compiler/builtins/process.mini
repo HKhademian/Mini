@@ -1,9 +1,0 @@
-/// Process API contracts; implementations live in common/process and emitters.
-
-import "./registry";
-
-builtin_add("process_env", "text", "text", "essential");
-builtin_add("process_exec_path", "", "text", "essential");
-builtin_add("process_exit", "number", "number", "essential");
-builtin_add("process_script_path", "", "text", "essential");
-builtin_add("process_spawn", "map", "map", "essential");

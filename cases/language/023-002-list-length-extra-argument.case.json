@@ -1,6 +1,6 @@
 {
   "id": "language.list-length-extra-argument",
-  "kind": "reject",
+  "kind": "compile",
   "source": "023-002-list-length-extra-argument.mini",
   "features": [
     "list.length"
@@ -13,10 +13,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "023-002-list-length-extra-argument.stderr"
-      },
-      "exitCode": 1,
+      "stderr": {"text": ""},
+      "exitCode": 0,
       "name": "default"
     }
   ]

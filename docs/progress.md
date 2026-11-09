@@ -10,12 +10,11 @@ The current assigned versions are in
 [config/versions.json](../config/versions.json). The active release labels are:
 
 ```text
-mini      mini-v0.6.0-v0.3.0-alpha.36
-lang      lang-v0.6.0-v0.5.0-alpha.10
-ast       ast-v0.6.0-v0.1.0-alpha.1
-compiler  compiler-v0.6.0-v0.5.0-alpha.44
-bootstrap bootstrap-v0.6.0-v0.3.0-alpha.46
-builtins  builtins-v0.6.0-v0.4.0-alpha.10
+mini      mini-v0.6.0-v0.3.0-alpha.57
+lang      lang-v0.6.0-v0.5.0-alpha.15
+ast       ast-v0.6.0-v0.1.0-alpha.3
+compiler  compiler-v0.6.0-v0.5.0-alpha.68
+bootstrap bootstrap-v0.6.0-v0.3.0-alpha.70
 cli       cli-v0.6.0-v0.1.0-alpha.20
 check     check-v0.6.0-v0.1.0-alpha.13
 format    format-v0.6.0-v0.1.0-alpha.9
@@ -51,7 +50,7 @@ vscode    vscode-v0.6.0-v0.3.9
 - **JavaScript output.** The compiler emits plain Node JavaScript. Generated
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
 - **Zero-value model.** `:=` declares bindings. Calls always produce a value;
-  no-result builtins and functions that fall through return 0.
+  no-result operations and functions that fall through return 0.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;
   parentheses remain available for grouping. A block rejects duplicate `:=`
   declarations, and a parenthesized whole condition reports a warning.

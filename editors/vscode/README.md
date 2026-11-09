@@ -48,8 +48,8 @@ If the server cannot start, the extension reports the attempted command and
 offers to open the setting.
 
 Diagnostics update as you type, including unsaved and untitled documents.
-Hover a function, variable, or builtin to see its signature and `///`
-documentation. Completion offers document declarations, builtins, and keywords.
+Hover a function or variable to see its signature and `///` documentation.
+Completion offers document declarations, common functions, and keywords.
 Ctrl+click or **Go to Definition** jumps to a document function or variable
 declaration. Formatting uses the same fixed style as `mini fmt`; enable
 **Format On Save** or run **Format Document**. Invalid source is not reformatted.
@@ -86,7 +86,7 @@ Tagged GitHub releases include an installable VSIX, the source archive, and
 checksums. Local tagged packaging uses `mini release`; see `docs/releases.md`
 in the repository. Build an untagged local VSIX with the command above.
 
-Source contracts in the repository: `docs/language.md` and `docs/builtins.md`.
+Source contracts in the repository: `docs/language.md` and `docs/functions.md`.
 Implementation references: [syntax highlighting](https://code.visualstudio.com/api/language-extensions/syntax-highlight-guide),
 [language configuration](https://code.visualstudio.com/api/language-extensions/language-configuration-guide),
 and [VSIX packaging](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).

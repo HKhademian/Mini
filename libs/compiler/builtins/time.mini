@@ -1,5 +1,0 @@
-/// Time API contract; implementations live in common/time and emitter registries.
-
-import "./registry";
-
-builtin_add("time_millis", "", "number", "essential");

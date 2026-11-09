@@ -1,6 +1,6 @@
 {
   "id": "language.map-keys-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "034-005-map-keys-wrong-target.mini",
   "features": [
     "map.keys",
@@ -18,10 +18,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "034-005-map-keys-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

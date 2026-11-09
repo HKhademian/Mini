@@ -1,6 +1,6 @@
 {
   "id": "language.map-set-missing-value",
-  "kind": "reject",
+  "kind": "compile",
   "source": "032-005-map-set-missing-value.mini",
   "features": [
     "map.set",
@@ -16,10 +16,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "032-005-map-set-missing-value.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

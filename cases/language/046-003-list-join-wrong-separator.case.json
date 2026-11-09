@@ -1,6 +1,6 @@
 {
   "id": "language.list-join-wrong-separator",
-  "kind": "reject",
+  "kind": "compile",
   "source": "046-003-list-join-wrong-separator.mini",
   "features": [
     "list.join"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "046-003-list-join-wrong-separator.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

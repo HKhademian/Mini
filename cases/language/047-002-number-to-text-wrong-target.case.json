@@ -1,6 +1,6 @@
 {
   "id": "language.number-to-text-wrong-target",
-  "kind": "reject",
+  "kind": "compile",
   "source": "047-002-number-to-text-wrong-target.mini",
   "features": [
     "number.to-text"
@@ -14,10 +14,8 @@
       "stdout": {
         "text": ""
       },
-      "stderr": {
-        "file": "047-002-number-to-text-wrong-target.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

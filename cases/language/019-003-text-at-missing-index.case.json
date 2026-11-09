@@ -1,6 +1,6 @@
 {
   "id": "language.text-at-missing-index",
-  "kind": "reject",
+  "kind": "compile",
   "source": "019-003-text-at-missing-index.mini",
   "features": [
     "text.get"
@@ -14,10 +14,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "019-003-text-at-missing-index.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

@@ -1,8 +1,0 @@
-/// File API contracts; implementations live in common/file and emitter registries.
-
-import "./registry";
-
-builtin_add("file_read", "text", "text", "essential");
-builtin_add("file_read_bytes", "text", "list", "essential");
-builtin_add("file_write", "text,text", "number", "essential");
-builtin_add("file_write_bytes", "text,list", "number", "essential");

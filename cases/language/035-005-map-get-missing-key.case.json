@@ -1,6 +1,6 @@
 {
   "id": "language.map-get-missing-key",
-  "kind": "reject",
+  "kind": "compile",
   "source": "035-005-map-get-missing-key.mini",
   "features": [
     "map.get",
@@ -16,10 +16,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "035-005-map-get-missing-key.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

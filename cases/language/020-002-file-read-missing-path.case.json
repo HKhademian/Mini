@@ -1,6 +1,6 @@
 {
   "id": "language.file-read-missing-path",
-  "kind": "reject",
+  "kind": "compile",
   "source": "020-002-file-read-missing-path.mini",
   "features": [
     "file.read"
@@ -13,10 +13,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "020-002-file-read-missing-path.stderr"
-      },
-      "exitCode": 1,
+      "stderr": {"text": ""},
+      "exitCode": 0,
       "name": "default"
     }
   ]

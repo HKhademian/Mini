@@ -9,7 +9,6 @@ Tags use `product-vGROUP_VERSION-vPRODUCT_VERSION`:
 ```text
 ast-v0.6.0-v0.1.0-alpha.1
 compiler-v0.5.0-v0.4.0-alpha.5
-builtins-v0.5.0-v0.4.0-alpha.2
 bootstrap-v0.5.0-v0.2.0-alpha.7
 vscode-v0.5.0-v0.3.6
 ```
@@ -56,12 +55,11 @@ publication. Bootstrap promotion is recorded separately in
 increments:
 
 ```text
-mini-v0.6.0-v0.3.0-alpha.56
-lang-v0.6.0-v0.5.0-alpha.14
-ast-v0.6.0-v0.1.0-alpha.2
-compiler-v0.6.0-v0.5.0-alpha.67
-bootstrap-v0.6.0-v0.3.0-alpha.69
-builtins-v0.6.0-v0.4.0-alpha.21
+mini-v0.6.0-v0.3.0-alpha.57
+lang-v0.6.0-v0.5.0-alpha.15
+ast-v0.6.0-v0.1.0-alpha.3
+compiler-v0.6.0-v0.5.0-alpha.68
+bootstrap-v0.6.0-v0.3.0-alpha.70
 cli-v0.6.0-v0.1.0-alpha.20
 check-v0.6.0-v0.1.0-alpha.13
 format-v0.6.0-v0.1.0-alpha.9
@@ -79,7 +77,6 @@ target-neutral AST schema and `Program` inspection contract. `compiler` versions
 active generated compiler; the retired handwritten compiler has no product
 stream. `bootstrap` versions the promoted generated fixed point.
 `mini-compile` and `minic` share the compiler version.
-`builtins` versions primitive support independently.
 Each other tool keeps the stream named by its tag.
 
 Std remains unassigned/unavailable. Future first-release examples under the

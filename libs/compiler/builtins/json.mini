@@ -1,6 +1,0 @@
-/// JSON API contracts; implementations live in common/json and emitter registries.
-
-import "./registry";
-
-builtin_add("json_parse", "text", "map", "performance");
-builtin_add("json_to_text", "unknown", "text", "performance");

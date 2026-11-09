@@ -39,11 +39,12 @@ groups and unary negation recurse.
 
 Before parsing statements, `parser_new` scans the token list to register
 top-level function names and arities. The main pass then builds nodes and checks
-bindings, scopes, call names and arities, builtin argument kinds, and expression
-kind compatibility. These checks are part of parsing today; there is not yet a
-separate semantic-analysis pass over the finished tree. Function signatures are
-available before their declarations are visited, while function result kinds
-may remain `unknown` when not established by the current checks.
+bindings, scopes, call names, and expression kind compatibility. Calls to every
+function use the same argument behavior: missing declared parameters receive
+zero, and extra supplied arguments remain visible through `fn_args()`. These
+checks are part of parsing today; there is not yet a separate semantic-analysis
+pass over the finished tree. Function declarations are available before their
+bodies are visited, while result kinds may remain `unknown` for forward calls.
 
 ## Diagnostics and limits
 
@@ -54,7 +55,7 @@ Comments are carried only when the lexer was asked to include comment tokens.
 Whitespace trivia is not represented in the AST. Formatters therefore retain
 the original source and comment-preserving token list beside the tree.
 
-The parser is coupled to Mini's current lexer token maps, builtin registry,
-import-expanded file ordering, and language contract. `parser_ast(tokens)` is
+The parser is coupled to Mini's current lexer token maps, import-expanded file
+ordering, and language contract. `parser_ast(tokens)` is
 the in-memory front-end entry point for an already prepared token list. It does
 not read files or expand imports itself.

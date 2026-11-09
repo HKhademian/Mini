@@ -1,6 +1,6 @@
 {
   "id": "language.io-read-argument",
-  "kind": "reject",
+  "kind": "compile",
   "source": "005-004-io-read-argument.mini",
   "features": [
     "text.input",
@@ -15,10 +15,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "005-004-io-read-argument.stderr"
-      },
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

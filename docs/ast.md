@@ -1,7 +1,7 @@
 # Mini AST
 
 The Mini AST is a separately versioned compiler product. Its current schema is
-`0.1.0-alpha.2`, registered as `ast` in
+`0.1.0-alpha.3`, registered as `ast` in
 [`config/versions.json`](../config/versions.json) and returned as
 `Program.ast_schema_version` by `parser_ast(tokens)`. The schema implementation
 and node constructors are in [`libs/compiler/ast.mini`](../libs/compiler/ast.mini);

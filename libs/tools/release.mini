@@ -72,7 +72,7 @@ fn release_component(name) {
     if name == "lang" {
         return "language";
     }
-    if name == "mini" || name == "ast" || name == "compiler" || name == "bootstrap" || name == "builtins"
+    if name == "mini" || name == "ast" || name == "compiler" || name == "bootstrap"
         || name == "std" || name == "check" || name == "format" || name == "verify"
         || name == "release" || name == "test" || name == "bench" || name == "cli"
         || name == "lsp" || name == "vscode" {

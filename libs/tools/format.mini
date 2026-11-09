@@ -10,7 +10,6 @@ import "common/text";
 import "common/list";
 import "compiler/lexer";
 import "compiler/parser";
-import "compiler/builtins";
 
 /// Return one line's indentation text for a block depth.
 fn format_indentation(depth) {

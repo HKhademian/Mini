@@ -5,7 +5,7 @@ is the source and the generated
 [dist/compile.js](../dist/compile.js) is the active compiler,
 selected by [config/compiler.json](../config/compiler.json). The former
 handwritten implementation was retired; only accepted [language](language.md) and
-[builtin](builtins.md) contracts are normative.
+[function](functions.md) contracts are normative.
 
 JavaScript is the default target. An initial C11 target supports top-level
 `io_write` calls and top-level bindings with ASCII text, safe integers, and
@@ -96,13 +96,9 @@ still uses its growable buffer. A zero-argument Mini call passes count zero and
 NULL. Output visits values in order and stops on native output failure. A
 nonzero count with NULL is rejected by the helper.
 
-The parameter view is the selected common C convention for future generated
-Mini functions and Mini-visible helpers/builtins. Declared parameters will read
-their positions with numeric zero for missing inputs; extra inputs remain in
-the view. Native user functions and other builtin lowering are not available
-yet. Existing JavaScript builtin arity checks are unchanged by this slice;
-accepting arbitrary input counts for every builtin still needs safe default
-and kind handling. A future FFI entry can take count/pointer separately and
+The parameter view is the selected common C convention for generated Mini
+functions. Declared parameters read their positions with numeric zero for
+missing inputs; extra inputs remain in the view. A future FFI entry can take count/pointer separately and
 construct the view internally. No function-call performance result is claimed.
 
 ### Initial C function support
@@ -265,15 +261,11 @@ Tooling uses the active compiler directly:
 ```text
 node COMPILER tokens --comments SOURCE.mini
 node COMPILER compile SOURCE.mini OUTPUT.js
-node COMPILER metadata
 ```
 
-`fn_args()` is a language form rather than a host builtin, so it does not appear
-in `metadata`. Each generated function binds its own argument list.
-
-`metadata` emits one JSON object listing every builtin name, parameter kind,
-result kind, and operation class. Tooling hover, completion, and signature text
-read this command instead of a separate builtin table.
+`fn_args()` is a language form. Each generated function binds its own argument
+list. The language server reads function declarations and documentation from
+the ordinary Mini source files under `libs/common`.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format
@@ -467,9 +459,9 @@ bootstrap migration.
 
 The compiler source is authored as ordered sources next to the tools;
 [tools/compiler.mini](../tools/compiler.mini) includes `common/text.mini`,
-`lexer.mini`, `parser.mini`, and `builtins.mini`.
+`lexer.mini`, `parser.mini`, and the target emitters.
 `tools/compiler.mini` includes them in dependency order. Adapter text is
-source in the namespace files under `libs/compiler/builtins/`, shared by the generated compiler and
-generated tools. `mini check` verifies the generated bootstrap fixed point and
+source in the Mini function files under `libs/common/`, shared by the generated
+compiler and generated tools. `mini check` verifies the generated bootstrap fixed point and
 stale generated tools. `import` is a mini language feature; there is no module
 or import syntax.

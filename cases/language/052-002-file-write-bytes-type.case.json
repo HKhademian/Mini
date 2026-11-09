@@ -1,6 +1,6 @@
 {
   "id": "language.file-write-bytes-type",
-  "kind": "reject",
+  "kind": "compile",
   "source": "052-002-file-write-bytes-type.mini",
   "features": ["file.write-bytes"],
   "cases": [
@@ -8,8 +8,8 @@
       "name": "text-bytes",
       "stdin": {"text": ""},
       "stdout": {"text": ""},
-      "stderr": {"file": "052-002-file-write-bytes-type.stderr"},
-      "exitCode": 1
+      "stderr": {"text": ""},
+      "exitCode": 0
     }
   ]
 }

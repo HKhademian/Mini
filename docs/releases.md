@@ -105,7 +105,7 @@ for the local preview and publication steps.
 Product tags are independent:
 
 ```text
-mini lang compiler bootstrap builtins std
+mini lang compiler bootstrap std
 cli check format lsp test verify bench release vscode
 ```
 

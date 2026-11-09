@@ -326,7 +326,6 @@ fn check_versions(root) {
         "bench",
         "cli",
         "vscode",
-        "builtins",
         "format",
         "lsp"
     );

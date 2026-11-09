@@ -1,6 +1,6 @@
 {
   "id": "language.process-exit-missing-status",
-  "kind": "reject",
+  "kind": "compile",
   "source": "025-003-process-exit-missing-status.mini",
   "features": [
     "process.exit"
@@ -13,10 +13,8 @@
       "stdout": {
         "file": "empty.stdout"
       },
-      "stderr": {
-        "file": "025-003-process-exit-missing-status.stderr"
-      },
-      "exitCode": 1,
+      "stderr": {"text": ""},
+      "exitCode": 0,
       "name": "default"
     }
   ]

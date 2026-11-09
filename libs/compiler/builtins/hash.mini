@@ -1,5 +1,0 @@
-/// Hash API contract; implementations live in common/hash and emitter registries.
-
-import "./registry";
-
-builtin_add("hash_sha256", "unknown", "text", "performance");
