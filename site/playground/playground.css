@@ -1,8 +1,9 @@
 .playground-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100svh;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
 }
 
 .playground-header,
@@ -290,11 +291,17 @@
 }
 
 #stderr {
+  min-height: 0;
+  max-height: 35%;
+  overflow: auto;
   border-top: 1px solid var(--line);
   color: #fcd34d;
 }
 
 #diagnostic {
+  min-height: 0;
+  max-height: 35%;
+  overflow: auto;
   border-top: 1px solid var(--line);
   color: #fca5a5;
 }
@@ -343,6 +350,8 @@
 #code {
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  overflow: auto;
   white-space: pre;
   overflow-wrap: normal;
 }
@@ -406,6 +415,13 @@
 }
 
 @media (max-width: 900px) {
+  .playground-page {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow: auto;
+  }
+
   .playground-header nav {
     width: auto;
   }
