@@ -77,6 +77,8 @@ compiler.
 - 2026-11-09: C implements function-local `fn_args()` from the `params` view
   and top-level `fn_args()` from native `argc`/`argv`, excluding the executable.
   The native argument fixture verifies both contexts.
+- 2026-11-09: C `text_from_code` now encodes valid Unicode scalar values as
+  UTF-8, allowing the emitted compiler to run a C compile on a sample program.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
   storage/views are implementation responsibilities.
 - Native text now uses an owned growable byte buffer with offset/length views.

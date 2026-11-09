@@ -22,8 +22,9 @@ declared in
 [libs/common/text.mini](../libs/common/text.mini) and require
 `import "common/text"`. Their Mini implementations are the fallback; JavaScript
 registers same-name host overrides for the representation and performance paths.
-The C target registers ASCII-only host implementations for `text_length`,
-`text_get`, `text_code`, and `text_slice`; those operations reject non-ASCII text.
+The C target registers a UTF-8 implementation of `text_from_code`; its
+`text_length`, `text_get`, `text_code`, and `text_slice` host implementations
+currently reject non-ASCII input.
 The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
 and require `import "common/file"`. Their Mini implementations panic when a
 target has no file host; the JavaScript and C emitters register same-name host

@@ -1,0 +1,7 @@
+import "common/io";
+import "common/text";
+
+io_write_line(text_from_code(65));
+io_write_line(text_from_code(233));
+io_write_line(text_from_code(128512));
+io_write_line(text_from_code(55296));

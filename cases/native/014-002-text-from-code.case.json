@@ -1,0 +1,20 @@
+{
+  "id": "native.c-text-from-code",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-002-text-from-code.mini",
+  "features": [
+    "target.c",
+    "text.from-code",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "ascii-and-unicode-scalars",
+      "stdin": { "text": "" },
+      "stdout": { "text": "A\né\n😀\n\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

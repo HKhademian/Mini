@@ -129,6 +129,8 @@ updates replace existing values, and `io_write` serializes nested maps as sorted
 JSON objects. JSON output rejects nesting deeper than 128. Generated execution
 owns lists and maps through cleanup at program exit. `fn_args()` is supported
 inside functions and at top level through native `argc`/`argv` capture.
+The C target's `text_from_code` host implementation encodes valid Unicode scalar
+values as UTF-8; several other C text operations remain ASCII-only.
 
 ### File initialization
 

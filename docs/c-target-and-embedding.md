@@ -144,8 +144,9 @@ Resolve these topics as implementation reaches them:
   require safe integers; broader limits remain open. Undefined C overflow is
   not a Mini rule.
 - Text: C implements ASCII length, indexing, first-code-point lookup, and slicing.
-Non-ASCII text indexing and conversion remain unsupported; JS indexes UTF-16
-units and converts bytes as UTF-8, so UTF-8 byte indexing is not equivalent.
+`text_from_code` encodes valid Unicode scalar values as UTF-8. Non-ASCII text
+indexing remains unsupported; JS indexes UTF-16 units, so UTF-8 byte indexing
+is not equivalent.
 - Collections: tagged lists cover construction, mutation, copies, indexing, and
   joins. Tagged maps use an initial pair-array representation with lookup,
   mutation, key snapshots, copying, merging, and nested JSON output. The
