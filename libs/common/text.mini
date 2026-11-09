@@ -37,6 +37,20 @@ fn text_to_codes(source) {
     return codes;
 }
 
+/// Return one text value per Unicode scalar character index.
+fn text_to_chars(source) {
+    characters := list_new();
+    if !value_is_text(source) {
+        return characters;
+    }
+    position := 0;
+    while position < text_length(source) {
+        list_set(characters, list_length(characters), text_get(source, position));
+        position = position + 1;
+    }
+    return characters;
+}
+
 /// Merge text arguments into one text value, ignoring non-text arguments.
 fn text_merge() {
     values := fn_args();

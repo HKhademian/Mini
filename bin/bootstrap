@@ -352,6 +352,19 @@ function text_to_codes(source) {
     }
     return codes;
 }
+function text_to_chars(source) {
+
+    let characters = list_new();
+    if ((!value_is_text(source))) {
+        return characters;
+    }
+    let position = 0;
+    while ((position < text_length(source))) {
+        list_set(characters, (characters).length, text_get(source, position));
+        position = (position + 1);
+    }
+    return characters;
+}
 function text_merge() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 

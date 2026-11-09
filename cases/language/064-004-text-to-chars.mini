@@ -1,0 +1,7 @@
+/// Return one single-scalar text value per character index.
+
+import "common/io";
+import "common/text";
+
+io_write_line(text_to_chars("چطوری 😀"));
+io_write_line(text_to_chars(42));

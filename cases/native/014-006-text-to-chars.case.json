@@ -1,0 +1,16 @@
+{
+  "id": "native.c-text-to-chars",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-006-text-to-chars.mini",
+  "features": ["target.c", "text.to-chars", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "single-scalar-text-list",
+      "stdin": {"text": ""},
+      "stdout": {"text": "[\"چ\",\"ط\",\"و\",\"ر\",\"ی\",\" \",\"😀\"]\n[]\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}
