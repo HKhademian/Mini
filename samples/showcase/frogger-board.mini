@@ -1,10 +1,20 @@
 /// Print one compact Frogger board as a ten-by-ten text grid.
 
 import "common/io";
+import "common/list";
+import "common/play";
+
+frog_x := 4;
+frog_y := 9;
+car_a_x := 1;
+car_b_x := 7;
+car_c_x := 3;
+car_d_x := 4;
+update_ticks := 0;
 
 /// Return the tile at one board position.
 fn frogger_tile(column, row) {
-    if column == 4 && row == 9 {
+    if column == frog_x && row == frog_y {
         return "F";
     }
     if row == 0 && column >= 4 && column <= 5 {
@@ -23,10 +33,10 @@ fn frogger_tile(column, row) {
         return "~";
     }
     if row == 4 {
-        if column == 1 || column == 2 {
+        if column == car_a_x || column == car_a_x + 1 {
             return ">";
         }
-        if column == 7 {
+        if column == car_b_x {
             return ">";
         }
     }
@@ -36,11 +46,11 @@ fn frogger_tile(column, row) {
         }
     }
     if row == 7 {
-        if column == 1 || column == 8 {
+        if column == car_d_x || column == car_d_x + 1 {
             return ">";
         }
     }
-    if row == 8 && column >= 4 && column <= 6 {
+    if row == 8 && column >= car_d_x && column <= car_d_x + 2 {
         return "<";
     }
     if row == 3 || row == 6 || row == 9 {
@@ -50,6 +60,108 @@ fn frogger_tile(column, row) {
         return ".";
     }
     return " ";
+}
+
+/// Return the packed RGB color for one tile.
+fn frogger_color(column, row) {
+    if column == frog_x && row == frog_y {
+        return 65280;
+    }
+    if row == 0 && column >= 4 && column <= 5 {
+        return 16776960;
+    }
+    if row == 1 {
+        if column >= 2 && column <= 5 {
+            return 10053120;
+        }
+        return 255;
+    }
+    if row == 2 {
+        if column >= 5 && column <= 8 {
+            return 10053120;
+        }
+        return 255;
+    }
+    if row == 4 {
+        if column == car_a_x || column == car_a_x + 1 || column == car_b_x {
+            return 16711680;
+        }
+        return 3355443;
+    }
+    if row == 5 {
+        if column >= car_c_x && column <= car_c_x + 2 {
+            return 16711680;
+        }
+        return 3355443;
+    }
+    if row == 7 {
+        if column == car_d_x || column == car_d_x + 1 {
+            return 16711680;
+        }
+        return 3355443;
+    }
+    if row == 8 {
+        if column >= car_d_x && column <= car_d_x + 2 {
+            return 16711680;
+        }
+        return 3355443;
+    }
+    return 32768;
+}
+
+/// Move traffic and emit one ten-by-ten frame; return zero to continue.
+fn mini_play_update() {
+    update_ticks = update_ticks + 1;
+    if update_ticks >= 8 {
+        update_ticks = 0;
+        car_a_x = car_a_x + 1;
+        if car_a_x > 7 {
+            car_a_x = 1;
+        }
+        car_b_x = car_b_x - 1;
+        if car_b_x < 1 {
+            car_b_x = 8;
+        }
+        car_c_x = car_c_x + 1;
+        if car_c_x > 6 {
+            car_c_x = 1;
+        }
+        car_d_x = car_d_x - 1;
+        if car_d_x < 1 {
+            car_d_x = 8;
+        }
+    }
+
+    pixels := list_new();
+    row := 0;
+    while row < 10 {
+        column := 0;
+        while column < 10 {
+            list_set(pixels, list_length(pixels), frogger_color(column, row));
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    mini_render(10, 10, pixels);
+    if frog_y == 0 {
+        return 1;
+    }
+}
+
+/// Move Frogger one cell in response to a directional key press.
+fn mini_play_onKeyDown(key) {
+    if (key == "ArrowLeft" || key == "a") && frog_x > 0 {
+        frog_x = frog_x - 1;
+    }
+    if (key == "ArrowRight" || key == "d") && frog_x < 9 {
+        frog_x = frog_x + 1;
+    }
+    if (key == "ArrowUp" || key == "w") && frog_y > 0 {
+        frog_y = frog_y - 1;
+    }
+    if (key == "ArrowDown" || key == "s") && frog_y < 9 {
+        frog_y = frog_y + 1;
+    }
 }
 
 /// Build and print each row of the board.
@@ -67,4 +179,6 @@ fn frogger_render() {
     }
 }
 
+mini_play(10, 10, "Frogger");
+mini_play_update();
 frogger_render();

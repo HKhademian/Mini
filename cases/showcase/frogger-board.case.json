@@ -6,6 +6,7 @@
     "functions",
     "control.if",
     "control.while",
+    "common.play",
     "text.output"
   ],
   "cases": [

@@ -1,0 +1,44 @@
+/// Store a small play session's metadata and most recently rendered frame.
+
+import "common/list";
+
+play_width_value := 0;
+play_height_value := 0;
+play_title_value := "";
+play_pixels_value := list_new();
+
+/// Declare the board dimensions and title for a host play session.
+fn mini_play(width, height, title) {
+    play_width_value = width;
+    play_height_value = height;
+    play_title_value = title;
+    return 0;
+}
+
+/// Store one row-major frame of packed RGB color values.
+fn mini_render(width, height, pixels) {
+    play_width_value = width;
+    play_height_value = height;
+    play_pixels_value = list_copy(pixels);
+    return 0;
+}
+
+/// Return the declared play width.
+fn mini_play_width() {
+    return play_width_value;
+}
+
+/// Return the declared play height.
+fn mini_play_height() {
+    return play_height_value;
+}
+
+/// Return the play title.
+fn mini_play_title() {
+    return play_title_value;
+}
+
+/// Return a copy of the most recently rendered row-major frame.
+fn mini_play_pixels() {
+    return list_copy(play_pixels_value);
+}

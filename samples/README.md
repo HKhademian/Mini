@@ -43,5 +43,5 @@ has a matching case under [cases/showcase/](../cases/showcase/) and runs in
 `mini test`; the site catalog is generated from the same files, so a sample
 cannot drift from its verified output.
 
-- [breakout-board.mini](showcase/breakout-board.mini): Build a ten-by-ten Breakout frame with tile selection and nested loops. [Case](../cases/showcase/breakout-board.case.json).
-- [frogger-board.mini](showcase/frogger-board.mini): Build a ten-by-ten Frogger frame from road, river, and player tiles. [Case](../cases/showcase/frogger-board.case.json).
+- [breakout-board.mini](showcase/breakout-board.mini): Animate a bouncing ball and move the paddle on a ten-by-ten board with Mini Play. [Case](../cases/showcase/breakout-board.case.json).
+- [frogger-board.mini](showcase/frogger-board.mini): Move Frogger between animated road and river lanes on a ten-by-ten board with Mini Play. [Case](../cases/showcase/frogger-board.case.json).

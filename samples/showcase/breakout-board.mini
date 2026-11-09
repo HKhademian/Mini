@@ -1,6 +1,15 @@
 /// Print one compact Breakout board as a ten-by-ten text grid.
 
 import "common/io";
+import "common/list";
+import "common/play";
+
+ball_x := 4;
+ball_y := 6;
+ball_dx := 1;
+ball_dy := -1;
+paddle_x := 4;
+update_ticks := 0;
 
 /// Return the tile at one board position.
 fn breakout_tile(column, row) {
@@ -10,13 +19,76 @@ fn breakout_tile(column, row) {
     if row < 3 {
         return "#";
     }
-    if column == 4 && row == 6 {
+    if column == ball_x && row == ball_y {
         return "o";
     }
-    if row == 8 && column >= 4 && column <= 6 {
+    if row == 8 && column >= paddle_x && column <= paddle_x + 2 {
         return "=";
     }
     return ".";
+}
+
+/// Return the packed RGB color for one tile.
+fn breakout_color(column, row) {
+    if column == 0 || column == 9 || row == 0 || row == 9 {
+        return 3355443;
+    }
+    if row < 3 {
+        return 16733525;
+    }
+    if column == ball_x && row == ball_y {
+        return 16777215;
+    }
+    if row == 8 && column >= paddle_x && column <= paddle_x + 2 {
+        return 65535;
+    }
+    return 0;
+}
+
+/// Advance the ball and emit one ten-by-ten frame; return zero to continue.
+fn mini_play_update() {
+    update_ticks = update_ticks + 1;
+    if update_ticks >= 8 {
+        update_ticks = 0;
+        ball_x = ball_x + ball_dx;
+        ball_y = ball_y + ball_dy;
+        if ball_x <= 1 || ball_x >= 8 {
+            ball_dx = 0 - ball_dx;
+        }
+        if ball_y <= 1 {
+            ball_dy = 1;
+        }
+        if ball_y >= 7 {
+            if ball_x >= paddle_x && ball_x <= paddle_x + 2 {
+                ball_y = 6;
+                ball_dy = 0 - 1;
+            } else {
+                return 1;
+            }
+        }
+    }
+
+    pixels := list_new();
+    row := 0;
+    while row < 10 {
+        column := 0;
+        while column < 10 {
+            list_set(pixels, list_length(pixels), breakout_color(column, row));
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    mini_render(10, 10, pixels);
+}
+
+/// Move the paddle one cell for a left or right key press.
+fn mini_play_onKeyDown(key) {
+    if (key == "ArrowLeft" || key == "a") && paddle_x > 1 {
+        paddle_x = paddle_x - 1;
+    }
+    if (key == "ArrowRight" || key == "d") && paddle_x < 6 {
+        paddle_x = paddle_x + 1;
+    }
 }
 
 /// Build and print each row of the board.
@@ -34,4 +106,6 @@ fn breakout_render() {
     }
 }
 
+mini_play(10, 10, "Breakout");
+mini_play_update();
 breakout_render();
