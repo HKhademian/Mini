@@ -141,7 +141,7 @@ fn native_script_path(root, work) {
     source := path_join(work, "script-path.mini");
     output := path_join(work, "script-path.c");
     binary := path_join(work, "script-path");
-    file_write(source, "import \"core/io\";\nimport \"core/process\";\nio_write_line(process_script_path());\n");
+    file_write(source, "import \"core/io\";\nimport \"core/process\";\nimport \"util/io\";\nio_write_line(process_script_path());\n");
     native_compile(root, work, "script path source", list_of("--target", "c", source, output), output);
     built := native_build(output, binary, root);
     if map_get(built, "status") != 0 {
