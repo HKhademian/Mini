@@ -627,11 +627,11 @@
   {
     "id": "pixel-blinking-dot",
     "group": "Animation",
-    "label": "Single-pixel color blink — planned",
-    "note": "Alternate one pixel gently between two colors.",
+    "label": "Soft color pulse",
+    "note": "Ease a centered pixel between soft blue shades at four color steps per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-blinking-dot.mini"
   },
   {
     "id": "pixel-wraparound",

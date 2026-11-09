@@ -1,0 +1,58 @@
+/// Slowly ease one centered pixel between calm shades of blue.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_center := number_div(screen_size, 2);
+playback_fps := 60;
+color_steps_per_second := 4;
+frames_per_color_step := number_div(playback_fps, color_steps_per_second);
+maximum_color_step := 8;
+black := pixel_rgb(0, 0, 0);
+color_step := 0;
+color_direction := 1;
+update_ticks := 0;
+
+/// Draw the current soft color on a black board.
+fn pixel_blinking_dot_render() {
+    red := 55 + number_mul(color_step, 15);
+    green := 90 + number_mul(color_step, 15);
+    blue := 155 + number_mul(color_step, 11);
+    board := pixel_board_new(screen_size, screen_size, black);
+    pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, pixel_rgb(red, green, blue));
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Advance one step of the slow color ramp.
+fn canvas_update() {
+    pixel_blinking_dot_render();
+    update_ticks = update_ticks + 1;
+    if update_ticks >= frames_per_color_step {
+        update_ticks = 0;
+        if color_step == 0 || color_step == maximum_color_step {
+            color_direction = 0 - color_direction;
+        }
+        color_step = color_step + color_direction;
+    }
+}
+
+/// Print a text fallback for command-line runs.
+fn pixel_blinking_dot_print() {
+    row := 0;
+    while row < screen_size {
+        if row == screen_center {
+            io_write_line(".....*....");
+        } else {
+            io_write_line("..........");
+        }
+        row = row + 1;
+    }
+}
+
+pixel_blinking_dot_render();
+canvas_play(screen_size, screen_size, "Soft Color Pulse");
+pixel_blinking_dot_print();
