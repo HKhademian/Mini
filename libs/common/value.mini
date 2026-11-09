@@ -1,4 +1,4 @@
-import "common/process-panic";
+import "common/process";
 
 /// Return the runtime kind; targets without a representation host panic.
 fn value_kind(value) {

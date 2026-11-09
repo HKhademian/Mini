@@ -1,8 +1,13 @@
-/// Host process APIs and a Mini capture helper.
+/// Host process APIs, panic fallback, and the text-stream process helper.
 
 import "common/list";
 import "common/map";
-import "./process-panic";
+import "common/text";
+
+/// Stop execution when an operation has no available process host.
+fn process_panic(message) {
+    return process_panic(message);
+}
 
 /// Return an environment variable or panic when the target has no process host.
 fn process_env(name) {
@@ -38,4 +43,17 @@ fn process_capture(command, args, directory, input) {
     map_set(options, "input", input);
     map_set(options, "timeout", 30000);
     return process_spawn(options);
+}
+
+/// Run command with arguments and return a result map with text output streams.
+/// The child inherits the parent environment; mode selects capture or inherit.
+fn process_run(command, args, mode) {
+    options := map_new();
+    map_set(options, "command", command);
+    map_set(options, "arguments", args);
+    map_set(options, "mode", mode);
+    result := process_spawn(options);
+    map_set(result, "stdout", text_from_bytes(map_get(result, "stdout")));
+    map_set(result, "stderr", text_from_bytes(map_get(result, "stderr")));
+    return result;
 }

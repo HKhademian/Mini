@@ -9,7 +9,7 @@
     "common.list",
     "common.number",
     "common.play",
-    "common.pixel-board",
+    "util.board",
     "text.output"
   ],
   "cases": [

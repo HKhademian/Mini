@@ -8,10 +8,9 @@ import "common/io";
 import "common/map";
 import "common/path";
 import "common/list";
-import "common/process-run";
+import "common/process";
 import "common/text";
 import "common/file";
-import "common/process";
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {

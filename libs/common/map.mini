@@ -1,7 +1,7 @@
 /// Map functions with Mini fallbacks and target-provided representation primitives.
 
 import "common/list";
-import "common/process-panic";
+import "common/process";
 import "common/value";
 
 /// Create a fresh map; targets without a map host implementation panic.

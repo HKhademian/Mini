@@ -1,6 +1,6 @@
 /// List functions with Mini algorithms and target-provided representation primitives.
 
-import "common/process-panic";
+import "common/process";
 import "common/value";
 
 /// Create an empty list; targets without a host implementation panic.

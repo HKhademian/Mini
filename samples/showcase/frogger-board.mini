@@ -1,7 +1,7 @@
 /// Animate Frogger on a ten-by-ten pixel board and print its initial text frame.
 
 import "common/io";
-import "common/pixel-board";
+import "util/board";
 import "common/play";
 
 screen_size := 10;

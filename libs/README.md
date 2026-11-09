@@ -1,9 +1,9 @@
 # Mini libraries
 
 - `common/` — shared path, text, list, JSON, process, project, result, value,
-  numeric, play-session, and pixel-board libraries. `process-run.mini` layers
-  the simple text-stream process helper over `process.mini`'s host-backed
-  process capture.
+  numeric, and play-session libraries. `process.mini` keeps the process host
+  APIs, panic fallback, and text-stream helper together.
 - `compiler/` — compiler implementation parts included by
   `tools/compiler.mini`.
+- `util/` — optional helpers such as the Mini Play pixel-board builder.
 - `tools/` — behavior libraries for command entries under `tools/`.

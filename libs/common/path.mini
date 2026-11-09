@@ -1,7 +1,7 @@
 import "common/text";
 import "common/file";
 import "common/list";
-import "common/process-panic";
+import "common/process";
 import "./text";
 
 /// Create a directory and its missing parents using the target host.

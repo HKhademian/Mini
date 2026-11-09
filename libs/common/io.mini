@@ -1,7 +1,7 @@
 /// Standard input and output operations with target-independent contracts.
 
 import "common/list";
-import "common/process-panic";
+import "common/process";
 
 /// Read all standard input as UTF-8 text.
 fn io_read_all() {

@@ -1,6 +1,6 @@
 /// SHA-256 API with a panic fallback when the target has no hash host.
 
-import "common/process-panic";
+import "common/process";
 
 /// Hash text or byte-list values and return lowercase hexadecimal text.
 fn hash_sha256(value) {

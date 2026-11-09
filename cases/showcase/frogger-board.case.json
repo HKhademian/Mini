@@ -7,7 +7,7 @@
     "control.if",
     "control.while",
     "common.play",
-    "common.pixel-board",
+    "util.board",
     "text.output"
   ],
   "cases": [

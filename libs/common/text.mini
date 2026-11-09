@@ -1,6 +1,6 @@
 import "common/list";
 import "common/number";
-import "common/process-panic";
+import "common/process";
 import "common/value";
 
 /// Return the number of Unicode scalar values; targets without a host implementation panic.
