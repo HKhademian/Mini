@@ -9,6 +9,7 @@ import "core/json";
 import "util/project";
 import "core/file";
 import "util/process";
+import "util/result";
 
 /// Report a build failure and stop.
 fn build_fail(message) {

@@ -3,7 +3,7 @@
 import "core/map";
 import "core/path";
 import "core/json";
-import "core/result";
+import "util/result";
 import "core/process";
 import "core/file";
 

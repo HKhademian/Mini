@@ -15,6 +15,7 @@ import "util/project";
 import "core/file";
 import "util/process";
 import "compiler/lexer";
+import "util/result";
 
 /// Write one server log line.
 fn lsp_log(message) {

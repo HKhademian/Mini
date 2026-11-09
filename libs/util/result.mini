@@ -1,5 +1,7 @@
+/// Small tagged-result maps used by tooling and utility APIs.
+
 import "core/map";
-import "./value";
+import "core/value";
 
 /// Return a successful result map.
 ///

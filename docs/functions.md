@@ -222,7 +222,8 @@ order. Non-text elements contribute empty text while retaining their separator
 positions; non-list arguments contribute no elements. A non-text separator
 returns empty text.
 
-[libs/core/result.mini](../libs/core/result.mini) holds the result API.
+[libs/util/result.mini](../libs/util/result.mini) holds the result API; import
+`util/result` to use it.
 `result_ok(value, message)` and `result_fail(message)` build the map, which
 carries `ok`, `value`, and `message`. `result_is_ok` and `result_is_fail` test
 it. `result_get_message`, `result_get_value`, `result_set_message`, and

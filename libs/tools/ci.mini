@@ -7,6 +7,7 @@ import "core/process";
 import "core/json";
 import "util/project";
 import "core/file";
+import "util/result";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {

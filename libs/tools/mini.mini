@@ -9,6 +9,7 @@ import "util/project";
 import "core/file";
 import "util/process";
 import "util/io";
+import "util/result";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {

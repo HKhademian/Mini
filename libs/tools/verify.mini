@@ -16,6 +16,7 @@ import "core/hash";
 import "core/process";
 import "util/process";
 import "./cases";
+import "util/result";
 
 /// Report a verification failure and stop.
 fn verify_fail(message) {

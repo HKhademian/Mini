@@ -10,7 +10,7 @@ import "core/text";
 import "core/path";
 import "core/process";
 import "core/json";
-import "core/result";
+import "util/result";
 import "util/project";
 import "core/file";
 import "core/hash";

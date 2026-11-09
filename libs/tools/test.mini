@@ -15,6 +15,7 @@ import "core/process";
 import "util/process";
 import "./cases";
 import "util/io";
+import "util/result";
 
 /// Report usage and stop.
 fn test_usage() {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import "core/io";
-import "core/result";
+import "util/result";
 import "core/process";
 
 /// Verify result predicates for success, failure, and non-maps.
