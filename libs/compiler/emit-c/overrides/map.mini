@@ -1,0 +1,11 @@
+/// C host replacement for map_merge on targets without map representation.
+
+import "./registry";
+
+emit_c_host_function_add(
+    "map_merge",
+    "int MINI_ID(fn_map_merge)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1;\n"
+    + "    (void)fputs(\"map_merge requires a map host\\n\", stderr); (void)fflush(stderr); exit(1);\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
+);
