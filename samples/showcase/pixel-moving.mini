@@ -1,9 +1,9 @@
 /// Move one pixel across a ten-by-ten canvas and bounce at its edges.
 
-import "common/io";
-import "common/number";
+import "core/io";
+import "core/number";
 import "util/board";
-import "common/play";
+import "core/play";
 
 screen_size := 10;
 black := pixel_rgb(0, 0, 0);

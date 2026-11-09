@@ -1,6 +1,6 @@
 /// Registry for target-specific implementations of same-name Mini functions.
 
-import "common/map";
+import "core/map";
 import "./registry";
 import "./number";
 import "./hash";

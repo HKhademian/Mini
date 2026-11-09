@@ -1,8 +1,8 @@
 /// Take a key snapshot and count it.
 
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/list";
+import "core/map";
+import "core/io";
 
 values := map_new();
 map_set(values, "a", 1);

@@ -1,7 +1,7 @@
-import "common/json";
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/json";
+import "core/list";
+import "core/map";
+import "core/io";
 if json_text("abc") == "\"abc\"" && json_text(42) == "42" && json_text(true) == "true" && json_text(false) == "false" && json_text("a\"b")
     == "\"a\\\"b\"" {
     io_write_line("ok");

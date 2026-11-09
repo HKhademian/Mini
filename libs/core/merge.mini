@@ -1,7 +1,7 @@
-import "common/list";
-import "common/map";
-import "common/number";
-import "common/value";
+import "core/list";
+import "core/map";
+import "core/number";
+import "core/value";
 
 /// Merge variadic values using the first value's kind.
 fn value_merge() {

@@ -1,8 +1,8 @@
 /// Map functions with Mini fallbacks and target-provided representation primitives.
 
-import "common/list";
-import "common/process";
-import "common/value";
+import "core/list";
+import "core/process";
+import "core/value";
 
 /// Create a fresh map; targets without a map host implementation panic.
 fn map_new() {

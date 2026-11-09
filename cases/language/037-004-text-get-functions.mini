@@ -1,5 +1,5 @@
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 fn text() {
     io_write("t");

@@ -1,6 +1,6 @@
-import "common/list";
-import "common/io";
-import "common/file";
+import "core/list";
+import "core/io";
+import "core/file";
 
 args := fn_args();
 if list_length(args) == 3 && list_get(args, 0) == "copy" {

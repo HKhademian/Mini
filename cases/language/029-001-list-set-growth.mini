@@ -1,7 +1,7 @@
-import "common/io";
-import "common/text";
-import "common/list";
-import "common/process";
+import "core/io";
+import "core/text";
+import "core/list";
+import "core/process";
 
 items := list_new();
 r := text_length(io_read_all()) - 1;

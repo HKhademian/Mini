@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := "outer";
 i := 0;
 while i < 2 {

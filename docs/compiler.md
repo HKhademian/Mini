@@ -272,7 +272,7 @@ node COMPILER compile SOURCE.mini OUTPUT.js
 
 `fn_args()` is a language form. Each generated function binds its own argument
 list. The language server reads function declarations and documentation from
-the ordinary Mini source files under `libs/common`.
+the ordinary Mini source files under `libs/core`.
 `tokens --comments` emits token JSON including comment tokens. Default `tokens`
 and `mini-compile --tokens` remain comment-free. `compile` writes no standard
 output and reports the first failure on standard error in the terminal format
@@ -465,10 +465,10 @@ bootstrap migration.
 ## Mini source layout
 
 The compiler source is authored as ordered sources next to the tools;
-[tools/compiler.mini](../tools/compiler.mini) includes `common/text.mini`,
+[tools/compiler.mini](../tools/compiler.mini) includes `core/text.mini`,
 `lexer.mini`, `parser.mini`, and the target emitters.
 `tools/compiler.mini` includes them in dependency order. Adapter text is
-source in the Mini function files under `libs/common/`, shared by the generated
+source in the Mini function files under `libs/core/`, shared by the generated
 compiler and generated tools. `mini check` verifies the generated bootstrap fixed point and
 stale generated tools. `import` is a mini language feature; there is no module
 or import syntax.

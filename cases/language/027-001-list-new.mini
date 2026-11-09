@@ -1,6 +1,6 @@
-import "common/io";
-import "common/list";
-import "common/process";
+import "core/io";
+import "core/list";
+import "core/process";
 
 items := list_new();
 if list_length(items) == 0 && list_length(list_new()) == 0 {

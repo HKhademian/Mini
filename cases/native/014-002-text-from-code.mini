@@ -1,5 +1,5 @@
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 io_write_line(text_from_code(65));
 io_write_line(text_from_code(233));

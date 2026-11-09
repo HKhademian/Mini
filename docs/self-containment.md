@@ -1,7 +1,7 @@
 # Function and emitter behavior
 
 Mini has one kind of callable: a function declared with `fn`. A function's Mini
-body defines its behavior. Functions in `libs/common/` are available through
+body defines its behavior. Functions in `libs/core/` are available through
 the ordinary import graph, along with other imported declarations.
 
 ## Target implementations
@@ -19,13 +19,13 @@ zero. A host implementation must return a Mini value as well, even when the
 underlying native operation is conventionally void.
 
 When a target cannot provide an operation, the function body may call
-`process_panic` from `common/process`.
+`process_panic` from `core/process`.
 Other functions can provide a Mini implementation directly. Both remain regular
 functions in source and use the same call rules.
 
 ## Host boundary
 
 Mini code itself does not access operating-system streams, files, processes, or
-clocks. Those operations are expressed as functions in `libs/common/`; an
+clocks. Those operations are expressed as functions in `libs/core/`; an
 emitter supplies a same-name target implementation where available. This keeps
 source behavior and target replacement attached to the same function name.

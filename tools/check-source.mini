@@ -1,13 +1,12 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
-import "common/map";
-import "common/text";
-import "common/file";
-import "common/path";
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/text";
+import "core/file";
+import "core/path";
 import "tools/check-source";
-import "common/process";
+import "core/process";
 import "compiler/lexer";
 import "compiler/parser";
 

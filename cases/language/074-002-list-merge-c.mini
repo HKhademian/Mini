@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 first := list_of("a", 1);
 second := list_of("b", true);

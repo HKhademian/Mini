@@ -1,5 +1,5 @@
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 fn pick(value) {
     if value == 1 {
         return 5;

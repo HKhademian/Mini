@@ -3,18 +3,18 @@
 /// Results are maps with `ok` and a failure `message`; scenario mismatches never
 /// terminate the host process.
 
-import "common/map";
-import "common/value";
-import "common/list";
-import "common/text";
-import "common/path";
-import "common/process";
+import "core/map";
+import "core/value";
+import "core/list";
+import "core/text";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/result";
+import "core/project";
+import "core/file";
+import "core/hash";
 import "util/process";
-import "common/json";
-import "common/result";
-import "common/project";
-import "common/file";
-import "common/hash";
 import "./native";
 
 /// Return a successful result map.
@@ -53,9 +53,15 @@ fn case_stream_valid(stream) {
         return false;
     }
     count := 0;
-    if map_has(stream, "text") { count = count + 1; }
-    if map_has(stream, "bytes") { count = count + 1; }
-    if map_has(stream, "file") { count = count + 1; }
+    if map_has(stream, "text") {
+        count = count + 1;
+    }
+    if map_has(stream, "bytes") {
+        count = count + 1;
+    }
+    if map_has(stream, "file") {
+        count = count + 1;
+    }
     return count == 1;
 }
 
@@ -65,9 +71,15 @@ fn case_stream_bytes(stream, directory) {
         return result_fail("stream must be an object");
     }
     count := 0;
-    if map_has(stream, "text") { count = count + 1; }
-    if map_has(stream, "bytes") { count = count + 1; }
-    if map_has(stream, "file") { count = count + 1; }
+    if map_has(stream, "text") {
+        count = count + 1;
+    }
+    if map_has(stream, "bytes") {
+        count = count + 1;
+    }
+    if map_has(stream, "file") {
+        count = count + 1;
+    }
     if count != 1 {
         return result_fail("one stream representation required");
     }
@@ -367,7 +379,20 @@ fn case_copy_tree(from, to) {
 
 /// Run git with the fixture identity settings.
 fn case_git(directory, args) {
-    git_args := list_of("-c", "user.name=Case fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgSign=false", "-c", "tag.gpgSign=false", "-c", "maintenance.auto=false", "-c", "gc.auto=0");
+    git_args := list_of(
+        "-c",
+        "user.name=Case fixture",
+        "-c",
+        "user.email=fixture@example.invalid",
+        "-c",
+        "commit.gpgSign=false",
+        "-c",
+        "tag.gpgSign=false",
+        "-c",
+        "maintenance.auto=false",
+        "-c",
+        "gc.auto=0"
+    );
     position := 0;
     while position < list_length(args) {
         list_set(git_args, list_length(git_args), list_get(args, position));
@@ -675,11 +700,27 @@ fn case_case_identity(fixture, project_root) {
         scenario := list_get(scenarios, position);
         entry := map_new();
         map_set(entry, "name", map_get(scenario, "name"));
-        map_set(entry, "stdin", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdin"), directory), "bytes")));
-        map_set(entry, "stdout", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdout"), directory), "bytes")));
-        map_set(entry, "stderr", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stderr"), directory), "bytes")));
+        map_set(
+            entry,
+            "stdin",
+            hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdin"), directory), "bytes"))
+        );
+        map_set(
+            entry,
+            "stdout",
+            hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stdout"), directory), "bytes"))
+        );
+        map_set(
+            entry,
+            "stderr",
+            hash_sha256(map_get(case_stream_bytes(map_get(scenario, "stderr"), directory), "bytes"))
+        );
         if map_has(scenario, "artifact") {
-            map_set(entry, "artifact", hash_sha256(map_get(case_stream_bytes(map_get(scenario, "artifact"), directory), "bytes")));
+            map_set(
+                entry,
+                "artifact",
+                hash_sha256(map_get(case_stream_bytes(map_get(scenario, "artifact"), directory), "bytes"))
+            );
         }
         if map_has(scenario, "inputFiles") {
             map_set(entry, "inputFiles", case_file_hashes(map_get(scenario, "inputFiles"), directory));
@@ -704,7 +745,11 @@ fn case_file_hashes(files, directory) {
     position := 0;
     while position < list_length(names) {
         name := list_get(names, position);
-        map_set(hashes, name, hash_sha256(map_get(case_stream_bytes(map_get(files, name), directory), "bytes")));
+        map_set(
+            hashes,
+            name,
+            hash_sha256(map_get(case_stream_bytes(map_get(files, name), directory), "bytes"))
+        );
         position = position + 1;
     }
     return hashes;

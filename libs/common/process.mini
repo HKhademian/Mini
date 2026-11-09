@@ -1,4 +1,5 @@
 /// Host process APIs and panic fallback.
+//
 
 /// Stop execution when an operation has no available process host.
 fn process_panic(message) {

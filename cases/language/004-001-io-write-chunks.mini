@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 io_write("");
 io_write("mi");
 io_write("ni");

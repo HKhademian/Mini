@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 a := "longer first text, forcing buffer growth";
 b := "abc";
 c := "a" + "bc";

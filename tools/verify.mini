@@ -1,11 +1,10 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
-import "tools/verify";
+import "core/io";
+import "core/list";
+import "core/process";
+import "core/project";
 import "tools/test";
-import "common/process";
-import "common/project";
+import "tools/verify";
 
 /// Consume verify options, then check one case or the bootstrap.
 fn main(args) {

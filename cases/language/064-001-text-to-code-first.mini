@@ -1,8 +1,8 @@
 /// Exercise code-point access and construction.
 
-import "common/text";
-import "common/number";
-import "common/io";
+import "core/text";
+import "core/number";
+import "core/io";
 
 accent := text_to_code("é", 0);
 io_write_line(number_to_text(accent));

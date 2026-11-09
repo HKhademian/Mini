@@ -1,9 +1,9 @@
 /// Exercise path checks, directory listing, copying, and recursive removal.
 
-import "common/list";
-import "common/io";
-import "common/file";
-import "common/path";
+import "core/list";
+import "core/io";
+import "core/file";
+import "core/path";
 
 root := path_temp_directory();
 sub := root + "/sub";

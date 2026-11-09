@@ -1,9 +1,9 @@
 /// Run and capture processes using the process host API.
 
-import "common/list";
-import "common/map";
-import "common/text";
-import "common/process";
+import "core/list";
+import "core/map";
+import "core/text";
+import "core/process";
 
 /// Run one process and capture its result with a fixed timeout.
 fn process_capture(command, args, directory, input) {

@@ -1,5 +1,5 @@
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 fn classify(value) {
     if value < 0 {
         return -1;

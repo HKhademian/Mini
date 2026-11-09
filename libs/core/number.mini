@@ -1,6 +1,6 @@
-import "common/list";
-import "common/text";
-import "common/value";
+import "core/list";
+import "core/text";
+import "core/value";
 
 /// Total numeric addition: non-number operands return 0.
 fn number_add(a, b) {

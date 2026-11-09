@@ -1,10 +1,10 @@
 /// Play Breakout on a small board with a keyboard start, pause, and replay.
 
-import "common/io";
-import "common/list";
-import "common/number";
+import "core/io";
+import "core/list";
+import "core/number";
 import "util/board";
-import "common/play";
+import "core/play";
 
 screen_size := 10;
 screen_edge := screen_size - 1;

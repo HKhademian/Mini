@@ -1,2 +1,2 @@
-import "common/io";
+import "core/io";
 io_write(9007199254740992);

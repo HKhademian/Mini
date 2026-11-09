@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 import "tools/test";
-import "common/process";
-import "common/project";
+import "core/process";
+import "core/project";
 
 /// Parse arguments and run selected case scenarios.
 fn main(args) {

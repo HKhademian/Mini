@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 fn make_list() {
     return list_new();

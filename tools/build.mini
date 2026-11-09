@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
-import "common/project";
+import "core/io";
+import "core/list";
+import "core/project";
 import "tools/build";
-import "common/process";
+import "core/process";
 
 /// Parse arguments and build or check generated artifacts.
 fn main(args) {

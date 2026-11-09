@@ -1,6 +1,6 @@
 /// Combine comparisons with &&.
 
-import "common/io";
+import "core/io";
 
 count := 3;
 ready := count > 0 && count < 10;

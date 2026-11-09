@@ -1,5 +1,5 @@
-import "common/io";
-import "common/number";
+import "core/io";
+import "core/number";
 
 fn wrapper() {
     import "./060-001-import-helper";

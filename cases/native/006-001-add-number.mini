@@ -1,2 +1,2 @@
-import "common/io";
+import "core/io";
 io_write(1 + 2, "|", -8 + 3, "|", 1 + 2 + 3, "\n");

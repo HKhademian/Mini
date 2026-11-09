@@ -1,6 +1,6 @@
-import "common/number";
-import "common/list";
-import "common/io";
+import "core/number";
+import "core/list";
+import "core/io";
 fn count() {
     return list_length(fn_args());
 }

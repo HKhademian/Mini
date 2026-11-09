@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 i := 0;
 while i < 4 { io_write(i, "|"); i = i + 1; }
 io_write(i, "\n");

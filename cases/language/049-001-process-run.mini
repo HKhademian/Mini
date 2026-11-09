@@ -1,10 +1,10 @@
 /// Exercise one-shot process execution with captured, inherited, and failed commands.
 
-import "common/text";
-import "common/list";
-import "common/map";
-import "common/io";
-import "common/process";
+import "core/text";
+import "core/list";
+import "core/map";
+import "core/io";
+import "core/process";
 import "util/process";
 
 args := list_new();

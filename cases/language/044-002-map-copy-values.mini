@@ -1,6 +1,6 @@
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/list";
+import "core/map";
+import "core/io";
 fn copy(value) {
     return map_copy(value);
 }

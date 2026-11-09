@@ -1,9 +1,9 @@
 /// Delete map keys and observe removal through map_has and map_keys.
 
-import "common/number";
-import "common/list";
-import "common/io";
-import "common/map";
+import "core/number";
+import "core/list";
+import "core/io";
+import "core/map";
 
 items := map_of("a", 1, "b", 2);
 map_delete(items, "a");

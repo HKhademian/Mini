@@ -1,7 +1,7 @@
 /// Filter three-column CSV rows whose third field is yes, returning name and city as tab-separated text.
 
-import "common/text";
-import "common/list";
+import "core/text";
+import "core/list";
 
 /// Return a selected row as text; headers and other rows contribute empty text.
 fn csv_row(fields) {

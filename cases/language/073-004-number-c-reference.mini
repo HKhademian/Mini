@@ -1,7 +1,7 @@
-import "common/io";
-import "common/list";
-import "common/number";
-import "common/value";
+import "core/io";
+import "core/list";
+import "core/number";
+import "core/value";
 
 io_write(value_kind("x"));
 io_write(value_is_number(1));

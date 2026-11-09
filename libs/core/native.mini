@@ -1,7 +1,7 @@
 /// Artifact naming shared by C generation and native builds.
 //
 
-import "common/text";
+import "core/text";
 
 /// Replace a C source suffix, or append a suffix when the output has another name.
 fn native_artifact_path(source, suffix) {

@@ -1,6 +1,6 @@
 /// Join text with +.
 
-import "common/io";
+import "core/io";
 
 first := "self";
 second := "-hosting";

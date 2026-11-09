@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := 1;
 import "./005-006-bindings-initialized-in-dependency-helper";
 io_write(value, "\n");

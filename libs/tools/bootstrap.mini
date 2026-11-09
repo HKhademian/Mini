@@ -1,15 +1,15 @@
-import "common/map";
-import "common/io";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/process";
+import "core/map";
+import "core/io";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/project";
+import "core/file";
+import "core/hash";
+import "core/result";
 import "util/process";
-import "common/json";
-import "common/project";
-import "common/file";
-import "common/hash";
-import "common/result";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";
@@ -119,7 +119,21 @@ fn bootstrap_clean_all(root) {
     directory_create(output_directory);
     package_path := path_join(output_directory, package_name);
     vsce := path_join(editor, "node_modules/@vscode/vsce/vsce");
-    bootstrap_step(root, "VS Code VSIX package", node, list_of(vsce, "package", "--no-dependencies", "--allow-missing-repository", "--skip-license", "--out", package_path), editor);
+    bootstrap_step(
+        root,
+        "VS Code VSIX package",
+        node,
+        list_of(
+            vsce,
+            "package",
+            "--no-dependencies",
+            "--allow-missing-repository",
+            "--skip-license",
+            "--out",
+            package_path
+        ),
+        editor
+    );
     io_write_line("Clean rebuild and full project checks passed. VSIX: dist/rebuild/" + package_name);
     return 0;
 }

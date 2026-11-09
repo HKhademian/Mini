@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := 7;
 while false { value = 99; io_write("wrong"); }
 io_write(value, "\n");

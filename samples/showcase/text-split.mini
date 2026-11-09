@@ -1,8 +1,8 @@
 /// Split text on a literal separator.
 
-import "common/text";
-import "common/list";
-import "common/io";
+import "core/text";
+import "core/list";
+import "core/io";
 
 fields := text_split("one,two,three", ",");
 index := 0;

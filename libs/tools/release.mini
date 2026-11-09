@@ -2,19 +2,19 @@
 /// Usage: node dist/release.js OUTPUT [COMPONENT_TAG]
 /// Never creates or publishes tags. Prints nothing on success.
 
-import "common/io";
-import "common/map";
-import "common/value";
-import "common/list";
-import "common/text";
-import "common/path";
-import "common/process";
+import "core/io";
+import "core/map";
+import "core/value";
+import "core/list";
+import "core/text";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/result";
+import "core/project";
+import "core/file";
+import "core/hash";
 import "util/process";
-import "common/json";
-import "common/result";
-import "common/project";
-import "common/file";
-import "common/hash";
 
 /// Report a release error and stop.
 fn release_fail(message) {

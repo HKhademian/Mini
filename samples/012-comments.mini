@@ -1,6 +1,6 @@
 /// Show documentation comments on a function and line comments in its body.
 
-import "common/io";
+import "core/io";
 
 /// Return 1 for any supplied values a and b; neither argument is changed.
 fn mine(a, b) {

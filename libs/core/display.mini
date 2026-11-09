@@ -1,7 +1,7 @@
-import "common/json";
-import "common/list";
-import "common/number";
-import "common/value";
+import "core/json";
+import "core/list";
+import "core/number";
+import "core/value";
 
 /// Return text unchanged, or empty text for a non-text value.
 fn text_to_text(value) {

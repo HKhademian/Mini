@@ -1,7 +1,7 @@
 /// Read text and print slices that demonstrate bounds and negative indices.
 
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 source := io_read_all();
 io_write_line(text_slice(source, 0, 3));

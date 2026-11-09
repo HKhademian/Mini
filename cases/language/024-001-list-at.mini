@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 args := fn_args();
 io_write(list_get(args, 0));

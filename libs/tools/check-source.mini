@@ -1,6 +1,6 @@
-import "common/map";
-import "common/text";
-import "common/list";
+import "core/map";
+import "core/text";
+import "core/list";
 import "compiler/lexer";
 import "compiler/parser";
 

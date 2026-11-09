@@ -1,11 +1,11 @@
 /// Exercise the existing subset needed by M1 and write a checked TS program to the supplied path.
 
-import "common/text";
-import "common/list";
-import "common/map";
-import "common/io";
-import "common/file";
-import "common/process";
+import "core/text";
+import "core/list";
+import "core/map";
+import "core/io";
+import "core/file";
+import "core/process";
 
 /// Return ten times value using only addition; used by decimal formatting.
 fn times_ten(value) {

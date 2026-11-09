@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 parent_value := 40;
 import "./061-006-file-initialization-parent-binding-helper";

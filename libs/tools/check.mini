@@ -2,18 +2,18 @@
 /// versions, editor metadata, cases, documents, portable paths, and bootstrap.
 /// Usage: node dist/check.js [--docs]
 
-import "common/number";
-import "common/map";
-import "common/io";
-import "common/value";
-import "common/list";
-import "common/text";
-import "common/json";
-import "common/file";
-import "common/path";
-import "./cases";
-import "common/process";
+import "core/number";
+import "core/map";
+import "core/io";
+import "core/value";
+import "core/list";
+import "core/text";
+import "core/json";
+import "core/file";
+import "core/path";
+import "core/process";
 import "util/process";
+import "./cases";
 
 /// Report a check failure and stop.
 fn check_fail(message) {

@@ -1,4 +1,4 @@
-import "common/io";
-import "common/file";
+import "core/io";
+import "core/file";
 
 file_write("output.txt", io_read_all());

@@ -1,5 +1,5 @@
-import "common/list";
-import "common/map";
+import "core/list";
+import "core/map";
 items := map_new();
 fresh := map_new();
 nested := list_new();

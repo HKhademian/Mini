@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 first := io_read_all();
 second := io_read_all();

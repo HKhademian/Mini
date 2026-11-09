@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 source := "original";
 copy := source;
 source = "replacement";

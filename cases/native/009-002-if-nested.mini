@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := 2;
 if value < 1 { io_write("small"); } else if value == 2 {
     if true { io_write("nested"); } else { io_write("wrong"); }

@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 fn capture(first) {
     return fn_args();

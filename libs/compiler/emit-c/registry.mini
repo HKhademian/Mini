@@ -1,7 +1,7 @@
 /// Store C definitions that transparently replace same-name Mini functions.
 
-import "common/list";
-import "common/map";
+import "core/list";
+import "core/map";
 
 c_host_function_names := list_new();
 c_host_function_definitions := map_new();

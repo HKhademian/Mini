@@ -1,5 +1,5 @@
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 fn find(value, needle) {
     return text_find(value, needle);
 }

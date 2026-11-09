@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 io_write("not emitted");
 value := 1;
 import "./005-007-bindings-read-before-initialization-helper";

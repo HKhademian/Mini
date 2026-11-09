@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 left := list_of("a", 1);
 right := list_of("b", true);

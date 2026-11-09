@@ -1,9 +1,9 @@
 /// Blink a friendly, warm-colored face on a soft blue canvas.
 
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 import "util/board";
-import "common/play";
+import "core/play";
 
 screen_size := 10;
 background := pixel_rgb(18, 34, 70);

@@ -66,7 +66,7 @@
   Mini has line comments only; do not introduce
   block comments or documentation tags.
 - Keep this project self-contained; do not reference the predecessor project.
-- In `libs/` sources, resolve library imports such as `common/io.mini`,
+- In `libs/` sources, resolve library imports such as `core/io.mini`,
   `compiler/lexer.mini`, and `pure/json.mini` from the `libs/` root, regardless
   of the importing file's folder. Use `./` for neighbors and child folders. Do
   not import from a parent directory with `../`.

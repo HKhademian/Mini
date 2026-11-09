@@ -1,5 +1,5 @@
-import "common/io";
-import "common/process";
+import "core/io";
+import "core/process";
 
 fn replace(value) {
     value = 9;

@@ -1,12 +1,12 @@
 /// Run one child process with options for arguments, directory, input, and mode.
 
-import "common/text";
-import "common/list";
-import "common/map";
-import "common/io";
-import "common/file";
-import "common/path";
-import "common/process";
+import "core/text";
+import "core/list";
+import "core/map";
+import "core/io";
+import "core/file";
+import "core/path";
+import "core/process";
 
 dir := path_temp_directory();
 args := list_new();

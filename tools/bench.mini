@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-
-import "common/number";
-import "common/list";
-import "common/io";
-import "common/path";
+import "core/number";
+import "core/list";
+import "core/io";
+import "core/path";
 import "tools/bench";
-import "common/process";
-import "common/project";
+import "core/process";
+import "core/project";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main(args) {

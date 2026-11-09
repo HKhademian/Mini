@@ -1,10 +1,10 @@
 /// Evaluate semicolon-separated integer expressions with +, -, unary minus, and parentheses.
-//
+
+import "core/text";
+import "core/map";
+import "core/process";
 
 /// Return value times ten using the same arithmetic available to mini.
-import "common/text";
-import "common/map";
-import "common/process";
 fn expr_ten(value) {
     twice := value + value;
     four := twice + twice;

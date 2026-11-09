@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 import "./061-003-file-initialization-once-helper";
 import "././061-003-file-initialization-once-helper";

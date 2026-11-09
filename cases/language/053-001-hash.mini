@@ -1,8 +1,8 @@
 /// Hash text and byte lists with SHA-256.
 
-import "common/list";
-import "common/io";
-import "common/hash";
+import "core/list";
+import "core/io";
+import "core/hash";
 
 if hash_sha256("abc") == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad" {
     io_write_line("text ok");

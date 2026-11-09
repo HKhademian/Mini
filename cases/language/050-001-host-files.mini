@@ -1,10 +1,10 @@
 /// Exercise the executable path, temporary directory, and removal primitives.
 
-import "common/text";
-import "common/path";
-import "common/io";
-import "common/file";
-import "common/process";
+import "core/text";
+import "core/path";
+import "core/io";
+import "core/file";
+import "core/process";
 
 if path_is_file(process_exec_path()) {
     io_write_line("exec ok");

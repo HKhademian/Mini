@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 import "./061-005-file-initialization-binding-helper";
 io_write(initialized_value, "|");

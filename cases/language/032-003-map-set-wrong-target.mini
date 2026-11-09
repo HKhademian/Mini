@@ -1,7 +1,7 @@
-import "common/io";
-import "common/list";
-import "common/map";
-import "common/process";
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/process";
 
 fn target() {
     io_write("t");

@@ -1,8 +1,8 @@
-import "common/io";
-import "common/list";
-import "common/map";
-import "common/merge";
-import "common/value";
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/merge";
+import "core/value";
 
 base := map_of("n", 1, "flag", false, "empty", "");
 nested := map_of("ok", true);

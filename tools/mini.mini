@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-
-import "common/path";
+import "core/path";
 import "tools/mini";
-import "common/process";
-import "common/project";
+import "core/process";
+import "core/project";
 
 /// Dispatch the invoked command.
 fn main(args) {

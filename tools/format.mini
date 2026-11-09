@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
-import "common/text";
-import "common/file";
-import "common/path";
+import "core/io";
+import "core/list";
+import "core/text";
+import "core/file";
+import "core/path";
 import "tools/format";
-import "common/process";
+import "core/process";
 
 /// Report a command error and stop.
 fn format_fail(message) {

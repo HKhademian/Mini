@@ -1,6 +1,6 @@
-import "common/io";
-import "common/list";
-import "common/process";
+import "core/io";
+import "core/list";
+import "core/process";
 
 items := list_new();
 list_set(items, 5, "hi");

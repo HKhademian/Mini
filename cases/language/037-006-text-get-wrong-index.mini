@@ -1,2 +1,2 @@
-import "common/text";
+import "core/text";
 text_get("hello", "1");

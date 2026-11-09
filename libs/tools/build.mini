@@ -1,14 +1,14 @@
-import "common/io";
-import "common/value";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/process";
+import "core/io";
+import "core/value";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/project";
+import "core/file";
 import "util/process";
-import "common/json";
-import "common/project";
-import "common/file";
 
 /// Report a build failure and stop.
 fn build_fail(message) {

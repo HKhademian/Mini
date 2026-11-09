@@ -1,5 +1,5 @@
-import "common/io";
-import "common/display";
-import "common/list";
+import "core/io";
+import "core/display";
+import "core/list";
 
 io_write(value_join("|", "x", 42, true, list_of("a", 2)));

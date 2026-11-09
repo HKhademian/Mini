@@ -1,9 +1,9 @@
 /// Show empty-text and zero read fallbacks, list gaps, and indexing from the end.
 
-import "common/text";
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/text";
+import "core/list";
+import "core/map";
+import "core/io";
 
 io_write_line("character: " + text_get("hello", 1));
 if text_get(0, 1) == "" && text_get("hello", 2000) == "" {

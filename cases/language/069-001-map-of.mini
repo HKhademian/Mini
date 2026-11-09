@@ -1,9 +1,9 @@
 /// Build maps from alternating key and value arguments.
 
-import "common/number";
-import "common/list";
-import "common/io";
-import "common/map";
+import "core/number";
+import "core/list";
+import "core/io";
+import "core/map";
 
 pairs := map_of("hi", 2, "test", 3);
 repeated := map_of("k", 1, "k", 2);

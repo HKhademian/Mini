@@ -1,7 +1,7 @@
 #!/usr/bin/env -S mini run
 /// Native sample with ordinary source comments.
 // Ignore calls written in comments: io_write("wrong");
-import "common/io";
+import "core/io";
 
 io_write( // before a literal
     "comments\n" // after a literal

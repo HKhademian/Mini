@@ -1,5 +1,5 @@
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 
 /// Trial division up to a limit.
 fn is_prime(n) {

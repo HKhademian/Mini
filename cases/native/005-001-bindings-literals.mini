@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 message := "hi from mini";
 count := 42;
 io_write(message, ": ", count, "\n");

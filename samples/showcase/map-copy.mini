@@ -1,7 +1,7 @@
 /// Changing the copy leaves the original intact.
 
-import "common/map";
-import "common/io";
+import "core/map";
+import "core/io";
 
 original := map_new();
 map_set(original, "name", "Mini");

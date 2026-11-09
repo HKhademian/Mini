@@ -1,3 +1,3 @@
-import "common/io";
+import "core/io";
 
 source := io_read_all("mini");

@@ -103,7 +103,7 @@ async function compileSource(source, portable) {
   try {
     emit_js_set_reference_mode(portable);
     const prepared = buildTokens(lex_tokenize, lex_expand_imports, source);
-    const play = source.includes('import "common/play";')
+    const play = source.includes('import "core/play";')
       && /\bmini_play\s*\(/.test(source)
       && /\bfn\s+mini_play_update\s*\(/.test(source);
     return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), play, diagnostic: "" };

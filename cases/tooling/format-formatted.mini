@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 value := 1; // keep
 if value == 1 {

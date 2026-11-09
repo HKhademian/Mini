@@ -6,8 +6,8 @@
     "functions",
     "control.if",
     "control.while",
-    "common.play",
-    "common.pixel-board",
+    "core.play",
+    "util.board",
     "text.output"
   ],
   "cases": [

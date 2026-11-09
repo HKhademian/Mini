@@ -69,7 +69,7 @@ An import can separate file docs from declaration docs:
 
 ```mini
 /// File purpose.
-import "common/io";
+import "core/io";
 
 /// Documents the next declaration.
 message := "hello";
@@ -122,14 +122,14 @@ io_write("ok\n");
 A top-level import adds another Mini source to the current compilation.
 
 ```mini
-import "common/text";
+import "core/text";
 import "./local";
 ```
 
-- `import "common/text"` resolves to `libs/common/text.mini`. Import paths in
+- `import "core/text"` resolves to `libs/core/text.mini`. Import paths in
   Mini source are extensionless. Functions declared anywhere in the expanded
   import graph share one call namespace. Import the source that provides the
-  functions your program uses; for example, `common/map` provides `map_new` and
+  functions your program uses; for example, `core/map` provides `map_new` and
   `map_get`.
 - Paths beginning `./` or `../` are resolved relative to the importing file.
   Prefer these forms for sibling and child modules.
@@ -300,7 +300,7 @@ io_write("input: ", source, "\n");
   results without separators and writes them to standard output with no added
   newline. It returns 0; an empty call writes nothing. Writing multiple values
   produces the same bytes as writing each value separately in order.
-- `io_write_line(...values)` is a Mini helper from `libs/common/io.mini`; it
+- `io_write_line(...values)` is a Mini helper from `libs/core/io.mini`; it
   writes the same concatenated values followed by one newline and returns the
   `io_write` result. Include that file when using it. An empty call writes only
   the newline.
@@ -318,7 +318,7 @@ them only when concrete compiler or tool code needs them.
 provides the higher-level slicing operation.
 
 Use `group_operation` names for the text family. These are flat identifiers;
-the prefix adds no namespace syntax. Import `common/text` to use `text_slice`
+the prefix adds no namespace syntax. Import `core/text` to use `text_slice`
 and the other text helpers.
 
 ```mini
@@ -340,7 +340,7 @@ while position < text_length(source) {
 - `text_split(text, divider)` returns a list of text fields split on a literal
   divider. Empty fields are preserved. An empty divider returns a one-element
   list containing the source. A non-text target or divider returns an empty list.
-- `text_slice(text, start, end)` is supplied by `import "common/text"`. It
+- `text_slice(text, start, end)` is supplied by `import "core/text"`. It
   returns text from `start` through the exclusive `end`. Bounds are zero-based
   integers. Negative bounds count from the end; bounds clamp to the text;
   invalid argument kinds, a non-text target, or an empty/reversed range return
@@ -362,7 +362,7 @@ text := text_merge("mini", "lang");
 
 - `text_merge(...texts)` concatenates text arguments in order.
 - Non-text arguments are ignored; no arguments return empty text.
-- Import `common/text` to use it.
+- Import `core/text` to use it.
 
 ## Accepted operation: text joining
 
@@ -373,16 +373,16 @@ text := text_join(", ", "Mini", "Lang");
 - `text_join(separator, ...texts)` joins text arguments with the separator.
 - Non-text values contribute empty text, with separators retained between
   argument positions. A non-text separator returns empty text.
-- Import `common/text` to use it.
+- Import `core/text` to use it.
 
 ## Accepted operation: number text
 
 ```mini
-import "common/number";
+import "core/number";
 text := number_to_text(42);
 ```
 
-- Import `common/number` before calling a `number_*` function.
+- Import `core/number` before calling a `number_*` function.
 - `number_to_text(value)` returns canonical decimal text for a safe integer:
   optional minus sign, no leading zeros, `0` for zero, and no exponent.
 - Non-number values and non-safe integers return empty text.
@@ -505,7 +505,7 @@ merged := list_merge(left, right);
 - `list_merge(...lists)` returns a fresh list containing each list argument's
   items in argument order. Non-list arguments are ignored.
 - The merge is shallow; contained values are shared with the source lists.
-- Import `common/list` to use it.
+- Import `core/list` to use it.
 
 ## Accepted operation: map merging
 
@@ -516,7 +516,7 @@ merged := map_merge(defaults, overrides);
 - `map_merge(...maps)` returns a fresh map with entries from each map argument
   applied in order. Later maps replace earlier values for matching keys.
 - Non-map arguments are ignored, and the source maps are unchanged.
-- Import `common/map` to use it.
+- Import `core/map` to use it.
 
 ## Accepted operation: value merging
 
@@ -529,7 +529,7 @@ merged := value_merge(first, second, third);
 - Later values of other kinds are ignored. An empty call or unsupported first
   kind returns 0.
 - Text, list, and map results are fresh values; lists and maps merge shallowly.
-- Import `common/merge` to use it.
+- Import `core/merge` to use it.
 
 ## Accepted operation: value joining
 
@@ -540,7 +540,7 @@ text := value_join(" | ", "Mini", 42, true);
 - `value_join(separator, ...values)` converts each value with `value_to_text` and
   joins the results with the separator.
 - A non-text separator or a call with no arguments returns empty text.
-- Import `common/display` to use it.
+- Import `core/display` to use it.
 
 ## Accepted operation: list text joining
 
@@ -732,7 +732,7 @@ io_write(text_from_bytes(bytes));
 - `text_from_bytes(bytes)` decodes such a list as UTF-8. Non-integer or out-of-range
   elements count as zero.
 - `file_read_bytes(path)` and `file_write_bytes(path, bytes)` read and replace a
-  whole file as a byte list. File operations are declared in `common/file`;
+  whole file as a byte list. File operations are declared in `core/file`;
   import that module before calling any `file_*` function.
 
 ## Accepted operation: SHA-256 hashing
@@ -877,7 +877,7 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```mini
-import "common/path";
+import "core/path";
 
 node := process_exec_path();
 directory := path_temp_directory();
@@ -888,12 +888,12 @@ directory_remove(directory);
 
 - `process_exec_path()` returns the absolute path of the running Node
   executable. It takes no arguments.
-- Directory and path host functions are declared in `common/path`; import that
+- Directory and path host functions are declared in `core/path`; import that
   module before calling them.
 - `path_temp_directory()` creates and returns a fresh empty directory under the
   host temporary directory. It takes no arguments.
 - `file_remove(path)` and `directory_remove(path)` are helpers from
-  `libs/common/path.mini`; import that module when using them. They call
+  `libs/core/path.mini`; import that module when using them. They call
   `path_remove(path)` only after checking the path kind and, for directories,
   that the directory is empty.
 - `directory_remove(path)` leaves non-empty directories untouched.

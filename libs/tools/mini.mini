@@ -1,13 +1,13 @@
-import "common/map";
-import "common/io";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/process";
+import "core/map";
+import "core/io";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/project";
+import "core/file";
 import "util/process";
-import "common/json";
-import "common/project";
-import "common/file";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {
@@ -91,8 +91,12 @@ fn mini_usage(message) {
 /// Print the dispatcher help.
 fn mini_help() {
     io_write("mini: self-hosting foundation for building your own language\n");
-    io_write("Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [--verbose] [--unit] [FILTER] | bench OUTPUT [FILTER] | verify [--verbose] [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n");
-    io_write("Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n");
+    io_write(
+        "Usage: mini check [--docs | SOURCE.mini | -] | fmt [--write | --check] SOURCE.mini | run SOURCE.mini [ARG]... | test [--verbose] [--unit] [FILTER] | bench OUTPUT [FILTER] | verify [--verbose] [CASE.json] | release OUTPUT [TAG] | compile [--target js|c] SOURCE.mini [OUTPUT] | build [--check] | ci TASK_FILE\n"
+    );
+    io_write(
+        "Aliases: mini-check, mini-format, mini-run, mini-test, mini-bench, mini-verify, mini-release, mini-compile, minic\n"
+    );
     return 0;
 }
 

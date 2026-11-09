@@ -1,7 +1,7 @@
 /// Return Unicode scalar values from character indexes.
 
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 text := "چطوری 😀";
 io_write_line(text_to_code(text, 0));

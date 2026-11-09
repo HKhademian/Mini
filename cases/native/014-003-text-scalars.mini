@@ -1,6 +1,6 @@
-import "common/io";
-import "common/list";
-import "common/text";
+import "core/io";
+import "core/list";
+import "core/text";
 
 text := "چطوری David";
 io_write_line(text_length(text));

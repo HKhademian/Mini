@@ -1,7 +1,7 @@
-import "common/file";
-import "common/io";
-import "common/list";
-import "common/path";
+import "core/file";
+import "core/io";
+import "core/list";
+import "core/path";
 
 root := path_temp_directory();
 source := root + "/source";

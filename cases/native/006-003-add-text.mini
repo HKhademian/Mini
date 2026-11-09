@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 a := "hello";
 b := " ";
 joined := a + b + "mini";

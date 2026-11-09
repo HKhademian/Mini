@@ -1,5 +1,5 @@
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 
 /// Return a value from a named function.
 fn square(value) {

@@ -1,4 +1,4 @@
-import "common/io";
-import "common/map";
+import "core/io";
+import "core/map";
 
 io_write(map_merge(), "\n");

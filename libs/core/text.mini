@@ -1,7 +1,7 @@
-import "common/list";
-import "common/number";
-import "common/process";
-import "common/value";
+import "core/list";
+import "core/number";
+import "core/process";
+import "core/value";
 
 /// Return the number of Unicode scalar values; targets without a host implementation panic.
 fn text_length(source) {

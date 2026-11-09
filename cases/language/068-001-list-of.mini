@@ -1,8 +1,8 @@
 /// Build lists of several sizes from supplied arguments.
 
-import "common/number";
-import "common/io";
-import "common/list";
+import "core/number";
+import "core/io";
+import "core/list";
 
 items := list_of(1, 2, 3);
 empty := list_of();

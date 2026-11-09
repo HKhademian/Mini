@@ -1,9 +1,9 @@
 /// Report the runtime kind of each mini value kind.
 
-import "common/value";
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/value";
+import "core/list";
+import "core/map";
+import "core/io";
 
 if value_kind("x") == "text" && value_kind(1) == "number" && value_kind(true) == "boolean"
     && value_kind(list_new()) == "list" && value_kind(map_new()) == "map" {

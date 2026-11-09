@@ -1,6 +1,6 @@
 /// Repeat while a condition holds.
 
-import "common/io";
+import "core/io";
 
 position := 1;
 while position <= 5 {

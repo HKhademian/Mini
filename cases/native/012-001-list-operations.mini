@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 items := list_of("b", "c");
 list_push_front(items, "a");

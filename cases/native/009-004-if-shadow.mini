@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := "outer";
 if true {
     value := "inner";

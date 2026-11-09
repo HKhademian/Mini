@@ -1,7 +1,7 @@
 /// Index declarations and references by identifier, retaining source order in each posting list.
 
-import "common/list";
-import "common/map";
+import "core/list";
+import "core/map";
 
 /// Return a map from identifier text to its occurrence offsets; comments and strings are excluded.
 fn app_run(source) {

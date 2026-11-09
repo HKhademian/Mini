@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 buffer := "ok";
 status := 7;
 arguments_0 := buffer;

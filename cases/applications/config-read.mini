@@ -1,9 +1,9 @@
 /// Parse sectioned key=value configuration with comments, whitespace trimming, and replacement.
-//
+
+import "core/text";
+import "core/map";
 
 /// Return a bounded character copy of source.
-import "common/text";
-import "common/map";
 fn config_slice(source, start, end) {
     output := "";
     position := start;

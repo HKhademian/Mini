@@ -2,18 +2,18 @@
 /// Usage: node dist/lang-server.js [--version]
 /// Standard output carries only protocol frames; logs go to standard error.
 
-import "common/io";
-import "common/json";
-import "common/number";
-import "common/map";
-import "common/value";
-import "common/list";
-import "common/text";
-import "common/path";
-import "common/process";
+import "core/io";
+import "core/json";
+import "core/number";
+import "core/map";
+import "core/value";
+import "core/list";
+import "core/text";
+import "core/path";
+import "core/process";
+import "core/project";
+import "core/file";
 import "util/process";
-import "common/project";
-import "common/file";
 import "compiler/lexer";
 
 /// Write one server log line.
@@ -221,7 +221,11 @@ fn lsp_analyze(text, name) {
     tokens := list_new();
     diagnostics := list_new();
     if map_get(tokenized, "status") != 0 {
-        list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(tokenized, "stderr")), text, name, tokens));
+        list_set(
+            diagnostics,
+            0,
+            lsp_parse_diagnostic(text_from_bytes(map_get(tokenized, "stderr")), text, name, tokens)
+        );
         path_remove(work);
         failed := map_new();
         map_set(failed, "tokens", tokens);
@@ -235,7 +239,11 @@ fn lsp_analyze(text, name) {
     compile_args := list_of(compiler, input, output);
     compiled := lsp_run("node", compile_args, root, list_new());
     if map_get(compiled, "status") != 0 {
-        list_set(diagnostics, 0, lsp_parse_diagnostic(text_from_bytes(map_get(compiled, "stderr")), text, name, tokens));
+        list_set(
+            diagnostics,
+            0,
+            lsp_parse_diagnostic(text_from_bytes(map_get(compiled, "stderr")), text, name, tokens)
+        );
     }
     path_remove(work);
     result := map_new();
@@ -303,8 +311,11 @@ fn lsp_declarations(tokens) {
                     cursor = cursor + 1;
                 }
                 map_set(declaration, "kind", "function");
-                map_set(declaration, "signature",
-                    "fn " + map_get(name, "text") + "(" + list_join(", ", parameters) + ")");
+                map_set(
+                    declaration,
+                    "signature",
+                    "fn " + map_get(name, "text") + "(" + list_join(", ", parameters) + ")"
+                );
                 list_set(result, list_length(result), declaration);
             }
         }
@@ -322,21 +333,21 @@ fn lsp_declarations(tokens) {
     return result;
 }
 
-/// Cache function declarations read from the ordinary common Mini sources.
-lsp_common_function_cache := 0;
+/// Cache function declarations read from the ordinary core Mini sources.
+lsp_core_function_cache := 0;
 
-/// Return functions from common sources for editor hover and completion.
-fn lsp_common_functions() {
-    if value_is_list(lsp_common_function_cache) {
-        return lsp_common_function_cache;
+/// Return functions from core sources for editor hover and completion.
+fn lsp_core_functions() {
+    if value_is_list(lsp_core_function_cache) {
+        return lsp_core_function_cache;
     }
     functions := list_new();
     seen := map_new();
     root := lsp_root();
-    paths := directory_list(path_join(root, "libs/common"));
+    paths := directory_list(path_join(root, "libs/core"));
     position := 0;
     while position < list_length(paths) {
-        path := path_join(path_join(root, "libs/common"), list_get(paths, position));
+        path := path_join(path_join(root, "libs/core"), list_get(paths, position));
         if text_ends_with(path, ".mini") {
             source := file_read(path);
             tokens := lex_tokenize(source, path_basename(path), true);
@@ -354,7 +365,7 @@ fn lsp_common_functions() {
         }
         position = position + 1;
     }
-    lsp_common_function_cache = functions;
+    lsp_core_function_cache = functions;
     return functions;
 }
 
@@ -397,14 +408,18 @@ fn lsp_hover(tokens, offset) {
         map_set(hover, "range", lsp_range_of(token));
         return hover;
     }
-    standard := lsp_common_functions();
+    standard := lsp_core_functions();
     position := 0;
     while position < list_length(standard) {
         declaration := list_get(standard, position);
         if map_get(declaration, "name") == map_get(token, "text") {
             content := map_new();
             map_set(content, "kind", "markdown");
-            map_set(content, "value", lsp_markdown(map_get(declaration, "signature"), map_get(declaration, "doc")));
+            map_set(
+                content,
+                "value",
+                lsp_markdown(map_get(declaration, "signature"), map_get(declaration, "doc"))
+            );
             hover := map_new();
             map_set(hover, "contents", content);
             map_set(hover, "range", lsp_range_of(token));
@@ -463,7 +478,7 @@ fn lsp_completions(tokens, text, offset) {
         }
         position = position + 1;
     }
-    standard := lsp_common_functions();
+    standard := lsp_core_functions();
     position = 0;
     while position < list_length(standard) {
         declaration := list_get(standard, position);
@@ -516,8 +531,10 @@ fn lsp_reply(id, result) {
 
 /// Reply with a protocol error.
 fn lsp_reply_error(id, code, message) {
-    lsp_send("{\"jsonrpc\":\"2.0\",\"id\":" + json_text(id) + ",\"error\":{\"code\":" + number_to_text(code)
-        + ",\"message\":" + json_text(message) + "}}");
+    lsp_send(
+        "{\"jsonrpc\":\"2.0\",\"id\":" + json_text(id) + ",\"error\":{\"code\":" + number_to_text(code)
+        + ",\"message\":" + json_text(message) + "}}"
+    );
     return 0;
 }
 
@@ -642,7 +659,11 @@ fn lsp_completion_reply(documents, params) {
     outcome := lsp_analyze(text, map_get(text_document, "uri"));
     reply := map_new();
     map_set(reply, "isIncomplete", false);
-    map_set(reply, "items", lsp_completions(map_get(outcome, "tokens"), text, lsp_offset_at(text, position)));
+    map_set(
+        reply,
+        "items",
+        lsp_completions(map_get(outcome, "tokens"), text, lsp_offset_at(text, position))
+    );
     return json_text(reply);
 }
 

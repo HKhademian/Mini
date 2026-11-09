@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 initialized_value := 40;
 io_write("dependency|");

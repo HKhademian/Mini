@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/json";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/file";
-import "common/process";
+import "core/io";
+import "core/json";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/file";
+import "core/process";
+import "util/process";
 
 /// Report a formatter test failure.
 fn format_fail(name, message) {
@@ -19,9 +19,9 @@ fn format_fail(name, message) {
 /// Format one temporary source and return stdout.
 fn format_source(root, work, name, source) {
     path := path_join(work, name);
-    has_io := text_find(source, "io_write(") >= 0 && text_find(source, "import \"common/io\";") < 0;
+    has_io := text_find(source, "io_write(") >= 0 && text_find(source, "import \"core/io\";") < 0;
     if has_io {
-        source = "import \"common/io\";\n" + source;
+        source = "import \"core/io\";\n" + source;
     }
     file_write(path, source);
     args := list_of(path_join(root, "bin/mini-format"), path);

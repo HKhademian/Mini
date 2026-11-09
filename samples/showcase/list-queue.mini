@@ -1,7 +1,7 @@
 /// Push at the back and pop from the front.
 
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 queue := list_new();
 list_push_back(queue, "first");

@@ -1,7 +1,7 @@
 /// Shift character codes by one.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 source := "MINI";
 output := "";

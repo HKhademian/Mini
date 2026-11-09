@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 value := 1;
 io_write(value, "|");
 value = 2;

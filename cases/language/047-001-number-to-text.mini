@@ -1,6 +1,6 @@
-import "common/number";
-import "common/list";
-import "common/io";
+import "core/number";
+import "core/list";
+import "core/io";
 if number_to_text(0) == "0" && number_to_text(123) == "123" && number_to_text(-45) == "-45" && number_to_text(1 + 2) == "3" && number_to_text(0 - 7) == "-7" {
     io_write_line("ok");
 } else {

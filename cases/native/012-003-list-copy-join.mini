@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 items := list_of("a", 0, "b", false, "c");
 copy := list_copy(items);

@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 io_write();
 io_write("first:", 42, ":", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", ":", -7, "\n");
 io_write();

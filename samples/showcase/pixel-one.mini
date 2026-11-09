@@ -1,9 +1,9 @@
 /// Show one white pixel on a ten-by-ten black canvas.
 
-import "common/io";
-import "common/number";
+import "core/io";
+import "core/number";
 import "util/board";
-import "common/play";
+import "core/play";
 
 screen_size := 10;
 screen_center := number_div(screen_size, 2);

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /// Bootstrap seed: embeds the compiler and rebuilds the compiler and tools.
 
-import "common/io";
-import "common/list";
-import "common/text";
-import "common/project";
+import "core/io";
+import "core/list";
+import "core/text";
+import "core/project";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";

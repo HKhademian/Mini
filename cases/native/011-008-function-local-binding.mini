@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 fn calculate(a) {
     result := a + 2;
     result = result + 10;

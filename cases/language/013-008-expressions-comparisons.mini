@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 fn mark(value) {
     if value {

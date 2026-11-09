@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 io_write("root-before|");
 import "./005-004-bindings-import-helper";
 io_write(shared, "|", longer, "\n");

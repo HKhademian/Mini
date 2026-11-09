@@ -1,7 +1,7 @@
 /// Test for a key before reading it.
 
-import "common/map";
-import "common/io";
+import "core/map";
+import "core/io";
 
 values := map_new();
 map_set(values, "ready", true);

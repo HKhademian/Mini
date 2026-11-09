@@ -1,8 +1,8 @@
 /// Write a note in a fresh temporary directory, read it back, and clean up.
 
-import "common/io";
-import "common/path";
-import "common/file";
+import "core/io";
+import "core/path";
+import "core/file";
 
 directory := path_temp_directory();
 file_write(directory + "/note.txt", "Mini\n");

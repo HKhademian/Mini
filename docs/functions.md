@@ -1,6 +1,6 @@
 # Common functions
 
-Mini functions under `libs/common/` provide the shared APIs for text, numbers,
+Mini functions under `libs/core/` provide the shared APIs for text, numbers,
 collections, files, processes, and other host services. Calls use ordinary Mini
 function syntax. Importing source files makes their declarations available in
 one shared call namespace. Emitters may replace a same-name function body with
@@ -23,26 +23,26 @@ codes. `text_from_chars(characters)` joins a list of character texts unchanged.
 non-integer elements as zero and normalizes integer elements modulo 256. The
 text and UTF-8 functions are
 declared in
-[libs/common/text.mini](../libs/common/text.mini) and require
-`import "common/text"`. Their Mini implementations are the fallback; JavaScript
+[libs/core/text.mini](../libs/core/text.mini) and require
+`import "core/text"`. Their Mini implementations are the fallback; JavaScript
 registers same-name host overrides for the representation and performance paths.
 Text length, indexing, and slicing count Unicode scalar values rather than
 UTF-8 bytes or UTF-16 code units. `text_to_code(text, index)` returns a scalar
 value, and `text_from_code` encodes one valid Unicode scalar. C stores text as UTF-8;
 JavaScript adapts its UTF-16 strings to these shared operations.
-The file functions are declared in [libs/common/file.mini](../libs/common/file.mini)
-and require `import "common/file"`. Their Mini implementations panic when a
+The file functions are declared in [libs/core/file.mini](../libs/core/file.mini)
+and require `import "core/file"`. Their Mini implementations panic when a
 target has no file host; the JavaScript and C emitters register same-name host
 overrides. `file_read(path)` returns UTF-8 text, `file_write(path, text)` writes
 UTF-8 text and returns zero, and the byte variants read or replace whole files
 as byte lists.
 
 `hash_sha256(value)` hashes UTF-8 text or a byte list and returns lowercase hex.
-Import `common/hash`; its Mini fallback panics, and JavaScript and C register
+Import `core/hash`; its Mini fallback panics, and JavaScript and C register
 same-name host implementations.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
-Import `common/time`; its Mini fallback panics, and JavaScript registers the
+Import `core/time`; its Mini fallback panics, and JavaScript registers the
 same-name host implementation.
 
 `process_script_path()` returns the current script or executable path, and
@@ -51,8 +51,8 @@ native `argv[0]` to an absolute path; process spawning remains a separate host
 capability.
 
 Directory and path functions are declared in
-[libs/common/path.mini](../libs/common/path.mini) and require
-`import "common/path"`. Their Mini implementations panic when a target has no
+[libs/core/path.mini](../libs/core/path.mini) and require
+`import "core/path"`. Their Mini implementations panic when a target has no
 filesystem host; JavaScript and C register same-name host overrides.
 `path_is_exists(path)`, `path_is_file(path)`, and `path_is_directory(path)`
 report whether a path exists, names a regular file, or names a directory. `directory_list(path)` returns sorted entry names, or an
@@ -77,24 +77,24 @@ zero waits indefinitely). The result map holds `status`, `signal`, `stdout`,
 `stderr`, and `error`. Captured streams are byte lists; inherited streams are
 connected to the parent and stay empty. `status` is 1 when the command cannot
 start or ends by a signal.
-Import `common/process` for these APIs. Their Mini fallbacks call
+Import `core/process` for these APIs. Their Mini fallbacks call
 `process_panic(message)` when a target has no process host; JavaScript registers
 same-name host overrides. C supplies native process spawning, script/executable
 paths, panic, and exit hosts; environment and time remain unavailable in C.
 
 ## Map operations
 
-Map APIs are declared in [libs/common/map.mini](../libs/common/map.mini) and
-require `import "common/map"`. Their Mini definitions provide the fallback
+Map APIs are declared in [libs/core/map.mini](../libs/core/map.mini) and
+require `import "core/map"`. Their Mini definitions provide the fallback
 contract; a target may replace the same function with a host implementation.
 A target that cannot implement a required map primitive uses `process_panic`.
 `map_set` and `map_delete` return zero, so these operations never produce a
 void result.
 
-`value_kind(value)` is declared in `common/value` and returns `text`, `number`,
+`value_kind(value)` is declared in `core/value` and returns `text`, `number`,
 `boolean`, `list`, `map`, or `other` for the runtime kind of a value. Targets
 without a representation primitive use `process_panic`.
-`value_merge(...values)` from `common/merge` selects its behavior from the first value: numbers add,
+`value_merge(...values)` from `core/merge` selects its behavior from the first value: numbers add,
 texts concatenate, lists concatenate, and maps merge with later keys replacing
 earlier values. Values of other kinds are ignored; an unsupported first kind or
 an empty call returns 0.
@@ -110,7 +110,7 @@ integers 0-255; end of input returns a shorter list or an empty list.
 arrays become lists, booleans remain booleans, numbers remain safe integers, and
 JSON `null` becomes numeric zero. It returns a map with `ok` and `value`: `ok`
 is true on success, and false with `value` 0 for invalid JSON or non-text input.
-Import `common/json`; its Mini implementation is the fallback and JavaScript
+Import `core/json`; its Mini implementation is the fallback and JavaScript
 registers a same-name host overrides.
 
 The accepted [text I/O contract](language.md) starts with `io_read_all()` and `io_write(...values)`:
@@ -118,8 +118,8 @@ consume remaining stdin through EOF as UTF-8 text, and write UTF-8 text to stdou
 without a newline. EOF yields empty text. Neither operation converts newlines.
 `io_write` applies `value_to_text` to each value, concatenates the results without
 separators, writes the result, and returns 0. These same-name Mini APIs are
-declared in [libs/common/io.mini](../libs/common/io.mini) and require
-`import "common/io"`. Their fallback panics when a target has no I/O host
+declared in [libs/core/io.mini](../libs/core/io.mini) and require
+`import "core/io"`. Their fallback panics when a target has no I/O host
 implementation; the JavaScript emitter replaces the same functions through its
 override registry. The C target registers host overrides for standard input,
 standard output, and standard error.
@@ -127,7 +127,7 @@ standard output, and standard error.
 converted values followed by one newline.
 
 `value_to_text(any_value)` is the shared display conversion in
-[libs/common/display.mini](../libs/common/display.mini); import `common/display`.
+[libs/core/display.mini](../libs/core/display.mini); import `core/display`.
 Text passes through, numbers use `number_to_text`, booleans become `true` or
 `false`, and lists/maps use `json_text`. JSON serialization remains distinct:
 it quotes text values.
@@ -140,8 +140,8 @@ at file scope it returns the program arguments. It is part of function argument
 capture syntax and needs no library import.
 
 `number_to_text(value)` returns canonical decimal text for a safe integer, or
-empty text for other values. It is implemented in `common/number` and uses the
-same-name JavaScript host override. Import `common/number` before calling number
+empty text for other values. It is implemented in `core/number` and uses the
+same-name JavaScript host override. Import `core/number` before calling number
 functions.
 
 `number_mul(a, b)`, `number_div(a, b)`, `number_mod(a, b)`, `number_floor(a)`,
@@ -152,19 +152,19 @@ by zero return 0. Division truncates toward zero and remainder keeps the
 dividend's sign. `number_pow` accepts a non-negative integer exponent.
 `number_from_text` accepts an optional minus sign followed by decimal digits.
 These number functions have same-name Mini implementations in
-[libs/common/number.mini](../libs/common/number.mini), with JavaScript host
+[libs/core/number.mini](../libs/core/number.mini), with JavaScript host
 implementations selected by the emitter. The Mini implementations also serve
 reference mode. The separate JSON reference implementation currently accepts
 integer JSON numbers only.
 
 `number_add(a, b)`, `number_sub(a, b)`, `number_min(a, b)`, and `number_max(a, b)`
-are imported functions in [libs/common/number.mini](../libs/common/number.mini)
-and require `import "common/number"`. They return 0 when either operand is not
+are imported functions in [libs/core/number.mini](../libs/core/number.mini)
+and require `import "core/number"`. They return 0 when either operand is not
 a number. The JavaScript emitter replaces each same-name Mini implementation
 with its registered host function. The `+` operator remains separately type-checked syntax.
 
 The text functions are imported Mini APIs in
-[libs/common/text.mini](../libs/common/text.mini); use `import "common/text"`.
+[libs/core/text.mini](../libs/core/text.mini); use `import "core/text"`.
 Their Mini implementations are the fallback, with same-name JavaScript host
 replacements registered by the JS emitter. `text_get` uses zero-based
 integer indices and returns empty text for a non-text target or an out-of-range
@@ -211,7 +211,7 @@ lists and maps remain aliases. A non-list target returns an empty list.
 appended in order. Non-list arguments contribute no items; no arguments returns
 an empty list.
 `list_push_back`, `list_push_front`, `list_pop_back`, and `list_pop_front` are
-Mini helpers in [libs/common/list.mini](../libs/common/list.mini). They mutate a
+Mini helpers in [libs/core/list.mini](../libs/core/list.mini). They mutate a
 list and return 0 for pushes, or remove and return one value for pops. Empty or
 non-list pops return 0. `list_truncate(items, length)` is the representation
 primitive they use to shrink a list to an existing non-negative length; longer
@@ -221,7 +221,7 @@ order. Non-text elements contribute empty text while retaining their separator
 positions; non-list arguments contribute no elements. A non-text separator
 returns empty text.
 
-[libs/common/result.mini](../libs/common/result.mini) holds the result API.
+[libs/core/result.mini](../libs/core/result.mini) holds the result API.
 `result_ok(value, message)` and `result_fail(message)` build the map, which
 carries `ok`, `value`, and `message`. `result_is_ok` and `result_is_fail` test
 it. `result_get_message`, `result_get_value`, `result_set_message`, and
@@ -229,7 +229,7 @@ it. `result_get_message`, `result_get_value`, `result_set_message`, and
 callers import the library rather than indexing keys.
 
 `list_of(...)` and `map_of(...)` build collections from their arguments. They are
-functions under [libs/common](../libs/common), so programs import the source modules they use. `list_of` returns its arguments as a list. `map_of` reads alternating
+functions under [libs/core](../libs/core), so programs import the source modules they use. `list_of` returns its arguments as a list. `map_of` reads alternating
 keys and values; a repeated key takes the last value, and a key without a value
 takes 0, so `map_of("k")` equals `map_of("k", 0)`.
 
@@ -280,7 +280,7 @@ are needed.
 The accepted built-ins `process_exec_path()` and `path_temp_directory()` expose the
 running Node executable path and create a fresh empty directory under the host
 temporary directory. `path_temp_file()` is a Mini helper in
-[libs/common/path.mini](../libs/common/path.mini); it creates one empty file in a
+[libs/core/path.mini](../libs/core/path.mini); it creates one empty file in a
 fresh temporary directory and returns the file path. Include that file to use
 the helper. The same library defines `file_remove(path)` and
 `directory_remove(path)` on top of the `path_remove(path)` function. `file_remove`

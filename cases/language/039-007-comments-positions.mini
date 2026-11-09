@@ -1,5 +1,5 @@
 // leading
-import "common/io";
+import "core/io";
 
 value := 1; /// doc
 	io_write("//"); // tail

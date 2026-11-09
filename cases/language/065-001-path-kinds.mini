@@ -1,9 +1,9 @@
 /// Exercise path kind and temporary path helpers.
 
-import "common/io";
-import "common/path";
-import "common/file";
-import "common/process";
+import "core/io";
+import "core/path";
+import "core/file";
+import "core/process";
 
 directory := path_temp_directory();
 file := directory + "/file.txt";

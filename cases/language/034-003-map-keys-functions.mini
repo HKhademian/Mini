@@ -1,6 +1,6 @@
-import "common/io";
-import "common/list";
-import "common/map";
+import "core/io";
+import "core/list";
+import "core/map";
 
 fn make_map() {
     io_write("m");

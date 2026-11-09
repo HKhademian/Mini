@@ -1,8 +1,8 @@
 /// Explain a missing argument on stderr and exit with status 2; otherwise print it.
 
-import "common/io";
-import "common/list";
-import "common/process";
+import "core/io";
+import "core/list";
+import "core/process";
 
 args := fn_args();
 if list_length(args) == 0 {

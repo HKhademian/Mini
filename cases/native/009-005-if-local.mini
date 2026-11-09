@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 if true {
     local := "before";
     if true { local = "after"; }

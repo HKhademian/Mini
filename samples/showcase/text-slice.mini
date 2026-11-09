@@ -1,7 +1,7 @@
 /// Slice with positive and negative bounds.
 
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 text := "playground";
 io_write_line(text_slice(text, 0, 4));

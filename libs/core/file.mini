@@ -1,4 +1,4 @@
-import "common/process";
+import "core/process";
 
 /// Read a UTF-8 file using the target host.
 fn file_read(path) {

@@ -1,8 +1,8 @@
 /// Parse an object and read a field.
 
-import "common/json";
-import "common/map";
-import "common/io";
+import "core/json";
+import "core/map";
+import "core/io";
 
 parsed := json_value("{\"name\":\"Mini\",\"count\":2}");
 if map_get(parsed, "ok") {

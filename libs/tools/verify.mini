@@ -3,19 +3,19 @@
 /// Prints one compact JSON object with source, compiler, generation, example,
 /// and artifact hashes. Exits 1 on any mismatch.
 
-import "common/io";
-import "common/json";
-import "common/number";
-import "common/map";
-import "common/value";
-import "common/list";
-import "common/text";
-import "common/file";
-import "common/path";
-import "common/hash";
-import "./cases";
+import "core/io";
+import "core/json";
+import "core/number";
+import "core/map";
+import "core/value";
+import "core/list";
+import "core/text";
+import "core/file";
+import "core/path";
+import "core/hash";
+import "core/process";
 import "util/process";
-import "common/process";
+import "./cases";
 
 /// Report a verification failure and stop.
 fn verify_fail(message) {
@@ -82,13 +82,17 @@ fn verify_bootstrap(root) {
         result := process_capture("node", compile_args, work, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);
-            verify_fail("bootstrap generation " + number_to_text(stage) + " failed: " + text_from_bytes(map_get(result, "stderr")));
+            verify_fail(
+                "bootstrap generation " + number_to_text(stage) + " failed: " + text_from_bytes(map_get(result, "stderr"))
+            );
         }
         output := file_read_bytes(next);
         if !case_bytes_equal(output, seed_bytes) {
             path_remove(work);
-            verify_fail("bootstrap differs from generation " + number_to_text(stage)
-                + "; regenerate and promote the matching compiler");
+            verify_fail(
+                "bootstrap differs from generation " + number_to_text(stage)
+                + "; regenerate and promote the matching compiler"
+            );
         }
         list_set(generations, list_length(generations), hash_sha256(output));
         previous = next;

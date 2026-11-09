@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/text";
-import "common/number";
-import "common/process";
+import "core/io";
+import "core/text";
+import "core/number";
+import "core/process";
 
 /// Check total numeric helpers against valid and invalid operands.
 fn main() {

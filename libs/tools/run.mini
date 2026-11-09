@@ -4,14 +4,14 @@
 /// reach the program through fn_args(). Standard streams are inherited.
 /// A failed compilation skips execution and keeps its exit status.
 
-import "common/io";
-import "common/map";
-import "common/path";
-import "common/list";
-import "common/process";
+import "core/io";
+import "core/map";
+import "core/path";
+import "core/list";
+import "core/process";
+import "core/text";
+import "core/file";
 import "util/process";
-import "common/text";
-import "common/file";
 
 /// Remove a temporary run directory and its known files.
 fn run_cleanup(directory) {

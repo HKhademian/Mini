@@ -1,7 +1,7 @@
 /// Classic division and branching.
 
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 
 n := 1;
 while n <= 15 {

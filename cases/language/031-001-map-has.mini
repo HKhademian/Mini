@@ -1,6 +1,6 @@
-import "common/io";
-import "common/map";
-import "common/process";
+import "core/io";
+import "core/map";
+import "core/process";
 
 items := map_new();
 key := io_read_all();

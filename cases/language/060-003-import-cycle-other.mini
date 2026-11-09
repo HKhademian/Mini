@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 io_write("A-before|");
 fn from_a() {

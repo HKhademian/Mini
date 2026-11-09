@@ -1,7 +1,7 @@
 /// Walk backwards and build a new string.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 source := "mini";
 output := "";

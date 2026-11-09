@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 fn visit(value) {
     io_write(value);

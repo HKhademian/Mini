@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 /// Exercise the public compiler target flags and generated native program.
 
-import "common/io";
-import "common/value";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/file";
-import "common/process";
+import "core/io";
+import "core/value";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/file";
+import "core/process";
 import "tools/cases";
+import "util/process";
 
 /// Remove the workspace and report one integration failure.
 fn native_fail(work, name, message) {
@@ -89,7 +90,10 @@ fn native_macro_host(root, work, custom) {
 /// Require a failed native case to retain source/header/preprocessor artifacts.
 fn native_debug_artifacts(root, work) {
     manifest := path_join(work, "native-debug.case.json");
-    file_write(manifest, "{\"id\":\"native-debug\",\"kind\":\"feature\",\"target\":\"c\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"wrong-output\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"wrong\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
+    file_write(
+        manifest,
+        "{\"id\":\"native-debug\",\"kind\":\"feature\",\"target\":\"c\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"wrong-output\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"wrong\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}"
+    );
     loaded := case_load_case(manifest);
     if result_is_fail(loaded) {
         native_fail(work, "debug fixture", result_get_message(loaded));
@@ -135,7 +139,7 @@ fn native_script_path(root, work) {
     source := path_join(work, "script-path.mini");
     output := path_join(work, "script-path.c");
     binary := path_join(work, "script-path");
-    file_write(source, "import \"common/io\";\nimport \"common/process\";\nio_write_line(process_script_path());\n");
+    file_write(source, "import \"core/io\";\nimport \"core/process\";\nio_write_line(process_script_path());\n");
     native_compile(root, work, "script path source", list_of("--target", "c", source, output), output);
     built := native_build(output, binary, root);
     if map_get(built, "status") != 0 {
@@ -160,9 +164,17 @@ fn main(args) {
         process_exit(1);
     }
     source := path_join(work, "output.mini");
-    file_write(source, "import \"common/io\";\nio_write(\"$mini_payload|native\\n\");\n");
-    native_manifest_reject(work, "unknown-target", "{\"id\":\"unknown-target\",\"kind\":\"feature\",\"target\":\"other\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"native\\n\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
-    native_manifest_reject(work, "tool-target", "{\"id\":\"tool-target\",\"kind\":\"tool\",\"target\":\"c\",\"tool\":\"mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}");
+    file_write(source, "import \"core/io\";\nio_write(\"$mini_payload|native\\n\");\n");
+    native_manifest_reject(
+        work,
+        "unknown-target",
+        "{\"id\":\"unknown-target\",\"kind\":\"feature\",\"target\":\"other\",\"source\":\"output.mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"native\\n\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}"
+    );
+    native_manifest_reject(
+        work,
+        "tool-target",
+        "{\"id\":\"tool-target\",\"kind\":\"tool\",\"target\":\"c\",\"tool\":\"mini\",\"features\":[],\"cases\":[{\"name\":\"default\",\"stdin\":{\"text\":\"\"},\"stdout\":{\"text\":\"\"},\"stderr\":{\"text\":\"\"},\"exitCode\":0}]}"
+    );
     explicit_c := path_join(work, "explicit.c");
     native_compile(root, work, "explicit C output", list_of("--target", "c", source, explicit_c), explicit_c);
     native_compile(root, work, "default C output", list_of("--target", "c", source), source + ".c");
@@ -209,7 +221,10 @@ fn main(args) {
         native_fail(work, "C output paths", "explicit and default programs differ");
     }
     file_write(path_join(work, "generated.c"), file_read(explicit_c));
-    file_write(path_join(work, "value-constructors.c"), file_read(path_join(root, "cases/native/value-constructors.c")));
+    file_write(
+        path_join(work, "value-constructors.c"),
+        file_read(path_join(root, "cases/native/value-constructors.c"))
+    );
     native_macro_host(root, work, false);
     native_macro_host(root, work, true);
     native_debug_artifacts(root, work);
@@ -217,7 +232,13 @@ fn main(args) {
     native_script_path(root, work);
     explicit_js := path_join(work, "explicit.mjs");
     default_js := source + ".js";
-    native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);
+    native_compile(
+        root,
+        work,
+        "explicit JS target",
+        list_of("--target", "js", source, explicit_js),
+        explicit_js
+    );
     native_compile(root, work, "default JS target", list_of(source), default_js);
     if file_read(explicit_js) != file_read(default_js) {
         native_fail(work, "JS target compatibility", "explicit and default output differ");
@@ -230,12 +251,36 @@ fn main(args) {
     rejected := path_join(work, "rejected.c");
     native_reject(root, work, "unknown target", list_of("--target", "other", source, rejected), rejected);
     native_reject(root, work, "missing target", list_of("--target"), rejected);
-    native_reject(root, work, "extra compiler argument", list_of("--target", "c", source, rejected, "extra"), rejected);
-    native_reject(root, work, "C reference mode", list_of("--target", "c", "--reference", source, rejected), rejected);
-    native_reject(root, work, "C program-only mode", list_of("--target", "c", "--program-only", source, rejected), rejected);
+    native_reject(
+        root,
+        work,
+        "extra compiler argument",
+        list_of("--target", "c", source, rejected, "extra"),
+        rejected
+    );
+    native_reject(
+        root,
+        work,
+        "C reference mode",
+        list_of("--target", "c", "--reference", source, rejected),
+        rejected
+    );
+    native_reject(
+        root,
+        work,
+        "C program-only mode",
+        list_of("--target", "c", "--program-only", source, rejected),
+        rejected
+    );
     unsupported := path_join(work, "unsupported.mini");
-    file_write(unsupported, "import \"common/io\";\nio_write(\"must not run\");\nvalue := text_length(\"x\");\n");
-    native_reject(root, work, "unsupported C source", list_of("--target", "c", unsupported, rejected), rejected);
+    file_write(unsupported, "import \"core/io\";\nio_write(\"must not run\");\nvalue := text_length(\"x\");\n");
+    native_reject(
+        root,
+        work,
+        "unsupported C source",
+        list_of("--target", "c", unsupported, rejected),
+        rejected
+    );
     if path_is_exists(unsupported + ".js") || path_is_exists(unsupported + ".c") {
         native_fail(work, "unsupported C source", "default/fallback artifact was created");
     }

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
-
-import "common/json";
-import "common/map";
-import "common/io";
-import "common/list";
-import "common/text";
+import "core/json";
+import "core/map";
+import "core/io";
+import "core/list";
+import "core/text";
 import "compiler/parser";
-import "common/process";
+import "core/process";
 
 /// Fail an AST shape assertion with its location in the test.
 fn ast_test_fail(message) {

@@ -1,10 +1,10 @@
 /// Count key snapshots before/after replacement, including empty and method-like keys.
 //
 
-import "common/io";
-import "common/list";
-import "common/map";
-import "common/process";
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/process";
 
 items := map_new();
 key := io_read_all();

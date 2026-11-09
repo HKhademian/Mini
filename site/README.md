@@ -30,11 +30,11 @@ linked to its commit. `build.json` records the full commit and short revision.
 
 ## Mini Play
 
-Import `common/play` to declare the board and `util/board` to build
+Import `core/play` to declare the board and `util/board` to build
 row-major RGB frames:
 
 ```mini
-import "common/play";
+import "core/play";
 import "util/board";
 
 mini_play(10, 10, "Example");

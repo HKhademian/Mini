@@ -1,8 +1,8 @@
 /// Aggregate whitespace-delimited LEVEL ROUTE USER log lines for a request summary.
 
-import "common/text";
-import "common/list";
-import "common/map";
+import "core/text";
+import "core/list";
+import "core/map";
 
 /// Increment key in counts; mutate that map and return zero.
 fn log_increment(counts, key) {

@@ -1,7 +1,7 @@
 /// Choose one of two branches.
 
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 
 value := 7;
 if number_mod(value, 2) == 0 {

@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 import "tools/run";
-import "common/process";
-import "common/text";
+import "core/process";
+import "core/text";
 
 /// Parse internal arguments and run the selected program.
 fn main(args) {

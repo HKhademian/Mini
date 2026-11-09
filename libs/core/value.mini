@@ -1,4 +1,4 @@
-import "common/process";
+import "core/process";
 
 /// Return the runtime kind; targets without a representation host panic.
 fn value_kind(value) {
@@ -29,4 +29,3 @@ fn value_is_list(value) {
 fn value_is_map(value) {
     return value_kind(value) == "map";
 }
-

@@ -4,10 +4,10 @@
 /// `--write` replaces a file only after successful formatting; `--check`
 /// reports noncanonical input without writing.
 
-import "common/number";
-import "common/map";
-import "common/text";
-import "common/list";
+import "core/number";
+import "core/map";
+import "core/text";
+import "core/list";
 import "compiler/lexer";
 import "compiler/parser";
 

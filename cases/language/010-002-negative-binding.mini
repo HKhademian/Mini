@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 x := 1;
 io_write(-x);

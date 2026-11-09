@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-
-import "common/list";
-import "common/io";
+import "core/list";
+import "core/io";
 import "tools/lang-server";
-import "common/process";
+import "core/process";
 
 /// Parse arguments and serve the language protocol.
 fn main(args) {

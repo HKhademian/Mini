@@ -1,8 +1,8 @@
 /// Demonstrate unique text keys, replacement, missing reads, and key snapshots.
 
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/list";
+import "core/map";
+import "core/io";
 
 names := map_new();
 if list_length(map_keys(names)) == 0 {

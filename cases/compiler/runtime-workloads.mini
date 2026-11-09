@@ -1,8 +1,8 @@
 /// Synthetic compiler operations measured by tools/runtime-performance.ts; no standalone side effects.
 
-import "common/text";
-import "common/list";
-import "common/map";
+import "core/text";
+import "core/list";
+import "core/map";
 
 /// Return the next numeric value, providing an ordinary function call in the scalar probe.
 fn perf_step(value) {

@@ -1,6 +1,6 @@
-import "common/text";
-import "common/list";
-import "common/io";
+import "core/text";
+import "core/list";
+import "core/io";
 fn split(value, divider) {
     return text_split(value, divider);
 }

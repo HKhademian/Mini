@@ -1,5 +1,5 @@
-import "common/io";
-import "common/map";
+import "core/io";
+import "core/map";
 
 base := map_of("name", "Mini", "count", 1);
 extra := map_of("count", 2, "ready", true);

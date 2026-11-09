@@ -1,10 +1,10 @@
 /// Round-trip text and bytes through the byte primitives.
 
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/io";
-import "common/file";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/io";
+import "core/file";
 
 encoded := text_to_bytes("abc");
 if list_length(encoded) == 3 && list_get(encoded, 0) == 97 && text_from_bytes(encoded) == "abc" {

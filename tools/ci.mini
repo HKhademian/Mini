@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/list";
-import "common/file";
+import "core/io";
+import "core/list";
+import "core/file";
 import "tools/ci";
-import "common/process";
+import "core/process";
 
 /// Read the task file and run the selected CI task.
 fn main(args) {

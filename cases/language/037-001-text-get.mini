@@ -1,5 +1,5 @@
-import "common/io";
-import "common/text";
+import "core/io";
+import "core/text";
 
 source := io_read_all();
 index := 0;

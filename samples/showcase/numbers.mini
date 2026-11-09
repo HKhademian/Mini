@@ -1,7 +1,7 @@
 /// Multiply and subtract numbers.
 
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 
 width := 6;
 height := 7;

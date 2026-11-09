@@ -204,7 +204,7 @@ the first compiler port.
 ## Generated tools
 
 Tool source is mini. Entries live in `tools/`; reusable logic lives in `libs/`
-(`libs/common/text.mini`, `libs/tools/cases.mini`, and per-tool libraries such as
+(`libs/core/text.mini`, `libs/tools/cases.mini`, and per-tool libraries such as
 `libs/tools/format.mini`); generated artifacts live in `dist/` named by command, for
 example `dist/format.js` and `dist/mini.js`, produced from the active compiler
 and excluded from the strict TypeScript check.
@@ -225,7 +225,7 @@ generated JavaScript file and declares the `bin/` launchers:
 ```
 
 Each tool source declares its dependencies with mini `import` directives, for
-example `import "common/text";`. The build helper compiles the
+example `import "core/text";`. The build helper compiles the
 source directly with the tracked bootstrap; import expansion is part of the
 compiler.
 
@@ -249,7 +249,7 @@ After bootstrap replacement, authoritative parsing, checking, and emission
 behavior must live in mini. Tool integration reuses that behavior through the
 active compiler's `tokens --comments` and `compile` commands; the language server
 does not import handwritten compiler modules. Common-function signatures for
-hover and completion come from declarations in `libs/common`.
+hover and completion come from declarations in `libs/core`.
 The compiler parser now returns a shared AST with source spans and semantic
 kinds; the JavaScript emitter consumes it. AST dumps and LSP analysis can use
 the same representation. A formatter also needs source text and token/trivia

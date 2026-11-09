@@ -3,10 +3,10 @@
 /// capability checks, syntax lowering, runtime fragments, and source assembly.
 /// Text views reference a growable byte buffer owned by each program invocation.
 
-import "common/text";
-import "common/number";
-import "common/list";
-import "common/map";
+import "core/text";
+import "core/number";
+import "core/list";
+import "core/map";
 import "./parser";
 import "./emit-c/io";
 import "./emit-c/file";

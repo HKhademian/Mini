@@ -2,18 +2,18 @@
 /// Usage: node dist/bench.js OUTPUT [FILTER]
 /// Output must not exist; the parent directory is created.
 
-import "common/io";
-import "common/json";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/file";
-import "common/path";
-import "common/hash";
-import "common/time";
-import "./cases";
-import "common/process";
+import "core/io";
+import "core/json";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/file";
+import "core/path";
+import "core/hash";
+import "core/time";
+import "core/process";
 import "util/process";
+import "./cases";
 
 /// Report a benchmark error and stop.
 fn bench_fail(message) {

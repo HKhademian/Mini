@@ -2533,6 +2533,13 @@ function emit_js_compile_quiet(tokens) {
 
     return emit_js_program(parser_ast_quiet(tokens));
 }
+function hash_sha256(value) {
+    const crypto = process.getBuiltinModule("node:crypto");
+    const bytes = Array.isArray(value)
+        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
+        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
+    return crypto.createHash("sha256").update(bytes).digest("hex");
+}
 function process_capture(command, args, directory, input) {
 
     let options = map_new();
@@ -2553,13 +2560,6 @@ function process_run(command, args, mode) {
     map_set(result, "stdout", text_from_bytes(map_get(result, "stdout")));
     map_set(result, "stderr", text_from_bytes(map_get(result, "stderr")));
     return result;
-}
-function hash_sha256(value) {
-    const crypto = process.getBuiltinModule("node:crypto");
-    const bytes = Array.isArray(value)
-        ? Buffer.from(value.map(item => typeof item === "number" && Number.isInteger(item) ? item & 255 : 0))
-        : Buffer.from(typeof value === "string" ? value : String(value), "utf8");
-    return crypto.createHash("sha256").update(bytes).digest("hex");
 }
 function bootstrap_fail(message) {
 

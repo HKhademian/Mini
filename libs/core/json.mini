@@ -1,8 +1,8 @@
-import "common/list";
-import "common/map";
-import "common/number";
-import "common/text";
-import "common/value";
+import "core/list";
+import "core/map";
+import "core/number";
+import "core/text";
+import "core/value";
 
 /// Build a JSON parse result with the public two-field contract.
 fn json_result(ok, value) {
@@ -414,4 +414,4 @@ fn json_text(value) {
     return output;
 }
 
-import "common/map";
+import "core/map";

@@ -1,5 +1,5 @@
-import "common/io";
-import "common/map";
+import "core/io";
+import "core/map";
 
 fn change(items) {
     map_set(items, "name", "shared");

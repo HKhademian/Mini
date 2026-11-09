@@ -1,12 +1,12 @@
-import "common/io";
-import "common/file";
-import "common/json";
-import "common/text";
-import "common/number";
-import "common/map";
-import "common/list";
-import "common/path";
-import "common/process";
+import "core/io";
+import "core/file";
+import "core/json";
+import "core/text";
+import "core/number";
+import "core/map";
+import "core/list";
+import "core/path";
+import "core/process";
 
 /// Return a token map with the fields used by the compiler.
 fn token_new(kind, text, source, start, end, line, column, context) {

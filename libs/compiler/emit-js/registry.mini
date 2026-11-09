@@ -1,6 +1,6 @@
 /// Shared registration table for JavaScript host function replacements.
 
-import "common/map";
+import "core/map";
 
 js_host_functions := map_new();
 reference_mode := false;

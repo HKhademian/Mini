@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 outer := 0;
 while outer < 2 {
     inner := 0;

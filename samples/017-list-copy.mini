@@ -1,7 +1,7 @@
 /// Copy a list and show that changing the copy leaves the original intact.
 
-import "common/list";
-import "common/io";
+import "core/list";
+import "core/io";
 
 original := list_new();
 list_set(original, 0, "original");

@@ -1,7 +1,7 @@
 /// Locate a word inside text.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 haystack := "a small compiler";
 io_write_line(text_find(haystack, "compiler"));

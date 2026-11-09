@@ -1,6 +1,6 @@
-import "common/file";
-import "common/io";
-import "common/list";
+import "core/file";
+import "core/io";
+import "core/list";
 
 text_status := file_write("note.txt", "ok");
 bytes_status := file_write_bytes("bytes.bin", list_of(65, 0, 255));

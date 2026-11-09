@@ -1,5 +1,5 @@
-import "common/list";
-import "common/io";
+import "core/list";
+import "core/io";
 fn copy(value) {
     return list_copy(value);
 }

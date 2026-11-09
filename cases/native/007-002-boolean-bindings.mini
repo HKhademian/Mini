@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 ready := true;
 other := false;
 io_write(ready, "|", other, "|");

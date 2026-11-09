@@ -1,8 +1,8 @@
 /// Read present and missing environment variables.
 
-import "common/text";
-import "common/io";
-import "common/process";
+import "core/text";
+import "core/io";
+import "core/process";
 
 if text_length(process_env("PATH")) > 0 && process_env("MINI_MISSING_ENV_NAME") == "" {
     io_write_line("env ok");

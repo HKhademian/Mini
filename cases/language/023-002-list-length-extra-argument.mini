@@ -1,3 +1,3 @@
-import "common/list";
+import "core/list";
 
 count := list_length(fn_args(), 0);

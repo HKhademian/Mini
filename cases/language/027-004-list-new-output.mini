@@ -1,3 +1,3 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 io_write(list_new());

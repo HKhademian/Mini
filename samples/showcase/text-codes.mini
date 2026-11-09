@@ -1,10 +1,10 @@
 /// Convert between characters and code points, then print mixed values directly.
 
-import "common/display";
-import "common/value";
-import "common/text";
-import "common/number";
-import "common/io";
+import "core/display";
+import "core/value";
+import "core/text";
+import "core/number";
+import "core/io";
 
 text := "A!";
 character := text_get(text, 0);

@@ -1,7 +1,7 @@
 /// Demonstrate growable lists, replacement, negative indices, and shared nested values.
 
-import "common/list";
-import "common/io";
+import "core/list";
+import "core/io";
 
 items := list_new();
 list_set(items, 0, "first");

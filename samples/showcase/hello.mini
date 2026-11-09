@@ -1,5 +1,5 @@
 /// Write one line of text.
 
-import "common/io";
+import "core/io";
 
 io_write_line("hello, mini");

@@ -1,7 +1,7 @@
 /// Split source text into words and symbols.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 source := "x:=1;";
 index := 0;

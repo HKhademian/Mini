@@ -1,7 +1,7 @@
 /// Count characters.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 text := "playground";
 io_write_line(text_length(text));

@@ -5,15 +5,15 @@
 ///        node dist/test.js --candidate COMPILER.js [--verbose] [FILTER]
 /// Prints scenario summaries by default, showing PASS lines when --verbose is set.
 
-import "common/number";
-import "common/map";
-import "common/io";
-import "common/text";
-import "common/list";
-import "common/path";
-import "./cases";
-import "common/process";
+import "core/number";
+import "core/map";
+import "core/io";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/process";
 import "util/process";
+import "./cases";
 
 /// Report usage and stop.
 fn test_usage() {
@@ -119,8 +119,10 @@ fn test_candidate(fixtures, root, compiler, verbose) {
                         }
                     } else {
                         failed = failed + 1;
-                        io_write_error("FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
-                            + ": " + result_get_message(result) + "\n");
+                        io_write_error(
+                            "FAIL " + map_get(definition, "id") + "/" + map_get(scenario, "name")
+                            + ": " + result_get_message(result) + "\n"
+                        );
                     }
                     scenario_index = scenario_index + 1;
                 }

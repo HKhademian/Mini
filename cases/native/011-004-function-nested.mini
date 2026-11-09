@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 fn add(a, b) { return a + b; }
 fn twice(value) { return add(value, value); }
 io_write(twice(add(2, 3)), "\n");

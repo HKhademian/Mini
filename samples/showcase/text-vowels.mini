@@ -1,7 +1,7 @@
 /// Combine a loop with character comparisons.
 
-import "common/text";
-import "common/io";
+import "core/text";
+import "core/io";
 
 text := "self hosting";
 index := 0;

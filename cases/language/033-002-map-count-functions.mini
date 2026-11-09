@@ -1,8 +1,8 @@
 /// Check that nested key-count compositions evaluate the map-producing call once.
 
-import "common/io";
-import "common/list";
-import "common/map";
+import "core/io";
+import "core/list";
+import "core/map";
 
 /// Print a call marker and return a fresh one-key map.
 fn make_map() {

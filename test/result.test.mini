@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/result";
-import "common/process";
+import "core/io";
+import "core/result";
+import "core/process";
 
 /// Verify result predicates for success, failure, and non-maps.
 fn main() {

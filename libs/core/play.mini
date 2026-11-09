@@ -1,6 +1,6 @@
 /// Store a small play session's metadata and most recently rendered frame.
 
-import "common/list";
+import "core/list";
 
 play_width_value := 0;
 play_height_value := 0;

@@ -1,8 +1,8 @@
 /// Read comma-separated text and print each field on its own line.
 
-import "common/text";
-import "common/list";
-import "common/io";
+import "core/text";
+import "core/list";
+import "core/io";
 
 parts := text_split(io_read_all(), ",");
 position := 0;

@@ -1,7 +1,7 @@
 /// Store a map inside another map.
 
-import "common/map";
-import "common/io";
+import "core/map";
+import "core/io";
 
 outer := map_new();
 inner := map_new();

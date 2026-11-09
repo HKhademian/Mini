@@ -1,9 +1,9 @@
-import "common/map";
+import "core/map";
 import "./path";
 import "./json";
 import "./result";
-import "common/process";
-import "common/file";
+import "core/process";
+import "core/file";
 
 /// Return the repository root from the running tool path.
 fn project_root() {

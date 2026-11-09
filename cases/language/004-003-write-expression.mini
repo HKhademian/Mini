@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 output := "mi" + "ni";
 io_write(output);

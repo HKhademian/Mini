@@ -1,6 +1,6 @@
 /// Bind text and number values and write one line.
 
-import "common/io";
+import "core/io";
 
 name := "Mini";
 version := 1;

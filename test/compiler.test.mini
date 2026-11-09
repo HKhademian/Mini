@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-
-import "common/io";
-import "common/number";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/file";
-import "common/path";
-import "common/hash";
+import "core/io";
+import "core/number";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/file";
+import "core/path";
+import "core/hash";
 import "tools/cases";
-import "common/process";
+import "core/process";
+import "util/process";
 
 /// Verify the generated compiler reproduces itself from its mini source.
 fn main(args) {
@@ -27,8 +27,10 @@ fn main(args) {
         result := process_capture(process_exec_path(), compile_args, root, list_new());
         if map_get(result, "status") != 0 {
             path_remove(work);
-            io_write_error("compiler stage " + number_to_text(stage) + " failed: "
-                + text_from_bytes(map_get(result, "stderr")));
+            io_write_error(
+                "compiler stage " + number_to_text(stage) + " failed: "
+                + text_from_bytes(map_get(result, "stderr"))
+            );
             process_exit(1);
         }
         if hash_sha256(file_read_bytes(output)) != expected {

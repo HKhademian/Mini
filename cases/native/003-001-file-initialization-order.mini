@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 io_write("root-before:", 4, "\n");
 import "./003-001-file-initialization-order-first";
 import "./003-001-file-initialization-order-second";

@@ -171,7 +171,7 @@ compiler.
   [passing proposal](../../docs/parameter-passing.md), and [cases](../../docs/cases.md).
 - [Bootstrap](../../docs/bootstrap.md) and [evolution](../../docs/evolving-language.md).
 - [Compiler](../../tools/compiler.mini), [parser](../../libs/compiler/parser.mini),
-  [lexer](../../libs/compiler/lexer.mini), and [common functions](../../libs/common).
+  [lexer](../../libs/compiler/lexer.mini), and [common functions](../../libs/core).
 
 No child/prerequisite plans. Execute in order using small atomic commits.
 New paths below are proposed. Do not require completing all language features

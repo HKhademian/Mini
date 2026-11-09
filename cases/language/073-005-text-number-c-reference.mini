@@ -1,6 +1,6 @@
-import "common/io";
-import "common/number";
-import "common/text";
+import "core/io";
+import "core/number";
+import "core/text";
 
 io_write(text_length("mini"));
 io_write(text_get("mini", 1));

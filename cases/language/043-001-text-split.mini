@@ -1,6 +1,6 @@
-import "common/text";
-import "common/list";
-import "common/io";
+import "core/text";
+import "core/list";
+import "core/io";
 parts := text_split("a,b,,c,", ",");
 if list_length(parts) == 5 && list_get(parts, 0) == "a" && list_get(parts, 1) == "b" && list_get(parts, 2) == "" && list_get(parts, 3) == "c" && list_get(parts, 4) == "" {
     io_write_line("ok");

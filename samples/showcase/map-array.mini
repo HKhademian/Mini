@@ -1,9 +1,9 @@
 /// Parse an array and read an item.
 
-import "common/json";
-import "common/list";
-import "common/map";
-import "common/io";
+import "core/json";
+import "core/list";
+import "core/map";
+import "core/io";
 
 parsed := json_value("[10,20,30]");
 if map_get(parsed, "ok") {

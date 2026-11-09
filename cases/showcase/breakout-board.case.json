@@ -6,9 +6,9 @@
     "functions",
     "control.if",
     "control.while",
-    "common.list",
-    "common.number",
-    "common.play",
+    "core.list",
+    "core.number",
+    "core.play",
     "util.board",
     "text.output"
   ],

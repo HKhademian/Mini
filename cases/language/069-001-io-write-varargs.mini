@@ -1,12 +1,12 @@
 /// Write mixed values through the variadic I/O helpers.
 
-import "common/display";
-import "common/json";
-import "common/text";
-import "common/number";
-import "common/list";
-import "common/io";
-import "common/map";
+import "core/display";
+import "core/json";
+import "core/text";
+import "core/number";
+import "core/list";
+import "core/io";
+import "core/map";
 
 text := "Mini";
 io_write_line(text_to_code(text_get(text, 0), 0), "=", text_from_code(77));

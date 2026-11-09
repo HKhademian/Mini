@@ -7,34 +7,34 @@
     "end": 17,
     "line": 2,
     "column": 1,
-    "context": "import \"common/io\";"
+    "context": "import \"core/io\";"
   },
   {
     "kind": "text",
-    "text": "\"common/io\"",
+    "text": "\"core/io\"",
     "source": "039-007-comments-positions.mini",
     "start": 18,
-    "end": 29,
+    "end": 27,
     "line": 2,
     "column": 8,
-    "context": "import \"common/io\";"
+    "context": "import \"core/io\";"
   },
   {
     "kind": "symbol",
     "text": ";",
     "source": "039-007-comments-positions.mini",
-    "start": 29,
-    "end": 30,
+    "start": 27,
+    "end": 28,
     "line": 2,
-    "column": 19,
-    "context": "import \"common/io\";"
+    "column": 17,
+    "context": "import \"core/io\";"
   },
   {
     "kind": "identifier",
     "text": "value",
     "source": "039-007-comments-positions.mini",
-    "start": 32,
-    "end": 37,
+    "start": 30,
+    "end": 35,
     "line": 4,
     "column": 1,
     "context": "value := 1; /// doc"
@@ -43,8 +43,8 @@
     "kind": "symbol",
     "text": ":=",
     "source": "039-007-comments-positions.mini",
-    "start": 38,
-    "end": 40,
+    "start": 36,
+    "end": 38,
     "line": 4,
     "column": 7,
     "context": "value := 1; /// doc"
@@ -53,8 +53,8 @@
     "kind": "number",
     "text": "1",
     "source": "039-007-comments-positions.mini",
-    "start": 41,
-    "end": 42,
+    "start": 39,
+    "end": 40,
     "line": 4,
     "column": 10,
     "context": "value := 1; /// doc"
@@ -63,8 +63,8 @@
     "kind": "symbol",
     "text": ";",
     "source": "039-007-comments-positions.mini",
-    "start": 42,
-    "end": 43,
+    "start": 40,
+    "end": 41,
     "line": 4,
     "column": 11,
     "context": "value := 1; /// doc"
@@ -73,8 +73,8 @@
     "kind": "identifier",
     "text": "io_write",
     "source": "039-007-comments-positions.mini",
-    "start": 53,
-    "end": 61,
+    "start": 51,
+    "end": 59,
     "line": 5,
     "column": 2,
     "context": "\tio_write(\"//\"); // tail"
@@ -83,8 +83,8 @@
     "kind": "symbol",
     "text": "(",
     "source": "039-007-comments-positions.mini",
-    "start": 61,
-    "end": 62,
+    "start": 59,
+    "end": 60,
     "line": 5,
     "column": 10,
     "context": "\tio_write(\"//\"); // tail"
@@ -93,8 +93,8 @@
     "kind": "text",
     "text": "\"//\"",
     "source": "039-007-comments-positions.mini",
-    "start": 62,
-    "end": 66,
+    "start": 60,
+    "end": 64,
     "line": 5,
     "column": 11,
     "context": "\tio_write(\"//\"); // tail"
@@ -103,8 +103,8 @@
     "kind": "symbol",
     "text": ")",
     "source": "039-007-comments-positions.mini",
-    "start": 66,
-    "end": 67,
+    "start": 64,
+    "end": 65,
     "line": 5,
     "column": 15,
     "context": "\tio_write(\"//\"); // tail"
@@ -113,8 +113,8 @@
     "kind": "symbol",
     "text": ";",
     "source": "039-007-comments-positions.mini",
-    "start": 67,
-    "end": 68,
+    "start": 65,
+    "end": 66,
     "line": 5,
     "column": 16,
     "context": "\tio_write(\"//\"); // tail"
@@ -123,8 +123,8 @@
     "kind": "eof",
     "text": "",
     "source": "039-007-comments-positions.mini",
-    "start": 84,
-    "end": 84,
+    "start": 82,
+    "end": 82,
     "line": 6,
     "column": 8,
     "context": "/// eof"

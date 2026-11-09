@@ -1,6 +1,6 @@
-import "common/io";
-import "common/list";
-import "common/merge";
+import "core/io";
+import "core/list";
+import "core/merge";
 
 io_write(
     value_merge(2, "x", 3),

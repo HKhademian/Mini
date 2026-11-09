@@ -1,8 +1,8 @@
 /// Exercise list stack mutation.
 
-import "common/number";
-import "common/io";
-import "common/list";
+import "core/number";
+import "core/io";
+import "core/list";
 
 items := list_new();
 list_push_back(items, "b");

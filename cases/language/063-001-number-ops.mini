@@ -1,5 +1,5 @@
-import "common/number";
-import "common/io";
+import "core/number";
+import "core/io";
 io_write_line(number_to_text(2 + 3));
 io_write_line(number_to_text(number_mul(6, 7)));
 io_write_line(number_to_text(number_div(7, 2)));

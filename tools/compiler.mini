@@ -1,21 +1,20 @@
 #!/usr/bin/env node
-
 /// Compose the mini compiler from its source files.
 
-import "common/json";
-import "common/number";
-import "common/list";
-import "common/map";
-import "common/io";
-import "common/file";
-import "common/path";
-import "common/text";
-import "common/native";
+import "core/json";
+import "core/number";
+import "core/list";
+import "core/map";
+import "core/io";
+import "core/file";
+import "core/path";
+import "core/text";
+import "core/native";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";
 import "compiler/emit-c";
-import "common/process";
+import "core/process";
 
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {

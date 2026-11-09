@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 line := io_read_line();
 bytes := io_read_bytes(2);

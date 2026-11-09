@@ -1,5 +1,5 @@
-import "common/list";
-import "common/io";
+import "core/list";
+import "core/io";
 items := list_new();
 list_set(items, 0, "a");
 list_set(items, 1, "b");

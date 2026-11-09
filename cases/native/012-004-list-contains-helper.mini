@@ -1,5 +1,5 @@
-import "common/io";
-import "common/list";
+import "core/io";
+import "core/list";
 
 items := list_of(1, 2, 3);
 io_write(list_contains(items, 2), ",", list_contains(items, 8), "\n");

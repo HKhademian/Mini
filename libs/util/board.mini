@@ -1,8 +1,8 @@
 /// Build small row-major color boards for Mini Play hosts.
 
-import "common/list";
-import "common/number";
-import "common/play";
+import "core/list";
+import "core/number";
+import "core/play";
 
 /// Create a board filled with one packed RGB color.
 fn pixel_board_new(width, height, color) {

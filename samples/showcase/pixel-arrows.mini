@@ -1,8 +1,8 @@
 /// Move a pixel around a ten-by-ten canvas with arrows or WASD.
 
-import "common/io";
+import "core/io";
 import "util/board";
-import "common/play";
+import "core/play";
 
 screen_size := 10;
 screen_edge := screen_size - 1;

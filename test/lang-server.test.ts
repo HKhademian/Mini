@@ -261,7 +261,7 @@ test('blank lines do not split declaration docs and header docs stay file scoped
     const uri = 'file:///doc-boundaries.mini';
     const text = [
       '/// File purpose.',
-      'import "common/io";',
+      'import "core/io";',
       '',
       '/// Declaration detail.',
       '',

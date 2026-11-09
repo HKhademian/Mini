@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 left := 10;
 right := -3;
 result := left + right;

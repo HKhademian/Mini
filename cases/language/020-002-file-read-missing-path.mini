@@ -1,3 +1,3 @@
-import "common/file";
+import "core/file";
 
 source := file_read();

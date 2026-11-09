@@ -1,2 +1,2 @@
-import "common/json";
+import "core/json";
 json_value(1);

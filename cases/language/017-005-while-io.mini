@@ -1,4 +1,4 @@
-import "common/io";
+import "core/io";
 
 token := io_read_all();
 position := 0;

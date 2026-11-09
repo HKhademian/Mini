@@ -1,7 +1,7 @@
-import "common/io";
-import "common/display";
-import "common/list";
-import "common/number";
+import "core/io";
+import "core/display";
+import "core/list";
+import "core/number";
 
 values := list_of("a", 2);
 io_write_line(

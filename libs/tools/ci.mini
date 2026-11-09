@@ -1,12 +1,12 @@
-import "common/io";
-import "common/map";
-import "common/text";
-import "common/list";
-import "common/path";
-import "common/process";
-import "common/json";
-import "common/project";
-import "common/file";
+import "core/io";
+import "core/map";
+import "core/text";
+import "core/list";
+import "core/path";
+import "core/process";
+import "core/json";
+import "core/project";
+import "core/file";
 
 /// Locate the repository root for direct or `mini run` invocation.
 fn ci_root() {
@@ -131,7 +131,12 @@ fn ci_publish(root) {
 fn ci_task(root, task) {
     if task == "install" {
         ci_run(root, "npm", list_of("ci", "--ignore-scripts", "--no-audit", "--no-fund"), root);
-        return ci_run(root, "npm", list_of("ci", "--ignore-scripts", "--no-audit", "--no-fund"), path_join(root, "editors/vscode"));
+        return ci_run(
+            root,
+            "npm",
+            list_of("ci", "--ignore-scripts", "--no-audit", "--no-fund"),
+            path_join(root, "editors/vscode")
+        );
     }
     if task == "check" {
         return ci_mini(root, list_of("check"));
