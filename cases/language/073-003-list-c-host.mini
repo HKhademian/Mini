@@ -4,7 +4,7 @@ import "common/list";
 items := list_of("middle");
 list_push_front(items, "first");
 list_push_back(items, "last");
-io_write(list_join(items, ","));
+io_write(list_join(",", items));
 io_write(list_pop_front(items));
 io_write(list_pop_back(items));
 io_write(list_length(items));

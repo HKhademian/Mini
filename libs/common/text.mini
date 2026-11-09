@@ -111,7 +111,7 @@ fn text_slice(source, start, end) {
         list_set(parts, list_length(parts), text_get(source, position));
         position = position + 1;
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
@@ -126,7 +126,7 @@ fn indent_output(output) {
         }
         position = position + 1;
     }
-    return list_join(result, "\n");
+    return list_join("\n", result);
 }
 
 /// Return whether text ends with suffix.
@@ -396,5 +396,5 @@ fn text_from_bytes(bytes) {
             }
         }
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }

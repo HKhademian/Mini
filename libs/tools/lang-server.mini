@@ -284,7 +284,7 @@ fn lsp_declarations(tokens) {
                 }
                 map_set(declaration, "kind", "function");
                 map_set(declaration, "signature",
-                    "fn " + map_get(name, "text") + "(" + list_join(parameters, ", ") + ")");
+                    "fn " + map_get(name, "text") + "(" + list_join(", ", parameters) + ")");
                 list_set(result, list_length(result), declaration);
             }
         }
@@ -344,7 +344,7 @@ fn lsp_markdown(signature, doc) {
     if list_length(doc) == 0 {
         return code;
     }
-    return code + "\n\n" + list_join(doc, "\n");
+    return code + "\n\n" + list_join("\n", doc);
 }
 
 /// Return the last declaration with a name.
@@ -436,7 +436,7 @@ fn lsp_completions(tokens, text, offset) {
             if list_length(map_get(declaration, "doc")) > 0 {
                 documentation := map_new();
                 map_set(documentation, "kind", "markdown");
-                map_set(documentation, "value", list_join(map_get(declaration, "doc"), "\n"));
+                map_set(documentation, "value", list_join("\n", map_get(declaration, "doc")));
                 map_set(item, "documentation", documentation);
             }
             list_set(items, list_length(items), item);
@@ -458,7 +458,7 @@ fn lsp_completions(tokens, text, offset) {
             if list_length(map_get(declaration, "doc")) > 0 {
                 documentation := map_new();
                 map_set(documentation, "kind", "markdown");
-                map_set(documentation, "value", list_join(map_get(declaration, "doc"), "\n"));
+                map_set(documentation, "value", list_join("\n", map_get(declaration, "doc")));
                 map_set(item, "documentation", documentation);
             }
             list_set(items, list_length(items), item);

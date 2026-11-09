@@ -4,7 +4,7 @@ items := list_new();
 list_set(items, 0, "a");
 list_set(items, 1, "b");
 list_set(items, 2, "c");
-if list_join(items, ",") == "a,b,c" {
+if list_join(",", items) == "a,b,c" {
     io_write_line("ok");
 } else {
     io_write_line("bad");
@@ -13,16 +13,16 @@ mixed := list_new();
 list_set(mixed, 0, "a");
 list_set(mixed, 1, 1);
 list_set(mixed, 2, "c");
-if list_join(mixed, "-") == "a--c" {
+if list_join("-", mixed) == "a--c" {
     io_write_line("ok");
 } else {
     io_write_line("bad");
 }
 fn join(value, separator) {
-    return list_join(value, separator);
+    return list_join(separator, value);
 }
 empty := list_new();
-if list_join(empty, ",") == "" && list_join(items, "") == "abc" && join(12, ",") == "" && join(items, 12) == "" {
+if list_join(",", empty) == "" && list_join("", items) == "abc" && join(12, ",") == "" && join(items, 12) == "" {
     io_write_line("ok");
 } else {
     io_write_line("bad");

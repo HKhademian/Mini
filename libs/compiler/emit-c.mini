@@ -68,7 +68,7 @@ fn emit_c_indent(source) {
         }
         position = position + 1;
     }
-    return list_join(result, "\n");
+    return list_join("\n", result);
 }
 
 /// Decode one lexer-validated ASCII literal to decimal byte initializer texts.
@@ -133,7 +133,7 @@ fn emit_c_join_lines(lines, trailing_newlines) {
         list_set(lines, list_length(lines), "");
         existing = existing + 1;
     }
-    return list_join(lines, "\n");
+    return list_join("\n", lines);
 }
 
 /// Return generic vector storage operations shared by lists and text buffers.
@@ -322,7 +322,7 @@ fn emit_c_literal_input(bytes) {
         position = position + 1;
     }
     list_set(parts, list_length(parts), "\"");
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Normalize decimal spelling and reject magnitude before host numeric rounding.
@@ -541,7 +541,7 @@ fn emit_c_ast_call(node, state, bindings, binding_orders, destination, in_functi
         list_length(body),
         "    if (MINI_ID(fn_" + name + ")(context, " + params + ", &" + destination + ") != 0) return 1;\n"
     );
-    return list_join(body, "");
+    return list_join("", body);
 }
 
 /// Lower one AST statement using target state and lexical binding maps.
@@ -561,7 +561,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             );
             position = position + 1;
         }
-        return list_join(output, "");
+        return list_join("", output);
     }
     if kind == AST_BINDING || kind == AST_ASSIGNMENT {
         name := map_get(node, "name");
@@ -654,6 +654,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
         if in_function {
             if kind == AST_WHILE {
                 return list_join(
+                    "",
                     list_of(
                         "    while (1) {\n        MINI_ID(value) " + condition + ";\n",
                         emit_c_indent(expression),
@@ -663,8 +664,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
                             emit_c_ast_statement(consequent, state, map_copy(bindings), map_copy(binding_orders), true)
                         ),
                         "    }\n"
-                    ),
-                    ""
+                    )
                 );
             }
             output := list_of(
@@ -695,7 +695,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
                 list_set(output, list_length(output), "    }");
             }
             list_set(output, list_length(output), "\n");
-            return list_join(output, "");
+            return list_join("", output);
         }
         list_set(
             map_get(state, "c_declarations"),
@@ -750,7 +750,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             list_set(output, list_length(output), "    }");
         }
         list_set(output, list_length(output), "\n");
-        return list_join(output, "");
+        return list_join("", output);
     }
     emit_c_fail(node);
     return "";

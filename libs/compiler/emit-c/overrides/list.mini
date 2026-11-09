@@ -179,7 +179,7 @@ emit_c_host_function_add(
     "list_join",
     "int MINI_ID(fn_list_join)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
     + "    if (!context || !result || params.count != 2 || !params.args) return 1;\n"
-    + "    return MINI_ID(list_join)(context, params.args[0], params.args[1], result);\n}\n"
+    + "    return MINI_ID(list_join)(context, params.args[1], params.args[0], result);\n}\n"
 );
 
 emit_c_host_function_add(

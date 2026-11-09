@@ -29,7 +29,7 @@ fn release_run(command, args, directory) {
     result := process_capture(command, args, directory, list_new());
     if map_get(result, "status") != 0 {
         release_fail(
-            command + " " + list_join(args, " ") + " failed:\n"
+            command + " " + list_join(" ", args) + " failed:\n"
             + text_from_bytes(map_get(result, "stdout")) + text_from_bytes(map_get(result, "stderr"))
         );
     }
@@ -119,7 +119,7 @@ fn release_compiler_hash(active) {
         list_set(parts, list_length(parts), path + "\n" + file_read(path_join(project_root(), path)));
         position = position + 1;
     }
-    return hash_sha256(list_join(parts, "\n"));
+    return hash_sha256(list_join("\n", parts));
 }
 
 /// Return the Node version from a probe.
@@ -208,7 +208,7 @@ fn release_checksums(output) {
         );
         position = position + 1;
     }
-    file_write(path_join(output, "SHA256SUMS"), list_join(lines, ""));
+    file_write(path_join(output, "SHA256SUMS"), list_join("", lines));
     return 0;
 }
 

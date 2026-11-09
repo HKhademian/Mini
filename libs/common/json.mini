@@ -85,7 +85,7 @@ fn json_string(state) {
         character := json_peek(state);
         if character == "\"" {
             map_set(state, "position", map_get(state, "position") + 1);
-            return list_join(parts, "");
+            return list_join("", parts);
         }
         if character == "\\" {
             map_set(state, "position", map_get(state, "position") + 1);
@@ -338,7 +338,7 @@ fn json_escape(text) {
         position = position + 1;
     }
     list_set(parts, list_length(parts), "\"");
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Encode one JSON value into a state map.
@@ -398,7 +398,7 @@ fn json_encode(value, seen, state) {
             list_set(parts, list_length(parts), "}");
         }
         list_pop_back(seen);
-        return list_join(parts, "");
+        return list_join("", parts);
     }
     return "null";
 }

@@ -4,4 +4,4 @@ import "common/io";
 import "common/list";
 
 words := list_of("one", "two", "three");
-io_write_line(list_join(words, " | "));
+io_write_line(list_join(" | ", words));

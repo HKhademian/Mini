@@ -30,7 +30,7 @@ fn format_body(lines) {
         return "";
     }
     list_set(lines, list_length(lines), "");
-    return list_join(lines, "\n");
+    return list_join("\n", lines);
 }
 
 /// Return whether text is a word-like token for spacing.

@@ -79,7 +79,7 @@ fn diagnostic_text(token, label) {
         diagnostic_indent(token) + "^",
         ""
     );
-    return list_join(lines, "\n");
+    return list_join("\n", lines);
 }
 
 /// Report a positioned diagnostic and stop the compiler.

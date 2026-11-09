@@ -45,7 +45,7 @@ fn emit_c_host_runtime_definitions() {
         list_set(output, list_length(output), map_get(c_host_runtime_definitions, name));
         position = position + 1;
     }
-    return list_join(output, "\n");
+    return list_join("\n", output);
 }
 
 /// Register a host runtime fragment that needs the generated invocation context.
@@ -66,7 +66,7 @@ fn emit_c_host_runtime_after_context_definitions() {
         list_set(output, list_length(output), map_get(c_host_late_runtime_definitions, name));
         position = position + 1;
     }
-    return list_join(output, "\n");
+    return list_join("\n", output);
 }
 
 /// Register a system header required by C host replacements.
@@ -88,7 +88,7 @@ fn emit_c_host_preamble_add(line) {
 
 /// Return registered directives in insertion order.
 fn emit_c_host_preambles() {
-    return list_join(c_host_preamble_lines, "\n");
+    return list_join("\n", c_host_preamble_lines);
 }
 
 /// Return registered system includes in insertion order.
@@ -99,7 +99,7 @@ fn emit_c_host_includes() {
         list_set(output, list_length(output), "#include <" + list_get(c_host_include_names, position) + ">");
         position = position + 1;
     }
-    return list_join(output, "\n");
+    return list_join("\n", output);
 }
 
 /// Return registered C implementation definitions in registration order.
@@ -111,5 +111,5 @@ fn emit_c_host_function_definitions() {
         list_set(output, list_length(output), map_get(c_host_function_definitions, name));
         position = position + 1;
     }
-    return list_join(output, "\n");
+    return list_join("\n", output);
 }

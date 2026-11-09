@@ -40,7 +40,26 @@ function list_truncate(items, length) {
     return 0;
 }
 function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }
-function list_join(items, separator) {
+function list_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let sources = $mini_fn_args;
+    let result = list_new();
+    let source_index = 0;
+    while ((source_index < (sources).length)) {
+        let source = list_get(sources, source_index);
+        if (value_is_list(source)) {
+            let item_index = 0;
+            while ((item_index < (source).length)) {
+                list_set(result, (result).length, list_get(source, item_index));
+                item_index = (item_index + 1);
+            }
+        }
+        source_index = (source_index + 1);
+    }
+    return result;
+}
+function list_join(separator, items) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";
     let output = "";
     for (let index = 0; index < items.length; index++) {
@@ -69,7 +88,7 @@ function list_join_from(items, start, separator) {
         list_set(parts, (parts).length, list_get(items, position));
         position = (position + 1);
     }
-    return list_join(parts, separator);
+    return list_join(separator, parts);
 }
 function list_reverse(items) {
 

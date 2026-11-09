@@ -39,7 +39,26 @@ function list_truncate(items, length) {
     return 0;
 }
 function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }
-function list_join(items, separator) {
+function list_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let sources = $mini_fn_args;
+    let result = list_new();
+    let source_index = 0;
+    while ((source_index < (sources).length)) {
+        let source = list_get(sources, source_index);
+        if (value_is_list(source)) {
+            let item_index = 0;
+            while ((item_index < (source).length)) {
+                list_set(result, (result).length, list_get(source, item_index));
+                item_index = (item_index + 1);
+            }
+        }
+        source_index = (source_index + 1);
+    }
+    return result;
+}
+function list_join(separator, items) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";
     let output = "";
     for (let index = 0; index < items.length; index++) {
@@ -68,7 +87,7 @@ function list_join_from(items, start, separator) {
         list_set(parts, (parts).length, list_get(items, position));
         position = (position + 1);
     }
-    return list_join(parts, separator);
+    return list_join(separator, parts);
 }
 function list_reverse(items) {
 
@@ -183,6 +202,46 @@ function list_rest(items, count) {
     }
     return result;
 }
+function text_merge() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    let output = "";
+    let position = 0;
+    while ((position < (values).length)) {
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
+function text_join() {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let values = $mini_fn_args;
+    if (((values).length === 0)) {
+        return "";
+    }
+    let separator = list_get(values, 0);
+    if ((!value_is_text(separator))) {
+        return "";
+    }
+    let output = "";
+    let position = 1;
+    while ((position < (values).length)) {
+        if ((position > 1)) {
+            output = (output + separator);
+        }
+        let value = list_get(values, position);
+        if (value_is_text(value)) {
+            output = (output + value);
+        }
+        position = (position + 1);
+    }
+    return output;
+}
 function text_length(source) { return typeof source === "string" ? source.length : 0; }
 function text_get(source, index) { if (typeof source === "string" && Number.isInteger(index) && index >= 0 && index < source.length) return source[index]; return ""; }
 function text_code(source) { return typeof source === "string" && source.length > 0 ? source.codePointAt(0) : 0; }
@@ -223,7 +282,7 @@ function indent_output(output) {
         }
         position = (position + 1);
     }
-    return list_join(result, "\n");
+    return list_join("\n", result);
 }
 function text_ends_with(source, suffix) {
 

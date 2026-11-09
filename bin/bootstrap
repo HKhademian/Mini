@@ -78,7 +78,7 @@ function list_merge() {
     }
     return result;
 }
-function list_join(items, separator) {
+function list_join(separator, items) {
     if (!Array.isArray(items) || typeof separator !== "string") return "";
     let output = "";
     for (let index = 0; index < items.length; index++) {
@@ -107,7 +107,7 @@ function list_join_from(items, start, separator) {
         list_set(parts, (parts).length, list_get(items, position));
         position = (position + 1);
     }
-    return list_join(parts, separator);
+    return list_join(separator, parts);
 }
 function list_reverse(items) {
 
@@ -405,7 +405,7 @@ function indent_output(output) {
         }
         position = (position + 1);
     }
-    return list_join(result, "\n");
+    return list_join("\n", result);
 }
 function text_ends_with(source, suffix) {
 
@@ -698,7 +698,7 @@ function path_normalize(path) {
         }
         position = (position + 1);
     }
-    let output = list_join(stack, "/");
+    let output = list_join("/", stack);
     if (absolute) {
         return ("/" + output);
     }
@@ -783,7 +783,7 @@ function json_string(state) {
         let character = json_peek(state);
         if ((character === "\"")) {
             map_set(state, "position", (map_get(state, "position") + 1));
-            return list_join(parts, "");
+            return list_join("", parts);
         }
         if ((character === "\\")) {
             map_set(state, "position", (map_get(state, "position") + 1));
@@ -1014,7 +1014,7 @@ function json_escape(text) {
         position = (position + 1);
     }
     list_set(parts, (parts).length, "\"");
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 function json_encode(value, seen, state) {
 
@@ -1073,7 +1073,7 @@ function json_encode(value, seen, state) {
             list_set(parts, (parts).length, "}");
         }
         list_pop_back(seen);
-        return list_join(parts, "");
+        return list_join("", parts);
     }
     return "null";
 }
@@ -1272,7 +1272,7 @@ function diagnostic_indent(token) {
 function diagnostic_text(token, label) {
 
     let lines = list_of(((((((map_get(token, "source") + ":") + number_to_text(map_get(token, "line"))) + ":") + number_to_text(map_get(token, "column"))) + ": ") + label), map_get(token, "context"), (diagnostic_indent(token) + "^"), "");
-    return list_join(lines, "\n");
+    return list_join("\n", lines);
 }
 function diagnostic_fail(token, message) {
 
@@ -2223,19 +2223,19 @@ function emit_js_replace_lowering(source, needle, replacement) {
         let found = text_find(rest, needle);
         if ((found < 0)) {
             list_set(parts, (parts).length, text_slice(source, position, text_length(source)));
-            return list_join(parts, "");
+            return list_join("", parts);
         }
         list_set(parts, (parts).length, text_slice(source, position, (position + found)));
         list_set(parts, (parts).length, replacement);
         position = ((position + found) + text_length(needle));
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 function emit_js_apply_host_lowering(form, args) {
 
     let output = form;
     if ((text_find(output, "{...}") >= 0)) {
-        output = emit_js_replace_lowering(output, "{...}", list_join(args, ", "));
+        output = emit_js_replace_lowering(output, "{...}", list_join(", ", args));
     }
     let position = 0;
     while ((position < (args).length)) {
@@ -2296,7 +2296,7 @@ function emit_js_expression(node) {
         if ((host_lowering !== "")) {
             return emit_js_apply_host_lowering(host_lowering, argument_codes);
         }
-        return (((callee + "(") + list_join(argument_codes, ", ")) + ")");
+        return (((callee + "(") + list_join(", ", argument_codes)) + ")");
     }
     return "";
 }
@@ -2315,9 +2315,9 @@ function emit_js_block(node) {
     let body = emit_js_statements(map_get(node, "statements"));
     let indented = indent_output(body);
     if ((indented === "")) {
-        return list_join(list_of("{", "}"), "\n");
+        return list_join("\n", list_of("{", "}"));
     }
-    return list_join(list_of("{", indented, "}"), "\n");
+    return list_join("\n", list_of("{", indented, "}"));
 }
 function emit_js_function_body(node) {
 
@@ -2346,7 +2346,7 @@ function emit_js_function(node) {
         list_set(parameters, (parameters).length, map_get(list_get(nodes, position), "name"));
         position = (position + 1);
     }
-    return (((((("function " + map_get(node, "name")) + "(") + list_join(parameters, ", ")) + ") ") + emit_js_function_body(node)) + "\n");
+    return (((((("function " + map_get(node, "name")) + "(") + list_join(", ", parameters)) + ") ") + emit_js_function_body(node)) + "\n");
 }
 function emit_js_statement(node) {
 
@@ -2396,7 +2396,7 @@ function emit_js_statements(nodes) {
         list_set(parts, (parts).length, emit_js_statement(list_get(nodes, position)));
         position = (position + 1);
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 function emit_js_file_body(nodes, file) {
 
@@ -2409,7 +2409,7 @@ function emit_js_file_body(nodes, file) {
         }
         position = (position + 1);
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 function emit_js_file_initializers(program) {
 
@@ -2422,15 +2422,15 @@ function emit_js_file_initializers(program) {
         let name = ("$mini_file_" + number_to_text(index));
         let code = emit_js_file_body(body, list_get(files, index));
         let wrapper_lines = list_of((("function " + name) + "() {"), indent_output(code), "}", "");
-        list_set(wrappers, (wrappers).length, list_join(wrapper_lines, "\n"));
+        list_set(wrappers, (wrappers).length, list_join("\n", wrapper_lines));
         list_set(calls, (calls).length, (("    " + name) + "();"));
         index = (index + 1);
     }
     if (((files).length > 0)) {
-        let main_lines = list_of("function $mini_main() {", list_join(calls, "\n"), "}", "$mini_main();", "");
-        list_set(wrappers, (wrappers).length, list_join(main_lines, "\n"));
+        let main_lines = list_of("function $mini_main() {", list_join("\n", calls), "}", "$mini_main();", "");
+        list_set(wrappers, (wrappers).length, list_join("\n", main_lines));
     }
-    return list_join(wrappers, "");
+    return list_join("", wrappers);
 }
 function emit_js_program_only(program) {
 
@@ -2449,7 +2449,7 @@ function emit_js_program_only(program) {
         }
         position = (position + 1);
     }
-    return list_join(output, "");
+    return list_join("", output);
 }
 function emit_js_program(program) {
 
@@ -2470,7 +2470,7 @@ function emit_js_program(program) {
     if (map_get(program, "has_shebang")) {
         shebang = "#!/usr/bin/env node\n";
     }
-    return list_join(list_of(shebang, "\"use strict\";\n", list_join(globals, ""), list_join(declarations, ""), emit_js_file_initializers(program)), "");
+    return list_join("", list_of(shebang, "\"use strict\";\n", list_join("", globals), list_join("", declarations), emit_js_file_initializers(program)));
 }
 function emit_js_set_reference_mode(enabled) {
 
@@ -2715,7 +2715,7 @@ function $mini_file_20() {
     emit_js_host_function_add("list_set", "function list_set(items, index, value) {\n    if (!Array.isArray(items) || !Number.isInteger(index)) return 0;\n    if (index < 0) index = items.length + index;\n    if (index >= 0) items[index] = value;\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("list_truncate", "function list_truncate(items, length) {\n    if (Array.isArray(items) && Number.isInteger(length) && length >= 0 && length < items.length) items.length = length;\n    return 0;\n}\n", true, "");
     emit_js_host_function_add("list_copy", "function list_copy(items) { return Array.isArray(items) ? items.slice() : []; }\n", false, "");
-    emit_js_host_function_add("list_join", "function list_join(items, separator) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", false, "");
+    emit_js_host_function_add("list_join", "function list_join(separator, items) {\n    if (!Array.isArray(items) || typeof separator !== \"string\") return \"\";\n    let output = \"\";\n    for (let index = 0; index < items.length; index++) {\n        if (index > 0) output += separator;\n        const value = items[index];\n        if (typeof value === \"string\") output += value;\n    }\n    return output;\n}\n", false, "");
 }
 function $mini_file_21() {
     emit_js_host_function_add("map_new", "function map_new() { return Object.create(null); }\n", true, "");

@@ -1,4 +1,4 @@
 import "common/io";
 import "common/list";
 
-io_write(list_join(list_new(), 1));
+io_write(list_join(1, list_new()));

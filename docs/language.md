@@ -519,10 +519,10 @@ merged := map_merge(defaults, overrides);
 ## Accepted operation: list text joining
 
 ```mini
-text := list_join(items, ", ");
+text := list_join(", ", items);
 ```
 
-- `list_join(items, separator)` joins text elements with a text separator.
+- `list_join(separator, items)` joins text elements with a text separator.
 - Non-text elements contribute empty text; separators are still placed between
   positions.
 - A non-list target or non-text separator returns empty text.

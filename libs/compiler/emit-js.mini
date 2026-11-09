@@ -19,20 +19,20 @@ fn emit_js_replace_lowering(source, needle, replacement) {
         found := text_find(rest, needle);
         if found < 0 {
             list_set(parts, list_length(parts), text_slice(source, position, text_length(source)));
-            return list_join(parts, "");
+            return list_join("", parts);
         }
         list_set(parts, list_length(parts), text_slice(source, position, position + found));
         list_set(parts, list_length(parts), replacement);
         position = position + found + text_length(needle);
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Apply a registry-owned target lowering to call arguments.
 fn emit_js_apply_host_lowering(form, args) {
     output := form;
     if text_find(output, "{...}") >= 0 {
-        output = emit_js_replace_lowering(output, "{...}", list_join(args, ", "));
+        output = emit_js_replace_lowering(output, "{...}", list_join(", ", args));
     }
     position := 0;
     while position < list_length(args) {
@@ -96,7 +96,7 @@ fn emit_js_expression(node) {
         if host_lowering != "" {
             return emit_js_apply_host_lowering(host_lowering, argument_codes);
         }
-        return callee + "(" + list_join(argument_codes, ", ") + ")";
+        return callee + "(" + list_join(", ", argument_codes) + ")";
     }
     return "";
 }
@@ -117,9 +117,9 @@ fn emit_js_block(node) {
     body := emit_js_statements(map_get(node, "statements"));
     indented := indent_output(body);
     if indented == "" {
-        return list_join(list_of("{", "}"), "\n");
+        return list_join("\n", list_of("{", "}"));
     }
-    return list_join(list_of("{", indented, "}"), "\n");
+    return list_join("\n", list_of("{", indented, "}"));
 }
 
 /// Emit one function body, including capture and fallthrough handling.
@@ -150,7 +150,7 @@ fn emit_js_function(node) {
         list_set(parameters, list_length(parameters), map_get(list_get(nodes, position), "name"));
         position = position + 1;
     }
-    return "function " + map_get(node, "name") + "(" + list_join(parameters, ", ") + ") " + emit_js_function_body(node)
+    return "function " + map_get(node, "name") + "(" + list_join(", ", parameters) + ") " + emit_js_function_body(node)
         + "\n";
 }
 
@@ -209,7 +209,7 @@ fn emit_js_statements(nodes) {
         list_set(parts, list_length(parts), emit_js_statement(list_get(nodes, position)));
         position = position + 1;
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Emit a source file's top-level executable statements.
@@ -223,7 +223,7 @@ fn emit_js_file_body(nodes, file) {
         }
         position = position + 1;
     }
-    return list_join(parts, "");
+    return list_join("", parts);
 }
 
 /// Emit file initializer wrappers and their dependency-first entry point.
@@ -237,15 +237,15 @@ fn emit_js_file_initializers(program) {
         name := "$mini_file_" + number_to_text(index);
         code := emit_js_file_body(body, list_get(files, index));
         wrapper_lines := list_of("function " + name + "() {", indent_output(code), "}", "");
-        list_set(wrappers, list_length(wrappers), list_join(wrapper_lines, "\n"));
+        list_set(wrappers, list_length(wrappers), list_join("\n", wrapper_lines));
         list_set(calls, list_length(calls), "    " + name + "();");
         index = index + 1;
     }
     if list_length(files) > 0 {
-        main_lines := list_of("function $mini_main() {", list_join(calls, "\n"), "}", "$mini_main();", "");
-        list_set(wrappers, list_length(wrappers), list_join(main_lines, "\n"));
+        main_lines := list_of("function $mini_main() {", list_join("\n", calls), "}", "$mini_main();", "");
+        list_set(wrappers, list_length(wrappers), list_join("\n", main_lines));
     }
-    return list_join(wrappers, "");
+    return list_join("", wrappers);
 }
 
 /// Emit the program without helper/import wrappers, retaining main-source statements only.
@@ -269,7 +269,7 @@ fn emit_js_program_only(program) {
         }
         position = position + 1;
     }
-    return list_join(output, "");
+    return list_join("", output);
 }
 
 /// Emit a complete JavaScript program from the checked shared AST.
@@ -292,14 +292,14 @@ fn emit_js_program(program) {
         shebang = "#!/usr/bin/env node\n";
     }
     return list_join(
+        "",
         list_of(
             shebang,
             "\"use strict\";\n",
-            list_join(globals, ""),
-            list_join(declarations, ""),
+            list_join("", globals),
+            list_join("", declarations),
             emit_js_file_initializers(program)
-        ),
-        ""
+        )
     );
 }
 

@@ -20,7 +20,7 @@ import "common/process";
 /// Return token JSON with two-space indentation and a final newline.
 fn token_json(tokens) {
     if list_length(tokens) == 0 {
-        return list_join(list_of("[]", ""), "\n");
+        return list_join("\n", list_of("[]", ""));
     }
     lines := list_new();
     list_set(lines, 0, "[");
@@ -42,13 +42,13 @@ fn token_json(tokens) {
         if position + 1 < list_length(tokens) {
             list_set(object_lines, 9, "  },");
         }
-        item := list_join(object_lines, "\n");
+        item := list_join("\n", object_lines);
         list_set(lines, list_length(lines), item);
         position = position + 1;
     }
     list_set(lines, list_length(lines), "]");
     list_set(lines, list_length(lines), "");
-    return list_join(lines, "\n");
+    return list_join("\n", lines);
 }
 
 /// Return a list without its first item.
