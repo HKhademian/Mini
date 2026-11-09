@@ -1,0 +1,16 @@
+{
+  "id": "native.c-text-to-codes",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-005-text-to-codes.mini",
+  "features": ["target.c", "text.to-codes", "text.scalar-indexing"],
+  "cases": [
+    {
+      "name": "scalar-code-list",
+      "stdin": {"text": ""},
+      "stdout": {"text": "[1670,1591,1608,1585,1740,32,128512]\n[]\n"},
+      "stderr": {"text": ""},
+      "exitCode": 0
+    }
+  ]
+}

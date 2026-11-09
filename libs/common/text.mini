@@ -23,6 +23,20 @@ fn text_from_code(code) {
     return process_panic("text_from_code requires a host implementation");
 }
 
+/// Return one Unicode scalar code per character index.
+fn text_to_codes(source) {
+    codes := list_new();
+    if !value_is_text(source) {
+        return codes;
+    }
+    position := 0;
+    while position < text_length(source) {
+        list_set(codes, list_length(codes), text_to_code(source, position));
+        position = position + 1;
+    }
+    return codes;
+}
+
 /// Merge text arguments into one text value, ignoring non-text arguments.
 fn text_merge() {
     values := fn_args();
