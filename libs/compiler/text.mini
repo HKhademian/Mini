@@ -1,0 +1,19 @@
+/// Text formatting helpers for compiler source generation.
+
+import "core/list";
+import "core/text";
+
+/// Return output lines with nonempty lines prefixed by four spaces and joined by LF.
+fn text_indent_output(output) {
+    lines := text_split_lines(output);
+    result := list_new();
+    position := 0;
+    while position < list_length(lines) {
+        line := list_get(lines, position);
+        if text_length(line) > 0 {
+            list_set(result, list_length(result), "    " + line);
+        }
+        position = position + 1;
+    }
+    return list_join("\n", result);
+}

@@ -3,6 +3,7 @@
 /// parsing and shared syntax checks remain in parser.mini.
 
 import "core/text";
+import "./text";
 import "core/number";
 import "core/list";
 import "core/map";
