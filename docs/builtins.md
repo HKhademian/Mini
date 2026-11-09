@@ -97,7 +97,8 @@ separators, writes the result, and returns 0. These same-name Mini APIs are
 declared in [libs/common/io.mini](../libs/common/io.mini) and require
 `import "common/io"`. Their fallback panics when a target has no I/O host
 implementation; the JavaScript emitter replaces the same functions through its
-override registry. The C target lowers `io_write` through its native writer.
+override registry. The C target registers host overrides for standard input,
+standard output, and standard error.
 `io_write_line(...values)` is a Mini helper in the same module and writes the
 converted values followed by one newline.
 

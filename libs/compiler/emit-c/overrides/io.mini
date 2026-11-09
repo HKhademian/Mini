@@ -90,8 +90,51 @@ emit_c_host_function_add(
 emit_c_host_function_add(
     "io_write_line",
     "int MINI_ID(fn_io_write_line)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
-    + "    if (!result) return 1;\n"
-    + "    (void)params;\n"
-    + "    return MINI_ID(fn_panic)(context, (MINI_ID(params)) MINI_PARAMS(0, NULL), result);\n"
+    + "    if (!context || !result || (params.count && !params.args)) return 1;\n"
+    + "    if (MINI_ID(io_write)(params) != 0 || fputc('\\n', stdout) == EOF) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n"
     + "}\n"
+);
+
+emit_c_host_function_add(
+    "io_read_all",
+    "int MINI_ID(fn_io_read_all)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 0) return 1; size_t offset = context->buffer.count; int byte;\n"
+    + "    while ((byte = fgetc(stdin)) != EOF) { unsigned char value = (unsigned char)byte;\n"
+    + "        if (MINI_ID(text_buffer_append)(&context->buffer, &value, 1) != 0) return 1; }\n"
+    + "    if (ferror(stdin)) return 1; *result = MINI_ID(value_text)(&context->buffer, offset, context->buffer.count - offset); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "io_read_line",
+    "int MINI_ID(fn_io_read_line)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 0) return 1; size_t offset = context->buffer.count; int byte;\n"
+    + "    while ((byte = fgetc(stdin)) != EOF && byte != '\\n') { unsigned char value = (unsigned char)byte;\n"
+    + "        if (MINI_ID(text_buffer_append)(&context->buffer, &value, 1) != 0) return 1; }\n"
+    + "    if (ferror(stdin)) return 1; size_t length = context->buffer.count - offset;\n"
+    + "    if (length && context->buffer.items[context->buffer.count - 1] == '\\r') { context->buffer.count -= 1; length -= 1; }\n"
+    + "    *result = MINI_ID(value_text)(&context->buffer, offset, length); return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "io_read_bytes",
+    "int MINI_ID(fn_io_read_bytes)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; MINI_ID(value) bytes = MINI_ID(list_new)(context);\n"
+    + "    MINI_ID(value) limit = params.args[0]; if (limit.kind != MINI_ID(kind_number) || limit.number <= 0\n"
+    + "        || limit.number > 9007199254740991.0\n"
+    + "        || limit.number != (double)(size_t)limit.number) { *result = bytes; return 0; }\n"
+    + "    size_t count = (size_t)limit.number; for (size_t index = 0; index < count; ++index) { int byte = fgetc(stdin);\n"
+    + "        if (byte == EOF) { if (ferror(stdin)) return 1; break; }\n"
+    + "        MINI_ID(list_push)(bytes.list, (MINI_ID(value)) MINI_VALUE_NUMBER(byte), 0); }\n"
+    + "    *result = bytes; return 0;\n}\n"
+);
+
+emit_c_host_function_add(
+    "io_write_error",
+    "int MINI_ID(fn_io_write_error)(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result) {\n"
+    + "    if (!context || !result || params.count != 1 || !params.args) return 1; MINI_ID(value) message = params.args[0];\n"
+    + "    if (message.kind == MINI_ID(kind_text) && message.text.buffer && message.text.offset <= message.text.buffer->count\n"
+    + "        && message.text.length <= message.text.buffer->count - message.text.offset\n"
+    + "        && message.text.length && fwrite(message.text.buffer->items + message.text.offset, 1, message.text.length, stderr) != message.text.length) return 1;\n"
+    + "    *result = (MINI_ID(value)) MINI_VALUE_NUMBER(0); return 0;\n}\n"
 );

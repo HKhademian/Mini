@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- mini 0.3.0-alpha.50 / compiler 0.5.0-alpha.61 / bootstrap
+  0.3.0-alpha.63: complete the native C standard-stream host API.
+
 - mini 0.3.0-alpha.49 / compiler 0.5.0-alpha.60 / bootstrap
   0.3.0-alpha.62: add ASCII C text representation overrides and exercise pure
   number parsing and formatting through them.
