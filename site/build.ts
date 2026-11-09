@@ -353,7 +353,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
     <section class="section" id="samples">
       <header class="section-head">
         <h2>Real samples, real output</h2>
-        <p>Explore the language through runnable examples.</p>
+        <p>Explore the language through runnable examples. <a href="./samples/">Browse graphical samples and the roadmap.</a></p>
       </header>
       <div class="samples">
         ${cards.map(renderSampleCard).join("\n        ")}
@@ -498,7 +498,7 @@ function readVersions(): { compiler: string; language: string; play: string } {
 }
 
 /// Render the playground page.
-function renderPlayground(data: readonly PlaygroundSample[], planned: readonly PlaygroundEntry[]): string {
+function renderPlayground(data: readonly PlaygroundSample[]): string {
     let options = "";
     let currentGroup = "";
     data.forEach((sample, index) => {
@@ -516,19 +516,6 @@ function renderPlayground(data: readonly PlaygroundSample[], planned: readonly P
     }
     const serialized = JSON.stringify(data).replaceAll("<", "\\u003c");
     const versions = readVersions();
-    const graphicalSamples = data.filter((sample) => ["Games", "Pixel Art", "Animation", "Interactive"].includes(sample.group));
-    const graphicalGroups = Array.from(new Set(graphicalSamples.map((sample) => sample.group).concat(planned.map((sample) => sample.group))));
-    const graphicalSection = graphicalGroups.length === 0 ? "" : `<section class="graphical-samples" aria-labelledby="graphical-samples-title">
-      <h2 id="graphical-samples-title">Graphical samples</h2>
-      <p>Runnable samples open in the editor. Items marked planned are not runnable yet.</p>
-      ${graphicalGroups.map((group) => {
-          const runnable = graphicalSamples.filter((sample) => sample.group === group);
-          const upcoming = planned.filter((sample) => sample.group === group);
-          const runnableItems = runnable.map((sample) => `<li><a href="?sample=${encodeURIComponent(sample.id)}">${escapeHtml(sample.label)}</a><span>${escapeHtml(sample.note)}</span></li>`).join("");
-          const plannedItems = upcoming.map((sample) => `<li><strong>${escapeHtml(sample.label)}</strong><span>${escapeHtml(sample.note)}</span></li>`).join("");
-          return `<div class="graphical-group"><h3>${escapeHtml(group)}</h3><ul>${runnableItems}${plannedItems}</ul></div>`;
-      }).join("")}
-    </section>`;
     return `<!doctype html>
 <html lang="en">
 <head>
@@ -542,24 +529,19 @@ function renderPlayground(data: readonly PlaygroundSample[], planned: readonly P
   <link rel="stylesheet" href="../style.css?rev=${sourceCommit}">
   <link rel="stylesheet" href="./playground.css?rev=${sourceCommit}">
 </head>
-<body>
+<body class="playground-page">
   <a class="skip" href="#main">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header playground-header">
     ${renderBrand("../")}
     <nav aria-label="Site">
-      <a href="../#install">Install</a>
-      <a href="../#why">Why</a>
-      <a href="../#samples">Samples</a>
-      <a href="../#docs">Docs</a>
-      <a href="${repo}">GitHub</a>
+      <a href="../">Home</a>
+      <a href="../samples/">Graphical samples</a>
     </nav>
   </header>
 
   <main id="main" class="playground">
     <h1>Playground</h1>
-    <p class="lede">Choose from ${data.length} runnable examples or write your own. The compiler and program run in your browser.</p>
-    ${graphicalSection}
 
     <div class="workbench">
       <section class="pane" aria-label="Editor">
@@ -613,13 +595,11 @@ function renderPlayground(data: readonly PlaygroundSample[], planned: readonly P
       </section>
     </div>
 
-    <p class="limits">Runs in your browser. Bundled library includes work; custom file, process, and network access are unavailable.</p>
-    <p class="versions">compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)} &middot; playground ${escapeHtml(versions.play)} &middot; syntax highlighter included in playground</p>
   </main>
 
-  <footer class="site-footer">
-    <p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>
-    <p><a href="../#docs">Documentation</a></p>
+  <footer class="site-footer playground-footer">
+    <p>Runs in your browser. Filesystem, process, and network access are unavailable.</p>
+    <p>compiler ${escapeHtml(versions.compiler)} &middot; language ${escapeHtml(versions.language)} &middot; playground ${escapeHtml(versions.play)}</p>
     ${renderSourceRevision()}
   </footer>
 
@@ -934,6 +914,41 @@ function renderPlayground(data: readonly PlaygroundSample[], planned: readonly P
 `;
 }
 
+/// Render a separate index of runnable and planned graphical samples.
+function renderGraphicalIndex(): string {
+    const groups = ["Games", "Pixel Art", "Animation", "Interactive"];
+    const sections = groups.map((group) => {
+        const entries = playgroundSamples.filter((sample) => sample.group === group);
+        if (entries.length === 0) return "";
+        return `<section class="section graphical-index-group"><div class="section-head"><h2>${escapeHtml(group)}</h2></div><div class="docs">${entries.map((sample) => {
+            const planned = sample.status === "planned";
+            const title = planned ? sample.label.replace(/\s*[—-]\s*planned$/i, "") : sample.label;
+            const action = planned ? `<span class="badge">Planned</span>` : `<a href="../playground/?sample=${encodeURIComponent(sample.id)}">Open in playground &rarr;</a>`;
+            return `<article class="doc graphical-index-card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(sample.note)}</p><footer>${action}</footer></article>`;
+        }).join("")}</div></section>`;
+    }).join("");
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mini — graphical samples</title>
+  <meta name="description" content="Runnable and planned small-canvas graphical samples for mini.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../style.css?rev=${sourceCommit}">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">${renderBrand("../")}<nav aria-label="Site"><a href="../playground/">Playground</a><a href="../">Home</a></nav></header>
+  <main id="main">
+    <section class="section"><div class="section-head"><h1>Graphical samples</h1><p>Runnable examples open in the playground. Planned ideas are listed for later implementation.</p></div></section>
+    ${sections}
+  </main>
+  <footer class="site-footer"><p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>${renderSourceRevision()}</footer>
+</body>
+</html>`;
+}
+
 /// Build every site asset and print the written page.
 function main(): void {
     const hero = loadSample(heroSample);
@@ -949,13 +964,10 @@ function main(): void {
     mkdirSync(playground, { recursive: true });
     writeFileSync(join(playground, "compiler.js"), buildBrowserCompiler());
     writeFileSync(join(playground, "imports.js"), buildBrowserImports());
-    writeFileSync(
-        join(playground, "index.html"),
-        renderPlayground(
-            loadPlaygroundSamples(),
-            playgroundSamples.filter((sample) => sample.status === "planned"),
-        ),
-    );
+    writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
+    const graphicalIndex = join(output, "samples");
+    mkdirSync(graphicalIndex, { recursive: true });
+    writeFileSync(join(graphicalIndex, "index.html"), renderGraphicalIndex());
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
     writeFileSync(join(playground, "worker.js"), buildBrowserWorker());
     cpSync(join(root, "site", "playground", "playground.css"), join(playground, "playground.css"));

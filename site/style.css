@@ -440,6 +440,24 @@ pre {
   transform: translateY(-2px);
 }
 
+.graphical-index-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.graphical-index-card h3,
+.graphical-index-card p {
+  margin: 0;
+}
+
+.graphical-index-card footer {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 0.84rem;
+}
+
 .samples {
   display: grid;
   gap: 22px;
