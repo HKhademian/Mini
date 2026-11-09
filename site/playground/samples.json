@@ -582,11 +582,11 @@
   {
     "id": "pixel-shapes",
     "group": "Pixel Art",
-    "label": "Lines and shapes — planned",
-    "note": "Draw a line, box, and diagonal on a small board.",
+    "label": "Lines and shapes",
+    "note": "Render a horizontal line, outline box, and diagonal once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/pixel-shapes.mini"
   },
   {
     "id": "pixel-icons",

@@ -1,0 +1,72 @@
+/// Draw a horizontal line, outline box, and diagonal on a ten-by-ten board.
+
+import "core/io";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+black := pixel_rgb(0, 0, 0);
+line_color := pixel_rgb(72, 220, 190);
+box_color := pixel_rgb(255, 180, 64);
+diagonal_color := pixel_rgb(120, 150, 255);
+
+board := pixel_board_new(screen_size, screen_size, black);
+
+column := 1;
+while column < screen_edge {
+    pixel_board_set(board, screen_size, screen_size, column, 1, line_color);
+    column = column + 1;
+}
+
+row := 4;
+while row <= 8 {
+    box_column := 1;
+    while box_column <= 4 {
+        if row == 4 || row == 8 || box_column == 1 || box_column == 4 {
+            pixel_board_set(board, screen_size, screen_size, box_column, row, box_color);
+        }
+        box_column = box_column + 1;
+    }
+    row = row + 1;
+}
+
+diagonal_column := 6;
+while diagonal_column <= screen_edge {
+    pixel_board_set(board, screen_size, screen_size, diagonal_column, diagonal_column - 2, diagonal_color);
+    diagonal_column = diagonal_column + 1;
+}
+
+canvas_render(screen_size, screen_size, board);
+
+/// Return one visible character for each shape in the text fallback.
+fn pixel_shapes_character(column, row) {
+    if row == 1 && column > 0 && column < screen_edge {
+        return "-";
+    }
+    if column >= 1 && column <= 4 && row >= 4 && row <= 8 && (column == 1 || column == 4 || row == 4 || row == 8) {
+        return "+";
+    }
+    if column >= 6 && column <= screen_edge && row == column - 2 {
+        return "/";
+    }
+    return ".";
+}
+
+/// Print the static frame for command-line runs.
+fn pixel_shapes_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            line = line + pixel_shapes_character(column, row);
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_shapes_print();
