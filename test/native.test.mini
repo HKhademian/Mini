@@ -111,6 +111,25 @@ fn native_debug_artifacts(root, work) {
     return 0;
 }
 
+/// Check top-level fn_args() against native argv values.
+fn native_program_arguments(root, work) {
+    source := path_join(root, "cases/native/014-001-fn-args.mini");
+    output := path_join(work, "program-args.c");
+    binary := path_join(work, "program-args");
+    native_compile(root, work, "program argument source", list_of("--target", "c", source, output), output);
+    built := native_build(output, binary, root);
+    if map_get(built, "status") != 0 {
+        native_fail(work, "program argument build", text_from_bytes(map_get(built, "stderr")));
+    }
+    ran := process_capture(binary, list_of("first", "second"), work, list_new());
+    if map_get(ran, "status") != 0 || text_from_bytes(map_get(ran, "stdout"))
+        != "[\"first\",\"second\"]\n[\"declared\",\"extra\"]\n"
+        || text_from_bytes(map_get(ran, "stderr")) != "" {
+        native_fail(work, "program argument output", "top-level or function fn_args() differs");
+    }
+    return 0;
+}
+
 /// Verify target selection through the public CLI rather than emitter internals.
 fn main(args) {
     root := list_get(args, 0);
@@ -173,6 +192,7 @@ fn main(args) {
     native_macro_host(root, work, false);
     native_macro_host(root, work, true);
     native_debug_artifacts(root, work);
+    native_program_arguments(root, work);
     explicit_js := path_join(work, "explicit.mjs");
     default_js := source + ".js";
     native_compile(root, work, "explicit JS target", list_of("--target", "js", source, explicit_js), explicit_js);

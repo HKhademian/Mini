@@ -1,0 +1,22 @@
+{
+  "id": "native.c-fn-args",
+  "kind": "feature",
+  "target": "c",
+  "source": "014-001-fn-args.mini",
+  "features": [
+    "target.c",
+    "functions.args",
+    "process.args",
+    "function.call",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "top-level-and-function-argument-capture",
+      "stdin": { "text": "" },
+      "stdout": { "text": "[]\n[\"declared\",\"extra\"]\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

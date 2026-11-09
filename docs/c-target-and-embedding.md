@@ -150,8 +150,9 @@ units and converts bytes as UTF-8, so UTF-8 byte indexing is not equivalent.
   joins. Tagged maps use an initial pair-array representation with lookup,
   mutation, key snapshots, copying, merging, and nested JSON output. The
   [passing proposal](parameter-passing.md) remains separate from accepted rules.
-- Calls: add default returns, argument defaults/extras, fn_args(), recursion,
-  scope, and globals when cases require them; resolve ambiguities at that point.
+- Calls: C functions support zero-default missing parameters, extra arguments,
+  recursion, local scope, and `fn_args()` for function and process arguments.
+  Broader global and call behavior remains tied to compiler parity cases.
 - Effects: preserve left-to-right, exactly-once evaluation and lazy logical
   operators when implemented. Use temporaries/control flow rather than assuming
   C argument evaluation order.

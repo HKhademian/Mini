@@ -111,9 +111,10 @@ remain in that view. Parameter values are local to each call and returned text
 uses the invocation-owned buffer. Recursive calls and function-local conditional
 control flow (`if`/`else` with returns) are supported. Function-local bindings
 use stack storage and support declaration with `:=` and reassignment with `=`;
-their block scope is preserved across recursive calls. `fn_args()` remains
-pending. The emitted function signature is an internal compiler interface, not
-an FFI API.
+their block scope is preserved across recursive calls. `fn_args()` returns the
+actual supplied arguments inside a function, including extras. At top level it
+returns process arguments, excluding the generated executable name. The emitted
+function signature is an internal compiler interface, not an FFI API.
 
 The C target also supports tagged list values with `list_new()`, `list_of(...)`,
 front/back push and pop, `list_truncate`, `list_length`, `list_get`, and `list_set`.
@@ -126,8 +127,8 @@ The C target also supports tagged map values with `map_new`, `map_of`, `map_set`
 map-oriented `value_merge`. Maps use a growable array of key/value pairs; map
 updates replace existing values, and `io_write` serializes nested maps as sorted
 JSON objects. JSON output rejects nesting deeper than 128. Generated execution
-owns lists and maps through cleanup at program exit. `fn_args()` remains pending
-for C-defined Mini functions and top-level command-line argument capture.
+owns lists and maps through cleanup at program exit. `fn_args()` is supported
+inside functions and at top level through native `argc`/`argv` capture.
 
 ### File initialization
 

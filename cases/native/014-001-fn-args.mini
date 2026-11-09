@@ -1,0 +1,8 @@
+import "common/io";
+
+fn capture(first) {
+    return fn_args();
+}
+
+io_write(fn_args(), "\n");
+io_write(capture("declared", "extra"), "\n");

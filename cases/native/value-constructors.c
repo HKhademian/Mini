@@ -82,5 +82,6 @@ int main(void) {
     MINI_ID(text_buffer_free)(&sample_buffer);
     if (sample_buffer.items || sample_buffer.count || sample_buffer.capacity) return 11;
     MINI_ID(text_buffer_free)(&sample_buffer);
-    return MINI_ID(generated_main)();
+    char *arguments[] = { "generated", NULL };
+    return MINI_ID(generated_main)(1, arguments);
 }

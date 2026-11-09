@@ -451,7 +451,10 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
         return emit_c_ast_expression(map_get(node, "expression"), state, bindings, binding_orders, destination, in_function);
     }
     if kind == AST_FN_ARGS {
-        emit_c_fail(node);
+        if map_get(node, "captures") {
+            return "    " + destination + " = MINI_ID(fn_args_value)(context, params);\n";
+        }
+        return "    " + destination + " = context->arguments;\n";
     }
     if kind == AST_CALL {
         return emit_c_ast_call(node, state, bindings, binding_orders, destination, in_function);
@@ -991,6 +994,7 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_lines(lines, "typedef struct MINI_ID(context) MINI_ID(context);");
     emit_c_collect_lines(lines, "struct MINI_ID(context) {");
     emit_c_collect_lines(lines, "    MINI_ID(text_buffer) buffer;");
+    emit_c_collect_lines(lines, "    MINI_ID(value) arguments;");
     emit_c_collect_lines(lines, "    MINI_ID(vec) lists;");
     emit_c_collect_lines(lines, "    MINI_ID(vec) maps;");
     emit_c_collect_fragments(lines, map_get(state, "c_declarations"));
@@ -1003,14 +1007,21 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_fragments(lines, map_get(state, "c_functions"));
     emit_c_collect_fragments(lines, map_get(state, "c_conditions"));
     emit_c_collect_fragments(lines, files);
-    emit_c_collect_lines(lines, "int main(void) {");
+    emit_c_collect_lines(lines, "int main(int argc, char **argv) {");
     emit_c_collect_lines(lines, "    MINI_ID(context) context = {0};");
     emit_c_collect_lines(lines, "    int status = 0;");
+    emit_c_collect_lines(lines, "    context.arguments = MINI_ID(list_new)(&context);");
+    emit_c_collect_lines(lines, "    for (int argument = 1; argument < argc; ++argument) {");
+    emit_c_collect_lines(lines, "        size_t offset = context.buffer.count, length = strlen(argv[argument]);");
+    emit_c_collect_lines(lines, "        if (MINI_ID(text_buffer_append)(&context.buffer, (const unsigned char *)argv[argument], length) != 0) { status = 1; goto cleanup; }");
+    emit_c_collect_lines(lines, "        MINI_ID(list_push)(context.arguments.list, (MINI_ID(value)) MINI_VALUE_TEXT(&context.buffer, offset, length), 0);");
+    emit_c_collect_lines(lines, "    }");
     emit_c_collect_lines(
         lines,
         "    (void)MINI_ID(list_new); (void)MINI_ID(list_push); (void)MINI_ID(list_pop); (void)MINI_ID(list_truncate);"
     );
     emit_c_collect_lines(lines, "    (void)MINI_ID(add); (void)MINI_ID(equal);");
+    emit_c_collect_lines(lines, "    (void)MINI_ID(fn_args_value);");
     emit_c_collect_lines(lines, "    (void)MINI_ID(list_length); (void)MINI_ID(list_get); (void)MINI_ID(list_set);");
     emit_c_collect_lines(
         lines,
