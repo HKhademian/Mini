@@ -4,6 +4,7 @@ import "core/json";
 import "core/list";
 import "core/map";
 import "core/io";
+import "util/io";
 
 object := json_value("{\"name\":\"Mini\",\"count\":2,\"missing\":null,\"items\":[1,true]}");
 if map_get(object, "ok") {

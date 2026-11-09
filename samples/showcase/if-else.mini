@@ -2,6 +2,7 @@
 
 import "core/number";
 import "core/io";
+import "util/io";
 
 value := 7;
 if number_mod(value, 2) == 0 {

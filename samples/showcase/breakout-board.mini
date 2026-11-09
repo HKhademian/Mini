@@ -5,6 +5,7 @@ import "core/list";
 import "core/number";
 import "util/board";
 import "core/play";
+import "util/io";
 
 screen_size := 10;
 screen_edge := screen_size - 1;

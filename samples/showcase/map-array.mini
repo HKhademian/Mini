@@ -4,6 +4,7 @@ import "core/json";
 import "core/list";
 import "core/map";
 import "core/io";
+import "util/io";
 
 parsed := json_value("[10,20,30]");
 if map_get(parsed, "ok") {

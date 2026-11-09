@@ -1,6 +1,7 @@
 /// Repeat while a condition holds.
 
 import "core/io";
+import "util/io";
 
 position := 1;
 while position <= 5 {

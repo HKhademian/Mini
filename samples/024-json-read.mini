@@ -3,6 +3,7 @@
 import "core/json";
 import "core/map";
 import "core/io";
+import "util/io";
 
 parsed := json_value(io_read_all());
 value := map_get(parsed, "value");

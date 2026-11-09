@@ -2,6 +2,7 @@
 
 import "core/io";
 import "core/text";
+import "util/io";
 
 text := "چطوری 😀";
 io_write_line(text_to_code(text, 0));

@@ -123,8 +123,9 @@ declared in [libs/core/io.mini](../libs/core/io.mini) and require
 implementation; the JavaScript emitter replaces the same functions through its
 override registry. The C target registers host overrides for standard input,
 standard output, and standard error.
-`io_write_line(...values)` is a Mini helper in the same module and writes the
-converted values followed by one newline.
+`io_write_line(...values)` is a Mini convenience helper in
+[libs/util/io.mini](../libs/util/io.mini); import `util/io` to use it. It writes
+the converted values followed by one newline.
 
 `value_to_text(any_value)` is the shared display conversion in
 [libs/core/display.mini](../libs/core/display.mini); import `core/display`.

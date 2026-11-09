@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 source := "MINI";
 output := "";

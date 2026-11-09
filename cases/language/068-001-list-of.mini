@@ -3,6 +3,7 @@
 import "core/number";
 import "core/io";
 import "core/list";
+import "util/io";
 
 items := list_of(1, 2, 3);
 empty := list_of();

@@ -300,9 +300,9 @@ io_write("input: ", source, "\n");
   results without separators and writes them to standard output with no added
   newline. It returns 0; an empty call writes nothing. Writing multiple values
   produces the same bytes as writing each value separately in order.
-- `io_write_line(...values)` is a Mini helper from `libs/core/io.mini`; it
+- `io_write_line(...values)` is a Mini helper from `libs/util/io.mini`; it
   writes the same concatenated values followed by one newline and returns the
-  `io_write` result. Include that file when using it. An empty call writes only
+  `io_write` result. Import `util/io` when using it. An empty call writes only
   the newline.
 - Both use UTF-8 without newline conversion. Initial cases stay within ASCII.
 

@@ -1,6 +1,7 @@
 import "core/list";
 import "core/io";
 import "core/text";
+import "util/io";
 fn slice(value) {
     return text_slice(value, 0, 2);
 }

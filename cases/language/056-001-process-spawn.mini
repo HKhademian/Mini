@@ -7,6 +7,7 @@ import "core/io";
 import "core/file";
 import "core/path";
 import "core/process";
+import "util/io";
 
 dir := path_temp_directory();
 args := list_new();

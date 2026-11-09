@@ -1,3 +1,4 @@
 #!/usr/bin/env -S mini run
 import "core/io";
+import "util/io";
 io_write_line("ok");

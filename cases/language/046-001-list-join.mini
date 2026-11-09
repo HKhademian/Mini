@@ -1,5 +1,6 @@
 import "core/list";
 import "core/io";
+import "util/io";
 items := list_new();
 list_set(items, 0, "a");
 list_set(items, 1, "b");

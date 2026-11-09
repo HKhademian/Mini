@@ -3,6 +3,7 @@ import "core/list";
 import "core/io";
 import "tools/lang-server";
 import "core/process";
+import "util/io";
 
 /// Parse arguments and serve the language protocol.
 fn main(args) {

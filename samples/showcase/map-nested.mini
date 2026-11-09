@@ -2,6 +2,7 @@
 
 import "core/map";
 import "core/io";
+import "util/io";
 
 outer := map_new();
 inner := map_new();

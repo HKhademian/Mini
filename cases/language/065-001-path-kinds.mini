@@ -4,6 +4,7 @@ import "core/io";
 import "core/path";
 import "core/file";
 import "core/process";
+import "util/io";
 
 directory := path_temp_directory();
 file := directory + "/file.txt";

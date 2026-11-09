@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 haystack := "a small compiler";
 io_write_line(text_find(haystack, "compiler"));

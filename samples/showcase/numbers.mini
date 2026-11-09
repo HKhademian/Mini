@@ -2,6 +2,7 @@
 
 import "core/number";
 import "core/io";
+import "util/io";
 
 width := 6;
 height := 7;

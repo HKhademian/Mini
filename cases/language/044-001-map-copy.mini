@@ -1,5 +1,6 @@
 import "core/map";
 import "core/io";
+import "util/io";
 original := map_new();
 map_set(original, "name", "original");
 copy := map_copy(original);

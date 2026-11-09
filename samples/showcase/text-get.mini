@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 text := "Mini";
 io_write_line(text_get(text, 0) + text_get(text, 3));

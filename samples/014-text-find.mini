@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 source := io_read_all();
 if text_find(source, "Mini") >= 0 {

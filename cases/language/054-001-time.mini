@@ -2,6 +2,7 @@
 
 import "core/io";
 import "core/time";
+import "util/io";
 
 first := time_millis();
 if first > 0 {

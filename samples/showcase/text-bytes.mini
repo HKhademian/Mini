@@ -3,6 +3,7 @@
 import "core/text";
 import "core/list";
 import "core/io";
+import "util/io";
 
 bytes := text_to_bytes("Mini");
 index := 0;

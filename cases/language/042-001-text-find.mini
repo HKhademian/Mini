@@ -1,5 +1,6 @@
 import "core/text";
 import "core/io";
+import "util/io";
 source := "alpha beta alpha";
 first := text_find(source, "alpha");
 second := text_find(source, "beta");

@@ -5,6 +5,7 @@ import "core/path";
 import "core/io";
 import "core/file";
 import "core/process";
+import "util/io";
 
 if path_is_file(process_exec_path()) {
     io_write_line("exec ok");

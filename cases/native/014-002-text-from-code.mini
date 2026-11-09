@@ -1,5 +1,6 @@
 import "core/io";
 import "core/text";
+import "util/io";
 
 io_write_line(text_from_code(65));
 io_write_line(text_from_code(233));

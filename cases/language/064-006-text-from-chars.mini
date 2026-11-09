@@ -2,6 +2,7 @@
 
 import "core/io";
 import "core/text";
+import "util/io";
 
 characters := text_to_chars("چطوری 😀");
 io_write_line(text_from_chars(characters));

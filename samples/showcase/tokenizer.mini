@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 source := "x:=1;";
 index := 0;

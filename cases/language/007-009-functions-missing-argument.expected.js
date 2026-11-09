@@ -615,6 +615,9 @@ function $mini_file_5() {
 
 }
 function $mini_file_6() {
+
+}
+function $mini_file_7() {
     io_write_line(number_to_text((join("a", 0)).length));
 }
 function $mini_main() {
@@ -625,5 +628,6 @@ function $mini_main() {
     $mini_file_4();
     $mini_file_5();
     $mini_file_6();
+    $mini_file_7();
 }
 $mini_main();

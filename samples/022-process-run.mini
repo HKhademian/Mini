@@ -5,6 +5,7 @@ import "core/map";
 import "core/io";
 import "core/process";
 import "util/process";
+import "util/io";
 
 args := list_new();
 list_set(args, 0, "-e");

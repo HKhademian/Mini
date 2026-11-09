@@ -1,6 +1,7 @@
 import "core/io";
 import "core/list";
 import "core/text";
+import "util/io";
 
 text := "چطوری David";
 io_write_line(text_length(text));

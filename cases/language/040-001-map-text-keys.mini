@@ -4,6 +4,7 @@ import "core/list";
 import "core/map";
 import "core/io";
 import "core/process";
+import "util/io";
 
 /// Record receiver evaluation and return the nested map without copying it.
 fn receiver(state) {

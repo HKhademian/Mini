@@ -2,6 +2,7 @@
 
 import "core/number";
 import "core/io";
+import "util/io";
 
 n := 1;
 while n <= 15 {

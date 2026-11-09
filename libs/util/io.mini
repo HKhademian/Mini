@@ -1,0 +1,16 @@
+/// Convenience output helpers built on the core I/O functions.
+
+import "core/io";
+import "core/list";
+import "util/io";
+
+/// Write every supplied value followed by one newline and return the write result.
+fn io_write_line() {
+    values := fn_args();
+    position := 0;
+    while position < list_length(values) {
+        io_write(list_get(values, position));
+        position = position + 1;
+    }
+    return io_write("\n");
+}

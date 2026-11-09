@@ -4,6 +4,7 @@ import "core/number";
 import "core/list";
 import "core/io";
 import "core/map";
+import "util/io";
 
 pairs := map_of("hi", 2, "test", 3);
 repeated := map_of("k", 1, "k", 2);

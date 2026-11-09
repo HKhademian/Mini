@@ -1,5 +1,6 @@
 import "core/number";
 import "core/io";
+import "util/io";
 fn pick(value) {
     if value == 1 {
         return 5;

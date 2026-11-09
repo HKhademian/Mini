@@ -13,6 +13,7 @@ import "util/process";
 import "compiler/lexer";
 import "compiler/parser";
 import "compiler/emit-js";
+import "util/io";
 
 /// Report a bootstrap failure.
 fn bootstrap_fail(message) {

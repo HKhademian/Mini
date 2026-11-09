@@ -1,5 +1,6 @@
 import "core/text";
 import "core/io";
+import "util/io";
 
 /// Reverse text and compare.
 fn reverse(text) {

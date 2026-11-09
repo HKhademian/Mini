@@ -2,6 +2,7 @@
 
 import "core/number";
 import "core/io";
+import "util/io";
 
 io_write_line(number_to_text(42));
 io_write_line(number_to_text(-7));

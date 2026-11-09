@@ -1,4 +1,5 @@
 import "core/list";
 import "core/io";
+import "util/io";
 args := fn_args();
 io_write_line(list_join("|", args));

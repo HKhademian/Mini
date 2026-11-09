@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 first := io_read_line();
 three := io_read_bytes(3);

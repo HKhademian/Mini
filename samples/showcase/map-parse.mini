@@ -3,6 +3,7 @@
 import "core/json";
 import "core/map";
 import "core/io";
+import "util/io";
 
 parsed := json_value("{\"name\":\"Mini\",\"count\":2}");
 if map_get(parsed, "ok") {

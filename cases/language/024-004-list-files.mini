@@ -1,6 +1,7 @@
 import "core/list";
 import "core/io";
 import "core/file";
+import "util/io";
 
 args := fn_args();
 if list_length(args) == 3 && list_get(args, 0) == "copy" {

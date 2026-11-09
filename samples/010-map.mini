@@ -3,6 +3,7 @@
 import "core/list";
 import "core/map";
 import "core/io";
+import "util/io";
 
 names := map_new();
 if list_length(map_keys(names)) == 0 {

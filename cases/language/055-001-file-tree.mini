@@ -4,6 +4,7 @@ import "core/list";
 import "core/io";
 import "core/file";
 import "core/path";
+import "util/io";
 
 root := path_temp_directory();
 sub := root + "/sub";

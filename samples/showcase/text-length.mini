@@ -2,6 +2,7 @@
 
 import "core/text";
 import "core/io";
+import "util/io";
 
 text := "playground";
 io_write_line(text_length(text));

@@ -4,6 +4,7 @@ import "core/io";
 import "core/number";
 import "util/board";
 import "core/play";
+import "util/io";
 
 screen_size := 10;
 screen_center := number_div(screen_size, 2);

@@ -1,5 +1,6 @@
 import "core/number";
 import "core/io";
+import "util/io";
 
 /// Return a value from a named function.
 fn square(value) {

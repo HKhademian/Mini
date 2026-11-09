@@ -6,6 +6,7 @@ import "core/path";
 import "tools/bench";
 import "core/process";
 import "core/project";
+import "util/io";
 
 /// Parse arguments, run benchmarks, and report the output path.
 fn main(args) {

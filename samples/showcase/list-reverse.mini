@@ -2,6 +2,7 @@
 
 import "core/list";
 import "core/io";
+import "util/io";
 
 values := list_new();
 list_set(values, 0, "one");

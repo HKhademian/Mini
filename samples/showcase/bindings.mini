@@ -1,6 +1,7 @@
 /// Bind text and number values and write one line.
 
 import "core/io";
+import "util/io";
 
 name := "Mini";
 version := 1;

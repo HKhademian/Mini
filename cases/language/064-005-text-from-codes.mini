@@ -3,6 +3,7 @@
 import "core/io";
 import "core/list";
 import "core/text";
+import "util/io";
 
 io_write_line(text_from_codes(list_of(65, 233, 128512, 55296, 66)));
 io_write_line(text_from_codes(42));

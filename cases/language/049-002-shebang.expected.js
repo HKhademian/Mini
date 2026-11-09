@@ -33,6 +33,53 @@ function process_spawn(options) {
     }
     return output;
 }
+function io_read_all() { return process.getBuiltinModule("node:fs").readFileSync(0, "utf8"); }
+function io_read_bytes(count) { if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }
+function io_read_line() { const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString("utf8"); }
+function io_write(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
+    return 0;
+}
+function io_write_error(...values) {
+    function normalize(value) {
+        if (Array.isArray(value)) return value.map(normalize);
+        if (value !== null && typeof value === "object") {
+            const result = Object.create(null);
+            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
+            return result;
+        }
+        return value;
+    }
+    function display(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
+        if (typeof value === "boolean") return value ? "true" : "false";
+        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
+        return "0";
+    }
+    let text = "";
+    for (const value of values) text += display(value);
+    process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
+    return 0;
+}
 function value_kind(value) { if (typeof value === "string") return "text"; if (typeof value === "number") return "number"; if (typeof value === "boolean") return "boolean"; if (Array.isArray(value)) return "list"; if (value !== null && typeof value === "object") return "map"; return "other"; }
 function value_is_text(value) {
 
@@ -239,53 +286,6 @@ function list_rest(items, count) {
     }
     return result;
 }
-function io_read_all() { return process.getBuiltinModule("node:fs").readFileSync(0, "utf8"); }
-function io_read_bytes(count) { if (typeof count !== "number" || !Number.isInteger(count) || count <= 0) return []; const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(count); const read = fs.readSync(0, buffer, 0, count, null); return Array.from(buffer.subarray(0, read)); }
-function io_read_line() { const fs = process.getBuiltinModule("node:fs"); const buffer = Buffer.alloc(1); const bytes = []; while (true) { const count = fs.readSync(0, buffer, 0, 1, null); if (count === 0 || buffer[0] === 10) break; bytes.push(buffer[0]); } if (bytes.length > 0 && bytes[bytes.length - 1] === 13) bytes.pop(); return Buffer.from(bytes).toString("utf8"); }
-function io_write(...values) {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
-    }
-    function display(value) {
-        if (typeof value === "string") return value;
-        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
-        if (typeof value === "boolean") return value ? "true" : "false";
-        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
-        return "0";
-    }
-    let text = "";
-    for (const value of values) text += display(value);
-    process.getBuiltinModule("node:fs").writeSync(1, Buffer.from(text, "utf8"));
-    return 0;
-}
-function io_write_error(...values) {
-    function normalize(value) {
-        if (Array.isArray(value)) return value.map(normalize);
-        if (value !== null && typeof value === "object") {
-            const result = Object.create(null);
-            for (const key of Object.keys(value).sort()) result[key] = normalize(value[key]);
-            return result;
-        }
-        return value;
-    }
-    function display(value) {
-        if (typeof value === "string") return value;
-        if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "";
-        if (typeof value === "boolean") return value ? "true" : "false";
-        if (Array.isArray(value) || (value !== null && typeof value === "object")) return JSON.stringify(normalize(value));
-        return "0";
-    }
-    let text = "";
-    for (const value of values) text += display(value);
-    process.getBuiltinModule("node:fs").writeSync(2, Buffer.from(text, "utf8"));
-    return 0;
-}
 function io_write_line() {
     const $mini_fn_args = Array.prototype.slice.call(arguments);
 
@@ -310,6 +310,9 @@ function $mini_file_3() {
 
 }
 function $mini_file_4() {
+
+}
+function $mini_file_5() {
     io_write_line("ok");
 }
 function $mini_main() {
@@ -318,5 +321,6 @@ function $mini_main() {
     $mini_file_2();
     $mini_file_3();
     $mini_file_4();
+    $mini_file_5();
 }
 $mini_main();

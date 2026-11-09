@@ -3,6 +3,7 @@
 import "core/list";
 import "core/map";
 import "core/io";
+import "util/io";
 
 values := map_new();
 map_set(values, "key", "old");

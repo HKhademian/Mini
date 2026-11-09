@@ -8,6 +8,7 @@ import "core/json";
 import "core/project";
 import "core/file";
 import "util/process";
+import "util/io";
 
 /// Return the active compiler entry.
 fn mini_compiler(root) {

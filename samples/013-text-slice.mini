@@ -2,6 +2,7 @@
 
 import "core/io";
 import "core/text";
+import "util/io";
 
 source := io_read_all();
 io_write_line(text_slice(source, 0, 3));

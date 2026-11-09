@@ -1,6 +1,7 @@
 /// Print a Fibonacci sequence using mixed-value output.
 
 import "core/io";
+import "util/io";
 
 /// Calculate a Fibonacci number with an iterative loop.
 fn fib(n) {

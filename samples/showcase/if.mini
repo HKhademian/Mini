@@ -1,6 +1,7 @@
 /// Run a block when a condition holds.
 
 import "core/io";
+import "util/io";
 
 temperature := 21;
 if temperature > 18 {

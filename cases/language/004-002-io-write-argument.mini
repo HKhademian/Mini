@@ -1,4 +1,5 @@
 import "core/io";
+import "util/io";
 
 io_write();
 io_write_line();

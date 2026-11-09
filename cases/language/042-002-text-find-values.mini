@@ -1,5 +1,6 @@
 import "core/text";
 import "core/io";
+import "util/io";
 fn find(value, needle) {
     return text_find(value, needle);
 }

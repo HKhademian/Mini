@@ -1,6 +1,7 @@
 /// Join text with +.
 
 import "core/io";
+import "util/io";
 
 first := "self";
 second := "-hosting";

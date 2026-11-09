@@ -4,6 +4,7 @@ import "core/io";
 import "core/list";
 import "util/board";
 import "core/play";
+import "util/io";
 
 screen_size := 10;
 background := pixel_rgb(18, 34, 70);

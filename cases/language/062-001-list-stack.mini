@@ -3,6 +3,7 @@
 import "core/number";
 import "core/io";
 import "core/list";
+import "util/io";
 
 items := list_new();
 list_push_back(items, "b");
