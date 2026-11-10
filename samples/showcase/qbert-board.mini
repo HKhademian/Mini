@@ -1,0 +1,129 @@
+/// Hop across a small diamond of tiles and change every tile's color.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_center := number_div(screen_size, 2);
+level_rows := 4;
+total_tiles := number_div(number_mul(level_rows, level_rows + 1), 2);
+tiles := list_of(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+player_row := 0;
+player_column := 0;
+changed_tiles := 0;
+game_won := false;
+background := pixel_rgb(8, 14, 30);
+tile_color := pixel_rgb(82, 126, 214);
+changed_color := pixel_rgb(255, 150, 72);
+player_color := pixel_rgb(255, 236, 92);
+
+/// Return the row-major index for a tile in the triangular board.
+fn qbert_tile_index(row, column) {
+    return number_div(number_mul(row, row + 1), 2) + column;
+}
+
+/// Draw every diamond tile and the player marker.
+fn qbert_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    row := 0;
+    while row < level_rows {
+        column := 0;
+        while column <= row {
+            tile_x := screen_center - row + number_mul(column, 2);
+            tile_y := 1 + number_mul(row, 2);
+            tile_index := qbert_tile_index(row, column);
+            color := tile_color;
+            if list_get(tiles, tile_index) == 1 {
+                color = changed_color;
+            }
+            pixel_board_set(board, screen_size, screen_size, tile_x, tile_y, color);
+            if row == player_row && column == player_column {
+                pixel_board_set(board, screen_size, screen_size, tile_x, tile_y, player_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Change the tile under the player and detect a full-color board.
+fn qbert_mark_tile() {
+    tile_index := qbert_tile_index(player_row, player_column);
+    if list_get(tiles, tile_index) == 0 {
+        list_set(tiles, tile_index, 1);
+        changed_tiles = changed_tiles + 1;
+        if changed_tiles >= total_tiles {
+            game_won = true;
+        }
+    }
+}
+
+/// Keep the current board visible until every tile has been changed.
+fn canvas_update() {
+    qbert_render();
+    if game_won {
+        return 1;
+    }
+}
+
+/// Hop along a diagonal edge using the arrow keys or W/A/S/D.
+fn canvas_on_key_down(key) {
+    if game_won {
+        return 0;
+    }
+    next_row := player_row;
+    next_column := player_column;
+    if key == "ArrowUp" || key == "w" {
+        next_row = player_row - 1;
+        next_column = player_column - 1;
+    } else if key == "ArrowRight" || key == "d" {
+        next_row = player_row - 1;
+    } else if key == "ArrowLeft" || key == "a" {
+        next_row = player_row + 1;
+    } else if key == "ArrowDown" || key == "s" {
+        next_row = player_row + 1;
+        next_column = player_column + 1;
+    }
+    if next_row >= 0 && next_row < level_rows && next_column >= 0 && next_column <= next_row {
+        player_row = next_row;
+        player_column = next_column;
+        qbert_mark_tile();
+    }
+}
+
+/// Print the triangular tile layout for command-line runs.
+fn qbert_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            tile_row := number_div(row - 1, 2);
+            tile_column := number_div(column - (screen_center - tile_row), 2);
+            if row >= 1 && number_mod(row - 1, 2) == 0 && tile_row < level_rows && tile_column >= 0 && tile_column <= tile_row && number_mod(column - (screen_center - tile_row), 2) == 0 {
+                if tile_row == player_row && tile_column == player_column {
+                    line = line + "@";
+                } else if list_get(tiles, qbert_tile_index(tile_row, tile_column)) == 1 {
+                    line = line + "#";
+                } else {
+                    line = line + "o";
+                }
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+qbert_mark_tile();
+qbert_render();
+canvas_play(screen_size, screen_size, "Q*bert · Diagonal Arrows");
+qbert_print();

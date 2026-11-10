@@ -555,11 +555,11 @@
   {
     "id": "qbert-board",
     "group": "Games",
-    "label": "Q*bert — planned",
-    "note": "Hop across a compact isometric-style tile board.",
+    "label": "Q*bert",
+    "note": "Hop with diagonal arrow moves (Up/Left go up; Right/Down go down) and change every tile's color.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/qbert-board.mini"
   },
   {
     "id": "pixel-one",
