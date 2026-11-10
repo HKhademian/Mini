@@ -62,7 +62,9 @@ stores one row-major frame with `width * height` packed RGB integers from
 `0x000000` to `0xffffff`. The host reads frame dimensions and pixels through
 `canvas_get_width()`, `canvas_get_height()`, and `canvas_get_pixels()`; the pixel
 getter returns the stored list without copying. `canvas_get_title()` returns the
-current title. `pixel_board_new`, `pixel_board_set`, `pixel_board_get`, and
+current title. Each update can call `canvas_draw(...)` again on the same canvas;
+the host uses that frame's current dimensions and pixels. `pixel_board_new`,
+`pixel_board_set`, `pixel_board_get`, and
 `pixel_rgb` help construct boards. The same Mini calls can
 be hosted by other renderers, such as Raylib; each host owns its frame loop and
 drawing.

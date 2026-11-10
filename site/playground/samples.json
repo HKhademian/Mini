@@ -661,6 +661,15 @@
     "file": "samples/showcase/pixel-moving.mini"
   },
   {
+    "id": "pixel-resize",
+    "group": "Animation",
+    "label": "Dynamic canvas size",
+    "note": "Draw new frames on the same canvas while its square size changes from five to nine pixels, three times per second.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-resize.mini"
+  },
+  {
     "id": "pixel-beating-heart",
     "group": "Animation",
     "label": "Beating heart",

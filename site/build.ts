@@ -674,6 +674,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     }
 
     function drawPlayFrame(pixels) {
+      if (playCanvas.width < 1 || playCanvas.height < 1) return;
       const image = playContext.createImageData(playCanvas.width, playCanvas.height);
       const count = Math.min(pixels.length, playCanvas.width * playCanvas.height);
       for (let index = 0; index < count; index += 1) {
@@ -685,6 +686,19 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         image.data[offset + 3] = 255;
       }
       playContext.putImageData(image, 0, 0);
+    }
+
+    function applyPlayFrame(frame) {
+      if (!frame) return;
+      if (frame.width > 0 && frame.height > 0) {
+        if (playCanvas.width !== frame.width) playCanvas.width = frame.width;
+        if (playCanvas.height !== frame.height) playCanvas.height = frame.height;
+      }
+      if (typeof frame.title === "string") {
+        playCanvas.title = frame.title;
+        playTitle.textContent = frame.title;
+      }
+      drawPlayFrame(frame.pixels);
     }
 
     function unlockAudio() {
@@ -816,7 +830,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         if (data.action === "step") {
           playInFlight = false;
           if (!activePlay) return;
-          drawPlayFrame(data.pixels);
+          applyPlayFrame(data);
           if (data.status === 0) {
             playFrame = requestAnimationFrame(requestPlayStep);
           } else {
@@ -827,7 +841,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           return;
         }
         if (["keydown", "keyup", "pointermove", "pointerdown", "pointerup"].includes(data.action)) {
-          if (activeCanvas && data.pixels) drawPlayFrame(data.pixels);
+          if (activeCanvas && data.pixels) applyPlayFrame(data);
           return;
         }
         if (data.action === "failure") {
@@ -853,13 +867,9 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         }
         const canvasFrame = data.play || data.canvas;
         if (!compileOnly && canvasFrame) {
-          playCanvas.width = canvasFrame.width;
-          playCanvas.height = canvasFrame.height;
-          playCanvas.title = canvasFrame.title;
-          playTitle.textContent = canvasFrame.title;
+          applyPlayFrame(canvasFrame);
           playStatus.textContent = data.play ? data.play.hasUpdate ? "Playing · arrows or WASD" : "Canvas ready" : "One-time render";
           tabCanvas.hidden = false;
-          drawPlayFrame(canvasFrame.pixels);
           showTab("canvas");
           if (data.play) playCanvas.focus({ preventScroll: true });
           if (data.play && data.play.hasUpdate && data.play.status === 0) {

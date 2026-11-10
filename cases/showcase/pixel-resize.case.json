@@ -1,0 +1,24 @@
+{
+  "id": "showcase.pixel-resize",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-resize.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "core.number",
+    "util.canvas",
+    "util.board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": { "text": "The same canvas grows from five to nine pixels wide.\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

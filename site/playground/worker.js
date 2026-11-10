@@ -141,7 +141,7 @@ function prepare(code, play, still, title, audio) {
   ].join("\n");
   const playBridge = play ? [
     "globalThis.__miniPlay = {",
-    "  pixels: canvas_get_pixels,",
+    "  frame: function () { return { width: canvas_get_width(), height: canvas_get_height(), title: canvas_get_title(), pixels: canvas_get_pixels() }; },",
     '  init: typeof canvas_on_init === "function" ? canvas_on_init : null,',
     '  update: typeof canvas_on_update === "function" ? canvas_on_update : null,',
     '  keyDown: typeof canvas_on_key_down === "function" ? canvas_on_key_down : null,',
@@ -153,9 +153,6 @@ function prepare(code, play, still, title, audio) {
     "if (globalThis.__miniPlay.init) globalThis.__miniPlay.init();",
     "globalThis.__miniPlay.hasUpdate = Boolean(globalThis.__miniPlay.update);",
     "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update ? globalThis.__miniPlay.update(0) : null;",
-    "globalThis.__miniPlay.width = canvas_get_width();",
-    "globalThis.__miniPlay.height = canvas_get_height();",
-    "globalThis.__miniPlay.title = canvas_get_title();",
   ].join("\n") : "";
   const stillBridge = still ? [
     "globalThis.__miniCanvas = {",
@@ -181,6 +178,7 @@ async function runCode(code, stdin, args, play, still, title, audio) {
   try {
     await import(url);
     const session = globalThis.__miniPlay;
+    const frame = session ? session.frame() : null;
     return {
       ok: true,
       output: globalThis.__miniOutput,
@@ -188,10 +186,10 @@ async function runCode(code, stdin, args, play, still, title, audio) {
       canvas: globalThis.__miniCanvas ?? null,
       tones: globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [],
       play: session ? {
-        width: session.width,
-        height: session.height,
-        title: session.title,
-        pixels: session.pixels(),
+        width: frame.width,
+        height: frame.height,
+        title: frame.title,
+        pixels: frame.pixels,
         status: session.initialStatus,
         hasUpdate: session.hasUpdate,
       } : null,
@@ -213,33 +211,38 @@ self.onmessage = async (event) => {
     const data = event.data;
     if (data && data.action === "update" && globalThis.__miniPlay) {
       const status = globalThis.__miniPlay.update(data.dt);
+      const frame = globalThis.__miniPlay.frame();
       const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
-      self.postMessage({ action: "step", status, pixels: globalThis.__miniPlay.pixels(), tones: tones });
+      self.postMessage({ action: "step", status, width: frame.width, height: frame.height, title: frame.title, pixels: frame.pixels, tones: tones });
       return;
     }
     if (data && data.action === "keydown" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyDown) globalThis.__miniPlay.keyDown(data.key);
+      const frame = globalThis.__miniPlay.frame();
       const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
-      self.postMessage({ action: "keydown", pixels: globalThis.__miniPlay.pixels(), tones: tones });
+      self.postMessage({ action: "keydown", width: frame.width, height: frame.height, title: frame.title, pixels: frame.pixels, tones: tones });
       return;
     }
     if (data && data.action === "keyup" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyUp) globalThis.__miniPlay.keyUp(data.key);
+      const frame = globalThis.__miniPlay.frame();
       const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
-      self.postMessage({ action: "keyup", pixels: globalThis.__miniPlay.pixels(), tones: tones });
+      self.postMessage({ action: "keyup", width: frame.width, height: frame.height, title: frame.title, pixels: frame.pixels, tones: tones });
       return;
     }
     if (data && data.action === "pointermove" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.pointerMove) globalThis.__miniPlay.pointerMove(data.x, data.y);
+      const frame = globalThis.__miniPlay.frame();
       const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
-      self.postMessage({ action: "pointermove", pixels: globalThis.__miniPlay.pixels(), tones: tones });
+      self.postMessage({ action: "pointermove", width: frame.width, height: frame.height, title: frame.title, pixels: frame.pixels, tones: tones });
       return;
     }
     if (data && (data.action === "pointerdown" || data.action === "pointerup") && globalThis.__miniPlay) {
       const handler = data.action === "pointerdown" ? globalThis.__miniPlay.pointerDown : globalThis.__miniPlay.pointerUp;
       if (handler) handler(data.x, data.y, data.button);
+      const frame = globalThis.__miniPlay.frame();
       const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
-      self.postMessage({ action: data.action, pixels: globalThis.__miniPlay.pixels(), tones: tones });
+      self.postMessage({ action: data.action, width: frame.width, height: frame.height, title: frame.title, pixels: frame.pixels, tones: tones });
       return;
     }
     if (data && data.action === "stop") {
