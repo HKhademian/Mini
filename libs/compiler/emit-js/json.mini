@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "json_value",
-    text_join(
-        "\n",
+    list_of(
         "function json_value(text) {",
         "  const result = Object.create(null);",
         "  result.ok = false;",
@@ -56,8 +55,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "json_text",
-    text_join(
-        "\n",
+    list_of(
         "function json_text(value) {",
         "  const seen = new Set();",
         "  function encode(item) {",

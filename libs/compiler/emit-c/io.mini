@@ -159,8 +159,7 @@ emit_c_host_runtime_add("io_write", emit_c_io_runtime());
 // io_write uses the runtime writer; io_write_line has no native variadic lowering.
 emit_c_host_function_add(
     "io_write",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_write)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
         "  if (!context || !result) {",
@@ -177,8 +176,7 @@ emit_c_host_function_add(
 );
 emit_c_host_function_add(
     "io_write_line",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_write_line)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -196,8 +194,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "io_read_all",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_read_all)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 0) {",
@@ -223,8 +220,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "io_read_line",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_read_line)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 0) {",
@@ -255,8 +251,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "io_read_bytes",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_read_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -289,8 +284,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "io_write_error",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_io_write_error)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",

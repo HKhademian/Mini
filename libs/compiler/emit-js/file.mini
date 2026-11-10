@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "file_read",
-    text_join(
-        "\n",
+    list_of(
         "function file_read(path) {",
         "  return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\");",
         "}",
@@ -16,8 +15,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "file_read_bytes",
-    text_join(
-        "\n",
+    list_of(
         "function file_read_bytes(path) {",
         "  return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));",
         "}",
@@ -28,8 +26,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "file_write",
-    text_join(
-        "\n",
+    list_of(
         "function file_write(path, text) {",
         "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\");",
         "  return 0;",
@@ -41,8 +38,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "file_write_bytes",
-    text_join(
-        "\n",
+    list_of(
         "function file_write_bytes(path, bytes) {",
         "  const values = Array.isArray(bytes) ?",
         "      bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) :",

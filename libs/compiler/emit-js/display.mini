@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "value_to_text",
-    text_join(
-        "\n",
+    list_of(
         "function value_to_text(value) {",
         "  if (typeof value === \"string\") {",
         "    return value;",

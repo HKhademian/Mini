@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "hash_sha256",
-    text_join(
-        "\n",
+    list_of(
         "function hash_sha256(value) {",
         "  const crypto = process.getBuiltinModule(\"node:crypto\");",
         "  const bytes = Array.isArray(value) ?",

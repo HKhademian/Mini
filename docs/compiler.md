@@ -44,14 +44,16 @@ source text and trivia beside the AST. See the independent
 [migration plan](../.agents/plans/compiler-ast-backends.md), and
 [AST definitions](../libs/compiler/ast.mini).
 
-The JavaScript emitter produces a complete Node source string and manages
-file initializers and target syntax. It emits calls under their Mini function
-names; its override registry may replace a same-name imported Mini function or
-lower that call through a target implementation.
-The C emitter produces a C source/header pair for its supported subset and owns
-registered host functions and runtime fragments, target capability failures,
-and C syntax lowering. Neither emitter owns lexing or shared parsing/checking.
-Their Mini source files document the AST entry points and compile adapters.
+Both compile adapters return generated output as line lists. The C backend also
+keeps registered runtime fragments and host definitions as lines while assembling
+its source and header. The compiler command joins each list with LF only when it
+writes the artifact. The JavaScript emitter manages file initializers and target
+syntax, and emits calls under their Mini function names; its override registry
+may replace a same-name imported Mini function or lower that call through a
+target implementation. The C emitter handles its supported subset, target
+capability failures, and C syntax lowering. Neither emitter owns lexing or shared
+parsing/checking. Their Mini source files document the AST entry points and
+compile adapters.
 
 Emitters and other source generators collect output fragments or lines in
 lists and join them at the output boundary. For line-oriented output, an empty

@@ -4,8 +4,7 @@ import "./registry";
 
 emit_c_host_function_add(
     "value_merge",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -86,8 +85,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_kind",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_kind)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -118,8 +116,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_is_text",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_is_text)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -134,8 +131,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_is_number",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_is_number)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -150,8 +146,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_is_boolean",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_is_boolean)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                 MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -166,8 +161,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_is_list",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_is_list)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -182,8 +176,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "value_is_map",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_value_is_map)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",

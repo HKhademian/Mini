@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "directory_create",
-    text_join(
-        "\n",
+    list_of(
         "function directory_create(path) {",
         "  process.getBuiltinModule(\"node:fs\").mkdirSync(path, {recursive: true});",
         "  return 0;",
@@ -17,8 +16,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "directory_list",
-    text_join(
-        "\n",
+    list_of(
         "function directory_list(path) {",
         "  const fs = process.getBuiltinModule(\"node:fs\");",
         "  try {",
@@ -34,8 +32,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_copy",
-    text_join(
-        "\n",
+    list_of(
         "function path_copy(from, to) {",
         "  process.getBuiltinModule(\"node:fs\").cpSync(",
         "      from, to, {recursive: true, force: true, dereference: true});",
@@ -48,8 +45,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_is_directory",
-    text_join(
-        "\n",
+    list_of(
         "function path_is_directory(path) {",
         "  const fs = process.getBuiltinModule(\"node:fs\");",
         "  try {",
@@ -65,8 +61,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_is_exists",
-    text_join(
-        "\n",
+    list_of(
         "function path_is_exists(path) {",
         "  const fs = process.getBuiltinModule(\"node:fs\");",
         "  try {",
@@ -82,8 +77,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_is_file",
-    text_join(
-        "\n",
+    list_of(
         "function path_is_file(path) {",
         "  try {",
         "    return process.getBuiltinModule(\"node:fs\").statSync(path).isFile();",
@@ -98,8 +92,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_remove",
-    text_join(
-        "\n",
+    list_of(
         "function path_remove(path) {",
         "  process.getBuiltinModule(\"node:fs\").rmSync(path, {recursive: true, force: true});",
         "  return 0;",
@@ -111,8 +104,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "path_temp_directory",
-    text_join(
-        "\n",
+    list_of(
         "function path_temp_directory() {",
         "  const fs = process.getBuiltinModule(\"node:fs\");",
         "  const os = process.getBuiltinModule(\"node:os\");",

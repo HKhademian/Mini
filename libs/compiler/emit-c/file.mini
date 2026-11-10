@@ -4,8 +4,7 @@ import "./registry";
 
 emit_c_host_function_add(
     "file_read",
-    text_join(
-        "\n",
+    list_of(
         "static char *MINI_ID(file_path)(MINI_ID(value) value) {",
         "  if (value.kind != MINI_ID(kind_text) || !value.text.buffer ||",
         "      value.text.offset > value.text.buffer->count ||",
@@ -68,8 +67,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "file_read_bytes",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_file_read_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -111,8 +109,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "file_write",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_file_write)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args ||",
@@ -155,8 +152,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "file_write_bytes",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_file_write_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                 MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args ||",

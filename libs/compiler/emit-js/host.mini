@@ -19,11 +19,15 @@ import "./process";
 /// Return a registered host implementation unless reference mode is active.
 fn emit_js_host_function(name) {
     if !map_has(js_host_functions, name) {
-        return "";
+        return list_new();
     }
     entry := map_get(js_host_functions, name);
     if reference_mode && !map_get(entry, "keep_reference") {
-        return "";
+        return list_new();
     }
-    return map_get(entry, "definition");
+    output := list_copy(map_get(entry, "definition"));
+    if list_length(output) > 0 && list_get(output, list_length(output) - 1) == "" {
+        list_truncate(output, list_length(output) - 1);
+    }
+    return output;
 }

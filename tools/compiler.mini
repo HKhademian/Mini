@@ -148,15 +148,15 @@ fn main(args) {
     if target_name == "c" {
         header := native_artifact_path(target, ".h");
         code := emit_c_compile(expanded, path_basename(header));
-        file_write(header, emit_c_header(path_basename(header)));
-        file_write(target, code);
+        file_write(header, list_join("\n", emit_c_header(path_basename(header))));
+        file_write(target, list_join("\n", code));
         return 0;
     }
     if program_only {
-        file_write(target, emit_js_compile_program_only(expanded));
+        file_write(target, list_join("\n", emit_js_compile_program_only(expanded)));
         return 0;
     }
-    file_write(target, emit_js_compile(expanded));
+    file_write(target, list_join("\n", emit_js_compile(expanded)));
     return 0;
 }
 

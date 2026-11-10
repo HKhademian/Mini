@@ -5,14 +5,18 @@ import "./registry";
 
 emit_js_host_function_add(
     "map_new",
-    text_join("\n", "function map_new() {", "  return Object.create(null);", "}", ""),
+    list_of(
+        "function map_new() {",
+        "  return Object.create(null);",
+        "}",
+        ""
+    ),
     true,
     ""
 );
 emit_js_host_function_add(
     "map_get",
-    text_join(
-        "\n",
+    list_of(
         "function map_get(items, key) {",
         "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
         "    return 0;",
@@ -26,8 +30,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "map_set",
-    text_join(
-        "\n",
+    list_of(
         "function map_set(items, key, value) {",
         "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
         "      typeof key === \"string\") {",
@@ -42,8 +45,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "map_has",
-    text_join(
-        "\n",
+    list_of(
         "function map_has(items, key) {",
         "  return items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
         "      typeof key === \"string\" && Object.prototype.hasOwnProperty.call(items, key);",
@@ -55,8 +57,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "map_keys",
-    text_join(
-        "\n",
+    list_of(
         "function map_keys(items) {",
         "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
         "    return [];",
@@ -70,8 +71,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "map_delete",
-    text_join(
-        "\n",
+    list_of(
         "function map_delete(items, key) {",
         "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&",
         "      typeof key === \"string\") {",
@@ -86,8 +86,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "map_copy",
-    text_join(
-        "\n",
+    list_of(
         "function map_copy(items) {",
         "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {",
         "    return Object.create(null);",

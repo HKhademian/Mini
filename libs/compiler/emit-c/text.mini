@@ -4,8 +4,7 @@ import "./registry";
 
 emit_c_host_runtime_add(
     "text_units",
-    text_join(
-        "\n",
+    list_of(
         "static int MINI_ID(text_decode)(const unsigned char *bytes, size_t length, uint32_t *code,",
         "                                size_t *width) {",
         "  if (!bytes || !length || !code || !width) {",
@@ -192,8 +191,7 @@ emit_c_host_runtime_add(
 
 emit_c_host_runtime_after_context_add(
     "text_utf16_extract",
-    text_join(
-        "\n",
+    list_of(
         "static int MINI_ID(text_utf16_extract)(MINI_ID(context) * context, MINI_ID(text) source,",
         "                                       size_t start, size_t end, MINI_ID(value) * result) {",
         "  size_t total = 0;",
@@ -253,8 +251,7 @@ emit_c_host_runtime_after_context_add(
 
 emit_c_host_function_add(
     "text_merge",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -286,8 +283,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_join",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_join)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -334,8 +330,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_length",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_length)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -355,8 +350,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_get",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_get)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -385,8 +379,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_to_code",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_to_code)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -429,8 +422,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_from_code",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_from_code)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -478,8 +470,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "text_slice",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_text_slice)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 3 || !params.args) {",

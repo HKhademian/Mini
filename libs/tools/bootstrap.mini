@@ -22,8 +22,8 @@ fn bootstrap_fail(message) {
     return 0;
 }
 
-/// Compile one source in-process and return generated text.
-fn bootstrap_compile_text(source) {
+/// Compile one source in-process and return generated source lines.
+fn bootstrap_compile_lines(source) {
     tokens := lex_tokenize(file_read(source), path_basename(source), false);
     expanded := lex_expand_imports(tokens, source, map_new());
     return emit_js_compile(expanded);
@@ -145,7 +145,7 @@ fn bootstrap_all(root) {
     source := path_join(root, "tools/compiler.mini");
     first := path_join(work, "compiler1.js");
     second := path_join(work, "compiler2.js");
-    file_write(first, bootstrap_compile_text(source));
+    file_write(first, list_join("\n", bootstrap_compile_lines(source)));
     bootstrap_executable(root, first);
     bootstrap_compile_with(root, first, source, second);
     if hash_sha256(file_read_bytes(first)) != hash_sha256(file_read_bytes(second)) {

@@ -4,9 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "value_kind",
-    text_join(
-        "\n",
-        "function value_kind(value) {",
+    list_of("function value_kind(value) {",
         "  if (typeof value === \"string\") {",
         "    return \"text\";",
         "  }",

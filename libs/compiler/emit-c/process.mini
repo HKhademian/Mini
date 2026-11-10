@@ -5,8 +5,7 @@ import "./registry";
 emit_c_host_preamble_add("#define _XOPEN_SOURCE 700");
 emit_c_host_runtime_after_context_add(
     "process_script_path",
-    text_join(
-        "\n",
+    list_of(
         "static int MINI_ID(script_path_resolve)(MINI_ID(context) * context, MINI_ID(value) input,",
         "                                        MINI_ID(value) * result) {",
         "  if (!context || !result || input.kind != MINI_ID(kind_text) || !input.text.buffer ||",
@@ -49,8 +48,7 @@ emit_c_host_runtime_after_context_add(
 
 emit_c_host_function_add(
     "process_panic",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_process_panic)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!result || (params.count && !params.args)) {",
@@ -77,8 +75,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "process_exit",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_process_exit)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
         "  if (!result || params.count != 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) {",
@@ -95,8 +92,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "process_script_path",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_process_script_path)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                    MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 0) {",

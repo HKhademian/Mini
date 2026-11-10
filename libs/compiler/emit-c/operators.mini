@@ -4,8 +4,7 @@ import "./registry";
 
 emit_c_host_runtime_add(
     "operators",
-    text_join(
-        "\n",
+    list_of(
         "static int MINI_ID(add)(MINI_ID(text_buffer) * buffer, MINI_ID(value) * left,",
         "                        MINI_ID(value) right) {",
         "  if (left->kind == MINI_ID(kind_number) && right.kind == MINI_ID(kind_number)) {",

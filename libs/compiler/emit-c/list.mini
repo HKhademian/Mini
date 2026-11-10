@@ -190,8 +190,7 @@ emit_c_host_runtime_after_context_add("list", emit_c_list_runtime());
 
 emit_c_host_function_add(
     "list_new",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_new)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 0) {",
@@ -206,8 +205,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_of",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_of)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                        MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -225,8 +223,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_merge",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_merge)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -251,8 +248,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_get",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_get)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -267,8 +263,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_length",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_length)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -283,8 +278,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_set",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_set)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 3 || !params.args) {",
@@ -300,8 +294,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_truncate",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_truncate)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -317,8 +310,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_copy",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_copy)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -333,8 +325,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_join",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_join)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
         "  if (!context || !result || (params.count && !params.args)) {",
@@ -348,8 +339,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_push_back",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_push_back)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -367,8 +357,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_push_front",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_push_front)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 2 || !params.args) {",
@@ -386,8 +375,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_pop_back",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_pop_back)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",
@@ -405,8 +393,7 @@ emit_c_host_function_add(
 
 emit_c_host_function_add(
     "list_pop_front",
-    text_join(
-        "\n",
+    list_of(
         "int MINI_ID(fn_list_pop_front)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
         "  if (!context || !result || params.count != 1 || !params.args) {",

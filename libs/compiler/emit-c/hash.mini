@@ -4,8 +4,7 @@ import "./registry";
 
 emit_c_host_function_add(
     "hash_sha256",
-    text_join(
-        "\n",
+    list_of(
         "static uint32_t MINI_ID(sha_rotr)(uint32_t value, unsigned int count) {",
         "  return (value >> count) | (value << (32 - count));",
         "}",

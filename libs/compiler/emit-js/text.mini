@@ -4,8 +4,7 @@ import "./registry";
 
 emit_js_host_function_add(
     "text_find",
-    text_join(
-        "\n",
+    list_of(
         "function text_find(source, needle) {",
         "  if (typeof source !== \"string\" || typeof needle !== \"string\") {",
         "    return -1;",
@@ -20,8 +19,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_from_bytes",
-    text_join(
-        "\n",
+    list_of(
         "function text_from_bytes(bytes) {",
         "  if (!Array.isArray(bytes)) {",
         "    return \"\";",
@@ -38,8 +36,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_from_code",
-    text_join(
-        "\n",
+    list_of(
         "function text_from_code(code) {",
         "  if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF ||",
         "      (code >= 0xD800 && code <= 0xDFFF)) {",
@@ -54,8 +51,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_to_code",
-    text_join(
-        "\n",
+    list_of(
         "function text_to_code(source, index) {",
         "  if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) {",
         "    return 0;",
@@ -71,8 +67,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_get",
-    text_join(
-        "\n",
+    list_of(
         "function text_get(source, index) {",
         "  if (typeof source !== \"string\" || !Number.isInteger(index) || index < 0) {",
         "    return \"\";",
@@ -87,8 +82,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_length",
-    text_join(
-        "\n",
+    list_of(
         "function text_length(source) {",
         "  if (typeof source !== \"string\") {",
         "    return 0;",
@@ -111,8 +105,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_slice",
-    text_join(
-        "\n",
+    list_of(
         "function text_slice(source, start, end) {",
         "  if (typeof source !== \"string\" || !Number.isInteger(start) || !Number.isInteger(end)) {",
         "    return \"\";",
@@ -149,8 +142,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_split",
-    text_join(
-        "\n",
+    list_of(
         "function text_split(source, divider) {",
         "  if (typeof source !== \"string\" || typeof divider !== \"string\") {",
         "    return [];",
@@ -167,8 +159,7 @@ emit_js_host_function_add(
 );
 emit_js_host_function_add(
     "text_to_bytes",
-    text_join(
-        "\n",
+    list_of(
         "function text_to_bytes(source) {",
         "  return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : [];",
         "}",

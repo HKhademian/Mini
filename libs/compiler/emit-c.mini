@@ -7,6 +7,7 @@ import "core/text";
 import "core/number";
 import "core/list";
 import "core/map";
+import "core/value";
 import "./parser";
 import "./emit-c/io";
 import "./emit-c/file";
@@ -135,7 +136,7 @@ fn emit_c_header_guard(name) {
     return guard + "_INCLUDED";
 }
 
-/// Join generated lines and encode terminal newlines as empty final lines.
+/// Normalize terminal newlines and return the generated source lines.
 fn emit_c_join_lines(lines, trailing_newlines) {
     length := list_length(lines);
     position := length;
@@ -151,7 +152,7 @@ fn emit_c_join_lines(lines, trailing_newlines) {
         list_set(lines, list_length(lines), "");
         existing = existing + 1;
     }
-    return list_join("\n", lines);
+    return lines;
 }
 
 /// Return generic vector storage operations shared by lists and text buffers.
@@ -443,6 +444,14 @@ fn emit_c_file_function(index, body) {
 
 /// Append generated source as line items so assembly stays readable and uniform.
 fn emit_c_collect_lines(lines, source) {
+    if value_is_list(source) {
+        position := 0;
+        while position < list_length(source) {
+            list_set(lines, list_length(lines), list_get(source, position));
+            position = position + 1;
+        }
+        return 0;
+    }
     if source == "" {
         return 0;
     }
@@ -1106,7 +1115,7 @@ fn emit_c_program(program, header_name) {
     list_set(lines, list_length(lines), "");
     emit_c_collect_lines(lines, emit_c_vec_runtime());
     emit_c_collect_lines(lines, emit_c_value_constructor());
-    emit_c_collect_lines(lines, runtime);
+    emit_c_collect_fragments(lines, runtime);
     emit_c_collect_lines(lines, "typedef struct MINI_ID(context) MINI_ID(context);");
     emit_c_collect_lines(lines, "struct MINI_ID(context) {");
     emit_c_collect_lines(lines, "    MINI_ID(text_buffer) buffer;");
@@ -1117,8 +1126,8 @@ fn emit_c_program(program, header_name) {
     emit_c_collect_fragments(lines, map_get(state, "c_declarations"));
     emit_c_collect_lines(lines, "};");
     list_set(lines, list_length(lines), "");
-    emit_c_collect_lines(lines, emit_c_host_runtime_after_context_definitions());
-    emit_c_collect_lines(lines, emit_c_host_function_definitions());
+    emit_c_collect_fragments(lines, emit_c_host_runtime_after_context_definitions());
+    emit_c_collect_fragments(lines, emit_c_host_function_definitions());
     emit_c_collect_fragments(lines, map_get(state, "c_prototypes"));
     list_set(lines, list_length(lines), "");
     emit_c_collect_fragments(lines, map_get(state, "c_functions"));

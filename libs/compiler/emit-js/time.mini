@@ -4,7 +4,12 @@ import "./registry";
 
 emit_js_host_function_add(
     "time_millis",
-    text_join("\n", "function time_millis() {", "  return Date.now();", "}", ""),
+    list_of(
+        "function time_millis() {",
+        "  return Date.now();",
+        "}",
+        ""
+    ),
     true,
     ""
 );
