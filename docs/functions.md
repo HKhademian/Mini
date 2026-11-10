@@ -133,7 +133,8 @@ the converted values followed by one newline.
 `value_to_text(any_value)` is the shared display conversion in
 [libs/core/display.mini](../libs/core/display.mini); import `core/display`.
 Text passes through, numbers use `number_to_text`, booleans become `true` or
-`false`, and lists/maps use `json_text`. JSON serialization remains distinct:
+`false`, and lists/maps use `json_text`. Cyclic collections contribute empty
+text. JSON serialization remains distinct:
 it quotes text values.
 `to_text(value)` is an alias for `value_to_text(value)`. `text_to_text(value)`
 passes text through and returns empty text for other values; `list_to_text(value)`

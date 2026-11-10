@@ -1,0 +1,9 @@
+{
+  "id": "language.output-cycles",
+  "kind": "feature",
+  "source": "../native/015-009-output-cycles.mini",
+  "features": ["text.output", "list.new", "map.new"],
+  "cases": [
+    {"name": "cyclic-values", "stdin": {"text": ""}, "stdout": {"text": "before|after\n"}, "stderr": {"text": "before|after\n"}, "exitCode": 0}
+  ]
+}

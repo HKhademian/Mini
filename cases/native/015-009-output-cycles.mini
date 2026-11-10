@@ -1,0 +1,11 @@
+/// Cyclic values contribute empty text without dropping adjacent output.
+import "core/io";
+import "core/list";
+import "core/map";
+
+items := list_new();
+list_set(items, 0, items);
+object := map_new();
+map_set(object, "self", object);
+io_write("before", items, "|", object, "after\n");
+io_write_error("before", items, "|", object, "after\n");

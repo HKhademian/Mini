@@ -135,7 +135,11 @@ function io_write(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return encode(value, 0, new Set());
+      try {
+        return encode(value, 0, new Set());
+      } catch {
+        return "";
+      }
     }
     return "0";
   }
@@ -196,7 +200,11 @@ function io_write_error(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return encode(value, 0, new Set());
+      try {
+        return encode(value, 0, new Set());
+      } catch {
+        return "";
+      }
     }
     return "0";
   }

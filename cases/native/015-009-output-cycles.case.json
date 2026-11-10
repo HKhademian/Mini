@@ -1,0 +1,10 @@
+{
+  "id": "native.c-output-cycles",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-009-output-cycles.mini",
+  "features": ["target.c", "text.output", "list.new", "map.new"],
+  "cases": [
+    {"name": "cyclic-values", "stdin": {"text": ""}, "stdout": {"text": "before|after\n"}, "stderr": {"text": "before|after\n"}, "exitCode": 0}
+  ]
+}
