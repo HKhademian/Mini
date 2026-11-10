@@ -108,12 +108,12 @@ async function compileSource(source, portable) {
   try {
     emit_js_set_reference_mode(portable);
     const prepared = buildTokens(lex_tokenize, lex_expand_imports, source);
-    const play = source.includes('import "util/canvas";')
+    const play = source.includes('import "extra/canvas";')
       && /\bcanvas_play\s*\(/.test(source);
     const still = !play
-      && source.includes('import "util/canvas";')
+      && source.includes('import "extra/canvas";')
       && /^canvas_draw\s*\(/m.test(source);
-    const audio = source.includes('import "util/audio";');
+    const audio = source.includes('import "extra/audio";');
     return {
       code: sourceText(emit_js_compile(prepared)),
       program: sourceText(emit_js_compile_program_only(prepared)),

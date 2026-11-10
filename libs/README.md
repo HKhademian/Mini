@@ -6,5 +6,6 @@
   `tools/compiler.mini`.
 - `util/` — higher-level helpers such as process capture, line output, project
   paths, native artifact paths, temporary files, list suffix joins, result
-  maps, canvas session state, and the Mini Play pixel-board builder.
+  maps.
+- `extra/` — optional Mini Play audio, canvas, and pixel-board helpers.
 - `tools/` — behavior libraries for command entries under `tools/`.

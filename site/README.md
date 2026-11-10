@@ -30,12 +30,12 @@ linked to its commit. `build.json` records the full commit and short revision.
 
 ## Mini Play
 
-Import `util/canvas` to declare the board and `util/board` to build
+Import `extra/canvas` to declare the board and `extra/board` to build
 row-major RGB frames:
 
 ```mini
-import "util/canvas";
-import "util/board";
+import "extra/canvas";
+import "extra/board";
 
 screen_size := 10;
 
@@ -69,7 +69,7 @@ the host uses that frame's current dimensions and pixels. `pixel_board_new`,
 be hosted by other renderers, such as Raylib; each host owns its frame loop and
 drawing.
 
-Import `util/audio` to request a tone with `audio_tone(frequency, duration_ms,
+Import `extra/audio` to request a tone with `audio_tone(frequency, duration_ms,
 volume_percent)`. Frequency is in hertz (20–20,000), duration is in milliseconds
 (up to 3,000), and volume is a percent (1–100); invalid values are ignored.
 The library queues tone triples for the host, which drains them with `audio_tone_drain()` after

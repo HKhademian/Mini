@@ -2,7 +2,7 @@
 
 import "core/list";
 import "core/number";
-import "util/canvas";
+import "extra/canvas";
 
 /// Create a board filled with one packed RGB color.
 fn pixel_board_new(width, height, color) {
