@@ -43,7 +43,7 @@ goals and tradeoffs.
 - [Growing a language](docs/evolving-language.md): add features while preserving self-hosting.
 - [Compiler reference](docs/compiler.md): compiler commands and generated output.
 - [C target and embedding](docs/c-target-and-embedding.md): initial C output and
-  the incremental path to a mini-written script runner.
+  the native bootstrap and path to a mini-written script runner.
 - [Releases](docs/releases.md): artifacts and verification.
 - [VS Code support](editors/vscode/README.md): syntax support and language server.
 
