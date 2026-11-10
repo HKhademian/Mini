@@ -50,7 +50,7 @@ same-name host implementations.
 native `argv[0]` to an absolute path; process spawning remains a separate host
 capability.
 
-Directory and path functions are declared in
+Filesystem host primitives are declared in
 [libs/core/path.mini](../libs/core/path.mini) and require
 `import "core/path"`. Their Mini implementations panic when a target has no
 filesystem host; JavaScript and C register same-name host overrides.
@@ -60,6 +60,8 @@ empty list when the path is missing or not a directory.
 `directory_create(path)` creates a directory and missing parents; an existing
 directory is a no-op. `path_copy(from, to)` copies a file or directory tree, dereferences symlinks,
 and preserves file modes.
+Path joining, normalization, resolution, and related Mini helpers live in
+[libs/util/path.mini](../libs/util/path.mini).
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
 `process_env(name)` returns the value of one environment variable, or empty
@@ -81,7 +83,7 @@ start or ends by a signal.
 Import `core/process` for these APIs. Their Mini fallbacks call
 `process_panic(message)` when a target has no process host; JavaScript registers
 same-name host overrides. C supplies native process spawning, script/executable
-paths, panic, and exit hosts; environment and time remain unavailable in C.
+paths, environment, panic, and exit hosts.
 
 ## Map operations
 
@@ -289,7 +291,7 @@ are needed.
 The accepted built-ins `process_exec_path()` and `path_temp_directory()` expose the
 running Node executable path and create a fresh empty directory under the host
 temporary directory. `path_temp_file()` is a Mini helper in
-[libs/core/path.mini](../libs/core/path.mini); it creates one empty file in a
+[libs/util/path.mini](../libs/util/path.mini); it creates one empty file in a
 fresh temporary directory and returns the file path. Include that file to use
 the helper. The same library defines `file_remove(path)` and
 `directory_remove(path)` on top of the `path_remove(path)` function. `file_remove`

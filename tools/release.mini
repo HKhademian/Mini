@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import "core/io";
 import "core/list";
-import "core/path";
+import "util/path";
 import "tools/release";
 import "core/process";
 import "util/project";

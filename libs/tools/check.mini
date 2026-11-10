@@ -10,7 +10,7 @@ import "core/list";
 import "core/text";
 import "core/json";
 import "core/file";
-import "core/path";
+import "util/path";
 import "core/process";
 import "util/process";
 import "util/io";

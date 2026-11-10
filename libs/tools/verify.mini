@@ -11,7 +11,7 @@ import "core/value";
 import "core/list";
 import "core/text";
 import "core/file";
-import "core/path";
+import "util/path";
 import "core/hash";
 import "core/process";
 import "util/process";

@@ -880,7 +880,7 @@ io_write(map_get(result, "stdout"));
 Tools need a Node executable, a fresh temporary directory, and cleanup:
 
 ```mini
-import "core/path";
+import "util/path";
 
 node := process_exec_path();
 directory := path_temp_directory();
@@ -896,7 +896,7 @@ directory_remove(directory);
 - `path_temp_directory()` creates and returns a fresh empty directory under the
   host temporary directory. It takes no arguments.
 - `file_remove(path)` and `directory_remove(path)` are helpers from
-  `libs/core/path.mini`; import that module when using them. They call
+  `libs/util/path.mini`; import `util/path` when using them. They call
   `path_remove(path)` only after checking the path kind and, for directories,
   that the directory is empty.
 - `directory_remove(path)` leaves non-empty directories untouched.

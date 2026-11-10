@@ -11,7 +11,7 @@ import "core/json";
 import "core/list";
 import "core/map";
 import "core/number";
-import "core/path";
+import "util/path";
 import "core/process";
 import "core/text";
 import "util/process";

@@ -7,7 +7,7 @@ import "core/list";
 import "core/map";
 import "core/io";
 import "core/file";
-import "core/path";
+import "util/path";
 import "core/text";
 import "util/native";
 import "compiler/lexer";

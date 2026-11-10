@@ -6,7 +6,7 @@
 
 import "core/io";
 import "core/map";
-import "core/path";
+import "util/path";
 import "core/list";
 import "core/process";
 import "core/text";

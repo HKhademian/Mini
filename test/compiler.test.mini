@@ -5,7 +5,7 @@ import "core/map";
 import "core/text";
 import "core/list";
 import "core/file";
-import "core/path";
+import "util/path";
 import "core/hash";
 import "tools/cases";
 import "core/process";

@@ -9,7 +9,7 @@ import "core/map";
 import "core/value";
 import "core/list";
 import "core/text";
-import "core/path";
+import "util/path";
 import "core/process";
 import "util/project";
 import "core/file";

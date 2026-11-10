@@ -2,7 +2,7 @@
 import "core/io";
 import "core/text";
 import "core/list";
-import "core/path";
+import "util/path";
 import "core/file";
 import "tools/cases";
 import "core/process";

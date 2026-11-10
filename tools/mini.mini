@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import "core/path";
+import "util/path";
 import "tools/mini";
 import "core/process";
 import "util/project";
