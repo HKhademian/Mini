@@ -43,7 +43,7 @@ matching case under [cases/showcase/](../cases/showcase/) and runs in
 `mini test`; the playground build also compiles and runs every runnable catalog
 entry. Planned ideas are listed separately below and on the playground page.
 
-- [breakout-board.mini](showcase/breakout-board.mini): Start and pause a small Breakout game with Space and P; a miss pauses in place, a win celebrates, and the top settings tune paddle width, brick columns, and ball speed. [Case](../cases/showcase/breakout-board.case.json).
+- [breakout-board.mini](showcase/breakout-board.mini): Start and pause a small Breakout game with Space and P; a miss pauses in place, a win celebrates, collision events play short tones, and the top settings tune paddle width, brick columns, and ball speed. [Case](../cases/showcase/breakout-board.case.json).
 - [frogger-board.mini](showcase/frogger-board.mini): Move Frogger between animated road and river lanes on a ten-by-ten pixel board. [Case](../cases/showcase/frogger-board.case.json).
 - [pixel-one.mini](showcase/pixel-one.mini): Render one white pixel once on a ten-by-ten canvas. [Case](../cases/showcase/pixel-one.case.json).
 - [pixel-heart.mini](showcase/pixel-heart.mini): Build and render a red heart once from a ten-by-ten text pattern. [Case](../cases/showcase/pixel-heart.case.json).

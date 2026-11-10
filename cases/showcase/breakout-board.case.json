@@ -8,6 +8,7 @@
     "control.while",
     "core.list",
     "core.number",
+    "util.audio",
     "util.canvas",
     "util.board",
     "text.output"

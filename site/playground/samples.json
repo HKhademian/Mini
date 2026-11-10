@@ -457,7 +457,7 @@
     "id": "breakout-board",
     "group": "Games",
     "label": "Breakout board",
-    "note": "Starts with Space; arrows or A/D steer; P pauses. Ball and color speeds are set at the top of the sample.",
+    "note": "Starts with Space; arrows or A/D steer; P pauses. Short tones mark wall, brick, paddle, miss, and win events.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/breakout-board.mini"
