@@ -1,0 +1,6 @@
+/// List reads accept missing and extra arguments consistently across targets.
+import "core/io";
+import "core/list";
+items := list_of("x");
+io_write(list_get(), "|", list_get(items), "|", list_get(items, 0, "ignored"), "|");
+io_write(list_length(), "|", list_length(items, "ignored"), "\n");

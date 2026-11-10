@@ -1,0 +1,10 @@
+{
+  "id": "native.c-list-read-arguments",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-011-list-read-arguments.mini",
+  "features": ["target.c", "list.get", "list.length"],
+  "cases": [
+    {"name": "missing-and-extra", "stdin": {"text": ""}, "stdout": {"text": "0|x|x|0|1\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}
