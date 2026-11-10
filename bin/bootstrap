@@ -1444,6 +1444,10 @@ function json_escape(text) {
     list_set(parts, (parts).length, "\"");
     return list_join("", parts);
 }
+function json_list_item(items, index) {
+
+    return list_get(items, index);
+}
 function json_encode(value, seen, state) {
 
     if (value_is_text(value)) {
@@ -1475,7 +1479,7 @@ function json_encode(value, seen, state) {
                 if ((position > 0)) {
                     list_set(parts, (parts).length, ",");
                 }
-                list_set(parts, (parts).length, json_encode(list_get(value, position), seen, state));
+                list_set(parts, (parts).length, json_encode(json_list_item(value, position), seen, state));
                 if ((!map_get(state, "ok"))) {
                     return "";
                 }

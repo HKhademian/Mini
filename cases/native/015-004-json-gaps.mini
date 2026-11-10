@@ -1,0 +1,39 @@
+import "core/json";
+import "core/list";
+import "core/map";
+import "core/io";
+import "util/io";
+inner := map_new();
+map_set(inner, "z", list_new());
+outer := map_new();
+map_set(outer, "nested", inner);
+map_set(outer, "text", "value");
+if json_text(outer) == "{\"nested\":{\"z\":[]},\"text\":\"value\"}" {
+    io_write_line("ok");
+} else {
+    io_write_line("bad");
+}
+sparse := list_new();
+list_set(sparse, 2, "last");
+if json_text(sparse) == "[null,null,\"last\"]" {
+    io_write_line("ok");
+} else {
+    io_write_line("bad");
+}
+if list_get(sparse, 0) == 0 && json_text(list_copy(sparse)) == "[null,null,\"last\"]" {
+    io_write_line("ok");
+} else {
+    io_write_line("bad");
+}
+list_set(sparse, 0, 0);
+if json_text(sparse) == "[0,null,\"last\"]" {
+    io_write_line("ok");
+} else {
+    io_write_line("bad");
+}
+io_write_line(sparse);
+other := list_new();
+list_set(other, 2, "x");
+io_write_line(json_text(list_merge(other)));
+list_push_front(other, "first");
+io_write_line(json_text(other));

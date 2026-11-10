@@ -124,6 +124,7 @@ It also supports shallow `list_copy` and `list_join`, which inserts separators
 between positions and contributes text values. `io_write` serializes lists as
 JSON, including nested lists and text escaping.
 `list_contains` and `list_reverse` are compiled from their Mini library definitions.
+Sparse list slots read as zero and remain distinct from explicit zero for JSON serialization.
 The C target also supports tagged map values with `map_new`, `map_of`, `map_set`,
 `map_get`, `map_has`, `map_keys`, `map_delete`, `map_copy`, `map_merge`, and
 map-oriented `value_merge`. Maps keep a growable array of key/value pairs and

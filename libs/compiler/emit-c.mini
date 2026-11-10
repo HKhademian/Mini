@@ -251,7 +251,7 @@ fn emit_c_header(name) {
             "typedef double MINI_ID(number);",
             "_Static_assert(FLT_RADIX == 2 && DBL_MANT_DIG >= 53, \"mini requires binary numbers with at least 53 bits of precision\");",
             "",
-            "typedef enum { MINI_ID(kind_text), MINI_ID(kind_number), MINI_ID(kind_boolean), MINI_ID(kind_list), MINI_ID(kind_map) } MINI_ID(value_kind);",
+            "typedef enum { MINI_ID(kind_text), MINI_ID(kind_number), MINI_ID(kind_boolean), MINI_ID(kind_list), MINI_ID(kind_map), MINI_ID(kind_gap) } MINI_ID(value_kind);",
             "typedef struct { unsigned char *items; size_t count; size_t capacity; size_t item_size; } MINI_ID(vec);",
             "typedef MINI_ID(vec) MINI_ID(text_buffer);",
             "typedef struct MINI_ID(list) MINI_ID(list);",

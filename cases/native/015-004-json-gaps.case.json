@@ -1,0 +1,29 @@
+{
+  "id": "native.c-json-gaps",
+  "kind": "feature",
+  "source": "015-004-json-gaps.mini",
+  "features": [
+    "json.to-text",
+    "list.new",
+    "list.set",
+    "map.new",
+    "map.set",
+    "target.c"
+  ],
+  "cases": [
+    {
+      "name": "nested-and-gaps",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "ok\nok\nok\nok\n[0,null,\"last\"]\n[0,0,\"x\"]\n[\"first\",0,0,\"x\"]\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ],
+  "target": "c"
+}
