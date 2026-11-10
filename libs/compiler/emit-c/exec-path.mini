@@ -7,7 +7,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_process_exec_path)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                  MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 0) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
         "    return 1;",
         "  }",
         "  return MINI_ID(script_path_resolve)(context, context->script_path, result);",

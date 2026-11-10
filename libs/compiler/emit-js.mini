@@ -44,6 +44,21 @@ fn emit_js_apply_host_lowering(form, args) {
     return output;
 }
 
+/// Return whether an inline lowering evaluates every supplied argument.
+fn emit_js_lowering_uses_all(form, args) {
+    if text_find(form, "{...}") >= 0 {
+        return true;
+    }
+    position := 0;
+    while position < list_length(args) {
+        if text_find(form, "{" + number_to_text(position) + "}") < 0 {
+            return false;
+        }
+        position = position + 1;
+    }
+    return true;
+}
+
 /// Format one target-specific JavaScript operator.
 fn emit_js_operator(operator) {
     if operator == "==" {
@@ -95,7 +110,7 @@ fn emit_js_expression(node) {
         argument_codes := emit_js_arguments(map_get(node, "arguments"));
         callee := map_get(node, "callee");
         host_lowering := emit_js_host_lowering(callee);
-        if host_lowering != "" {
+        if host_lowering != "" && emit_js_lowering_uses_all(host_lowering, argument_codes) {
             return emit_js_apply_host_lowering(host_lowering, argument_codes);
         }
         return callee + "(" + list_join(", ", argument_codes) + ")";

@@ -124,7 +124,8 @@ function signature is an internal compiler interface, not an FFI API.
 
 The C target also supports tagged list values with `list_new()`, `list_of(...)`,
 front/back push and pop, `list_truncate`, `list_length`, `list_get`, and `list_set`.
-List reads accept extra arguments and use zero for missing declared inputs.
+Host calls evaluate extra arguments before ignoring them and use zero for
+missing declared inputs.
 It also supports shallow `list_copy` and `list_join`, which inserts separators
 between positions and contributes text values. `io_write` serializes lists as
 JSON, including nested lists and text escaping.

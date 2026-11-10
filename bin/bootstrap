@@ -2743,6 +2743,20 @@ function emit_js_apply_host_lowering(form, args) {
     }
     return output;
 }
+function emit_js_lowering_uses_all(form, args) {
+
+    if ((text_find(form, "{...}") >= 0)) {
+        return true;
+    }
+    let position = 0;
+    while ((position < (args).length)) {
+        if ((text_find(form, (("{" + number_to_text(position)) + "}")) < 0)) {
+            return false;
+        }
+        position = (position + 1);
+    }
+    return true;
+}
 function emit_js_operator(operator) {
 
     if ((operator === "==")) {
@@ -2792,7 +2806,7 @@ function emit_js_expression(node) {
         let argument_codes = emit_js_arguments(map_get(node, "arguments"));
         let callee = map_get(node, "callee");
         let host_lowering = emit_js_host_lowering(callee);
-        if ((host_lowering !== "")) {
+        if (((host_lowering !== "") && emit_js_lowering_uses_all(host_lowering, argument_codes))) {
             return emit_js_apply_host_lowering(host_lowering, argument_codes);
         }
         return (((callee + "(") + list_join(", ", argument_codes)) + ")");

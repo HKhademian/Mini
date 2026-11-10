@@ -1,0 +1,19 @@
+/// Host overrides ignore extra arguments after evaluating them.
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/text";
+import "core/time";
+
+fn extra() {
+    io_write("evaluated|");
+    return 9;
+}
+items := list_new(extra());
+map := map_new(extra());
+map_set(map, "key", "v", extra());
+io_write(text_length(map_get(map, "key", extra()), extra()), "|");
+io_write(list_length(items, extra()), "|");
+if time_millis(extra()) > 0 {
+    io_write("ok\n");
+}

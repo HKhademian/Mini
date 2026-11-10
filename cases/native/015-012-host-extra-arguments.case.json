@@ -1,0 +1,10 @@
+{
+  "id": "native.c-host-extra-arguments",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-012-host-extra-arguments.mini",
+  "features": ["target.c", "function.call", "list.new", "map.new", "text.length"],
+  "cases": [
+    {"name": "ignored-after-evaluation", "stdin": {"text": ""}, "stdout": {"text": "evaluated|evaluated|evaluated|evaluated|evaluated|1|evaluated|0|evaluated|ok\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}

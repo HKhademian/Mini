@@ -77,7 +77,7 @@ emit_c_host_function_add(
         "int MINI_ID(fn_hash_sha256)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
         "  static const char digits[] = \"0123456789abcdef\";",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  uint32_t state[8] = {0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,",

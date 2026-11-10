@@ -190,7 +190,7 @@ emit_c_host_function_add(
         "}",
         "int MINI_ID(fn_directory_create)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                 MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(path_string)(params.args[0]);",
@@ -217,7 +217,7 @@ emit_c_host_function_add(
         "}",
         "int MINI_ID(fn_directory_list)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(value) list = MINI_ID(list_new)(context);",
@@ -296,7 +296,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_copy)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *from = MINI_ID(path_string)(params.args[0]);",
@@ -324,7 +324,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_is_directory)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                  MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(path_string)(params.args[0]);",
@@ -343,7 +343,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_is_exists)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(path_string)(params.args[0]);",
@@ -362,7 +362,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_is_file)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(path_string)(params.args[0]);",
@@ -381,7 +381,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_remove)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(path_string)(params.args[0]);",
@@ -405,7 +405,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_path_temp_directory)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                    MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 0) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
         "    return 1;",
         "  }",
         "  const char *base = getenv(\"TMPDIR\");",

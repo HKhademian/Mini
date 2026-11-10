@@ -414,7 +414,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_process_spawn)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  return MINI_ID(process_spawn_run)(context, params.args[0], result);",

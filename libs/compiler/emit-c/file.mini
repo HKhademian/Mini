@@ -27,7 +27,7 @@ emit_c_host_function_add(
         "}",
         "int MINI_ID(fn_file_read)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(file_path)(params.args[0]);",
@@ -70,7 +70,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_file_read_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  char *path = MINI_ID(file_path)(params.args[0]);",
@@ -112,7 +112,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_file_write)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args ||",
+        "  if (!context || !result || params.count < 2 || !params.args ||",
         "      params.args[1].kind != MINI_ID(kind_text)) {",
         "    return 1;",
         "  }",
@@ -155,7 +155,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_file_write_bytes)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                 MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args ||",
+        "  if (!context || !result || params.count < 2 || !params.args ||",
         "      params.args[1].kind != MINI_ID(kind_list) || !params.args[1].list) {",
         "    return 1;",
         "  }",

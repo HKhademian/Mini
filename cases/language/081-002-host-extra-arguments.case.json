@@ -1,0 +1,9 @@
+{
+  "id": "language.host-extra-arguments",
+  "kind": "feature",
+  "source": "../native/015-012-host-extra-arguments.mini",
+  "features": ["function.call", "list.new", "map.new", "text.length"],
+  "cases": [
+    {"name": "ignored-after-evaluation", "stdin": {"text": ""}, "stdout": {"text": "evaluated|evaluated|evaluated|evaluated|evaluated|1|evaluated|0|evaluated|ok\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}

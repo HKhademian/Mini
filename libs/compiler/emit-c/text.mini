@@ -238,7 +238,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_text_length)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  size_t length = 0;",
@@ -258,7 +258,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_text_get)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  size_t length = 0;",
@@ -287,7 +287,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_text_to_code)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(value) source = params.args[0], index = params.args[1];",
@@ -328,7 +328,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_text_from_code)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(value) code = params.args[0];",
@@ -376,7 +376,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_text_slice)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 3 || !params.args) {",
+        "  if (!context || !result || params.count < 3 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(value) source = params.args[0];",

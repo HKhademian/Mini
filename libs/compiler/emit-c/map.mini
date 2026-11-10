@@ -292,7 +292,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_new)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                        MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 0) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
         "    return 1;",
         "  }",
         "  *result = MINI_ID(map_new)(context);",
@@ -307,7 +307,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_get)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                        MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result = MINI_ID(map_get_value)(params.args[0], params.args[1]);",
@@ -322,7 +322,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_set)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                        MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 3 || !params.args) {",
+        "  if (!context || !result || params.count < 3 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(map_set_value)(params.args[0].kind == MINI_ID(kind_map) ? params.args[0].map : NULL,",
@@ -339,7 +339,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_has)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                        MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result =",
@@ -355,7 +355,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_keys)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result = MINI_ID(map_keys_value)(context, params.args[0]);",
@@ -370,7 +370,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_map_delete)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                           MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(map_delete_value)(params.args[0], params.args[1]);",

@@ -204,7 +204,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_new)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 0) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
         "    return 1;",
         "  }",
         "  *result = MINI_ID(list_new)(context);",
@@ -264,7 +264,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_json_list_item)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!result || params.count != 2 || !params.args ||",
+        "  if (!result || params.count < 2 || !params.args ||",
         "      params.args[0].kind != MINI_ID(kind_list) || !params.args[0].list ||",
         "      params.args[1].kind != MINI_ID(kind_number)) {",
         "    return 1;",
@@ -325,7 +325,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_set)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                         MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 3 || !params.args) {",
+        "  if (!context || !result || params.count < 3 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(list_set)(params.args[0], params.args[1], params.args[2]);",
@@ -341,7 +341,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_truncate)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  MINI_ID(list_truncate)(params.args[0], params.args[1]);",
@@ -357,7 +357,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_copy)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                          MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result = MINI_ID(list_copy)(context, params.args[0]);",
@@ -386,7 +386,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_push_back)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
@@ -404,7 +404,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_push_front)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 2 || !params.args) {",
+        "  if (!context || !result || params.count < 2 || !params.args) {",
         "    return 1;",
         "  }",
         "  if (params.args[0].kind == MINI_ID(kind_list) && params.args[0].list) {",
@@ -422,7 +422,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_pop_back)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                              MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",
@@ -440,7 +440,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_list_pop_front)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                               MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args) {",
+        "  if (!context || !result || params.count < 1 || !params.args) {",
         "    return 1;",
         "  }",
         "  *result = (MINI_ID(value))MINI_VALUE_NUMBER(0);",

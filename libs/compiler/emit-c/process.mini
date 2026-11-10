@@ -78,7 +78,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_process_env)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                            MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 1 || !params.args ||",
+        "  if (!context || !result || params.count < 1 || !params.args ||",
         "      params.args[0].kind != MINI_ID(kind_text)) {",
         "    return 1;",
         "  }",
@@ -113,7 +113,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_process_exit)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                             MINI_ID(value) * result) {",
-        "  if (!result || params.count != 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) {",
+        "  if (!result || params.count < 1 || !params.args || params.args[0].kind != MINI_ID(kind_number)) {",
         "    return 1;",
         "  }",
         "  (void)context;",
@@ -130,7 +130,7 @@ emit_c_host_function_add(
     list_of(
         "int MINI_ID(fn_process_script_path)(MINI_ID(context) * context, MINI_ID(params) params,",
         "                                    MINI_ID(value) * result) {",
-        "  if (!context || !result || params.count != 0) {",
+        "  if (!context || !result || (params.count && !params.args)) {",
         "    return 1;",
         "  }",
         "  return MINI_ID(script_path_resolve)(context, context->script_path, result);",
