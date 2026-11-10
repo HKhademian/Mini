@@ -11,7 +11,7 @@ fn pixel_board_new(width, height, color) {
     while row < height {
         column := 0;
         while column < width {
-            list_set(board, list_length(board), color);
+            list_push_back(board, color);
             column = column + 1;
         }
         row = row + 1;
