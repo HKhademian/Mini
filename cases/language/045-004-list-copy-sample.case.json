@@ -1,7 +1,7 @@
 {
   "id": "language.list-copy-sample",
   "kind": "sample",
-  "source": "../../samples/lists/017-list-copy.mini",
+  "source": "../../samples/lists/list-copy-isolation.mini",
   "features": [
     "list.copy",
     "list.new",

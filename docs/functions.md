@@ -272,7 +272,7 @@ text retain their kinds; use `map_has` when presence matters. No null value is a
 
 Count keys with `list_length(map_keys(items))`. This materializes a snapshot
 only when counting is requested, without maintaining a counter on every write.
-See the [map sample](../samples/maps/010-map.mini) for the operations together.
+See the [map sample](../samples/maps/map-operations.mini) for the operations together.
 
 `map_keys(items)` returns a fresh list of the map's text keys, in unspecified
 order. It is a snapshot: list edits do not change the map, and later map insertions

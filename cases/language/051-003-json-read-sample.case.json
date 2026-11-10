@@ -1,7 +1,7 @@
 {
   "id": "language.json-read-sample",
   "kind": "sample",
-  "source": "../../samples/json/024-json-read.mini",
+  "source": "../../samples/json/json-read.mini",
   "features": ["json.parse", "readAll", "map.get", "text.output"],
   "cases": [
     {

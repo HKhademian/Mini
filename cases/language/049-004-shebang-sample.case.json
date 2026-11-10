@@ -1,7 +1,7 @@
 {
   "id": "language.shebang-sample",
   "kind": "sample",
-  "source": "../../samples/basics/021-shebang.mini",
+  "source": "../../samples/basics/shebang.mini",
   "features": [
     "shebang",
     "text.output"

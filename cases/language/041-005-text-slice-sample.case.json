@@ -1,7 +1,7 @@
 {
   "id": "language.text-slice-sample",
   "kind": "sample",
-  "source": "../../samples/text/013-text-slice.mini",
+  "source": "../../samples/text/slice-input.mini",
   "features": [
     "text.slice",
     "text.input",

@@ -1,7 +1,7 @@
 {
   "id": "language.number-to-text-sample",
   "kind": "sample",
-  "source": "../../samples/numbers/019-number-to-text.mini",
+  "source": "../../samples/numbers/number-to-text.mini",
   "features": [
     "number.to-text",
     "text.output"

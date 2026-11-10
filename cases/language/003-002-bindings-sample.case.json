@@ -1,7 +1,7 @@
 {
   "id": "language.bindings-sample",
   "kind": "sample",
-  "source": "../../samples/basics/001-bindings.mini",
+  "source": "../../samples/basics/binding-assignment.mini",
   "features": [
     "bindings"
   ],

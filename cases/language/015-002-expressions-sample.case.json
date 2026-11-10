@@ -1,7 +1,7 @@
 {
   "id": "language.expressions-sample",
   "kind": "sample",
-  "source": "../../samples/basics/002-expressions.mini",
+  "source": "../../samples/basics/expressions.mini",
   "features": [
     "expressions"
   ],

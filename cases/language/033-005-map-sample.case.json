@@ -1,7 +1,7 @@
 {
   "id": "language.map-sample",
   "kind": "sample",
-  "source": "../../samples/maps/010-map.mini",
+  "source": "../../samples/maps/map-operations.mini",
   "features": [
     "map.new",
     "map.set",

@@ -91,7 +91,7 @@
       "gamma"
     ],
     "stdin": "",
-    "file": "samples/lists/006-list.mini"
+    "file": "samples/lists/argument-list.mini"
   },
   {
     "id": "text-length",
@@ -181,7 +181,7 @@
     "note": "Normalize tabs and line endings from standard input.",
     "args": [],
     "stdin": "alpha\tbeta\ngamma",
-    "file": "samples/text/004-text.mini"
+    "file": "samples/text/normalize-whitespace.mini"
   },
   {
     "id": "list-create",
@@ -208,7 +208,7 @@
     "note": "Build a word list and format it with a separator.",
     "args": [],
     "stdin": "",
-    "file": "samples/lists/018-list-join.mini"
+    "file": "samples/lists/list-join.mini"
   },
   {
     "id": "list-sum",
@@ -325,7 +325,7 @@
     "note": "Build a map and print compact JSON.",
     "args": [],
     "stdin": "",
-    "file": "samples/json/020-json-to-text.mini"
+    "file": "samples/json/json-to-text.mini"
   },
   {
     "id": "map-parse",

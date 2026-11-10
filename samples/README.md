@@ -2,19 +2,22 @@
 
 Samples are grouped by topic. Each source has a case with expected output;
 the [playground catalog](../site/README.md) also runs the graphical samples.
+For a first pass, try [hello](basics/hello.mini), [bindings](basics/bindings.mini),
+[expressions](basics/expressions.mini), [conditionals](basics/if-else.mini),
+[loops](basics/while.mini), and [functions](basics/function.mini).
 
 ```text
-./bin/mini run samples/lists/018-list-join.mini
+./bin/mini run samples/lists/list-join.mini
 ./bin/mini verify cases/language/046-004-list-join-sample.case.json
 ```
 
 ## Basics
 
-- [001-bindings.mini](basics/001-bindings.mini): Binding initialization and cursor assignment. [Case](../cases/language/003-002-bindings-sample.case.json).
-- [002-expressions.mini](basics/002-expressions.mini): Arithmetic, comparison, booleans, and text concatenation. [Case](../cases/language/015-002-expressions-sample.case.json).
-- [011-read-defaults.mini](basics/011-read-defaults.mini): Use `text_get`, `list_get`, and `map_get` defaults, read gaps as zero, and use a negative list index, without null. [Case](../cases/language/037-007-read-defaults-sample.case.json).
-- [012-comments.mini](basics/012-comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).
-- [021-shebang.mini](basics/021-shebang.mini): Use a first-line shebang header and print a line. [Case](../cases/language/049-004-shebang-sample.case.json).
+- [binding-assignment.mini](basics/binding-assignment.mini): Binding initialization and cursor assignment. [Case](../cases/language/003-002-bindings-sample.case.json).
+- [expressions.mini](basics/expressions.mini): Arithmetic, comparison, booleans, and text concatenation. [Case](../cases/language/015-002-expressions-sample.case.json).
+- [read-defaults.mini](basics/read-defaults.mini): Use `text_get`, `list_get`, and `map_get` defaults, read gaps as zero, and use a negative list index, without null. [Case](../cases/language/037-007-read-defaults-sample.case.json).
+- [comments.mini](basics/comments.mini): Document a function with `///` and explain implementation choices with `//`, both alone and after code. [Case](../cases/language/039-002-comments-sample.case.json).
+- [shebang.mini](basics/shebang.mini): Use a first-line shebang header and print a line. [Case](../cases/language/049-004-shebang-sample.case.json).
 - [bindings.mini](basics/bindings.mini): Bind text and number values. [Case](../cases/showcase/bindings.case.json).
 - [booleans.mini](basics/booleans.mini): Combine comparisons with &&. [Case](../cases/showcase/booleans.case.json).
 - [concat.mini](basics/concat.mini): Join text with +. [Case](../cases/showcase/concat.case.json).
@@ -27,14 +30,14 @@ the [playground catalog](../site/README.md) also runs the graphical samples.
 
 ## Numbers
 
-- [019-number-to-text.mini](numbers/019-number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Case](../cases/language/047-003-number-to-text-sample.case.json).
+- [number-to-text.mini](numbers/number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Case](../cases/language/047-003-number-to-text-sample.case.json).
 
 ## Text
 
-- [004-text.mini](text/004-text.mini): Scan with `text_length` and `text_get`, replacing tabs and newlines with spaces. [Case](../cases/language/019-004-text-sample.case.json).
-- [013-text-slice.mini](text/013-text-slice.mini): Read text and print slices with clamping, negative bounds, and an empty reversed range. [Case](../cases/language/041-005-text-slice-sample.case.json).
-- [014-text-find.mini](text/014-text-find.mini): Read text and report whether it contains two sample words. [Case](../cases/language/042-005-text-find-sample.case.json).
-- [015-text-split.mini](text/015-text-split.mini): Read comma-separated text and print each field on its own line. [Case](../cases/language/043-005-text-split-sample.case.json).
+- [normalize-whitespace.mini](text/normalize-whitespace.mini): Scan with `text_length` and `text_get`, replacing tabs and newlines with spaces. [Case](../cases/language/019-004-text-sample.case.json).
+- [slice-input.mini](text/slice-input.mini): Read text and print slices with clamping, negative bounds, and an empty reversed range. [Case](../cases/language/041-005-text-slice-sample.case.json).
+- [find-input.mini](text/find-input.mini): Read text and report whether it contains two sample words. [Case](../cases/language/042-005-text-find-sample.case.json).
+- [split-input.mini](text/split-input.mini): Read comma-separated text and print each field on its own line. [Case](../cases/language/043-005-text-split-sample.case.json).
 - [text-bytes.mini](text/text-bytes.mini): Turn text into its byte values. [Case](../cases/showcase/text-bytes.case.json).
 - [text-codes.mini](text/text-codes.mini): Round-trip a character through its code point and print values directly. [Case](../cases/showcase/text-codes.case.json).
 - [text-find.mini](text/text-find.mini): Locate a word inside text. [Case](../cases/showcase/text-find.case.json).
@@ -47,10 +50,10 @@ the [playground catalog](../site/README.md) also runs the graphical samples.
 
 ## Lists
 
-- [006-list.mini](lists/006-list.mini): Read command-line arguments as a list, print its length, and visit each item with `list_get`. [Case](../cases/language/024-003-list-sample.case.json).
-- [009-list-mutation.mini](lists/009-list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Case](../cases/language/029-008-list-mutation-sample.case.json).
-- [017-list-copy.mini](lists/017-list-copy.mini): Copy a list and show that changing the copy leaves the original intact. [Case](../cases/language/045-004-list-copy-sample.case.json).
-- [018-list-join.mini](lists/018-list-join.mini): Build a list with `list_of` and join its words with `list_join`. [Case](../cases/language/046-004-list-join-sample.case.json).
+- [argument-list.mini](lists/argument-list.mini): Read command-line arguments as a list, print its length, and visit each item with `list_get`. [Case](../cases/language/024-003-list-sample.case.json).
+- [list-mutation.mini](lists/list-mutation.mini): Use `list_new` and `list_set` for growth, replacement, negative indices, and mixed/nested values. [Case](../cases/language/029-008-list-mutation-sample.case.json).
+- [list-copy-isolation.mini](lists/list-copy-isolation.mini): Copy a list and show that changing the copy leaves the original intact. [Case](../cases/language/045-004-list-copy-sample.case.json).
+- [list-join.mini](lists/list-join.mini): Build a list with `list_of` and join its words with `list_join`. [Case](../cases/language/046-004-list-join-sample.case.json).
 - [list-copy.mini](lists/list-copy.mini): Changing the copy leaves the original intact. [Case](../cases/showcase/list-copy.case.json).
 - [list-create.mini](lists/list-create.mini): Set two items and read the length. [Case](../cases/showcase/list-create.case.json).
 - [list-get.mini](lists/list-get.mini): Use a negative index for the last item. [Case](../cases/showcase/list-get.case.json).
@@ -63,8 +66,8 @@ the [playground catalog](../site/README.md) also runs the graphical samples.
 
 ## Maps
 
-- [010-map.mini](maps/010-map.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, and `map_keys`; count the key list with `list_length`, read replacement values, distinguish missing keys, and snapshot keys. [Case](../cases/language/033-005-map-sample.case.json).
-- [016-map-copy.mini](maps/016-map-copy.mini): Copy a map and show that changing the copy leaves the original intact. [Case](../cases/language/044-004-map-copy-sample.case.json).
+- [map-operations.mini](maps/map-operations.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, and `map_keys`; count the key list with `list_length`, read replacement values, distinguish missing keys, and snapshot keys. [Case](../cases/language/033-005-map-sample.case.json).
+- [map-copy-isolation.mini](maps/map-copy-isolation.mini): Copy a map and show that changing the copy leaves the original intact. [Case](../cases/language/044-004-map-copy-sample.case.json).
 - [map-array.mini](maps/map-array.mini): Parse an array and read an item. [Case](../cases/showcase/map-array.case.json).
 - [map-copy.mini](maps/map-copy.mini): Changing the copy leaves the original intact. [Case](../cases/showcase/map-copy.case.json).
 - [map-create.mini](maps/map-create.mini): Set and read text-keyed values. [Case](../cases/showcase/map-create.case.json).
@@ -77,23 +80,23 @@ the [playground catalog](../site/README.md) also runs the graphical samples.
 
 ## JSON
 
-- [020-json-to-text.mini](json/020-json-to-text.mini): Build a map and print compact deterministic JSON text. [Case](../cases/language/048-004-json-to-text-sample.case.json).
-- [024-json-read.mini](json/024-json-read.mini): Parse standard-input JSON and print its name field. [Case](../cases/language/051-003-json-read-sample.case.json).
+- [json-to-text.mini](json/json-to-text.mini): Build a map and print compact deterministic JSON text. [Case](../cases/language/048-004-json-to-text-sample.case.json).
+- [json-read.mini](json/json-read.mini): Parse standard-input JSON and print its name field. [Case](../cases/language/051-003-json-read-sample.case.json).
 
 ## Input and output
 
-- [003-io.mini](io/003-io.mini): Copy stdin to stdout with `io_read_all` and `io_write`. [Case](../cases/language/005-002-io-sample.case.json).
-- [008-diagnostic.mini](io/008-diagnostic.mini): Use `io_write_error` before an unsuccessful exit. [Case](../cases/language/026-003-write-error-sample.case.json).
+- [echo-input.mini](io/echo-input.mini): Copy stdin to stdout with `io_read_all` and `io_write`. [Case](../cases/language/005-002-io-sample.case.json).
+- [diagnostic.mini](io/diagnostic.mini): Use `io_write_error` before an unsuccessful exit. [Case](../cases/language/026-003-write-error-sample.case.json).
 
 ## Files and directories
 
-- [005-file.mini](files/005-file.mini): Copy and print a file with `file_read` and `file_write`. [Case](../cases/language/021-003-file-sample.case.json).
-- [023-host-files.mini](files/023-host-files.mini): Write a note in a fresh temporary directory, read it back, and clean up. [Case](../cases/language/050-003-host-files-sample.case.json).
+- [copy-file.mini](files/copy-file.mini): Copy and print a file with `file_read` and `file_write`. [Case](../cases/language/021-003-file-sample.case.json).
+- [host-files.mini](files/host-files.mini): Write a note in a fresh temporary directory, read it back, and clean up. [Case](../cases/language/050-003-host-files-sample.case.json).
 
 ## Processes
 
-- [007-exit.mini](process/007-exit.mini): Use `process_exit` when an argument is missing. [Case](../cases/language/025-004-process-exit-sample.case.json).
-- [022-process-run.mini](process/022-process-run.mini): Run Node once, capture its output and status, and print them. [Case](../cases/language/049-004-process-run-sample.case.json).
+- [exit.mini](process/exit.mini): Use `process_exit` when an argument is missing. [Case](../cases/language/025-004-process-exit-sample.case.json).
+- [process-run.mini](process/process-run.mini): Run Node once, capture its output and status, and print them. [Case](../cases/language/049-004-process-run-sample.case.json).
 
 ## Programs and algorithms
 

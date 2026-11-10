@@ -1,7 +1,7 @@
 {
   "id": "language.process-exit-sample",
   "kind": "sample",
-  "source": "../../samples/process/007-exit.mini",
+  "source": "../../samples/process/exit.mini",
   "features": [
     "process.exit",
     "process.args",

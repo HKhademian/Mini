@@ -1,7 +1,7 @@
 {
   "id": "language.text-find-sample",
   "kind": "sample",
-  "source": "../../samples/text/014-text-find.mini",
+  "source": "../../samples/text/find-input.mini",
   "features": [
     "text.find",
     "text.input",

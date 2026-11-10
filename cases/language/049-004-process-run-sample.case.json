@@ -1,7 +1,7 @@
 {
   "id": "language.process-run-sample",
   "kind": "sample",
-  "source": "../../samples/process/022-process-run.mini",
+  "source": "../../samples/process/process-run.mini",
   "features": [
     "process.run",
     "list.new",

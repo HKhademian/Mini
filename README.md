@@ -16,7 +16,7 @@ To run mini locally, use Node.js 22.18.0 or newer:
 git clone <repository-url>
 cd Mini
 ./bin/bootstrap
-./bin/mini run samples/lists/018-list-join.mini
+./bin/mini run samples/lists/list-join.mini
 ```
 
 The sample builds a list and prints `one | two | three`. The compiler and

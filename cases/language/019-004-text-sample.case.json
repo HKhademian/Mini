@@ -1,7 +1,7 @@
 {
   "id": "language.text-sample",
   "kind": "sample",
-  "source": "../../samples/text/004-text.mini",
+  "source": "../../samples/text/normalize-whitespace.mini",
   "features": [
     "text.get",
     "text.length",

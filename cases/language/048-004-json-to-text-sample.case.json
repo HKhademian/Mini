@@ -1,7 +1,7 @@
 {
   "id": "language.json-to-text-sample",
   "kind": "sample",
-  "source": "../../samples/json/020-json-to-text.mini",
+  "source": "../../samples/json/json-to-text.mini",
   "features": [
     "json.to-text",
     "map.new",

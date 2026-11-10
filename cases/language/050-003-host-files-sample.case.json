@@ -1,7 +1,7 @@
 {
   "id": "language.host-files-sample",
   "kind": "sample",
-  "source": "../../samples/files/023-host-files.mini",
+  "source": "../../samples/files/host-files.mini",
   "features": [
     "directory.temp",
     "file.write",
