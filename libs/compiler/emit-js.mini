@@ -213,12 +213,9 @@ fn emit_js_statement(node) {
         if alternate != 0 {
             alternate_lines := emit_js_statement(alternate);
             if map_get(alternate, "node_kind") == AST_IF {
-                list_set(output, list_length(output) - 1, "} else " + list_get(alternate_lines, 0));
-                position := 1;
-                while position < list_length(alternate_lines) {
-                    list_set(output, list_length(output), list_get(alternate_lines, position));
-                    position = position + 1;
-                }
+                first_alternate_line := list_pop_front(alternate_lines);
+                list_set(output, list_length(output) - 1, "} else " + first_alternate_line);
+                list_push_back_list(output, alternate_lines);
             } else {
                 list_set(output, list_length(output) - 1, "} else {");
                 emit_js_append_indented(output, emit_js_statements(map_get(alternate, "statements")));

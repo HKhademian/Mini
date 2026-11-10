@@ -12,3 +12,42 @@ fn list_join_from(items, start, separator) {
     }
     return list_join(separator, parts);
 }
+
+/// Append the items from each source list to a destination list in argument order.
+/// Non-list destinations and sources contribute no items.
+fn list_push_back_list(destination) {
+    lists := fn_args();
+    list_index := 1;
+    while list_index < list_length(lists) {
+        source := list_get(lists, list_index);
+        if value_is_list(source) {
+            source_length := list_length(source);
+            item_index := 0;
+            while item_index < source_length {
+                list_push_back(destination, list_get(source, item_index));
+                item_index = item_index + 1;
+            }
+        }
+        list_index = list_index + 1;
+    }
+    return 0;
+}
+
+/// Prepend source list items while preserving argument and item order.
+/// Non-list destinations and sources contribute no items.
+fn list_push_front_list(destination) {
+    lists := fn_args();
+    list_index := list_length(lists) - 1;
+    while list_index > 0 {
+        source := list_copy(list_get(lists, list_index));
+        if value_is_list(source) {
+            item_index := list_length(source) - 1;
+            while item_index >= 0 {
+                list_push_front(destination, list_get(source, item_index));
+                item_index = item_index - 1;
+            }
+        }
+        list_index = list_index - 1;
+    }
+    return 0;
+}

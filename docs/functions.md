@@ -211,12 +211,18 @@ lists and maps remain aliases. A non-list target returns an empty list.
 `list_merge(...lists)` returns a new list with the items from each list argument
 appended in order. Non-list arguments contribute no items; no arguments returns
 an empty list.
+`list_push_back_list(destination, ...sources)` appends each source list's items
+to an existing destination, preserving argument and item order.
+`list_push_front_list(destination, ...sources)` prepends those items in the same
+order. Both operations ignore non-list sources and do nothing for a non-list
+destination; they return 0.
 `list_push_back`, `list_push_front`, `list_pop_back`, and `list_pop_front` are
 Mini helpers in [libs/core/list.mini](../libs/core/list.mini). They mutate a
 list and return 0 for pushes, or remove and return one value for pops. Empty or
 non-list pops return 0. `list_truncate(items, length)` is the representation
 primitive they use to shrink a list to an existing non-negative length; longer
 or invalid lengths are no-ops.
+The list-of-lists push operations are in [libs/util/list.mini](../libs/util/list.mini).
 `list_join(separator, ...lists)` joins text elements from the supplied lists in
 order. Non-text elements contribute empty text while retaining their separator
 positions; non-list arguments contribute no elements. A non-text separator
