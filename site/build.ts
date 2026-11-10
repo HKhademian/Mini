@@ -2,6 +2,7 @@
 /// Build the static showcase into dist/site.
 import { spawnSync } from "node:child_process";
 import { highlight, type Token } from "./highlight.js";
+import { groupSamples } from "./groups.ts";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
@@ -13,7 +14,8 @@ type PlaygroundEntry = {
     readonly note: string;
     readonly args: readonly string[];
     readonly stdin: string;
-    readonly status?: "planned";
+    readonly status?: "planned" | "cli";
+    readonly allowSilent?: boolean;
     readonly file?: string;
     readonly source?: string;
 };
@@ -40,6 +42,7 @@ type PlaygroundSample = {
     readonly source: string;
     readonly args: readonly string[];
     readonly stdin: string;
+    readonly allowSilent?: boolean;
 };
 
 const root = dirname(import.meta.dirname);
@@ -462,14 +465,14 @@ function verifyPlaygroundSample(sample: PlaygroundSample): void {
     if (result.status !== 0) {
         throw new Error(`${sample.id} failed:\n${result.stderr.trim()}`);
     }
-    if (result.stdout.trim() === "") {
-        throw new Error(`${sample.id} produced no output`);
+    if (sample.allowSilent ? result.stdout !== "" : result.stdout.trim() === "") {
+        throw new Error(`${sample.id} has unexpected output`);
     }
 }
 
 /// Load and verify every playground entry.
 function loadPlaygroundSamples(): readonly PlaygroundSample[] {
-    return playgroundSamples.filter((entry) => entry.status !== "planned").map((entry) => {
+    return playgroundSamples.filter((entry) => entry.status === undefined).map((entry) => {
         if ((entry.file === undefined) === (entry.source === undefined)) {
             throw new Error(`${entry.id} needs exactly one of file or source`);
         }
@@ -482,6 +485,7 @@ function loadPlaygroundSamples(): readonly PlaygroundSample[] {
             source,
             args: entry.args,
             stdin: entry.stdin,
+            allowSilent: entry.allowSilent,
         };
         verifyPlaygroundSample(sample);
         return sample;
@@ -499,21 +503,10 @@ function readVersions(): { compiler: string; language: string; play: string } {
 
 /// Render the playground page.
 function renderPlayground(data: readonly PlaygroundSample[]): string {
-    let options = "";
-    let currentGroup = "";
-    data.forEach((sample, index) => {
-        if (sample.group !== currentGroup) {
-            if (currentGroup !== "") {
-                options += "</optgroup>";
-            }
-            currentGroup = sample.group;
-            options += `<optgroup label="${escapeHtml(currentGroup)}">`;
-        }
-        options += `<option value="${index}">${escapeHtml(sample.label)}</option>`;
-    });
-    if (currentGroup !== "") {
-        options += "</optgroup>";
-    }
+    const options = groupSamples(data).map(({ name, entries }) =>
+        `<optgroup label="${escapeHtml(name)}">${entries.map(({ sample, index }) =>
+            `<option value="${index}">${escapeHtml(sample.label)}</option>`).join("")}</optgroup>`
+    ).join("");
     const serialized = JSON.stringify(data).replaceAll("<", "\\u003c");
     const versions = readVersions();
     return `<!doctype html>
@@ -1034,24 +1027,26 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 
 /// Render the catalog of runnable and planned samples, grouped by topic.
 function renderSamplesIndex(): string {
-    const groups = [...new Set(playgroundSamples.map((sample) => sample.group))];
-    const sections = groups.map((group) => {
-        const entries = playgroundSamples.filter((sample) => sample.group === group);
-        if (entries.length === 0) return "";
-        return `<section class="section sample-index-group"><div class="section-head"><h2>${escapeHtml(group)}</h2></div><div class="docs">${entries.map((sample) => {
+    const sections = groupSamples(playgroundSamples).map(({ name, entries }) =>
+        `<section class="section sample-index-group"><div class="section-head"><h2>${escapeHtml(name)}</h2></div><div class="docs">${entries.map(({ sample }) => {
             const planned = sample.status === "planned";
             const title = planned ? sample.label.replace(/\s*[—-]\s*planned$/i, "") : sample.label;
-            const action = planned ? `<span class="badge">Planned</span>` : `<a href="../playground/?sample=${encodeURIComponent(sample.id)}">Open in playground &rarr;</a>`;
+            let action = `<a href="../playground/?sample=${encodeURIComponent(sample.id)}">Open in playground &rarr;</a>`;
+            if (planned) action = `<span class="badge">Planned</span>`;
+            if (sample.status === "cli") {
+                if (!sample.file || !existsSync(join(root, sample.file))) throw new Error(`${sample.id} needs a local source`);
+                action = `<span class="badge">CLI only</span> <a href="${repo}/blob/${sourceCommit}/${escapeHtml(sample.file)}">View source &rarr;</a>`;
+            }
             return `<article class="doc sample-index-card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(sample.note)}</p><footer>${action}</footer></article>`;
-        }).join("")}</div></section>`;
-    }).join("");
+        }).join("")}</div></section>`
+    ).join("");
     return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mini — samples</title>
-  <meta name="description" content="Runnable and planned mini samples grouped by topic.">
+  <meta name="description" content="Mini samples grouped by topic.">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css?rev=${sourceCommit}">
 </head>
@@ -1059,7 +1054,7 @@ function renderSamplesIndex(): string {
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">${renderBrand("../")}<nav aria-label="Site"><a href="../playground/">Playground</a><a href="../">Home</a></nav></header>
   <main id="main">
-    <section class="section"><div class="section-head"><h1>Samples</h1><p>Browse runnable examples across Mini’s features. Open any runnable sample in the playground.</p></div></section>
+    <section class="section"><div class="section-head"><h1>Samples</h1><p>Browse examples by topic. Open browser-ready samples in the playground; CLI-only samples need local host access.</p></div></section>
     ${sections}
   </main>
   <footer class="site-footer"><p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>${renderSourceRevision()}</footer>

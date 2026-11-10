@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-parse",
   "kind": "sample",
-  "source": "../../samples/maps/map-parse.mini",
+  "source": "../../samples/json/map-parse.mini",
   "features": [
     "bindings",
     "control.if",

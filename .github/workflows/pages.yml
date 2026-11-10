@@ -29,6 +29,8 @@ jobs:
           cache: npm
       - name: Bootstrap generated tools
         run: ./bin/bootstrap
+      - name: Check sample grouping
+        run: node --test test/site-groups.test.ts
       - name: Build the showcase
         run: ./site/build.ts
       - uses: actions/configure-pages@v5

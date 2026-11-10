@@ -20,20 +20,20 @@ For a first pass, try [hello](basics/hello.mini), [bindings](basics/bindings.min
 - [shebang.mini](basics/shebang.mini): Use a first-line shebang header and print a line. [Case](../cases/language/049-004-shebang-sample.case.json).
 - [bindings.mini](basics/bindings.mini): Bind text and number values. [Case](../cases/showcase/bindings.case.json).
 - [booleans.mini](basics/booleans.mini): Combine comparisons with &&. [Case](../cases/showcase/booleans.case.json).
-- [concat.mini](basics/concat.mini): Join text with +. [Case](../cases/showcase/concat.case.json).
 - [function.mini](basics/function.mini): Return a value from a named function. [Case](../cases/showcase/function.case.json).
 - [hello.mini](basics/hello.mini): Write one line of text. [Case](../cases/showcase/hello.case.json).
 - [if-else.mini](basics/if-else.mini): Choose one of two branches. [Case](../cases/showcase/if-else.case.json).
 - [if.mini](basics/if.mini): Run a block when a condition holds. [Case](../cases/showcase/if.case.json).
-- [numbers.mini](basics/numbers.mini): Multiply and subtract numbers. [Case](../cases/showcase/numbers.case.json).
 - [while.mini](basics/while.mini): Repeat while a condition holds. [Case](../cases/showcase/while.case.json).
 
 ## Numbers
 
+- [arithmetic.mini](numbers/arithmetic.mini): Multiply and subtract numbers. [Case](../cases/showcase/numbers.case.json).
 - [number-to-text.mini](numbers/number-to-text.mini): Print canonical decimal text for zero, a positive number, and a negative number. [Case](../cases/language/047-003-number-to-text-sample.case.json).
 
 ## Text
 
+- [concat.mini](text/concat.mini): Join text with +. [Case](../cases/showcase/concat.case.json).
 - [normalize-whitespace.mini](text/normalize-whitespace.mini): Scan with `text_length` and `text_get`, replacing tabs and newlines with spaces. [Case](../cases/language/019-004-text-sample.case.json).
 - [slice-input.mini](text/slice-input.mini): Read text and print slices with clamping, negative bounds, and an empty reversed range. [Case](../cases/language/041-005-text-slice-sample.case.json).
 - [find-input.mini](text/find-input.mini): Read text and report whether it contains two sample words. [Case](../cases/language/042-005-text-find-sample.case.json).
@@ -68,18 +68,18 @@ For a first pass, try [hello](basics/hello.mini), [bindings](basics/bindings.min
 
 - [map-operations.mini](maps/map-operations.mini): Use `map_new`, `map_set`, `map_get`, `map_has`, and `map_keys`; count the key list with `list_length`, read replacement values, distinguish missing keys, and snapshot keys. [Case](../cases/language/033-005-map-sample.case.json).
 - [map-copy-isolation.mini](maps/map-copy-isolation.mini): Copy a map and show that changing the copy leaves the original intact. [Case](../cases/language/044-004-map-copy-sample.case.json).
-- [map-array.mini](maps/map-array.mini): Parse an array and read an item. [Case](../cases/showcase/map-array.case.json).
 - [map-copy.mini](maps/map-copy.mini): Changing the copy leaves the original intact. [Case](../cases/showcase/map-copy.case.json).
 - [map-create.mini](maps/map-create.mini): Set and read text-keyed values. [Case](../cases/showcase/map-create.case.json).
 - [map-has.mini](maps/map-has.mini): Test for a key before reading it. [Case](../cases/showcase/map-has.case.json).
 - [map-keys.mini](maps/map-keys.mini): Take a key snapshot and count it. [Case](../cases/showcase/map-keys.case.json).
 - [map-nested.mini](maps/map-nested.mini): Store a map inside another map. [Case](../cases/showcase/map-nested.case.json).
-- [map-parse.mini](maps/map-parse.mini): Parse an object and read a field. [Case](../cases/showcase/map-parse.case.json).
 - [map-replace.mini](maps/map-replace.mini): Setting an existing key keeps the key count. [Case](../cases/showcase/map-replace.case.json).
 - [map-word-count.mini](maps/map-word-count.mini): Count repeated words with a map. [Case](../cases/showcase/map-word-count.case.json).
 
 ## JSON
 
+- [map-parse.mini](json/map-parse.mini): Parse an object and read a field. [Case](../cases/showcase/map-parse.case.json).
+- [map-array.mini](json/map-array.mini): Parse an array and read an item. [Case](../cases/showcase/map-array.case.json).
 - [json-to-text.mini](json/json-to-text.mini): Build a map and print compact deterministic JSON text. [Case](../cases/language/048-004-json-to-text-sample.case.json).
 - [json-read.mini](json/json-read.mini): Parse standard-input JSON and print its name field. [Case](../cases/language/051-003-json-read-sample.case.json).
 

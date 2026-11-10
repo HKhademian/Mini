@@ -28,6 +28,14 @@ deterministic. It writes nothing else. The header wordmark and favicon come from
 Both pages show the full source revision, with the 12-character prefix in bold,
 linked to its commit. `build.json` records the full commit and short revision.
 
+## Sample groups
+
+The samples page lists every source by topic. Browser-ready examples appear in
+the playground selector, including examples that deliberately produce no output.
+Samples requiring filesystem or process access are marked CLI-only and link to
+their source. The selector and samples page use the same groups; sample IDs stay
+stable when entries move between groups.
+
 ## Mini Play
 
 Import `extra/canvas` to declare the board and `extra/board` to build

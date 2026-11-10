@@ -1,7 +1,7 @@
 {
   "id": "showcase.concat",
   "kind": "sample",
-  "source": "../../samples/basics/concat.mini",
+  "source": "../../samples/text/concat.mini",
   "features": [
     "bindings",
     "text.output"

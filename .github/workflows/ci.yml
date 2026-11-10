@@ -37,6 +37,9 @@ jobs:
         run: check
       - name: JSON verification scenarios
         run: test
+      - name: Check sample grouping
+        shell: bash
+        run: node --test test/site-groups.test.ts
       - name: Verify parallel C bootstrap
         shell: bash
         run: node tools/c-bootstrap.ts
