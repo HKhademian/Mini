@@ -83,7 +83,8 @@ uses tagged text/number values with growable byte-buffer backing and
 offset/length text views. The buffer belongs to the program invocation, so
 binding views survive across file initializers. Readable C literals initialize
 that backing; raw control bytes are escaped without losing their lengths. Target
-rejection does not create or replace either output file.
+rejection does not create or replace either output file. Shared parser warnings are
+reported for C and JavaScript compilation.
 
 Each source `io_write` emits one C call with signature
 `int MINI_ID(io_write)(MINI_ID(params) params)`. The generated header defines

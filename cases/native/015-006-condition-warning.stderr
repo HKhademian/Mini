@@ -1,0 +1,6 @@
+015-006-condition-warning.mini:2:4: warning: unnecessary condition parentheses
+if (position == 0) {
+   ^
+015-006-condition-warning.mini:5:7: warning: unnecessary condition parentheses
+while (position < 2) {
+      ^

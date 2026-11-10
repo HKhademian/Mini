@@ -1,0 +1,26 @@
+{
+  "id": "native.c-condition-warning",
+  "kind": "compile",
+  "source": "015-006-condition-warning.mini",
+  "features": [
+    "control.if",
+    "control.while",
+    "target.c"
+  ],
+  "cases": [
+    {
+      "name": "warns",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": ""
+      },
+      "stderr": {
+        "file": "015-006-condition-warning.stderr"
+      },
+      "exitCode": 0
+    }
+  ],
+  "target": "c"
+}

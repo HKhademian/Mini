@@ -1192,5 +1192,5 @@ fn emit_c_program(program, header_name) {
 
 /// Parse one prepared token list once, then delegate to the AST-only C backend.
 fn emit_c_compile(tokens, header_name) {
-    return emit_c_program(parser_ast_quiet(tokens), header_name);
+    return emit_c_program(parser_ast(tokens), header_name);
 }
