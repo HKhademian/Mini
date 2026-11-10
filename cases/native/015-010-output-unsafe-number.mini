@@ -1,0 +1,12 @@
+/// Serialize unsafe numbers inside collections as null.
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/number";
+import "core/display";
+
+unsafe := number_mul(9007199254740991, 2);
+items := list_of(unsafe, 1);
+object := map_new();
+map_set(object, "number", unsafe);
+io_write(items, "|", object, "|", list_to_text(items), "\n");

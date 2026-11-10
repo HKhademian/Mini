@@ -1,0 +1,10 @@
+{
+  "id": "native.c-output-unsafe-number",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-010-output-unsafe-number.mini",
+  "features": ["target.c", "text.output", "list.new", "map.new"],
+  "cases": [
+    {"name": "unsafe-number", "stdin": {"text": ""}, "stdout": {"text": "[null,1]|{\"number\":null}|[null,1]\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}
