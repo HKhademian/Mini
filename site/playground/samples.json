@@ -492,11 +492,11 @@
   {
     "id": "freeway-board",
     "group": "Games",
-    "label": "Freeway — planned",
-    "note": "Guide a chicken across lanes of moving traffic.",
+    "label": "Freeway",
+    "note": "Cross the road with arrows or WASD. Three traffic lanes move at two, three, and four steps per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/freeway-board.mini"
   },
   {
     "id": "seaquest-board",
