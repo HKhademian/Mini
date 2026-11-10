@@ -1,0 +1,120 @@
+/// Jump over incoming obstacles in a tiny Asterix-style runner.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+ground_row := screen_edge - 1;
+player_x := 2;
+playback_fps := 60;
+obstacle_fps := 3;
+frames_per_obstacle_step := number_div(playback_fps, obstacle_fps);
+jump_length_frames := number_div(playback_fps, 2);
+obstacle_x := screen_edge - 1;
+obstacle_row := ground_row;
+obstacle_ticks := 0;
+jump_ticks := 0;
+score := 0;
+game_over := false;
+background := pixel_rgb(18, 32, 62);
+ground_color := pixel_rgb(100, 190, 112);
+player_color := pixel_rgb(255, 210, 76);
+obstacle_color := pixel_rgb(236, 92, 82);
+score_color := pixel_rgb(108, 220, 240);
+
+/// Return the player's current vertical position during a jump.
+fn asterix_player_row() {
+    if jump_ticks > number_div(jump_length_frames, 2) {
+        return ground_row - 2;
+    }
+    if jump_ticks > 0 {
+        return ground_row - 1;
+    }
+    return ground_row;
+}
+
+/// Draw the ground, runner, obstacle, and simple score markers.
+fn asterix_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    column := 0;
+    while column < screen_size {
+        pixel_board_set(board, screen_size, screen_size, column, ground_row + 1, ground_color);
+        column = column + 1;
+    }
+    score_index := 0;
+    while score_index < score && score_index < screen_edge {
+        pixel_board_set(board, screen_size, screen_size, score_index, 0, score_color);
+        score_index = score_index + 1;
+    }
+    player_row := asterix_player_row();
+    pixel_board_set(board, screen_size, screen_size, player_x, player_row, player_color);
+    if player_row < ground_row {
+        pixel_board_set(board, screen_size, screen_size, player_x, player_row - 1, player_color);
+    }
+    pixel_board_set(board, screen_size, screen_size, obstacle_x, obstacle_row, obstacle_color);
+    pixel_board_set(board, screen_size, screen_size, obstacle_x, obstacle_row - 1, obstacle_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Advance the jump and obstacle, ending after a collision.
+fn canvas_update() {
+    if !game_over {
+        if jump_ticks > 0 {
+            jump_ticks = jump_ticks - 1;
+        }
+        obstacle_ticks = obstacle_ticks + 1;
+        if obstacle_ticks >= frames_per_obstacle_step {
+            obstacle_ticks = 0;
+            obstacle_x = obstacle_x - 1;
+            if obstacle_x < 1 {
+                obstacle_x = screen_edge - 1;
+                score = score + 1;
+            }
+        }
+        if obstacle_x == player_x && asterix_player_row() >= obstacle_row - 1 {
+            game_over = true;
+        }
+    }
+    asterix_render();
+    if game_over {
+        return 1;
+    }
+}
+
+/// Jump with Space, W, or the up arrow.
+fn canvas_on_key_down(key) {
+    if !game_over && jump_ticks == 0 && (key == " " || key == "w" || key == "ArrowUp") {
+        jump_ticks = jump_length_frames;
+    }
+}
+
+/// Print the first runner frame for command-line runs.
+fn asterix_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == ground_row + 1 {
+                line = line + "-";
+            } else if column == player_x && row == ground_row {
+                line = line + "A";
+            } else if column == obstacle_x && (row == obstacle_row || row == obstacle_row - 1) {
+                line = line + "#";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+asterix_render();
+canvas_play(screen_size, screen_size, "Asterix Runner · Space to Jump");
+asterix_print();

@@ -510,11 +510,11 @@
   {
     "id": "asterix-board",
     "group": "Games",
-    "label": "Asterix — planned",
-    "note": "A compact action game with jumping and obstacles.",
+    "label": "Asterix runner",
+    "note": "Press Space, W, or Up to jump incoming obstacles. Clear them at three steps per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/asterix-board.mini"
   },
   {
     "id": "snake-board",
