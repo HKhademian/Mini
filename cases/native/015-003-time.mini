@@ -1,0 +1,18 @@
+/// Read the millisecond clock without moving backwards.
+
+import "core/io";
+import "core/time";
+import "util/io";
+
+first := time_millis();
+if first > 0 {
+    io_write_line("time ok");
+} else {
+    io_write_line("time bad");
+}
+second := time_millis();
+if second >= first {
+    io_write_line("order ok");
+} else {
+    io_write_line("order bad");
+}

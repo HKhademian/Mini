@@ -1,0 +1,26 @@
+{
+  "id": "native.c-time",
+  "kind": "feature",
+  "source": "015-003-time.mini",
+  "features": [
+    "time.millis",
+    "text.output",
+    "target.c"
+  ],
+  "cases": [
+    {
+      "name": "epoch-milliseconds",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "time ok\norder ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ],
+  "target": "c"
+}

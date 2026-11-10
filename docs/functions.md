@@ -42,8 +42,8 @@ Import `core/hash`; its Mini fallback panics, and JavaScript and C register
 same-name host implementations.
 
 `time_millis()` returns the host clock as integer milliseconds since the epoch.
-Import `core/time`; its Mini fallback panics, and JavaScript registers the
-same-name host implementation.
+Import `core/time`; its Mini fallback panics, and JavaScript and C register
+same-name host implementations.
 
 `process_script_path()` returns the current script or executable path, and
 `process_exec_path()` returns the executable path. The C target resolves its

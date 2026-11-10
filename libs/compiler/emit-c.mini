@@ -18,6 +18,7 @@ import "./emit-c/value";
 import "./emit-c/display";
 import "./emit-c/text";
 import "./emit-c/process";
+import "./emit-c/time";
 import "./emit-c/exec-path";
 import "./emit-c/process-spawn";
 import "./emit-c/hash";
