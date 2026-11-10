@@ -582,7 +582,9 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         </div>
         <div id="panel-canvas" class="tab-panel canvas-panel" role="tabpanel" aria-labelledby="tab-canvas" hidden>
           <h2 id="play-title"></h2>
-          <canvas id="play-canvas" tabindex="0" aria-label="Mini Play board"></canvas>
+          <div class="canvas-stage">
+            <canvas id="play-canvas" tabindex="0" aria-label="Mini Play board"></canvas>
+          </div>
           <p id="play-status" role="status">Ready</p>
         </div>
         <div id="panel-code" class="tab-panel" role="tabpanel" aria-labelledby="tab-code" hidden>
