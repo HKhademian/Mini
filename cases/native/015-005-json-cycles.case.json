@@ -1,0 +1,10 @@
+{
+  "id": "native.c-json-cycles",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-005-json-cycles.mini",
+  "features": ["target.c", "json.to-text", "list.new", "map.new"],
+  "cases": [
+    {"name": "cycles-and-shared-values", "stdin": {"text": ""}, "stdout": {"text": "\n\n[[\"x\"],[\"x\"]]\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}

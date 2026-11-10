@@ -1,0 +1,15 @@
+/// Cycles serialize to empty text; repeated non-cyclic values remain valid.
+import "core/io";
+import "core/json";
+import "core/list";
+import "core/map";
+import "util/io";
+
+cycle := list_new();
+list_set(cycle, 0, cycle);
+io_write_line(json_text(cycle));
+map := map_new();
+map_set(map, "self", map);
+io_write_line(json_text(map));
+shared := list_of("x");
+io_write_line(json_text(list_of(shared, shared)));
