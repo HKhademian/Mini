@@ -1,0 +1,70 @@
+/// Play three-note chords from the number keys or arrow keys.
+
+import "core/io";
+import "util/audio";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+black := pixel_rgb(0, 0, 0);
+first_color := pixel_rgb(90, 150, 255);
+second_color := pixel_rgb(110, 230, 190);
+third_color := pixel_rgb(255, 210, 100);
+first_note := 262;
+second_note := 330;
+third_note := 392;
+
+/// Draw the three notes in the selected chord.
+fn pixel_chord_pad_draw() {
+    board := pixel_board_new(screen_size, screen_size, black);
+    pixel_board_set(board, screen_size, screen_size, 3, 5, first_color);
+    pixel_board_set(board, screen_size, screen_size, 4, 5, second_color);
+    pixel_board_set(board, screen_size, screen_size, 5, 5, third_color);
+    canvas_draw(screen_size, screen_size, board);
+}
+
+/// Select and play a three-note chord.
+fn pixel_chord_pad_play(note_one, note_two, note_three) {
+    first_note = note_one;
+    second_note = note_two;
+    third_note = note_three;
+    pixel_chord_pad_draw();
+    audio_tone(first_note, 300, 10);
+    audio_tone(second_note, 300, 10);
+    audio_tone(third_note, 300, 10);
+}
+
+/// Play C, F, or G major with keys 1–3 or left, up, and right.
+fn canvas_on_key_down(key) {
+    if key == "1" || key == "ArrowLeft" {
+        pixel_chord_pad_play(262, 330, 392);
+    } else if key == "2" || key == "ArrowUp" {
+        pixel_chord_pad_play(349, 440, 523);
+    } else if key == "3" || key == "ArrowRight" {
+        pixel_chord_pad_play(392, 494, 587);
+    }
+}
+
+/// Print the initial C major chord marker for command-line runs.
+fn pixel_chord_pad_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == 5 && column >= 3 && column <= 5 {
+                line = line + "*";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_chord_pad_draw();
+canvas_play("Chord Pad");
+pixel_chord_pad_print();

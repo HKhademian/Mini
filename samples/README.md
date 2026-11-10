@@ -54,6 +54,7 @@ entry. Planned ideas are listed separately below and on the playground page.
 - [pixel-dvd.mini](showcase/pixel-dvd.mini): Bounce a colored DVD logo around a 23×13 blue screen at three steps per second, changing color when it hits a wall. [Case](../cases/showcase/pixel-dvd.case.json).
 - [pixel-resize.mini](showcase/pixel-resize.mini): Redraw one canvas while its square frame changes from five to nine pixels wide. [Case](../cases/showcase/pixel-resize.case.json).
 - [pixel-tone.mini](showcase/pixel-tone.mini): Play a short tone with each arrow key or WASD press while changing the pixel color. [Case](../cases/showcase/pixel-tone.case.json).
+- [pixel-chord-pad.mini](showcase/pixel-chord-pad.mini): Play C, F, and G major chords with keys 1–3 or the arrow keys. [Case](../cases/showcase/pixel-chord-pad.case.json).
 
 ### Planned graphical samples
 

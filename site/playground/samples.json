@@ -742,6 +742,15 @@
     "file": "samples/showcase/pixel-tone.mini"
   },
   {
+    "id": "pixel-chord-pad",
+    "group": "Audio",
+    "label": "Chord pad",
+    "note": "Play C, F, or G major chords using keys 1–3 or the arrow keys.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-chord-pad.mini"
+  },
+  {
     "id": "pixel-dvd",
     "group": "Animation",
     "label": "DVD logo",
