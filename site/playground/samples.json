@@ -546,11 +546,11 @@
   {
     "id": "lunar-lander-board",
     "group": "Games",
-    "label": "Lunar Lander — planned",
-    "note": "Use simple thrust and gravity to land safely.",
+    "label": "Lunar Lander",
+    "note": "Use Up or Space to spend fuel and slow down, steer toward the green pad, and land at two positions per second with speed two or less.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/lunar-lander-board.mini"
   },
   {
     "id": "qbert-board",

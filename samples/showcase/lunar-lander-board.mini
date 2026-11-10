@@ -1,0 +1,157 @@
+/// Land gently on the green pad using limited thrust and horizontal steering.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+playback_fps := 60;
+gravity_fps := 1;
+fall_fps := 2;
+frames_per_gravity_step := number_div(playback_fps, gravity_fps);
+frames_per_fall_step := number_div(playback_fps, fall_fps);
+landing_row := screen_edge - 1;
+pad_left := 4;
+pad_right := 5;
+lander_x := number_div(screen_size, 2);
+lander_y := 1;
+vertical_speed := 0;
+maximum_speed := 5;
+safe_landing_speed := 2;
+fuel := 8;
+gravity_ticks := 0;
+fall_ticks := 0;
+thrust_on := false;
+game_over := false;
+game_won := false;
+sky_color := pixel_rgb(5, 16, 48);
+star_color := pixel_rgb(80, 118, 180);
+ground_color := pixel_rgb(52, 64, 78);
+pad_color := pixel_rgb(84, 230, 142);
+lander_color := pixel_rgb(224, 236, 248);
+flame_color := pixel_rgb(255, 148, 68);
+gauge_color := pixel_rgb(90, 192, 255);
+
+/// Draw the sky, landing pad, speed and fuel bars, and lander.
+fn lunar_lander_render() {
+    board := pixel_board_new(screen_size, screen_size, sky_color);
+    star_index := 0;
+    while star_index < screen_size {
+        star_x := number_mod(number_mul(star_index, 7) + 2, screen_size);
+        star_y := number_mod(number_mul(star_index, 3) + 1, landing_row - 1);
+        pixel_board_set(board, screen_size, screen_size, star_x, star_y, star_color);
+        star_index = star_index + 1;
+    }
+
+    column := 0;
+    while column < screen_size {
+        pixel_board_set(board, screen_size, screen_size, column, screen_edge, ground_color);
+        column = column + 1;
+    }
+    pad_column := pad_left;
+    while pad_column <= pad_right {
+        pixel_board_set(board, screen_size, screen_size, pad_column, landing_row, pad_color);
+        pad_column = pad_column + 1;
+    }
+
+    speed_index := 0;
+    while speed_index < vertical_speed {
+        pixel_board_set(board, screen_size, screen_size, speed_index, 0, gauge_color);
+        speed_index = speed_index + 1;
+    }
+    fuel_index := 0;
+    while fuel_index < fuel {
+        pixel_board_set(board, screen_size, screen_size, screen_edge - fuel_index, 0, flame_color);
+        fuel_index = fuel_index + 1;
+    }
+
+    pixel_board_set(board, screen_size, screen_size, lander_x, lander_y, lander_color);
+    if thrust_on && lander_y < landing_row {
+        pixel_board_set(board, screen_size, screen_size, lander_x, lander_y + 1, flame_color);
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Increase speed under gravity and descend at two positions per second.
+fn canvas_update() {
+    thrust_on = false;
+    if !game_over && !game_won {
+        gravity_ticks = gravity_ticks + 1;
+        if gravity_ticks >= frames_per_gravity_step {
+            gravity_ticks = 0;
+            if vertical_speed < maximum_speed {
+                vertical_speed = vertical_speed + 1;
+            }
+        }
+
+        fall_ticks = fall_ticks + 1;
+        if fall_ticks >= frames_per_fall_step {
+            fall_ticks = 0;
+            lander_y = lander_y + 1;
+            if lander_y >= landing_row {
+                lander_y = landing_row;
+                if vertical_speed <= safe_landing_speed && lander_x >= pad_left && lander_x <= pad_right {
+                    game_won = true;
+                } else {
+                    game_over = true;
+                }
+            }
+        }
+    }
+    lunar_lander_render();
+    if game_over || game_won {
+        return 1;
+    }
+}
+
+/// Steer left/right and use Up or Space for limited braking thrust.
+fn canvas_on_key_down(key) {
+    if game_over || game_won {
+        return 0;
+    }
+    if (key == "ArrowLeft" || key == "a") && lander_x > 0 {
+        lander_x = lander_x - 1;
+    } else if (key == "ArrowRight" || key == "d") && lander_x < screen_edge {
+        lander_x = lander_x + 1;
+    } else if (key == "ArrowUp" || key == " ") && fuel > 0 {
+        fuel = fuel - 1;
+        if vertical_speed > 0 {
+            vertical_speed = vertical_speed - 1;
+        }
+        thrust_on = true;
+    }
+}
+
+/// Print the opening lander and pad for command-line runs.
+fn lunar_lander_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if column == lander_x && row == lander_y {
+                line = line + "A";
+            } else if row == landing_row && column >= pad_left && column <= pad_right {
+                line = line + "=";
+            } else if row == screen_edge {
+                line = line + "#";
+            } else if row == 0 && column < fuel {
+                line = line + "F";
+            } else if row == 0 && column >= screen_size - vertical_speed {
+                line = line + "!";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+lunar_lander_render();
+canvas_play(screen_size, screen_size, "Lunar Lander · Up to Thrust");
+lunar_lander_print();
