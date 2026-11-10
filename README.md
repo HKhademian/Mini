@@ -25,7 +25,7 @@ tools.
 
 ## What you get
 
-- A compiler written in mini that generates readable JavaScript for Node.
+- A compiler written in mini that generates readable JavaScript and C11.
 - A command-line tool to check, format, compile, run, and test programs.
 - A browser playground with runnable examples and generated JavaScript.
 - A self-hosting check that verifies successive compiler generations match.

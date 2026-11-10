@@ -2,14 +2,19 @@
 
 ## Native C target
 
-The compiler also emits a bounded C11 subset; see the
-[compiler reference](compiler.md). Generating C still uses the Mini-written
-compiler running on Node. Building/running generated C requires a C11 toolchain,
-with `cc` on PATH for native case preprocessing and compilation. The compiler
-writes a source/header pair; native verification adds an expanded `.i` and builds
-from it. The resulting literal-output program
-uses the C standard library and needs no Node at execution time. Native source
-interpretation, an embedding API, and broad language support remain pending.
+The Mini-written compiler emits C11 source and a companion header; see the
+[compiler reference](compiler.md). The active compiler runs on Node, and a
+parallel native compiler and bootstrap are verified by the
+[C bootstrap gate](bootstrap.md). Building generated C requires a C11 toolchain;
+the native case runner uses `cc` on PATH. Generated native programs need no Node
+to execute, though programs that spawn Node commands still need Node for those
+commands.
+
+The native host implementations use POSIX filesystem and process APIs. The
+current changes have been verified locally on macOS arm64 with Apple Clang;
+Ubuntu and macOS CI are configured to run the C bootstrap gate. Windows support
+and Linux results for the current changes are not yet verified. Native source
+interpretation and an embedding API remain pending.
 
 ## Node tools and JavaScript target
 

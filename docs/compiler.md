@@ -7,7 +7,7 @@ selected by [config/compiler.json](../config/compiler.json). The former
 handwritten implementation was retired; only accepted [language](language.md) and
 [function](functions.md) contracts are normative.
 
-JavaScript is the default target. An initial C11 target supports top-level
+JavaScript is the default target. The C11 target supports top-level
 `io_write` calls and top-level bindings with UTF-8 text, safe integers, and
 boolean values, comments,
 an entry shebang, and empty programs. Negative number literals are supported in the
@@ -24,7 +24,8 @@ is unsupported at runtime; other arithmetic remains unsupported.
 An unconditional binding read that the C target can identify before its file runs
 rejects at compile time. Conditionally executed reads are checked at runtime; a
 read that actually occurs before initialization fails the native program.
-Other forms reject explicitly. The
+Additional supported functions, collections, and host operations are described
+below. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
 increments; the script interpreter and embedding API are not implemented yet.
 

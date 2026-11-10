@@ -1,9 +1,10 @@
 # C target and embeddable runner
 
-Status: proposal, 2026-11-07. The owner selected C as the next target and a
-compiler-first, incremental approach. The first C literal-output slice is
-implemented; a script interpreter and embedding API remain pending. See the
-[compiler reference](compiler.md) for current usage and the
+The Mini-written compiler emits C11 and can compile itself to a native compiler.
+The [C bootstrap gate](bootstrap.md) verifies compiler generations and runs the
+test driver through JS and native workers. JavaScript remains the active
+bootstrap. A runtime script interpreter and embedding API remain pending. See
+the [compiler reference](compiler.md) for current usage and the
 [implementation plan](../.agents/plans/c-target-and-embedding.md) for later work.
 
 ## Goal and first milestone
@@ -40,7 +41,7 @@ nested calls, recursion, conditional branching (`if`/`else`), and stack-local
 bindings. List values support construction (`list_new`, `list_of`), front/back
 push and pop, truncation, length, indexed reads and writes, shallow copying,
 text joining, the Mini helpers `list_contains` and `list_reverse`, and JSON output through
-`io_write`. Sparse assignment fills skipped positions with numeric zero.
+`io_write`. Sparse positions read as zero and serialize as JSON null.
 C output is written only after
 the whole source passes shared language checks and native subset validation.
 Top-level operations are grouped into per-file functions; one generated main
@@ -244,15 +245,11 @@ grows. A shared library existing does not by itself prove API usability.
 
 The stages do not require completing every language feature before trying a
 host or runner sample. The [plan](../.agents/plans/c-target-and-embedding.md)
-records concrete paths and gates. The first compiler slice works; later language
-features, native storage, and the script runner remain pending.
+records concrete paths and remaining embedding and distribution work. Native
+text, list, and map storage and a parallel compiler bootstrap are implemented.
 
-Portable C11 is the proposed baseline. Verify macOS/Linux first; test Windows
-exports/calling convention before claiming DLL support. A parallel C compiler
-bootstrap is an explicit goal after target parity; it is not a prerequisite for
-the first runner milestone. Keep the JS bootstrap active until successive C
-compiler generations reach a fixed point. Compare emitted C source, not native
-binary bytes, and preserve the separate JS gate.
-
-This creates no release version, published artifact, new syntax, or sandbox
-claim. Keep verified implementation increments in atomic commits.
+The native host code uses POSIX APIs. The current gate has been run locally on
+macOS arm64 with Apple Clang; Ubuntu and macOS CI are configured to run it.
+Windows and Linux results for the current changes are not yet verified. The JS
+bootstrap remains active; the C gate compares emitted source and headers rather
+than native binary bytes.
