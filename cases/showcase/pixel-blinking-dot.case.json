@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-blinking-dot",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-blinking-dot.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n..........\n..........\n..........\n.....*....\n..........\n..........\n..........\n..........\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

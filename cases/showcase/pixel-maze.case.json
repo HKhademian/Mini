@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-maze",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-maze.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "##########\n#.......G#\n#.######.#\n#........#\n#.######.#\n#........#\n#.######.#\n#........#\n#@.......#\n##########\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

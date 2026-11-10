@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-stripes",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-stripes.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n#.#.#.#.#.\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

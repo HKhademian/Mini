@@ -1,0 +1,26 @@
+{
+  "id": "showcase.qbert-board",
+  "kind": "sample",
+  "source": "../../samples/showcase/qbert-board.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "..........\n.....@....\n..........\n....o.o...\n..........\n...o.o.o..\n..........\n..o.o.o.o.\n..........\n..........\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

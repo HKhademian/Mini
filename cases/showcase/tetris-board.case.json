@@ -1,0 +1,26 @@
+{
+  "id": "showcase.tetris-board",
+  "kind": "sample",
+  "source": "../../samples/showcase/tetris-board.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "#........#\n#........#\n#..IIII..#\n#........#\n#........#\n#........#\n#........#\n#........#\n#........#\n##########\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

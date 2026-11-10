@@ -1,0 +1,26 @@
+{
+  "id": "showcase.space-invaders-board",
+  "kind": "sample",
+  "source": "../../samples/showcase/space-invaders-board.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n..V.V.V.V.\n..........\n..........\n..........\n..........\n..........\n.....A....\n..........\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

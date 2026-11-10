@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-checkerboard",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-checkerboard.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "#.#.#.#.#.\n.#.#.#.#.#\n#.#.#.#.#.\n.#.#.#.#.#\n#.#.#.#.#.\n.#.#.#.#.#\n#.#.#.#.#.\n.#.#.#.#.#\n#.#.#.#.#.\n.#.#.#.#.#\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}

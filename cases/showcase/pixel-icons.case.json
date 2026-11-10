@@ -1,0 +1,26 @@
+{
+  "id": "showcase.pixel-icons",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-icons.mini",
+  "features": [
+    "text.output",
+    "extra.canvas",
+    "extra.board"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": {
+        "text": ""
+      },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n...H......\n..H.H.....\n.H...H..>.\n.H...H>>>>\n.H.H.H..>.\n.H.H.H....\n.HHHHH....\n..........\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ]
+}
