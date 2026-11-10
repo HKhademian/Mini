@@ -1,0 +1,104 @@
+/// Play a four-note arpeggio at two notes per second; press Space to start or pause.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/audio";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+playback_fps := 60;
+notes_per_second := 2;
+frames_per_note := number_div(playback_fps, notes_per_second);
+black := pixel_rgb(0, 0, 0);
+white := pixel_rgb(255, 255, 255);
+notes := list_of(262, 330, 392, 523);
+note_colors := list_of(
+    pixel_rgb(90, 150, 255),
+    pixel_rgb(110, 230, 190),
+    pixel_rgb(255, 210, 100),
+    pixel_rgb(245, 100, 130)
+);
+note_index := 0;
+beat_ticks := 0;
+is_playing := false;
+space_is_down := false;
+
+/// Draw four note lamps and the current note marker.
+fn pixel_arpeggio_draw() {
+    board := pixel_board_new(screen_size, screen_size, black);
+    note := 0;
+    while note < list_length(notes) {
+        pixel_board_set(board, screen_size, screen_size, 3 + note, 4, list_get(note_colors, note));
+        note = note + 1;
+    }
+    pixel_board_set(board, screen_size, screen_size, 3 + note_index, 5, white);
+    canvas_draw(screen_size, screen_size, board);
+}
+
+/// Play the selected note with a short, quiet tone.
+fn pixel_arpeggio_play_note() {
+    audio_tone(list_get(notes, note_index), 180, 18);
+}
+
+/// Advance one note every half second while the arpeggio is running. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
+    if is_playing {
+        beat_ticks = beat_ticks + 1;
+        if beat_ticks >= frames_per_note {
+            beat_ticks = 0;
+            note_index = note_index + 1;
+            if note_index >= list_length(notes) {
+                note_index = 0;
+            }
+            pixel_arpeggio_draw();
+            pixel_arpeggio_play_note();
+        }
+    }
+}
+
+/// Start or pause the arpeggio with Space, ignoring key repeat.
+fn canvas_on_key_down(key) {
+    if key == " " && !space_is_down {
+        space_is_down = true;
+        is_playing = !is_playing;
+        beat_ticks = 0;
+        if is_playing {
+            pixel_arpeggio_play_note();
+        }
+    }
+}
+
+/// Allow Space to start or pause again after the key is released.
+fn canvas_on_key_up(key) {
+    if key == " " {
+        space_is_down = false;
+    }
+}
+
+/// Print the initial four lamps and selected note marker.
+fn pixel_arpeggio_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == 4 && column >= 3 && column <= 6 {
+                line = line + "*";
+            } else if row == 5 && column == 3 {
+                line = line + "@";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_arpeggio_draw();
+canvas_play("Slow Arpeggio · Space to Start");
+pixel_arpeggio_print();

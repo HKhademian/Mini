@@ -1,0 +1,28 @@
+{
+  "id": "showcase.pixel-arpeggio",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-arpeggio.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "core.list",
+    "core.number",
+    "util.audio",
+    "util.canvas",
+    "util.board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "..........\n..........\n..........\n..........\n...****...\n...@......\n..........\n..........\n..........\n..........\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

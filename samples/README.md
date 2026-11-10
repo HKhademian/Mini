@@ -56,6 +56,7 @@ entry. Planned ideas are listed separately below and on the playground page.
 - [pixel-tone.mini](showcase/pixel-tone.mini): Play a short tone with each arrow key or WASD press while changing the pixel color. [Case](../cases/showcase/pixel-tone.case.json).
 - [pixel-chord-pad.mini](showcase/pixel-chord-pad.mini): Play C, F, and G major chords with keys 1–3 or the arrow keys. [Case](../cases/showcase/pixel-chord-pad.case.json).
 - [pixel-soundboard.mini](showcase/pixel-soundboard.mini): Move over and click one of four colored pads to play a note. [Case](../cases/showcase/pixel-soundboard.case.json).
+- [pixel-arpeggio.mini](showcase/pixel-arpeggio.mini): Start or pause a four-note arpeggio paced at two notes per second with Space. [Case](../cases/showcase/pixel-arpeggio.case.json).
 
 ### Planned graphical samples
 

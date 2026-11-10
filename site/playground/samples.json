@@ -760,6 +760,15 @@
     "file": "samples/showcase/pixel-soundboard.mini"
   },
   {
+    "id": "pixel-arpeggio",
+    "group": "Audio",
+    "label": "Slow arpeggio",
+    "note": "Press Space to start or pause a four-note melody paced at two notes per second.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-arpeggio.mini"
+  },
+  {
     "id": "pixel-dvd",
     "group": "Animation",
     "label": "DVD logo",
