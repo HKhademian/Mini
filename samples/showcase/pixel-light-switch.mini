@@ -58,5 +58,5 @@ fn pixel_light_switch_print() {
 }
 
 pixel_light_switch_render();
-canvas_play(screen_size, screen_size, "Light Switch · Space to toggle");
+canvas_play("Light Switch · Space to toggle");
 pixel_light_switch_print();

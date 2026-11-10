@@ -153,5 +153,5 @@ fn lunar_lander_print() {
 }
 
 lunar_lander_render();
-canvas_play(screen_size, screen_size, "Lunar Lander · Up to Thrust");
+canvas_play("Lunar Lander · Up to Thrust");
 lunar_lander_print();

@@ -170,5 +170,5 @@ fn snake_print() {
 }
 
 snake_render();
-canvas_play(screen_size, screen_size, "Snake · Arrows or WASD");
+canvas_play("Snake · Arrows or WASD");
 snake_print();

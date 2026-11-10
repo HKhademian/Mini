@@ -139,10 +139,10 @@ function prepare(code, play, still, title) {
   ].join("\n");
   const playBridge = play ? [
     "globalThis.__miniPlay = {",
-    "  width: canvas_width(),",
-    "  height: canvas_height(),",
-    "  title: canvas_title(),",
-    "  pixels: canvas_pixels,",
+    "  width: canvas_get_width(),",
+    "  height: canvas_get_height(),",
+    "  title: canvas_get_title(),",
+    "  pixels: canvas_get_pixels,",
     '  init: typeof canvas_on_init === "function" ? canvas_on_init : null,',
     '  update: typeof canvas_on_update === "function" ? canvas_on_update : null,',
     '  keyDown: typeof canvas_on_key_down === "function" ? canvas_on_key_down : null,',
@@ -157,10 +157,10 @@ function prepare(code, play, still, title) {
   ].join("\n") : "";
   const stillBridge = still ? [
     "globalThis.__miniCanvas = {",
-    "  width: canvas_width(),",
-    "  height: canvas_height(),",
-    `  title: ${JSON.stringify(title)},`,
-    "  pixels: canvas_pixels(),",
+    "  width: canvas_get_width(),",
+    "  height: canvas_get_height(),",
+    `  title: canvas_get_title() || ${JSON.stringify(title)},`,
+    "  pixels: canvas_get_pixels(),",
     "};",
   ].join("\n") : "";
   return (code + "\n" + playBridge + "\n" + stillBridge)

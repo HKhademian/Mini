@@ -125,5 +125,5 @@ fn qbert_print() {
 
 qbert_mark_tile();
 qbert_render();
-canvas_play(screen_size, screen_size, "Q*bert · Diagonal Arrows");
+canvas_play("Q*bert · Diagonal Arrows");
 qbert_print();

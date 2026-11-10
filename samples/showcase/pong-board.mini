@@ -153,5 +153,5 @@ fn pong_print() {
 }
 
 pong_render();
-canvas_play(screen_size, screen_size, "Pong · W/S and Arrows");
+canvas_play("Pong · W/S and Arrows");
 pong_print();

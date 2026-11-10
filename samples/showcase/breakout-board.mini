@@ -284,5 +284,5 @@ fn breakout_render() {
 }
 
 breakout_reset();
-canvas_play(screen_size, screen_size, "Breakout");
+canvas_play("Breakout");
 breakout_render();

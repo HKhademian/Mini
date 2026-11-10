@@ -64,5 +64,5 @@ fn pixel_dvd_print() {
     }
 }
 
-canvas_play(screen_width, screen_height, "DVD Pixel");
+canvas_play("DVD Pixel");
 pixel_dvd_print();

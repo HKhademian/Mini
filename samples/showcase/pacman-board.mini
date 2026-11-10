@@ -168,5 +168,5 @@ fn pacman_print() {
 
 pacman_setup();
 pacman_render();
-canvas_play(screen_size, screen_size, "Pac-Man · Arrows or WASD");
+canvas_play("Pac-Man · Arrows or WASD");
 pacman_print();

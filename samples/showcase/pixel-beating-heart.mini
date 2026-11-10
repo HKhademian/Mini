@@ -80,5 +80,5 @@ fn pixel_beating_heart_print() {
     }
 }
 
-canvas_play(screen_size, screen_size, "Beating Heart");
+canvas_play("Beating Heart");
 pixel_beating_heart_print();

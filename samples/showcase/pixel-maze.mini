@@ -109,5 +109,5 @@ fn pixel_maze_print() {
 }
 
 pixel_maze_render();
-canvas_play(screen_size, screen_size, "Mini Maze · Arrows or WASD");
+canvas_play("Mini Maze · Arrows or WASD");
 pixel_maze_print();

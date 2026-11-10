@@ -61,5 +61,5 @@ fn pixel_rain_print() {
 }
 
 pixel_rain_render();
-canvas_play(screen_size, screen_size, "Falling Rain");
+canvas_play("Falling Rain");
 pixel_rain_print();

@@ -53,5 +53,5 @@ fn pixel_cursor_draw_print() {
 }
 
 pixel_cursor_draw_render();
-canvas_play(screen_size, screen_size, "Draw with Pointer · Move to Paint");
+canvas_play("Draw with Pointer · Move to Paint");
 pixel_cursor_draw_print();

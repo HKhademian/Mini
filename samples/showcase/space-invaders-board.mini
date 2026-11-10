@@ -166,5 +166,5 @@ fn space_invaders_print() {
 }
 
 space_invaders_render();
-canvas_play(screen_size, screen_size, "Space Invaders · Arrows and Space");
+canvas_play("Space Invaders · Arrows and Space");
 space_invaders_print();

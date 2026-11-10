@@ -54,5 +54,5 @@ fn pixel_blinking_dot_print() {
 }
 
 pixel_blinking_dot_render();
-canvas_play(screen_size, screen_size, "Soft Color Pulse");
+canvas_play("Soft Color Pulse");
 pixel_blinking_dot_print();

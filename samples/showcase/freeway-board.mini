@@ -167,5 +167,5 @@ fn freeway_print() {
 }
 
 freeway_render();
-canvas_play(screen_size, screen_size, "Freeway · Arrows or WASD");
+canvas_play("Freeway · Arrows or WASD");
 freeway_print();

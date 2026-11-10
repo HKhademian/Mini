@@ -116,5 +116,5 @@ fn asterix_print() {
 }
 
 asterix_render();
-canvas_play(screen_size, screen_size, "Asterix Runner · Space to Jump");
+canvas_play("Asterix Runner · Space to Jump");
 asterix_print();

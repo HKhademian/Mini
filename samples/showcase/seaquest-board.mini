@@ -163,5 +163,5 @@ fn seaquest_print() {
 }
 
 seaquest_render();
-canvas_play(screen_size, screen_size, "Seaquest · Arrows or WASD");
+canvas_play("Seaquest · Arrows or WASD");
 seaquest_print();

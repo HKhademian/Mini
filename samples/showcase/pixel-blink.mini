@@ -90,5 +90,5 @@ fn pixel_blink_print() {
     io_write_line("..........");
 }
 
-canvas_play(screen_size, screen_size, "Friendly Blink");
+canvas_play("Friendly Blink");
 pixel_blink_print();

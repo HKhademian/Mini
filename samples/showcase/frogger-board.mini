@@ -187,5 +187,5 @@ fn frogger_render() {
     }
 }
 
-canvas_play(screen_size, screen_size, "Frogger");
+canvas_play("Frogger");
 frogger_render();

@@ -81,5 +81,5 @@ fn pixel_walk_cycle_print() {
 }
 
 pixel_walk_cycle_render();
-canvas_play(screen_size, screen_size, "Tiny Walk Cycle");
+canvas_play("Tiny Walk Cycle");
 pixel_walk_cycle_print();

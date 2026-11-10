@@ -46,5 +46,5 @@ fn pixel_moving_print() {
     }
 }
 
-canvas_play(screen_size, screen_size, "Moving Pixel");
+canvas_play("Moving Pixel");
 pixel_moving_print();

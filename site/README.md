@@ -37,16 +37,18 @@ row-major RGB frames:
 import "util/canvas";
 import "util/board";
 
-canvas_play(10, 10, "Example");
+screen_size := 10;
+
+canvas_play("Example");
 
 fn canvas_on_update(dt) {
-    board := pixel_board_new(10, 10, pixel_rgb(0, 0, 0));
-    pixel_board_set(board, 10, 10, 5, 5, pixel_rgb(255, 255, 255));
-    pixel_board_draw(10, 10, board);
+    board := pixel_board_new(screen_size, screen_size, pixel_rgb(0, 0, 0));
+    pixel_board_set(board, screen_size, screen_size, 5, 5, pixel_rgb(255, 255, 255));
+    pixel_board_draw(screen_size, screen_size, board);
 }
 ```
 
-`canvas_play(width, height, title)` declares a play canvas. Optional
+`canvas_play(title)` selects play mode and sets its title. Optional
 `canvas_on_init()` runs once after the program starts. Optional
 `canvas_on_update(dt)` receives elapsed seconds and produces frames; falling
 through returns zero and continues, while a nonzero result stops animation.
@@ -57,8 +59,11 @@ starting an animation loop. Optional input handlers are
 `canvas_on_pointer_down(column, row, button)`, and
 `canvas_on_pointer_up(column, row, button)`. `canvas_draw(width, height, pixels)`
 stores one row-major frame with `width * height` packed RGB integers from
-`0x000000` to `0xffffff`. `pixel_board_new`, `pixel_board_set`,
-`pixel_board_get`, and `pixel_rgb` help construct boards. The same Mini calls can
+`0x000000` to `0xffffff`. The host reads frame dimensions and pixels through
+`canvas_get_width()`, `canvas_get_height()`, and `canvas_get_pixels()`; the pixel
+getter returns the stored list without copying. `canvas_get_title()` returns the
+current title. `pixel_board_new`, `pixel_board_set`, `pixel_board_get`, and
+`pixel_rgb` help construct boards. The same Mini calls can
 be hosted by other renderers, such as Raylib; each host owns its frame loop and
 drawing.
 

@@ -47,5 +47,5 @@ fn pixel_wraparound_print() {
 }
 
 pixel_wraparound_render();
-canvas_play(screen_size, screen_size, "Wrap-Around Pixel");
+canvas_play("Wrap-Around Pixel");
 pixel_wraparound_print();

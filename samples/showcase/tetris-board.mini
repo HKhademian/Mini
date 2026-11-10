@@ -241,5 +241,5 @@ while grid_index < number_mul(screen_size, screen_size) {
     grid_index = grid_index + 1;
 }
 tetris_render();
-canvas_play(screen_size, screen_size, "Tetris · Arrows, Up to Rotate, Space to Drop");
+canvas_play("Tetris · Arrows, Up to Rotate, Space to Drop");
 tetris_print();
