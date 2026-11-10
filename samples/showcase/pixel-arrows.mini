@@ -15,12 +15,12 @@ player_y := screen_edge - 1;
 goal_x := screen_edge - 1;
 goal_y := 1;
 
-/// Render the player and a fixed goal; falling through keeps the session open.
-fn canvas_update() {
+/// Render the player and a fixed goal; falling through keeps the session open. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     board := pixel_board_new(screen_size, screen_size, black);
     pixel_board_set(board, screen_size, screen_size, goal_x, goal_y, goal_color);
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Move one cell for an arrow or WASD key while staying inside the board.

@@ -80,7 +80,7 @@ fn space_invaders_render() {
         pixel_board_set(board, screen_size, screen_size, bullet_x, bullet_y, bullet_color);
     }
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Advance one bullet step, removing the first alien it reaches.
@@ -105,8 +105,8 @@ fn space_invaders_advance_bullet() {
     }
 }
 
-/// Advance invaders and the bullet at their configured speeds.
-fn canvas_update() {
+/// Advance invaders and the bullet at their configured speeds. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if !game_over && !game_won {
         invader_ticks = invader_ticks + 1;
         if invader_ticks >= frames_per_invader_step {

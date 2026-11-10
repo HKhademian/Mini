@@ -25,11 +25,11 @@ fn pixel_rain_render() {
         pixel_board_set(board, screen_size, screen_size, list_get(drop_columns, drop_index, 0), list_get(drop_rows, drop_index, 0), drop_color);
         drop_index = drop_index + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Advance all drops at three tiles per second, wrapping them to the top.
-fn canvas_update() {
+/// Advance all drops at three tiles per second, wrapping them to the top. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_rain_render();
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {

@@ -28,11 +28,11 @@ fn pixel_light_switch_render() {
         pixel_board_set(board, screen_size, screen_size, 4, 5, light_color);
         pixel_board_set(board, screen_size, screen_size, 5, 5, light_color);
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Keep drawing the current state between key presses.
-fn canvas_update() {
+/// Keep drawing the current state between key presses. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_light_switch_render();
 }
 

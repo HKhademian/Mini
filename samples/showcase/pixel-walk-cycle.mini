@@ -58,11 +58,11 @@ fn pixel_walk_cycle_render() {
         }
         row = row + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Switch between the two poses twice per second.
-fn canvas_update() {
+/// Switch between the two poses twice per second. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_walk_cycle_render();
     pose_ticks = pose_ticks + 1;
     if pose_ticks >= frames_per_pose {

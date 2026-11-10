@@ -60,11 +60,11 @@ fn pixel_blink_render() {
     pixel_board_set(board, screen_size, screen_size, 4, 7, detail_color);
     pixel_board_set(board, screen_size, screen_size, 5, 7, detail_color);
     pixel_board_set(board, screen_size, screen_size, 6, 6, detail_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Keep the eyes open for a while, then blink briefly.
-fn canvas_update() {
+/// Keep the eyes open for a while, then blink briefly. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_blink_render();
     blink_frames = blink_frames + 1;
     if eyes_open && blink_frames >= eyes_open_frames {

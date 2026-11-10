@@ -49,7 +49,7 @@ fn pixel_maze_render() {
     }
     pixel_board_set(board, screen_size, screen_size, goal_x, goal_y, goal_color);
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Move one cell with arrow keys or WASD without crossing walls.
@@ -71,8 +71,8 @@ fn canvas_on_key_down(key) {
     }
 }
 
-/// Keep the current maze frame visible and stop when the goal is reached.
-fn canvas_update() {
+/// Keep the current maze frame visible and stop when the goal is reached. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_maze_render();
     if player_x == goal_x && player_y == goal_y {
         return 1;

@@ -87,11 +87,11 @@ fn freeway_render() {
     }
     pixel_board_set(board, screen_size, screen_size, player_start_x, 0, goal_color);
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Advance each lane at its own speed and send the player back after a hit.
-fn canvas_update() {
+/// Advance each lane at its own speed and send the player back after a hit. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if !game_won {
         lane := 0;
         while lane < list_length(lane_rows) {

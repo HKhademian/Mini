@@ -168,11 +168,11 @@ fn tetris_render() {
         }
         row = row + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Let the piece fall twice per second, locking when it reaches a surface.
-fn canvas_update() {
+/// Let the piece fall twice per second, locking when it reaches a surface. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if !game_over {
         drop_ticks = drop_ticks + 1;
         if drop_ticks >= frames_per_drop {

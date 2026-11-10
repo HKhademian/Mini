@@ -24,11 +24,11 @@ fn pixel_blinking_dot_render() {
     blue := 155 + number_mul(color_step, 11);
     board := pixel_board_new(screen_size, screen_size, black);
     pixel_board_set(board, screen_size, screen_size, screen_center, screen_center, pixel_rgb(red, green, blue));
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Advance one step of the slow color ramp.
-fn canvas_update() {
+/// Advance one step of the slow color ramp. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_blinking_dot_render();
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_color_step {

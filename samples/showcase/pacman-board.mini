@@ -81,7 +81,7 @@ fn pacman_render() {
     }
     pixel_board_set(board, screen_size, screen_size, ghost_x, ghost_y, ghost_color);
     pixel_board_set(board, screen_size, screen_size, player_x, player_y, player_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Collect a dot after a successful player move.
@@ -122,8 +122,8 @@ fn canvas_on_key_down(key) {
     }
 }
 
-/// Move the ghost along the top corridor and stop when the game ends.
-fn canvas_update() {
+/// Move the ghost along the top corridor and stop when the game ends. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     ghost_ticks = ghost_ticks + 1;
     if ghost_ticks >= frames_per_ghost_step {
         ghost_ticks = 0;

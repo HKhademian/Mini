@@ -39,25 +39,31 @@ import "util/board";
 
 canvas_play(10, 10, "Example");
 
-fn canvas_update() {
+fn canvas_on_update(dt) {
     board := pixel_board_new(10, 10, pixel_rgb(0, 0, 0));
     pixel_board_set(board, 10, 10, 5, 5, pixel_rgb(255, 255, 255));
-    pixel_board_render(10, 10, board);
+    pixel_board_draw(10, 10, board);
 }
 ```
 
-The playground calls `canvas_update()` once per animation frame. Returning
-zero, including by falling through, continues play; a nonzero result stops the
-game and is shown as its exit status. `canvas_render(width, height, pixels)` stores
-one row-major frame with exactly `width * height` packed RGB integers from
-`0x000000` to `0xffffff`. The optional `canvas_on_key_down(key)` hook receives
-arrow-key or character key names. The same Mini calls can be hosted by other
-renderers, such as Raylib; this first adapter uses browser Canvas, and each host
-owns its frame loop and drawing. `pixel_board_new`, `pixel_board_set`,
-`pixel_board_get`, and `pixel_rgb` are small helpers for constructing boards.
+`canvas_play(width, height, title)` declares a play canvas. Optional
+`canvas_on_init()` runs once after the program starts. Optional
+`canvas_on_update(dt)` receives elapsed seconds and produces frames; falling
+through returns zero and continues, while a nonzero result stops animation.
+Without an update handler, the canvas displays its current frame without
+starting an animation loop. Optional input handlers are
+`canvas_on_key_down(key)`, `canvas_on_key_up(key)`,
+`canvas_on_pointer_move(column, row)`,
+`canvas_on_pointer_down(column, row, button)`, and
+`canvas_on_pointer_up(column, row, button)`. `canvas_draw(width, height, pixels)`
+stores one row-major frame with `width * height` packed RGB integers from
+`0x000000` to `0xffffff`. `pixel_board_new`, `pixel_board_set`,
+`pixel_board_get`, and `pixel_rgb` help construct boards. The same Mini calls can
+be hosted by other renderers, such as Raylib; each host owns its frame loop and
+drawing.
 
-For a still image, build the pixel list and call `canvas_render(...)` once at
-top level. Do not declare `canvas_play` or `canvas_update`; the playground
+For a still image, build the pixel list and call `canvas_draw(...)` once at
+top level without declaring `canvas_play`; the playground
 shows the rendered frame without starting an animation loop.
 
 Opening `dist/site/index.html` from `file://` shows the landing page, but the

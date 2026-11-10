@@ -124,11 +124,11 @@ fn frogger_render_pixels() {
         column = column + 1;
     }
     pixel_board_set(board, screen_size, screen_size, frog_x, frog_y, frog_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Move traffic and emit one ten-by-ten frame; return zero to continue.
-fn canvas_update() {
+/// Move traffic and emit one ten-by-ten frame; return zero to continue. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {
         update_ticks = 0;

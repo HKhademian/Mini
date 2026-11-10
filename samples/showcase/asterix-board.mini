@@ -57,11 +57,11 @@ fn asterix_render() {
     }
     pixel_board_set(board, screen_size, screen_size, obstacle_x, obstacle_row, obstacle_color);
     pixel_board_set(board, screen_size, screen_size, obstacle_x, obstacle_row - 1, obstacle_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Advance the jump and obstacle, ending after a collision.
-fn canvas_update() {
+/// Advance the jump and obstacle, ending after a collision. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if !game_over {
         if jump_ticks > 0 {
             jump_ticks = jump_ticks - 1;

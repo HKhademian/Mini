@@ -36,8 +36,8 @@ fn pixel_board_get(board, width, height, column, row) {
 }
 
 /// Submit one row-major board to the current Mini Play host.
-fn pixel_board_render(width, height, board) {
-    return canvas_render(width, height, board);
+fn pixel_board_draw(width, height, board) {
+    return canvas_draw(width, height, board);
 }
 
 /// Pack red, green, and blue channels into one RGB integer.

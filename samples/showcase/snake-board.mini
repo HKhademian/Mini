@@ -81,7 +81,7 @@ fn snake_render() {
         pixel_board_set(board, screen_size, screen_size, list_get(snake_x, segment), list_get(snake_y, segment), color);
         segment = segment - 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Move the snake once, grow on food, and stop on collision.
@@ -110,8 +110,8 @@ fn snake_advance() {
     }
 }
 
-/// Move the snake at three tiles per second.
-fn canvas_update() {
+/// Move the snake at three tiles per second. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {
         update_ticks = 0;

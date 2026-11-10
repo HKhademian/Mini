@@ -109,11 +109,10 @@ async function compileSource(source, portable) {
     emit_js_set_reference_mode(portable);
     const prepared = buildTokens(lex_tokenize, lex_expand_imports, source);
     const play = source.includes('import "util/canvas";')
-      && /\bcanvas_play\s*\(/.test(source)
-      && /\bfn\s+canvas_update\s*\(/.test(source);
+      && /\bcanvas_play\s*\(/.test(source);
     const still = !play
       && source.includes('import "util/canvas";')
-      && /^canvas_render\s*\(/m.test(source);
+      && /^canvas_draw\s*\(/m.test(source);
     return {
       code: sourceText(emit_js_compile(prepared)),
       program: sourceText(emit_js_compile_program_only(prepared)),
@@ -144,11 +143,17 @@ function prepare(code, play, still, title) {
     "  height: canvas_height(),",
     "  title: canvas_title(),",
     "  pixels: canvas_pixels,",
-    "  update: canvas_update,",
+    '  init: typeof canvas_on_init === "function" ? canvas_on_init : null,',
+    '  update: typeof canvas_on_update === "function" ? canvas_on_update : null,',
     '  keyDown: typeof canvas_on_key_down === "function" ? canvas_on_key_down : null,',
+    '  keyUp: typeof canvas_on_key_up === "function" ? canvas_on_key_up : null,',
     '  pointerMove: typeof canvas_on_pointer_move === "function" ? canvas_on_pointer_move : null,',
+    '  pointerDown: typeof canvas_on_pointer_down === "function" ? canvas_on_pointer_down : null,',
+    '  pointerUp: typeof canvas_on_pointer_up === "function" ? canvas_on_pointer_up : null,',
     "};",
-    "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update();",
+    "if (globalThis.__miniPlay.init) globalThis.__miniPlay.init();",
+    "globalThis.__miniPlay.hasUpdate = Boolean(globalThis.__miniPlay.update);",
+    "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update ? globalThis.__miniPlay.update(0) : null;",
   ].join("\n") : "";
   const stillBridge = still ? [
     "globalThis.__miniCanvas = {",
@@ -184,6 +189,7 @@ async function runCode(code, stdin, args, play, still, title) {
         title: session.title,
         pixels: session.pixels(),
         status: session.initialStatus,
+        hasUpdate: session.hasUpdate,
       } : null,
     };
   } catch (error) {
@@ -202,7 +208,7 @@ self.onmessage = async (event) => {
   try {
     const data = event.data;
     if (data && data.action === "update" && globalThis.__miniPlay) {
-      const status = globalThis.__miniPlay.update();
+      const status = globalThis.__miniPlay.update(data.dt);
       self.postMessage({ action: "step", status, pixels: globalThis.__miniPlay.pixels() });
       return;
     }
@@ -211,9 +217,20 @@ self.onmessage = async (event) => {
       self.postMessage({ action: "keydown" });
       return;
     }
+    if (data && data.action === "keyup" && globalThis.__miniPlay) {
+      if (globalThis.__miniPlay.keyUp) globalThis.__miniPlay.keyUp(data.key);
+      self.postMessage({ action: "keyup" });
+      return;
+    }
     if (data && data.action === "pointermove" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.pointerMove) globalThis.__miniPlay.pointerMove(data.x, data.y);
       self.postMessage({ action: "pointermove" });
+      return;
+    }
+    if (data && (data.action === "pointerdown" || data.action === "pointerup") && globalThis.__miniPlay) {
+      const handler = data.action === "pointerdown" ? globalThis.__miniPlay.pointerDown : globalThis.__miniPlay.pointerUp;
+      if (handler) handler(data.x, data.y, data.button);
+      self.postMessage({ action: data.action });
       return;
     }
     if (data && data.action === "stop") {

@@ -38,7 +38,7 @@ while diagonal_column <= screen_edge {
     diagonal_column = diagonal_column + 1;
 }
 
-canvas_render(screen_size, screen_size, board);
+canvas_draw(screen_size, screen_size, board);
 
 /// Return one visible character for each shape in the text fallback.
 fn pixel_shapes_character(column, row) {

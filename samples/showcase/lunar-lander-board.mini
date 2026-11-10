@@ -72,11 +72,11 @@ fn lunar_lander_render() {
     if thrust_on && lander_y < landing_row {
         pixel_board_set(board, screen_size, screen_size, lander_x, lander_y + 1, flame_color);
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Increase speed under gravity and descend at two positions per second.
-fn canvas_update() {
+/// Increase speed under gravity and descend at two positions per second. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     thrust_on = false;
     if !game_over && !game_won {
         gravity_ticks = gravity_ticks + 1;

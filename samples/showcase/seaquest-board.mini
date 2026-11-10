@@ -84,11 +84,11 @@ fn seaquest_render() {
     }
     pixel_board_set(board, screen_size, screen_size, enemy_x, enemy_y, enemy_color);
     pixel_board_set(board, screen_size, screen_size, sub_x, sub_y, sub_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Move the enemy and drain one oxygen unit every three seconds.
-fn canvas_update() {
+/// Move the enemy and drain one oxygen unit every three seconds. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if !game_over && !game_won {
         enemy_ticks = enemy_ticks + 1;
         if enemy_ticks >= frames_per_enemy_step {

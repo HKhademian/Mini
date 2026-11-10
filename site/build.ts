@@ -640,6 +640,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     let playFrame = 0;
     let playInFlight = false;
     let lastPlayStepAt = 0;
+    let previousPlayTimestamp = 0;
     const maxPlayFramesPerSecond = 60;
     const minPlayFrameMs = 1000 / maxPlayFramesPerSecond;
 
@@ -658,6 +659,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       playFrame = 0;
       playInFlight = false;
       lastPlayStepAt = 0;
+      previousPlayTimestamp = 0;
       activePlay = false;
       if (activeWorker) {
         activeWorker.postMessage({ action: "stop" });
@@ -690,7 +692,9 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       }
       lastPlayStepAt = timestamp;
       playInFlight = true;
-      activeWorker.postMessage({ action: "update" });
+      const dt = previousPlayTimestamp === 0 ? 1 / maxPlayFramesPerSecond : Math.min((timestamp - previousPlayTimestamp) / 1000, 0.1);
+      previousPlayTimestamp = timestamp;
+      activeWorker.postMessage({ action: "update", dt: dt });
     }
 
     function setStatus(text, kind) {
@@ -808,25 +812,26 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
           playCanvas.height = canvasFrame.height;
           playCanvas.title = canvasFrame.title;
           playTitle.textContent = canvasFrame.title;
-          playStatus.textContent = data.play ? "Playing · arrows or WASD" : "One-time render";
+          playStatus.textContent = data.play ? data.play.hasUpdate ? "Playing · arrows or WASD" : "Canvas ready" : "One-time render";
           tabCanvas.hidden = false;
           drawPlayFrame(canvasFrame.pixels);
           showTab("canvas");
           if (data.play) playCanvas.focus({ preventScroll: true });
-          if (data.play && data.play.status === 0) {
+          if (data.play && data.play.hasUpdate && data.play.status === 0) {
             activeWorker = worker;
             activePlay = true;
             lastPlayStepAt = 0;
+            previousPlayTimestamp = 0;
             playFrame = requestAnimationFrame(requestPlayStep);
           } else if (data.play) {
             worker.terminate();
-            playStatus.textContent = "Stopped with status " + data.play.status;
+            if (data.play.hasUpdate) playStatus.textContent = "Stopped with status " + data.play.status;
           }
         }
         if (data.diagnostic) {
           fail(data.diagnostic, compileOnly);
         } else {
-          setStatus(data.play ? data.play.status === 0 ? "playing" : "stopped" : (data.canvas ? "rendered in " : compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
+          setStatus(data.play ? !data.play.hasUpdate ? "ready" : data.play.status === 0 ? "playing" : "stopped" : (data.canvas ? "rendered in " : compileOnly ? "compiled in " : "played in ") + Math.round(performance.now() - started) + " ms", "ok");
         }
       };
       worker.onerror = function () {
@@ -884,6 +889,10 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(event.key)) event.preventDefault();
       activeWorker.postMessage({ action: "keydown", key: event.key });
     });
+    playCanvas.addEventListener("keyup", function (event) {
+      if (!activePlay || !activeWorker) return;
+      activeWorker.postMessage({ action: "keyup", key: event.key });
+    });
     playCanvas.addEventListener("pointermove", function (event) {
       if (!activePlay || !activeWorker) return;
       const bounds = playCanvas.getBoundingClientRect();
@@ -893,6 +902,23 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         activeWorker.postMessage({ action: "pointermove", x: x, y: y });
       }
     });
+    playCanvas.addEventListener("pointerdown", function (event) {
+      if (!activePlay || !activeWorker) return;
+      playCanvas.focus({ preventScroll: true });
+      const point = playPoint(event);
+      if (point) activeWorker.postMessage({ action: "pointerdown", x: point.x, y: point.y, button: event.button });
+    });
+    playCanvas.addEventListener("pointerup", function (event) {
+      if (!activePlay || !activeWorker) return;
+      const point = playPoint(event);
+      if (point) activeWorker.postMessage({ action: "pointerup", x: point.x, y: point.y, button: event.button });
+    });
+    function playPoint(event) {
+      const bounds = playCanvas.getBoundingClientRect();
+      const x = Math.floor((event.clientX - bounds.left) * playCanvas.width / bounds.width);
+      const y = Math.floor((event.clientY - bounds.top) * playCanvas.height / bounds.height);
+      return x >= 0 && x < playCanvas.width && y >= 0 && y < playCanvas.height ? { x: x, y: y } : null;
+    }
     function tabKey(event) {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
       event.preventDefault();

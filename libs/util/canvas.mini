@@ -16,7 +16,7 @@ fn canvas_play(width, height, title) {
 }
 
 /// Store one row-major frame of packed RGB color values.
-fn canvas_render(width, height, pixels) {
+fn canvas_draw(width, height, pixels) {
     canvas_width_value = width;
     canvas_height_value = height;
     canvas_pixels_value = list_copy(pixels);

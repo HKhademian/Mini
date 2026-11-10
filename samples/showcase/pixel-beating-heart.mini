@@ -41,8 +41,8 @@ heart_small := list_of(
 heart_is_big := true;
 beat_frames := 0;
 
-/// Render one pulse phase and change size at the configured pace.
-fn canvas_update() {
+/// Render one pulse phase and change size at the configured pace. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     rows := heart_big;
     color := bright_red;
     if !heart_is_big {
@@ -62,7 +62,7 @@ fn canvas_update() {
         }
         row = row + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 
     beat_frames = beat_frames + 1;
     if beat_frames >= frames_per_phase {

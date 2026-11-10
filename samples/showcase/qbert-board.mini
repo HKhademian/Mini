@@ -48,7 +48,7 @@ fn qbert_render() {
         }
         row = row + 1;
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Change the tile under the player and detect a full-color board.
@@ -63,8 +63,8 @@ fn qbert_mark_tile() {
     }
 }
 
-/// Keep the current board visible until every tile has been changed.
-fn canvas_update() {
+/// Keep the current board visible until every tile has been changed. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     qbert_render();
     if game_won {
         return 1;

@@ -20,11 +20,11 @@ update_ticks := 0;
 fn pixel_wraparound_render() {
     board := pixel_board_new(screen_size, screen_size, background);
     pixel_board_set(board, screen_size, screen_size, pixel_x, screen_center, pixel_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
-/// Advance the pixel at three tiles per second and wrap at the edge.
-fn canvas_update() {
+/// Advance the pixel at three tiles per second and wrap at the edge. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_wraparound_render();
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {

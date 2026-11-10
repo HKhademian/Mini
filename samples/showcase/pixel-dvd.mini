@@ -21,11 +21,11 @@ pixel_dx := 1;
 pixel_dy := 1;
 update_ticks := 0;
 
-/// Advance one tile with wraparound at the configured animation speed, then draw it.
-fn canvas_update() {
+/// Advance one tile with wraparound at the configured animation speed, then draw it. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     board := pixel_board_new(screen_width, screen_height, blue);
     pixel_board_set(board, screen_width, screen_height, pixel_x, pixel_y, white);
-    pixel_board_render(screen_width, screen_height, board);
+    pixel_board_draw(screen_width, screen_height, board);
 
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {

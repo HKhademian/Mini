@@ -23,7 +23,7 @@ while row < screen_size {
     row = row + 1;
 }
 
-canvas_render(screen_size, screen_size, board);
+canvas_draw(screen_size, screen_size, board);
 
 /// Print the stripes as a text fallback for command-line runs.
 fn pixel_stripes_print() {

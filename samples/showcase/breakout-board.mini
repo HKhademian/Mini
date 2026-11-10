@@ -118,7 +118,7 @@ fn breakout_render_pixels() {
     if game_state == "celebrating" {
         color := list_get(rainbow_colors, celebration_color_index, ball_color);
         board := pixel_board_new(screen_size, screen_size, color);
-        pixel_board_render(screen_size, screen_size, board);
+        pixel_board_draw(screen_size, screen_size, board);
         return 0;
     }
 
@@ -161,7 +161,7 @@ fn breakout_render_pixels() {
     } else {
         pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
     }
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Move the ball and resolve wall, brick, and paddle collisions.
@@ -209,8 +209,8 @@ fn breakout_advance_ball() {
     }
 }
 
-/// Animate the paused ball, game, or rainbow win celebration.
-fn canvas_update() {
+/// Animate the paused ball, game, or rainbow win celebration. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     if game_state == "paused" {
         pause_ticks = pause_ticks + 1;
         if pause_ticks >= pause_color_step_frames {

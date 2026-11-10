@@ -18,7 +18,7 @@ pointer_row := number_div(screen_size, 2);
 fn pixel_cursor_draw_render() {
     board := list_copy(trail);
     pixel_board_set(board, screen_size, screen_size, pointer_column, pointer_row, pixel_rgb(255, 220, 96));
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Paint the cell under the pointer and remember it for the trail.
@@ -28,8 +28,8 @@ fn canvas_on_pointer_move(column, row) {
     pixel_board_set(trail, screen_size, screen_size, column, row, trail_color);
 }
 
-/// Keep the latest trail visible while the pointer is still.
-fn canvas_update() {
+/// Keep the latest trail visible while the pointer is still. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     pixel_cursor_draw_render();
 }
 

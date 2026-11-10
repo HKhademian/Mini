@@ -65,7 +65,7 @@ fn pong_render() {
         paddle_row = paddle_row + 1;
     }
     pixel_board_set(board, screen_size, screen_size, ball_x, ball_y, ball_color);
-    pixel_board_render(screen_size, screen_size, board);
+    pixel_board_draw(screen_size, screen_size, board);
 }
 
 /// Advance the ball and award a point when it passes a paddle.
@@ -101,8 +101,8 @@ fn pong_advance_ball() {
     ball_y = next_y;
 }
 
-/// Update the court at the configured ball speed.
-fn canvas_update() {
+/// Update the court at the configured ball speed. Elapsed time is provided in seconds.
+fn canvas_on_update(dt) {
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {
         update_ticks = 0;
