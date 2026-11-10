@@ -1,4 +1,4 @@
-/// Bounce a small DVD logo around a blue screen at three steps per second.
+/// Bounce a small mini wordmark around a blue screen at three steps per second.
 
 import "core/io";
 import "core/list";
@@ -24,13 +24,13 @@ logo_colors := list_of(
     pixel_rgb(100, 160, 255)
 );
 logo_rows := list_of(
-    "##..#...#.##.",
-    "#.#.#...#.#.#",
-    "#.#..#.#..#.#",
-    "#.#..#.#..#.#",
-    "#.#..#.#..#.#",
-    "##....#...##.",
-    "..#########.."
+    "......#.....#",
+    ".............",
+    "##.#..#.##..#",
+    "#.#.#.#.#.#.#",
+    "#.#.#.#.#.#.#",
+    "#.#.#.#.#.#.#",
+    "#.#.#.#.#.#.#"
 );
 logo_x := 1;
 logo_y := 1;
@@ -82,7 +82,7 @@ fn canvas_on_update(dt) {
 }
 
 /// Print the first logo frame for command-line runs.
-fn pixel_dvd_print() {
+fn pixel_mini_print() {
     row := 0;
     while row < screen_height {
         column := 0;
@@ -102,5 +102,5 @@ fn pixel_dvd_print() {
     }
 }
 
-canvas_play("DVD Logo");
-pixel_dvd_print();
+canvas_play("mini");
+pixel_mini_print();
