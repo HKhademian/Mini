@@ -11,13 +11,13 @@ todos:
     status: completed
   - id: bootstrap-gate
     content: Automate the four-way compiler and native bootstrap verification
-    status: completed
+    status: in_progress
   - id: portability
     content: Verify supported platforms and native storage lifetimes
     status: completed
   - id: completion
     content: Run final gates and reconcile C target documentation
-    status: in_progress
+    status: pending
 plans:
   requires: []
   blocks: []
@@ -57,6 +57,8 @@ Complete the Mini-to-C emitter for the accepted language and supported host serv
 - Seventy `kind: compile` manifests were excluded because they assert JS generated artifacts or compiler acceptance rather than executable behavior. Their shared front-end diagnostics and C acceptance need a dedicated target-aware check in the parity phase. C JSON output has a depth limit of 128, and native host process/path code uses POSIX facilities.
 
 ### Parity progress (2026-11-10)
+
+- Broader 455-manifest C audit found two showcase failures caused by extra `list_get` arguments. Both now pass, and the repeated C audit passed 455/455 manifests (JavaScript artifact comparisons omitted). Host wrappers now accept extras and JS inline lowering preserves their evaluation; the bootstrap gate needs a fresh run after these fixes.
 
 - The 282 non-pending language manifests pass against C, including 70 compile cases with JavaScript artifact comparisons omitted; the temporary audit is not yet a durable gate. JS candidate suite passes 494/494 scenarios, with four proposals pending; native suite passes 90/90.
 - Fixed inherited output ordering, environment and clock hosts, sparse JSON gaps, cyclic JSON and output, shared parser warnings, guarded initialization, and unsafe numbers in C collection output. Each increment has its own commit and compiler/bootstrap tags.
