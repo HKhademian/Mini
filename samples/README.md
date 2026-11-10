@@ -38,7 +38,7 @@ node samples/009-list-mutation.mini.ts
 
 ## Showcase samples
 
-Runnable graphical samples live in [showcase/](showcase/). Each one has a
+Runnable showcase samples live in [showcase/](showcase/). Each one has a
 matching case under [cases/showcase/](../cases/showcase/) and runs in
 `mini test`; the playground build also compiles and runs every runnable catalog
 entry. Planned ideas are listed separately below and on the playground page.
@@ -51,7 +51,7 @@ entry. Planned ideas are listed separately below and on the playground page.
 - [pixel-moving.mini](showcase/pixel-moving.mini): Move a pixel horizontally at a configurable five steps per second. [Case](../cases/showcase/pixel-moving.case.json).
 - [pixel-beating-heart.mini](showcase/pixel-beating-heart.mini): Pulse a pixel heart about once per second between two sizes and shades of red. [Case](../cases/showcase/pixel-beating-heart.case.json).
 - [pixel-arrows.mini](showcase/pixel-arrows.mini): Move a pixel with arrow keys or WASD to reach a goal. [Case](../cases/showcase/pixel-arrows.case.json).
-- [pixel-dvd.mini](showcase/pixel-dvd.mini): Bounce one pixel at a configurable three steps per second over a blue screen. [Case](../cases/showcase/pixel-dvd.case.json).
+- [pixel-dvd.mini](showcase/pixel-dvd.mini): Move one pixel from (3, 7) around an 11×13 blue screen at three steps per second. [Case](../cases/showcase/pixel-dvd.case.json).
 
 ### Planned graphical samples
 
