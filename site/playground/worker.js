@@ -93,6 +93,11 @@ function buildTokens(lexTokenize, lexExpandImports, source) {
   return lexExpandImports(tokens, "playground.mini", Object.create(null));
 }
 
+/// Convert the compiler's line-list output into JavaScript source text.
+function sourceText(value) {
+  return Array.isArray(value) ? value.join("\n") : value;
+}
+
 /// Compile one variant and return both the runnable and user-source code.
 async function compileSource(source, portable) {
   const { lex_tokenize, lex_expand_imports, emit_js_compile, emit_js_compile_program_only, emit_js_set_reference_mode } = await loadCompiler();
@@ -109,7 +114,13 @@ async function compileSource(source, portable) {
     const still = !play
       && source.includes('import "util/canvas";')
       && /^canvas_render\s*\(/m.test(source);
-    return { code: emit_js_compile(prepared), program: emit_js_compile_program_only(prepared), play, still, diagnostic: "" };
+    return {
+      code: sourceText(emit_js_compile(prepared)),
+      program: sourceText(emit_js_compile_program_only(prepared)),
+      play,
+      still,
+      diagnostic: "",
+    };
   } catch (error) {
     const message = error && error.message ? error.message : String(error);
     return { code: "", program: "", diagnostic: diagnostic || message };
