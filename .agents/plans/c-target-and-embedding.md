@@ -11,7 +11,7 @@ todos:
     status: completed
   - id: step-3-expand-compiler
     content: "Extend C support through small feature increments"
-    status: in_progress
+    status: completed
   - id: step-4-native-storage
     content: "Add native storage and ownership as supported features need them"
     status: pending
@@ -185,6 +185,10 @@ before trying a useful host or runner sample; carry forward explicit target gaps
 
 ### Step 3 — expand-compiler
 
+Completed for the audited accepted cases on 2026-11-10. The bullets below retain
+the incremental history; the native suite and parallel bootstrap gate are the
+current verification, not the earlier intermediate counts.
+
 **Depends on:** step-2-first-c.
 **Files:** extend libs/compiler/emit-c.mini, parser/builtin lowering,
 cases/native/, test/compiler.test.mini, and docs/compiler.md.
@@ -192,7 +196,7 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
 - Numeric literal output, top-level bindings, number addition, text joining,
   boolean values and logic, and scalar comparisons are complete. Continue in the
   user's selected order: control flow (if and while); functions. Braced if,
-  else if, else, and while lowering are implemented; functions are next.
+  else if, else, while, and function lowering are implemented.
 - C condition helpers evaluate branch conditions lazily and propagate native
   failures. Generated Mini branches use braces and direct else-if chains;
   scoped bindings retain shadowing and outer assignments.
@@ -215,7 +219,7 @@ cases/native/, test/compiler.test.mini, and docs/compiler.md.
 - Recursive C functions and function-local conditional branching (`if`/`else`
   with returns) are supported. Function-local bindings use per-call stack
   storage, with `:=` declarations and `=` updates scoped to their blocks.
-  `fn_args()` remains pending; the generated internal status/result signature
+  `fn_args()` was added later; the generated internal status/result signature
   is not an embedding API.
 - Verified function-local initialization and reassignment, including a local
   carried through recursive calls: 488/488 scenarios (four proposal cases
@@ -369,6 +373,10 @@ without Node at script runtime; claims match evidence.
 **Verify:** release gates and focused packaged-artifact/FFI smoke checks.
 
 ### Step 8 — parallel C compiler bootstrap
+
+Completed locally by `node tools/c-bootstrap.ts`; JS remains the active bootstrap.
+Ubuntu and macOS CI are configured, but Linux and Windows results for these
+changes remain unverified.
 
 **Depends on:** the C target supports every accepted feature used by
 `tools/compiler.mini`, its imports, and the compiler CLI's host services.
