@@ -887,7 +887,7 @@
     "id": "pixel-dvd",
     "group": "Animation",
     "label": "DVD logo",
-    "note": "Bounce a colorful DVD logo around a 23×13 blue screen at 3 steps per second.",
+    "note": "Bounce a compact DVD logo around a 31×23 blue screen at 3 steps per second.",
     "args": [],
     "stdin": "",
     "file": "samples/graphics/animation/pixel-dvd.mini"

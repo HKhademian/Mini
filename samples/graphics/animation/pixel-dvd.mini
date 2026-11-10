@@ -7,10 +7,10 @@ import "extra/board";
 import "extra/canvas";
 import "util/io";
 
-screen_width := 23;
-screen_height := 13;
-logo_width := 17;
-logo_height := 5;
+screen_width := 47;
+screen_height := 31;
+logo_width := 13;
+logo_height := 7;
 max_logo_x := screen_width - logo_width;
 max_logo_y := screen_height - logo_height;
 playback_fps := 60;
@@ -24,11 +24,13 @@ logo_colors := list_of(
     pixel_rgb(100, 160, 255)
 );
 logo_rows := list_of(
-    "####..#...#.####.",
-    "#...#.#...#.#...#",
-    "#...#..#.#..#...#",
-    "#...#.#...#.#...#",
-    "####...#.#..####."
+    "##..#...#.##.",
+    "#.#.#...#.#.#",
+    "#.#..#.#..#.#",
+    "#.#..#.#..#.#",
+    "#.#..#.#..#.#",
+    "##....#...##.",
+    "..#########.."
 );
 logo_x := 1;
 logo_y := 1;

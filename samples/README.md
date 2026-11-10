@@ -141,7 +141,7 @@ For a first pass, try [hello](basics/hello.mini), [bindings](basics/bindings.min
 - [pixel-beating-heart.mini](graphics/animation/pixel-beating-heart.mini): Pulse a pixel heart about once per second between two sizes and shades of red. [Case](../cases/showcase/pixel-beating-heart.case.json).
 - [pixel-blink.mini](graphics/animation/pixel-blink.mini): A warm smiling face blinks about once every three seconds on a soft blue background. [Case](../cases/showcase/pixel-blink.case.json).
 - [pixel-blinking-dot.mini](graphics/animation/pixel-blinking-dot.mini): Ease a centered pixel between soft blue shades at four color steps per second. [Case](../cases/showcase/pixel-blinking-dot.case.json).
-- [pixel-dvd.mini](graphics/animation/pixel-dvd.mini): Bounce a colorful DVD logo around a 23×13 blue screen at 3 steps per second. [Case](../cases/showcase/pixel-dvd.case.json).
+- [pixel-dvd.mini](graphics/animation/pixel-dvd.mini): Bounce a compact DVD logo around a 31×23 blue screen at 3 steps per second. [Case](../cases/showcase/pixel-dvd.case.json).
 - [pixel-moving.mini](graphics/animation/pixel-moving.mini): Move and bounce a pixel at a configurable 5 steps per second. [Case](../cases/showcase/pixel-moving.case.json).
 - [pixel-rain.mini](graphics/animation/pixel-rain.mini): Move three drops at three steps per second and wrap them to the top. [Case](../cases/showcase/pixel-rain.case.json).
 - [pixel-resize.mini](graphics/animation/pixel-resize.mini): Draw new frames on the same canvas while its square size changes from five to nine pixels, three times per second. [Case](../cases/showcase/pixel-resize.case.json).
