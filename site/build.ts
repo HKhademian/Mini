@@ -353,7 +353,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
     <section class="section" id="samples">
       <header class="section-head">
         <h2>Real samples, real output</h2>
-        <p>Explore the language through runnable examples. <a href="./samples/">Browse graphical samples and the roadmap.</a></p>
+        <p>Explore the language through runnable examples. <a href="./samples/">Browse all samples by topic.</a></p>
       </header>
       <div class="samples">
         ${cards.map(renderSampleCard).join("\n        ")}
@@ -539,7 +539,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     </div>
     <nav aria-label="Site">
       <a href="../">Home</a>
-      <a href="../samples/">Graphical samples</a>
+      <a href="../samples/">Samples</a>
     </nav>
   </header>
 
@@ -935,17 +935,17 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
 `;
 }
 
-/// Render a separate index of runnable and planned graphical samples.
-function renderGraphicalIndex(): string {
-    const groups = ["Games", "Pixel Art", "Animation", "Interactive"];
+/// Render the catalog of runnable and planned samples, grouped by topic.
+function renderSamplesIndex(): string {
+    const groups = [...new Set(playgroundSamples.map((sample) => sample.group))];
     const sections = groups.map((group) => {
         const entries = playgroundSamples.filter((sample) => sample.group === group);
         if (entries.length === 0) return "";
-        return `<section class="section graphical-index-group"><div class="section-head"><h2>${escapeHtml(group)}</h2></div><div class="docs">${entries.map((sample) => {
+        return `<section class="section sample-index-group"><div class="section-head"><h2>${escapeHtml(group)}</h2></div><div class="docs">${entries.map((sample) => {
             const planned = sample.status === "planned";
             const title = planned ? sample.label.replace(/\s*[—-]\s*planned$/i, "") : sample.label;
             const action = planned ? `<span class="badge">Planned</span>` : `<a href="../playground/?sample=${encodeURIComponent(sample.id)}">Open in playground &rarr;</a>`;
-            return `<article class="doc graphical-index-card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(sample.note)}</p><footer>${action}</footer></article>`;
+            return `<article class="doc sample-index-card"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(sample.note)}</p><footer>${action}</footer></article>`;
         }).join("")}</div></section>`;
     }).join("");
     return `<!doctype html>
@@ -953,8 +953,8 @@ function renderGraphicalIndex(): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>mini — graphical samples</title>
-  <meta name="description" content="Runnable and planned small-canvas graphical samples for mini.">
+  <title>mini — samples</title>
+  <meta name="description" content="Runnable and planned mini samples grouped by topic.">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="../style.css?rev=${sourceCommit}">
 </head>
@@ -962,7 +962,7 @@ function renderGraphicalIndex(): string {
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">${renderBrand("../")}<nav aria-label="Site"><a href="../playground/">Playground</a><a href="../">Home</a></nav></header>
   <main id="main">
-    <section class="section"><div class="section-head"><h1>Graphical samples</h1><p>Runnable examples open in the playground. Planned ideas are listed for later implementation.</p></div></section>
+    <section class="section"><div class="section-head"><h1>Samples</h1><p>Browse runnable examples across Mini’s features. Open any runnable sample in the playground.</p></div></section>
     ${sections}
   </main>
   <footer class="site-footer"><p>${renderName("{{name}} is alpha software.")} <a href="${repo}/blob/main/LICENSE">Apache-2.0</a> licensed.</p>${renderSourceRevision()}</footer>
@@ -988,7 +988,7 @@ function main(): void {
     writeFileSync(join(playground, "index.html"), renderPlayground(loadPlaygroundSamples()));
     const graphicalIndex = join(output, "samples");
     mkdirSync(graphicalIndex, { recursive: true });
-    writeFileSync(join(graphicalIndex, "index.html"), renderGraphicalIndex());
+    writeFileSync(join(graphicalIndex, "index.html"), renderSamplesIndex());
     cpSync(join(root, "site", "playground", "shim.js"), join(playground, "shim.js"));
     writeFileSync(join(playground, "worker.js"), buildBrowserWorker());
     cpSync(join(root, "site", "playground", "playground.css"), join(playground, "playground.css"));
