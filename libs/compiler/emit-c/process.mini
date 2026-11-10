@@ -74,6 +74,41 @@ emit_c_host_function_add(
 );
 
 emit_c_host_function_add(
+    "process_env",
+    list_of(
+        "int MINI_ID(fn_process_env)(MINI_ID(context) * context, MINI_ID(params) params,",
+        "                            MINI_ID(value) * result) {",
+        "  if (!context || !result || params.count != 1 || !params.args ||",
+        "      params.args[0].kind != MINI_ID(kind_text)) {",
+        "    return 1;",
+        "  }",
+        "  MINI_ID(text) name = params.args[0].text;",
+        "  if (!name.buffer || name.offset > name.buffer->count ||",
+        "      name.length > name.buffer->count - name.offset || name.length == SIZE_MAX) {",
+        "    return 1;",
+        "  }",
+        "  char *key = malloc(name.length + 1);",
+        "  if (!key) {",
+        "    return 1;",
+        "  }",
+        "  if (name.length) {",
+        "    memcpy(key, name.buffer->items + name.offset, name.length);",
+        "  }",
+        "  key[name.length] = 0;",
+        "  const char *value = memchr(key, 0, name.length) ? NULL : getenv(key);",
+        "  free(key);",
+        "  size_t offset = context->buffer.count, length = value ? strlen(value) : 0;",
+        "  if (length && MINI_ID(text_buffer_append)(&context->buffer, (const unsigned char *)value, length)) {",
+        "    return 1;",
+        "  }",
+        "  *result = MINI_ID(value_text)(&context->buffer, offset, length);",
+        "  return 0;",
+        "}",
+        ""
+    )
+);
+
+emit_c_host_function_add(
     "process_exit",
     list_of(
         "int MINI_ID(fn_process_exit)(MINI_ID(context) * context, MINI_ID(params) params,",

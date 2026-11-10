@@ -63,7 +63,8 @@ and preserves file modes.
 `path_remove(path)` removes a file or directory tree and ignores a missing path.
 
 `process_env(name)` returns the value of one environment variable, or empty
-text when it is unset. The child environment remains inherited for processes.
+text when it is unset. JavaScript and C provide host implementations; the
+child environment remains inherited for processes.
 
 `process_script_path()` returns the absolute path of the running script, or empty
 text when the host does not provide one. Tools use it to locate repository files

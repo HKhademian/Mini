@@ -1,0 +1,26 @@
+{
+  "id": "native.c-process-env",
+  "kind": "feature",
+  "source": "015-002-process-env.mini",
+  "features": [
+    "process.env",
+    "text.length",
+    "target.c"
+  ],
+  "cases": [
+    {
+      "name": "present-and-missing",
+      "stdin": {
+        "text": ""
+      },
+      "stdout": {
+        "text": "env ok\n"
+      },
+      "stderr": {
+        "text": ""
+      },
+      "exitCode": 0
+    }
+  ],
+  "target": "c"
+}
