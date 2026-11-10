@@ -47,7 +47,8 @@ compiler.
 
 - 2026-11-10: `node tools/c-bootstrap.ts` passed the four compiler directions,
   both complete test drivers with native workers, and the compiled native
-  bootstrap on macOS arm64. The command is configured in Ubuntu and macOS CI;
+  bootstrap on macOS arm64. A broader audit passed 455 C-target manifests;
+  JavaScript emission snapshots were excluded from that target comparison. The command is configured in Ubuntu and macOS CI;
   Linux and Windows results for these changes remain unverified. JavaScript
   stays the active bootstrap. The separate host, runner, and distribution steps
   below remain pending.
