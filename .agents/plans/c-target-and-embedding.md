@@ -26,7 +26,7 @@ todos:
     status: pending
   - id: step-8-c-bootstrap
     content: "Reach C parity for compiler dependencies and verify a parallel C bootstrap fixed point"
-    status: pending
+    status: completed
 plans:
   requires: []
   blocks: []
@@ -44,6 +44,13 @@ library through a C-compatible FFI. Runtime scripts need neither Node nor a C
 compiler.
 
 ## Done and owner direction
+
+- 2026-11-10: `node tools/c-bootstrap.ts` passed the four compiler directions,
+  both complete test drivers with native workers, and the compiled native
+  bootstrap on macOS arm64. The command is configured in Ubuntu and macOS CI;
+  Linux and Windows results for these changes remain unverified. JavaScript
+  stays the active bootstrap. The separate host, runner, and distribution steps
+  below remain pending.
 
 - Inspected the compiler, builtin templates, case harness, bootstrap, and rules.
 - 2026-11-07: specified the first ASCII literal-output slice and source-manifest
@@ -97,10 +104,9 @@ compiler.
   values consistently in JS and C. C emits UTF-8 source literals; the LSP
   converts Mini scalar offsets to and from its UTF-16 positions. Unicode C
   cases and the full 534-scenario JS and C-built suites pass.
-- 2026-11-09: the four compiler directions agree on compiler output, and
+- 2026-11-09: the four compiler directions agreed on compiler output, and
   `dist/bootstrap.c` compiled under strict C11 and ran `bootstrap_all` to
-  completion. A repeatable repository command for the full matrix and C
-  bootstrap remains the next tooling increment.
+  completion. The repeatable gate was subsequently added on 2026-11-10.
 - Use tagged unions. Growing arrays, allocation/deallocation, maps, and text
   storage/views are implementation responsibilities.
 - Native text now uses an owned growable byte buffer with offset/length views.
