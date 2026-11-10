@@ -69,10 +69,10 @@ the host uses that frame's current dimensions and pixels. `pixel_board_new`,
 be hosted by other renderers, such as Raylib; each host owns its frame loop and
 drawing.
 
-Import `util/audio` to request a tone with `audio_tone(frequency, duration,
-volume)`. Frequency is in hertz (20–20,000), duration is in seconds (up to 3),
-and volume is linear from 0 to 1; invalid values are ignored. The library queues
-tone triples for the host, which drains them with `audio_tone_drain()` after
+Import `util/audio` to request a tone with `audio_tone(frequency, duration_ms,
+volume_percent)`. Frequency is in hertz (20–20,000), duration is in milliseconds
+(up to 3,000), and volume is a percent (1–100); invalid values are ignored.
+The library queues tone triples for the host, which drains them with `audio_tone_drain()` after
 each program or event callback. The browser host plays sine tones with a short
 gain fade and unlocks Web Audio on a user gesture.
 

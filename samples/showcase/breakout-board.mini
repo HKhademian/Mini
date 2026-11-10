@@ -170,7 +170,7 @@ fn breakout_advance_ball() {
     next_x := ball_x + ball_dx;
     if next_x < 1 || next_x > screen_edge - 1 {
         ball_dx = 0 - ball_dx;
-        audio_tone(660, number_div(1, 12), number_div(12, 100));
+        audio_tone(660, 80, 12);
     }
     ball_x = ball_x + ball_dx;
 
@@ -185,10 +185,10 @@ fn breakout_advance_ball() {
             bricks_remaining = bricks_remaining - 1;
             ball_y = next_y + 1;
             ball_dy = 1;
-            audio_tone(880, number_div(1, 10), number_div(18, 100));
+            audio_tone(880, 100, 18);
             if bricks_remaining == 0 {
                 game_state = "celebrating";
-                audio_tone(1320, number_div(1, 3), number_div(22, 100));
+                audio_tone(1320, 330, 22);
                 celebration_ticks = 0;
                 celebration_color_index = 0;
                 celebration_changes = 0;
@@ -201,11 +201,11 @@ fn breakout_advance_ball() {
             // Resolve contact at the paddle's top edge, leaving the ball above it.
             ball_y = paddle_row - 1;
             ball_dy = 0 - 1;
-            audio_tone(440, number_div(1, 8), number_div(18, 100));
+            audio_tone(440, 125, 18);
         } else {
             ball_y = next_y;
             game_state = "paused";
-            audio_tone(165, number_div(1, 4), number_div(20, 100));
+            audio_tone(165, 250, 20);
             restart_required = true;
             pause_ticks = 0;
             pause_color_phase = 0;

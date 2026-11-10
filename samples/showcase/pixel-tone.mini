@@ -35,7 +35,7 @@ fn canvas_on_key_down(key) {
         tone_color = pixel_rgb(255, 120, 130);
     }
     pixel_tone_draw();
-    audio_tone(tone_frequency, number_div(18, 100), number_div(25, 100));
+    audio_tone(tone_frequency, 180, 25);
 }
 
 pixel_tone_draw();

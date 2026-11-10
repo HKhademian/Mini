@@ -716,12 +716,14 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       let index = 0;
       while (index + 2 < values.length) {
         const frequency = Number(values[index]);
-        const duration = Number(values[index + 1]);
-        const volume = Number(values[index + 2]);
+        const durationMs = Number(values[index + 1]);
+        const volumePercent = Number(values[index + 2]);
         index += 3;
         if (!Number.isFinite(frequency) || frequency < 20 || frequency > 20000
-          || !Number.isFinite(duration) || duration <= 0 || duration > 3
-          || !Number.isFinite(volume) || volume <= 0 || volume > 1) continue;
+          || !Number.isFinite(durationMs) || durationMs <= 0 || durationMs > 3000
+          || !Number.isFinite(volumePercent) || volumePercent <= 0 || volumePercent > 100) continue;
+        const duration = durationMs / 1000;
+        const volume = volumePercent / 100;
         const oscillator = audioContext.createOscillator();
         const gain = audioContext.createGain();
         const startAt = audioContext.currentTime;
