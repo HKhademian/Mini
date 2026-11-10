@@ -95,7 +95,7 @@ void result.
 `value_kind(value)` is declared in `core/value` and returns `text`, `number`,
 `boolean`, `list`, `map`, or `other` for the runtime kind of a value. Targets
 without a representation primitive use `process_panic`.
-`value_merge(...values)` from `core/merge` selects its behavior from the first value: numbers add,
+`value_merge(...values)` from `util/merge` selects its behavior from the first value: numbers add,
 texts concatenate, lists concatenate, and maps merge with later keys replacing
 earlier values. Values of other kinds are ignored; an unsupported first kind or
 an empty call returns 0.

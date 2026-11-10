@@ -1,7 +1,7 @@
 import "core/io";
 import "core/list";
 import "core/map";
-import "core/merge";
+import "util/merge";
 import "core/value";
 
 base := map_of("n", 1, "flag", false, "empty", "");
