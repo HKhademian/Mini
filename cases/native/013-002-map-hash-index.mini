@@ -1,0 +1,62 @@
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/number";
+import "core/text";
+
+items := map_new();
+map_set(items, "key0", 10);
+map_set(items, "key31", 31); // These keys share a bucket at 8 and 16 slots.
+map_set(items, "a", 1);
+map_set(items, "b", 2);
+map_set(items, "c", 3);
+map_set(items, "d", 4);
+map_delete(items, "key0");
+map_set(items, "key0", 20);
+if map_get(items, "key31") != 31 || map_get(items, "key0") != 20 {
+    io_write("collision failed\n");
+}
+
+index := 0;
+while index < 100 {
+    map_set(items, "n" + number_to_text(index), index);
+    index = index + 1;
+}
+snapshot := map_keys(items);
+copy := map_copy(items);
+index = 0;
+while index < 100 {
+    key := "n" + number_to_text(index);
+    if !map_has(items, key) || map_get(items, key) != index {
+        io_write("growth failed\n");
+    }
+    if index < 50 {
+        map_delete(items, key);
+    }
+    index = index + 1;
+}
+index = 0;
+while index < 50 {
+    key := "n" + number_to_text(index);
+    if map_has(items, key) || map_get(copy, key) != index {
+        io_write("delete or copy failed\n");
+    }
+    map_set(items, key, index + 100);
+    index = index + 1;
+}
+
+nul := "before" + text_from_code(0) + "after";
+map_set(items, nul, 7);
+nul_copy := "before" + text_from_code(0) + "after";
+map_set(items, "é", 8);
+map_set(items, "😀", 9);
+if map_get(items, nul_copy) != 7 || map_get(items, "before") != 0
+    || map_get(items, "é") != 8 || map_get(items, "😀") != 9 {
+    io_write("text key failed\n");
+}
+json := map_of("z", 1, "a", 2, "m", 3, "b", 4, "x", 5);
+io_write(json, "\n");
+if map_get(json, "z") != 1 || map_get(json, "a") != 2 {
+    io_write("sort index failed\n");
+}
+io_write(list_length(snapshot), ":", list_length(map_keys(items)), ":", map_get(items, "n0"), "\n");

@@ -147,8 +147,9 @@ Resolve these topics as implementation reaches them:
   point lookup, and slicing. `text_from_code` encodes valid Unicode scalar
   values as UTF-8.
 - Collections: tagged lists cover construction, mutation, copies, indexing, and
-  joins. Tagged maps use an initial pair-array representation with lookup,
-  mutation, key snapshots, copying, merging, and nested JSON output. The
+  joins. Tagged maps keep entries in an array and add a hash index after four
+  entries. They support lookup, mutation, key snapshots, copying, merging, and
+  nested JSON output. The
   [passing proposal](parameter-passing.md) remains separate from accepted rules.
 - Calls: C functions support zero-default missing parameters, extra arguments,
   recursion, local scope, and `fn_args()` for function and process arguments.

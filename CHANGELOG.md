@@ -15,6 +15,9 @@
 
 ## Unreleased
 
+- compiler 0.5.0-alpha.86 / bootstrap 0.3.0-alpha.72: index native C maps
+  with a growing hash table while preserving entry order and valid UTF-8 text keys.
+
 - mini 0.3.0-alpha.55 / compiler 0.5.0-alpha.66 / bootstrap
   0.3.0-alpha.68: move C addition and equality runtime definitions into the
   emitter override registry.

@@ -1,0 +1,16 @@
+{
+  "id": "native.c-map-hash-index",
+  "kind": "feature",
+  "target": "c",
+  "source": "013-002-map-hash-index.mini",
+  "features": ["target.c", "map.set", "map.get", "map.has", "map.delete", "map.keys", "map.copy", "map.json"],
+  "cases": [
+    {
+      "name": "collisions-growth-delete-and-sort",
+      "stdin": { "text": "" },
+      "stdout": { "text": "{\"a\":2,\"b\":4,\"m\":3,\"x\":5,\"z\":1}\n106:109:100\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

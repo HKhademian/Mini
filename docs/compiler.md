@@ -126,9 +126,12 @@ JSON, including nested lists and text escaping.
 `list_contains` and `list_reverse` are compiled from their Mini library definitions.
 The C target also supports tagged map values with `map_new`, `map_of`, `map_set`,
 `map_get`, `map_has`, `map_keys`, `map_delete`, `map_copy`, `map_merge`, and
-map-oriented `value_merge`. Maps use a growable array of key/value pairs; map
-updates replace existing values, and `io_write` serializes nested maps as sorted
-JSON objects. JSON output rejects nesting deeper than 128. Generated execution
+map-oriented `value_merge`. Maps keep a growable array of key/value pairs and
+use an open-addressed hash index after four entries. Lookup compares
+length-delimited UTF-8 bytes; JSON sorts keys by UTF-16 units to match the
+JavaScript target. Map updates replace existing values, and `io_write`
+serializes nested maps as sorted JSON objects. JSON output rejects nesting deeper
+than 128. Generated execution
 owns lists and maps through cleanup at program exit. `fn_args()` is supported
 inside functions and at top level through native `argc`/`argv` capture.
 The C target's `text_from_code` host implementation encodes valid Unicode scalar
