@@ -64,7 +64,7 @@ cli-v0.6.1-v0.1.0-alpha.20
 check-v0.6.1-v0.1.0-alpha.13
 format-v0.6.1-v0.1.0-alpha.9
 lsp-v0.6.1-v0.1.0-alpha.11
-test-v0.6.1-v0.1.0-alpha.8
+test-v0.6.1-v0.1.0-alpha.9
 verify-v0.6.1-v0.1.0-alpha.10
 bench-v0.6.1-v0.1.0-alpha.7
 release-v0.6.1-v0.1.0-alpha.8

@@ -32,7 +32,8 @@ Tool behavior is implemented in mini. The dispatcher, verifier, release harness,
 formatter, language server, test runner, benchmark tool, and CI task runner are
 generated from `tools/*.mini`. The test runner uses a small Node TypeScript
 worker pool to launch independent Mini-selected jobs concurrently; fixture
-selection, execution checks, and reporting remain in Mini. Other host TypeScript
+selection, execution checks, and reporting remain in Mini. Each worker runs
+the same compiled test driver as its parent, including for a native C build. Other host TypeScript
 supports editor clients, performance measurement, and host-specific integration
 tests.
 
