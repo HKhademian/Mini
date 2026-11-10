@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-wraparound",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-wraparound.mini",
+  "source": "../../samples/graphics/animation/pixel-wraparound.mini",
   "features": [
     "text.output",
     "extra.canvas",

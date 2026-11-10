@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-max",
   "kind": "sample",
-  "source": "../../samples/showcase/list-max.mini",
+  "source": "../../samples/lists/list-max.mini",
   "features": [
     "bindings",
     "control.if",

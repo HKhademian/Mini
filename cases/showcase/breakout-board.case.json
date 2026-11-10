@@ -1,7 +1,7 @@
 {
   "id": "showcase.breakout-board",
   "kind": "sample",
-  "source": "../../samples/showcase/breakout-board.mini",
+  "source": "../../samples/games/breakout-board.mini",
   "features": [
     "functions",
     "control.if",

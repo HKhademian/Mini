@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-blinking-dot",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-blinking-dot.mini",
+  "source": "../../samples/graphics/animation/pixel-blinking-dot.mini",
   "features": [
     "text.output",
     "extra.canvas",

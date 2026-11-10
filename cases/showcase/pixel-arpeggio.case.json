@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-arpeggio",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-arpeggio.mini",
+  "source": "../../samples/graphics/audio/pixel-arpeggio.mini",
   "features": [
     "functions",
     "control.if",

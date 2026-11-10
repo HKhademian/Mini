@@ -1,7 +1,7 @@
 {
   "id": "showcase.tetris-board",
   "kind": "sample",
-  "source": "../../samples/showcase/tetris-board.mini",
+  "source": "../../samples/games/tetris-board.mini",
   "features": [
     "text.output",
     "extra.canvas",

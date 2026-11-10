@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-walk-cycle",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-walk-cycle.mini",
+  "source": "../../samples/graphics/animation/pixel-walk-cycle.mini",
   "features": [
     "text.output",
     "extra.canvas",

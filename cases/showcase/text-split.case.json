@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-split",
   "kind": "sample",
-  "source": "../../samples/showcase/text-split.mini",
+  "source": "../../samples/text/text-split.mini",
   "features": [
     "bindings",
     "control.while",

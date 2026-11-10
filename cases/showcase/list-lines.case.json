@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-lines",
   "kind": "sample",
-  "source": "../../samples/showcase/list-lines.mini",
+  "source": "../../samples/lists/list-lines.mini",
   "features": [
     "bindings",
     "control.if",

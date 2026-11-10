@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-light-switch",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-light-switch.mini",
+  "source": "../../samples/graphics/interactive/pixel-light-switch.mini",
   "features": [
     "text.output",
     "extra.canvas",

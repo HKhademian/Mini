@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-find",
   "kind": "sample",
-  "source": "../../samples/showcase/text-find.mini",
+  "source": "../../samples/text/text-find.mini",
   "features": [
     "bindings",
     "text.output",

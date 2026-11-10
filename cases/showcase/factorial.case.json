@@ -1,7 +1,7 @@
 {
   "id": "showcase.factorial",
   "kind": "sample",
-  "source": "../../samples/showcase/factorial.mini",
+  "source": "../../samples/programs/factorial.mini",
   "features": [
     "functions",
     "control.if",

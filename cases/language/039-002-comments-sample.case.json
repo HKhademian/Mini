@@ -1,7 +1,7 @@
 {
   "id": "language.comments-sample",
   "kind": "sample",
-  "source": "../../samples/012-comments.mini",
+  "source": "../../samples/basics/012-comments.mini",
   "features": [
     "comments.line",
     "comments.documentation",

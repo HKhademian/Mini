@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-gradient",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-gradient.mini",
+  "source": "../../samples/graphics/art/pixel-gradient.mini",
   "features": [
     "text.output",
     "extra.canvas",

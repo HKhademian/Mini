@@ -63,7 +63,7 @@ decisions. Prefer useful explanations to repeating the code. Documentation
 comments remain in source for readers and future tools; `mini doc` is not yet
 implemented, and no documentation tags or extraction format are selected.
 
-The [comment sample](../samples/012-comments.mini) demonstrates both forms.
+The [comment sample](../samples/basics/012-comments.mini) demonstrates both forms.
 
 An import can separate file docs from declaration docs:
 
@@ -354,7 +354,7 @@ while position < text_length(source) {
 
 These primitives let mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
-The [read-defaults sample](../samples/011-read-defaults.mini) shows ordinary empty
+The [read-defaults sample](../samples/basics/011-read-defaults.mini) shows ordinary empty
 text and numeric-zero fallbacks without an absence value.
 
 ## Accepted operation: text merging
@@ -685,7 +685,7 @@ count := list_length(map_keys(names));
   not change the map.
 
 Counting materializes a key snapshot. There is no stored size counter or separate
-counting primitive. The [map sample](../samples/010-map.mini) combines these operations.
+counting primitive. The [map sample](../samples/maps/010-map.mini) combines these operations.
 
 ## Accepted operation: map keys
 

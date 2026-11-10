@@ -1,7 +1,7 @@
 {
   "id": "showcase.booleans",
   "kind": "sample",
-  "source": "../../samples/showcase/booleans.mini",
+  "source": "../../samples/basics/booleans.mini",
   "features": [
     "bindings",
     "control.if",

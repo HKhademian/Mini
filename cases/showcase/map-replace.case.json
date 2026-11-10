@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-replace",
   "kind": "sample",
-  "source": "../../samples/showcase/map-replace.mini",
+  "source": "../../samples/maps/map-replace.mini",
   "features": [
     "bindings",
     "text.output",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.tokenizer",
   "kind": "sample",
-  "source": "../../samples/showcase/tokenizer.mini",
+  "source": "../../samples/programs/tokenizer.mini",
   "features": [
     "bindings",
     "control.if",

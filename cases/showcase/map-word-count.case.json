@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-word-count",
   "kind": "sample",
-  "source": "../../samples/showcase/map-word-count.mini",
+  "source": "../../samples/maps/map-word-count.mini",
   "features": [
     "bindings",
     "control.while",

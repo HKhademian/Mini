@@ -1,7 +1,7 @@
 {
   "id": "showcase.if-else",
   "kind": "sample",
-  "source": "../../samples/showcase/if-else.mini",
+  "source": "../../samples/basics/if-else.mini",
   "features": [
     "bindings",
     "control.if",

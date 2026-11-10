@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-arrows",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-arrows.mini",
+  "source": "../../samples/graphics/interactive/pixel-arrows.mini",
   "features": [
     "functions",
     "control.if",

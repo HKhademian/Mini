@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-create",
   "kind": "sample",
-  "source": "../../samples/showcase/map-create.mini",
+  "source": "../../samples/maps/map-create.mini",
   "features": [
     "bindings",
     "text.output",

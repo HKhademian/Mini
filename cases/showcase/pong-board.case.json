@@ -1,7 +1,7 @@
 {
   "id": "showcase.pong-board",
   "kind": "sample",
-  "source": "../../samples/showcase/pong-board.mini",
+  "source": "../../samples/games/pong-board.mini",
   "features": [
     "text.output",
     "extra.canvas",

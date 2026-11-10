@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-queue",
   "kind": "sample",
-  "source": "../../samples/showcase/list-queue.mini",
+  "source": "../../samples/lists/list-queue.mini",
   "features": [
     "bindings",
     "text.output",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-icons",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-icons.mini",
+  "source": "../../samples/graphics/art/pixel-icons.mini",
   "features": [
     "text.output",
     "extra.canvas",

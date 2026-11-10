@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-bytes",
   "kind": "sample",
-  "source": "../../samples/showcase/text-bytes.mini",
+  "source": "../../samples/text/text-bytes.mini",
   "features": [
     "bindings",
     "control.while",

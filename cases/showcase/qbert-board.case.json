@@ -1,7 +1,7 @@
 {
   "id": "showcase.qbert-board",
   "kind": "sample",
-  "source": "../../samples/showcase/qbert-board.mini",
+  "source": "../../samples/games/qbert-board.mini",
   "features": [
     "text.output",
     "extra.canvas",

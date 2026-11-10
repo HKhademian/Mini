@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-tone",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-tone.mini",
+  "source": "../../samples/graphics/audio/pixel-tone.mini",
   "features": [
     "functions",
     "control.if",

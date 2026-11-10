@@ -1,7 +1,7 @@
 {
   "id": "showcase.primes",
   "kind": "sample",
-  "source": "../../samples/showcase/primes.mini",
+  "source": "../../samples/programs/primes.mini",
   "features": [
     "bindings",
     "functions",

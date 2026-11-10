@@ -41,7 +41,7 @@ optional `artifact` descriptor; `reject` checks failed compilation with no outpu
 file. A compile case without `artifact` checks acceptance, streams, status, and
 creation of the generated file. It does not run the program or pin formatting.
 A silent program can have empty expected streams and still check compilation
-and execution; see the [binding sample](../samples/001-bindings.mini) and its
+and execution; see the [binding sample](../samples/basics/001-bindings.mini) and its
 [case](../cases/language/003-002-bindings-sample.case.json).
 
 Use `"pending": "reason"` on an unimplemented language case. Its source and

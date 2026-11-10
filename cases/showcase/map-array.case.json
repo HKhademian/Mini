@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-array",
   "kind": "sample",
-  "source": "../../samples/showcase/map-array.mini",
+  "source": "../../samples/maps/map-array.mini",
   "features": [
     "bindings",
     "control.if",

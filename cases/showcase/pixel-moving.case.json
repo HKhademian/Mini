@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-moving",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-moving.mini",
+  "source": "../../samples/graphics/animation/pixel-moving.mini",
   "features": [
     "functions",
     "control.if",

@@ -1,7 +1,7 @@
 {
   "id": "language.file-sample",
   "kind": "sample",
-  "source": "../../samples/005-file.mini",
+  "source": "../../samples/files/005-file.mini",
   "features": [
     "file.read",
     "file.write",

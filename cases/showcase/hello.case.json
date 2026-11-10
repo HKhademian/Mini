@@ -1,7 +1,7 @@
 {
   "id": "showcase.hello",
   "kind": "sample",
-  "source": "../../samples/showcase/hello.mini",
+  "source": "../../samples/basics/hello.mini",
   "features": [
     "text.output"
   ],

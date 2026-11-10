@@ -1,7 +1,7 @@
 {
   "id": "showcase.bindings",
   "kind": "sample",
-  "source": "../../samples/showcase/bindings.mini",
+  "source": "../../samples/basics/bindings.mini",
   "features": [
     "bindings",
     "text.output"

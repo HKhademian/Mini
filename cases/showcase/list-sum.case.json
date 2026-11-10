@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-sum",
   "kind": "sample",
-  "source": "../../samples/showcase/list-sum.mini",
+  "source": "../../samples/lists/list-sum.mini",
   "features": [
     "bindings",
     "control.while",

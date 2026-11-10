@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-create",
   "kind": "sample",
-  "source": "../../samples/showcase/list-create.mini",
+  "source": "../../samples/lists/list-create.mini",
   "features": [
     "bindings",
     "text.output",

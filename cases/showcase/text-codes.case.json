@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-codes",
   "kind": "sample",
-  "source": "../../samples/showcase/text-codes.mini",
+  "source": "../../samples/text/text-codes.mini",
   "features": [
     "bindings",
     "expressions.boolean",

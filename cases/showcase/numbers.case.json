@@ -1,7 +1,7 @@
 {
   "id": "showcase.numbers",
   "kind": "sample",
-  "source": "../../samples/showcase/numbers.mini",
+  "source": "../../samples/basics/numbers.mini",
   "features": [
     "bindings",
     "text.output",

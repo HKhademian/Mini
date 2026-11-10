@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-checkerboard",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-checkerboard.mini",
+  "source": "../../samples/graphics/art/pixel-checkerboard.mini",
   "features": [
     "text.output",
     "extra.canvas",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-keys",
   "kind": "sample",
-  "source": "../../samples/showcase/map-keys.mini",
+  "source": "../../samples/maps/map-keys.mini",
   "features": [
     "bindings",
     "text.output",

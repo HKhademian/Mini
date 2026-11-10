@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-length",
   "kind": "sample",
-  "source": "../../samples/showcase/text-length.mini",
+  "source": "../../samples/text/text-length.mini",
   "features": [
     "bindings",
     "text.output",

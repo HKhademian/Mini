@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-blink",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-blink.mini",
+  "source": "../../samples/graphics/animation/pixel-blink.mini",
   "features": [
     "functions",
     "control.if",

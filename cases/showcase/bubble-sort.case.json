@@ -1,7 +1,7 @@
 {
   "id": "showcase.bubble-sort",
   "kind": "sample",
-  "source": "../../samples/showcase/bubble-sort.mini",
+  "source": "../../samples/programs/bubble-sort.mini",
   "features": [
     "bindings",
     "control.if",

@@ -6,7 +6,7 @@
     "note": "Write one line of text.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/hello.mini"
+    "file": "samples/basics/hello.mini"
   },
   {
     "id": "bindings",
@@ -15,7 +15,7 @@
     "note": "Bind text and number values.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/bindings.mini"
+    "file": "samples/basics/bindings.mini"
   },
   {
     "id": "numbers",
@@ -24,7 +24,7 @@
     "note": "Multiply and subtract numbers.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/numbers.mini"
+    "file": "samples/basics/numbers.mini"
   },
   {
     "id": "concat",
@@ -33,7 +33,7 @@
     "note": "Join text with +.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/concat.mini"
+    "file": "samples/basics/concat.mini"
   },
   {
     "id": "booleans",
@@ -42,7 +42,7 @@
     "note": "Combine comparisons with &&.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/booleans.mini"
+    "file": "samples/basics/booleans.mini"
   },
   {
     "id": "if",
@@ -51,7 +51,7 @@
     "note": "Run a block when a condition holds.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/if.mini"
+    "file": "samples/basics/if.mini"
   },
   {
     "id": "if-else",
@@ -60,7 +60,7 @@
     "note": "Choose one of two branches.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/if-else.mini"
+    "file": "samples/basics/if-else.mini"
   },
   {
     "id": "while",
@@ -69,7 +69,7 @@
     "note": "Repeat while a condition holds.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/while.mini"
+    "file": "samples/basics/while.mini"
   },
   {
     "id": "function",
@@ -78,7 +78,7 @@
     "note": "Return a value from a named function.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/function.mini"
+    "file": "samples/basics/function.mini"
   },
   {
     "id": "arguments",
@@ -91,7 +91,7 @@
       "gamma"
     ],
     "stdin": "",
-    "file": "samples/006-list.mini"
+    "file": "samples/lists/006-list.mini"
   },
   {
     "id": "text-length",
@@ -100,7 +100,7 @@
     "note": "Count characters.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-length.mini"
+    "file": "samples/text/text-length.mini"
   },
   {
     "id": "text-get",
@@ -109,7 +109,7 @@
     "note": "Read the first and last character.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-get.mini"
+    "file": "samples/text/text-get.mini"
   },
   {
     "id": "text-slice",
@@ -118,7 +118,7 @@
     "note": "Slice with positive and negative bounds.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-slice.mini"
+    "file": "samples/text/text-slice.mini"
   },
   {
     "id": "text-find",
@@ -127,7 +127,7 @@
     "note": "Locate a word inside text.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-find.mini"
+    "file": "samples/text/text-find.mini"
   },
   {
     "id": "text-split",
@@ -136,7 +136,7 @@
     "note": "Split text on a literal separator.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-split.mini"
+    "file": "samples/text/text-split.mini"
   },
   {
     "id": "text-reverse",
@@ -145,7 +145,7 @@
     "note": "Walk backwards and build a new string.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-reverse.mini"
+    "file": "samples/text/text-reverse.mini"
   },
   {
     "id": "text-vowels",
@@ -154,7 +154,7 @@
     "note": "Combine a loop with character comparisons.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-vowels.mini"
+    "file": "samples/text/text-vowels.mini"
   },
   {
     "id": "text-bytes",
@@ -163,7 +163,7 @@
     "note": "Turn text into its byte values.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-bytes.mini"
+    "file": "samples/text/text-bytes.mini"
   },
   {
     "id": "text-codes",
@@ -172,7 +172,7 @@
     "note": "Round-trip a character through its code point and print values directly.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/text-codes.mini"
+    "file": "samples/text/text-codes.mini"
   },
   {
     "id": "text",
@@ -181,7 +181,7 @@
     "note": "Normalize tabs and line endings from standard input.",
     "args": [],
     "stdin": "alpha\tbeta\ngamma",
-    "file": "samples/004-text.mini"
+    "file": "samples/text/004-text.mini"
   },
   {
     "id": "list-create",
@@ -190,7 +190,7 @@
     "note": "Set two items and read the length.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-create.mini"
+    "file": "samples/lists/list-create.mini"
   },
   {
     "id": "list-get",
@@ -199,7 +199,7 @@
     "note": "Use a negative index for the last item.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-get.mini"
+    "file": "samples/lists/list-get.mini"
   },
   {
     "id": "lists",
@@ -208,7 +208,7 @@
     "note": "Build a word list and format it with a separator.",
     "args": [],
     "stdin": "",
-    "file": "samples/018-list-join.mini"
+    "file": "samples/lists/018-list-join.mini"
   },
   {
     "id": "list-sum",
@@ -217,7 +217,7 @@
     "note": "Accumulate numbers in a loop.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-sum.mini"
+    "file": "samples/lists/list-sum.mini"
   },
   {
     "id": "list-max",
@@ -226,7 +226,7 @@
     "note": "Scan a list and keep the best value.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-max.mini"
+    "file": "samples/lists/list-max.mini"
   },
   {
     "id": "list-reverse",
@@ -235,7 +235,7 @@
     "note": "Walk a list backwards and join the items.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-reverse.mini"
+    "file": "samples/lists/list-reverse.mini"
   },
   {
     "id": "list-stack",
@@ -244,7 +244,7 @@
     "note": "Push and pop from the back.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-stack.mini"
+    "file": "samples/lists/list-stack.mini"
   },
   {
     "id": "list-queue",
@@ -253,7 +253,7 @@
     "note": "Push at the back and pop from the front.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-queue.mini"
+    "file": "samples/lists/list-queue.mini"
   },
   {
     "id": "list-copy",
@@ -262,7 +262,7 @@
     "note": "Changing the copy leaves the original intact.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-copy.mini"
+    "file": "samples/lists/list-copy.mini"
   },
   {
     "id": "list-lines",
@@ -271,7 +271,7 @@
     "note": "Split text into lines and join them again.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/list-lines.mini"
+    "file": "samples/lists/list-lines.mini"
   },
   {
     "id": "map-create",
@@ -280,7 +280,7 @@
     "note": "Set and read text-keyed values.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-create.mini"
+    "file": "samples/maps/map-create.mini"
   },
   {
     "id": "map-has",
@@ -289,7 +289,7 @@
     "note": "Test for a key before reading it.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-has.mini"
+    "file": "samples/maps/map-has.mini"
   },
   {
     "id": "map-keys",
@@ -298,7 +298,7 @@
     "note": "Take a key snapshot and count it.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-keys.mini"
+    "file": "samples/maps/map-keys.mini"
   },
   {
     "id": "map-replace",
@@ -307,7 +307,7 @@
     "note": "Setting an existing key keeps the key count.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-replace.mini"
+    "file": "samples/maps/map-replace.mini"
   },
   {
     "id": "map-copy",
@@ -316,7 +316,7 @@
     "note": "Changing the copy leaves the original intact.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-copy.mini"
+    "file": "samples/maps/map-copy.mini"
   },
   {
     "id": "json",
@@ -325,7 +325,7 @@
     "note": "Build a map and print compact JSON.",
     "args": [],
     "stdin": "",
-    "file": "samples/020-json-to-text.mini"
+    "file": "samples/json/020-json-to-text.mini"
   },
   {
     "id": "map-parse",
@@ -334,7 +334,7 @@
     "note": "Parse an object and read a field.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-parse.mini"
+    "file": "samples/maps/map-parse.mini"
   },
   {
     "id": "map-array",
@@ -343,7 +343,7 @@
     "note": "Parse an array and read an item.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-array.mini"
+    "file": "samples/maps/map-array.mini"
   },
   {
     "id": "map-nested",
@@ -352,7 +352,7 @@
     "note": "Store a map inside another map.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-nested.mini"
+    "file": "samples/maps/map-nested.mini"
   },
   {
     "id": "map-word-count",
@@ -361,7 +361,7 @@
     "note": "Count repeated words with a map.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/map-word-count.mini"
+    "file": "samples/maps/map-word-count.mini"
   },
   {
     "id": "fizzbuzz",
@@ -370,7 +370,7 @@
     "note": "Classic division and branching.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/fizzbuzz.mini"
+    "file": "samples/programs/fizzbuzz.mini"
   },
   {
     "id": "factorial",
@@ -379,7 +379,7 @@
     "note": "A recursive function.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/factorial.mini"
+    "file": "samples/programs/factorial.mini"
   },
   {
     "id": "fibonacci",
@@ -388,7 +388,7 @@
     "note": "Print an iterative sequence without manual number formatting.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/fibonacci.mini"
+    "file": "samples/programs/fibonacci.mini"
   },
   {
     "id": "primes",
@@ -397,7 +397,7 @@
     "note": "Trial division up to a limit.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/primes.mini"
+    "file": "samples/programs/primes.mini"
   },
   {
     "id": "palindrome",
@@ -406,7 +406,7 @@
     "note": "Reverse text and compare.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/palindrome.mini"
+    "file": "samples/programs/palindrome.mini"
   },
   {
     "id": "caesar",
@@ -415,7 +415,7 @@
     "note": "Shift character codes by one.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/caesar.mini"
+    "file": "samples/programs/caesar.mini"
   },
   {
     "id": "binary-search",
@@ -424,7 +424,7 @@
     "note": "Find a value in a sorted list.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/binary-search.mini"
+    "file": "samples/programs/binary-search.mini"
   },
   {
     "id": "bubble-sort",
@@ -433,7 +433,7 @@
     "note": "Sort a small list in place.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/bubble-sort.mini"
+    "file": "samples/programs/bubble-sort.mini"
   },
   {
     "id": "tokenizer",
@@ -442,7 +442,7 @@
     "note": "Split source text into words and symbols.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/tokenizer.mini"
+    "file": "samples/programs/tokenizer.mini"
   },
   {
     "id": "csv-sum",
@@ -451,7 +451,7 @@
     "note": "Parse numbers from CSV text and add them.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/csv-sum.mini"
+    "file": "samples/programs/csv-sum.mini"
   },
   {
     "id": "breakout-board",
@@ -460,7 +460,7 @@
     "note": "Starts with Space; arrows or A/D steer; P pauses. Short tones mark wall, brick, paddle, miss, and win events.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/breakout-board.mini"
+    "file": "samples/games/breakout-board.mini"
   },
   {
     "id": "frogger-board",
@@ -469,7 +469,7 @@
     "note": "Move Frogger through traffic that advances at a configurable 3 steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/frogger-board.mini"
+    "file": "samples/games/frogger-board.mini"
   },
   {
     "id": "pong-board",
@@ -478,7 +478,7 @@
     "note": "Move the left paddle with W/S and the right paddle with the arrow keys. The ball moves at three steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pong-board.mini"
+    "file": "samples/games/pong-board.mini"
   },
   {
     "id": "pacman-board",
@@ -487,7 +487,7 @@
     "note": "Collect corridor dots with arrows or WASD and avoid the ghost as it patrols at one step per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pacman-board.mini"
+    "file": "samples/games/pacman-board.mini"
   },
   {
     "id": "freeway-board",
@@ -496,7 +496,7 @@
     "note": "Cross the road with arrows or WASD. Three traffic lanes move at two, three, and four steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/freeway-board.mini"
+    "file": "samples/games/freeway-board.mini"
   },
   {
     "id": "seaquest-board",
@@ -505,7 +505,7 @@
     "note": "Steer the submarine with arrows or WASD, touch all three divers, and avoid the enemy before oxygen runs out.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/seaquest-board.mini"
+    "file": "samples/games/seaquest-board.mini"
   },
   {
     "id": "asterix-board",
@@ -514,7 +514,7 @@
     "note": "Press Space, W, or Up to jump incoming obstacles. Clear them at three steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/asterix-board.mini"
+    "file": "samples/games/asterix-board.mini"
   },
   {
     "id": "snake-board",
@@ -523,7 +523,7 @@
     "note": "Steer with arrows or WASD, eat the red food, and avoid walls and your tail. Moves at three steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/snake-board.mini"
+    "file": "samples/games/snake-board.mini"
   },
   {
     "id": "space-invaders-board",
@@ -532,7 +532,7 @@
     "note": "Move with arrows or A/D, fire with Space, and clear the formation before it reaches you. Invaders move twice per second; shots move four times per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/space-invaders-board.mini"
+    "file": "samples/games/space-invaders-board.mini"
   },
   {
     "id": "tetris-board",
@@ -541,7 +541,7 @@
     "note": "Move with arrows or A/D, rotate with Up/W, soft-drop with Down/S, hard-drop with Space, and clear rows. Pieces fall twice per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/tetris-board.mini"
+    "file": "samples/games/tetris-board.mini"
   },
   {
     "id": "lunar-lander-board",
@@ -550,7 +550,7 @@
     "note": "Use Up or Space to spend fuel and slow down, steer toward the green pad, and land at two positions per second with speed two or less.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/lunar-lander-board.mini"
+    "file": "samples/games/lunar-lander-board.mini"
   },
   {
     "id": "qbert-board",
@@ -559,7 +559,7 @@
     "note": "Hop with diagonal arrow moves (Up/Left go up; Right/Down go down) and change every tile's color.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/qbert-board.mini"
+    "file": "samples/games/qbert-board.mini"
   },
   {
     "id": "pixel-one",
@@ -568,7 +568,7 @@
     "note": "Render a single white pixel once on a black ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-one.mini"
+    "file": "samples/graphics/art/pixel-one.mini"
   },
   {
     "id": "pixel-heart",
@@ -577,7 +577,7 @@
     "note": "Build and render a red heart once from a ten-by-ten text pattern.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-heart.mini"
+    "file": "samples/graphics/art/pixel-heart.mini"
   },
   {
     "id": "pixel-shapes",
@@ -586,7 +586,7 @@
     "note": "Render a horizontal line, outline box, and diagonal once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-shapes.mini"
+    "file": "samples/graphics/art/pixel-shapes.mini"
   },
   {
     "id": "pixel-icons",
@@ -595,7 +595,7 @@
     "note": "Render a small house and a right arrow once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-icons.mini"
+    "file": "samples/graphics/art/pixel-icons.mini"
   },
   {
     "id": "pixel-checkerboard",
@@ -604,7 +604,7 @@
     "note": "Render a two-color checkerboard once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-checkerboard.mini"
+    "file": "samples/graphics/art/pixel-checkerboard.mini"
   },
   {
     "id": "pixel-stripes",
@@ -613,7 +613,7 @@
     "note": "Render alternating vertical colors once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-stripes.mini"
+    "file": "samples/graphics/art/pixel-stripes.mini"
   },
   {
     "id": "pixel-gradient",
@@ -622,7 +622,7 @@
     "note": "Render a horizontal blue-to-lavender color gradient once on a ten-by-ten board.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-gradient.mini"
+    "file": "samples/graphics/art/pixel-gradient.mini"
   },
   {
     "id": "pixel-blinking-dot",
@@ -631,7 +631,7 @@
     "note": "Ease a centered pixel between soft blue shades at four color steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-blinking-dot.mini"
+    "file": "samples/graphics/animation/pixel-blinking-dot.mini"
   },
   {
     "id": "pixel-wraparound",
@@ -640,7 +640,7 @@
     "note": "Move a pixel across the board at three steps per second and wrap at the edge.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-wraparound.mini"
+    "file": "samples/graphics/animation/pixel-wraparound.mini"
   },
   {
     "id": "pixel-blink",
@@ -649,7 +649,7 @@
     "note": "A warm smiling face blinks about once every three seconds on a soft blue background.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-blink.mini"
+    "file": "samples/graphics/animation/pixel-blink.mini"
   },
   {
     "id": "pixel-moving",
@@ -658,7 +658,7 @@
     "note": "Move and bounce a pixel at a configurable 5 steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-moving.mini"
+    "file": "samples/graphics/animation/pixel-moving.mini"
   },
   {
     "id": "pixel-resize",
@@ -667,7 +667,7 @@
     "note": "Draw new frames on the same canvas while its square size changes from five to nine pixels, three times per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-resize.mini"
+    "file": "samples/graphics/animation/pixel-resize.mini"
   },
   {
     "id": "pixel-beating-heart",
@@ -676,7 +676,7 @@
     "note": "Pulse a pixel heart about once per second between two sizes and shades of red.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-beating-heart.mini"
+    "file": "samples/graphics/animation/pixel-beating-heart.mini"
   },
   {
     "id": "pixel-rain",
@@ -685,7 +685,7 @@
     "note": "Move three drops at three steps per second and wrap them to the top.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-rain.mini"
+    "file": "samples/graphics/animation/pixel-rain.mini"
   },
   {
     "id": "pixel-walk-cycle",
@@ -694,7 +694,7 @@
     "note": "Switch between small character poses to suggest walking.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-walk-cycle.mini"
+    "file": "samples/graphics/animation/pixel-walk-cycle.mini"
   },
   {
     "id": "pixel-arrows",
@@ -703,7 +703,7 @@
     "note": "Move the yellow pixel around the green goal with arrows or WASD.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-arrows.mini"
+    "file": "samples/graphics/interactive/pixel-arrows.mini"
   },
   {
     "id": "pixel-cursor-draw",
@@ -712,7 +712,7 @@
     "note": "Move the pointer across the canvas to paint a lasting trail of pixels.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-cursor-draw.mini"
+    "file": "samples/graphics/interactive/pixel-cursor-draw.mini"
   },
   {
     "id": "pixel-light-switch",
@@ -721,7 +721,7 @@
     "note": "Press Space or Enter to switch a small lamp on and off.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-light-switch.mini"
+    "file": "samples/graphics/interactive/pixel-light-switch.mini"
   },
   {
     "id": "pixel-maze",
@@ -730,7 +730,7 @@
     "note": "Use arrows or WASD to reach the green goal without crossing walls.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-maze.mini"
+    "file": "samples/graphics/interactive/pixel-maze.mini"
   },
   {
     "id": "pixel-tone",
@@ -739,7 +739,7 @@
     "note": "Play four short tones with the arrow keys or WASD; the canvas stays responsive without an update loop.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-tone.mini"
+    "file": "samples/graphics/audio/pixel-tone.mini"
   },
   {
     "id": "pixel-chord-pad",
@@ -748,7 +748,7 @@
     "note": "Play C, F, or G major chords using keys 1–3 or the arrow keys.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-chord-pad.mini"
+    "file": "samples/graphics/audio/pixel-chord-pad.mini"
   },
   {
     "id": "pixel-soundboard",
@@ -757,7 +757,7 @@
     "note": "Move over and click one of four colored pads to play its note.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-soundboard.mini"
+    "file": "samples/graphics/audio/pixel-soundboard.mini"
   },
   {
     "id": "pixel-arpeggio",
@@ -766,7 +766,7 @@
     "note": "Press Space to start or pause a four-note melody paced at two notes per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-arpeggio.mini"
+    "file": "samples/graphics/audio/pixel-arpeggio.mini"
   },
   {
     "id": "pixel-dvd",
@@ -775,6 +775,6 @@
     "note": "Bounce a colorful DVD logo around a 23×13 blue screen at 3 steps per second.",
     "args": [],
     "stdin": "",
-    "file": "samples/showcase/pixel-dvd.mini"
+    "file": "samples/graphics/animation/pixel-dvd.mini"
   }
 ]

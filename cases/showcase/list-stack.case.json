@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-stack",
   "kind": "sample",
-  "source": "../../samples/showcase/list-stack.mini",
+  "source": "../../samples/lists/list-stack.mini",
   "features": [
     "bindings",
     "text.output",

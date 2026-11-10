@@ -1,7 +1,7 @@
 {
   "id": "showcase.function",
   "kind": "sample",
-  "source": "../../samples/showcase/function.mini",
+  "source": "../../samples/basics/function.mini",
   "features": [
     "functions",
     "text.output",

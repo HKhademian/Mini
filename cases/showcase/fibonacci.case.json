@@ -1,7 +1,7 @@
 {
   "id": "showcase.fibonacci",
   "kind": "sample",
-  "source": "../../samples/showcase/fibonacci.mini",
+  "source": "../../samples/programs/fibonacci.mini",
   "features": [
     "bindings",
     "functions",

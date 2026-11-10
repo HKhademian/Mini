@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-reverse",
   "kind": "sample",
-  "source": "../../samples/showcase/text-reverse.mini",
+  "source": "../../samples/text/text-reverse.mini",
   "features": [
     "bindings",
     "control.while",

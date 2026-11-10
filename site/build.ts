@@ -88,7 +88,7 @@ const heroSample: Sample = {
     id: "fibonacci",
     title: "Fibonacci",
     note: "Build and print a number sequence with a function and loop.",
-    file: "samples/showcase/fibonacci.mini",
+    file: "samples/programs/fibonacci.mini",
     args: [],
     stdin: "",
 };
@@ -98,7 +98,7 @@ const samples: readonly Sample[] = [
         id: "lists",
         title: "Lists",
         note: "Join list items with a visible separator.",
-        file: "samples/018-list-join.mini",
+        file: "samples/lists/018-list-join.mini",
         args: [],
         stdin: "",
     },
@@ -106,7 +106,7 @@ const samples: readonly Sample[] = [
         id: "arguments",
         title: "Program arguments",
         note: "Forward command-line arguments to the program.",
-        file: "samples/006-list.mini",
+        file: "samples/lists/006-list.mini",
         args: ["alpha", "beta", "gamma"],
         stdin: "",
     },
@@ -114,7 +114,7 @@ const samples: readonly Sample[] = [
         id: "text",
         title: "Text and stdin",
         note: "Normalize tabs and line endings from standard input.",
-        file: "samples/004-text.mini",
+        file: "samples/text/004-text.mini",
         args: [],
         stdin: "alpha\tbeta\ngamma",
     },
@@ -344,7 +344,7 @@ function renderPage(hero: RenderedSample, cards: readonly RenderedSample[]): str
         </li>
         <li class="step">
           <h3>Run a sample</h3>
-          ${codeBlock("./bin/mini run samples/018-list-join.mini", "step-code")}
+          ${codeBlock("./bin/mini run samples/lists/018-list-join.mini", "step-code")}
           <p class="step-note">prints <code>one | two | three</code></p>
         </li>
       </ol>

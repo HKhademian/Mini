@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-stripes",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-stripes.mini",
+  "source": "../../samples/graphics/art/pixel-stripes.mini",
   "features": [
     "text.output",
     "extra.canvas",

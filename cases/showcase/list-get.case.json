@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-get",
   "kind": "sample",
-  "source": "../../samples/showcase/list-get.mini",
+  "source": "../../samples/lists/list-get.mini",
   "features": [
     "bindings",
     "text.output",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-shapes",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-shapes.mini",
+  "source": "../../samples/graphics/art/pixel-shapes.mini",
   "features": [
     "text.output",
     "extra.canvas",

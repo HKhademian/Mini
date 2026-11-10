@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-heart",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-heart.mini",
+  "source": "../../samples/graphics/art/pixel-heart.mini",
   "features": [
     "functions",
     "control.if",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.frogger-board",
   "kind": "sample",
-  "source": "../../samples/showcase/frogger-board.mini",
+  "source": "../../samples/games/frogger-board.mini",
   "features": [
     "functions",
     "control.if",

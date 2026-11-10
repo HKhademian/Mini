@@ -1,7 +1,7 @@
 {
   "id": "showcase.fizzbuzz",
   "kind": "sample",
-  "source": "../../samples/showcase/fizzbuzz.mini",
+  "source": "../../samples/programs/fizzbuzz.mini",
   "features": [
     "bindings",
     "control.if",

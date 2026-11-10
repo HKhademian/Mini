@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-soundboard",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-soundboard.mini",
+  "source": "../../samples/graphics/audio/pixel-soundboard.mini",
   "features": [
     "functions",
     "control.if",

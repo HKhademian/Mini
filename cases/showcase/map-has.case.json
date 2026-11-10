@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-has",
   "kind": "sample",
-  "source": "../../samples/showcase/map-has.mini",
+  "source": "../../samples/maps/map-has.mini",
   "features": [
     "bindings",
     "control.if",

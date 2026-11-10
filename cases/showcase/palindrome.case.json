@@ -1,7 +1,7 @@
 {
   "id": "showcase.palindrome",
   "kind": "sample",
-  "source": "../../samples/showcase/palindrome.mini",
+  "source": "../../samples/programs/palindrome.mini",
   "features": [
     "bindings",
     "functions",

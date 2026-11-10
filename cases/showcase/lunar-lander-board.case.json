@@ -1,7 +1,7 @@
 {
   "id": "showcase.lunar-lander-board",
   "kind": "sample",
-  "source": "../../samples/showcase/lunar-lander-board.mini",
+  "source": "../../samples/games/lunar-lander-board.mini",
   "features": [
     "text.output",
     "extra.canvas",

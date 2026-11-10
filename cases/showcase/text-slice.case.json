@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-slice",
   "kind": "sample",
-  "source": "../../samples/showcase/text-slice.mini",
+  "source": "../../samples/text/text-slice.mini",
   "features": [
     "bindings",
     "text.output",

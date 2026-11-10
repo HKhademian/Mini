@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-cursor-draw",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-cursor-draw.mini",
+  "source": "../../samples/graphics/interactive/pixel-cursor-draw.mini",
   "features": [
     "text.output",
     "extra.canvas",

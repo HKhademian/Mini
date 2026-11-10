@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-chord-pad",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-chord-pad.mini",
+  "source": "../../samples/graphics/audio/pixel-chord-pad.mini",
   "features": [
     "functions",
     "control.if",

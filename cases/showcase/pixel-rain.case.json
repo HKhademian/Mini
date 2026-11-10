@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-rain",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-rain.mini",
+  "source": "../../samples/graphics/animation/pixel-rain.mini",
   "features": [
     "text.output",
     "extra.canvas",

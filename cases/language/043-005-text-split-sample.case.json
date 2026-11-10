@@ -1,7 +1,7 @@
 {
   "id": "language.text-split-sample",
   "kind": "sample",
-  "source": "../../samples/015-text-split.mini",
+  "source": "../../samples/text/015-text-split.mini",
   "features": [
     "text.split",
     "text.input",

@@ -1,7 +1,7 @@
 {
   "id": "showcase.list-reverse",
   "kind": "sample",
-  "source": "../../samples/showcase/list-reverse.mini",
+  "source": "../../samples/lists/list-reverse.mini",
   "features": [
     "bindings",
     "control.if",

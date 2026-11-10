@@ -76,6 +76,42 @@ fn format_compiled(root, file, output) {
     return file_read(output);
 }
 
+/// Check formatter stability for numbered samples in a directory tree.
+fn format_check_samples(root, work, directory) {
+    names := directory_list(directory);
+    checked := 0;
+    position := 0;
+    while position < list_length(names) {
+        name := list_get(names, position);
+        path := path_join(directory, name);
+        if path_is_directory(path) {
+            checked = checked + format_check_samples(root, work, path);
+        } else if text_ends_with(name, ".mini") && text_find("0123456789", text_get(name, 0)) >= 0 {
+            original := path_join(work, name);
+            formatted := path_join(work, "formatted-" + name);
+            file_write(original, file_read(path));
+            output := format_source(root, work, name, file_read(original));
+            file_write(formatted, output);
+            if format_signature(root, formatted) != format_signature(root, original) {
+                format_fail(name, "tokens changed");
+            }
+            if format_compiled(root, formatted, path_join(work, "formatted.js")) != format_compiled(
+                root,
+                original,
+                path_join(work, "original.js")
+            ) {
+                format_fail(name, "generated code changed");
+            }
+            if format_source(root, work, name, file_read(formatted)) != output {
+                format_fail(name, "not idempotent");
+            }
+            checked = checked + 1;
+        }
+        position = position + 1;
+    }
+    return checked;
+}
+
 /// Run the formatter checks.
 fn main(args) {
     root := list_get(args, 0);
@@ -170,34 +206,7 @@ fn main(args) {
         || text_from_bytes(map_get(invalid, "stderr")) != "cases/tooling/format-invalid.mini:1:10: expected expression\nvalue := ;\n         ^\n" {
         format_fail("invalid", "unexpected diagnostic");
     }
-    names := directory_list(path_join(root, "samples"));
-    checked := 0;
-    position := 0;
-    while position < list_length(names) {
-        name := list_get(names, position);
-        if text_ends_with(name, ".mini") {
-            original := path_join(work, name);
-            formatted := path_join(work, "formatted-" + name);
-            file_write(original, file_read(path_join(path_join(root, "samples"), name)));
-            output := format_source(root, work, name, file_read(original));
-            file_write(formatted, output);
-            if format_signature(root, formatted) != format_signature(root, original) {
-                format_fail(name, "tokens changed");
-            }
-            if format_compiled(root, formatted, path_join(work, "formatted.js")) != format_compiled(
-                root,
-                original,
-                path_join(work, "original.js")
-            ) {
-                format_fail(name, "generated code changed");
-            }
-            if format_source(root, work, name, file_read(formatted)) != output {
-                format_fail(name, "not idempotent");
-            }
-            checked = checked + 1;
-        }
-        position = position + 1;
-    }
+    checked := format_check_samples(root, work, path_join(root, "samples"));
     if checked <= 15 {
         format_fail("samples", "expected more samples");
     }

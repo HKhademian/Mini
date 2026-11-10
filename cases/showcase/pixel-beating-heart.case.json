@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-beating-heart",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-beating-heart.mini",
+  "source": "../../samples/graphics/animation/pixel-beating-heart.mini",
   "features": [
     "functions",
     "control.if",

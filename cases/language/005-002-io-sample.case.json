@@ -1,7 +1,7 @@
 {
   "id": "language.io-sample",
   "kind": "example",
-  "source": "../../samples/003-io.mini",
+  "source": "../../samples/io/003-io.mini",
   "features": [
     "text.input",
     "text.output"

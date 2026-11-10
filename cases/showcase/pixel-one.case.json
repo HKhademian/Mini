@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-one",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-one.mini",
+  "source": "../../samples/graphics/art/pixel-one.mini",
   "features": [
     "functions",
     "control.if",

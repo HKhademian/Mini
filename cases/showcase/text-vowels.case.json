@@ -1,7 +1,7 @@
 {
   "id": "showcase.text-vowels",
   "kind": "sample",
-  "source": "../../samples/showcase/text-vowels.mini",
+  "source": "../../samples/text/text-vowels.mini",
   "features": [
     "bindings",
     "control.if",

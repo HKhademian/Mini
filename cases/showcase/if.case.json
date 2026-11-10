@@ -1,7 +1,7 @@
 {
   "id": "showcase.if",
   "kind": "sample",
-  "source": "../../samples/showcase/if.mini",
+  "source": "../../samples/basics/if.mini",
   "features": [
     "bindings",
     "control.if",

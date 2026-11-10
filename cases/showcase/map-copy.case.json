@@ -1,7 +1,7 @@
 {
   "id": "showcase.map-copy",
   "kind": "sample",
-  "source": "../../samples/showcase/map-copy.mini",
+  "source": "../../samples/maps/map-copy.mini",
   "features": [
     "bindings",
     "text.output",

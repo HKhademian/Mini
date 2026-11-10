@@ -1,7 +1,7 @@
 {
   "id": "language.files-path",
   "kind": "feature",
-  "source": "../../samples/003-io.mini",
+  "source": "../../samples/io/003-io.mini",
   "features": [],
   "pending": "Compiler unavailable.",
   "cases": [

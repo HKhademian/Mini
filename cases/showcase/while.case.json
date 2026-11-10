@@ -1,7 +1,7 @@
 {
   "id": "showcase.while",
   "kind": "sample",
-  "source": "../../samples/showcase/while.mini",
+  "source": "../../samples/basics/while.mini",
   "features": [
     "bindings",
     "control.while",

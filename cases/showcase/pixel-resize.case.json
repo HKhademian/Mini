@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-resize",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-resize.mini",
+  "source": "../../samples/graphics/animation/pixel-resize.mini",
   "features": [
     "functions",
     "control.if",

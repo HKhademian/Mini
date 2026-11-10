@@ -1,7 +1,7 @@
 {
   "id": "showcase.pixel-dvd",
   "kind": "sample",
-  "source": "../../samples/showcase/pixel-dvd.mini",
+  "source": "../../samples/graphics/animation/pixel-dvd.mini",
   "features": [
     "functions",
     "control.if",
