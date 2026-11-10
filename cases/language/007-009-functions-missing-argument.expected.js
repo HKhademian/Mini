@@ -696,18 +696,43 @@ function io_read_line() {
   return Buffer.from(bytes).toString("utf8");
 }
 function io_write(...values) {
-  function normalize(value) {
-    if (Array.isArray(value)) {
-      return value.map(normalize);
-    }
-    if (value !== null && typeof value === "object") {
-      const result = Object.create(null);
-      for (const key of Object.keys(value).sort()) {
-        result[key] = normalize(value[key]);
+  function compareText(left, right) {
+    let a = 0, b = 0;
+    while (a < left.length && b < right.length) {
+      const x = left.codePointAt(a), y = right.codePointAt(b);
+      if (x !== y) {
+        return x < y ? -1 : 1;
       }
-      return result;
+      a += x > 65535 ? 2 : 1;
+      b += y > 65535 ? 2 : 1;
     }
-    return value;
+    return a < left.length ? 1 : b < right.length ? -1 : 0;
+  }
+  function encode(value, depth, seen) {
+    if (depth > 128) throw 0;
+    if (typeof value === "string") return JSON.stringify(value);
+    if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "null";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (value === null || value === undefined) return "null";
+    if (typeof value !== "object" || seen.has(value)) throw 0;
+    seen.add(value);
+    let output;
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i++) {
+        parts.push(i in value ? encode(value[i], depth + 1, seen) : "null");
+      }
+      output = "[" + parts.join(",") + "]";
+    } else {
+      const parts = [];
+      const keys = Object.keys(value).sort(compareText);
+      for (const key of keys) {
+        parts.push(JSON.stringify(key) + ":" + encode(value[key], depth + 1, seen));
+      }
+      output = "{" + parts.join(",") + "}";
+    }
+    seen.delete(value);
+    return output;
   }
   function display(value) {
     if (typeof value === "string") {
@@ -720,7 +745,7 @@ function io_write(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return JSON.stringify(normalize(value));
+      return encode(value, 0, new Set());
     }
     return "0";
   }
@@ -732,18 +757,43 @@ function io_write(...values) {
   return 0;
 }
 function io_write_error(...values) {
-  function normalize(value) {
-    if (Array.isArray(value)) {
-      return value.map(normalize);
-    }
-    if (value !== null && typeof value === "object") {
-      const result = Object.create(null);
-      for (const key of Object.keys(value).sort()) {
-        result[key] = normalize(value[key]);
+  function compareText(left, right) {
+    let a = 0, b = 0;
+    while (a < left.length && b < right.length) {
+      const x = left.codePointAt(a), y = right.codePointAt(b);
+      if (x !== y) {
+        return x < y ? -1 : 1;
       }
-      return result;
+      a += x > 65535 ? 2 : 1;
+      b += y > 65535 ? 2 : 1;
     }
-    return value;
+    return a < left.length ? 1 : b < right.length ? -1 : 0;
+  }
+  function encode(value, depth, seen) {
+    if (depth > 128) throw 0;
+    if (typeof value === "string") return JSON.stringify(value);
+    if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "null";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (value === null || value === undefined) return "null";
+    if (typeof value !== "object" || seen.has(value)) throw 0;
+    seen.add(value);
+    let output;
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i++) {
+        parts.push(i in value ? encode(value[i], depth + 1, seen) : "null");
+      }
+      output = "[" + parts.join(",") + "]";
+    } else {
+      const parts = [];
+      const keys = Object.keys(value).sort(compareText);
+      for (const key of keys) {
+        parts.push(JSON.stringify(key) + ":" + encode(value[key], depth + 1, seen));
+      }
+      output = "{" + parts.join(",") + "}";
+    }
+    seen.delete(value);
+    return output;
   }
   function display(value) {
     if (typeof value === "string") {
@@ -756,7 +806,7 @@ function io_write_error(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return JSON.stringify(normalize(value));
+      return encode(value, 0, new Set());
     }
     return "0";
   }

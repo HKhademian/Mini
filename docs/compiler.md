@@ -8,7 +8,7 @@ handwritten implementation was retired; only accepted [language](language.md) an
 [function](functions.md) contracts are normative.
 
 JavaScript is the default target. An initial C11 target supports top-level
-`io_write` calls and top-level bindings with ASCII text, safe integers, and
+`io_write` calls and top-level bindings with UTF-8 text, safe integers, and
 boolean values, comments,
 an entry shebang, and empty programs. Negative number literals are supported in the
 inclusive range -9007199254740991 through 9007199254740991. Leading zeros are
@@ -127,15 +127,17 @@ JSON, including nested lists and text escaping.
 The C target also supports tagged map values with `map_new`, `map_of`, `map_set`,
 `map_get`, `map_has`, `map_keys`, `map_delete`, `map_copy`, `map_merge`, and
 map-oriented `value_merge`. Maps keep a growable array of key/value pairs and
-use an open-addressed hash index after four entries. Lookup compares
-length-delimited UTF-8 bytes; JSON sorts keys by UTF-16 units to match the
-JavaScript target. Map updates replace existing values, and `io_write`
-serializes nested maps as sorted JSON objects. JSON output rejects nesting deeper
-than 128. Generated execution
-owns lists and maps through cleanup at program exit. `fn_args()` is supported
+use an open-addressed hash index after four entries. Lookup and key ordering use
+length-delimited UTF-8 bytes, which sort valid UTF-8 text by Unicode scalar
+value. JSON uses this same order on both targets. Map updates replace existing
+values, and `io_write` serializes nested maps as sorted JSON objects without
+reordering the source map. JSON output rejects nesting deeper than 128. Generated
+execution owns lists and maps through cleanup at program exit. `fn_args()` is supported
 inside functions and at top level through native `argc`/`argv` capture.
-The C target's `text_from_code` host implementation encodes valid Unicode scalar
-values as UTF-8; several other C text operations remain ASCII-only.
+The C target stores text as UTF-8 and implements scalar-value length, indexing,
+lookup, and slicing. `text_from_code` encodes valid Unicode scalar values as
+UTF-8. JavaScript keeps its native strings and implements the same scalar-value
+operations.
 
 ### File initialization
 

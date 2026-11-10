@@ -44,7 +44,7 @@ emit_c_host_runtime_add(
         "  if (left.kind != MINI_ID(kind_text)) {",
         "    return 0;",
         "  }",
-        "  return MINI_ID(text_unit_compare)(left.text, right.text) == 0;",
+        "  return MINI_ID(text_compare)(left.text, right.text) == 0;",
         "}",
         ""
     )

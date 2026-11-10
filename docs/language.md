@@ -330,7 +330,8 @@ while position < text_length(source) {
 }
 ```
 
-- `text_length(text)` returns the number of characters; empty text has length 0.
+- `text_length(text)` returns the number of Unicode scalar values; empty text has
+  length 0.
 - `text_get(text, index)` returns one character as text, using a zero-based index.
 - If the target is not text, or the index is negative or at/beyond its length,
   return empty text without an error or conversion.
@@ -347,7 +348,9 @@ while position < text_length(source) {
   empty text.
 - The caller supplies integer indices. All arguments are required and evaluate
   once, from left to right, even when the target is not text.
-- Start with ASCII text. Unicode indexing is outside the initial scope.
+- Text indexing, lookup, and slicing count Unicode scalar values. Text values use
+  UTF-8 in C and JavaScript strings in the JS target; both targets expose the
+  same scalar operations.
 
 These primitives let mini scan source and accumulate tokens using existing
 loops, conditions, and text concatenation. They add no syntax.
@@ -412,7 +415,7 @@ text := json_text(value);
 - Text is quoted and escaped; safe integers use canonical decimal text; booleans
   use `true` and `false`.
 - Lists become arrays; gaps become `null`. Maps become objects with keys sorted
-  lexicographically for deterministic output.
+  by Unicode scalar value for deterministic, target-independent output.
 - Unsupported values become `null`; cyclic collections return empty text.
 - This is serialization only; it does not add a JSON value kind or parsing.
 

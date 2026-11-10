@@ -20,7 +20,7 @@ emit_js_host_function_add(
         "function directory_list(path) {",
         "  const fs = process.getBuiltinModule(\"node:fs\");",
         "  try {",
-        "    return fs.readdirSync(path).sort();",
+        "    return fs.readdirSync(path).sort((a, b) => { const x = Array.from(a, c => c.codePointAt(0)), y = Array.from(b, c => c.codePointAt(0)); for (let i = 0; i < Math.min(x.length, y.length); i++) { if (x[i] !== y[i]) return x[i] - y[i]; } return x.length - y.length; });",
         "  } catch {",
         "    return [];",
         "  }",

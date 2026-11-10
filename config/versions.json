@@ -1,10 +1,10 @@
 {
   "group": "0.6.1",
   "mini": "0.3.0-alpha.57",
-  "language": "0.5.0-alpha.15",
+  "language": "0.5.0-alpha.16",
   "ast": "0.1.0-alpha.3",
-  "compiler": "0.5.0-alpha.86",
-  "bootstrap": "0.3.0-alpha.72",
+  "compiler": "0.5.0-alpha.87",
+  "bootstrap": "0.3.0-alpha.73",
   "std": null,
   "check": "0.1.0-alpha.13",
   "verify": "0.1.0-alpha.10",

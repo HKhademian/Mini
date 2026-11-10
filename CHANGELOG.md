@@ -15,6 +15,10 @@
 
 ## Unreleased
 
+- language 0.5.0-alpha.16 / compiler 0.5.0-alpha.87 / bootstrap
+  0.3.0-alpha.73: index valid C UTF-8 text by Unicode scalar value and sort
+  JSON keys by the same order on both targets.
+
 - compiler 0.5.0-alpha.86 / bootstrap 0.3.0-alpha.72: index native C maps
   with a growing hash table while preserving entry order and valid UTF-8 text keys.
 

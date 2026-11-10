@@ -387,7 +387,8 @@ fn text_from_bytes(bytes) {
                 if first >= 224 && first <= 239 && position + 2 < list_length(bytes) {
                     second := text_byte_at(bytes, position + 1);
                     third := text_byte_at(bytes, position + 2);
-                    if second >= 128 && second <= 191 && third >= 128 && third <= 191 {
+                    if second >= 128 && second <= 191 && third >= 128 && third <= 191
+                        && !(first == 224 && second < 160) && !(first == 237 && second >= 160) {
                         list_set(
                             parts,
                             list_length(parts),
@@ -404,7 +405,8 @@ fn text_from_bytes(bytes) {
                         third := text_byte_at(bytes, position + 2);
                         fourth := text_byte_at(bytes, position + 3);
                         if second >= 128 && second <= 191 && third >= 128 && third <= 191
-                            && fourth >= 128 && fourth <= 191 {
+                            && fourth >= 128 && fourth <= 191 && !(first == 240 && second < 144)
+                            && !(first == 244 && second > 143) {
                             list_set(
                                 parts,
                                 list_length(parts),

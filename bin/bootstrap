@@ -105,18 +105,43 @@ function io_read_line() {
   return Buffer.from(bytes).toString("utf8");
 }
 function io_write(...values) {
-  function normalize(value) {
-    if (Array.isArray(value)) {
-      return value.map(normalize);
-    }
-    if (value !== null && typeof value === "object") {
-      const result = Object.create(null);
-      for (const key of Object.keys(value).sort()) {
-        result[key] = normalize(value[key]);
+  function compareText(left, right) {
+    let a = 0, b = 0;
+    while (a < left.length && b < right.length) {
+      const x = left.codePointAt(a), y = right.codePointAt(b);
+      if (x !== y) {
+        return x < y ? -1 : 1;
       }
-      return result;
+      a += x > 65535 ? 2 : 1;
+      b += y > 65535 ? 2 : 1;
     }
-    return value;
+    return a < left.length ? 1 : b < right.length ? -1 : 0;
+  }
+  function encode(value, depth, seen) {
+    if (depth > 128) throw 0;
+    if (typeof value === "string") return JSON.stringify(value);
+    if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "null";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (value === null || value === undefined) return "null";
+    if (typeof value !== "object" || seen.has(value)) throw 0;
+    seen.add(value);
+    let output;
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i++) {
+        parts.push(i in value ? encode(value[i], depth + 1, seen) : "null");
+      }
+      output = "[" + parts.join(",") + "]";
+    } else {
+      const parts = [];
+      const keys = Object.keys(value).sort(compareText);
+      for (const key of keys) {
+        parts.push(JSON.stringify(key) + ":" + encode(value[key], depth + 1, seen));
+      }
+      output = "{" + parts.join(",") + "}";
+    }
+    seen.delete(value);
+    return output;
   }
   function display(value) {
     if (typeof value === "string") {
@@ -129,7 +154,7 @@ function io_write(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return JSON.stringify(normalize(value));
+      return encode(value, 0, new Set());
     }
     return "0";
   }
@@ -141,18 +166,43 @@ function io_write(...values) {
   return 0;
 }
 function io_write_error(...values) {
-  function normalize(value) {
-    if (Array.isArray(value)) {
-      return value.map(normalize);
-    }
-    if (value !== null && typeof value === "object") {
-      const result = Object.create(null);
-      for (const key of Object.keys(value).sort()) {
-        result[key] = normalize(value[key]);
+  function compareText(left, right) {
+    let a = 0, b = 0;
+    while (a < left.length && b < right.length) {
+      const x = left.codePointAt(a), y = right.codePointAt(b);
+      if (x !== y) {
+        return x < y ? -1 : 1;
       }
-      return result;
+      a += x > 65535 ? 2 : 1;
+      b += y > 65535 ? 2 : 1;
     }
-    return value;
+    return a < left.length ? 1 : b < right.length ? -1 : 0;
+  }
+  function encode(value, depth, seen) {
+    if (depth > 128) throw 0;
+    if (typeof value === "string") return JSON.stringify(value);
+    if (typeof value === "number") return Number.isSafeInteger(value) ? String(value) : "null";
+    if (typeof value === "boolean") return value ? "true" : "false";
+    if (value === null || value === undefined) return "null";
+    if (typeof value !== "object" || seen.has(value)) throw 0;
+    seen.add(value);
+    let output;
+    if (Array.isArray(value)) {
+      const parts = [];
+      for (let i = 0; i < value.length; i++) {
+        parts.push(i in value ? encode(value[i], depth + 1, seen) : "null");
+      }
+      output = "[" + parts.join(",") + "]";
+    } else {
+      const parts = [];
+      const keys = Object.keys(value).sort(compareText);
+      for (const key of keys) {
+        parts.push(JSON.stringify(key) + ":" + encode(value[key], depth + 1, seen));
+      }
+      output = "{" + parts.join(",") + "}";
+    }
+    seen.delete(value);
+    return output;
   }
   function display(value) {
     if (typeof value === "string") {
@@ -165,7 +215,7 @@ function io_write_error(...values) {
       return value ? "true" : "false";
     }
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
-      return JSON.stringify(normalize(value));
+      return encode(value, 0, new Set());
     }
     return "0";
   }
@@ -888,7 +938,7 @@ function directory_create(path) {
 function directory_list(path) {
   const fs = process.getBuiltinModule("node:fs");
   try {
-    return fs.readdirSync(path).sort();
+    return fs.readdirSync(path).sort((a, b) => { const x = Array.from(a, c => c.codePointAt(0)), y = Array.from(b, c => c.codePointAt(0)); for (let i = 0; i < Math.min(x.length, y.length); i++) { if (x[i] !== y[i]) return x[i] - y[i]; } return x.length - y.length; });
   } catch {
     return [];
   }
@@ -1187,6 +1237,39 @@ function json_number(state) {
     }
     return number_from_text(text_slice(map_get(state, "text"), start, map_get(state, "position")));
 }
+function json_key_before(left, right) {
+
+    let position = 0;
+    let left_size = text_length(left);
+    let right_size = text_length(right);
+    while (((position < left_size) && (position < right_size))) {
+        let left_code = text_to_code(left, position);
+        let right_code = text_to_code(right, position);
+        if ((left_code !== right_code)) {
+            return (left_code < right_code);
+        }
+        position = (position + 1);
+    }
+    return (left_size < right_size);
+}
+function json_sorted_keys(keys) {
+
+    let result = list_copy(keys);
+    let position = 0;
+    while ((position < (result).length)) {
+        let cursor = (position + 1);
+        while ((cursor < (result).length)) {
+            if (json_key_before(list_get(result, cursor), list_get(result, position))) {
+                let hold = list_get(result, position);
+                list_set(result, position, list_get(result, cursor));
+                list_set(result, cursor, hold);
+            }
+            cursor = (cursor + 1);
+        }
+        position = (position + 1);
+    }
+    return result;
+}
 function json_array(state) {
 
     json_take(state, "[");
@@ -1401,7 +1484,7 @@ function json_encode(value, seen, state) {
             list_set(parts, (parts).length, "]");
         } else {
             list_set(parts, (parts).length, "{");
-            let keys = list_sorted(map_keys(value));
+            let keys = json_sorted_keys(map_keys(value));
             let index = 0;
             while ((index < (keys).length)) {
                 if ((index > 0)) {
@@ -1424,6 +1507,15 @@ function json_encode(value, seen, state) {
 }
 function json_text(value) {
   const seen = new Set();
+  function compareText(left, right) {
+    let a = 0, b = 0;
+    while (a < left.length && b < right.length) {
+      const x = left.codePointAt(a), y = right.codePointAt(b);
+      if (x !== y) return x < y ? -1 : 1;
+      a += x > 65535 ? 2 : 1; b += y > 65535 ? 2 : 1;
+    }
+    return a < left.length ? 1 : b < right.length ? -1 : 0;
+  }
   function encode(item) {
     if (typeof item === "string") {
       return JSON.stringify(item);
@@ -1454,7 +1546,7 @@ function json_text(value) {
       output = "[" + parts.join(",") + "]";
     } else {
       const parts = [];
-      for (const key of Object.keys(item).sort()) {
+      for (const key of Object.keys(item).sort(compareText)) {
         parts.push(JSON.stringify(key) + ":" + encode(item[key]));
       }
       output = "{" + parts.join(",") + "}";
@@ -3221,7 +3313,7 @@ function $mini_file_23() {
 }
 function $mini_file_24() {
     emit_js_host_function_add("json_value", list_of("function json_value(text) {", "  const result = Object.create(null);", "  result.ok = false;", "  result.value = 0;", "  if (typeof text !== \"string\") {", "    return result;", "  }", "  let parsed;", "  try {", "    parsed = JSON.parse(text);", "  } catch {", "    return result;", "  }", "  const clean = (item) => {", "    if (item === null) {", "      return 0;", "    }", "    if (typeof item === \"number\") {", "      if (!Number.isSafeInteger(item)) {", "        throw 0;", "      }", "      return item;", "    }", "    if (Array.isArray(item)) {", "      return item.map(clean);", "    }", "    if (typeof item === \"object\") {", "      const out = Object.create(null);", "      for (const key of Object.keys(item)) {", "        out[key] = clean(item[key]);", "      }", "      return out;", "    }", "    return item;", "  };", "  try {", "    result.value = clean(parsed);", "  } catch {", "    return result;", "  }", "  result.ok = true;", "  return result;", "}", ""), false, "");
-    emit_js_host_function_add("json_text", list_of("function json_text(value) {", "  const seen = new Set();", "  function encode(item) {", "    if (typeof item === \"string\") {", "      return JSON.stringify(item);", "    }", "    if (typeof item === \"number\") {", "      const text = number_to_text(item);", "      return text === \"\" ? \"null\" : text;", "    }", "    if (typeof item === \"boolean\") {", "      return item ? \"true\" : \"false\";", "    }", "    if (item === null || item === undefined) {", "      return \"null\";", "    }", "    if (typeof item !== \"object\") {", "      return \"null\";", "    }", "    if (seen.has(item)) {", "      throw 0;", "    }", "    seen.add(item);", "    let output;", "    if (Array.isArray(item)) {", "      const parts = [];", "      for (let index = 0; index < item.length; index++) {", "        parts.push(index in item ? encode(item[index]) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      for (const key of Object.keys(item).sort()) {", "        parts.push(JSON.stringify(key) + \":\" + encode(item[key]));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(item);", "    return output;", "  }", "  try {", "    return encode(value);", "  } catch {", "    return \"\";", "  }", "}", ""), false, "");
+    emit_js_host_function_add("json_text", list_of("function json_text(value) {", "  const seen = new Set();", "  function compareText(left, right) {", "    let a = 0, b = 0;", "    while (a < left.length && b < right.length) {", "      const x = left.codePointAt(a), y = right.codePointAt(b);", "      if (x !== y) return x < y ? -1 : 1;", "      a += x > 65535 ? 2 : 1; b += y > 65535 ? 2 : 1;", "    }", "    return a < left.length ? 1 : b < right.length ? -1 : 0;", "  }", "  function encode(item) {", "    if (typeof item === \"string\") {", "      return JSON.stringify(item);", "    }", "    if (typeof item === \"number\") {", "      const text = number_to_text(item);", "      return text === \"\" ? \"null\" : text;", "    }", "    if (typeof item === \"boolean\") {", "      return item ? \"true\" : \"false\";", "    }", "    if (item === null || item === undefined) {", "      return \"null\";", "    }", "    if (typeof item !== \"object\") {", "      return \"null\";", "    }", "    if (seen.has(item)) {", "      throw 0;", "    }", "    seen.add(item);", "    let output;", "    if (Array.isArray(item)) {", "      const parts = [];", "      for (let index = 0; index < item.length; index++) {", "        parts.push(index in item ? encode(item[index]) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      for (const key of Object.keys(item).sort(compareText)) {", "        parts.push(JSON.stringify(key) + \":\" + encode(item[key]));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(item);", "    return output;", "  }", "  try {", "    return encode(value);", "  } catch {", "    return \"\";", "  }", "}", ""), false, "");
 }
 function $mini_file_25() {
     emit_js_host_function_add("value_kind", list_of("function value_kind(value) {", "  if (typeof value === \"string\") {", "    return \"text\";", "  }", "  if (typeof value === \"number\") {", "    return \"number\";", "  }", "  if (typeof value === \"boolean\") {", "    return \"boolean\";", "  }", "  if (Array.isArray(value)) {", "    return \"list\";", "  }", "  if (value !== null && typeof value === \"object\") {", "    return \"map\";", "  }", "  return \"other\";", "}", ""), true, "");
@@ -3233,8 +3325,8 @@ function $mini_file_27() {
     emit_js_host_function_add("io_read_all", list_of("function io_read_all() {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\");", "}", ""), true, "");
     emit_js_host_function_add("io_read_bytes", list_of("function io_read_bytes(count) {", "  if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) {", "    return [];", "  }", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(count);", "  const read = fs.readSync(0, buffer, 0, count, null);", "  return Array.from(buffer.subarray(0, read));", "}", ""), true, "");
     emit_js_host_function_add("io_read_line", list_of("function io_read_line() {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(1);", "  const bytes = [];", "  while (true) {", "    const count = fs.readSync(0, buffer, 0, 1, null);", "    if (count === 0 || buffer[0] === 10) {", "      break;", "    }", "    bytes.push(buffer[0]);", "  }", "  if (bytes.length > 0 && bytes[bytes.length - 1] === 13) {", "    bytes.pop();", "  }", "  return Buffer.from(bytes).toString(\"utf8\");", "}", ""), true, "");
-    emit_js_host_function_add("io_write", list_of("function io_write(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
-    emit_js_host_function_add("io_write_error", list_of("function io_write_error(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("io_write", list_of("function io_write(...values) {", "  function compareText(left, right) {", "    let a = 0, b = 0;", "    while (a < left.length && b < right.length) {", "      const x = left.codePointAt(a), y = right.codePointAt(b);", "      if (x !== y) {", "        return x < y ? -1 : 1;", "      }", "      a += x > 65535 ? 2 : 1;", "      b += y > 65535 ? 2 : 1;", "    }", "    return a < left.length ? 1 : b < right.length ? -1 : 0;", "  }", "  function encode(value, depth, seen) {", "    if (depth > 128) throw 0;", "    if (typeof value === \"string\") return JSON.stringify(value);", "    if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"null\";", "    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";", "    if (value === null || value === undefined) return \"null\";", "    if (typeof value !== \"object\" || seen.has(value)) throw 0;", "    seen.add(value);", "    let output;", "    if (Array.isArray(value)) {", "      const parts = [];", "      for (let i = 0; i < value.length; i++) {", "        parts.push(i in value ? encode(value[i], depth + 1, seen) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      const keys = Object.keys(value).sort(compareText);", "      for (const key of keys) {", "        parts.push(JSON.stringify(key) + \":\" + encode(value[key], depth + 1, seen));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(value);", "    return output;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return encode(value, 0, new Set());", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
+    emit_js_host_function_add("io_write_error", list_of("function io_write_error(...values) {", "  function compareText(left, right) {", "    let a = 0, b = 0;", "    while (a < left.length && b < right.length) {", "      const x = left.codePointAt(a), y = right.codePointAt(b);", "      if (x !== y) {", "        return x < y ? -1 : 1;", "      }", "      a += x > 65535 ? 2 : 1;", "      b += y > 65535 ? 2 : 1;", "    }", "    return a < left.length ? 1 : b < right.length ? -1 : 0;", "  }", "  function encode(value, depth, seen) {", "    if (depth > 128) throw 0;", "    if (typeof value === \"string\") return JSON.stringify(value);", "    if (typeof value === \"number\") return Number.isSafeInteger(value) ? String(value) : \"null\";", "    if (typeof value === \"boolean\") return value ? \"true\" : \"false\";", "    if (value === null || value === undefined) return \"null\";", "    if (typeof value !== \"object\" || seen.has(value)) throw 0;", "    seen.add(value);", "    let output;", "    if (Array.isArray(value)) {", "      const parts = [];", "      for (let i = 0; i < value.length; i++) {", "        parts.push(i in value ? encode(value[i], depth + 1, seen) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      const keys = Object.keys(value).sort(compareText);", "      for (const key of keys) {", "        parts.push(JSON.stringify(key) + \":\" + encode(value[key], depth + 1, seen));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(value);", "    return output;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return encode(value, 0, new Set());", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
 }
 function $mini_file_28() {
     emit_js_host_function_add("file_read", list_of("function file_read(path) {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\");", "}", ""), true, "");
@@ -3244,7 +3336,7 @@ function $mini_file_28() {
 }
 function $mini_file_29() {
     emit_js_host_function_add("directory_create", list_of("function directory_create(path) {", "  process.getBuiltinModule(\"node:fs\").mkdirSync(path, {recursive: true});", "  return 0;", "}", ""), true, "");
-    emit_js_host_function_add("directory_list", list_of("function directory_list(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.readdirSync(path).sort();", "  } catch {", "    return [];", "  }", "}", ""), true, "");
+    emit_js_host_function_add("directory_list", list_of("function directory_list(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.readdirSync(path).sort((a, b) => { const x = Array.from(a, c => c.codePointAt(0)), y = Array.from(b, c => c.codePointAt(0)); for (let i = 0; i < Math.min(x.length, y.length); i++) { if (x[i] !== y[i]) return x[i] - y[i]; } return x.length - y.length; });", "  } catch {", "    return [];", "  }", "}", ""), true, "");
     emit_js_host_function_add("path_copy", list_of("function path_copy(from, to) {", "  process.getBuiltinModule(\"node:fs\").cpSync(", "      from, to, {recursive: true, force: true, dereference: true});", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("path_is_directory", list_of("function path_is_directory(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.statSync(path).isDirectory();", "  } catch {", "    return false;", "  }", "}", ""), true, "");
     emit_js_host_function_add("path_is_exists", list_of("function path_is_exists(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.existsSync(path);", "  } catch {", "    return false;", "  }", "}", ""), true, "");

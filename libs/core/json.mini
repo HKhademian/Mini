@@ -169,6 +169,41 @@ fn json_number(state) {
     return number_from_text(text_slice(map_get(state, "text"), start, map_get(state, "position")));
 }
 
+/// Compare JSON object keys by Unicode scalar values.
+fn json_key_before(left, right) {
+    position := 0;
+    left_size := text_length(left);
+    right_size := text_length(right);
+    while position < left_size && position < right_size {
+        left_code := text_to_code(left, position);
+        right_code := text_to_code(right, position);
+        if left_code != right_code {
+            return left_code < right_code;
+        }
+        position = position + 1;
+    }
+    return left_size < right_size;
+}
+
+/// Return JSON keys sorted by Unicode scalar values.
+fn json_sorted_keys(keys) {
+    result := list_copy(keys);
+    position := 0;
+    while position < list_length(result) {
+        cursor := position + 1;
+        while cursor < list_length(result) {
+            if json_key_before(list_get(result, cursor), list_get(result, position)) {
+                hold := list_get(result, position);
+                list_set(result, position, list_get(result, cursor));
+                list_set(result, cursor, hold);
+            }
+            cursor = cursor + 1;
+        }
+        position = position + 1;
+    }
+    return result;
+}
+
 /// Parse one JSON array.
 fn json_array(state) {
     json_take(state, "[");
@@ -381,7 +416,7 @@ fn json_encode(value, seen, state) {
             list_set(parts, list_length(parts), "]");
         } else {
             list_set(parts, list_length(parts), "{");
-            keys := list_sorted(map_keys(value));
+            keys := json_sorted_keys(map_keys(value));
             index := 0;
             while index < list_length(keys) {
                 if index > 0 {

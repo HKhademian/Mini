@@ -14,3 +14,4 @@ io_write_line(text_to_code(text_get(emoji, 0), 0));
 io_write_line(text_slice(emoji, 0, 1) == emoji);
 io_write_line(text_to_bytes(emoji));
 io_write_line(text_from_bytes(text_to_bytes(emoji)));
+io_write_line(text_to_bytes(text_from_bytes(list_of(237, 160, 128))));

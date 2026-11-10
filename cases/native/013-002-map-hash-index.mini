@@ -1,4 +1,6 @@
 import "core/io";
+import "core/json";
+import "core/display";
 import "core/list";
 import "core/map";
 import "core/number";
@@ -55,7 +57,22 @@ if map_get(items, nul_copy) != 7 || map_get(items, "before") != 0
     io_write("text key failed\n");
 }
 json := map_of("z", 1, "a", 2, "m", 3, "b", 4, "x", 5);
+map_set(json, "10", 10);
+map_set(json, "2", 2);
+map_set(json, text_from_code(57344), 6);
+map_set(json, text_from_code(65536), 7);
+io_write(json_text(json), "\n");
 io_write(json, "\n");
+stable := map_of("z", 1, "a", 2);
+stable_keys := map_keys(stable);
+io_write(json_text(stable), "\n");
+io_write(stable, "\n");
+value_to_text(stable);
+after_keys := map_keys(stable);
+if list_get(stable_keys, 0) != list_get(after_keys, 0)
+    || list_get(stable_keys, 1) != list_get(after_keys, 1) {
+    io_write("serialization changed map order\n");
+}
 if map_get(json, "z") != 1 || map_get(json, "a") != 2 {
     io_write("sort index failed\n");
 }
