@@ -8,10 +8,10 @@ todos:
     status: completed
   - id: parity
     content: Close confirmed accepted-language and host-service gaps
-    status: in_progress
+    status: completed
   - id: bootstrap-gate
     content: Automate the four-way compiler and native bootstrap verification
-    status: pending
+    status: in_progress
   - id: portability
     content: Verify supported platforms and native storage lifetimes
     status: pending
@@ -56,19 +56,13 @@ Complete the Mini-to-C emitter for the accepted language and supported host serv
 - The documented contract requires list gaps to read as zero but serialize as `null`, so C zero-filling loses required information. The inherited-process cases reproduce output ordering differences when the parent stream is captured.
 - Seventy `kind: compile` manifests were excluded because they assert JS generated artifacts or compiler acceptance rather than executable behavior. Their shared front-end diagnostics and C acceptance need a dedicated target-aware check in the parity phase. C JSON output has a depth limit of 128, and native host process/path code uses POSIX facilities.
 
-### Step 2 — parity
+### Parity progress (2026-11-10)
 
-**Depends on:** baseline  
-**Files:** `libs/compiler/emit-c.mini`, `libs/compiler/emit-c/`, `cases/native/`, relevant shared cases and documentation as needed.
-
-**Actions:**
-- Fix each confirmed gap in small independent increments, preserving accepted semantics, evaluation order, diagnostics and target rejection before effects. Add focused cases for each distinct behavior and interaction.
-- Cover host functions needed by accepted programs and compiler dependencies, using existing Mini fallbacks where applicable. Avoid speculative host APIs and language changes.
-- Keep invocation-owned values valid and clean up in supported execution paths; capture any deliberate limits in documentation.
-- Follow repository version, self-hosting, atomic commit and annotated tag rules for each completed compiler increment.
-
-**Acceptance:** all in-scope accepted cases have matching observable behavior on JS and C, or an explicit documented platform boundary; no unresolved in-scope mismatch is silently waived.  
-**Verify:** focused native and differential cases, relevant compiler and bootstrap gates for each increment.
+- The 282 non-pending language manifests pass against C, including 70 compile cases with JavaScript artifact comparisons omitted; the temporary audit is not yet a durable gate. JS candidate suite passes 494/494 scenarios, with four proposals pending; native suite passes 90/90.
+- Fixed inherited output ordering, environment and clock hosts, sparse JSON gaps, cyclic JSON and output, shared parser warnings, guarded initialization, and unsafe numbers in C collection output. Each increment has its own commit and compiler/bootstrap tags.
+- `mini check --docs` and nested tooling checks are blocked by a pre-existing missing case for `samples/showcase/asterix-board.mini`; preserve unrelated work and recheck during final verification.
+- Guarded early binding reads are checked at runtime; unconditional early reads still reject before output. Documented C runtime limits and platform boundaries remain subject to portability verification.
+- The test driver currently dispatches workers through Node and `dist/test.js` even when the driver itself is compiled to C. The bootstrap gate must ensure C workers actually execute the scenarios, rather than treating the top-level native driver as sufficient.
 
 ### Step 3 — bootstrap-gate
 
