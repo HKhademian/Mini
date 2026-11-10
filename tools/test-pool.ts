@@ -53,11 +53,14 @@ function runTask(index: number): void {
   const script = resolve(request.script);
   const command = script.endsWith('.js') ? process.execPath : script;
   const args = script.endsWith('.js') ? [script, '--_worker', JSON.stringify(task)] : ['--_worker', JSON.stringify(task)];
+  const env = { ...process.env };
+  delete env.MINI_TEST_WORKER;
+  if (task.serial === true) {
+    Object.assign(env, { MINI_TEST_JOBS: '1', MINI_TEST_MUTE: '1', MINI_TEST_NESTED: '1' });
+  }
   const child = spawn(command, args, {
     cwd: process.cwd(),
-    env: task.serial === true
-      ? { ...process.env, MINI_TEST_JOBS: '1', MINI_TEST_MUTE: '1', MINI_TEST_NESTED: '1' }
-      : process.env,
+    env,
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   let stdout = '';

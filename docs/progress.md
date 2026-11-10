@@ -19,7 +19,7 @@ cli       cli-v0.6.1-v0.1.0-alpha.20
 check     check-v0.6.1-v0.1.0-alpha.13
 format    format-v0.6.1-v0.1.0-alpha.9
 lsp       lsp-v0.6.1-v0.1.0-alpha.11
-test      test-v0.6.1-v0.1.0-alpha.9
+test      test-v0.6.1-v0.1.0-alpha.10
 verify    verify-v0.6.1-v0.1.0-alpha.10
 bench     bench-v0.6.1-v0.1.0-alpha.7
 release   release-v0.6.1-v0.1.0-alpha.8

@@ -240,7 +240,11 @@ fn test_run_tasks(tasks, root, jobs, progress, report_failures, report_workers) 
     results_path := path_join(work, "results.json");
     request := map_new();
     map_set(request, "jobs", jobs);
-    map_set(request, "script", process_script_path());
+    worker := process_env("MINI_TEST_WORKER");
+    if worker == "" {
+        worker = path_join(root, "dist/test.js");
+    }
+    map_set(request, "script", worker);
     map_set(request, "tasks", tasks);
     map_set(request, "progress", progress);
     map_set(request, "reportFailures", report_failures);
