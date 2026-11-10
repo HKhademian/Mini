@@ -395,6 +395,7 @@
   max-width: 100%;
   max-height: calc(100svh - 270px);
   height: auto;
+  object-fit: contain;
   image-rendering: pixelated;
   touch-action: none;
   background: #0a0d12;
