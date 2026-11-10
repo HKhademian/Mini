@@ -11,10 +11,10 @@ todos:
     status: completed
   - id: bootstrap-gate
     content: Automate the four-way compiler and native bootstrap verification
-    status: in_progress
+    status: completed
   - id: portability
     content: Verify supported platforms and native storage lifetimes
-    status: pending
+    status: in_progress
   - id: completion
     content: Run final gates and reconcile C target documentation
     status: pending
@@ -60,23 +60,14 @@ Complete the Mini-to-C emitter for the accepted language and supported host serv
 
 - The 282 non-pending language manifests pass against C, including 70 compile cases with JavaScript artifact comparisons omitted; the temporary audit is not yet a durable gate. JS candidate suite passes 494/494 scenarios, with four proposals pending; native suite passes 90/90.
 - Fixed inherited output ordering, environment and clock hosts, sparse JSON gaps, cyclic JSON and output, shared parser warnings, guarded initialization, and unsafe numbers in C collection output. Each increment has its own commit and compiler/bootstrap tags.
-- `mini check --docs` and nested tooling checks are blocked by a pre-existing missing case for `samples/showcase/asterix-board.mini`; preserve unrelated work and recheck during final verification.
+- Added the 22 missing showcase cases and corrected version fixtures; `mini check` now passes.
 - Guarded early binding reads are checked at runtime; unconditional early reads still reject before output. Documented C runtime limits and platform boundaries remain subject to portability verification.
 - The test driver currently dispatches workers through Node and `dist/test.js` even when the driver itself is compiled to C. The bootstrap gate must ensure C workers actually execute the scenarios, rather than treating the top-level native driver as sufficient.
 
-### Step 3 — bootstrap-gate
+### Bootstrap gate (2026-11-10)
 
-**Depends on:** baseline; parity fixes as required by the gate  
-**Files:** `libs/tools/`, `tools/`, `bin/`, `test/`, relevant documentation; choose exact locations consistent with existing build and test orchestration.
-
-**Actions:**
-- Add a repeatable repository command implementing the four compiler directions in the existing plan: JS compiler to JS and C, then C compiler to JS and C. Strictly build and run the C compiler, and run all resulting compiler outputs.
-- Compare JS output byte-for-byte and generated C after normalizing only the output-specific companion-header name; use fixed output paths where possible. Report artifact identity and retain useful failure diagnostics.
-- Run the complete test-suite driver compiled through JS and C and compare scenario results, statuses, and output checks. Compile and run generated `bootstrap.c` to rebuild and verify compiler and tools.
-- Keep the JS bootstrap check active; make the new command suitable for the repository's CI without silently weakening existing gates.
-
-**Acceptance:** one documented command fails on any matrix, suite, or native bootstrap discrepancy and passes all stages on a supported host.  
-**Verify:** run the new command and existing JS bootstrap verifier; check failure reporting with a focused deliberate mismatch.
+- `node tools/c-bootstrap.ts` passed the isolated four-way compiler matrix, all JS and native test workers, and the compiled native bootstrap; generated C SHA-256 was `9e7e2b8e5d56d12f7ccb030e96acf6a9e7128deb88c97fbfe6a31951210927cd` for that snapshot. The command is in macOS and Ubuntu CI; those remote jobs have not yet run for this change.
+- The mismatch self-check passed with `node tools/c-bootstrap.ts --test-comparison`. Native worker selection is explicit and cleared for nested tools.
 
 ### Step 4 — portability
 
