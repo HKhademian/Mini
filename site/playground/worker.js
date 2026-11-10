@@ -214,23 +214,23 @@ self.onmessage = async (event) => {
     }
     if (data && data.action === "keydown" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyDown) globalThis.__miniPlay.keyDown(data.key);
-      self.postMessage({ action: "keydown" });
+      self.postMessage({ action: "keydown", pixels: globalThis.__miniPlay.pixels() });
       return;
     }
     if (data && data.action === "keyup" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyUp) globalThis.__miniPlay.keyUp(data.key);
-      self.postMessage({ action: "keyup" });
+      self.postMessage({ action: "keyup", pixels: globalThis.__miniPlay.pixels() });
       return;
     }
     if (data && data.action === "pointermove" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.pointerMove) globalThis.__miniPlay.pointerMove(data.x, data.y);
-      self.postMessage({ action: "pointermove" });
+      self.postMessage({ action: "pointermove", pixels: globalThis.__miniPlay.pixels() });
       return;
     }
     if (data && (data.action === "pointerdown" || data.action === "pointerup") && globalThis.__miniPlay) {
       const handler = data.action === "pointerdown" ? globalThis.__miniPlay.pointerDown : globalThis.__miniPlay.pointerUp;
       if (handler) handler(data.x, data.y, data.button);
-      self.postMessage({ action: data.action });
+      self.postMessage({ action: data.action, pixels: globalThis.__miniPlay.pixels() });
       return;
     }
     if (data && data.action === "stop") {
