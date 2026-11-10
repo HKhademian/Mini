@@ -1,0 +1,85 @@
+/// Play one of four notes by moving over and clicking a colored pad.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/audio";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_width := 12;
+screen_height := 8;
+pad_count := 4;
+pad_width := number_div(screen_width, pad_count);
+black := pixel_rgb(0, 0, 0);
+white := pixel_rgb(255, 255, 255);
+pad_colors := list_of(
+    pixel_rgb(80, 130, 255),
+    pixel_rgb(70, 210, 180),
+    pixel_rgb(255, 190, 70),
+    pixel_rgb(245, 100, 130)
+);
+pad_notes := list_of(220, 330, 440, 550);
+active_pad := 0;
+
+/// Draw four colored pads and mark the pad under the pointer.
+fn pixel_soundboard_draw() {
+    board := pixel_board_new(screen_width, screen_height, black);
+    column := 0;
+    while column < screen_width {
+        pad := number_div(column, pad_width);
+        row := 0;
+        while row < screen_height {
+            pixel_board_set(board, screen_width, screen_height, column, row, list_get(pad_colors, pad));
+            row = row + 1;
+        }
+        column = column + 1;
+    }
+    marker_column := number_mul(active_pad, pad_width) + number_div(pad_width, 2);
+    pixel_board_set(board, screen_width, screen_height, marker_column, screen_height - 2, white);
+    canvas_draw(screen_width, screen_height, board);
+}
+
+/// Highlight the pad under the pointer without playing it.
+fn canvas_on_pointer_move(column, row) {
+    active_pad = number_div(column, pad_width);
+    pixel_soundboard_draw();
+}
+
+/// Play the selected pad on pointer down.
+fn canvas_on_pointer_down(column, row, button) {
+    active_pad = number_div(column, pad_width);
+    pixel_soundboard_draw();
+    audio_tone(list_get(pad_notes, active_pad), 220, 30);
+}
+
+/// Print pad numbers with the selected pad marked for command-line runs.
+fn pixel_soundboard_print() {
+    row := 0;
+    while row < screen_height {
+        column := 0;
+        line := "";
+        while column < screen_width {
+            pad := number_div(column, pad_width);
+            if row == screen_height - 2 && pad == active_pad {
+                line = line + "*";
+            } else if pad == 0 {
+                line = line + "1";
+            } else if pad == 1 {
+                line = line + "2";
+            } else if pad == 2 {
+                line = line + "3";
+            } else {
+                line = line + "4";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+pixel_soundboard_draw();
+canvas_play("Pointer Soundboard");
+pixel_soundboard_print();

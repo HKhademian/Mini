@@ -1,0 +1,28 @@
+{
+  "id": "showcase.pixel-soundboard",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-soundboard.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "control.while",
+    "core.list",
+    "core.number",
+    "util.audio",
+    "util.canvas",
+    "util.board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": {
+        "text": "111222333444\n111222333444\n111222333444\n111222333444\n111222333444\n111222333444\n***222333444\n111222333444\n"
+      },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

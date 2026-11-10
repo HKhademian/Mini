@@ -751,6 +751,15 @@
     "file": "samples/showcase/pixel-chord-pad.mini"
   },
   {
+    "id": "pixel-soundboard",
+    "group": "Audio",
+    "label": "Pointer soundboard",
+    "note": "Move over and click one of four colored pads to play its note.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-soundboard.mini"
+  },
+  {
     "id": "pixel-dvd",
     "group": "Animation",
     "label": "DVD logo",
