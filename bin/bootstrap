@@ -703,22 +703,6 @@ function text_ends_with(source, suffix) {
     }
     return (text_slice(source, (length - size), length) === suffix);
 }
-function text_is_letter(character) {
-
-    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
-}
-function text_is_digit(character) {
-
-    return (text_find("0123456789", character) >= 0);
-}
-function text_is_identifier_part(character) {
-
-    return (text_is_letter(character) || text_is_digit(character));
-}
-function text_is_two_character_symbol(value) {
-
-    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
-}
 function text_starts_with(source, prefix) {
 
     let size = text_length(prefix);
@@ -1645,6 +1629,36 @@ function project_compiler_entry(root) {
         return "";
     }
     return map_get(result_get_value(parsed), "entry");
+}
+function text_indent_output(output) {
+
+    let lines = text_split_lines(output);
+    let result = list_new();
+    let position = 0;
+    while ((position < (lines).length)) {
+        let line = list_get(lines, position);
+        if ((text_length(line) > 0)) {
+            list_set(result, (result).length, ("    " + line));
+        }
+        position = (position + 1);
+    }
+    return list_join("\n", result);
+}
+function text_is_letter(character) {
+
+    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
+}
+function text_is_digit(character) {
+
+    return (text_find("0123456789", character) >= 0);
+}
+function text_is_identifier_part(character) {
+
+    return (text_is_letter(character) || text_is_digit(character));
+}
+function text_is_two_character_symbol(value) {
+
+    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
 }
 function token_new(kind, text, source, start, end, line, column, context) {
 
@@ -2656,20 +2670,6 @@ function list_push_front_list(destination) {
     }
     return 0;
 }
-function text_indent_output(output) {
-
-    let lines = text_split_lines(output);
-    let result = list_new();
-    let position = 0;
-    while ((position < (lines).length)) {
-        let line = list_get(lines, position);
-        if ((text_length(line) > 0)) {
-            list_set(result, (result).length, ("    " + line));
-        }
-        position = (position + 1);
-    }
-    return list_join("\n", result);
-}
 function emit_js_host_function_add(name, definition, keep_reference, lowering) {
 
     let entry = map_new();
@@ -3245,6 +3245,9 @@ function $mini_file_13() {
 
 }
 function $mini_file_14() {
+
+}
+function $mini_file_15() {
     AST_SCHEMA_VERSION = "0.1.0-alpha.3";
     AST_PROGRAM = "Program";
     AST_BLOCK = "Block";
@@ -3262,9 +3265,6 @@ function $mini_file_14() {
     AST_UNARY = "Unary";
     AST_BINARY = "Binary";
     AST_GROUP = "Group";
-}
-function $mini_file_15() {
-
 }
 function $mini_file_16() {
 

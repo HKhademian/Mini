@@ -466,22 +466,6 @@ function text_ends_with(source, suffix) {
     }
     return (text_slice(source, (length - size), length) === suffix);
 }
-function text_is_letter(character) {
-
-    return (text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0);
-}
-function text_is_digit(character) {
-
-    return (text_find("0123456789", character) >= 0);
-}
-function text_is_identifier_part(character) {
-
-    return (text_is_letter(character) || text_is_digit(character));
-}
-function text_is_two_character_symbol(value) {
-
-    return (((((((value === "==") || (value === "!=")) || (value === "<=")) || (value === ">=")) || (value === "&&")) || (value === "||")) || (value === ":="));
-}
 function text_starts_with(source, prefix) {
 
     let size = text_length(prefix);

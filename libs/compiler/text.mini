@@ -1,4 +1,4 @@
-/// Text formatting helpers for compiler source generation.
+/// Text helpers for compiler lexing and source generation.
 
 import "core/list";
 import "core/text";
@@ -16,4 +16,25 @@ fn text_indent_output(output) {
         position = position + 1;
     }
     return list_join("\n", result);
+}
+
+/// Return whether character is an ASCII identifier start.
+fn text_is_letter(character) {
+    return text_find("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_", character) >= 0;
+}
+
+/// Return whether character is a decimal digit.
+fn text_is_digit(character) {
+    return text_find("0123456789", character) >= 0;
+}
+
+/// Return whether character continues an identifier.
+fn text_is_identifier_part(character) {
+    return text_is_letter(character) || text_is_digit(character);
+}
+
+/// Return whether value is one of the accepted two-character symbols.
+fn text_is_two_character_symbol(value) {
+    return value == "==" || value == "!=" || value == "<=" || value == ">=" || value == "&&" || value == "||"
+        || value == ":=";
 }
