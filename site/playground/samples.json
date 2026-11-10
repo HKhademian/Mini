@@ -537,11 +537,11 @@
   {
     "id": "tetris-board",
     "group": "Games",
-    "label": "Tetris — planned",
-    "note": "Move and rotate falling pieces to clear rows.",
+    "label": "Tetris",
+    "note": "Move with arrows or A/D, rotate with Up/W, soft-drop with Down/S, hard-drop with Space, and clear rows. Pieces fall twice per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/tetris-board.mini"
   },
   {
     "id": "lunar-lander-board",

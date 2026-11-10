@@ -1,0 +1,245 @@
+/// Rotate and drop small pieces, clearing completed rows on a compact board.
+
+import "core/io";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+playback_fps := 60;
+gravity_fps := 2;
+frames_per_drop := number_div(playback_fps, gravity_fps);
+grid := list_new();
+piece_colors := list_of(
+    pixel_rgb(80, 220, 255),
+    pixel_rgb(255, 210, 76),
+    pixel_rgb(192, 120, 255)
+);
+piece_kind := 0;
+piece_rotation := 0;
+piece_x := 3;
+piece_y := 1;
+drop_ticks := 0;
+score := 0;
+game_over := false;
+background := pixel_rgb(7, 13, 24);
+wall_color := pixel_rgb(48, 62, 82);
+score_color := pixel_rgb(120, 224, 170);
+
+/// Return whether one local cell belongs to the current piece.
+fn tetris_piece_cell(kind, column, row, rotation) {
+    if kind == 0 {
+        if rotation == 0 {
+            return row == 1 && column <= 3;
+        }
+        return column == 1 && row <= 3;
+    }
+    if kind == 1 {
+        return column >= 1 && column <= 2 && row >= 1 && row <= 2;
+    }
+    if rotation == 0 {
+        return (row == 1 && column <= 2) || (row == 0 && column == 1);
+    }
+    return (column == 1 && row <= 2) || (column == 0 && row == 1);
+}
+
+/// Check walls and locked cells before moving or rotating a piece.
+fn tetris_can_place(next_x, next_y, next_rotation) {
+    row := 0;
+    while row < 4 {
+        column := 0;
+        while column < 4 {
+            if tetris_piece_cell(piece_kind, column, row, next_rotation) {
+                board_x := next_x + column;
+                board_y := next_y + row;
+                if board_x <= 0 || board_x >= screen_edge || board_y <= 0 || board_y >= screen_edge {
+                    return false;
+                }
+                if list_get(grid, number_mul(board_y, screen_size) + board_x) == 1 {
+                    return false;
+                }
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    return true;
+}
+
+/// Clear complete rows and shift the rows above them down.
+fn tetris_clear_rows() {
+    row := screen_edge - 1;
+    while row > 0 {
+        full := true;
+        column := 1;
+        while column < screen_edge {
+            if list_get(grid, number_mul(row, screen_size) + column) == 0 {
+                full = false;
+            }
+            column = column + 1;
+        }
+        if full {
+            shift_row := row;
+            while shift_row > 1 {
+                column = 1;
+                while column < screen_edge {
+                    source_index := number_mul(shift_row - 1, screen_size) + column;
+                    target_index := number_mul(shift_row, screen_size) + column;
+                    list_set(grid, target_index, list_get(grid, source_index));
+                    column = column + 1;
+                }
+                shift_row = shift_row - 1;
+            }
+            column = 1;
+            while column < screen_edge {
+                list_set(grid, screen_size + column, 0);
+                column = column + 1;
+            }
+            score = score + 1;
+        } else {
+            row = row - 1;
+        }
+    }
+}
+
+/// Lock the active piece, clear rows, and spawn the next shape.
+fn tetris_lock_piece() {
+    row := 0;
+    while row < 4 {
+        column := 0;
+        while column < 4 {
+            if tetris_piece_cell(piece_kind, column, row, piece_rotation) {
+                board_x := piece_x + column;
+                board_y := piece_y + row;
+                if board_y <= 1 {
+                    game_over = true;
+                } else {
+                    list_set(grid, number_mul(board_y, screen_size) + board_x, 1);
+                }
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    tetris_clear_rows();
+    piece_kind = number_mod(piece_kind + 1, list_length(piece_colors));
+    piece_rotation = 0;
+    piece_x = 3;
+    piece_y = 1;
+    if !tetris_can_place(piece_x, piece_y, piece_rotation) {
+        game_over = true;
+    }
+}
+
+/// Draw the well, locked cells, score, and current piece.
+fn tetris_render() {
+    board := pixel_board_new(screen_size, screen_size, background);
+    edge := 0;
+    while edge < screen_size {
+        pixel_board_set(board, screen_size, screen_size, 0, edge, wall_color);
+        pixel_board_set(board, screen_size, screen_size, screen_edge, edge, wall_color);
+        pixel_board_set(board, screen_size, screen_size, edge, screen_edge, wall_color);
+        edge = edge + 1;
+    }
+
+    row := 1;
+    while row < screen_edge {
+        column := 1;
+        while column < screen_edge {
+            if list_get(grid, number_mul(row, screen_size) + column) == 1 {
+                pixel_board_set(board, screen_size, screen_size, column, row, score_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+
+    piece_color := list_get(piece_colors, piece_kind);
+    row = 0;
+    while row < 4 {
+        column := 0;
+        while column < 4 {
+            if tetris_piece_cell(piece_kind, column, row, piece_rotation) {
+                pixel_board_set(board, screen_size, screen_size, piece_x + column, piece_y + row, piece_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Let the piece fall twice per second, locking when it reaches a surface.
+fn canvas_update() {
+    if !game_over {
+        drop_ticks = drop_ticks + 1;
+        if drop_ticks >= frames_per_drop {
+            drop_ticks = 0;
+            if tetris_can_place(piece_x, piece_y + 1, piece_rotation) {
+                piece_y = piece_y + 1;
+            } else {
+                tetris_lock_piece();
+            }
+        }
+    }
+    tetris_render();
+    if game_over {
+        return 1;
+    }
+}
+
+/// Move, rotate, soft-drop, or hard-drop the active piece.
+fn canvas_on_key_down(key) {
+    if game_over {
+        return 0;
+    }
+    if (key == "ArrowLeft" || key == "a") && tetris_can_place(piece_x - 1, piece_y, piece_rotation) {
+        piece_x = piece_x - 1;
+    } else if (key == "ArrowRight" || key == "d") && tetris_can_place(piece_x + 1, piece_y, piece_rotation) {
+        piece_x = piece_x + 1;
+    } else if (key == "ArrowDown" || key == "s") && tetris_can_place(piece_x, piece_y + 1, piece_rotation) {
+        piece_y = piece_y + 1;
+    } else if key == "ArrowUp" || key == "w" {
+        next_rotation := number_mod(piece_rotation + 1, 2);
+        if tetris_can_place(piece_x, piece_y, next_rotation) {
+            piece_rotation = next_rotation;
+        }
+    } else if key == " " {
+        while tetris_can_place(piece_x, piece_y + 1, piece_rotation) {
+            piece_y = piece_y + 1;
+        }
+        tetris_lock_piece();
+    }
+}
+
+/// Print the initial well and horizontal line piece for command-line runs.
+fn tetris_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if column == 0 || column == screen_edge || row == screen_edge {
+                line = line + "#";
+            } else if row == piece_y + 1 && column >= piece_x && column < piece_x + 4 {
+                line = line + "I";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+grid_index := 0;
+while grid_index < number_mul(screen_size, screen_size) {
+    list_set(grid, grid_index, 0);
+    grid_index = grid_index + 1;
+}
+tetris_render();
+canvas_play(screen_size, screen_size, "Tetris · Arrows, Up to Rotate, Space to Drop");
+tetris_print();
