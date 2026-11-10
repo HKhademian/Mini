@@ -528,11 +528,11 @@
   {
     "id": "space-invaders-board",
     "group": "Games",
-    "label": "Space Invaders — planned",
-    "note": "Move a ship, fire at a descending formation, and track lives.",
+    "label": "Space Invaders",
+    "note": "Move with arrows or A/D, fire with Space, and clear the formation before it reaches you. Invaders move twice per second; shots move four times per second.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/space-invaders-board.mini"
   },
   {
     "id": "tetris-board",
