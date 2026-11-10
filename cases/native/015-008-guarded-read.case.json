@@ -1,0 +1,10 @@
+{
+  "id": "native.c-guarded-uninitialized-read",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-008-guarded-read.mini",
+  "features": ["target.c", "bindings", "import.initialization"],
+  "cases": [
+    {"name": "executed-read-fails", "stdin": {"text": ""}, "stdout": {"text": ""}, "stderr": {"text": ""}, "exitCode": 1}
+  ]
+}

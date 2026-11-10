@@ -21,7 +21,9 @@ nesting, local shadowing, and assignments. Braced `while` loops reevaluate
 their condition before each iteration.
 Negating a variable or expression is unsupported; use binary subtraction from zero. Mixed-kind addition
 is unsupported at runtime; other arithmetic remains unsupported.
-A binding read that the C target cannot establish as initialized rejects at compile time.
+An unconditional binding read that the C target can identify before its file runs
+rejects at compile time. Conditionally executed reads are checked at runtime; a
+read that actually occurs before initialization fails the native program.
 Other forms reject explicitly. The
 [C target and embedding direction](c-target-and-embedding.md) tracks later
 increments; the script interpreter and embedding API are not implemented yet.

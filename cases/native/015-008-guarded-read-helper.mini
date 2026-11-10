@@ -1,0 +1,6 @@
+/// Read a later binding from a branch that executes before its initializer.
+import "core/io";
+condition := true;
+if condition {
+    io_write(value);
+}

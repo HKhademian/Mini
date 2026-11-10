@@ -479,6 +479,24 @@ fn emit_c_collect_fragments(lines, fragments) {
     return 0;
 }
 
+/// Lower an expression whose evaluation may be skipped.
+fn emit_c_guarded_expression(node, state, bindings, binding_orders, destination, in_function) {
+    depth := map_get(state, "c_guard_depth");
+    map_set(state, "c_guard_depth", depth + 1);
+    result := emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_function);
+    map_set(state, "c_guard_depth", depth);
+    return result;
+}
+
+/// Lower a statement whose execution may be skipped.
+fn emit_c_guarded_statement(node, state, bindings, binding_orders, in_function) {
+    depth := map_get(state, "c_guard_depth");
+    map_set(state, "c_guard_depth", depth + 1);
+    result := emit_c_ast_statement(node, state, bindings, binding_orders, in_function);
+    map_set(state, "c_guard_depth", depth);
+    return result;
+}
+
 /// Lower one target-neutral expression into a C value destination.
 fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_function) {
     kind := map_get(node, "node_kind");
@@ -517,7 +535,8 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
         if !map_has(bindings, name) {
             emit_c_fail(node);
         }
-        if !in_function && map_get(node, "file_order") < map_get(binding_orders, name) {
+        if !in_function && map_get(state, "c_guard_depth") == 0
+            && map_get(node, "file_order") < map_get(binding_orders, name) {
             diagnostic_fail(emit_c_ast_location(node), "C target cannot read a binding before its file runs");
         }
         binding := map_get(bindings, name);
@@ -580,7 +599,7 @@ fn emit_c_ast_expression(node, state, bindings, binding_orders, destination, in_
             return body + "    if (" + destination + ".kind != MINI_ID(kind_boolean)) {\n        return 1;\n    }\n"
                 + "    if (" + condition + ") {\n        MINI_ID(value) " + right + ";\n"
                 + emit_c_indent(
-                emit_c_ast_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function)
+                emit_c_guarded_expression(map_get(node, "right"), state, bindings, binding_orders, right, in_function)
             )
                 + "        if (" + right + ".kind != MINI_ID(kind_boolean)) {\n            return 1;\n        }\n"
                 + "        " + destination + " = " + right + ";\n    }\n";
@@ -852,7 +871,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             keyword + " ((context->condition_status_" + number + " = MINI_ID(condition_" + number + ")(context, &context->condition_value_"
             + number + ")) != 0 || context->condition_value_" + number + ") {\n",
             "    if (context->condition_status_" + number + " != 0) {\n        return 1;\n    }\n",
-            emit_c_ast_statement(
+            emit_c_guarded_statement(
                 consequent,
                 state,
                 map_copy(bindings),
@@ -866,7 +885,7 @@ fn emit_c_ast_statement(node, state, bindings, binding_orders, in_function) {
             list_set(
                 output,
                 list_length(output),
-                emit_c_ast_statement(
+                emit_c_guarded_statement(
                     map_get(node, "alternate"),
                     state,
                     map_copy(bindings),
@@ -910,6 +929,7 @@ fn emit_c_ast_function(node, state, bindings, binding_orders) {
     outer_arg_count := map_get(state, "c_arg_count");
     map_set(state, "c_local_count", 0);
     map_set(state, "c_temp", 0);
+    map_set(state, "c_guard_depth", 0);
     map_set(state, "c_arg_count", 0);
     signature := "int MINI_ID(fn_" + name + ")(MINI_ID(context) *context, MINI_ID(params) params, MINI_ID(value) *result)";
     list_set(

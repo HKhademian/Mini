@@ -1,0 +1,5 @@
+/// Skipped initializers do not read later bindings.
+import "core/io";
+value := 1;
+import "./015-007-guarded-initialization-helper";
+io_write("done\n");

@@ -1,0 +1,15 @@
+/// Keep later binding reads behind conditions and short-circuit expressions.
+import "core/io";
+condition := false;
+if condition {
+    io_write(value);
+}
+while condition {
+    io_write(value);
+}
+if condition && value == 1 {
+    io_write("unreachable");
+}
+if true || value == 1 {
+    io_write("skipped\n");
+}

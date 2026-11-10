@@ -1,0 +1,5 @@
+/// A guarded read still fails when its uninitialized branch executes.
+import "core/io";
+value := 1;
+import "./015-008-guarded-read-helper";
+io_write("unreachable\n");

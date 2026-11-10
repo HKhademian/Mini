@@ -1,0 +1,10 @@
+{
+  "id": "native.c-guarded-initialization",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-007-guarded-initialization.mini",
+  "features": ["target.c", "bindings", "import.initialization"],
+  "cases": [
+    {"name": "skipped-reads", "stdin": {"text": ""}, "stdout": {"text": "skipped\ndone\n"}, "stderr": {"text": ""}, "exitCode": 0}
+  ]
+}
