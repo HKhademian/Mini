@@ -6,9 +6,9 @@
     "functions",
     "control.if",
     "control.while",
-    "util.audio",
-    "util.canvas",
-    "util.board",
+    "extra.audio",
+    "extra.canvas",
+    "extra.board",
     "text.output"
   ],
   "cases": [

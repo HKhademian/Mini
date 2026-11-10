@@ -8,9 +8,9 @@
     "control.while",
     "core.list",
     "core.number",
-    "util.audio",
-    "util.canvas",
-    "util.board",
+    "extra.audio",
+    "extra.canvas",
+    "extra.board",
     "text.output"
   ],
   "cases": [

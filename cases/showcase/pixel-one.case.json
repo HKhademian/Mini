@@ -6,8 +6,8 @@
     "functions",
     "control.if",
     "control.while",
-    "util.canvas",
-    "util.board",
+    "extra.canvas",
+    "extra.board",
     "text.output"
   ],
   "cases": [

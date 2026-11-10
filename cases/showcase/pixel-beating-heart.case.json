@@ -8,8 +8,8 @@
     "control.while",
     "core.number",
     "core.list",
-    "util.canvas",
-    "util.board",
+    "extra.canvas",
+    "extra.board",
     "text.output"
   ],
   "cases": [
