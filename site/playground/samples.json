@@ -744,8 +744,8 @@
   {
     "id": "pixel-dvd",
     "group": "Animation",
-    "label": "DVD pixel",
-    "note": "Move one pixel from (3, 7) around an 11×13 blue screen at 3 steps per second.",
+    "label": "DVD logo",
+    "note": "Bounce a colorful DVD logo around a 23×13 blue screen at 3 steps per second.",
     "args": [],
     "stdin": "",
     "file": "samples/showcase/pixel-dvd.mini"

@@ -51,7 +51,7 @@ entry. Planned ideas are listed separately below and on the playground page.
 - [pixel-moving.mini](showcase/pixel-moving.mini): Move a pixel horizontally at a configurable five steps per second. [Case](../cases/showcase/pixel-moving.case.json).
 - [pixel-beating-heart.mini](showcase/pixel-beating-heart.mini): Pulse a pixel heart about once per second between two sizes and shades of red. [Case](../cases/showcase/pixel-beating-heart.case.json).
 - [pixel-arrows.mini](showcase/pixel-arrows.mini): Move a pixel with arrow keys or WASD to reach a goal. [Case](../cases/showcase/pixel-arrows.case.json).
-- [pixel-dvd.mini](showcase/pixel-dvd.mini): Move one pixel from (3, 7) around an 11×13 blue screen at three steps per second. [Case](../cases/showcase/pixel-dvd.case.json).
+- [pixel-dvd.mini](showcase/pixel-dvd.mini): Bounce a colored DVD logo around a 23×13 blue screen at three steps per second, changing color when it hits a wall. [Case](../cases/showcase/pixel-dvd.case.json).
 - [pixel-resize.mini](showcase/pixel-resize.mini): Redraw one canvas while its square frame changes from five to nine pixels wide. [Case](../cases/showcase/pixel-resize.case.json).
 - [pixel-tone.mini](showcase/pixel-tone.mini): Play a short tone with each arrow key or WASD press while changing the pixel color. [Case](../cases/showcase/pixel-tone.case.json).
 

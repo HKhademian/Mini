@@ -1,68 +1,104 @@
-/// Move one bright pixel around an 11-by-13 blue screen like a tiny DVD screensaver.
+/// Bounce a small DVD logo around a blue screen at three steps per second.
 
 import "core/io";
+import "core/list";
 import "core/number";
 import "util/board";
 import "util/canvas";
 import "util/io";
 
-screen_width := 11;
+screen_width := 23;
 screen_height := 13;
-screen_width_edge := screen_width - 1;
-screen_height_edge := screen_height - 1;
+logo_width := 17;
+logo_height := 5;
+max_logo_x := screen_width - logo_width;
+max_logo_y := screen_height - logo_height;
 playback_fps := 60;
 animation_fps := 3;
 frames_per_step := number_div(playback_fps, animation_fps);
 blue := pixel_rgb(8, 32, 112);
-white := pixel_rgb(255, 245, 220);
-pixel_x := 3;
-pixel_y := 7;
-pixel_dx := 1;
-pixel_dy := 1;
+logo_colors := list_of(
+    pixel_rgb(255, 80, 80),
+    pixel_rgb(255, 220, 64),
+    pixel_rgb(64, 220, 160),
+    pixel_rgb(100, 160, 255)
+);
+logo_rows := list_of(
+    "####..#...#.####.",
+    "#...#.#...#.#...#",
+    "#...#..#.#..#...#",
+    "#...#.#...#.#...#",
+    "####...#.#..####."
+);
+logo_x := 1;
+logo_y := 1;
+logo_dx := 1;
+logo_dy := 1;
+logo_color_index := 0;
 update_ticks := 0;
 
-/// Advance one tile with wraparound at the configured animation speed, then draw it. Elapsed time is provided in seconds.
+/// Draw the current logo frame, then move it at the configured animation speed. Elapsed time is provided in seconds.
 fn canvas_on_update(dt) {
     board := pixel_board_new(screen_width, screen_height, blue);
-    pixel_board_set(board, screen_width, screen_height, pixel_x, pixel_y, white);
+    row := 0;
+    while row < logo_height {
+        column := 0;
+        while column < logo_width {
+            if text_get(list_get(logo_rows, row), column) == "#" {
+                color := list_get(logo_colors, logo_color_index);
+                pixel_board_set(board, screen_width, screen_height, logo_x + column, logo_y + row, color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
     pixel_board_draw(screen_width, screen_height, board);
 
     update_ticks = update_ticks + 1;
     if update_ticks >= frames_per_step {
         update_ticks = 0;
-        pixel_x = pixel_x + pixel_dx;
-        pixel_y = pixel_y + pixel_dy;
-        if pixel_x < 0 {
-            pixel_x = screen_width_edge;
-        } else if pixel_x > screen_width_edge {
-            pixel_x = 0;
+        next_logo_x := logo_x + logo_dx;
+        next_logo_y := logo_y + logo_dy;
+        bounced := false;
+        if next_logo_x < 0 || next_logo_x > max_logo_x {
+            logo_dx = 0 - logo_dx;
+            bounced = true;
         }
-        if pixel_y < 0 {
-            pixel_y = screen_height_edge;
-        } else if pixel_y > screen_height_edge {
-            pixel_y = 0;
+        if next_logo_y < 0 || next_logo_y > max_logo_y {
+            logo_dy = 0 - logo_dy;
+            bounced = true;
         }
+        if bounced {
+            logo_color_index = logo_color_index + 1;
+            if logo_color_index >= list_length(logo_colors) {
+                logo_color_index = 0;
+            }
+        }
+        logo_x = logo_x + logo_dx;
+        logo_y = logo_y + logo_dy;
     }
 }
 
-/// Print the first frame for command-line runs.
+/// Print the first logo frame for command-line runs.
 fn pixel_dvd_print() {
     row := 0;
     while row < screen_height {
-        col := 0;
+        column := 0;
         line := "";
-        while col < screen_width {
-            if row == pixel_y && col == pixel_x {
+        while column < screen_width {
+            logo_row := row - logo_y;
+            logo_column := column - logo_x;
+            if logo_row >= 0 && logo_row < logo_height && logo_column >= 0 && logo_column < logo_width && text_get(list_get(logo_rows, logo_row), logo_column) == "#" {
                 line = line + "*";
             } else {
                 line = line + ".";
             }
-            col = col + 1;
+            column = column + 1;
         }
         io_write_line(line);
         row = row + 1;
     }
 }
 
-canvas_play("DVD Pixel");
+canvas_play("DVD Logo");
 pixel_dvd_print();
