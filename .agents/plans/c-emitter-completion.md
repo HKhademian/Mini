@@ -14,10 +14,10 @@ todos:
     status: completed
   - id: portability
     content: Verify supported platforms and native storage lifetimes
-    status: in_progress
+    status: completed
   - id: completion
     content: Run final gates and reconcile C target documentation
-    status: pending
+    status: in_progress
 plans:
   requires: []
   blocks: []
@@ -69,18 +69,10 @@ Complete the Mini-to-C emitter for the accepted language and supported host serv
 - `node tools/c-bootstrap.ts` passed the isolated four-way compiler matrix, all JS and native test workers, and the compiled native bootstrap; generated C SHA-256 was `9e7e2b8e5d56d12f7ccb030e96acf6a9e7128deb88c97fbfe6a31951210927cd` for that snapshot. The command is in macOS and Ubuntu CI; those remote jobs have not yet run for this change.
 - The mismatch self-check passed with `node tools/c-bootstrap.ts --test-comparison`. Native worker selection is explicit and cleared for nested tools.
 
-### Step 4 — portability
+### Portability (2026-11-10)
 
-**Depends on:** parity and bootstrap-gate  
-**Files:** native fixtures, relevant CI configuration, `docs/runtime.md`, `docs/c-target-and-embedding.md` as warranted.
-
-**Actions:**
-- Run strict C11 builds and native/parity checks on available macOS and Linux environments; record exact host and compiler. Use sanitizer checks for focused allocation, view lifetime, mutation and cleanup paths where available.
-- Identify POSIX dependencies and document platform boundaries. Do not claim Windows support without testing its process, path, build, and ABI behavior; leave unavailable platform verification explicit.
-- Fix reproduced portability or lifetime defects in focused atomic increments.
-
-**Acceptance:** supported-platform claims match actual passing checks; known unsupported platforms and untested configurations are explicit.  
-**Verify:** platform CI or recorded host runs; relevant sanitizer fixtures when available.
+- Local host: Darwin 27.0.0 arm64, Apple Clang 21.0.0. Strict C11 builds and AddressSanitizer/UndefinedBehaviorSanitizer runs passed for list mutation, map growth, sparse gaps, cyclic JSON/output, and the host constructor/text-buffer growth and cleanup fixture.
+- Linux was not available locally; Podman could not connect to a Linux VM. Ubuntu and macOS CI are configured to run the bootstrap gate, but have not run for these changes. Windows is unverified. Documentation states these limits and the POSIX host dependency.
 
 ### Step 5 — completion
 
