@@ -134,6 +134,7 @@ values, and `io_write` serializes nested maps as sorted JSON objects without
 reordering the source map. JSON output rejects nesting deeper than 128. Generated
 execution owns lists and maps through cleanup at program exit. `fn_args()` is supported
 inside functions and at top level through native `argc`/`argv` capture.
+Before starting a child with inherited streams, the C host flushes buffered output so the child observes the parent’s preceding output.
 The C target stores text as UTF-8 and implements scalar-value length, indexing,
 lookup, and slicing. `text_from_code` encodes valid Unicode scalar values as
 UTF-8. JavaScript keeps its native strings and implements the same scalar-value

@@ -1,0 +1,17 @@
+/// Preserve parent output before inherited child output on both streams.
+import "core/io";
+import "core/list";
+import "core/map";
+import "core/process";
+
+io_write("parent-out|");
+io_write_error("parent-err|");
+options := map_new();
+map_set(options, "command", "/bin/sh");
+map_set(options, "arguments", list_of("-c", "printf child-out; printf child-err >&2"));
+map_set(options, "mode", "inherit");
+result := process_spawn(options);
+if map_get(result, "status") == 0 {
+    io_write("|done\n");
+    io_write_error("|done\n");
+}

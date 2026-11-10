@@ -1,0 +1,16 @@
+{
+  "id": "native.c-process-inherit-output-order",
+  "kind": "feature",
+  "target": "c",
+  "source": "015-001-process-inherit.mini",
+  "features": ["target.c", "process.spawn", "text.output"],
+  "cases": [
+    {
+      "name": "parent-before-inherited-child",
+      "stdin": {"text": ""},
+      "stdout": {"text": "parent-out|child-out|done\n"},
+      "stderr": {"text": "parent-err|child-err|done\n"},
+      "exitCode": 0
+    }
+  ]
+}
