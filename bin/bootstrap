@@ -2507,6 +2507,53 @@ function parser_ast_quiet(tokens) {
     map_set(parser, "warn", false);
     return parser_program(parser);
 }
+function list_join_from(items, start, separator) {
+
+    let parts = list_new();
+    let position = start;
+    while ((position < (items).length)) {
+        list_set(parts, (parts).length, list_get(items, position));
+        position = (position + 1);
+    }
+    return list_join(separator, parts);
+}
+function list_push_back_list(destination) {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let lists = $mini_fn_args;
+    let list_index = 1;
+    while ((list_index < (lists).length)) {
+        let source = list_get(lists, list_index);
+        if (value_is_list(source)) {
+            let source_length = (source).length;
+            let item_index = 0;
+            while ((item_index < source_length)) {
+                list_push_back(destination, list_get(source, item_index));
+                item_index = (item_index + 1);
+            }
+        }
+        list_index = (list_index + 1);
+    }
+    return 0;
+}
+function list_push_front_list(destination) {
+    const $mini_fn_args = Array.prototype.slice.call(arguments);
+
+    let lists = $mini_fn_args;
+    let list_index = ((lists).length - 1);
+    while ((list_index > 0)) {
+        let source = list_copy(list_get(lists, list_index));
+        if (value_is_list(source)) {
+            let item_index = ((source).length - 1);
+            while ((item_index >= 0)) {
+                list_push_front(destination, list_get(source, item_index));
+                item_index = (item_index - 1);
+            }
+        }
+        list_index = (list_index - 1);
+    }
+    return 0;
+}
 function text_indent_output(output) {
 
     let lines = text_split_lines(output);
@@ -2667,12 +2714,7 @@ function emit_js_append_indented(output, lines) {
 }
 function emit_js_append_lines(output, lines) {
 
-    let position = 0;
-    while ((position < (lines).length)) {
-        list_set(output, (output).length, list_get(lines, position));
-        position = (position + 1);
-    }
-    return 0;
+    return list_push_back_list(output, lines);
 }
 function emit_js_block(node) {
 
@@ -2751,12 +2793,9 @@ function emit_js_statement(node) {
         if ((alternate !== 0)) {
             let alternate_lines = emit_js_statement(alternate);
             if ((map_get(alternate, "node_kind") === AST_IF)) {
-                list_set(output, ((output).length - 1), ("} else " + list_get(alternate_lines, 0)));
-                let position = 1;
-                while ((position < (alternate_lines).length)) {
-                    list_set(output, (output).length, list_get(alternate_lines, position));
-                    position = (position + 1);
-                }
+                let first_alternate_line = list_pop_front(alternate_lines);
+                list_set(output, ((output).length - 1), ("} else " + first_alternate_line));
+                list_push_back_list(output, alternate_lines);
             } else {
                 list_set(output, ((output).length - 1), "} else {");
                 emit_js_append_indented(output, emit_js_statements(map_get(alternate, "statements")));
@@ -3126,10 +3165,13 @@ function $mini_file_15() {
 
 }
 function $mini_file_16() {
+
+}
+function $mini_file_17() {
     js_host_functions = map_new();
     reference_mode = false;
 }
-function $mini_file_17() {
+function $mini_file_18() {
     emit_js_host_function_add("number_add", list_of("function number_add(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return a + b;", "}", ""), false, "");
     emit_js_host_function_add("number_sub", list_of("function number_sub(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return a - b;", "}", ""), false, "");
     emit_js_host_function_add("number_min", list_of("function number_min(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\") {", "    return 0;", "  }", "  return Math.min(a, b);", "}", ""), false, "");
@@ -3142,13 +3184,13 @@ function $mini_file_17() {
     emit_js_host_function_add("number_pow", list_of("function number_pow(a, b) {", "  if (typeof a !== \"number\" || typeof b !== \"number\" || !Number.isInteger(b) || b < 0) {", "    return 0;", "  }", "  return Math.pow(a, b);", "}", ""), false, "");
     emit_js_host_function_add("number_to_text", list_of("function number_to_text(value) {", "  if (typeof value !== \"number\" || !Number.isSafeInteger(value)) {", "    return \"\";", "  }", "  return String(value);", "}", ""), false, "");
 }
-function $mini_file_18() {
+function $mini_file_19() {
     emit_js_host_function_add("hash_sha256", list_of("function hash_sha256(value) {", "  const crypto = process.getBuiltinModule(\"node:crypto\");", "  const bytes = Array.isArray(value) ?", "      Buffer.from(", "          value.map(item => typeof item === \"number\" && Number.isInteger(item) ? item & 255 : 0)) :", "      Buffer.from(typeof value === \"string\" ? value : String(value), \"utf8\");", "  return crypto.createHash(\"sha256\").update(bytes).digest(\"hex\");", "}", ""), true, "");
 }
-function $mini_file_19() {
+function $mini_file_20() {
     emit_js_host_function_add("time_millis", list_of("function time_millis() {", "  return Date.now();", "}", ""), true, "");
 }
-function $mini_file_20() {
+function $mini_file_21() {
     emit_js_host_function_add("list_new", list_of("function list_new() {", "  return [];", "}", ""), true, "");
     emit_js_host_function_add("list_get", list_of("function list_get(items, index) {", "  if (!Array.isArray(items) || !Number.isInteger(index)) {", "    return 0;", "  }", "  if (index < 0) {", "    index = items.length + index;", "  }", "  return index >= 0 && index < items.length && index in items ? items[index] : 0;", "}", ""), true, "");
     emit_js_host_function_add("list_length", list_of("function list_length(items) {", "  return Array.isArray(items) ? items.length : 0;", "}", ""), true, "({0}).length");
@@ -3157,7 +3199,7 @@ function $mini_file_20() {
     emit_js_host_function_add("list_copy", list_of("function list_copy(items) {", "  return Array.isArray(items) ? items.slice() : [];", "}", ""), false, "");
     emit_js_host_function_add("list_join", list_of("function list_join(separator, ...sources) {", "  if (typeof separator !== \"string\") {", "    return \"\";", "  }", "  let output = \"\";", "  let hasItem = false;", "  for (const items of sources) {", "    if (!Array.isArray(items)) {", "      continue;", "    }", "    for (const value of items) {", "      if (hasItem) {", "        output += separator;", "      }", "      if (typeof value === \"string\") {", "        output += value;", "      }", "      hasItem = true;", "    }", "  }", "  return output;", "}", ""), false, "");
 }
-function $mini_file_21() {
+function $mini_file_22() {
     emit_js_host_function_add("map_new", list_of("function map_new() {", "  return Object.create(null);", "}", ""), true, "");
     emit_js_host_function_add("map_get", list_of("function map_get(items, key) {", "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {", "    return 0;", "  }", "  return Object.prototype.hasOwnProperty.call(items, key) ? items[key] : 0;", "}", ""), true, "");
     emit_js_host_function_add("map_set", list_of("function map_set(items, key, value) {", "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&", "      typeof key === \"string\") {", "    items[key] = value;", "  }", "  return 0;", "}", ""), true, "");
@@ -3166,7 +3208,7 @@ function $mini_file_21() {
     emit_js_host_function_add("map_delete", list_of("function map_delete(items, key) {", "  if (items !== null && typeof items === \"object\" && !Array.isArray(items) &&", "      typeof key === \"string\") {", "    delete items[key];", "  }", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("map_copy", list_of("function map_copy(items) {", "  if (items === null || typeof items !== \"object\" || Array.isArray(items)) {", "    return Object.create(null);", "  }", "  return Object.assign(Object.create(null), items);", "}", ""), false, "");
 }
-function $mini_file_22() {
+function $mini_file_23() {
     emit_js_host_function_add("text_find", list_of("function text_find(source, needle) {", "  if (typeof source !== \"string\" || typeof needle !== \"string\") {", "    return -1;", "  }", "  const found = source.indexOf(needle);", "  return found < 0 ? -1 : Array.from(source.slice(0, found)).length;", "}", ""), false, "");
     emit_js_host_function_add("text_from_bytes", list_of("function text_from_bytes(bytes) {", "  if (!Array.isArray(bytes)) {", "    return \"\";", "  }", "  return Buffer", "      .from(bytes.map(", "          value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0))", "      .toString(\"utf8\");", "}", ""), false, "");
     emit_js_host_function_add("text_from_code", list_of("function text_from_code(code) {", "  if (typeof code !== \"number\" || !Number.isInteger(code) || code < 0 || code > 0x10FFFF ||", "      (code >= 0xD800 && code <= 0xDFFF)) {", "    return \"\";", "  }", "  return String.fromCodePoint(code);", "}", ""), true, "");
@@ -3177,30 +3219,30 @@ function $mini_file_22() {
     emit_js_host_function_add("text_split", list_of("function text_split(source, divider) {", "  if (typeof source !== \"string\" || typeof divider !== \"string\") {", "    return [];", "  }", "  if (divider === \"\") {", "    return [source];", "  }", "  return source.split(divider);", "}", ""), false, "");
     emit_js_host_function_add("text_to_bytes", list_of("function text_to_bytes(source) {", "  return typeof source === \"string\" ? Array.from(Buffer.from(source, \"utf8\")) : [];", "}", ""), false, "");
 }
-function $mini_file_23() {
+function $mini_file_24() {
     emit_js_host_function_add("json_value", list_of("function json_value(text) {", "  const result = Object.create(null);", "  result.ok = false;", "  result.value = 0;", "  if (typeof text !== \"string\") {", "    return result;", "  }", "  let parsed;", "  try {", "    parsed = JSON.parse(text);", "  } catch {", "    return result;", "  }", "  const clean = (item) => {", "    if (item === null) {", "      return 0;", "    }", "    if (typeof item === \"number\") {", "      if (!Number.isSafeInteger(item)) {", "        throw 0;", "      }", "      return item;", "    }", "    if (Array.isArray(item)) {", "      return item.map(clean);", "    }", "    if (typeof item === \"object\") {", "      const out = Object.create(null);", "      for (const key of Object.keys(item)) {", "        out[key] = clean(item[key]);", "      }", "      return out;", "    }", "    return item;", "  };", "  try {", "    result.value = clean(parsed);", "  } catch {", "    return result;", "  }", "  result.ok = true;", "  return result;", "}", ""), false, "");
     emit_js_host_function_add("json_text", list_of("function json_text(value) {", "  const seen = new Set();", "  function encode(item) {", "    if (typeof item === \"string\") {", "      return JSON.stringify(item);", "    }", "    if (typeof item === \"number\") {", "      const text = number_to_text(item);", "      return text === \"\" ? \"null\" : text;", "    }", "    if (typeof item === \"boolean\") {", "      return item ? \"true\" : \"false\";", "    }", "    if (item === null || item === undefined) {", "      return \"null\";", "    }", "    if (typeof item !== \"object\") {", "      return \"null\";", "    }", "    if (seen.has(item)) {", "      throw 0;", "    }", "    seen.add(item);", "    let output;", "    if (Array.isArray(item)) {", "      const parts = [];", "      for (let index = 0; index < item.length; index++) {", "        parts.push(index in item ? encode(item[index]) : \"null\");", "      }", "      output = \"[\" + parts.join(\",\") + \"]\";", "    } else {", "      const parts = [];", "      for (const key of Object.keys(item).sort()) {", "        parts.push(JSON.stringify(key) + \":\" + encode(item[key]));", "      }", "      output = \"{\" + parts.join(\",\") + \"}\";", "    }", "    seen.delete(item);", "    return output;", "  }", "  try {", "    return encode(value);", "  } catch {", "    return \"\";", "  }", "}", ""), false, "");
 }
-function $mini_file_24() {
+function $mini_file_25() {
     emit_js_host_function_add("value_kind", list_of("function value_kind(value) {", "  if (typeof value === \"string\") {", "    return \"text\";", "  }", "  if (typeof value === \"number\") {", "    return \"number\";", "  }", "  if (typeof value === \"boolean\") {", "    return \"boolean\";", "  }", "  if (Array.isArray(value)) {", "    return \"list\";", "  }", "  if (value !== null && typeof value === \"object\") {", "    return \"map\";", "  }", "  return \"other\";", "}", ""), true, "");
 }
-function $mini_file_25() {
+function $mini_file_26() {
     emit_js_host_function_add("value_to_text", list_of("function value_to_text(value) {", "  if (typeof value === \"string\") {", "    return value;", "  }", "  if (typeof value === \"number\") {", "    return number_to_text(value);", "  }", "  if (typeof value === \"boolean\") {", "    return value ? \"true\" : \"false\";", "  }", "  if (value !== null && typeof value === \"object\") {", "    return json_text(value);", "  }", "  return \"0\";", "}", ""), false, "");
 }
-function $mini_file_26() {
+function $mini_file_27() {
     emit_js_host_function_add("io_read_all", list_of("function io_read_all() {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(0, \"utf8\");", "}", ""), true, "");
     emit_js_host_function_add("io_read_bytes", list_of("function io_read_bytes(count) {", "  if (typeof count !== \"number\" || !Number.isInteger(count) || count <= 0) {", "    return [];", "  }", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(count);", "  const read = fs.readSync(0, buffer, 0, count, null);", "  return Array.from(buffer.subarray(0, read));", "}", ""), true, "");
     emit_js_host_function_add("io_read_line", list_of("function io_read_line() {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const buffer = Buffer.alloc(1);", "  const bytes = [];", "  while (true) {", "    const count = fs.readSync(0, buffer, 0, 1, null);", "    if (count === 0 || buffer[0] === 10) {", "      break;", "    }", "    bytes.push(buffer[0]);", "  }", "  if (bytes.length > 0 && bytes[bytes.length - 1] === 13) {", "    bytes.pop();", "  }", "  return Buffer.from(bytes).toString(\"utf8\");", "}", ""), true, "");
     emit_js_host_function_add("io_write", list_of("function io_write(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(1, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("io_write_error", list_of("function io_write_error(...values) {", "  function normalize(value) {", "    if (Array.isArray(value)) {", "      return value.map(normalize);", "    }", "    if (value !== null && typeof value === \"object\") {", "      const result = Object.create(null);", "      for (const key of Object.keys(value).sort()) {", "        result[key] = normalize(value[key]);", "      }", "      return result;", "    }", "    return value;", "  }", "  function display(value) {", "    if (typeof value === \"string\") {", "      return value;", "    }", "    if (typeof value === \"number\") {", "      return Number.isSafeInteger(value) ? String(value) : \"\";", "    }", "    if (typeof value === \"boolean\") {", "      return value ? \"true\" : \"false\";", "    }", "    if (Array.isArray(value) || (value !== null && typeof value === \"object\")) {", "      return JSON.stringify(normalize(value));", "    }", "    return \"0\";", "  }", "  let text = \"\";", "  for (const value of values) {", "    text += display(value);", "  }", "  process.getBuiltinModule(\"node:fs\").writeSync(2, Buffer.from(text, \"utf8\"));", "  return 0;", "}", ""), true, "");
 }
-function $mini_file_27() {
+function $mini_file_28() {
     emit_js_host_function_add("file_read", list_of("function file_read(path) {", "  return process.getBuiltinModule(\"node:fs\").readFileSync(path, \"utf8\");", "}", ""), true, "");
     emit_js_host_function_add("file_read_bytes", list_of("function file_read_bytes(path) {", "  return Array.from(process.getBuiltinModule(\"node:fs\").readFileSync(path));", "}", ""), true, "");
     emit_js_host_function_add("file_write", list_of("function file_write(path, text) {", "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, text, \"utf8\");", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("file_write_bytes", list_of("function file_write_bytes(path, bytes) {", "  const values = Array.isArray(bytes) ?", "      bytes.map(value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0) :", "      [];", "  process.getBuiltinModule(\"node:fs\").writeFileSync(path, Buffer.from(values));", "  return 0;", "}", ""), true, "");
 }
-function $mini_file_28() {
+function $mini_file_29() {
     emit_js_host_function_add("directory_create", list_of("function directory_create(path) {", "  process.getBuiltinModule(\"node:fs\").mkdirSync(path, {recursive: true});", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("directory_list", list_of("function directory_list(path) {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  try {", "    return fs.readdirSync(path).sort();", "  } catch {", "    return [];", "  }", "}", ""), true, "");
     emit_js_host_function_add("path_copy", list_of("function path_copy(from, to) {", "  process.getBuiltinModule(\"node:fs\").cpSync(", "      from, to, {recursive: true, force: true, dereference: true});", "  return 0;", "}", ""), true, "");
@@ -3210,16 +3252,13 @@ function $mini_file_28() {
     emit_js_host_function_add("path_remove", list_of("function path_remove(path) {", "  process.getBuiltinModule(\"node:fs\").rmSync(path, {recursive: true, force: true});", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("path_temp_directory", list_of("function path_temp_directory() {", "  const fs = process.getBuiltinModule(\"node:fs\");", "  const os = process.getBuiltinModule(\"node:os\");", "  return fs.mkdtempSync(os.tmpdir() + \"/mini-\");", "}", ""), true, "");
 }
-function $mini_file_29() {
+function $mini_file_30() {
     emit_js_host_function_add("process_env", list_of("function process_env(name) {", "  return process.env[name] ?? \"\";", "}", ""), true, "");
     emit_js_host_function_add("process_exec_path", list_of("function process_exec_path() {", "  return process.execPath;", "}", ""), true, "");
     emit_js_host_function_add("process_exit", list_of("function process_exit(status) {", "  process.exit(status);", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("process_panic", list_of("function process_panic(message) {", "  process.getBuiltinModule(\"node:fs\").writeSync(", "      2, Buffer.from((typeof message === \"string\" ? message : \"\") + \"\\n\", \"utf8\"));", "  process.exit(1);", "  return 0;", "}", ""), true, "");
     emit_js_host_function_add("process_script_path", list_of("function process_script_path() {", "  return process.argv[1] ?? \"\";", "}", ""), true, "");
     emit_js_host_function_add("process_spawn", list_of("function process_spawn(options) {", "  const output = {__proto__: null, status: 1, signal: \"\", stdout: [], stderr: [], error: \"\"};", "  const child = process.getBuiltinModule(\"node:child_process\");", "  const settings = options !== null && typeof options === \"object\" ? options : {};", "  const command = typeof settings.command === \"string\" ? settings.command : \"\";", "  const args = Array.isArray(settings.arguments) ? settings.arguments.map(String) : [];", "  const mode = settings.mode === \"inherit\" ? \"inherit\" : \"capture\";", "  const directory = typeof settings.directory === \"string\" && settings.directory !== \"\" ?", "      settings.directory :", "      undefined;", "  const timeout =", "      typeof settings.timeout === \"number\" && settings.timeout > 0 ? settings.timeout : undefined;", "  const input = Array.isArray(settings.input) ?", "      Buffer.from(settings.input.map(", "          value => typeof value === \"number\" && Number.isInteger(value) ? value & 255 : 0)) :", "      undefined;", "  const result = child.spawnSync(command, args, {", "    cwd: directory,", "    stdio: mode === \"inherit\" ? \"inherit\" : \"pipe\",", "    input: mode === \"inherit\" ? undefined : input,", "    timeout,", "    maxBuffer: 64 * 1024 * 1024,", "  });", "  if (result.error) {", "    output.error = String(result.error.message);", "  }", "  if (result.status !== null) {", "    output.status = result.status;", "  }", "  if (typeof result.signal === \"string\") {", "    output.signal = result.signal;", "  }", "  if (mode !== \"inherit\") {", "    output.stdout = result.stdout ? Array.from(result.stdout) : [];", "    output.stderr = result.stderr ? Array.from(result.stderr) : [];", "  }", "  return output;", "}", ""), true, "");
-}
-function $mini_file_30() {
-
 }
 function $mini_file_31() {
 
@@ -3237,6 +3276,9 @@ function $mini_file_35() {
 
 }
 function $mini_file_36() {
+
+}
+function $mini_file_37() {
     main(process.argv.slice(2));
 }
 function $mini_main() {
@@ -3277,5 +3319,6 @@ function $mini_main() {
     $mini_file_34();
     $mini_file_35();
     $mini_file_36();
+    $mini_file_37();
 }
 $mini_main();
