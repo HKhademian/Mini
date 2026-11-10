@@ -37,6 +37,9 @@ jobs:
         run: check
       - name: JSON verification scenarios
         run: test
+      - name: Verify parallel C bootstrap
+        shell: bash
+        run: node tools/c-bootstrap.ts
       - name: Benchmark harness smoke test
         run: bench
       - name: Extracted distribution smoke test
@@ -80,6 +83,9 @@ jobs:
         run: check
       - name: JSON verification scenarios
         run: test
+      - name: Verify parallel C bootstrap
+        shell: bash
+        run: node tools/c-bootstrap.ts
       - name: Benchmark harness smoke test
         run: bench
       - name: Extracted distribution smoke test

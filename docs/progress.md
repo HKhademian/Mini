@@ -51,9 +51,10 @@ vscode    vscode-v0.6.1-v0.3.9
   tool.
 - **JavaScript output.** The compiler emits plain Node JavaScript. Generated
   programs run directly on Node 22.18.0 or newer, without a TypeScript transform.
-- **C11 target.** mini emits and runs native C for its documented supported
-  subset. The compiler remains self-hosted through JavaScript; compiling the
-  compiler itself to C is still outside the current target subset.
+- **C11 target.** mini emits native C, including a C-built compiler. The
+  parallel bootstrap gate compares compiler generations, runs JS and native
+  test workers, and executes the native bootstrap. JavaScript remains the active
+  bootstrap.
 - **Zero-value model.** `:=` declares bindings. Calls always produce a value;
   no-result operations and functions that fall through return 0.
 - **Paren-free conditions.** `if` and `while` conditions end at the braced body;

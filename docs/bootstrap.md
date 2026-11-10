@@ -25,6 +25,19 @@ It then reinstalls locked dependencies, rebuilds the compiler and tools, runs
 repository, case, unit, LSP, release, and editor checks, and packages the VS
 Code extension to `dist/rebuild/mini-GROUP-vVERSION.vsix`.
 
+To verify the parallel C bootstrap on a supported POSIX host with a C11 compiler:
+
+```text
+node tools/c-bootstrap.ts
+```
+
+The command copies the checkout to a temporary workspace, compares the JS and C
+compiler generations (using the same C output basename), runs the full test
+driver through JS and native workers, and builds and runs the native bootstrap.
+It prints the generated C source SHA-256 and retains the workspace on failure.
+The JS bootstrap remains the active compiler. `node tools/c-bootstrap.ts
+--test-comparison` checks that the byte comparison rejects a mismatch.
+
 `dist/` and generated `bin/` entries are ignored by Git. CI bootstraps before
 running checks and publishes built tools and release artifacts.
 
