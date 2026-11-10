@@ -67,6 +67,13 @@ current title. `pixel_board_new`, `pixel_board_set`, `pixel_board_get`, and
 be hosted by other renderers, such as Raylib; each host owns its frame loop and
 drawing.
 
+Import `util/audio` to request a tone with `audio_tone(frequency, duration,
+volume)`. Frequency is in hertz (20–20,000), duration is in seconds (up to 3),
+and volume is linear from 0 to 1; invalid values are ignored. The library queues
+tone triples for the host, which drains them with `audio_tone_drain()` after
+each program or event callback. The browser host plays sine tones with a short
+gain fade and unlocks Web Audio on a user gesture.
+
 For a still image, build the pixel list and call `canvas_draw(...)` once at
 top level without declaring `canvas_play`; the playground
 shows the rendered frame without starting an animation loop.

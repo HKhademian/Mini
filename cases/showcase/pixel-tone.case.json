@@ -1,0 +1,23 @@
+{
+  "id": "showcase.pixel-tone",
+  "kind": "sample",
+  "source": "../../samples/showcase/pixel-tone.mini",
+  "features": [
+    "functions",
+    "control.if",
+    "util.audio",
+    "util.canvas",
+    "util.board",
+    "text.output"
+  ],
+  "cases": [
+    {
+      "name": "default",
+      "stdin": { "text": "" },
+      "args": [],
+      "stdout": { "text": "Use the arrow keys or WASD to play a tone.\n" },
+      "stderr": { "text": "" },
+      "exitCode": 0
+    }
+  ]
+}

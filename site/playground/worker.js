@@ -113,11 +113,13 @@ async function compileSource(source, portable) {
     const still = !play
       && source.includes('import "util/canvas";')
       && /^canvas_draw\s*\(/m.test(source);
+    const audio = source.includes('import "util/audio";');
     return {
       code: sourceText(emit_js_compile(prepared)),
       program: sourceText(emit_js_compile_program_only(prepared)),
       play,
       still,
+      audio,
       diagnostic: "",
     };
   } catch (error) {
@@ -131,7 +133,7 @@ async function compileSource(source, portable) {
 }
 
 /// Replace Node-only imports with the playground runtime.
-function prepare(code, play, still, title) {
+function prepare(code, play, still, title, audio) {
   const prelude = [
     'const readFileSync = (path) => { if (path === 0) return globalThis.__miniStdin ?? ""; throw new Error("file access is not available in the playground: " + path); };',
     'const writeFileSync = () => { throw new Error("file access is not available in the playground"); };',
@@ -163,18 +165,19 @@ function prepare(code, play, still, title) {
     "  pixels: canvas_get_pixels(),",
     "};",
   ].join("\n") : "";
-  return (code + "\n" + playBridge + "\n" + stillBridge)
+  const audioBridge = audio ? "globalThis.__miniAudioDrain = audio_tone_drain;" : "";
+  return (code + "\n" + playBridge + "\n" + stillBridge + "\n" + audioBridge)
     .replace(/^#![^\n]*\n/, "")
     .replace(/import \{[^}]*\} from "node:fs";\n/, prelude + "\n");
 }
 
 /// Execute one compiled program and return its streams or runtime error.
-async function runCode(code, stdin, args, play, still, title) {
+async function runCode(code, stdin, args, play, still, title, audio) {
   globalThis.__miniOutput = "";
   globalThis.__miniRuntimeError = "";
   globalThis.__miniStdin = typeof stdin === "string" ? stdin : "";
   globalThis.process.argv = ["node", "mini"].concat(Array.isArray(args) ? args : []);
-  const url = URL.createObjectURL(new Blob([prepare(code, play, still, title)], { type: "text/javascript" }));
+  const url = URL.createObjectURL(new Blob([prepare(code, play, still, title, audio)], { type: "text/javascript" }));
   try {
     await import(url);
     const session = globalThis.__miniPlay;
@@ -183,6 +186,7 @@ async function runCode(code, stdin, args, play, still, title) {
       output: globalThis.__miniOutput,
       stderr: globalThis.__miniRuntimeError,
       canvas: globalThis.__miniCanvas ?? null,
+      tones: globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [],
       play: session ? {
         width: session.width,
         height: session.height,
@@ -209,28 +213,33 @@ self.onmessage = async (event) => {
     const data = event.data;
     if (data && data.action === "update" && globalThis.__miniPlay) {
       const status = globalThis.__miniPlay.update(data.dt);
-      self.postMessage({ action: "step", status, pixels: globalThis.__miniPlay.pixels() });
+      const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
+      self.postMessage({ action: "step", status, pixels: globalThis.__miniPlay.pixels(), tones: tones });
       return;
     }
     if (data && data.action === "keydown" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyDown) globalThis.__miniPlay.keyDown(data.key);
-      self.postMessage({ action: "keydown", pixels: globalThis.__miniPlay.pixels() });
+      const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
+      self.postMessage({ action: "keydown", pixels: globalThis.__miniPlay.pixels(), tones: tones });
       return;
     }
     if (data && data.action === "keyup" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.keyUp) globalThis.__miniPlay.keyUp(data.key);
-      self.postMessage({ action: "keyup", pixels: globalThis.__miniPlay.pixels() });
+      const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
+      self.postMessage({ action: "keyup", pixels: globalThis.__miniPlay.pixels(), tones: tones });
       return;
     }
     if (data && data.action === "pointermove" && globalThis.__miniPlay) {
       if (globalThis.__miniPlay.pointerMove) globalThis.__miniPlay.pointerMove(data.x, data.y);
-      self.postMessage({ action: "pointermove", pixels: globalThis.__miniPlay.pixels() });
+      const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
+      self.postMessage({ action: "pointermove", pixels: globalThis.__miniPlay.pixels(), tones: tones });
       return;
     }
     if (data && (data.action === "pointerdown" || data.action === "pointerup") && globalThis.__miniPlay) {
       const handler = data.action === "pointerdown" ? globalThis.__miniPlay.pointerDown : globalThis.__miniPlay.pointerUp;
       if (handler) handler(data.x, data.y, data.button);
-      self.postMessage({ action: data.action, pixels: globalThis.__miniPlay.pixels() });
+      const tones = globalThis.__miniAudioDrain ? globalThis.__miniAudioDrain() : [];
+      self.postMessage({ action: data.action, pixels: globalThis.__miniPlay.pixels(), tones: tones });
       return;
     }
     if (data && data.action === "stop") {
@@ -247,7 +256,7 @@ self.onmessage = async (event) => {
       self.postMessage({ ok: true, output: "", stderr: "", diagnostic: "", code: compiled.code, program: compiled.program });
       return;
     }
-    const result = await runCode(compiled.code, data.stdin, data.args, compiled.play, compiled.still, data.title);
+    const result = await runCode(compiled.code, data.stdin, data.args, compiled.play, compiled.still, data.title, compiled.audio);
     self.postMessage({
       ok: result.ok,
       output: result.output,
@@ -257,6 +266,7 @@ self.onmessage = async (event) => {
       program: compiled.program,
       canvas: result.canvas,
       play: result.play,
+      tones: result.tones,
     });
   } catch (error) {
     const detail = error && error.stack ? error.stack : String(error);

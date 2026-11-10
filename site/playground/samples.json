@@ -724,6 +724,15 @@
     "file": "samples/showcase/pixel-maze.mini"
   },
   {
+    "id": "pixel-tone",
+    "group": "Audio",
+    "label": "Tone keys",
+    "note": "Play four short tones with the arrow keys or WASD; the canvas stays responsive without an update loop.",
+    "args": [],
+    "stdin": "",
+    "file": "samples/showcase/pixel-tone.mini"
+  },
+  {
     "id": "pixel-dvd",
     "group": "Animation",
     "label": "DVD pixel",

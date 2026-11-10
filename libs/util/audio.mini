@@ -1,0 +1,24 @@
+/// Queue portable tone requests for the active audio host.
+
+import "core/list";
+
+audio_tone_values := list_new();
+
+/// Queue a tone in hertz, seconds, and linear volume from zero to one.
+/// Invalid frequencies, durations, and volumes are ignored.
+fn audio_tone(frequency, duration, volume) {
+    if frequency < 20 || frequency > 20000 || duration <= 0 || duration > 3 || volume <= 0 || volume > 1 {
+        return 0;
+    }
+    list_set(audio_tone_values, list_length(audio_tone_values), frequency);
+    list_set(audio_tone_values, list_length(audio_tone_values), duration);
+    list_set(audio_tone_values, list_length(audio_tone_values), volume);
+    return 0;
+}
+
+/// Return queued tone triples and clear the queue for the host.
+fn audio_tone_drain() {
+    tones := list_copy(audio_tone_values);
+    list_truncate(audio_tone_values, 0);
+    return tones;
+}

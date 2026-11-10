@@ -1,0 +1,43 @@
+/// Play a short tone from the keyboard and show its note color.
+
+import "core/io";
+import "core/number";
+import "util/audio";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+black := pixel_rgb(0, 0, 0);
+tone_frequency := 440;
+tone_color := pixel_rgb(70, 190, 255);
+
+/// Draw one colored note marker on the board.
+fn pixel_tone_draw() {
+    board := pixel_board_new(screen_size, screen_size, black);
+    pixel_board_set(board, screen_size, screen_size, 5, 5, tone_color);
+    canvas_draw(screen_size, screen_size, board);
+}
+
+/// Play a different tone for each arrow direction.
+fn canvas_on_key_down(key) {
+    if key == "ArrowLeft" || key == "a" {
+        tone_frequency = 220;
+        tone_color = pixel_rgb(90, 130, 255);
+    } else if key == "ArrowRight" || key == "d" {
+        tone_frequency = 330;
+        tone_color = pixel_rgb(80, 220, 180);
+    } else if key == "ArrowUp" || key == "w" {
+        tone_frequency = 440;
+        tone_color = pixel_rgb(255, 210, 90);
+    } else if key == "ArrowDown" || key == "s" {
+        tone_frequency = 550;
+        tone_color = pixel_rgb(255, 120, 130);
+    }
+    pixel_tone_draw();
+    audio_tone(tone_frequency, number_div(18, 100), number_div(25, 100));
+}
+
+pixel_tone_draw();
+canvas_play("Tone keys · Arrows or WASD");
+io_write_line("Use the arrow keys or WASD to play a tone.");

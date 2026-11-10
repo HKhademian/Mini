@@ -644,6 +644,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     let previousPlayTimestamp = 0;
     const maxPlayFramesPerSecond = 60;
     const minPlayFrameMs = 1000 / maxPlayFramesPerSecond;
+    let audioContext = null;
 
     function showTab(name) {
       const active = name === "code" && !tabCode.disabled ? "code" : name === "canvas" && !tabCanvas.hidden ? "canvas" : "output";
@@ -684,6 +685,43 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         image.data[offset + 3] = 255;
       }
       playContext.putImageData(image, 0, 0);
+    }
+
+    function unlockAudio() {
+      const AudioContextType = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextType) return;
+      if (!audioContext) audioContext = new AudioContextType();
+      if (audioContext.state === "suspended") {
+        const resume = audioContext.resume();
+        if (resume && resume.catch) resume.catch(function () {});
+      }
+    }
+
+    function playToneEvents(values) {
+      if (!audioContext || !Array.isArray(values)) return;
+      let index = 0;
+      while (index + 2 < values.length) {
+        const frequency = Number(values[index]);
+        const duration = Number(values[index + 1]);
+        const volume = Number(values[index + 2]);
+        index += 3;
+        if (!Number.isFinite(frequency) || frequency < 20 || frequency > 20000
+          || !Number.isFinite(duration) || duration <= 0 || duration > 3
+          || !Number.isFinite(volume) || volume <= 0 || volume > 1) continue;
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        const startAt = audioContext.currentTime;
+        const ramp = Math.min(duration / 4, 0.01);
+        oscillator.frequency.setValueAtTime(frequency, startAt);
+        gain.gain.setValueAtTime(0, startAt);
+        gain.gain.linearRampToValueAtTime(volume, startAt + ramp);
+        gain.gain.setValueAtTime(volume, startAt + duration - ramp);
+        gain.gain.linearRampToValueAtTime(0, startAt + duration);
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        oscillator.start(startAt);
+        oscillator.stop(startAt + duration);
+      }
     }
 
     function requestPlayStep(timestamp) {
@@ -774,6 +812,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       }, 5000);
       worker.onmessage = function (event) {
         const data = event.data;
+        if (data.tones) playToneEvents(data.tones);
         if (data.action === "step") {
           playInFlight = false;
           if (!activePlay) return;
@@ -789,7 +828,6 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
         }
         if (["keydown", "keyup", "pointermove", "pointerdown", "pointerup"].includes(data.action)) {
           if (activeCanvas && data.pixels) drawPlayFrame(data.pixels);
-          if (data.tones) playTones(data.tones);
           return;
         }
         if (data.action === "failure") {
@@ -880,14 +918,20 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
       run();
     }
 
-    select.addEventListener("change", showSample);
+    select.addEventListener("change", function () {
+      unlockAudio();
+      showSample();
+    });
     source.addEventListener("input", function () {
       stopPlay();
       updateSourceHighlight();
     });
     source.addEventListener("scroll", syncSourceHighlightScroll);
     resetButton.addEventListener("click", showSample);
-    runButton.addEventListener("click", run);
+    runButton.addEventListener("click", function () {
+      unlockAudio();
+      run();
+    });
     document.getElementById("compile").addEventListener("click", compileOnly);
     tabOutput.addEventListener("click", function () { showTab("output"); });
     tabCanvas.addEventListener("click", function () {
@@ -897,6 +941,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     tabCode.addEventListener("click", function () { showTab("code"); });
     playCanvas.addEventListener("keydown", function (event) {
       if (!activeCanvas || !activeWorker) return;
+      unlockAudio();
       if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " "].includes(event.key)) event.preventDefault();
       activeWorker.postMessage({ action: "keydown", key: event.key });
     });
@@ -915,6 +960,7 @@ function renderPlayground(data: readonly PlaygroundSample[]): string {
     });
     playCanvas.addEventListener("pointerdown", function (event) {
       if (!activeCanvas || !activeWorker) return;
+      unlockAudio();
       playCanvas.focus({ preventScroll: true });
       const point = playPoint(event);
       if (point) activeWorker.postMessage({ action: "pointerdown", x: point.x, y: point.y, button: event.button });
