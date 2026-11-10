@@ -141,9 +141,6 @@ function prepare(code, play, still, title, audio) {
   ].join("\n");
   const playBridge = play ? [
     "globalThis.__miniPlay = {",
-    "  width: canvas_get_width(),",
-    "  height: canvas_get_height(),",
-    "  title: canvas_get_title(),",
     "  pixels: canvas_get_pixels,",
     '  init: typeof canvas_on_init === "function" ? canvas_on_init : null,',
     '  update: typeof canvas_on_update === "function" ? canvas_on_update : null,',
@@ -156,6 +153,9 @@ function prepare(code, play, still, title, audio) {
     "if (globalThis.__miniPlay.init) globalThis.__miniPlay.init();",
     "globalThis.__miniPlay.hasUpdate = Boolean(globalThis.__miniPlay.update);",
     "globalThis.__miniPlay.initialStatus = globalThis.__miniPlay.update ? globalThis.__miniPlay.update(0) : null;",
+    "globalThis.__miniPlay.width = canvas_get_width();",
+    "globalThis.__miniPlay.height = canvas_get_height();",
+    "globalThis.__miniPlay.title = canvas_get_title();",
   ].join("\n") : "";
   const stillBridge = still ? [
     "globalThis.__miniCanvas = {",
