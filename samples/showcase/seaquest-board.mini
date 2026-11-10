@@ -1,0 +1,167 @@
+/// Rescue three divers before oxygen runs out or an enemy reaches the sub.
+
+import "core/io";
+import "core/list";
+import "core/number";
+import "util/board";
+import "util/canvas";
+import "util/io";
+
+screen_size := 10;
+screen_edge := screen_size - 1;
+playback_fps := 60;
+enemy_fps := 2;
+frames_per_enemy_step := number_div(playback_fps, enemy_fps);
+oxygen_units := screen_edge - 1;
+frames_per_oxygen_unit := number_mul(playback_fps, 3);
+ocean_color := pixel_rgb(4, 30, 88);
+wave_color := pixel_rgb(18, 62, 132);
+sub_color := pixel_rgb(255, 214, 68);
+diver_color := pixel_rgb(230, 250, 255);
+enemy_color := pixel_rgb(255, 86, 110);
+oxygen_color := pixel_rgb(70, 230, 190);
+diver_cells := list_of(23, 56, 78);
+diver_rescued := list_of(0, 0, 0);
+sub_x := 1;
+sub_y := 4;
+enemy_x := 8;
+enemy_y := 4;
+enemy_direction := 0 - 1;
+enemy_ticks := 0;
+oxygen_ticks := 0;
+oxygen_left := oxygen_units;
+rescued := 0;
+game_over := false;
+game_won := false;
+
+/// Rescue a diver when the submarine enters its cell.
+fn seaquest_rescue_at_sub() {
+    diver_index := 0;
+    while diver_index < list_length(diver_cells) {
+        if list_get(diver_rescued, diver_index) == 0 {
+            cell := list_get(diver_cells, diver_index);
+            diver_x := number_mod(cell, screen_size);
+            diver_y := number_div(cell, screen_size);
+            if sub_x == diver_x && sub_y == diver_y {
+                list_set(diver_rescued, diver_index, 1);
+                rescued = rescued + 1;
+                if rescued == list_length(diver_cells) {
+                    game_won = true;
+                }
+            }
+        }
+        diver_index = diver_index + 1;
+    }
+}
+
+/// Draw the ocean, oxygen bar, sub, divers, and enemy.
+fn seaquest_render() {
+    board := pixel_board_new(screen_size, screen_size, ocean_color);
+    row := 1;
+    while row < screen_size {
+        column := 0;
+        while column < screen_size {
+            if number_mod(row + column, 4) == 0 {
+                pixel_board_set(board, screen_size, screen_size, column, row, wave_color);
+            }
+            column = column + 1;
+        }
+        row = row + 1;
+    }
+
+    oxygen_index := 0;
+    while oxygen_index < oxygen_left && oxygen_index < screen_edge {
+        pixel_board_set(board, screen_size, screen_size, oxygen_index, 0, oxygen_color);
+        oxygen_index = oxygen_index + 1;
+    }
+    diver_index := 0;
+    while diver_index < list_length(diver_cells) {
+        if list_get(diver_rescued, diver_index) == 0 {
+            cell := list_get(diver_cells, diver_index);
+            pixel_board_set(board, screen_size, screen_size, number_mod(cell, screen_size), number_div(cell, screen_size), diver_color);
+        }
+        diver_index = diver_index + 1;
+    }
+    pixel_board_set(board, screen_size, screen_size, enemy_x, enemy_y, enemy_color);
+    pixel_board_set(board, screen_size, screen_size, sub_x, sub_y, sub_color);
+    pixel_board_render(screen_size, screen_size, board);
+}
+
+/// Move the enemy and drain one oxygen unit every three seconds.
+fn canvas_update() {
+    if !game_over && !game_won {
+        enemy_ticks = enemy_ticks + 1;
+        if enemy_ticks >= frames_per_enemy_step {
+            enemy_ticks = 0;
+            if enemy_x + enemy_direction <= 1 || enemy_x + enemy_direction >= screen_edge {
+                enemy_direction = 0 - enemy_direction;
+            }
+            enemy_x = enemy_x + enemy_direction;
+        }
+
+        oxygen_ticks = oxygen_ticks + 1;
+        if oxygen_ticks >= frames_per_oxygen_unit {
+            oxygen_ticks = 0;
+            oxygen_left = oxygen_left - 1;
+            if oxygen_left <= 0 {
+                game_over = true;
+            }
+        }
+        if sub_x == enemy_x && sub_y == enemy_y {
+            game_over = true;
+        }
+    }
+    seaquest_render();
+    if game_over || game_won {
+        return 1;
+    }
+}
+
+/// Steer the submarine with arrows or WASD and rescue divers by touching them.
+fn canvas_on_key_down(key) {
+    if game_over || game_won {
+        return 0;
+    }
+    if (key == "ArrowLeft" || key == "a") && sub_x > 1 {
+        sub_x = sub_x - 1;
+    } else if (key == "ArrowRight" || key == "d") && sub_x < screen_edge - 1 {
+        sub_x = sub_x + 1;
+    } else if (key == "ArrowUp" || key == "w") && sub_y > 1 {
+        sub_y = sub_y - 1;
+    } else if (key == "ArrowDown" || key == "s") && sub_y < screen_edge - 1 {
+        sub_y = sub_y + 1;
+    }
+    seaquest_rescue_at_sub();
+    if sub_x == enemy_x && sub_y == enemy_y {
+        game_over = true;
+    }
+}
+
+/// Print the initial ocean and all three rescue targets.
+fn seaquest_print() {
+    row := 0;
+    while row < screen_size {
+        column := 0;
+        line := "";
+        while column < screen_size {
+            if row == 0 && column < oxygen_left {
+                line = line + "=";
+            } else if column == sub_x && row == sub_y {
+                line = line + "S";
+            } else if column == enemy_x && row == enemy_y {
+                line = line + "X";
+            } else if (column == 3 && row == 2) || (column == 6 && row == 5) || (column == 8 && row == 7) {
+                line = line + "D";
+            } else {
+                line = line + ".";
+            }
+            column = column + 1;
+        }
+        io_write_line(line);
+        row = row + 1;
+    }
+}
+
+seaquest_render();
+canvas_play(screen_size, screen_size, "Seaquest · Arrows or WASD");
+seaquest_print();

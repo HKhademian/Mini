@@ -501,11 +501,11 @@
   {
     "id": "seaquest-board",
     "group": "Games",
-    "label": "Seaquest — planned",
-    "note": "Dive, rescue divers, and manage your air supply.",
+    "label": "Seaquest",
+    "note": "Steer the submarine with arrows or WASD, touch all three divers, and avoid the enemy before oxygen runs out.",
     "args": [],
     "stdin": "",
-    "status": "planned"
+    "file": "samples/showcase/seaquest-board.mini"
   },
   {
     "id": "asterix-board",
