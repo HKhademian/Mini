@@ -1,0 +1,55 @@
+/// Play: EML stack machine + EML expression converter in Mini.
+
+import "core/map";
+import "core/number";
+import "util/io";
+import "./eml";
+
+fn show_stream(name, program) {
+    res := eml_run_stream(program);
+    status := "valid";
+    if map_get(res, "loose") {
+        status = "loose";
+    }
+    io_write_line(
+        "stream: " + program + " | " + name + " | status: " + status
+        + " | depth: " + number_to_text(map_get(res, "depth"))
+        + " | underflows: " + number_to_text(map_get(res, "underflows"))
+    );
+    io_write_line("  TOS = " + eml_c_text(map_get(res, "tos")));
+}
+
+fn show_convert(expr) {
+    conv := eml_convert(expr);
+    res := eml_run_stream(map_get(conv, "stream"));
+    status := "valid";
+    if map_get(res, "loose") {
+        status = "loose";
+    }
+    io_write_line("expr: " + expr);
+    io_write_line("  tree  = " + map_get(conv, "tree"));
+    io_write_line("  morse = " + map_get(conv, "stream"));
+    io_write_line("  bits  = " + map_get(conv, "bits"));
+    io_write_line("  eval  = " + status + " | ops: " + number_to_text(map_get(res, "ops")));
+    io_write_line("  TOS   = " + eml_c_text(map_get(res, "tos")));
+}
+
+io_write_line("=== 1. EML Stack Machine (Morse / Bit Stream) ===");
+show_stream("1", "-");
+show_stream("underflow eml(1,1)", ".");
+show_stream("eml(1,1) = e", "--.");
+show_stream("1, eml(1,1)", "---.");
+show_stream("0 = eml(1, exp(e))", "---.-..");
+show_stream("bits: 0 = 1110100", "1110100");
+
+io_write_line("");
+io_write_line("=== 2. EML Converter (Expression -> EML Tree & Stream -> Stack Eval) ===");
+show_convert("1");
+show_convert("e");
+show_convert("0");
+show_convert("exp(1)");
+show_convert("ln(e)");
+show_convert("-1");
+show_convert("2 + 3");
+show_convert("6 / 2");
+show_convert("2 * 3 - 1");
